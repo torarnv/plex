@@ -515,11 +515,12 @@ void CGUIWindowVideoInfo::Refresh()
 
     CStdString strImage = m_movieItem->GetVideoInfoTag()->m_strPictureURL.GetFirstThumb().m_url;
 
-    CStdString thumbImage = m_movieItem->GetThumbnailImage();
-    if (!m_movieItem->HasThumbnail())
-      thumbImage = m_movieItem->GetCachedVideoThumb();
+    CStdString thumbImage = m_movieItem->GetCachedVideoThumb();
+    if (!CFile::Exists(thumbImage) || m_movieItem->GetProperty("HasAutoThumb") == "1")
+      thumbImage = m_movieItem->GetUserVideoThumb();
     if (!CFile::Exists(thumbImage) && strImage.size() > 0)
     {
+      thumbImage = m_movieItem->GetCachedVideoThumb();
       CScraperUrl::DownloadThumbnail(thumbImage,m_movieItem->GetVideoInfoTag()->m_strPictureURL.GetFirstThumb());
       CUtil::DeleteVideoDatabaseDirectoryCache(); // to get them new thumbs to show
     }
