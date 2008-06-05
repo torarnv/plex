@@ -476,9 +476,10 @@ void CGUIWindowVideoInfo::Refresh()
 
     CStdString strImage = m_movieItem->GetVideoInfoTag()->m_strPictureURL.GetFirstThumb().m_url;
 
-    CStdString thumbImage = m_movieItem->GetCachedVideoThumb();
-    if (!CFile::Exists(thumbImage) || m_movieItem->GetProperty("HasAutoThumb") == "1")
-      thumbImage = m_movieItem->GetUserVideoThumb();
+    m_movieItem->SetVideoThumb();
+    CStdString thumbImage = m_movieItem->GetThumbnailImage();
+    if (!m_movieItem->HasThumbnail() || m_movieItem->GetProperty("HasAutoThumb") == "1")
+      thumbImage = m_movieItem->GetCachedVideoThumb();
     if (!CFile::Exists(thumbImage) && strImage.size() > 0)
     {
       thumbImage = m_movieItem->GetCachedVideoThumb();
