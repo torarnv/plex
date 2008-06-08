@@ -1621,9 +1621,6 @@ CProfile* CApplication::InitDirectoriesOSX()
   CStdString home = getenv("HOME");
   CIoSupport::RemapDriveLetter('Q', (char*) strExecutablePath.c_str());
 
-  g_settings.m_vecProfiles.clear();
-  g_settings.LoadProfiles(_P(PROFILES_FILE));
-
   CProfile* profile = NULL;
 
   if (m_bPlatformDirectories)
@@ -1638,6 +1635,9 @@ CProfile* CApplication::InitDirectoriesOSX()
     CStdString str2 = str;
     str2.append("/Mounts");
     CreateDirectory(str2.c_str(), NULL);
+    str2 = str;
+    str2.append("/skin");
+    CreateDirectory(str2.c_str(), NULL);
     str.append("/UserData");
     CreateDirectory(str.c_str(), NULL);
 
@@ -1650,23 +1650,17 @@ CProfile* CApplication::InitDirectoriesOSX()
     str.append("/Library/Application Support/XBMC");
     CIoSupport::RemapDriveLetter('T', str.c_str());
     CIoSupport::RemapDriveLetter('U', str.c_str());
-    
-    if (g_settings.m_vecProfiles.size()==0)
-    {
-      profile = new CProfile;
-      CStdString s = getenv("HOME");
-      s.append("/Library/Application Support/XBMC/UserData");
-      profile->setDirectory(s.c_str());
-    }
   }
-  else
+
+  g_settings.m_vecProfiles.clear();
+  g_settings.LoadProfiles(_P(PROFILES_FILE));
+
+  if (g_settings.m_vecProfiles.size() == 0)
   {
-    if (g_settings.m_vecProfiles.size()==0)
-    {
-      profile = new CProfile;
-      profile->setDirectory(_P("q:\\UserData"));
-    }
+    profile = new CProfile();
+    profile->setDirectory(_P("t:\\UserData"));
   }
+  
   return profile;
 #else
   return NULL;
@@ -3074,7 +3068,7 @@ void CApplication::Render()
       }
       else if ((g_infoManager.GetFPS() > g_graphicsContext.GetFPS() + 10) && g_infoManager.GetFPS() > 1000/singleFrameTime)
       {
-        //The driver is ignoring vsync. Was set to ALWAYS, set to VIDEO. Framerate will be limited from next render.
+        // The driver is ignoring vsync. Was set to ALWAYS, set to VIDEO. Framerate will be limited from next render.
         CLog::Log(LOGWARNING, "VSYNC ignored by driver, enabling framerate limiter.");
         g_videoConfig.SetVSyncMode(VSYNC_VIDEO);
       }

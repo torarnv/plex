@@ -558,7 +558,7 @@ bool CFileItem::IsInternetStream() const
     return false;
 
   if (strProtocol == "shout" || strProtocol == "mms" ||
-      strProtocol == "http" || /*strProtocol == "ftp" ||*/
+      strProtocol == "http" || strProtocol == "ftp" ||
       strProtocol == "rtsp" || strProtocol == "rtp" ||
       strProtocol == "udp"  || strProtocol == "lastfm" ||
       strProtocol == "https")
@@ -635,7 +635,7 @@ bool CFileItem::IsDVDImage() const
 {
   CStdString strExtension;
   CUtil::GetExtension(m_strPath, strExtension);
-  if (strExtension.Equals(".img") || strExtension.Equals(".iso")) return true;
+  if (strExtension.Equals(".img") || strExtension.Equals(".iso") || strExtension.Equals(".nrg")) return true;
   return false;
 }
 
