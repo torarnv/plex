@@ -4549,7 +4549,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if (execute.Equals("container.previousviewmode"))
   {
-    CGUIMessage message(GUI_MSG_CHANGE_VIEW_MODE, m_gWindowManager.GetActiveWindow(), 0, 0, -1);
+    CGUIMessage message(GUI_MSG_CHANGE_VIEW_MODE, m_gWindowManager.GetActiveWindow(), 0, 0, MAXDWORD);
     g_graphicsContext.SendMessage(message);
   }
   else if (execute.Equals("container.setviewmode"))
@@ -4564,7 +4564,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if (execute.Equals("container.previoussortmethod"))
   {
-    CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, m_gWindowManager.GetActiveWindow(), 0, 0, -1);
+    CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, m_gWindowManager.GetActiveWindow(), 0, 0, MAXDWORD);
     g_graphicsContext.SendMessage(message);
   }
   else if (execute.Equals("container.setsortmethod"))
