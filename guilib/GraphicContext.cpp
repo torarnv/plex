@@ -1395,7 +1395,9 @@ bool CGraphicContext::ToggleFullScreenRoot ()
   }
 
   g_fontManager.ReloadTTFFonts();
-  g_application.ReloadSkin();
+  
+  if (g_graphicsContext.IsFullScreenVideo() == false)
+    g_application.ReloadSkin();
   return  m_bFullScreenRoot;
 }
 
