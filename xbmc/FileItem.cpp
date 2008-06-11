@@ -193,7 +193,7 @@ CFileItem::CFileItem(const CStdString& strPath, bool bIsFolder)
   m_bIsFolder = bIsFolder;
 #ifdef DEBUG
   // tuxbox urls cannot have a / at end
-  if (m_bIsFolder && !m_strPath.IsEmpty() && !IsFileFolder() && !CUtil::IsTuxBox(m_strPath))
+  if (m_bIsFolder && !m_strPath.IsEmpty() && !IsFileFolder() && !CUtil::IsTuxBox(m_strPath) && strPath.Left(14) != "smartfolder://")
     ASSERT(CUtil::HasSlashAtEnd(m_strPath));
 #endif
 

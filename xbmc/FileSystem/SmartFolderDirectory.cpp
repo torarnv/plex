@@ -10,6 +10,10 @@ bool CSmartFolderDirectory::GetDirectory(const CStdString& strPath, CFileItemLis
 {
   CStdString strTruePath = strPath.Right(strPath.length()-13).c_str();
   
+  // If there's a trailing /, remove it.
+  if (CUtil::HasSlashAtEnd(strTruePath))
+    strTruePath = strTruePath.Left(strTruePath.length()-1);
+  
   // If we don't have a savedSearch at the end, we've gone up.
   if (CUtil::GetExtension(strTruePath) != ".savedSearch")
     return CHDDirectory::GetDirectory(strTruePath, items);
