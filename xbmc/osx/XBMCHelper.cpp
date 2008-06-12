@@ -257,7 +257,7 @@ void XBMCHelper::WriteFile(const char* fileName, const std::string& data)
 /////////////////////////////////////////////////////////////////////////////
 int XBMCHelper::GetProcessPid(const char* strProgram)
 {
-  kinfo_proc* mylist = (kinfo_proc *)malloc(sizeof(kinfo_proc));
+  kinfo_proc* mylist;
   size_t mycount = 0;
   int ret = -1;
 
@@ -272,8 +272,9 @@ int XBMCHelper::GetProcessPid(const char* strProgram)
       //if (ignorePid == 0 || ignorePid != proc->kp_proc.p_pid)
       ret = proc->kp_proc.p_pid;
     }
+    
   }
-
+  
   free (mylist);
 
   return ret;
