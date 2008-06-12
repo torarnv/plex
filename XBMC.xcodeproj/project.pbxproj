@@ -54,6 +54,9 @@
 		88ECB6EA0DE07BEE003396A7 /* libogg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 88ECB6E90DE07BEE003396A7 /* libogg.a */; };
 		88ECB6EC0DE07C56003396A7 /* libmysqlclient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 88ECB6EB0DE07C56003396A7 /* libmysqlclient.a */; };
 		8DD76F790486A8DE00D96B5E /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09AB6884FE841BABC02AAC07 /* CoreFoundation.framework */; };
+		9409C1DC0E01D622001626C3 /* libaften.0.0.8.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9409C1DB0E01D622001626C3 /* libaften.0.0.8.dylib */; };
+		9409C1EE0E01D696001626C3 /* ac3encoder.c in Sources */ = {isa = PBXBuildFile; fileRef = 9409C1E80E01D696001626C3 /* ac3encoder.c */; };
+		9409C1EF0E01D696001626C3 /* ringbuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 9409C1EC0E01D696001626C3 /* ringbuffer.c */; };
 		B1A921F40DF6D14F0024CC4F /* libbz2.1.0.4.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B1A921F30DF6D14F0024CC4F /* libbz2.1.0.4.dylib */; };
 		E306D12E0DDF7B590052C2AD /* XBMCHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E306D12C0DDF7B590052C2AD /* XBMCHelper.cpp */; };
 		E33206380D5070AA00435CE3 /* DVDDemuxVobsub.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E33206370D5070AA00435CE3 /* DVDDemuxVobsub.cpp */; };
@@ -918,6 +921,13 @@
 		88ECB6E90DE07BEE003396A7 /* libogg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libogg.a; path = /opt/local/lib/libogg.a; sourceTree = "<absolute>"; };
 		88ECB6EB0DE07C56003396A7 /* libmysqlclient.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmysqlclient.a; path = /opt/local/lib/mysql5/mysql/libmysqlclient.a; sourceTree = "<absolute>"; };
 		8DD76F7E0486A8DE00D96B5E /* XBMC */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = XBMC; sourceTree = BUILT_PRODUCTS_DIR; };
+		9409C1DB0E01D622001626C3 /* libaften.0.0.8.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libaften.0.0.8.dylib; sourceTree = "<group>"; };
+		9409C1E80E01D696001626C3 /* ac3encoder.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ac3encoder.c; sourceTree = "<group>"; };
+		9409C1E90E01D696001626C3 /* ac3encoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ac3encoder.h; sourceTree = "<group>"; };
+		9409C1EA0E01D696001626C3 /* aften-types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "aften-types.h"; sourceTree = "<group>"; };
+		9409C1EB0E01D696001626C3 /* aften.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = aften.h; sourceTree = "<group>"; };
+		9409C1EC0E01D696001626C3 /* ringbuffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ringbuffer.c; sourceTree = "<group>"; };
+		9409C1ED0E01D696001626C3 /* ringbuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ringbuffer.h; sourceTree = "<group>"; };
 		B1A921F30DF6D14F0024CC4F /* libbz2.1.0.4.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libbz2.1.0.4.dylib; path = /opt/local/lib/libbz2.1.0.4.dylib; sourceTree = "<absolute>"; };
 		E306D12C0DDF7B590052C2AD /* XBMCHelper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMCHelper.cpp; sourceTree = "<group>"; };
 		E306D12D0DDF7B590052C2AD /* XBMCHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCHelper.h; sourceTree = "<group>"; };
@@ -2886,6 +2896,7 @@
 				88ECB6EA0DE07BEE003396A7 /* libogg.a in Frameworks */,
 				88ECB6EC0DE07C56003396A7 /* libmysqlclient.a in Frameworks */,
 				B1A921F40DF6D14F0024CC4F /* libbz2.1.0.4.dylib in Frameworks */,
+				9409C1DC0E01D622001626C3 /* libaften.0.0.8.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2915,6 +2926,7 @@
 		08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				9409C1DB0E01D622001626C3 /* libaften.0.0.8.dylib */,
 				B1A921F30DF6D14F0024CC4F /* libbz2.1.0.4.dylib */,
 				88ECB6EB0DE07C56003396A7 /* libmysqlclient.a */,
 				88ECB6E90DE07BEE003396A7 /* libogg.a */,
@@ -3015,6 +3027,19 @@
 				810C9F870D67BDE20095F5DD /* timestamp.c */,
 			);
 			path = libcmyth;
+			sourceTree = "<group>";
+		};
+		9409C1E50E01D680001626C3 /* AC3Encoder */ = {
+			isa = PBXGroup;
+			children = (
+				9409C1E80E01D696001626C3 /* ac3encoder.c */,
+				9409C1E90E01D696001626C3 /* ac3encoder.h */,
+				9409C1EA0E01D696001626C3 /* aften-types.h */,
+				9409C1EB0E01D696001626C3 /* aften.h */,
+				9409C1EC0E01D696001626C3 /* ringbuffer.c */,
+				9409C1ED0E01D696001626C3 /* ringbuffer.h */,
+			);
+			name = AC3Encoder;
 			sourceTree = "<group>";
 		};
 		C6859E96029091FE04C91782 /* Documentation */ = {
@@ -3863,6 +3888,7 @@
 		E38E14F80D25F9F900618676 /* dvdplayer */ = {
 			isa = PBXGroup;
 			children = (
+				9409C1E50E01D680001626C3 /* AC3Encoder */,
 				E38E14F90D25F9F900618676 /* ALSADirectSound.cpp */,
 				E38E14FA0D25F9F900618676 /* ALSADirectSound.h */,
 				E38E14FB0D25F9F900618676 /* dvd_config.h */,
@@ -6797,6 +6823,8 @@
 				8883CEA70DD81807004E8B72 /* DVDSubtitleParserSSA.cpp in Sources */,
 				8883CEA80DD81807004E8B72 /* DVDSubtitlesLibass.cpp in Sources */,
 				E306D12E0DDF7B590052C2AD /* XBMCHelper.cpp in Sources */,
+				9409C1EE0E01D696001626C3 /* ac3encoder.c in Sources */,
+				9409C1EF0E01D696001626C3 /* ringbuffer.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6872,6 +6900,7 @@
 					"\"$(SRCROOT)/system/python\"",
 					"\"$(SRCROOT)/xbmc/lib/libPython/linux\"",
 					"\"$(SRCROOT)/xbmc/lib/libcdio-osx\"",
+					"\"$(SRCROOT)\"",
 				);
 				OTHER_LDFLAGS = "-header-pad_max_install_names";
 				PRODUCT_NAME = XBMC;
@@ -6944,6 +6973,7 @@
 					"\"$(SRCROOT)/system/python\"",
 					"\"$(SRCROOT)/xbmc/lib/libPython/linux\"",
 					"\"$(SRCROOT)/xbmc/lib/libcdio-osx\"",
+					"\"$(SRCROOT)\"",
 				);
 				OTHER_LDFLAGS = "-header-pad_max_install_names";
 				PRODUCT_NAME = XBMC;
