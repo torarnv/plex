@@ -23,6 +23,8 @@
 #include "PortAudioDirectSound.h"
 #include "AudioContext.h"
 #include "Util.h"
+#include "ac3encoder.h"
+#include "XBAudioConfig.h"
 
 void PortAudioDirectSound::DoWork()
 {
