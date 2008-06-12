@@ -30,6 +30,13 @@
 #include "../mplayer/IAudioCallback.h"
 #include "../ssrc.h"
 #include "../../utils/PCMAmplifier.h"
+#include "aften-types.h"
+
+//These values are forced to allow spdif out
+#define SPDIF_SAMPLESIZE 16
+#define SPDIF_CHANNELS 2
+#define SPDIF_SAMPLERATE 48000
+#define AC3_SAMPLES_PER_FRAME 256
 
 extern void RegisterAudioCallback(IAudioCallback* pCallback);
 extern void UnRegisterAudioCallback();
@@ -85,6 +92,9 @@ private:
   //snd_pcm_uframes_t m_BufferSize;
 
   bool m_bPassthrough;
+	
+  bool m_bEncodeAC3;
+  AftenContext m_aftenContext;
 };
 
 #endif 
