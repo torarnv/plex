@@ -19,10 +19,10 @@
    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
  */
-
+/*
 struct ac3encoder
 (ringbuffer, acmod, channels, will need some way to access portaudio) - could just encode and return struct = win
 
 channels->acmod
 
-free buffer
+free buffer*/

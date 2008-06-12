@@ -20,7 +20,7 @@
 
  */
 
-#include <config.h>
+//#include <config.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
@@ -33,7 +33,7 @@
 #include "ringbuffer.h"
 
 #define MODULE_ID RINGBUFFER
-#include "debug.h"
+//#include "debug.h"
 
 
 /* call before output thread is active !!!!! */

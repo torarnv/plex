@@ -22,6 +22,8 @@
 #include "stdafx.h"
 #include "DVDAudioCodecLibFaad.h"
 #include "DVDStreamInfo.h"
+#include "GUISettings.h"
+#include "XBAudioConfig.h"
 
 CDVDAudioCodecLibFaad::CDVDAudioCodecLibFaad() : CDVDAudioCodec()
 {
@@ -216,7 +218,13 @@ bool CDVDAudioCodecLibFaad::OpenDecoder()
 
     // modify some stuff here
     pConfiguration->outputFormat = FAAD_FMT_16BIT; // already default
-    pConfiguration->downMatrix = 1;
+	  
+	  if (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL)
+	  {
+		  // Downmatrix with analog devices or if device doesn't support AC3
+		  pConfiguration->downMatrix = !(g_audioConfig.GetAC3Enabled());
+	  }
+	  else pConfiguration->downMatrix = 1;
          
     m_dll.faacDecSetConfiguration(m_pHandle, pConfiguration);
 
