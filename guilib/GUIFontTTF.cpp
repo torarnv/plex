@@ -251,8 +251,16 @@ void CGUIFontTTF::Clear()
   m_face = NULL;
 }
 
-bool CGUIFontTTF::Load(const CStdString& strFilename, float height, float aspect, float lineSpacing)
+bool CGUIFontTTF::Load(const CStdString& strFile, float height, float aspect, float lineSpacing)
 {
+  CStdString strFilename = strFile;
+  
+#ifdef __APPLE__
+  // Hardware to the unicode version that's built into every system.
+  if (strFilename.Right(9) == "Arial.ttf")
+    strFilename = "/Library/Fonts/Arial Unicode.ttf";
+#endif
+  
 #ifndef HAS_SDL
   // create our character texture + font shader
   m_pD3DDevice = g_graphicsContext.Get3DDevice();
