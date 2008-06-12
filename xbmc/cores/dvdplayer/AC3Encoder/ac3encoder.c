@@ -26,3 +26,10 @@ struct ac3encoder
 channels->acmod
 
 free buffer*/
+
+static const int acmod_to_ch[8] = { 2, 1, 2, 3, 3, 4, 4, 5 };
+
+static const char *acmod_str[8] = {
+    "dual mono (1+1)", "mono (1/0)", "stereo (2/0)",
+    "3/0", "2/1", "3/1", "2/2", "3/2"
+};

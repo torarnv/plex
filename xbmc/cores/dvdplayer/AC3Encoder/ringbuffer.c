@@ -32,7 +32,7 @@
 
 #include "ringbuffer.h"
 
-#define MODULE_ID RINGBUFFER
+//#define MODULE_ID RINGBUFFER
 //#include "debug.h"
 
 

@@ -51,10 +51,82 @@ PortAudioDirectSound::PortAudioDirectSound(IAudioCallback* pCallback, int iChann
   m_bPause = false;
   m_bCanPause = false;
   m_bIsAllocated = false;
-  m_uiChannels = iChannels;
-  m_uiSamplesPerSec = uiSamplesPerSec;
-  m_uiBitsPerSample = uiBitsPerSample;
-  m_bPassthrough = bPassthrough;
+
+	
+  // most of this needs to go into ac3encoder.c
+	if (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL && g_audioConfig.GetAC3Enabled())
+	{
+		// Enable AC3 passthrough for digital devices
+		m_uiChannels = SPDIF_CHANNELS;
+		m_uiSamplesPerSec = SPDIF_SAMPLERATE;
+		m_uiBitsPerSample = SPDIF_SAMPLESIZE;
+		
+		m_bEncodeAC3 = true;
+		
+		aften_set_defaults(&m_aftenContext);
+		
+		m_aftenContext.channels = iChannels;
+		m_aftenContext.samplerate = uiSamplesPerSec;
+		//m_aftenContext.sample_format = 
+		//#ifdef CONFIG_DOUBLE
+		//		s.sample_format = A52_SAMPLE_FMT_DBL;
+		//#else
+		//		s.sample_format = A52_SAMPLE_FMT_FLT;
+		
+		// we have no way of knowing which LPCM channel is which, so just use best guess
+		m_aftenContext.acmod = -1;
+		m_aftenContext.lfe = 0;
+		switch (iChannels)
+		{
+			case 1:
+				m_aftenContext.acmod = 1; // mono
+				break;
+			case 2:
+				m_aftenContext.acmod = 2; // stereo
+				break;
+			case 3:
+				m_aftenContext.acmod = 2; // stereo with LFE, ie Stereo/Prologic 2.1
+				m_aftenContext.lfe = 1;
+				break;
+			case 4:
+				m_aftenContext.acmod = 6; // Quadraphonic, ie 2/2
+				break;
+			case 5:
+				m_aftenContext.acmod = 6; // Quadraphonic with LFE - I don't know if this even exists
+				m_aftenContext.lfe = 1;
+				break;
+			case 6:
+				m_aftenContext.acmod = 7;
+				m_aftenContext.lfe = 1;
+				break;
+			default:
+				CLog::Log(LOGERROR, "Invalid number of channels for AC3 (%i)\n", iChannels); 
+				break;
+		}
+		
+		// print ac3 info to console
+		
+		if (aften_encode_init(&m_aftenContext))
+		{
+			CLog::Log(LOGERROR, "error initialising AC3 encoder\n");
+			aften_encode_close(&m_aftenContext);
+		}
+		else CLog::Log(LOGINFO, "AC3 encoder initialised with configuration: %d Hz %s %s", 
+					   m_aftenContext.samplerate, 
+					   acmod_str[m_aftenContext.acmod], 
+					   (m_aftenContext.lfe == 1) ? "+ LFE\n" : "\n");
+		
+		m_bPassthrough = true;
+	}
+	else
+	{
+		m_bEncodeAC3 = false;
+		m_uiChannels = iChannels;
+		m_uiSamplesPerSec = uiSamplesPerSec;
+		m_uiBitsPerSample = uiBitsPerSample;
+		m_bPassthrough = bPassthrough;
+	}
+	
 
   m_nCurrentVolume = g_stSettings.m_nVolumeLevel;
   if (!m_bPassthrough)
