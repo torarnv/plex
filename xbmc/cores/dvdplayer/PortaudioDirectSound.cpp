@@ -53,7 +53,7 @@ PortAudioDirectSound::PortAudioDirectSound(IAudioCallback* pCallback, int iChann
   m_bCanPause = false;
   m_bIsAllocated = false;
 
-	if (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL && g_audioConfig.GetAC3Enabled())
+	if (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL && g_audioConfig.GetAC3Enabled() && !bPassthrough)
 	{
 		// Enable AC3 passthrough for digital devices
 		m_uiChannels = SPDIF_CHANNELS;
@@ -122,7 +122,9 @@ HRESULT PortAudioDirectSound::Deinitialize()
     SAFELY(Pa_StopStream(m_pStream));
     SAFELY(Pa_CloseStream(m_pStream));
   }
-  
+	
+	ac3encoder_free(&m_ac3encoder);
+	
   m_bIsAllocated = false;
   m_pStream = 0;
   
@@ -248,14 +250,33 @@ DWORD PortAudioDirectSound::AddPackets(unsigned char *data, DWORD len)
   
   unsigned char* pcmPtr = data;
   
-  // Handle volume de-amplification.
-  if (!m_bPassthrough)
-    m_amp.DeAmplify((short *)pcmPtr, framesToWrite * m_uiChannels);
-  
-  // Write data to the stream.
-  SAFELY(Pa_WriteStream(m_pStream, pcmPtr, framesToWrite));
-
+  if (m_bEncodeAC3)
+  {
+	  int ac3_frames = 0, frame_length = 0, total_written;
+	  unsigned char ac3_encoded_frame[3072];
+	  
+	  if ((ac3_frames = ac3encoder_write_samples(&m_ac3encoder, pcmPtr, len)) > 0)
+	  {
+		  CLog::Log(LOGINFO, "Buffered %i AC3 frame%s", ac3_frames, (ac3_frames == 1) ? "" : "s");
+		  while(ac3_frames > 0)
+		  {
+			  frame_length = ac3encoder_get_encoded_frame(&m_ac3encoder, (unsigned char *)&ac3_encoded_frame);
+			  SAFELY(Pa_WriteStream(m_pStream, &ac3_encoded_frame, frame_length / SPDIF_CHANNELS));
+			  ac3_frames--;
+		  }
+	  }
+  }
+  else
+  {
+	  // Handle volume de-amplification.
+	  if (!m_bPassthrough)
+		  m_amp.DeAmplify((short *)pcmPtr, framesToWrite * m_uiChannels);
+	  
+	  // Write data to the stream.
+	  SAFELY(Pa_WriteStream(m_pStream, pcmPtr, framesToWrite));	  
+  }
   return framesToWrite * m_uiChannels * (m_uiBitsPerSample/8);
+  
 }
 
 //***********************************************************************************************

@@ -32,7 +32,7 @@ static const char *acmod_str[8] = {
 
 void ac3encoder_init(struct AC3Encoder *encoder, int iChannels, unsigned int uiSamplesPerSec)
 {
-	rb_init(&encoder->m_encodeBuffer, 3072 * 5); // store at most 5 AC3 packets
+	rb_init(&encoder->m_encodeBuffer, 2048 * 6 * 10); // store up to 10 AAC frames (1024 samples)
 	
 	aften_set_defaults(&encoder->m_aftenContext);
 	
@@ -92,17 +92,16 @@ void ac3encoder_init(struct AC3Encoder *encoder, int iChannels, unsigned int uiS
 	 struct ac3encoder
 	 (ringbuffer, acmod, channels, will need some way to access portaudio) - could just encode and return struct = win
 	 
-	 channels->acmod
-	 
-	 free buffer*/
+	 channels->acmod*/
 	
 }
 
 // returns number of available AC3 frames
 int ac3encoder_write_samples(struct AC3Encoder *encoder, unsigned char *samples, int length)
 {
-	
-	return 0;
+	rb_write(encoder->m_encodeBuffer, samples, length);
+	int available_frames = rb_data_size(encoder->m_encodeBuffer) / (encoder->m_aftenContext.channels * 2) / AC3_SAMPLES_PER_FRAME;
+	return available_frames;
 }
 
 int ac3encoder_get_encoded_frame(struct AC3Encoder *encoder, unsigned char *frame)
