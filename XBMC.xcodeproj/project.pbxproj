@@ -54,7 +54,8 @@
 		88ECB6EA0DE07BEE003396A7 /* libogg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 88ECB6E90DE07BEE003396A7 /* libogg.a */; };
 		88ECB6EC0DE07C56003396A7 /* libmysqlclient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 88ECB6EB0DE07C56003396A7 /* libmysqlclient.a */; };
 		8DD76F790486A8DE00D96B5E /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09AB6884FE841BABC02AAC07 /* CoreFoundation.framework */; };
-		9409C1DC0E01D622001626C3 /* libaften.0.0.8.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9409C1DB0E01D622001626C3 /* libaften.0.0.8.dylib */; };
+		940914600E020DE00029D477 /* libaften_pcm.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9409145E0E020DE00029D477 /* libaften_pcm.a */; };
+		940914610E020DE00029D477 /* libaften_static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9409145F0E020DE00029D477 /* libaften_static.a */; };
 		9409C1EE0E01D696001626C3 /* ac3encoder.c in Sources */ = {isa = PBXBuildFile; fileRef = 9409C1E80E01D696001626C3 /* ac3encoder.c */; };
 		9409C1EF0E01D696001626C3 /* ringbuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 9409C1EC0E01D696001626C3 /* ringbuffer.c */; };
 		B1A921F40DF6D14F0024CC4F /* libbz2.1.0.4.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B1A921F30DF6D14F0024CC4F /* libbz2.1.0.4.dylib */; };
@@ -921,7 +922,8 @@
 		88ECB6E90DE07BEE003396A7 /* libogg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libogg.a; path = /opt/local/lib/libogg.a; sourceTree = "<absolute>"; };
 		88ECB6EB0DE07C56003396A7 /* libmysqlclient.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmysqlclient.a; path = /opt/local/lib/mysql5/mysql/libmysqlclient.a; sourceTree = "<absolute>"; };
 		8DD76F7E0486A8DE00D96B5E /* XBMC */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = XBMC; sourceTree = BUILT_PRODUCTS_DIR; };
-		9409C1DB0E01D622001626C3 /* libaften.0.0.8.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libaften.0.0.8.dylib; path = system/players/dvdplayer/libaften.0.0.8.dylib; sourceTree = "<group>"; };
+		9409145E0E020DE00029D477 /* libaften_pcm.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libaften_pcm.a; path = system/players/dvdplayer/libaften_pcm.a; sourceTree = "<group>"; };
+		9409145F0E020DE00029D477 /* libaften_static.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libaften_static.a; path = system/players/dvdplayer/libaften_static.a; sourceTree = "<group>"; };
 		9409C1E80E01D696001626C3 /* ac3encoder.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ac3encoder.c; path = AC3Encoder/ac3encoder.c; sourceTree = "<group>"; };
 		9409C1E90E01D696001626C3 /* ac3encoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ac3encoder.h; path = AC3Encoder/ac3encoder.h; sourceTree = "<group>"; };
 		9409C1EA0E01D696001626C3 /* aften-types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "aften-types.h"; path = "AC3Encoder/aften-types.h"; sourceTree = "<group>"; };
@@ -2896,7 +2898,8 @@
 				88ECB6EA0DE07BEE003396A7 /* libogg.a in Frameworks */,
 				88ECB6EC0DE07C56003396A7 /* libmysqlclient.a in Frameworks */,
 				B1A921F40DF6D14F0024CC4F /* libbz2.1.0.4.dylib in Frameworks */,
-				9409C1DC0E01D622001626C3 /* libaften.0.0.8.dylib in Frameworks */,
+				940914600E020DE00029D477 /* libaften_pcm.a in Frameworks */,
+				940914610E020DE00029D477 /* libaften_static.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2926,7 +2929,8 @@
 		08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				9409C1DB0E01D622001626C3 /* libaften.0.0.8.dylib */,
+				9409145E0E020DE00029D477 /* libaften_pcm.a */,
+				9409145F0E020DE00029D477 /* libaften_static.a */,
 				B1A921F30DF6D14F0024CC4F /* libbz2.1.0.4.dylib */,
 				88ECB6EB0DE07C56003396A7 /* libmysqlclient.a */,
 				88ECB6E90DE07BEE003396A7 /* libogg.a */,
@@ -6901,6 +6905,7 @@
 					"\"$(SRCROOT)/xbmc/lib/libPython/linux\"",
 					"\"$(SRCROOT)/xbmc/lib/libcdio-osx\"",
 					"\"$(SRCROOT)\"",
+					"\"$(SRCROOT)/system/players/dvdplayer\"",
 				);
 				OTHER_LDFLAGS = "-header-pad_max_install_names";
 				PRODUCT_NAME = XBMC;

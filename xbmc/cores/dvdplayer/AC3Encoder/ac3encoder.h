@@ -20,12 +20,23 @@
 
  */
 
-#include "aften.h"
 #include "ringbuffer.h"
+#include "aften-types.h"
 
-static const int acmod_to_ch[8] = { 2, 1, 2, 3, 3, 4, 4, 5 };
+//These values are forced to allow spdif out
+#define SPDIF_SAMPLESIZE 16
+#define SPDIF_CHANNELS 2
+#define SPDIF_SAMPLERATE 48000
+#define AC3_SAMPLES_PER_FRAME 256
 
-static const char *acmod_str[8] = {
-    "dual mono (1+1)", "mono (1/0)", "stereo (2/0)",
-    "3/0", "2/1", "3/1", "2/2", "3/2"
+struct AC3Encoder
+{
+	struct OutRingBuffer *m_encodeBuffer;
+	AftenContext m_aftenContext;
 };
+
+void ac3encoder_init(struct AC3Encoder *encoder, int iChannels, unsigned int uiSamplesPerSec);
+int ac3encoder_write_samples(struct AC3Encoder *encoder, unsigned char *sammples, int length);
+int ac3encoder_get_encoded_frame(struct AC3Encoder *encoder, unsigned char *frame);
+void ac3encoder_flush(struct AC3Encoder *encoder);
+void ac3encoder_free(struct AC3Encoder *encoder);
