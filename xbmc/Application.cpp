@@ -4139,7 +4139,7 @@ bool CApplication::ProcessEventServer(float frameTime)
     // If it's an axis, save the value to repeat it.
     if (isAxis == true)
     {
-      if (fabs(fAmount) >= 0.08)
+      if (fabs(fAmount) >= 0.2)
         m_lastAxisMap[joystickName][wKeyID] = fAmount;
       else
         m_lastAxisMap[joystickName].erase(wKeyID);
@@ -4251,7 +4251,7 @@ bool CApplication::ProcessJoystickEvent(const std::string& joystickName, int wKe
    }
    else
    {
-     CLog::Log(LOGDEBUG, "ERROR mapping joystick action");
+     CLog::Log(LOGDEBUG, "ERROR mapping joystick (%s)", joystickName.c_str());
    }
 #endif
    
