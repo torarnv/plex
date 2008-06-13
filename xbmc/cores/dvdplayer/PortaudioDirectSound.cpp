@@ -60,7 +60,7 @@ PortAudioDirectSound::PortAudioDirectSound(IAudioCallback* pCallback, int iChann
 		m_uiSamplesPerSec = SPDIF_SAMPLERATE;
 		m_uiBitsPerSample = SPDIF_SAMPLESIZE;
 		
-		ac3encoder_init(&m_ac3encoder, iChannels, uiSamplesPerSec);
+		ac3encoder_init(&m_ac3encoder, iChannels, uiSamplesPerSec, uiBitsPerSample);
 		m_bEncodeAC3 = true;
 		m_bPassthrough = true;
 	}

@@ -21,6 +21,7 @@
  */
 
 #include "ac3encoder.h"
+#include <stdlib.h>
 #include <stdio.h>
 
 static const int acmod_to_ch[8] = { 2, 1, 2, 3, 3, 4, 4, 5 };
@@ -30,7 +31,7 @@ static const char *acmod_str[8] = {
     "3/0", "2/1", "3/1", "2/2", "3/2"
 };
 
-void ac3encoder_init(struct AC3Encoder *encoder, int iChannels, unsigned int uiSamplesPerSec)
+void ac3encoder_init(struct AC3Encoder *encoder, int iChannels, unsigned int uiSamplesPerSec, int uiBitsPerSample)
 {
 	rb_init(&encoder->m_encodeBuffer, 2048 * 6 * 10); // store up to 10 AAC frames (1024 samples)
 	
@@ -38,6 +39,7 @@ void ac3encoder_init(struct AC3Encoder *encoder, int iChannels, unsigned int uiS
 	
 	encoder->m_aftenContext.channels = iChannels;
 	encoder->m_aftenContext.samplerate = uiSamplesPerSec;
+	encoder->m_iSampleSize = uiBitsPerSample;
 	//m_aftenContext.sample_format = 
 	//#ifdef CONFIG_DOUBLE
 	//		s.sample_format = A52_SAMPLE_FMT_DBL;
@@ -75,6 +77,11 @@ void ac3encoder_init(struct AC3Encoder *encoder, int iChannels, unsigned int uiS
 			break;
 	}
 	
+	encoder->last_frame = 0;
+    encoder->got_fs_once = 0;
+    encoder->iAC3FrameSize = 0;
+    encoder->irawFramesRead = 0;
+	
 	// print ac3 info to console
 	
 	if (aften_encode_init(&encoder->m_aftenContext))
@@ -106,16 +113,49 @@ int ac3encoder_write_samples(struct AC3Encoder *encoder, unsigned char *samples,
 
 int ac3encoder_get_encoded_frame(struct AC3Encoder *encoder, unsigned char *frame)
 {
-	// read first 1536 samples (size/numchannels)
-	// encode with aften
-	// dump into *frame - max 3072 char buffer
+	encoder->irawFramesRead = AC3_SAMPLES_PER_FRAME * 
+							  encoder->m_aftenContext.channels * 
+							  (encoder->m_iSampleSize / 8);
+	// read 256 * channel samples
+	unsigned char *frame_buffer;
+	frame_buffer = calloc(1, encoder->irawFramesRead);
+#warning fix for short frames
+	// only generate a frame if we have 256 samples per channel
+	if (rb_read(encoder->m_encodeBuffer, frame_buffer, encoder->irawFramesRead) < encoder->irawFramesRead)
+	{
+		free(frame_buffer);
+		return 0;
+	}
+	
+	//encode
+	do 
+	{
+		encoder->iAC3FrameSize = aften_encode_frame(&encoder->m_aftenContext, frame, frame_buffer, AC3_SAMPLES_PER_FRAME);
+	
+		if(encoder->iAC3FrameSize < 0) 
+		{
+			fprintf(stderr, "Error encoding frame\n");
+			break;
+		} 
+		else 
+		{
+			if (encoder->iAC3FrameSize > 0)
+			{
+				encoder->got_fs_once = 1;// means encoder started outputting samples.
+			}
+			encoder->last_frame = encoder->irawFramesRead;
+		}
+	} while (!encoder->got_fs_once);
+	
+	free(frame_buffer);
+	
 	// return len 
-	return 0;
+	return encoder->iAC3FrameSize;
 }
 							 
 void ac3encoder_flush(struct AC3Encoder *encoder)
 {
-							 
+    //while (encode_frame(..., NULL));
 }
 			
 void ac3encoder_free(struct AC3Encoder *encoder)

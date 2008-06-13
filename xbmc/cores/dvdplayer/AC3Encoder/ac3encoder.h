@@ -33,9 +33,16 @@ struct AC3Encoder
 {
 	struct OutRingBuffer *m_encodeBuffer;
 	AftenContext m_aftenContext;
+	int m_iSampleSize;
+	
+	// encoder flags
+	int last_frame;
+    int got_fs_once;
+    int iAC3FrameSize;
+    int irawFramesRead;	
 };
 
-void ac3encoder_init(struct AC3Encoder *encoder, int iChannels, unsigned int uiSamplesPerSec);
+void ac3encoder_init(struct AC3Encoder *encoder, int iChannels, unsigned int uiSamplesPerSec, int uiBitsPerSample);
 int ac3encoder_write_samples(struct AC3Encoder *encoder, unsigned char *sammples, int length);
 int ac3encoder_get_encoded_frame(struct AC3Encoder *encoder, unsigned char *frame);
 void ac3encoder_flush(struct AC3Encoder *encoder);
