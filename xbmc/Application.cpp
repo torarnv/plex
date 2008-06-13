@@ -3164,6 +3164,9 @@ bool CApplication::OnKey(CKey& key)
   g_Mouse.SetInactive();
   CAction action;
 
+  action.kKey = g_Keyboard.GetSVKey();
+  action.unicode = g_Keyboard.GetUnicode();
+
   // a key has been pressed.
   // Reset the screensaver timer
   // but not for the analog thumbsticks/triggers
