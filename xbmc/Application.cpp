@@ -931,8 +931,6 @@ HRESULT CApplication::Create(HWND hWnd)
   CIoSupport::RemapDriveLetter('Q', szDevicePath);
 #endif
 
-  CStdString strLogFile, strLogFileOld;
-
   CProfile *profile;
 
   // only the InitDirectories* for the current platform should return
@@ -969,6 +967,9 @@ HRESULT CApplication::Create(HWND hWnd)
   CLog::Log(LOGNOTICE, "Q is mapped to: %s", strExecutablePath.c_str());
   char szXBEFileName[1024];
   CIoSupport::GetXbePath(szXBEFileName);
+  CStdString strLogFile;
+  strLogFile.Format("%sxbmc.log", _P(g_stSettings.m_logFolder).c_str());
+    
   CLog::Log(LOGNOTICE, "The executeable running is: %s", szXBEFileName);
   CLog::Log(LOGNOTICE, "Log File is located: %s", strLogFile.c_str());
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
