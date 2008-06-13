@@ -306,8 +306,6 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   // We only want to call SDL_SetVideoMode if it's not shared, otherwise we'll create a new window.
   if (shared == 0)
   {
-#else
-    int options = SDL_OPENGL | (fullscreen?SDL_FULLSCREEN:0);
 #endif
     SDL_GL_SetAttribute(SDL_GL_RED_SIZE,   m_iRedSize);
     SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, m_iGreenSize);
@@ -338,6 +336,7 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
     // the context SDL creates isn't full screen compatible, so we create new one
     Cocoa_GL_ReplaceSDLWindowContext();
 #else
+    int options = SDL_OPENGL | (fullscreen?SDL_FULLSCREEN:0);
     m_SDLSurface = SDL_SetVideoMode(m_iWidth, m_iHeight, 0, options);
 #endif
     if (m_SDLSurface)
