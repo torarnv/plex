@@ -170,7 +170,7 @@ CSettings::CSettings(void)
   g_advancedSettings.m_autoDetectPingTime = 30;
   g_advancedSettings.m_playCountMinimumPercent = 90.0f;
 
-  g_advancedSettings.m_songInfoDuration = 2;
+  g_advancedSettings.m_songInfoDuration = 10;
   g_advancedSettings.m_busyDialogDelay = 2000;
   g_advancedSettings.m_logLevel = LOG_LEVEL_DEBUG;
   g_advancedSettings.m_cddbAddress = "freedb.freedb.org";
