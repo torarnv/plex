@@ -56,10 +56,10 @@ PortAudioDirectSound::PortAudioDirectSound(IAudioCallback* pCallback, int iChann
 	if (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL && g_audioConfig.GetAC3Enabled() && !bPassthrough)
 	{
 		// Enable AC3 passthrough for digital devices
-		m_uiChannels = SPDIF_CHANNELS;
-		m_uiSamplesPerSec = SPDIF_SAMPLERATE;
-		m_uiBitsPerSample = SPDIF_SAMPLESIZE;
-		
+//		m_uiChannels = SPDIF_CHANNELS;
+//		m_uiSamplesPerSec = SPDIF_SAMPLERATE;
+//		m_uiBitsPerSample = SPDIF_SAMPLESIZE;
+//		
 		ac3encoder_init(&m_ac3encoder, iChannels, uiSamplesPerSec, uiBitsPerSample);
 		m_bEncodeAC3 = true;
 		m_bPassthrough = true;
@@ -67,11 +67,12 @@ PortAudioDirectSound::PortAudioDirectSound(IAudioCallback* pCallback, int iChann
 	else
 	{
 		m_bEncodeAC3 = false;
+	}
 		m_uiChannels = iChannels;
 		m_uiSamplesPerSec = uiSamplesPerSec;
 		m_uiBitsPerSample = uiBitsPerSample;
 		m_bPassthrough = bPassthrough;
-	}
+
 	
 
   m_nCurrentVolume = g_stSettings.m_nVolumeLevel;
@@ -89,14 +90,26 @@ PortAudioDirectSound::PortAudioDirectSound(IAudioCallback* pCallback, int iChann
   //  device = g_guiSettings.GetString("audiooutput.passthroughdevice");
 
   CLog::Log(LOGINFO, "Asked to open device: [%s]\n", device.c_str());
-
-  m_pStream = CPortAudio::CreateOutputStream(device,
-                                             m_uiChannels, 
-                                             m_uiSamplesPerSec, 
-                                             m_uiBitsPerSample,
-                                             m_bPassthrough,
-                                             m_dwPacketSize);
-  
+if (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL && g_audioConfig.GetAC3Enabled() && !bPassthrough)
+{
+	m_pStream = CPortAudio::CreateOutputStream(device,
+											   SPDIF_CHANNELS, 
+											   SPDIF_SAMPLERATE, 
+											   SPDIF_SAMPLESIZE,
+											   true,
+											   SPDIF_CHANNELS*(SPDIF_SAMPLESIZE/8)*512);
+}
+else
+{
+	m_pStream = CPortAudio::CreateOutputStream(device,
+											   m_uiChannels, 
+											   m_uiSamplesPerSec, 
+											   m_uiBitsPerSample,
+											   m_bPassthrough,
+											   m_dwPacketSize);
+	
+}
+    
   // Start the stream.
   SAFELY(Pa_StartStream(m_pStream));
 
@@ -251,21 +264,26 @@ DWORD PortAudioDirectSound::AddPackets(unsigned char *data, DWORD len)
 	  // was a very bad idea since Pa_GetStreamWriteAvailable would get called
 	  // twice and could return different answers!
 	  //
-	  if (framesToWrite > framesPassedIn)
-		  framesToWrite = framesPassedIn;
-	  int ac3_frames = 0, frame_length = 0, total_written;
+	  //if (framesToWrite > framesPassedIn)
+	//	  framesToWrite = framesPassedIn;
+	  int ac3_frames = 0, frame_length = 0;
 	  unsigned char ac3_encoded_frame[6144];
-	  
-	  if ((ac3_frames = ac3encoder_write_samples(&m_ac3encoder, pcmPtr, len)) > 0)
+	  // we only write a frame if we have room in the portaudio buffer
+	  if ((ac3_frames = ac3encoder_write_samples(&m_ac3encoder, pcmPtr, len)) > 0 && framesToWrite >= 1536)
 	  {
 		  CLog::Log(LOGINFO, "Buffered %i AC3 frame%s", ac3_frames, (ac3_frames == 1) ? "" : "s");
 		  while(ac3_frames > 0)
 		  {
-			  frame_length = ac3encoder_get_encoded_frame(&m_ac3encoder, (unsigned char *)&ac3_encoded_frame);
-			  SAFELY(Pa_WriteStream(m_pStream, &ac3_encoded_frame, framesToWrite / SPDIF_CHANNELS));
+			  frame_length = ac3encoder_get_encoded_samples(&m_ac3encoder, (unsigned char *)&ac3_encoded_frame, framesToWrite);
+			  SAFELY(Pa_WriteStream(m_pStream, &ac3_encoded_frame, 1536));
+			  if (framesToWrite < 1536)
+			  {
+				  CLog::Log(LOGERROR, "Buffer underrun");
+			  }
 			  ac3_frames--;
 		  }
 	  }
+	  return len;//framesToWrite * ac3encoder_channelcount(&m_ac3encoder) * (m_uiBitsPerSample/8);
   }
   else
   {
@@ -285,8 +303,9 @@ DWORD PortAudioDirectSound::AddPackets(unsigned char *data, DWORD len)
 	  
 	  // Write data to the stream.
 	  SAFELY(Pa_WriteStream(m_pStream, pcmPtr, framesToWrite));	  
+	  return framesToWrite * m_uiChannels * (m_uiBitsPerSample/8);
   }
-  return framesToWrite * m_uiChannels * (m_uiBitsPerSample/8);
+  
   
 }
 
