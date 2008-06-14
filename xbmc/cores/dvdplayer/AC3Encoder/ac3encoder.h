@@ -45,5 +45,6 @@ struct AC3Encoder
 void ac3encoder_init(struct AC3Encoder *encoder, int iChannels, unsigned int uiSamplesPerSec, int uiBitsPerSample);
 int ac3encoder_write_samples(struct AC3Encoder *encoder, unsigned char *sammples, int length);
 int ac3encoder_get_encoded_frame(struct AC3Encoder *encoder, unsigned char *frame);
+int ac3encoder_channelcount(struct AC3Encoder *encoder);
 void ac3encoder_flush(struct AC3Encoder *encoder);
 void ac3encoder_free(struct AC3Encoder *encoder);

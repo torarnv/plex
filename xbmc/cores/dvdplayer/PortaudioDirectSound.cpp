@@ -237,23 +237,24 @@ DWORD PortAudioDirectSound::AddPackets(unsigned char *data, DWORD len)
     return len; 
   }
   
-  // Find out how much space we have available.
-  DWORD framesPassedIn = len / (m_uiChannels * m_uiBitsPerSample/8);
-  DWORD framesToWrite  = Pa_GetStreamWriteAvailable(m_pStream);
-  
-  // Clip to the amount we got passed in. I was using MIN above, but that
-  // was a very bad idea since Pa_GetStreamWriteAvailable would get called
-  // twice and could return different answers!
-  //
-  if (framesToWrite > framesPassedIn)
-    framesToWrite = framesPassedIn;
-  
+  DWORD framesToWrite;
+	
   unsigned char* pcmPtr = data;
   
   if (m_bEncodeAC3)
   {
+	  // Find out how much space we have available.
+	  DWORD framesPassedIn = len / (ac3encoder_channelcount(&m_ac3encoder) * m_uiBitsPerSample/8);
+	  framesToWrite  = Pa_GetStreamWriteAvailable(m_pStream);
+	  
+	  // Clip to the amount we got passed in. I was using MIN above, but that
+	  // was a very bad idea since Pa_GetStreamWriteAvailable would get called
+	  // twice and could return different answers!
+	  //
+	  if (framesToWrite > framesPassedIn)
+		  framesToWrite = framesPassedIn;
 	  int ac3_frames = 0, frame_length = 0, total_written;
-	  unsigned char ac3_encoded_frame[3072];
+	  unsigned char ac3_encoded_frame[6144];
 	  
 	  if ((ac3_frames = ac3encoder_write_samples(&m_ac3encoder, pcmPtr, len)) > 0)
 	  {
@@ -261,13 +262,23 @@ DWORD PortAudioDirectSound::AddPackets(unsigned char *data, DWORD len)
 		  while(ac3_frames > 0)
 		  {
 			  frame_length = ac3encoder_get_encoded_frame(&m_ac3encoder, (unsigned char *)&ac3_encoded_frame);
-			  SAFELY(Pa_WriteStream(m_pStream, &ac3_encoded_frame, frame_length / SPDIF_CHANNELS));
+			  SAFELY(Pa_WriteStream(m_pStream, &ac3_encoded_frame, framesToWrite / SPDIF_CHANNELS));
 			  ac3_frames--;
 		  }
 	  }
   }
   else
   {
+	  // Find out how much space we have available.
+	  DWORD framesPassedIn = len / (m_uiChannels * m_uiBitsPerSample/8);
+	  framesToWrite  = Pa_GetStreamWriteAvailable(m_pStream);
+	  
+	  // Clip to the amount we got passed in. I was using MIN above, but that
+	  // was a very bad idea since Pa_GetStreamWriteAvailable would get called
+	  // twice and could return different answers!
+	  //
+	  if (framesToWrite > framesPassedIn)
+		  framesToWrite = framesPassedIn;
 	  // Handle volume de-amplification.
 	  if (!m_bPassthrough)
 		  m_amp.DeAmplify((short *)pcmPtr, framesToWrite * m_uiChannels);

@@ -153,6 +153,11 @@ int ac3encoder_get_encoded_frame(struct AC3Encoder *encoder, unsigned char *fram
 	return encoder->iAC3FrameSize;
 }
 							 
+int ac3encoder_channelcount(struct AC3Encoder *encoder)
+{
+	return encoder->m_aftenContext.channels;
+}
+
 void ac3encoder_flush(struct AC3Encoder *encoder)
 {
     //while (encode_frame(..., NULL));
