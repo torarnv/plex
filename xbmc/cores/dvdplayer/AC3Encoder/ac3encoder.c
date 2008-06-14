@@ -31,9 +31,13 @@ static const char *acmod_str[8] = {
     "3/0", "2/1", "3/1", "2/2", "3/2"
 };
 
+
+// call before using the encoder
+// initialises the aften context and the I/O buffers
 void ac3encoder_init(struct AC3Encoder *encoder, int iChannels, unsigned int uiSamplesPerSec, int uiBitsPerSample)
 {
-	rb_init(&encoder->m_encodeBuffer, 2048 * 6 * 10); // store up to 10 AAC frames (1024 samples)
+	rb_init(&encoder->m_inputBuffer, 2048 * 6 * 10); // store up to 10240 six-channel samples
+	rb_init(&encoder->m_outputBuffer, AC3_SAMPLES_PER_FRAME * SPDIF_SAMPLESIZE / 8 * 5); // store up to 5 AC3 frames
 	
 	aften_set_defaults(&encoder->m_aftenContext);
 	
@@ -80,7 +84,7 @@ void ac3encoder_init(struct AC3Encoder *encoder, int iChannels, unsigned int uiS
 	encoder->last_frame = 0;
     encoder->got_fs_once = 0;
     encoder->iAC3FrameSize = 0;
-    encoder->irawFramesRead = 0;
+    encoder->irawSampleBytesRead = 0;
 	
 	// print ac3 info to console
 	
@@ -106,51 +110,69 @@ void ac3encoder_init(struct AC3Encoder *encoder, int iChannels, unsigned int uiS
 // returns number of available AC3 frames
 int ac3encoder_write_samples(struct AC3Encoder *encoder, unsigned char *samples, int length)
 {
-	rb_write(encoder->m_encodeBuffer, samples, length);
-	int available_frames = rb_data_size(encoder->m_encodeBuffer) / (encoder->m_aftenContext.channels * 2) / AC3_SAMPLES_PER_FRAME;
+	rb_write(encoder->m_inputBuffer, samples, length);
+	
+	while (ac3coder_get_PCM_samplecount(encoder) > AC3_SAMPLES_PER_FRAME)
+	{
+		// encode to output buffer
+		encoder->irawSampleBytesRead = AC3_SAMPLES_PER_FRAME * SPDIF_CHANNELS * SPDIF_SAMPLESIZE / 8;
+		unsigned char *sample_buffer;
+		sample_buffer = calloc(1, encoder->irawSampleBytesRead);
+		if (rb_read(encoder->m_inputBuffer, sample_buffer, encoder->irawSampleBytesRead) < encoder->irawSampleBytesRead)
+		{
+			free(sample_buffer);
+			return 0;
+		}
+		
+		//encode
+		unsigned char AC3_frame_buffer[AC3_SPDIF_FRAME_SIZE];
+		memset(&AC3_frame_buffer, 0, AC3_SPDIF_FRAME_SIZE);
+		do 
+		{
+			memset(&AC3_frame_buffer, 0, AC3_SPDIF_FRAME_SIZE);
+			encoder->iAC3FrameSize = aften_encode_frame(&encoder->m_aftenContext, AC3_frame_buffer, sample_buffer, AC3_SAMPLES_PER_FRAME);
+			
+			if(encoder->iAC3FrameSize < 0) 
+			{
+				fprintf(stderr, "Error encoding frame\n");
+				break;
+			} 
+			else 
+			{
+				if (encoder->iAC3FrameSize > 0)
+				{
+					encoder->got_fs_once = 1;// means encoder started outputting samples.
+				}
+				encoder->last_frame = encoder->irawSampleBytesRead;
+			}
+		} while (!encoder->got_fs_once);
+		rb_write(m_outputBuffer, &AC3_frame_buffer, AC3_SPDIF_FRAME_SIZE);
+		free(sample_buffer);
+		
+		// return len 
+		//return encoder->iAC3FrameSize;
+		
+	}
+	return ac3encoder_get_AC3_framecount(encoder);
+}
+
+// returns number of samples in input buffer
+int ac3coder_get_PCM_samplecount(struct AC3Encoder *encoder)
+{
+	int samplecount = rb_data_size(encoder->m_inputBuffer) / encoder->m_aftenContext.channels / encoder->m_iSampleSize / 8;
+	return samplecount;
+}
+
+// returns number of available AC3 frames
+int ac3encoder_get_AC3_framecount(struct AC3Encoder *encoder)
+{
+	int available_frames = rb_data_size(encoder->m_outputBuffer) / (SPDIF_SAMPLESIZE / 8) / SPDIF_CHANNELS / AC3_SAMPLES_PER_FRAME;
 	return available_frames;
 }
 
 int ac3encoder_get_encoded_frame(struct AC3Encoder *encoder, unsigned char *frame)
 {
-	encoder->irawFramesRead = AC3_SAMPLES_PER_FRAME * 
-							  encoder->m_aftenContext.channels * 
-							  (encoder->m_iSampleSize / 8);
-	// read 256 * channel samples
-	unsigned char *frame_buffer;
-	frame_buffer = calloc(1, encoder->irawFramesRead);
-#warning fix for short frames
-	// only generate a frame if we have 256 samples per channel
-	if (rb_read(encoder->m_encodeBuffer, frame_buffer, encoder->irawFramesRead) < encoder->irawFramesRead)
-	{
-		free(frame_buffer);
-		return 0;
-	}
-	
-	//encode
-	do 
-	{
-		encoder->iAC3FrameSize = aften_encode_frame(&encoder->m_aftenContext, frame, frame_buffer, AC3_SAMPLES_PER_FRAME);
-	
-		if(encoder->iAC3FrameSize < 0) 
-		{
-			fprintf(stderr, "Error encoding frame\n");
-			break;
-		} 
-		else 
-		{
-			if (encoder->iAC3FrameSize > 0)
-			{
-				encoder->got_fs_once = 1;// means encoder started outputting samples.
-			}
-			encoder->last_frame = encoder->irawFramesRead;
-		}
-	} while (!encoder->got_fs_once);
-	
-	free(frame_buffer);
-	
-	// return len 
-	return encoder->iAC3FrameSize;
+	// retunr number of frames
 }
 							 
 int ac3encoder_channelcount(struct AC3Encoder *encoder)

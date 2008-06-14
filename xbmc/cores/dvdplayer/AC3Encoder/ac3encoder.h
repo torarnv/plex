@@ -28,6 +28,7 @@
 #define SPDIF_CHANNELS 2
 #define SPDIF_SAMPLERATE 48000
 #define AC3_SAMPLES_PER_FRAME 1536
+#define AC3_SPDIF_FRAME_SIZE AC3_SAMPLES_PER_FRAME * SPDIF_CHANNELS * SPDIF_SAMPLESIZE / 8
 
 struct AC3Encoder
 {
@@ -40,12 +41,14 @@ struct AC3Encoder
 	int last_frame;
     int got_fs_once;
     int iAC3FrameSize;
-    int irawFramesRead;	
+    int irawSampleBytesRead;	
 };
 
 void ac3encoder_init(struct AC3Encoder *encoder, int iChannels, unsigned int uiSamplesPerSec, int uiBitsPerSample);
 int ac3encoder_write_samples(struct AC3Encoder *encoder, unsigned char *samples, int frames);
-int ac3encoder_get_encoded_samples(struct AC3Encoder *encoder, unsigned char *encoded_samples, int frames);
+int ac3coder_get_PCM_samplecount(struct AC3Encoder *encoder);
+int ac3encoder_get_AC3_framecount(struct AC3Encoder *encoder);
+int ac3encoder_get_encoded_frame(struct AC3Encoder *encoder, unsigned char *encoded_frame);
 int ac3encoder_channelcount(struct AC3Encoder *encoder);
 void ac3encoder_flush(struct AC3Encoder *encoder);
 void ac3encoder_free(struct AC3Encoder *encoder);

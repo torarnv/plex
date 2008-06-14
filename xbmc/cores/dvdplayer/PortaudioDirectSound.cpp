@@ -274,7 +274,7 @@ DWORD PortAudioDirectSound::AddPackets(unsigned char *data, DWORD len)
 		  CLog::Log(LOGINFO, "Buffered %i AC3 frame%s", ac3_frames, (ac3_frames == 1) ? "" : "s");
 		  while(ac3_frames > 0)
 		  {
-			  frame_length = ac3encoder_get_encoded_samples(&m_ac3encoder, (unsigned char *)&ac3_encoded_frame, framesToWrite);
+			  frame_length = ac3encoder_get_encoded_frame(&m_ac3encoder, (unsigned char *)&ac3_encoded_frame, framesToWrite);
 			  SAFELY(Pa_WriteStream(m_pStream, &ac3_encoded_frame, 1536));
 			  if (framesToWrite < 1536)
 			  {
