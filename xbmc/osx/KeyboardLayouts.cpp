@@ -94,15 +94,17 @@ void COSXKeyboardLayouts::GetLayouts()
   CFStringRef keys[] = {kTISPropertyInputSourceType};
   CFStringRef vals[] = {kTISTypeKeyboardLayout};
   CFRange range = {0,0};
-  TISInputSourceRef temp;
   
   props = CFDictionaryCreate(NULL, (const void **) keys, (const void**) vals, 1, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
   layouts = TISCreateInputSourceList(props, false);
   if((range.length = CFArrayGetCount(layouts)) > 1) 
+  {
+    TISInputSourceRef temp;
     c_layout = CFArrayGetFirstIndexOfValue(layouts, range, (temp = TISCopyCurrentKeyboardLayoutInputSource()));
+    CFRelease(temp);
+  }
   
   CFRelease(props);
-  CFRelease(temp);
 }
 
 bool COSXKeyboardLayouts::SetASCIILayout()
