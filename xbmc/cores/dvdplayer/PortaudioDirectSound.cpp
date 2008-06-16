@@ -250,60 +250,63 @@ DWORD PortAudioDirectSound::AddPackets(unsigned char *data, DWORD len)
     return len; 
   }
   
-  DWORD framesToWrite;
-	
+  DWORD samplesPassedIn;
   unsigned char* pcmPtr = data;
   
-  if (m_bEncodeAC3)
+  if (m_bEncodeAC3) // use the raw PCM channel count to get the number of samples to play
   {
-	  // Find out how much space we have available.
-	  DWORD framesPassedIn = len / (ac3encoder_channelcount(&m_ac3encoder) * m_uiBitsPerSample/8);
-	  framesToWrite  = Pa_GetStreamWriteAvailable(m_pStream);
+	  samplesPassedIn = len / (ac3encoder_channelcount(&m_ac3encoder) * m_uiBitsPerSample/8);
+  }
+  else // the PCM input and stream output should match
+  {
+	  samplesPassedIn = len / (m_uiChannels * m_uiBitsPerSample/8);
+  }
+  
+  // Find out how much space we have available.
+  DWORD samplesToWrite  = Pa_GetStreamWriteAvailable(m_pStream);
 	  
-	  // Clip to the amount we got passed in. I was using MIN above, but that
-	  // was a very bad idea since Pa_GetStreamWriteAvailable would get called
-	  // twice and could return different answers!
-	  //
-	  //if (framesToWrite > framesPassedIn)
-	//	  framesToWrite = framesPassedIn;
-	  int ac3_frames = 0, frame_length = 0;
-	  unsigned char ac3_encoded_frame[6144];
-	  // we only write a frame if we have room in the portaudio buffer
-	  if ((ac3_frames = ac3encoder_write_samples(&m_ac3encoder, pcmPtr, len)) > 0 && framesToWrite >= 1536)
+  // Clip to the amount we got passed in. I was using MIN above, but that
+  // was a very bad idea since Pa_GetStreamWriteAvailable would get called
+  // twice and could return different answers!
+  //
+  if (samplesToWrite > samplesPassedIn)
+	  samplesToWrite = samplesPassedIn;
+	
+  if (m_bEncodeAC3)
+  {	  
+	  int ac3_frame_count = 0;
+	  if ((ac3_frame_count = ac3encoder_write_samples(&m_ac3encoder, pcmPtr, samplesToWrite)) = 0)
 	  {
-		  CLog::Log(LOGINFO, "Buffered %i AC3 frame%s", ac3_frames, (ac3_frames == 1) ? "" : "s");
-		  while(ac3_frames > 0)
-		  {
-			  frame_length = ac3encoder_get_encoded_frame(&m_ac3encoder, (unsigned char *)&ac3_encoded_frame, framesToWrite);
-			  SAFELY(Pa_WriteStream(m_pStream, &ac3_encoded_frame, 1536));
-			  if (framesToWrite < 1536)
-			  {
-				  CLog::Log(LOGERROR, "Buffer underrun");
-			  }
-			  ac3_frames--;
-		  }
+		  CLog::Log(LOGERROR, "AC3 output buffer underrun");
 	  }
-	  return len;//framesToWrite * ac3encoder_channelcount(&m_ac3encoder) * (m_uiBitsPerSample/8);
+ 	  else
+	  {
+		  CLog::Log(LOGINFO, "Buffered %i AC3 frame%s", ac3_frame_count, (ac3_frame_count == 1) ? "" : "s");
+		  
+		  unsigned char ac3_framebuffer[AC3_SPDIF_FRAME_SIZE];
+		  memset(&ac3_framebuffer, 0, sizeof(ac3_framebuffer));
+				 
+		  int buffer_sample_readcount = -1;
+		  if ((buffer_sample_readcount = ac3encoder_get_encoded_samples(&m_ac3encoder, ac3_framebuffer, samplesToWrite)) != samplesToWrite)
+		  {
+			 CLog::Log(LOGERROR, "AC3 output buffer underrun");
+		  }
+		  else
+		  {
+			 SAFELY(Pa_WriteStream(m_pStream, &ac3_framebuffer, samplesToWrite));
+		  }
+		  return samplesToWrite * ac3encoder_channelcount(&m_ac3encoder) * (m_uiBitsPerSample/8);
+	  }
   }
   else
   {
-	  // Find out how much space we have available.
-	  DWORD framesPassedIn = len / (m_uiChannels * m_uiBitsPerSample/8);
-	  framesToWrite  = Pa_GetStreamWriteAvailable(m_pStream);
-	  
-	  // Clip to the amount we got passed in. I was using MIN above, but that
-	  // was a very bad idea since Pa_GetStreamWriteAvailable would get called
-	  // twice and could return different answers!
-	  //
-	  if (framesToWrite > framesPassedIn)
-		  framesToWrite = framesPassedIn;
-	  // Handle volume de-amplification.
+	 // Handle volume de-amplification.
 	  if (!m_bPassthrough)
-		  m_amp.DeAmplify((short *)pcmPtr, framesToWrite * m_uiChannels);
+		  m_amp.DeAmplify((short *)pcmPtr, samplesToWrite * m_uiChannels);
 	  
 	  // Write data to the stream.
-	  SAFELY(Pa_WriteStream(m_pStream, pcmPtr, framesToWrite));	  
-	  return framesToWrite * m_uiChannels * (m_uiBitsPerSample/8);
+	  SAFELY(Pa_WriteStream(m_pStream, pcmPtr, samplesToWrite));	  
+	  return samplesToWrite * m_uiChannels * (m_uiBitsPerSample/8);
   }
   
   

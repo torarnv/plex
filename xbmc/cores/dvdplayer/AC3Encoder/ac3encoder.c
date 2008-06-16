@@ -23,6 +23,7 @@
 #include "ac3encoder.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 static const int acmod_to_ch[8] = { 2, 1, 2, 3, 3, 4, 4, 5 };
 
@@ -97,20 +98,22 @@ void ac3encoder_init(struct AC3Encoder *encoder, int iChannels, unsigned int uiS
 				   encoder->m_aftenContext.samplerate, 
 				   acmod_str[encoder->m_aftenContext.acmod], 
 				   (encoder->m_aftenContext.lfe == 1) ? "+ LFE\n" : "\n");
-	/*
-	 
-	 
-	 struct ac3encoder
-	 (ringbuffer, acmod, channels, will need some way to access portaudio) - could just encode and return struct = win
-	 
-	 channels->acmod*/
 	
+	// pre-fill AC3 buffer with silent frame so we can output immediately
+	unsigned char *silent_PCM_init = calloc(1, encoder->m_aftenContext.channels * encoder->m_iSampleSize / 8 * AC3_SAMPLES_PER_FRAME); // 1536 silent samples
+	if (ac3encoder_write_samples(encoder, silent_PCM_init, AC3_SAMPLES_PER_FRAME) < AC3_SAMPLES_PER_FRAME)
+	{
+		fprintf(stderr, "Error pre-buffering AC3 encoder\n");
+		aften_encode_close(&encoder->m_aftenContext);
+	}
+	free(silent_PCM_init);
 }
 
 // returns number of available AC3 frames
-int ac3encoder_write_samples(struct AC3Encoder *encoder, unsigned char *samples, int length)
+int ac3encoder_write_samples(struct AC3Encoder *encoder, unsigned char *samples, int frames_in)
 {
-	rb_write(encoder->m_inputBuffer, samples, length);
+	int input_size = frames_in * encoder->m_aftenContext.channels * encoder->m_iSampleSize / 8;
+	rb_write(encoder->m_inputBuffer, samples, input_size);
 	
 	while (ac3coder_get_PCM_samplecount(encoder) > AC3_SAMPLES_PER_FRAME)
 	{
@@ -121,7 +124,7 @@ int ac3encoder_write_samples(struct AC3Encoder *encoder, unsigned char *samples,
 		if (rb_read(encoder->m_inputBuffer, sample_buffer, encoder->irawSampleBytesRead) < encoder->irawSampleBytesRead)
 		{
 			free(sample_buffer);
-			return 0;
+			return ac3encoder_get_AC3_samplecount(encoder);
 		}
 		
 		//encode
@@ -146,14 +149,10 @@ int ac3encoder_write_samples(struct AC3Encoder *encoder, unsigned char *samples,
 				encoder->last_frame = encoder->irawSampleBytesRead;
 			}
 		} while (!encoder->got_fs_once);
-		rb_write(m_outputBuffer, &AC3_frame_buffer, AC3_SPDIF_FRAME_SIZE);
+		rb_write(encoder->m_outputBuffer, (unsigned char *)&AC3_frame_buffer, AC3_SPDIF_FRAME_SIZE);
 		free(sample_buffer);
-		
-		// return len 
-		//return encoder->iAC3FrameSize;
-		
 	}
-	return ac3encoder_get_AC3_framecount(encoder);
+	return ac3encoder_get_AC3_samplecount(encoder);
 }
 
 // returns number of samples in input buffer
@@ -163,16 +162,26 @@ int ac3coder_get_PCM_samplecount(struct AC3Encoder *encoder)
 	return samplecount;
 }
 
-// returns number of available AC3 frames
-int ac3encoder_get_AC3_framecount(struct AC3Encoder *encoder)
+// returns number of available AC3 samples
+int ac3encoder_get_AC3_samplecount(struct AC3Encoder *encoder)
 {
-	int available_frames = rb_data_size(encoder->m_outputBuffer) / (SPDIF_SAMPLESIZE / 8) / SPDIF_CHANNELS / AC3_SAMPLES_PER_FRAME;
-	return available_frames;
+	int available_samples = rb_data_size(encoder->m_outputBuffer) / (SPDIF_SAMPLESIZE / 8) / SPDIF_CHANNELS;
+	return available_samples;
 }
 
-int ac3encoder_get_encoded_frame(struct AC3Encoder *encoder, unsigned char *frame)
+// returms number of samples
+int ac3encoder_get_encoded_samples(struct AC3Encoder *encoder, unsigned char *encoded_samples, int samples_out)
 {
-	// retunr number of frames
+	if (samples_out > ac3encoder_get_AC3_samplecount(encoder))
+	{
+		return -1;
+	}
+	else
+	{
+		int samples_read = -1;
+		samples_read = rb_read(encoder->m_outputBuffer, encoded_samples, samples_out * SPDIF_CHANNELS * (SPDIF_SAMPLESIZE / 8));
+		return samples_read / SPDIF_CHANNELS / (SPDIF_SAMPLESIZE / 8);
+	}
 }
 							 
 int ac3encoder_channelcount(struct AC3Encoder *encoder)
@@ -187,7 +196,8 @@ void ac3encoder_flush(struct AC3Encoder *encoder)
 			
 void ac3encoder_free(struct AC3Encoder *encoder)
 {
-	rb_free(encoder->m_encodeBuffer);
+	rb_free(encoder->m_inputBuffer);
+	rb_free(encoder->m_outputBuffer);
 #warning need to flush?
 	aften_encode_close(&encoder->m_aftenContext);
 }
