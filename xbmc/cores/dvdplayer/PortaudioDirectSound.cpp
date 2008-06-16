@@ -90,7 +90,7 @@ PortAudioDirectSound::PortAudioDirectSound(IAudioCallback* pCallback, int iChann
   //  device = g_guiSettings.GetString("audiooutput.passthroughdevice");
 
   CLog::Log(LOGINFO, "Asked to open device: [%s]\n", device.c_str());
-if (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL && g_audioConfig.GetAC3Enabled() && !bPassthrough)
+if (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL && g_audioConfig.GetAC3Enabled() && !m_bPassthrough)
 {
 	m_pStream = CPortAudio::CreateOutputStream(device,
 											   SPDIF_CHANNELS, 
@@ -275,16 +275,14 @@ DWORD PortAudioDirectSound::AddPackets(unsigned char *data, DWORD len)
   if (m_bEncodeAC3)
   {	  
 	  int ac3_frame_count = 0;
-	  if ((ac3_frame_count = ac3encoder_write_samples(&m_ac3encoder, pcmPtr, samplesToWrite)) = 0)
+	  if ((ac3_frame_count = ac3encoder_write_samples(&m_ac3encoder, pcmPtr, samplesToWrite)) == 0)
 	  {
 		  CLog::Log(LOGERROR, "AC3 output buffer underrun");
 	  }
  	  else
 	  {
-		  CLog::Log(LOGINFO, "Buffered %i AC3 frame%s", ac3_frame_count, (ac3_frame_count == 1) ? "" : "s");
-		  
 		  unsigned char ac3_framebuffer[AC3_SPDIF_FRAME_SIZE];
-		  memset(&ac3_framebuffer, 0, sizeof(ac3_framebuffer));
+		  memset(ac3_framebuffer, 0, sizeof(ac3_framebuffer));
 				 
 		  int buffer_sample_readcount = -1;
 		  if ((buffer_sample_readcount = ac3encoder_get_encoded_samples(&m_ac3encoder, ac3_framebuffer, samplesToWrite)) != samplesToWrite)
@@ -293,7 +291,7 @@ DWORD PortAudioDirectSound::AddPackets(unsigned char *data, DWORD len)
 		  }
 		  else
 		  {
-			 SAFELY(Pa_WriteStream(m_pStream, &ac3_framebuffer, samplesToWrite));
+			 SAFELY(Pa_WriteStream(m_pStream, ac3_framebuffer, samplesToWrite));
 		  }
 		  return samplesToWrite * ac3encoder_channelcount(&m_ac3encoder) * (m_uiBitsPerSample/8);
 	  }

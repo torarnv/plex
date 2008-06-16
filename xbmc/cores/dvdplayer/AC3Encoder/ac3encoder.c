@@ -32,25 +32,45 @@ static const char *acmod_str[8] = {
     "3/0", "2/1", "3/1", "2/2", "3/2"
 };
 
+static inline int swabdata(char* dst, char* src, int size)
+{	
+	if( size & 0x1 )
+	{
+		swab(src, dst, size-1);
+		dst+=size-1;
+		src+=size-1;
+		
+		dst[0] = 0x0;
+		dst[1] = src[0];
+		return size+1;
+	}
+	else
+	{
+		swab(src, dst, size);
+		return size;
+	}
+	
+}
+
+
 
 // call before using the encoder
 // initialises the aften context and the I/O buffers
 void ac3encoder_init(struct AC3Encoder *encoder, int iChannels, unsigned int uiSamplesPerSec, int uiBitsPerSample)
 {
 	rb_init(&encoder->m_inputBuffer, 2048 * 6 * 10); // store up to 10240 six-channel samples
-	rb_init(&encoder->m_outputBuffer, AC3_SAMPLES_PER_FRAME * SPDIF_SAMPLESIZE / 8 * 5); // store up to 5 AC3 frames
+	rb_init(&encoder->m_outputBuffer, AC3_SPDIF_FRAME_SIZE * 5); // store up to 5 AC3 frames
 	
 	aften_set_defaults(&encoder->m_aftenContext);
 	
 	encoder->m_aftenContext.channels = iChannels;
 	encoder->m_aftenContext.samplerate = uiSamplesPerSec;
 	encoder->m_iSampleSize = uiBitsPerSample;
-	//m_aftenContext.sample_format = 
-	//#ifdef CONFIG_DOUBLE
-	//		s.sample_format = A52_SAMPLE_FMT_DBL;
-	//#else
-	//		s.sample_format = A52_SAMPLE_FMT_FLT;
-	
+//#ifdef CONFIG_DOUBLE
+	//encoder->m_aftenContext.sample_format = A52_SAMPLE_FMT_DBL;
+//#else
+	//encoder->m_aftenContext.sample_format = A52_SAMPLE_FMT_FLT;
+//#endif	
 	// we have no way of knowing which LPCM channel is which, so just use best guess
 	encoder->m_aftenContext.acmod = -1;
 	encoder->m_aftenContext.lfe = 0;
@@ -128,12 +148,29 @@ int ac3encoder_write_samples(struct AC3Encoder *encoder, unsigned char *samples,
 		}
 		
 		//encode
-		unsigned char AC3_frame_buffer[AC3_SPDIF_FRAME_SIZE];
-		//memset(&AC3_frame_buffer, 0, AC3_SPDIF_FRAME_SIZE);
+		unsigned char AC3_frame_buffer[AC3_SPDIF_FRAME_SIZE], oldendian[AC3_SPDIF_FRAME_SIZE];
 		do 
 		{
 			memset(&AC3_frame_buffer, 0, AC3_SPDIF_FRAME_SIZE);
-			encoder->iAC3FrameSize = aften_encode_frame(&encoder->m_aftenContext, AC3_frame_buffer, sample_buffer, AC3_SAMPLES_PER_FRAME);
+			encoder->iAC3FrameSize = aften_encode_frame(&encoder->m_aftenContext, oldendian, sample_buffer, AC3_SAMPLES_PER_FRAME);
+			swabdata((char*)AC3_frame_buffer+8, (char*)oldendian, encoder->iAC3FrameSize);
+			AC3_frame_buffer[0] = 0x72; /* sync words */
+			AC3_frame_buffer[1] = 0xF8;
+			AC3_frame_buffer[2] = 0x1F;
+			AC3_frame_buffer[3] = 0x4E;
+			AC3_frame_buffer[4] = 0x01;//AC3_frame_buffer[13] & 7; /* bsmod */
+			AC3_frame_buffer[5] = 0x00; /* data type */
+			AC3_frame_buffer[6] = (encoder->iAC3FrameSize << 3) & 0xFF;
+			AC3_frame_buffer[7] = (encoder->iAC3FrameSize >> 5) & 0xFF;
+			/*
+			pOut[0] = 0x72;
+			pOut[1] = 0xF8;
+			pOut[2] = 0x1F;
+			pOut[3] = 0x4E;
+			pOut[4] = 0x01; //(length) ? data_type : 0; /* & 0x1F; */
+		/*	pOut[5] = 0x00;
+			pOut[6] = (iDataSize2 << 3) & 0xFF;
+			pOut[7] = (iDataSize2 >> 5) & 0xFF;*/
 			
 			if(encoder->iAC3FrameSize < 0) 
 			{
@@ -149,7 +186,7 @@ int ac3encoder_write_samples(struct AC3Encoder *encoder, unsigned char *samples,
 				encoder->last_frame = encoder->irawSampleBytesRead;
 			}
 		} while (!encoder->got_fs_once);
-		rb_write(encoder->m_outputBuffer, (unsigned char *)&AC3_frame_buffer, AC3_SPDIF_FRAME_SIZE);
+		rb_write(encoder->m_outputBuffer, AC3_frame_buffer, AC3_SPDIF_FRAME_SIZE);
 		free(sample_buffer);
 	}
 	return ac3encoder_get_AC3_samplecount(encoder);
@@ -166,6 +203,7 @@ int ac3coder_get_PCM_samplecount(struct AC3Encoder *encoder)
 int ac3encoder_get_AC3_samplecount(struct AC3Encoder *encoder)
 {
 	int available_samples = rb_data_size(encoder->m_outputBuffer) / (SPDIF_SAMPLESIZE / 8) / SPDIF_CHANNELS;
+
 	return available_samples;
 }
 
