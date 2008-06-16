@@ -15,11 +15,16 @@ COSXKeyboardLayouts::COSXKeyboardLayouts()
   h_layout = c_layout = -1;
   layouts = NULL;
   
-  // may be
-  SetASCIILayout();
-  //  
   GetLayouts();
-  GetKeyboardShortCut();
+
+  if(c_layout > -1)
+  {
+    // may be this
+    SetASCIILayout();
+    //  
+    GetKeyboardShortCut();
+  }
+
 }
 COSXKeyboardLayouts::~COSXKeyboardLayouts()
 {
@@ -97,7 +102,7 @@ void COSXKeyboardLayouts::GetLayouts()
   
   props = CFDictionaryCreate(NULL, (const void **) keys, (const void**) vals, 1, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
   layouts = TISCreateInputSourceList(props, false);
-  if((range.length = CFArrayGetCount(layouts)) > 1) 
+  if(layouts != NULL && (range.length = CFArrayGetCount(layouts)) > 1) 
   {
     TISInputSourceRef temp;
     c_layout = CFArrayGetFirstIndexOfValue(layouts, range, (temp = TISCopyCurrentKeyboardLayoutInputSource()));
