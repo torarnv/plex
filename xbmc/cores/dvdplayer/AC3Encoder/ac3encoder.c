@@ -115,10 +115,10 @@ int ac3encoder_write_samples(struct AC3Encoder *encoder, unsigned char *samples,
 	int input_size = frames_in * encoder->m_aftenContext.channels * encoder->m_iSampleSize / 8;
 	rb_write(encoder->m_inputBuffer, samples, input_size);
 	
-	while (ac3coder_get_PCM_samplecount(encoder) > AC3_SAMPLES_PER_FRAME)
+	while (ac3coder_get_PCM_samplecount(encoder) >= AC3_SAMPLES_PER_FRAME)
 	{
 		// encode to output buffer
-		encoder->irawSampleBytesRead = AC3_SAMPLES_PER_FRAME * SPDIF_CHANNELS * SPDIF_SAMPLESIZE / 8;
+		encoder->irawSampleBytesRead = AC3_SAMPLES_PER_FRAME * encoder->m_aftenContext.channels * encoder->m_iSampleSize / 8;
 		unsigned char *sample_buffer;
 		sample_buffer = calloc(1, encoder->irawSampleBytesRead);
 		if (rb_read(encoder->m_inputBuffer, sample_buffer, encoder->irawSampleBytesRead) < encoder->irawSampleBytesRead)
@@ -129,7 +129,7 @@ int ac3encoder_write_samples(struct AC3Encoder *encoder, unsigned char *samples,
 		
 		//encode
 		unsigned char AC3_frame_buffer[AC3_SPDIF_FRAME_SIZE];
-		memset(&AC3_frame_buffer, 0, AC3_SPDIF_FRAME_SIZE);
+		//memset(&AC3_frame_buffer, 0, AC3_SPDIF_FRAME_SIZE);
 		do 
 		{
 			memset(&AC3_frame_buffer, 0, AC3_SPDIF_FRAME_SIZE);
@@ -158,7 +158,7 @@ int ac3encoder_write_samples(struct AC3Encoder *encoder, unsigned char *samples,
 // returns number of samples in input buffer
 int ac3coder_get_PCM_samplecount(struct AC3Encoder *encoder)
 {
-	int samplecount = rb_data_size(encoder->m_inputBuffer) / encoder->m_aftenContext.channels / encoder->m_iSampleSize / 8;
+	int samplecount = rb_data_size(encoder->m_inputBuffer) / encoder->m_aftenContext.channels / (encoder->m_iSampleSize / 8);
 	return samplecount;
 }
 
