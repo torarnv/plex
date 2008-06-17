@@ -1382,6 +1382,8 @@ bool CGraphicContext::ToggleFullScreenRoot ()
   }
   else
   {
+    windowres = GetVideoResolution();
+    
     if (lastres != INVALID)
     {
       SetVideoResolution(lastres);
