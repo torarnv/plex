@@ -4131,43 +4131,53 @@ bool CApplication::ProcessEventServer(float frameTime)
   std::string joystickName;
   bool isAxis = false;
   float fAmount = 0.0;
+  bool done = false;
   
-  WORD wKeyID = es->GetButtonCode(joystickName, isAxis, fAmount);
-  
-  if (wKeyID)
+  while (!done)
   {
-    // If it's an axis, save the value to repeat it.
-    if (isAxis == true)
+    WORD wKeyID = es->GetButtonCode(joystickName, isAxis, fAmount);
+    
+    if (wKeyID)
     {
-      if (fabs(fAmount) >= 0.2)
-        m_lastAxisMap[joystickName][wKeyID] = fAmount;
+      // If it's an axis, save the value to repeat it.
+      if (isAxis == true)
+      {
+        if (fabs(fAmount) >= 0.2)
+          m_lastAxisMap[joystickName][wKeyID] = fAmount;
+        else
+          m_lastAxisMap[joystickName].erase(wKeyID);
+      }
+    }
+    else if (m_lastAxisMap.size() > 0)
+    {
+      // Process all the stored axis.
+      for (map<std::string, map<int, float> >::iterator iter = m_lastAxisMap.begin(); iter != m_lastAxisMap.end(); ++iter)
+      {
+        for (map<int, float>::iterator iterAxis = (*iter).second.begin(); iterAxis != (*iter).second.end(); ++iterAxis)
+          ProcessJoystickEvent((*iter).first, (*iterAxis).first, true, (*iterAxis).second);
+      }
+    }
+    
+    if (wKeyID)
+    {
+      if (joystickName.length() > 0)
+      {
+        ProcessJoystickEvent(joystickName, wKeyID, isAxis, fAmount);
+      }
       else
-        m_lastAxisMap[joystickName].erase(wKeyID);
-    }
-  }
-  else if (m_lastAxisMap.size() > 0)
-  {
-    // Process all the stored axis.
-    for (map<std::string, map<int, float> >::iterator iter = m_lastAxisMap.begin(); iter != m_lastAxisMap.end(); ++iter)
-    {
-      for (map<int, float>::iterator iterAxis = (*iter).second.begin(); iterAxis != (*iter).second.end(); ++iterAxis)
-        ProcessJoystickEvent((*iter).first, (*iterAxis).first, true, (*iterAxis).second);
-    }
-  }
-  
-  if (wKeyID)
-  {
-    if (joystickName.length() > 0)
-    {
-      ProcessJoystickEvent(joystickName, wKeyID, isAxis, fAmount);
+      {
+        CKey key(wKeyID);
+        return OnKey( key );
+      }
     }
     else
     {
-      CKey key(wKeyID);
-      return OnKey( key );
+      done = true;
     }
   }
-  
+
+  done = false;
+  while (!done)
   {
     CAction action;
     action.wID = ACTION_MOUSE;
@@ -4200,6 +4210,10 @@ bool CApplication::ProcessEventServer(float frameTime)
         }
       }
       return m_gWindowManager.OnAction(action);
+    }
+    else
+    {
+      done = true;
     }
   }
 #endif  
