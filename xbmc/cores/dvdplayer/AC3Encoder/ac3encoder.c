@@ -66,11 +66,9 @@ void ac3encoder_init(struct AC3Encoder *encoder, int iChannels, unsigned int uiS
 	encoder->m_aftenContext.channels = iChannels;
 	encoder->m_aftenContext.samplerate = uiSamplesPerSec;
 	encoder->m_iSampleSize = uiBitsPerSample;
-//#ifdef CONFIG_DOUBLE
-	//encoder->m_aftenContext.sample_format = A52_SAMPLE_FMT_DBL;
-//#else
-	//encoder->m_aftenContext.sample_format = A52_SAMPLE_FMT_FLT;
-//#endif	
+
+	encoder->m_aftenContext.params.bitrate = 640; // set AC3 output bitrate to maximum
+	
 	// we have no way of knowing which LPCM channel is which, so just use best guess
 	encoder->m_aftenContext.acmod = -1;
 	encoder->m_aftenContext.lfe = 0;
@@ -158,7 +156,8 @@ int ac3encoder_write_samples(struct AC3Encoder *encoder, unsigned char *samples,
 			AC3_frame_buffer[1] = 0xF8;
 			AC3_frame_buffer[2] = 0x1F;
 			AC3_frame_buffer[3] = 0x4E;
-			AC3_frame_buffer[4] = 0x01;//AC3_frame_buffer[13] & 7; /* bsmod */
+			AC3_frame_buffer[4] = 0x01;
+			//AC3_frame_buffer[4] = AC3_frame_buffer[13] & 7; /* bsmod */
 			AC3_frame_buffer[5] = 0x00; /* data type */
 			AC3_frame_buffer[6] = (encoder->iAC3FrameSize << 3) & 0xFF;
 			AC3_frame_buffer[7] = (encoder->iAC3FrameSize >> 5) & 0xFF;
