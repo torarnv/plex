@@ -441,6 +441,7 @@ void Cocoa_GetSmartFolderResults(const char* strFile, void (*CallbackFunc)(void*
     CFRelease(query);
   }
   
-  CFRelease(filePath);
-  CFRelease(doc);
+  // Freeing these causes a crash when scanning for new content.
+  //CFRelease(filePath);
+  //CFRelease(doc);
 }
