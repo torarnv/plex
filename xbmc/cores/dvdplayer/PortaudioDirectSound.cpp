@@ -53,7 +53,10 @@ PortAudioDirectSound::PortAudioDirectSound(IAudioCallback* pCallback, int iChann
   m_bCanPause = false;
   m_bIsAllocated = false;
 
-	if (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL && g_audioConfig.GetAC3Enabled() && !bPassthrough)
+	if (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL 
+		&& g_audioConfig.GetAC3Enabled() 
+		&& iChannels > 2
+		&& !bPassthrough)
 	{
 		// Enable AC3 passthrough for digital devices
 //		m_uiChannels = SPDIF_CHANNELS;
@@ -135,8 +138,11 @@ HRESULT PortAudioDirectSound::Deinitialize()
     SAFELY(Pa_StopStream(m_pStream));
     SAFELY(Pa_CloseStream(m_pStream));
   }
+  if (m_bEncodeAC3)
+  {
+	  ac3encoder_free(&m_ac3encoder);
+  }
 	
-	ac3encoder_free(&m_ac3encoder);
 	
   m_bIsAllocated = false;
   m_pStream = 0;
