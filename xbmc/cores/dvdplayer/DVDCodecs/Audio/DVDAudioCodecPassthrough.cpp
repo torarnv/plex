@@ -38,7 +38,7 @@
 
 /* swab even and uneven data sizes. make sure dst can hold an size aligned to 2 */
 static inline int swabdata(char* dst, char* src, int size)
-{
+{	
   if( size & 0x1 )
   {
     swab(src, dst, size-1);

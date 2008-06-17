@@ -30,6 +30,9 @@
 #include "../mplayer/IAudioCallback.h"
 #include "../ssrc.h"
 #include "../../utils/PCMAmplifier.h"
+extern "C" {
+#include "ac3encoder.h"
+}
 
 extern void RegisterAudioCallback(IAudioCallback* pCallback);
 extern void UnRegisterAudioCallback();
@@ -85,6 +88,9 @@ private:
   //snd_pcm_uframes_t m_BufferSize;
 
   bool m_bPassthrough;
+	
+  bool m_bEncodeAC3;
+  AC3Encoder m_ac3encoder;
 };
 
 #endif 

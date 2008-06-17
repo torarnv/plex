@@ -23,6 +23,7 @@
 #include "PortAudioDirectSound.h"
 #include "AudioContext.h"
 #include "Util.h"
+#include "XBAudioConfig.h"
 
 void PortAudioDirectSound::DoWork()
 {
@@ -51,10 +52,28 @@ PortAudioDirectSound::PortAudioDirectSound(IAudioCallback* pCallback, int iChann
   m_bPause = false;
   m_bCanPause = false;
   m_bIsAllocated = false;
-  m_uiChannels = iChannels;
-  m_uiSamplesPerSec = uiSamplesPerSec;
-  m_uiBitsPerSample = uiBitsPerSample;
-  m_bPassthrough = bPassthrough;
+
+	if (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL && g_audioConfig.GetAC3Enabled() && !bPassthrough)
+	{
+		// Enable AC3 passthrough for digital devices
+//		m_uiChannels = SPDIF_CHANNELS;
+//		m_uiSamplesPerSec = SPDIF_SAMPLERATE;
+//		m_uiBitsPerSample = SPDIF_SAMPLESIZE;
+//		
+		ac3encoder_init(&m_ac3encoder, iChannels, uiSamplesPerSec, uiBitsPerSample);
+		m_bEncodeAC3 = true;
+		m_bPassthrough = true;
+	}
+	else
+	{
+		m_bEncodeAC3 = false;
+	}
+		m_uiChannels = iChannels;
+		m_uiSamplesPerSec = uiSamplesPerSec;
+		m_uiBitsPerSample = uiBitsPerSample;
+		m_bPassthrough = bPassthrough;
+
+	
 
   m_nCurrentVolume = g_stSettings.m_nVolumeLevel;
   if (!m_bPassthrough)
@@ -71,14 +90,26 @@ PortAudioDirectSound::PortAudioDirectSound(IAudioCallback* pCallback, int iChann
   //  device = g_guiSettings.GetString("audiooutput.passthroughdevice");
 
   CLog::Log(LOGINFO, "Asked to open device: [%s]\n", device.c_str());
-
-  m_pStream = CPortAudio::CreateOutputStream(device,
-                                             m_uiChannels, 
-                                             m_uiSamplesPerSec, 
-                                             m_uiBitsPerSample,
-                                             m_bPassthrough,
-                                             m_dwPacketSize);
-  
+if (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL && g_audioConfig.GetAC3Enabled() && !m_bPassthrough)
+{
+	m_pStream = CPortAudio::CreateOutputStream(device,
+											   SPDIF_CHANNELS, 
+											   SPDIF_SAMPLERATE, 
+											   SPDIF_SAMPLESIZE,
+											   true,
+											   SPDIF_CHANNELS*(SPDIF_SAMPLESIZE/8)*512);
+}
+else
+{
+	m_pStream = CPortAudio::CreateOutputStream(device,
+											   m_uiChannels, 
+											   m_uiSamplesPerSec, 
+											   m_uiBitsPerSample,
+											   m_bPassthrough,
+											   m_dwPacketSize);
+	
+}
+    
   // Start the stream.
   SAFELY(Pa_StartStream(m_pStream));
 
@@ -104,7 +135,9 @@ HRESULT PortAudioDirectSound::Deinitialize()
     SAFELY(Pa_StopStream(m_pStream));
     SAFELY(Pa_CloseStream(m_pStream));
   }
-  
+	
+	ac3encoder_free(&m_ac3encoder);
+	
   m_bIsAllocated = false;
   m_pStream = 0;
   
@@ -217,27 +250,64 @@ DWORD PortAudioDirectSound::AddPackets(unsigned char *data, DWORD len)
     return len; 
   }
   
-  // Find out how much space we have available.
-  DWORD framesPassedIn = len / (m_uiChannels * m_uiBitsPerSample/8);
-  DWORD framesToWrite  = Pa_GetStreamWriteAvailable(m_pStream);
+  DWORD samplesPassedIn;
+  unsigned char* pcmPtr = data;
   
+  if (m_bEncodeAC3) // use the raw PCM channel count to get the number of samples to play
+  {
+	  samplesPassedIn = len / (ac3encoder_channelcount(&m_ac3encoder) * m_uiBitsPerSample/8);
+  }
+  else // the PCM input and stream output should match
+  {
+	  samplesPassedIn = len / (m_uiChannels * m_uiBitsPerSample/8);
+  }
+  
+  // Find out how much space we have available.
+  DWORD samplesToWrite  = Pa_GetStreamWriteAvailable(m_pStream);
+	  
   // Clip to the amount we got passed in. I was using MIN above, but that
   // was a very bad idea since Pa_GetStreamWriteAvailable would get called
   // twice and could return different answers!
   //
-  if (framesToWrite > framesPassedIn)
-    framesToWrite = framesPassedIn;
+  if (samplesToWrite > samplesPassedIn)
+	  samplesToWrite = samplesPassedIn;
+	
+  if (m_bEncodeAC3)
+  {	  
+	  int ac3_frame_count = 0;
+	  if ((ac3_frame_count = ac3encoder_write_samples(&m_ac3encoder, pcmPtr, samplesToWrite)) == 0)
+	  {
+		  CLog::Log(LOGERROR, "AC3 output buffer underrun");
+	  }
+ 	  else
+	  {
+		  unsigned char ac3_framebuffer[AC3_SPDIF_FRAME_SIZE];
+		  memset(ac3_framebuffer, 0, sizeof(ac3_framebuffer));
+				 
+		  int buffer_sample_readcount = -1;
+		  if ((buffer_sample_readcount = ac3encoder_get_encoded_samples(&m_ac3encoder, ac3_framebuffer, samplesToWrite)) != samplesToWrite)
+		  {
+			 CLog::Log(LOGERROR, "AC3 output buffer underrun");
+		  }
+		  else
+		  {
+			 SAFELY(Pa_WriteStream(m_pStream, ac3_framebuffer, samplesToWrite));
+		  }
+		  return samplesToWrite * ac3encoder_channelcount(&m_ac3encoder) * (m_uiBitsPerSample/8);
+	  }
+  }
+  else
+  {
+	 // Handle volume de-amplification.
+	  if (!m_bPassthrough)
+		  m_amp.DeAmplify((short *)pcmPtr, samplesToWrite * m_uiChannels);
+	  
+	  // Write data to the stream.
+	  SAFELY(Pa_WriteStream(m_pStream, pcmPtr, samplesToWrite));	  
+	  return samplesToWrite * m_uiChannels * (m_uiBitsPerSample/8);
+  }
   
-  unsigned char* pcmPtr = data;
   
-  // Handle volume de-amplification.
-  if (!m_bPassthrough)
-    m_amp.DeAmplify((short *)pcmPtr, framesToWrite * m_uiChannels);
-  
-  // Write data to the stream.
-  SAFELY(Pa_WriteStream(m_pStream, pcmPtr, framesToWrite));
-
-  return framesToWrite * m_uiChannels * (m_uiBitsPerSample/8);
 }
 
 //***********************************************************************************************
@@ -251,6 +321,8 @@ FLOAT PortAudioDirectSound::GetDelay()
 
   if (g_audioContext.IsAC3EncoderActive())
     delay += 0.049;
+  else if (m_bEncodeAC3)
+	delay += 0.064;
   else
     delay += 0.008;
 
