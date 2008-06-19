@@ -329,7 +329,7 @@ FLOAT PortAudioDirectSound::GetDelay()
   if (g_audioContext.IsAC3EncoderActive())
     delay += 0.049;
   else if (m_bEncodeAC3)
-	delay += 0.064;
+	delay += 0.072;
   else
     delay += 0.008;
 
