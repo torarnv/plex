@@ -284,6 +284,7 @@ DWORD PortAudioDirectSound::AddPackets(unsigned char *data, DWORD len)
 	  if ((ac3_frame_count = ac3encoder_write_samples(&m_ac3encoder, pcmPtr, samplesToWrite)) == 0)
 	  {
 		  CLog::Log(LOGERROR, "AC3 output buffer underrun");
+		  return 0;
 	  }
  	  else
 	  {
