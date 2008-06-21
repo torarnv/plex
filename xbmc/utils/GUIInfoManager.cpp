@@ -3650,7 +3650,9 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
       return path;
     }
   case LISTITEM_FILENAME_AND_PATH:
-    if (item->IsMusicDb() && item->HasMusicInfoTag())
+    {
+      CStdString path;
+      if (item->IsMusicDb() && item->HasMusicInfoTag())
         path = CorrectAllItemsSortHack(item->GetMusicInfoTag()->GetURL());
       else if (item->IsVideoDb() && item->HasVideoInfoTag())
         path = CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strFileNameAndPath);
