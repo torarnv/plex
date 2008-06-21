@@ -82,7 +82,7 @@ int Cocoa_GetDisplay(int screen)
 
 void Cocoa_GetScreenResolutionOfAnotherScreen(int screen, int* w, int* h)
 {
-	CFDictionaryRef mode = CGDisplayCurrentMode(Cocoa_GetDisplay(screen));
+  CFDictionaryRef mode = CGDisplayCurrentMode(Cocoa_GetDisplay(screen));
   CFNumberGetValue(CFDictionaryGetValue(mode, kCGDisplayWidth), kCFNumberSInt32Type, w);
   CFNumberGetValue(CFDictionaryGetValue(mode, kCGDisplayHeight), kCFNumberSInt32Type, h);
 }
@@ -281,6 +281,15 @@ void Cocoa_GL_SetFullScreen(int screen, int width, int height, bool fs, bool bla
 
 void Cocoa_GL_EnableVSync(bool enable)
 {
+#if 1
+  NSOpenGLContext* context = (NSOpenGLContext*)Cocoa_GL_GetCurrentContext();
+  
+  // Flush synchronised with vertical retrace                       
+  GLint theOpenGLCPSwapInterval = enable ? 1 : 0;
+  [context setValues:(const GLint*)&theOpenGLCPSwapInterval forParameter:(NSOpenGLContextParameter) NSOpenGLCPSwapInterval];
+  
+#else
+
   CGLContextObj cglContext;
   cglContext = CGLGetCurrentContext();
   if (cglContext)
@@ -295,6 +304,7 @@ void Cocoa_GL_EnableVSync(bool enable)
     if (cglErr != kCGLNoError)
       printf("ERROR: CGLSetParameter for kCGLCPSwapInterval failed with error %d: %s", cglErr, CGLErrorString(cglErr));
   }
+#endif
 }
 
 void* Cocoa_GL_GetWindowPixelFormat()
@@ -341,6 +351,15 @@ void* Cocoa_GL_CreateContext(void* pixFmt, void* shareCtx)
     return nil;
   NSOpenGLContext* newContext = [[NSOpenGLContext alloc] initWithFormat:pixFmt
                                                            shareContext:(NSOpenGLContext*)shareCtx];
+
+  // Enable GL multithreading if available.                                                           
+  CGLContextObj theCGLContextObj = (CGLContextObj) [newContext CGLContextObj];
+  CGLEnable(theCGLContextObj, kCGLCEMPEngine);
+
+  // Flush synchronised with vertical retrace                       
+  GLint theOpenGLCPSwapInterval = 1;
+  [newContext setValues:(const GLint*)&theOpenGLCPSwapInterval forParameter:(NSOpenGLContextParameter) NSOpenGLCPSwapInterval];
+                                                           
   return newContext;
 }
 
