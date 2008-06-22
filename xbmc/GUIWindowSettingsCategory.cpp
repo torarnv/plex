@@ -2707,6 +2707,7 @@ void CGUIWindowSettingsCategory::FillInSubtitleFonts(CSetting *pSetting)
   int iCurrentFont = 0;
   int iFont = 0;
 
+#if 0
   // Find mplayer fonts...
   {
     CHDDirectory directory;
@@ -2725,7 +2726,9 @@ void CGUIWindowSettingsCategory::FillInSubtitleFonts(CSetting *pSetting)
       }
     }
   }
-
+#endif
+  
+#ifndef __APPLE__
   // find TTF fonts
   {
     CHDDirectory directory;
@@ -2750,6 +2753,41 @@ void CGUIWindowSettingsCategory::FillInSubtitleFonts(CSetting *pSetting)
       }
     }
   }
+#else
+  const char* fonts[] = { 
+      "Andale Mono",
+      "Arial",
+      "Arial Black",
+      "Arial Narrow Bold",
+      "Arial Rounded Bold",
+      "Arial Unicode",
+      "Brush Script",
+      "Georgia",
+      "Georgia Bold",
+      "Tahoma",
+      "Tahoma Bold",
+      "Times New Roman",
+      "Times New Roman Bold",
+      "Trebuchet MS",
+      "Trebuchet MS Bold",
+      "Verdana",
+      "Verdana Bold",
+      0
+  };
+  
+  for (int i=0; fonts[i]; i++)
+  {
+    CStdString strFont = fonts[i];
+
+    // See if it's the current one.
+    if (strFont.Equals(pSettingString->GetData(), false))
+          iCurrentFont = iFont;
+    
+    // Add it.
+    pControl->AddLabel(strFont, iFont++);
+  }
+#endif
+  
   pControl->SetValue(iCurrentFont);
 }
 

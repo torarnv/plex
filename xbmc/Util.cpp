@@ -3529,7 +3529,12 @@ void CUtil::ConvertFileItemToPlayListItem(const CFileItem *pItem, CPlayListItem 
 
 bool CUtil::IsUsingTTFSubtitles()
 {
+#ifdef __APPLE__
+  // That's all we use for now, baby.
+  return true;
+#else
   return CUtil::GetExtension(g_guiSettings.GetString("subtitles.font")).Equals(".ttf");
+#endif
 }
 
 typedef struct
