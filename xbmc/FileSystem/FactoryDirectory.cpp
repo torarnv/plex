@@ -72,6 +72,7 @@
 #include "CMythDirectory.h"
 #include "FileItem.h"
 #include "URL.h"
+#include "RSSDirectory.h"
 
 using namespace DIRECTORY;
 
@@ -147,6 +148,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
     if (strProtocol == "hdhomerun") return new CDirectoryHomeRun();
     if (strProtocol == "myth") return new CCMythDirectory();
     if (strProtocol == "cmyth") return new CCMythDirectory();
+    if (strProtocol == "rss") return new CRSSDirectory();
   }
 
  return NULL;
