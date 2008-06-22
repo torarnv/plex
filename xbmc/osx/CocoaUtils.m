@@ -433,34 +433,54 @@ void Cocoa_HideMouse()
 
 void Cocoa_GetSmartFolderResults(const char* strFile, void (*CallbackFunc)(void* userData, void* userData2, const char* path), void* userData, void* userData2)
 {
-  NSString*     filePath = [NSString stringWithUTF8String:strFile];
-  NSDictionary* doc = [NSDictionary dictionaryWithContentsOfFile:filePath];
+  NSString*     filePath = [[NSString alloc] initWithUTF8String:strFile];
+  NSDictionary* doc = [[NSDictionary alloc] initWithContentsOfFile:filePath];
   NSString*     raw = [doc objectForKey:@"RawQuery"];
+  NSArray*      searchPaths = [[doc objectForKey:@"SearchCriteria"] objectForKey:@"FXScopeArrayOfPaths"];
 
   // Ugh, Carbon from now on...
   MDQueryRef query = MDQueryCreate(kCFAllocatorDefault, (CFStringRef)raw, NULL, NULL);
   if (query)
   {
-    MDQueryExecute(query, kMDQuerySynchronous);
-    CFIndex count = MDQueryGetResultCount(query);
-  
-    char title[BUFSIZ];
-    int i;
-  
-    for (i = 0; i < count; ++i) 
+  	if (searchPaths)
+  	  MDQuerySetSearchScope(query, (CFArrayRef)searchPaths, 0);
+  	  
+    MDQueryExecute(query, 0);
+
+	// Keep track of when we started.
+	CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent(); 
+    for (;;)
     {
-      MDItemRef resultItem = (MDItemRef)MDQueryGetResultAtIndex(query, i);
-      CFStringRef titleRef = (CFStringRef)MDItemCopyAttribute(resultItem, kMDItemPath);
-      
-      CFStringGetCString(titleRef, title, BUFSIZ, kCFStringEncodingUTF8);
-      CallbackFunc(userData, userData2, title);
-      CFRelease(titleRef);
-    }  
+      CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, YES);
     
-    CFRelease(query);
+      // If we're done or we timed out.
+      if (MDQueryIsGatheringComplete(query) == true ||
+      	  CFAbsoluteTimeGetCurrent() - startTime >= 5)
+      {
+        // Stop the query.
+        MDQueryStop(query);
+      
+    	CFIndex count = MDQueryGetResultCount(query);
+    	char title[BUFSIZ];
+    	int i;
+  
+    	for (i = 0; i < count; ++i) 
+   		{
+      	  MDItemRef resultItem = (MDItemRef)MDQueryGetResultAtIndex(query, i);
+      	  CFStringRef titleRef = (CFStringRef)MDItemCopyAttribute(resultItem, kMDItemPath);
+      
+      	  CFStringGetCString(titleRef, title, BUFSIZ, kCFStringEncodingUTF8);
+      	  CallbackFunc(userData, userData2, title);
+      	  CFRelease(titleRef);
+    	}  
+    
+        CFRelease(query);
+    	break;
+      }
+    }
   }
   
   // Freeing these causes a crash when scanning for new content.
-  //CFRelease(filePath);
-  //CFRelease(doc);
+  CFRelease(filePath);
+  CFRelease(doc);
 }

@@ -3043,8 +3043,9 @@ void CApplication::Render()
   
   MEASURE_FUNCTION;
 
-  { // frame rate limiter (really bad, but it does the trick :p)
-    const static unsigned int singleFrameTime = 10;       // default limit 100 fps
+  { 
+    // Frame rate limiter (really bad, but it does the trick :p)
+    const static unsigned int singleFrameTime = 10; // default limit 100 fps
     static unsigned int lastFrameTime = 0;
     unsigned int currentTime = timeGetTime();
     int nDelayTime = 0;
@@ -3066,17 +3067,13 @@ void CApplication::Render()
     else
     {
       // only "limit frames" if we are not using vsync.
-      if (g_videoConfig.GetVSyncMode() != VSYNC_ALWAYS)
+      if (g_videoConfig.GetVSyncMode() != VSYNC_ALWAYS || 
+          (g_infoManager.GetFPS() > g_graphicsContext.GetFPS() + 10) && g_infoManager.GetFPS() > 1000/singleFrameTime)
       {
         if (lastFrameTime + singleFrameTime > currentTime)
           nDelayTime = lastFrameTime + singleFrameTime - currentTime;
+        CLog::Log(LOGWARNING, "VSYNC ignored by driver (FPS=%.0f) enabling framerate limiter to sleep (%d)", g_infoManager.GetFPS(), nDelayTime);
         Sleep(nDelayTime);
-      }
-      else if ((g_infoManager.GetFPS() > g_graphicsContext.GetFPS() + 10) && g_infoManager.GetFPS() > 1000/singleFrameTime)
-      {
-        // The driver is ignoring vsync. Was set to ALWAYS, set to VIDEO. Framerate will be limited from next render.
-        CLog::Log(LOGWARNING, "VSYNC ignored by driver, enabling framerate limiter.");
-        g_videoConfig.SetVSyncMode(VSYNC_VIDEO);
       }
     }
 #else
