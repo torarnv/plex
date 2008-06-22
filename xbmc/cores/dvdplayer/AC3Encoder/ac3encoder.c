@@ -53,8 +53,6 @@ static inline int swabdata(char* dst, char* src, int size)
 	
 }
 
-
-
 // call before using the encoder
 // initialises the aften context and the I/O buffers
 void ac3encoder_init(struct AC3Encoder *encoder, int iChannels, unsigned int uiSamplesPerSec, int uiBitsPerSample, int remap)
