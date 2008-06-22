@@ -54,12 +54,15 @@ static XBMCMain *_o_sharedMainInstance = nil;
 }
 
 /* NSExceptionHandling Delegate */
-- (BOOL)exceptionHandler:(NSExceptionHandler *)sender shouldLogException:(NSException *)e mask:(unsigned int)aMask {
+- (BOOL)exceptionHandler:(NSExceptionHandler *)sender shouldLogException:(NSException *)e mask:(unsigned int)aMask 
+{
   static BOOL handlingException = NO;
   
   // Check to see if the exceptionHandler is being recurisvely called...if so then there is an exception being
   // generated in this method.
-  if (handlingException) {
+  //
+  if (handlingException) 
+  {
     NSLog(@"**Exception** Fatal Error: Exception handler is recurising.");
     NSLog(@"**Exception** %@", [e reason]);
     return NO;
@@ -69,7 +72,8 @@ static XBMCMain *_o_sharedMainInstance = nil;
   NSLog(@"FATAL Exception: %@", [e reason]);
   
   NSString *stack = [[e userInfo] objectForKey:NSStackTraceKey];
-  if (stack) {
+  if (stack) 
+  {
     NSTask *ls = [[NSTask alloc] init];
     NSString *pid = [[NSNumber numberWithInt:[[NSProcessInfo processInfo] processIdentifier]] stringValue];
     NSMutableArray *args = [NSMutableArray arrayWithCapacity:20];
