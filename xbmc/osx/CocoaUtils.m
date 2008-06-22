@@ -353,8 +353,8 @@ void* Cocoa_GL_CreateContext(void* pixFmt, void* shareCtx)
                                                            shareContext:(NSOpenGLContext*)shareCtx];
 
   // Enable GL multithreading if available.                                                           
-  CGLContextObj theCGLContextObj = (CGLContextObj) [newContext CGLContextObj];
-  CGLEnable(theCGLContextObj, kCGLCEMPEngine);
+  //CGLContextObj theCGLContextObj = (CGLContextObj) [newContext CGLContextObj];
+  //CGLEnable(theCGLContextObj, kCGLCEMPEngine);
 
   // Flush synchronised with vertical retrace                       
   GLint theOpenGLCPSwapInterval = 1;
