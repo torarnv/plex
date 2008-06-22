@@ -6888,6 +6888,7 @@
 					HAS_SDL_JOYSTICK,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = 4.2;
 				GENERATE_PROFILING_CODE = NO;
 				HEADER_SEARCH_PATHS = (
 					xbmc/lib/libaften,
@@ -6965,6 +6966,7 @@
 					HAS_SDL_JOYSTICK,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = 4.2;
 				HEADER_SEARCH_PATHS = (
 					xbmc/lib/libaften,
 					"xbmc/lib/libffmpeg-OSX",
