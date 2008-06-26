@@ -69,12 +69,11 @@ PortAudioDirectSound::PortAudioDirectSound(IAudioCallback* pCallback, int iChann
 	{
 		m_bEncodeAC3 = false;
 	}
-		m_uiChannels = iChannels;
-		m_uiSamplesPerSec = uiSamplesPerSec;
-		m_uiBitsPerSample = uiBitsPerSample;
-		m_bPassthrough = bPassthrough;
 
-	
+	m_uiChannels = iChannels;
+	m_uiSamplesPerSec = uiSamplesPerSec;
+	m_uiBitsPerSample = uiBitsPerSample;
+	m_bPassthrough = bPassthrough;
 
   m_nCurrentVolume = g_stSettings.m_nVolumeLevel;
   if (!m_bPassthrough)
@@ -91,25 +90,28 @@ PortAudioDirectSound::PortAudioDirectSound(IAudioCallback* pCallback, int iChann
   //  device = g_guiSettings.GetString("audiooutput.passthroughdevice");
 
   CLog::Log(LOGINFO, "Asked to open device: [%s]\n", device.c_str());
-if (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL && g_audioConfig.GetAC3Enabled() && !m_bPassthrough)
-{
-	m_pStream = CPortAudio::CreateOutputStream(device,
+  
+  if (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL && 
+      g_audioConfig.GetAC3Enabled() && 
+      iChannels > 2 &&
+      !m_bPassthrough)
+  {
+    m_pStream = CPortAudio::CreateOutputStream(device,
 											   SPDIF_CHANNELS, 
 											   SPDIF_SAMPLERATE, 
 											   SPDIF_SAMPLESIZE,
 											   true,
 											   SPDIF_CHANNELS*(SPDIF_SAMPLESIZE/8)*512);
-}
-else
-{
-	m_pStream = CPortAudio::CreateOutputStream(device,
+  }
+  else
+  {
+    m_pStream = CPortAudio::CreateOutputStream(device,
 											   m_uiChannels, 
 											   m_uiSamplesPerSec, 
 											   m_uiBitsPerSample,
 											   m_bPassthrough,
 											   m_dwPacketSize);
-	
-}
+  }
     
   // Start the stream.
   SAFELY(Pa_StartStream(m_pStream));
