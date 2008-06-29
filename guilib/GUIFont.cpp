@@ -38,14 +38,12 @@ namespace MathUtils {
 
 float CScrollInfo::GetPixelsPerFrame()
 {
-  static const float alphaEMA = 0.05f;
+  static const float alphaEMA = 0.01f;
 
   if (0 == pixelSpeed)
     return 0; // not scrolling
   DWORD currentTime = timeGetTime();
   float delta = m_lastFrameTime ? (float)(currentTime - m_lastFrameTime) : m_averageFrameTime;
-  if (delta > 100)
-    delta = 100; // assume a minimum of 10 fps
   m_lastFrameTime = currentTime;
   // do an exponential moving average
   m_averageFrameTime = m_averageFrameTime + (delta - m_averageFrameTime) * alphaEMA;
