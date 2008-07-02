@@ -21,10 +21,28 @@
 #include "CocoaUtils.h"
 #import "XBMCMain.h" 
 
+#import <libSmartCrashReports/SmartCrashReportsInstall.h>
+#import <libSmartCrashReports/SmartCrashReportsAPI.h>
+
 void Cocoa_Initialize(void* pApplication)
 {
   // Intialize the Apple remote code.
   [[XBMCMain sharedInstance] setApplication: pApplication];
+}
+
+void InstallCrashReporter() 
+{
+//  CLog::Log(LOGDEBUG, "Validating that Unsanity Smart Crash Reporter is installed.");
+  NSLog(@"Validating that Unsanity Smart Crash Reporter is installed.");
+  
+  Boolean authenticationWillBeRequired = FALSE;
+  if (UnsanitySCR_CanInstall(&authenticationWillBeRequired))
+  {
+    NSLog(@"Installing Unsanity Smart Crash Reporter%@.", (authenticationWillBeRequired ? @" authentication will be required" : @""));
+//    CLog::Log(LOGDEBUG, "Installing Unsanity Smart Crash Reporter%s.", 
+//              (authenticationWillBeRequired ? "authentication will be required" : ""));
+    UnsanitySCR_Install(authenticationWillBeRequired ? kUnsanitySCR_GlobalInstall : 0);
+  }
 }
 
 void* InitializeAutoReleasePool()
