@@ -696,35 +696,13 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey,
       pPal->Unlock();
 #endif
       pMap = new CTextureMap(strTextureName);
-      static int npot = -1;
-#ifdef HAS_SDL_OPENGL
-      if ((npot==-1) && g_graphicsContext.getScreenSurface())
-      {
-        int vmaj,vmin;
-        g_graphicsContext.getScreenSurface()->GetGLVersion(vmaj, vmin);    
-        if (vmaj>=2 && GLEW_ARB_texture_non_power_of_two)
-          npot = 1;
-        else
-          npot = 0;
-      }
-#endif
+
       for (int iImage = 0; iImage < iImages; iImage++)
       {
-        int w;
-        int h;
-        if (npot==1)
-        {
-          w = iWidth;
-          h = iHeight;
-        }
-        else
-        {
-          w = PadPow2(iWidth);
-          h = PadPow2(iHeight);
-        }
-#ifdef HAS_XBOX_D3D
-        if (D3DXCreateTexture(g_graphicsContext.Get3DDevice(), w, h, 1, 0, D3DFMT_P8, D3DPOOL_MANAGED, &pTexture) == D3D_OK)
-#elif defined(HAS_SDL)
+        int w = iWidth;
+        int h = iHeight;
+
+#if defined(HAS_SDL)
           pTexture = SDL_CreateRGBSurface(SDL_HWSURFACE, w, h, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
         if (pTexture)
 #else
@@ -1263,11 +1241,27 @@ void CGLTexture::Update(int w, int h, int pitch, const unsigned char *pixels, bo
   
   for (int y = 0; y < h; y++)
   {
-    memcpy(resized, src, tpitch); // make sure pitch is not bigger than our width
+    memcpy(resized, src, tpitch);  // make sure pitch is not bigger than our width
     src += pitch;
+
+    // repeat last column to simulate clamp_to_edge
+    for(int i = tpitch; i < textureWidth*4; i+=4)
+      memcpy(resized+i, src-4, 4);
+
     resized += (textureWidth * 4);
   }
 
+  // repeat last row to simulate clamp_to_edge
+  for(int y = h; y < textureHeight; y++) 
+  {
+    memcpy(resized, src - tpitch, tpitch);
+
+    // repeat last column to simulate clamp_to_edge
+    for(int i = tpitch; i < textureWidth*4; i+=4) 
+      memcpy(resized+i, src-4, 4);
+
+    resized += (textureWidth * 4);
+  }
   if (loadToGPU)
      LoadToGPU();
 }
