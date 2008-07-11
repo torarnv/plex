@@ -61,8 +61,8 @@ void CGUILargeTextureManager::Process()
     CFileItem file(path, false);
     if (file.IsPicture() && !(file.IsZIP() || file.IsRAR() || file.IsCBR() || file.IsCBZ())) // ignore non-pictures
     { // check for filename only (i.e. lookup in skin/media/)
-      CStdString loadPath;
-      if (path.FindOneOf("/\\") == CStdString::npos)
+      CStdString loadPath(path);
+      if ((size_t)path.FindOneOf("/\\") == CStdString::npos)
       {
         loadPath = CUtil::AddFileToFolder(g_graphicsContext.GetMediaDir(), "media");
         loadPath = CUtil::AddFileToFolder(loadPath, path);
