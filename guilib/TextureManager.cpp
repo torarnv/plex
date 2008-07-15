@@ -879,6 +879,15 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey,
     }
   }
 
+  CTextureMap* pMap = new CTextureMap(strTextureName);
+  CTexture* pclsTexture = new CTexture(pTexture, info.Width, info.Height, bPacked || bundle >= 0, 100, pPal);
+  pMap->Add(pclsTexture);
+  m_vecTextures.push_back(pMap);
+
+#ifdef HAS_SDL_OPENGL
+  SDL_FreeSurface(pTexture);
+#endif    
+
 #ifdef _DEBUG
   LARGE_INTEGER end, freq;
   QueryPerformanceCounter(&end);
@@ -888,19 +897,6 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey,
   OutputDebugString(temp);
 #endif
 
-  CTextureMap* pMap = new CTextureMap(strTextureName);
-  CTexture* pclsTexture = new CTexture(pTexture, info.Width, info.Height, bPacked || bundle >= 0, 100, pPal);
-  pMap->Add(pclsTexture);
-  m_vecTextures.push_back(pMap);
-
-#ifdef HAS_SDL_OPENGL
-  SDL_FreeSurface(pTexture);
-#endif    
-  
-#ifdef HAS_XBOX_D3D
-  if (pPal)
-    pPal->Release();
-#endif
 #else
 
   LPDIRECT3DTEXTURE8 pTexture;
