@@ -556,17 +556,12 @@ void CSurface::EnableVSync(bool enable)
 #endif
 
 #ifdef __APPLE__
-  if (enable == true && m_bVSync == false)
+  if (enable != m_bVSync)
   {
-    CLog::Log(LOGINFO, "GL: Enabling VSYNC");
-    Cocoa_GL_EnableVSync(true);
+    CLog::Log(LOGINFO, "GL: %s VSYNC", (enable ? "Enabling" : "Disabling"));
+    Cocoa_GL_EnableVSync(enable);
+    m_bVSync = enable;
   }
-  else if (enable == false && m_bVSync == true)
-  {
-    CLog::Log(LOGINFO, "GL: Disabling VSYNC");
-    Cocoa_GL_EnableVSync(false);
-  }
-  m_bVSync = enable;
   return;
 #else
   if (enable)
