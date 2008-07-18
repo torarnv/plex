@@ -3096,14 +3096,17 @@ void CApplication::Render()
     else
     {
       // only "limit frames" if we are not using vsync.
+      double graphicsFPS = (double)g_infoManager.GetFPS();
+      double screenFPS = (double)g_graphicsContext.GetFPS();
+      
       if (g_videoConfig.GetVSyncMode() != VSYNC_ALWAYS ||
-          (g_infoManager.GetFPS() > g_graphicsContext.GetFPS() + 10) && g_infoManager.GetFPS() > 1000/singleFrameTime)
+          (graphicsFPS > screenFPS + 10) && graphicsFPS > 1000/singleFrameTime)
       {
         if (lastFrameTime + singleFrameTime > currentTime)
           nDelayTime = lastFrameTime + singleFrameTime - currentTime;
 
-        if (g_videoConfig.GetVSyncMode() == VSYNC_ALWAYS)
-          CLog::Log(LOGWARNING, "VSYNC ignored by driver (FPS=%.0f) enabling framerate limiter to sleep (%d)", g_infoManager.GetFPS(), nDelayTime);
+        if (screenFPS > 0 && g_videoConfig.GetVSyncMode() == VSYNC_ALWAYS)
+          CLog::Log(LOGWARNING, "VSYNC ignored by driver (FPS=%.0f) enabling framerate limiter to sleep (%d)", graphicsFPS, nDelayTime);
 
         Sleep(nDelayTime);
       }
