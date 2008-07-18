@@ -320,6 +320,7 @@ bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
   newviewport[2] = newRight - newLeft;
   newviewport[3] = newBottom - newTop;
   glScissor(newviewport[0], newviewport[1], newviewport[2], newviewport[3]);
+  glViewport(newviewport[0], newviewport[1], newviewport[2], newviewport[3]);
   VerifyGLState();
 #endif
 
@@ -342,6 +343,7 @@ void CGraphicContext::RestoreViewPort()
   GLVALIDATE;
   GLint* oldviewport = (GLint*)m_viewStack.top();
   glScissor(oldviewport[0], oldviewport[1], oldviewport[2], oldviewport[3]);
+  glViewport(oldviewport[0], oldviewport[1], oldviewport[2], oldviewport[3]);
   VerifyGLState();
 #endif
 
