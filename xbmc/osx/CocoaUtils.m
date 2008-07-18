@@ -482,7 +482,7 @@ void Cocoa_GL_EnableVSync(bool enable)
   
   // Flush synchronised with vertical retrace                       
   GLint theOpenGLCPSwapInterval = enable ? 1 : 0;
-  [context setValues:(const GLint*)&theOpenGLCPSwapInterval forParameter:(NSOpenGLContextParameter) NSOpenGLCPSwapInterval];
+  [context setValues:&theOpenGLCPSwapInterval forParameter:NSOpenGLCPSwapInterval];
   
 #else
 
