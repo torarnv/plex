@@ -29,6 +29,7 @@ CDVDSubtitleLineCollection::CDVDSubtitleLineCollection()
   m_pCurrent = NULL;
   
   m_iSize = 0;
+  m_fLastPts = 0.0;
 }
 
 CDVDSubtitleLineCollection::~CDVDSubtitleLineCollection()
@@ -62,6 +63,10 @@ void CDVDSubtitleLineCollection::Add(CDVDOverlay* pOverlay)
 CDVDOverlay* CDVDSubtitleLineCollection::Get(double iPts)
 {
   CDVDOverlay* pOverlay = NULL;
+
+  // If we're suddenly asked to get a subtitle for the past, reset.
+  if (iPts < m_fLastPts)
+    Reset();
   
   if (m_pCurrent)
   {
@@ -76,6 +81,7 @@ CDVDOverlay* CDVDSubtitleLineCollection::Get(double iPts)
 
       // advance to the next overlay
       m_pCurrent = m_pCurrent->pNext;
+      m_fLastPts = iPts;
     }
   }
   return pOverlay;

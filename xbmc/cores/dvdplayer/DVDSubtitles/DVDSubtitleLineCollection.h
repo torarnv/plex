@@ -44,7 +44,7 @@ public:
   CDVDOverlay* Get(double iPts = 0LL); // get the first overlay in this fifo
 
   void Reset();
-  
+
   void Remove();
   void Clear();
   int GetSize() { return m_iSize; }
@@ -54,6 +54,7 @@ private:
   ListElement* m_pCurrent;
   
   int m_iSize;
+  double m_fLastPts;
   //CRITICAL_SECTION m_critSection;
 };
 
