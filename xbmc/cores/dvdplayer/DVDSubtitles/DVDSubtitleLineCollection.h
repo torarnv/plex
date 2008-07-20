@@ -51,6 +51,7 @@ public:
   
 private:
   ListElement* m_pHead;
+  ListElement* m_pTail;
   ListElement* m_pCurrent;
   
   int m_iSize;
