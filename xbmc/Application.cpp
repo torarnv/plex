@@ -1617,6 +1617,7 @@ CProfile* CApplication::InitDirectoriesOSX()
 
   // We're going to manually manage the screensaver.
   setenv("SDL_VIDEO_ALLOW_SCREENSAVER", "1", true);
+  setenv("SDL_ENABLEAPPEVENTS", "1", 1);
 
   CStdString strExecutablePath;
   CUtil::GetHomePath(strExecutablePath);
@@ -2922,7 +2923,6 @@ void CApplication::RenderNoPresent()
 #endif
 
   g_ApplicationRenderer.Render();
-
 }
 
 void CApplication::DoRender()
@@ -3200,7 +3200,16 @@ bool CApplication::OnKey(CKey& key)
 
   action.kKey = g_Keyboard.GetSVKey();
   action.unicode = g_Keyboard.GetUnicode();
-
+  
+  if (g_Keyboard.GetAlt()  == true  ||
+      g_Keyboard.GetApple() == true ||
+      g_Keyboard.GetCtrl() == true  ||
+      g_Keyboard.GetRAlt()  == true)
+  {
+    // Ignore modified keys.
+    return false;
+  }
+  
   // a key has been pressed.
   // Reset the screensaver timer
   // but not for the analog thumbsticks/triggers
