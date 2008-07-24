@@ -1647,6 +1647,10 @@
 		E3B53E7C0D97B08100021A96 /* DVDSubtitleParserMicroDVD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3B53E7A0D97B08100021A96 /* DVDSubtitleParserMicroDVD.cpp */; };
 		E3B578970E0E3CDB002B3B3E /* libaften_pcm.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E3B578950E0E3CDB002B3B3E /* libaften_pcm.a */; };
 		E3B578980E0E3CDB002B3B3E /* libaften_static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E3B578960E0E3CDB002B3B3E /* libaften_static.a */; };
+		E3B963B70E3863CB0022F663 /* AMFObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3B963870E3860820022F663 /* AMFObject.cpp */; };
+		E3B963B80E3863D80022F663 /* rtmp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3B9638A0E3860820022F663 /* rtmp.cpp */; };
+		E3B963B90E3863E00022F663 /* rtmppacket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3B9638C0E3860820022F663 /* rtmppacket.cpp */; };
+		E3B963BC0E3863F80022F663 /* DVDInputStreamRTMP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3B963BA0E3863F80022F663 /* DVDInputStreamRTMP.cpp */; };
 		E3BBB7990D7EA78A00CAAFD3 /* CMythSession.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3BBB7980D7EA78A00CAAFD3 /* CMythSession.cpp */; };
 		E3BBB7A20D7EA8B200CAAFD3 /* libpcre.0.0.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3BBB7A10D7EA8B200CAAFD3 /* libpcre.0.0.1.dylib */; };
 		E3D4B99A0DF7E39B0092A179 /* FileXBMSP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3D4B9960DF7E39B0092A179 /* FileXBMSP.cpp */; };
@@ -3690,6 +3694,14 @@
 		E3B53E7B0D97B08100021A96 /* DVDSubtitleParserMicroDVD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDSubtitleParserMicroDVD.h; sourceTree = "<group>"; };
 		E3B578950E0E3CDB002B3B3E /* libaften_pcm.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libaften_pcm.a; path = xbmc/lib/libaften/libaften_pcm.a; sourceTree = "<group>"; };
 		E3B578960E0E3CDB002B3B3E /* libaften_static.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libaften_static.a; path = xbmc/lib/libaften/libaften_static.a; sourceTree = "<group>"; };
+		E3B963870E3860820022F663 /* AMFObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AMFObject.cpp; sourceTree = "<group>"; };
+		E3B963880E3860820022F663 /* AMFObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMFObject.h; sourceTree = "<group>"; };
+		E3B9638A0E3860820022F663 /* rtmp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rtmp.cpp; sourceTree = "<group>"; };
+		E3B9638B0E3860820022F663 /* rtmp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rtmp.h; sourceTree = "<group>"; };
+		E3B9638C0E3860820022F663 /* rtmppacket.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rtmppacket.cpp; sourceTree = "<group>"; };
+		E3B9638D0E3860820022F663 /* rtmppacket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rtmppacket.h; sourceTree = "<group>"; };
+		E3B963BA0E3863F80022F663 /* DVDInputStreamRTMP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDInputStreamRTMP.cpp; sourceTree = "<group>"; };
+		E3B963BB0E3863F80022F663 /* DVDInputStreamRTMP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDInputStreamRTMP.h; sourceTree = "<group>"; };
 		E3BBB7980D7EA78A00CAAFD3 /* CMythSession.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CMythSession.cpp; sourceTree = "<group>"; };
 		E3BBB7A10D7EA8B200CAAFD3 /* libpcre.0.0.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpcre.0.0.1.dylib; path = ../../../../../opt/local/lib/libpcre.0.0.1.dylib; sourceTree = SOURCE_ROOT; };
 		E3D4B9950DF7E39B0092A179 /* FileShoutcast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileShoutcast.h; sourceTree = "<group>"; };
@@ -5045,6 +5057,8 @@
 		E38E15570D25F9FA00618676 /* DVDInputStreams */ = {
 			isa = PBXGroup;
 			children = (
+				E3B963BA0E3863F80022F663 /* DVDInputStreamRTMP.cpp */,
+				E3B963BB0E3863F80022F663 /* DVDInputStreamRTMP.h */,
 				E33979940D62FD47004ECDDA /* DVDInputStreamTV.cpp */,
 				E33979950D62FD47004ECDDA /* DVDInputStreamTV.h */,
 				E38E15580D25F9FA00618676 /* DllDvdNav.h */,
@@ -5611,6 +5625,7 @@
 		E38E185C0D25F9FA00618676 /* lib */ = {
 			isa = PBXGroup;
 			children = (
+				E3B963860E3860820022F663 /* libRTMP */,
 				810C9F690D67BDE20095F5DD /* libcmyth */,
 				E38E185D0D25F9FA00618676 /* filezilla */,
 				E38E18610D25F9FA00618676 /* libcdio */,
@@ -6967,6 +6982,19 @@
 				E38E1ED00D25F9FD00618676 /* XKUtils.h */,
 			);
 			path = xbox;
+			sourceTree = "<group>";
+		};
+		E3B963860E3860820022F663 /* libRTMP */ = {
+			isa = PBXGroup;
+			children = (
+				E3B963870E3860820022F663 /* AMFObject.cpp */,
+				E3B963880E3860820022F663 /* AMFObject.h */,
+				E3B9638A0E3860820022F663 /* rtmp.cpp */,
+				E3B9638B0E3860820022F663 /* rtmp.h */,
+				E3B9638C0E3860820022F663 /* rtmppacket.cpp */,
+				E3B9638D0E3860820022F663 /* rtmppacket.h */,
+			);
+			path = libRTMP;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -8625,6 +8653,10 @@
 				E371C50A0E2F2D5400FBF841 /* ZipDirectory.cpp in Sources */,
 				E371C50B0E2F2D5400FBF841 /* ZipManager.cpp in Sources */,
 				E371CB900E303C7100FBF841 /* PlexDelegate.m in Sources */,
+				E3B963B70E3863CB0022F663 /* AMFObject.cpp in Sources */,
+				E3B963B80E3863D80022F663 /* rtmp.cpp in Sources */,
+				E3B963B90E3863E00022F663 /* rtmppacket.cpp in Sources */,
+				E3B963BC0E3863F80022F663 /* DVDInputStreamRTMP.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8901,6 +8933,7 @@
 					HAS_VIDEO_PLAYBACK,
 				);
 				HEADER_SEARCH_PATHS = (
+					xbmc,
 					xbmc/lib/libaften,
 					"xbmc/lib/libffmpeg-OSX",
 					xbmc/utils/,
@@ -8910,7 +8943,6 @@
 					xbmc/cores,
 					xbmc/cores/dvdplayer,
 					xbmc/cores/ffmpeg,
-					xbmc,
 					xbmc/linux,
 					guilib,
 					/opt/local/include,
@@ -8986,6 +9018,7 @@
 					HAS_VIDEO_PLAYBACK,
 				);
 				HEADER_SEARCH_PATHS = (
+					xbmc,
 					xbmc/lib/libaften,
 					"xbmc/lib/libffmpeg-OSX",
 					xbmc/utils/,
@@ -8995,7 +9028,6 @@
 					xbmc/cores,
 					xbmc/cores/dvdplayer,
 					xbmc/cores/ffmpeg,
-					xbmc,
 					xbmc/linux,
 					guilib,
 					/opt/local/include,
