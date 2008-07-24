@@ -707,7 +707,9 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
 #else
     m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, 0);
 #endif
-    SDL_WM_SetCaption("XBMC", NULL);
+#ifdef __APPLE__
+    SDL_WM_SetCaption("Plex", NULL);
+#endif
 #endif
 
     {
