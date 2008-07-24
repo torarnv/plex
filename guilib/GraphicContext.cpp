@@ -686,16 +686,18 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
 
     if (g_advancedSettings.m_fullScreen)
     {
+      needsResize = false;
       SetFullScreenRoot(true);
     }
     else if (lastRes>=DESKTOP )
     {
+      needsResize = false;
       SetFullScreenRoot(false);
     }
-
+    
     if (needsResize)
       m_screenSurface->ResizeSurface(m_iScreenWidth, m_iScreenHeight);
-
+    
 #elif defined(_WIN32) && !defined(HAS_XBOX_HARDWARE)
     m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, 0, g_advancedSettings.m_fullScreen);
     //get the display frequency
@@ -1452,10 +1454,13 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
                            g_advancedSettings.m_fakeFullScreen);
     m_screenSurface->RefreshCurrentContext();
     g_fontManager.ReloadTTFFonts();
+    
+    m_screenSurface->ResizeSurface(width, height, false);
 #else
     SDL_SetVideoMode(width, height, 0, SDL_FULLSCREEN);
-#endif
     m_screenSurface->ResizeSurface(width, height);
+#endif
+    
 #ifdef HAS_SDL_OPENGL
     glViewport(0, 0, m_iFullScreenWidth, m_iFullScreenHeight);
     glScissor(0, 0, m_iFullScreenWidth, m_iFullScreenHeight);

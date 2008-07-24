@@ -171,30 +171,12 @@ double Cocoa_GetScreenRefreshRate(int screen)
   // Figure out the refresh rate.
   CFDictionaryRef mode = CGDisplayCurrentMode(Cocoa_GetDisplay(screen));
   return (mode != NULL) ? getDictDouble(mode, kCGDisplayRefreshRate) : 0.0f;
- }
+}
 
-void Cocoa_GL_ResizeWindow(void *theContext, int w, int h)
+void* Cocoa_GL_ResizeWindow(void *theContext, int w, int h)
 {
-  if (!theContext)
-    return;
-  
-  NSOpenGLContext* context = Cocoa_GL_GetCurrentContext();
-  NSView* view;
-  NSWindow* window;
-  
-  view = [context view];
-  if (view && w>0 && h>0)
-  {
-    window = [view window];
-    if (window)
-    {
-      [window setContentSize:NSMakeSize(w,h)];
-      [window update];
-      [view setFrameSize:NSMakeSize(w, h)];
-      [context update];
-      [window center];
-    }
-  }
+  SDL_SetVideoMode(w, h, 0, SDL_OPENGL);
+  return Cocoa_GL_ReplaceSDLWindowContext();
 }
 
 void Cocoa_GL_BlankOtherDisplays(int screen)
@@ -538,13 +520,13 @@ void* Cocoa_GL_CreateContext(void* pixFmt, void* shareCtx)
   return newContext;
 }
 
-void Cocoa_GL_ReplaceSDLWindowContext()
+void* Cocoa_GL_ReplaceSDLWindowContext()
 {
   NSOpenGLContext* context = (NSOpenGLContext*)Cocoa_GL_GetCurrentContext();
   NSView* view = [context view];
   
   if (!view)
-    return;
+    return 0;
   
   // disassociate view from context
   [context clearDrawable];
@@ -556,18 +538,20 @@ void Cocoa_GL_ReplaceSDLWindowContext()
   // obtain window pixelformat
   NSOpenGLPixelFormat* pixFmt = (NSOpenGLPixelFormat*)Cocoa_GL_GetWindowPixelFormat();
   if (!pixFmt)
-    return;
+    return 0;
   
   NSOpenGLContext* newContext = (NSOpenGLContext*)Cocoa_GL_CreateContext((void*)pixFmt, nil);
   [pixFmt release];
   
   if (!newContext)
-    return;
+    return 0;
   
   // associate with current view
   [newContext setView:view];
   [newContext makeCurrentContext];
   lastOwnedContext = newContext;
+  
+  return newContext;
 }
 
 int Cocoa_DimDisplayNow()
