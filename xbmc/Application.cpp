@@ -3056,7 +3056,12 @@ void CApplication::SetQuiet(bool bQuiet)
 #ifndef HAS_XBOX_D3D
 void CApplication::Render()
 {
-  if (!m_AppActive && !m_bStop) {Sleep(1); ResetScreenSaver(); return;}
+  if (!m_AppActive && !m_bStop && (IsPlaying() == false || IsPaused() == true))
+  {
+    Sleep(1); 
+    ResetScreenSaver(); 
+    return;
+  }
 
 #ifdef __APPLE__
   // Make sure the system mouse cursor is hidden. I'm not sure if this
