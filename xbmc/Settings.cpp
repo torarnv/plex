@@ -120,7 +120,13 @@ CSettings::CSettings(void)
   // internal music extensions
   g_stSettings.m_musicExtensions += "|.sidstream|.oggstream|.nsfstream|.asapstream|.cdda";
 
+#ifdef __APPLE__
+  CStdString logDir = getenv("HOME");
+  logDir += "/Library/Logs/";
+  g_stSettings.m_logFolder = logDir;
+#else
   g_stSettings.m_logFolder = "Q:\\";              // log file location
+#endif
 
   g_stSettings.m_defaultMusicScraper = "allmusic.xml";
 
