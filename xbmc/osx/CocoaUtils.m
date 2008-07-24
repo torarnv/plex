@@ -350,7 +350,9 @@ void Cocoa_GL_SetFullScreen(int screen, int width, int height, bool fs, bool bla
       [newContext setView:blankView];
       
       // Hide the menu bar.
-      HideMenuBar();
+      fullScreenDisplay = Cocoa_GetDisplay(screen);
+      if (fullScreenDisplay == kCGDirectMainDisplay)
+        HideMenuBar();
           
       // Save the window.
       lastWindow = mainWindow;
@@ -400,7 +402,8 @@ void Cocoa_GL_SetFullScreen(int screen, int width, int height, bool fs, bool bla
     else
     {
       // Show menubar.
-      ShowMenuBar();
+      if (fullScreenDisplay == kCGDirectMainDisplay)
+        ShowMenuBar();
 
       // Get rid of the new window we created.
       [lastWindow close];
