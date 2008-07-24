@@ -79,6 +79,38 @@ void Cocoa_GL_ReleaseContext(void* theContext)
   [ context release ];
 }
 
+NSWindow* childWindow = nil;
+NSWindow* mainWindow = nil;
+
+void Cocoa_MakeChildWindow()
+{
+  NSOpenGLContext* context = (NSOpenGLContext*)Cocoa_GL_GetCurrentContext();
+  NSView* view = [context view];
+  NSWindow* window = [view window];
+
+  // Create a child window.
+  childWindow = [[NSWindow alloc] initWithContentRect:[window frame]
+                                            styleMask:NSBorderlessWindowMask
+                                              backing:NSBackingStoreBuffered
+                                                defer:NO];
+                                          
+  [childWindow setContentSize:[view frame].size];
+  [childWindow setBackgroundColor:[NSColor blackColor]];
+  [window addChildWindow:childWindow ordered:NSWindowAbove];
+  mainWindow = window;
+  //childWindow.alphaValue = 0.5; 
+}
+
+void Cocoa_DestroyChildWindow()
+{
+  if (childWindow != nil)
+  {
+    [mainWindow removeChildWindow:childWindow];
+    [childWindow close];
+    childWindow = nil;
+  }
+}
+
 void Cocoa_GL_SwapBuffers(void* theContext)
 {
   [ (NSOpenGLContext*)theContext flushBuffer ];
@@ -647,4 +679,15 @@ const char* Cocoa_GetAppVersion()
   }
   
   return strVersion;
+}
+
+void* Cocoa_GetDisplayPort()
+{
+  //NSOpenGLContext* context = (NSOpenGLContext*)Cocoa_GL_GetCurrentContext();
+  //NSView* view = [context view];
+  //WindowRef refWindow = [[view window] windowRef];
+  //return GetWindowPort(refWindow);
+  
+  WindowRef refWindow = [childWindow windowRef];
+  return GetWindowPort(refWindow);
 }
