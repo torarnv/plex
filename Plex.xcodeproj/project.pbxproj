@@ -1651,6 +1651,8 @@
 		E3B963B80E3863D80022F663 /* rtmp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3B9638A0E3860820022F663 /* rtmp.cpp */; };
 		E3B963B90E3863E00022F663 /* rtmppacket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3B9638C0E3860820022F663 /* rtmppacket.cpp */; };
 		E3B963BC0E3863F80022F663 /* DVDInputStreamRTMP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3B963BA0E3863F80022F663 /* DVDInputStreamRTMP.cpp */; };
+		E3B963EC0E3864C80022F663 /* RSSDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3B963EA0E3864C80022F663 /* RSSDirectory.cpp */; };
+		E3B963EF0E3864DB0022F663 /* RssFeed.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3B963ED0E3864DB0022F663 /* RssFeed.cpp */; };
 		E3BBB7990D7EA78A00CAAFD3 /* CMythSession.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3BBB7980D7EA78A00CAAFD3 /* CMythSession.cpp */; };
 		E3BBB7A20D7EA8B200CAAFD3 /* libpcre.0.0.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3BBB7A10D7EA8B200CAAFD3 /* libpcre.0.0.1.dylib */; };
 		E3D4B99A0DF7E39B0092A179 /* FileXBMSP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3D4B9960DF7E39B0092A179 /* FileXBMSP.cpp */; };
@@ -3702,6 +3704,10 @@
 		E3B9638D0E3860820022F663 /* rtmppacket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rtmppacket.h; sourceTree = "<group>"; };
 		E3B963BA0E3863F80022F663 /* DVDInputStreamRTMP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDInputStreamRTMP.cpp; sourceTree = "<group>"; };
 		E3B963BB0E3863F80022F663 /* DVDInputStreamRTMP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDInputStreamRTMP.h; sourceTree = "<group>"; };
+		E3B963EA0E3864C80022F663 /* RSSDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RSSDirectory.cpp; sourceTree = "<group>"; };
+		E3B963EB0E3864C80022F663 /* RSSDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RSSDirectory.h; sourceTree = "<group>"; };
+		E3B963ED0E3864DB0022F663 /* RssFeed.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RssFeed.cpp; sourceTree = "<group>"; };
+		E3B963EE0E3864DB0022F663 /* RssFeed.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RssFeed.h; sourceTree = "<group>"; };
 		E3BBB7980D7EA78A00CAAFD3 /* CMythSession.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CMythSession.cpp; sourceTree = "<group>"; };
 		E3BBB7A10D7EA8B200CAAFD3 /* libpcre.0.0.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpcre.0.0.1.dylib; path = ../../../../../opt/local/lib/libpcre.0.0.1.dylib; sourceTree = SOURCE_ROOT; };
 		E3D4B9950DF7E39B0092A179 /* FileShoutcast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileShoutcast.h; sourceTree = "<group>"; };
@@ -5343,6 +5349,8 @@
 		E38E16940D25F9FA00618676 /* FileSystem */ = {
 			isa = PBXGroup;
 			children = (
+				E3B963EA0E3864C80022F663 /* RSSDirectory.cpp */,
+				E3B963EB0E3864C80022F663 /* RSSDirectory.h */,
 				E3D4B9950DF7E39B0092A179 /* FileShoutcast.h */,
 				E3D4B9960DF7E39B0092A179 /* FileXBMSP.cpp */,
 				E3D4B9970DF7E39B0092A179 /* FileXBMSP.h */,
@@ -6830,6 +6838,8 @@
 		E38E1E220D25F9FD00618676 /* utils */ = {
 			isa = PBXGroup;
 			children = (
+				E3B963ED0E3864DB0022F663 /* RssFeed.cpp */,
+				E3B963EE0E3864DB0022F663 /* RssFeed.h */,
 				E36C29E70DA72486001F0C9D /* ScraperUrl.cpp */,
 				E36C29E80DA72486001F0C9D /* MusicArtistInfo.cpp */,
 				E36C29E90DA72486001F0C9D /* Fanart.cpp */,
@@ -8657,6 +8667,8 @@
 				E3B963B80E3863D80022F663 /* rtmp.cpp in Sources */,
 				E3B963B90E3863E00022F663 /* rtmppacket.cpp in Sources */,
 				E3B963BC0E3863F80022F663 /* DVDInputStreamRTMP.cpp in Sources */,
+				E3B963EC0E3864C80022F663 /* RSSDirectory.cpp in Sources */,
+				E3B963EF0E3864DB0022F663 /* RssFeed.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
