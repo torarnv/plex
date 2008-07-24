@@ -44,8 +44,9 @@ void InstallCrashReporter()
   Boolean authenticationWillBeRequired = FALSE;
   if (UnsanitySCR_CanInstall(&authenticationWillBeRequired))
   {
+    // Always do global install for Leopard.
     printf("Attempting to install Smart Crash Reporter.\n");
-    UnsanitySCR_Install(authenticationWillBeRequired ? kUnsanitySCR_GlobalInstall : 0);
+    UnsanitySCR_Install(kUnsanitySCR_GlobalInstall);
   }
   else
   {
