@@ -964,8 +964,8 @@ HRESULT CApplication::Create(HWND hWnd)
 #if defined(_LINUX) && !defined(__APPLE__)
   CLog::Log(LOGNOTICE, "Starting XBMC, Platform: GNU/Linux.  Built on %s (SVN:%s)", __DATE__, SVN_REV);
 #elif defined(__APPLE__)
-  CLog::Log(LOGNOTICE, "Starting XBMC, Platform: Mac OS X.  Built on %s", __DATE__);
-  CLog::Log(LOGNOTICE, "XBMC version %s.", Cocoa_GetAppVersion());
+  CLog::Log(LOGNOTICE, "Starting Plex, Platform: Mac OS X.  Built on %s", __DATE__);
+  CLog::Log(LOGNOTICE, "Plex version %s.", Cocoa_GetAppVersion());
 #elif defined(_WIN32) && !defined(HAS_XBOX_HARDWARE)
   CLog::Log(LOGNOTICE, "Starting XBMC, Platform: Windows.  Built on %s (compiler %i)", __DATE__, _MSC_VER);
 #else
@@ -975,9 +975,9 @@ HRESULT CApplication::Create(HWND hWnd)
   char szXBEFileName[1024];
   CIoSupport::GetXbePath(szXBEFileName);
   CStdString strLogFile;
-  strLogFile.Format("%sxbmc.log", _P(g_stSettings.m_logFolder).c_str());
+  strLogFile.Format("%splex.log", _P(g_stSettings.m_logFolder).c_str());
 
-  CLog::Log(LOGNOTICE, "The executeable running is: %s", szXBEFileName);
+  CLog::Log(LOGNOTICE, "The executable running is: %s", szXBEFileName);
   CLog::Log(LOGNOTICE, "Log File is located: %s", strLogFile.c_str());
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
 
