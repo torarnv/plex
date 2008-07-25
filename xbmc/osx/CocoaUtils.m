@@ -173,10 +173,47 @@ double Cocoa_GetScreenRefreshRate(int screen)
   return (mode != NULL) ? getDictDouble(mode, kCGDisplayRefreshRate) : 0.0f;
 }
 
+void QZ_ChangeWindowSize(int w, int h);
+
+static NSView* windowedView = 0;
+
 void* Cocoa_GL_ResizeWindow(void *theContext, int w, int h)
 {
-  SDL_SetVideoMode(w, h, 0, SDL_OPENGL);
-  return Cocoa_GL_ReplaceSDLWindowContext();
+  if (!theContext)
+    return 0;
+  
+  NSOpenGLContext* context = Cocoa_GL_GetCurrentContext();
+  NSView* view;
+  NSWindow* window;
+  
+  view = [context view];
+  
+  // If we're moving to full-screen, we've probably changed contexts already,
+  // so it's better to grab the view from the saved one.
+  //
+  if (windowedView != 0)
+  {
+    view = windowedView;
+    window = [view window];
+  }
+  
+  if (view && w>0 && h>0)
+  {
+    window = [view window];
+    if (window)
+    {
+      [window setContentSize:NSMakeSize(w, h)];
+      [window update];
+      [view setFrameSize:NSMakeSize(w, h)];
+      [context update];
+      [window center];
+    }
+  }
+  
+  // HACK to make sure SDL realizes the window size changed to help with mouse pointers.
+  QZ_ChangeWindowSize(w, h);  
+
+  return context;
 }
 
 void Cocoa_GL_BlankOtherDisplays(int screen)
@@ -259,6 +296,7 @@ void Cocoa_GL_SetFullScreen(int screen, int width, int height, bool fs, bool bla
     // Save these values.
     lastView = [context view];
     lastScreen = [[lastView window] screen];
+    windowedView = lastView;
     
     if (fakeFullScreen == false)
     {
@@ -433,6 +471,7 @@ void Cocoa_GL_SetFullScreen(int screen, int width, int height, bool fs, bool bla
     lastView = NULL;
     lastScreen = NULL;
     fullScreenDisplay = 0;
+    windowedView = 0;
   }
 }
 
@@ -677,5 +716,5 @@ void* Cocoa_GetDisplayPort()
   //return GetWindowPort(refWindow);
   
   WindowRef refWindow = [childWindow windowRef];
-  return GetWindowPort(refWindow);
+  return (void* )GetWindowPort(refWindow);
 }
