@@ -7029,6 +7029,7 @@
 				E371C1DB0E2F2AC300FBF841 /* Resources */,
 				E371C1DC0E2F2AC300FBF841 /* Sources */,
 				E371C1DD0E2F2AC300FBF841 /* Frameworks */,
+				E3AC021F0E3B34FA00DD298E /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -7086,6 +7087,22 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		E3AC021F0E3B34FA00DD298E /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "./build-number.py";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		8DD76F760486A8DE00D96B5E /* Sources */ = {
@@ -8845,6 +8862,7 @@
 		1DEB924C08733DCA0010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APPLICATION_VERSION = "0.5-RC1";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					_DEBUG,
 					_LINUX,
@@ -8881,6 +8899,7 @@
 		1DEB924D08733DCA0010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APPLICATION_VERSION = "0.5-RC1";
 				ARCHS = i386;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					_DEBUG,
