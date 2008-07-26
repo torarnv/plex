@@ -138,7 +138,7 @@ CStdString& CCharsetConverter::getCharsetLabelByName(const CStdString& charsetNa
 {
   for (unsigned int i = 0; i < m_vecCharsetNames.size(); i++)
   {
-    if (m_vecCharsetNames[i].Equals(charsetName, true))
+    if (m_vecCharsetNames[i].Equals(charsetName))
     {
       return m_vecCharsetLabels[i];
     }
@@ -151,7 +151,7 @@ CStdString& CCharsetConverter::getCharsetNameByLabel(const CStdString& charsetLa
 {
   for (unsigned int i = 0; i < m_vecCharsetLabels.size(); i++)
   {
-    if (m_vecCharsetLabels[i].Equals(charsetLabel, true))
+    if (m_vecCharsetLabels[i].Equals(charsetLabel))
     {
       return m_vecCharsetNames[i];
     }
@@ -164,7 +164,7 @@ bool CCharsetConverter::isBidiCharset(const CStdString& charset)
 {
   for (unsigned int i = 0; i < m_vecBidiCharsetNames.size(); i++)
   {
-    if (m_vecBidiCharsetNames[i].Equals(charset, true))
+    if (m_vecBidiCharsetNames[i].Equals(charset))
     {
       return true;
     }
@@ -193,7 +193,7 @@ void CCharsetConverter::reset(void)
 
   for (unsigned int i = 0; i < m_vecBidiCharsetNames.size(); i++)
   {
-    if (m_vecBidiCharsetNames[i] == strCharset)
+    if (m_vecBidiCharsetNames[i].Equals(strCharset))
     {
       m_stringFribidiCharset = m_vecBidiCharsets[i];
     }
@@ -292,7 +292,7 @@ void CCharsetConverter::logicalToVisualBiDi(const CStdStringA& strSource, CStdSt
 
   for (unsigned int i = 0; i < m_vecBidiCharsetNames.size(); i++)
   {
-    if (m_vecBidiCharsetNames[i].Equals(charset))
+    if (m_vecBidiCharsetNames[i].Equals(charset, false))
     {
       fribidiCharset = m_vecBidiCharsets[i];
       break;
