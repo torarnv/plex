@@ -8957,6 +8957,7 @@
 					SILENT,
 					HAS_VIDEO_PLAYBACK,
 				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				HEADER_SEARCH_PATHS = (
 					xbmc,
 					xbmc/lib/libaften,
@@ -9043,6 +9044,7 @@
 					SILENT,
 					HAS_VIDEO_PLAYBACK,
 				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				HEADER_SEARCH_PATHS = (
 					xbmc,
 					xbmc/lib/libaften,
