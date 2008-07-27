@@ -65,6 +65,7 @@ public:
   void UpdateObserver();
   void SetObserver(IRssObserver* observer);
   void CheckForUpdates();
+  void requestRefresh();
 
 private:
   void fromRSSToUTF16(const CStdStringA& strSource, CStdStringW& strDest);
@@ -89,6 +90,8 @@ private:
   std::vector<int> m_vecQueue;
   bool m_bIsRunning;
   CStdString m_encoding;
+  bool m_rtlText;
+  bool m_requestRefresh;
 };
 
 class CRssManager
@@ -98,6 +101,7 @@ public:
   ~CRssManager();
 
   void Stop();
+  void Reset();
 
   bool GetReader(DWORD controlID, DWORD windowID, IRssObserver* observer, CRssReader *&reader);
 
