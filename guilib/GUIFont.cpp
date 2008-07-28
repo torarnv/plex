@@ -132,7 +132,7 @@ void CGUIFont::DrawScrollingText(float x, float y, const std::vector<DWORD> &col
   //   pixelPos is the amount in pixels to move the string by.
   //   characterPos is the amount in characters to rotate the string by.
   //
-  float offset = 0;
+  float offset = scrollInfo.pixelPos;
   if (!scrollInfo.waitTime)
   {
     // move along by the appropriate scroll amount
@@ -161,7 +161,7 @@ void CGUIFont::DrawScrollingText(float x, float y, const std::vector<DWORD> &col
       }
       offset = scrollInfo.pixelPos;
     }
-    else
+    else if (scrollInfo.pixelSpeed < 0)
     { // scrolling backwards
       // we want to move scrollAmount, grab the next character
       float charWidth = GetCharWidth(scrollInfo.GetCurrentChar(text));
