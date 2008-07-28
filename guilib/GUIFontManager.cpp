@@ -103,12 +103,15 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
       fontPath += ".ttf";
     
     if (XFILE::CFile::Exists(fontPath))
+    {
       strPath = fontPath;
+    }
     else
     {
       fontPath = "/Library/Fonts/" + CUtil::GetFileName(strFilename);
       if (CUtil::GetExtension(strFilename).length() == 0)
         fontPath += ".ttf";
+      
       if (XFILE::CFile::Exists(fontPath))
         strPath = fontPath;
     }
