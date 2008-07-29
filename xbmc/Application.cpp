@@ -1624,10 +1624,10 @@ CProfile* CApplication::InitDirectoriesOSX()
 
   CStdString strExecutablePath;
   CUtil::GetHomePath(strExecutablePath);
-  setenv("XBMC_HOME", strExecutablePath.c_str(), 0);
+  setenv("PLEX_HOME", strExecutablePath.c_str(), 0);
 
   // Z: common for both
-  CIoSupport::RemapDriveLetter('Z',"/tmp/xbmc");
+  CIoSupport::RemapDriveLetter('Z',"/tmp/plex");
   CreateDirectory(_P("Z:\\"), NULL);
 
   CStdString home = getenv("HOME");
