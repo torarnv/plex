@@ -5040,8 +5040,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     if (!g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
       g_audioManager.Enable(false);
   }
-
-  if(!IsPlaying())
+  else
   {
     // since we didn't manage to get playback started, send any queued up messages
     while(m_vPlaybackStarting.size())
@@ -5050,6 +5049,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
       m_vPlaybackStarting.pop();
     }
   }
+
   while(m_vPlaybackStarting.size()) m_vPlaybackStarting.pop();
   m_bPlaybackStarting = false;
 
