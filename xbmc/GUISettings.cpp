@@ -667,10 +667,8 @@ CGUISettings::CGUISettings(void)
 #endif
 
   AddString(3, "videoscreen.guicalibration",214,"", BUTTON_CONTROL_STANDARD);
-#ifdef HAS_XBOX_HARDWARE
-  AddInt(4, "videoscreen.flickerfilter", 13100, 5, 0, 1, 5, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
-  AddBool(5, "videoscreen.soften", 215, false);
-#endif
+  AddString(4, "videoscreen.testpattern",226,"", BUTTON_CONTROL_STANDARD);
+
 #ifdef __APPLE__
   // Default to vsync always on!
   AddInt(6, "videoscreen.vsync", 13105, 2, 0, 1, 3, SPIN_CONTROL_TEXT);
