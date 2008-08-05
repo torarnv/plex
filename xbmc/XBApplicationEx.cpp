@@ -376,8 +376,8 @@ void CXBApplicationEx::ReadInput()
         g_Keyboard.Update(event);
       }
       break;
-      
     case SDL_KEYUP:
+      g_Keyboard.Update(event);
       lastKeyDown = 0;
       break;
       
