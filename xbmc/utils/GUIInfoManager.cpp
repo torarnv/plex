@@ -2579,7 +2579,7 @@ const CStdString CGUIInfoManager::GetMusicPlaylistInfo(const GUIInfo& info) cons
   { // relative index (requires current playlist is PLAYLIST_MUSIC)
     if (g_playlistPlayer.GetCurrentPlaylist() != PLAYLIST_MUSIC)
       return "";
-    index += g_playlistPlayer.GetCurrentSong();
+    index = g_playlistPlayer.GetNextSong(index);
   }
   if (index < 0 || index >= playlist.size())
     return "";
