@@ -1055,7 +1055,6 @@ int CXbmcHttp::xbmcAddToPlayList(int numParas, CStdString paras[])
     delete pItem;
     if (changed)
     {
-      g_playlistPlayer.HasChanged();
       return SetResponse(openTag+"OK");
     }
     else
