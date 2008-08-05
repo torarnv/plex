@@ -606,6 +606,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (info.Equals("viewmode")) ret = CONTAINER_VIEWMODE;
     else if (info.Equals("onnext")) ret = CONTAINER_ON_NEXT;
     else if (info.Equals("onprevious")) ret = CONTAINER_ON_PREVIOUS;
+    else if (info.Equals("scrolling"))
+      return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_SCROLLING : CONTAINER_SCROLLING, id, 0));
     else if (info.Equals("hasnext"))
       return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_HAS_NEXT : CONTAINER_HAS_NEXT, id, 0));
     else if (info.Equals("hasprevious"))    
@@ -835,6 +837,7 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
   else if (info.Equals("top250")) return LISTITEM_TOP250;
   else if (info.Equals("trailer")) return LISTITEM_TRAILER;
   else if (info.Equals("starrating")) return LISTITEM_STAR_RATING;
+  else if (info.Equals("sortletter")) return LISTITEM_SORT_LETTER;
   else if (info.Left(9).Equals("property(")) return AddListItemProp(info.Mid(9, info.GetLength() - 10));
   return 0;
 }
@@ -2087,29 +2090,30 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
         bReturn = m_stringParameters[info.GetData1()].Equals(content);
       }
       break;
-    case CONTAINER_ROW:
-    case CONTAINER_COLUMN:
-    case CONTAINER_POSITION:
-    case CONTAINER_HAS_NEXT:
-    case CONTAINER_HAS_PREVIOUS:
-    case CONTAINER_SUBITEM:
-      {
-        const CGUIControl *control = NULL;
-        if (info.GetData1())
-        { // container specified
-          CGUIWindow *window = GetWindowWithCondition(dwContextWindow, 0);
-          if (window)
-            control = window->GetControl(info.GetData1());
+      case CONTAINER_ROW:
+      case CONTAINER_COLUMN:
+      case CONTAINER_POSITION:
+      case CONTAINER_HAS_NEXT:
+      case CONTAINER_HAS_PREVIOUS:
+      case CONTAINER_SCROLLING:
+      case CONTAINER_SUBITEM:
+        {
+          const CGUIControl *control = NULL;
+          if (info.GetData1())
+          { // container specified
+            CGUIWindow *window = GetWindowWithCondition(dwContextWindow, 0);
+            if (window)
+              control = window->GetControl(info.GetData1());
+          }
+          else
+          { // no container specified - assume a mediawindow
+            CGUIWindow *window = GetWindowWithCondition(dwContextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+            if (window)
+              control = window->GetControl(window->GetViewContainerID());
+          }
+          if (control)
+            bReturn = control->GetCondition(condition, info.GetData2());
         }
-        else
-        { // no container specified - assume a mediawindow
-          CGUIWindow *window = GetWindowWithCondition(dwContextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
-          if (window)
-            control = window->GetControl(window->GetViewContainerID());
-        }
-        if (control)
-          bReturn = control->GetCondition(condition, info.GetData2());
-      }
       break;
     case CONTAINER_HAS_FOCUS:
       { // grab our container
@@ -2126,30 +2130,6 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
         }
         break;
       }
-    case LISTITEM_ISSELECTED:
-    case LISTITEM_ISPLAYING:
-      {
-        CFileItemPtr item;
-        if (!info.GetData1())
-        { // assumes a media window
-          CGUIWindow *window = GetWindowWithCondition(dwContextWindow, WINDOW_CONDITION_HAS_LIST_ITEMS);
-          if (window)
-            item = window->GetCurrentListItem(info.GetData2());
-        }
-        else
-        {
-          CGUIWindow *window = GetWindowWithCondition(dwContextWindow, 0);
-          if (window)
-          {
-            const CGUIControl *control = window->GetControl(info.GetData1());
-            if (control && control->IsContainer())
-              item = boost::static_pointer_cast<CFileItem>(((CGUIBaseContainer *)control)->GetListItem(info.GetData2()));
-          }
-        }
-        if (item)
-          bReturn = GetBool(condition, dwContextWindow, item.get());
-      }
-      break;
     case VIDEOPLAYER_CONTENT:
       {
         CStdString strContent="movies";
@@ -3661,6 +3641,13 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
       if (item->GetVideoInfoTag()->m_iTop250 > 0)
         strResult.Format("%i",item->GetVideoInfoTag()->m_iTop250);
       return strResult;
+    }
+    break;
+  case LISTITEM_SORT_LETTER:
+    {
+      CStdString letter = item->GetSortLabel().Left(1);
+      letter.ToUpper();
+      return letter;
     }
     break;
   }
