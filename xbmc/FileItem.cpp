@@ -2010,6 +2010,14 @@ void CFileItemList::Stack()
           item->m_dwSize = size;
           //CLog::Log(LOGDEBUG,"  ** finalized stack: %s", fileTitle.c_str());
         }
+        // item->m_bIsFolder = true;  // don't treat stacked files as folders
+        // the label may be in a different char set from the filename (eg over smb
+        // the label is converted from utf8, but the filename is not)
+        CUtil::GetVolumeFromFileName(item->GetLabel(), fileTitle, volumeNumber);
+        if (g_guiSettings.GetBool("filelists.hideextensions"))
+          CUtil::RemoveExtension(fileTitle);
+        item->SetLabel(fileTitle);
+        item->m_dwSize = size;
       }
     }
   }
