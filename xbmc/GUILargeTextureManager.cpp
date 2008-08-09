@@ -154,7 +154,7 @@ CGLTexture * CGUILargeTextureManager::GetImage(const CStdString &path, int &widt
   return NULL;
 }
 
-void CGUILargeTextureManager::ReleaseImage(const CStdString &path)
+void CGUILargeTextureManager::ReleaseImage(const CStdString &path, bool immediately)
 {
   CSingleLock lock(m_listSection);
   for (listIterator it = m_allocated.begin(); it != m_allocated.end(); ++it)
@@ -162,7 +162,7 @@ void CGUILargeTextureManager::ReleaseImage(const CStdString &path)
     CLargeTexture *image = *it;
     if (image->GetPath() == path)
     {
-      image->DecrRef(false);
+      image->DecrRef(immediately);
       return;
     }
   }
