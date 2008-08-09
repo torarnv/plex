@@ -75,7 +75,7 @@
 		E36C29EA0DA72486001F0C9D /* ScraperUrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E36C29E70DA72486001F0C9D /* ScraperUrl.cpp */; };
 		E36C29EB0DA72486001F0C9D /* MusicArtistInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E36C29E80DA72486001F0C9D /* MusicArtistInfo.cpp */; };
 		E36C29EC0DA72486001F0C9D /* Fanart.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E36C29E90DA72486001F0C9D /* Fanart.cpp */; };
-		E371C13B0E2F151A00FBF841 /* PlexApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = E371C13A0E2F151A00FBF841 /* PlexApplication.m */; };
+		E371C13B0E2F151A00FBF841 /* PlexApplication.mm in Sources */ = {isa = PBXBuildFile; fileRef = E371C13A0E2F151A00FBF841 /* PlexApplication.mm */; };
 		E371C2020E2F2D5400FBF841 /* AACcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15D50D25F9FA00618676 /* AACcodec.cpp */; };
 		E371C2030E2F2D5400FBF841 /* AC3CDDACodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15D70D25F9FA00618676 /* AC3CDDACodec.cpp */; };
 		E371C2040E2F2D5400FBF841 /* AC3Codec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15D90D25F9FA00618676 /* AC3Codec.cpp */; };
@@ -652,7 +652,7 @@
 		E371C43F0E2F2D5400FBF841 /* PlayListPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DE90D25F9FD00618676 /* PlayListPlayer.cpp */; };
 		E371C4400E2F2D5400FBF841 /* PlayListPLS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DEB0D25F9FD00618676 /* PlayListPLS.cpp */; };
 		E371C4410E2F2D5400FBF841 /* PlayListWPL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DED0D25F9FD00618676 /* PlayListWPL.cpp */; };
-		E371C4420E2F2D5400FBF841 /* PlexApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = E371C13A0E2F151A00FBF841 /* PlexApplication.m */; };
+		E371C4420E2F2D5400FBF841 /* PlexApplication.mm in Sources */ = {isa = PBXBuildFile; fileRef = E371C13A0E2F151A00FBF841 /* PlexApplication.mm */; };
 		E371C4430E2F2D5400FBF841 /* PltAction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1AC70D25F9FB00618676 /* PltAction.cpp */; };
 		E371C4440E2F2D5400FBF841 /* PltArgument.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1AC90D25F9FB00618676 /* PltArgument.cpp */; };
 		E371C4450E2F2D5400FBF841 /* PltCtrlPoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1ACB0D25F9FB00618676 /* PltCtrlPoint.cpp */; };
@@ -902,8 +902,8 @@
 		E371C53C0E2F2DF500FBF841 /* SmartCrashReportsAPI.o in Frameworks */ = {isa = PBXBuildFile; fileRef = EFF082090E106C00004114E6 /* SmartCrashReportsAPI.o */; };
 		E371C53D0E2F2DF500FBF841 /* SmartCrashReportsInstall.o in Frameworks */ = {isa = PBXBuildFile; fileRef = EFF0820A0E106C00004114E6 /* SmartCrashReportsInstall.o */; };
 		E371CB160E2F39CD00FBF841 /* Plex.xib in Resources */ = {isa = PBXBuildFile; fileRef = E371C1160E2F130900FBF841 /* Plex.xib */; };
-		E371CB8F0E303C7100FBF841 /* PlexDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E371CB8E0E303C7100FBF841 /* PlexDelegate.m */; };
-		E371CB900E303C7100FBF841 /* PlexDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E371CB8E0E303C7100FBF841 /* PlexDelegate.m */; };
+		E371CB8F0E303C7100FBF841 /* PlexDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = E371CB8E0E303C7100FBF841 /* PlexDelegate.mm */; };
+		E371CB900E303C7100FBF841 /* PlexDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = E371CB8E0E303C7100FBF841 /* PlexDelegate.mm */; };
 		E371CBB10E3044D900FBF841 /* Plex.icns in Resources */ = {isa = PBXBuildFile; fileRef = E371CBB00E3044D900FBF841 /* Plex.icns */; };
 		E371CC1A0E33473A00FBF841 /* AppleRemote.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E371CC190E33473A00FBF841 /* AppleRemote.cpp */; };
 		E37D5CB70D3023BB0081D327 /* CocoaUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = E37D5CB60D3023BB0081D327 /* CocoaUtils.m */; };
@@ -1811,11 +1811,11 @@
 		E36C29E90DA72486001F0C9D /* Fanart.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Fanart.cpp; sourceTree = "<group>"; };
 		E371C1160E2F130900FBF841 /* Plex.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Plex.xib; path = xbmc/osx/Plex.xib; sourceTree = "<group>"; };
 		E371C1390E2F151A00FBF841 /* PlexApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlexApplication.h; sourceTree = "<group>"; };
-		E371C13A0E2F151A00FBF841 /* PlexApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlexApplication.m; sourceTree = "<group>"; };
+		E371C13A0E2F151A00FBF841 /* PlexApplication.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PlexApplication.mm; sourceTree = "<group>"; };
 		E371C1DF0E2F2AC300FBF841 /* Plex.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Plex.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E371C1E10E2F2AC300FBF841 /* Plex-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Plex-Info.plist"; sourceTree = "<group>"; };
 		E371CB8D0E303C7100FBF841 /* PlexDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlexDelegate.h; sourceTree = "<group>"; };
-		E371CB8E0E303C7100FBF841 /* PlexDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlexDelegate.m; sourceTree = "<group>"; };
+		E371CB8E0E303C7100FBF841 /* PlexDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PlexDelegate.mm; sourceTree = "<group>"; };
 		E371CBB00E3044D900FBF841 /* Plex.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Plex.icns; sourceTree = "<group>"; };
 		E371CBF20E32927F00FBF841 /* PlexHelper */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = PlexHelper; sourceTree = BUILT_PRODUCTS_DIR; };
 		E371CC190E33473A00FBF841 /* AppleRemote.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AppleRemote.cpp; path = tools/EventClients/Clients/XBMCHelper/AppleRemote.cpp; sourceTree = "<group>"; };
@@ -4032,9 +4032,9 @@
 				E36384C90D768158005744DD /* CocoaToCppThunk.h */,
 				E36384CA0D768158005744DD /* CocoaToCppThunk.cpp */,
 				E371C1390E2F151A00FBF841 /* PlexApplication.h */,
-				E371C13A0E2F151A00FBF841 /* PlexApplication.m */,
+				E371C13A0E2F151A00FBF841 /* PlexApplication.mm */,
 				E371CB8D0E303C7100FBF841 /* PlexDelegate.h */,
-				E371CB8E0E303C7100FBF841 /* PlexDelegate.m */,
+				E371CB8E0E303C7100FBF841 /* PlexDelegate.mm */,
 			);
 			path = osx;
 			sourceTree = "<group>";
@@ -7886,8 +7886,8 @@
 				E3D4B99B0DF7E39B0092A179 /* XBMSDirectory.cpp in Sources */,
 				9409C1EE0E01D696001626C3 /* ac3encoder.c in Sources */,
 				9409C1EF0E01D696001626C3 /* ringbuffer.c in Sources */,
-				E371C13B0E2F151A00FBF841 /* PlexApplication.m in Sources */,
-				E371CB8F0E303C7100FBF841 /* PlexDelegate.m in Sources */,
+				E371C13B0E2F151A00FBF841 /* PlexApplication.mm in Sources */,
+				E371CB8F0E303C7100FBF841 /* PlexDelegate.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8471,7 +8471,7 @@
 				E371C43F0E2F2D5400FBF841 /* PlayListPlayer.cpp in Sources */,
 				E371C4400E2F2D5400FBF841 /* PlayListPLS.cpp in Sources */,
 				E371C4410E2F2D5400FBF841 /* PlayListWPL.cpp in Sources */,
-				E371C4420E2F2D5400FBF841 /* PlexApplication.m in Sources */,
+				E371C4420E2F2D5400FBF841 /* PlexApplication.mm in Sources */,
 				E371C4430E2F2D5400FBF841 /* PltAction.cpp in Sources */,
 				E371C4440E2F2D5400FBF841 /* PltArgument.cpp in Sources */,
 				E371C4450E2F2D5400FBF841 /* PltCtrlPoint.cpp in Sources */,
@@ -8673,7 +8673,7 @@
 				E371C5090E2F2D5400FBF841 /* YUV2RGBShader.cpp in Sources */,
 				E371C50A0E2F2D5400FBF841 /* ZipDirectory.cpp in Sources */,
 				E371C50B0E2F2D5400FBF841 /* ZipManager.cpp in Sources */,
-				E371CB900E303C7100FBF841 /* PlexDelegate.m in Sources */,
+				E371CB900E303C7100FBF841 /* PlexDelegate.mm in Sources */,
 				E3B963B70E3863CB0022F663 /* AMFObject.cpp in Sources */,
 				E3B963B80E3863D80022F663 /* rtmp.cpp in Sources */,
 				E3B963B90E3863E00022F663 /* rtmppacket.cpp in Sources */,
