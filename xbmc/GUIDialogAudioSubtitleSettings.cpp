@@ -324,7 +324,7 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
         // get player state, needed for dvd's
         CStdString state = g_application.m_pPlayer->GetPlayerState();
 
-        g_application.m_pPlayer->CloseFile(); // to conserve memory if unraring
+        //g_application.m_pPlayer->CloseFile(); // to conserve memory if unraring
         if (CFile::Cache(strPath,"z:\\subtitle"+strExt+".keep"))
         {
           CStdString strPath2;
@@ -365,6 +365,7 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
           g_stSettings.m_currentVideoSettings.m_SubtitleCached = false;
           g_stSettings.m_currentVideoSettings.m_SubtitleOn = true;
 
+#if 0
           // reopen the file
           if ( g_application.PlayFile(g_application.CurrentFileItem(), true) && g_application.m_pPlayer )
           {
@@ -372,6 +373,9 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
             g_application.m_pPlayer->SetPlayerState(state);
             g_application.SeekTime(time);
           }
+#else
+          g_application.Restart(true);
+#endif
 
           Close();
         }
