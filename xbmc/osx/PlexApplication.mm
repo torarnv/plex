@@ -5,20 +5,37 @@
 //  Created by Elan Feingold on 7/16/2008.
 //  Copyright 2008 Blue Mandrill Design. All rights reserved.
 //
+#include <SDL/SDL.h>
+#define BOOL CPP_BOOL
+#include "stdafx.h"
+#include "Application.h"
+#include "FileItem.h"
+#undef BOOL
+#undef DEBUG
 #import <unistd.h>
-#include "SDL/SDL.h"
 #import "PlexApplication.h"
 
-static int           gArgc;
-static const char  **gArgv;
-static BOOL          gFinderLaunch;
+extern CApplication g_application;
+
+int           gArgc;
+const char  **gArgv;
+
+BOOL gFinderLaunch = FALSE;
+BOOL gCalledAppMainline = FALSE;
 
 @implementation PlexApplication
 
 - (void) finishLaunching
 {
   [super finishLaunching];
+  gCalledAppMainline = TRUE;
   SDL_main(gArgc, (char** )gArgv);
+}
+
+/* Invoked by the dock menu */
+- (void)terminate:(id)sender
+{
+  [self quit:sender];
 }
 
 /* Invoked from the Quit menu item */
@@ -32,12 +49,12 @@ static BOOL          gFinderLaunch;
 
 - (IBAction)fullScreenToggle:(id)sender
 {
-  /* Post an SDL key event */
-  SDL_Event event;
-  memset(&event, 0, sizeof(event));
-  event.type = SDL_KEYDOWN;
-  event.key.keysym.unicode = '\\';
-  SDL_PushEvent(&event);
+ // Post an toggle full-screen event to the application thread.
+ SDL_Event event;
+ memset(&event, 0, sizeof(event));
+ event.type = PLEX_MESSAGE;
+ event.user.code = TMSG_TOGGLEFULLSCREEN;
+ SDL_PushEvent(&event);
 }
 
 - (void)sendEvent:(NSEvent *)anEvent 
