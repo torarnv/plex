@@ -121,6 +121,9 @@
 #ifdef HAS_EVENT_SERVER
 #include "utils/EventServer.h"
 #endif
+#ifdef HAS_SDL_JOYSTICK
+#include "common/SDLJoystick.h"
+#endif
 
 // Windows includes
 #include "GUIWindowManager.h"
@@ -566,8 +569,11 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
 #endif
 
   bool HaveGamepad = true; // should always have the gamepad when we get here
+  
+#ifndef __APPLE__
   if (InitD3D)
     InitBasicD3D();
+#endif
 
   if (m_splash)
   {
@@ -1247,6 +1253,10 @@ HRESULT CApplication::Create(HWND hWnd)
 #ifdef __APPLE__
   // Configure and possible manually start the helper.
   g_xbmcHelper.Configure();
+  
+  // Note that the screensaver should turn off.
+  Cocoa_UpdateSystemActivity();
+  Cocoa_TurnOffScreenSaver();
 #endif
 
 #ifdef HAS_XBOX_HARDWARE
