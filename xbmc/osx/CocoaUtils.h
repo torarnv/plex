@@ -67,6 +67,7 @@ extern "C"
   int Cocoa_DimDisplayNow();
   void Cocoa_UpdateSystemActivity();
   int Cocoa_SleepSystem();
+  void Cocoa_TurnOffScreenSaver();
 
   //
   // Mouse.

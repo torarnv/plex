@@ -618,6 +618,12 @@ void Cocoa_UpdateSystemActivity()
 {
   UpdateSystemActivity(UsrActivity);   
 }
+
+void Cocoa_TurnOffScreenSaver()
+{
+  NSAppleScript* stopScript = [[NSAppleScript alloc] initWithSource:@"tell application \"ScreenSaverEngine\" to quit"];
+  [stopScript executeAndReturnError:nil];
+}
                    
 int Cocoa_SleepSystem()
 {
