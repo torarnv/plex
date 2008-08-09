@@ -693,6 +693,10 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     {
       needsResize = false;
       SetFullScreenRoot(false);
+      
+      // Make sure screen saver is off.
+      Cocoa_UpdateSystemActivity();
+      Cocoa_TurnOffScreenSaver();
     }
     
     if (needsResize)
