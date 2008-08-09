@@ -376,6 +376,12 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       if( m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO )
         g_application.SwitchToFullScreen();
       break;
+      
+    case TMSG_TOGGLEFULLSCREEN:
+      g_graphicsContext.Lock();
+      g_graphicsContext.ToggleFullScreenRoot();
+      g_graphicsContext.Unlock();
+      break;
 
     case TMSG_HTTPAPI:
     {
@@ -652,6 +658,12 @@ void CApplicationMessenger::NetworkMessage(DWORD dwMessage, DWORD dwParam)
 void CApplicationMessenger::SwitchToFullscreen()
 {
   ThreadMessage tMsg = {TMSG_SWITCHTOFULLSCREEN};
+  SendMessage(tMsg, true);
+}
+
+void CApplicationMessenger::ToggleFullscreen()
+{
+  ThreadMessage tMsg = {TMSG_TOGGLEFULLSCREEN};
   SendMessage(tMsg, true);
 }
 
