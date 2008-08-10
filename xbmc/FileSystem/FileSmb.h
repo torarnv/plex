@@ -56,7 +56,7 @@ class CSMB : public CCriticalSection
 {
 public:
   CSMB();
-  ~CSMB();
+  virtual ~CSMB();
   void Init();
   void Deinit();
   void Purge();
