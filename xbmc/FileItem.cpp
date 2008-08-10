@@ -1904,21 +1904,36 @@ void CFileItemList::Stack()
       if (item->IsPlayList() || item->IsParentFolder() || item->IsNFO() || IsVirtualDirectoryRoot() || item->IsDVDImage())
         continue;
 
-      if( item->m_bIsFolder)
+      if (item->m_bIsFolder)
       {
         // check for any dvd directories, only on known fast types
         // i'm adding xbms even thou it really isn't fast due to
         // opening file to check for existence
-        if( !item->IsRemote()
-         || item->IsSmb()
-         || CUtil::IsInRAR(item->m_strPath)
-         || CUtil::IsInZIP(item->m_strPath)
-         || item->m_strPath.Left(5).Equals("xbms", false)
-         )
+        //
+        if (!item->IsRemote() || 
+             item->IsSmb() || 
+             CUtil::IsInRAR(item->m_strPath) || 
+             CUtil::IsInZIP(item->m_strPath) || 
+             item->m_strPath.Left(5).Equals("xbms", false))
         {
           CStdString path;
+          CStdString dvdPath = "";
           CUtil::AddFileToFolder(item->m_strPath, "VIDEO_TS.IFO", path);
           if (CFile::Exists(path))
+          {
+            dvdPath = path;
+          }
+          else
+          {
+            CUtil::AddFileToFolder(item->m_strPath, "VIDEO_TS", dvdPath);
+            CUtil::AddFileToFolder(dvdPath, "VIDEO_TS.IFO", path);
+            dvdPath.Empty();
+            if (CFile::Exists(path))
+            {
+              dvdPath = path;
+            }
+          }
+          if (!dvdPath.IsEmpty())
           {
             /* set the thumbnail based on folder */
             item->SetCachedVideoThumb();
@@ -1926,7 +1941,7 @@ void CFileItemList::Stack()
               item->SetUserVideoThumb();
 
             item->m_bIsFolder = false;
-            item->m_strPath = path;
+            item->m_strPath = dvdPath;
             item->SetLabel2("");
             item->SetLabelPreformated(true);
             m_sortMethod = SORT_METHOD_NONE; /* sorting is now broken */
@@ -1935,7 +1950,7 @@ void CFileItemList::Stack()
             /* otherwise user can't set icon on the stacked file as that */
             /* will allways be set on the video_ts.ifo file */
             CStdString thumb(item->GetCachedVideoThumb());
-            if(CFile::Exists(thumb))
+            if (CFile::Exists(thumb))
               item->SetThumbnailImage(thumb);
             else
               item->SetUserVideoThumb();
