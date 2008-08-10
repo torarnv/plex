@@ -5834,7 +5834,7 @@ CStdString CUtil::TranslatePath(const CStdString& path)
       if (lowerPath.Find("q:\\plugins") == 0)
       {
         CStdString str = getenv("HOME");
-        str.append("/Library/Application Support/XBMC/Plugins");
+        str.append("/Library/Application Support/Plex/Plugins");
         str.append(path.substr(10));
         str.Replace('\\', '/');
         return str;
