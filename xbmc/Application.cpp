@@ -1032,8 +1032,10 @@ HRESULT CApplication::Create(HWND hWnd)
 #else
   CLog::Log(LOGNOTICE, "Setup SDL");
 
+#ifndef __APPLE__
   /* Clean up on exit, exit on window close and interrupt */
   atexit(SDL_Quit);
+#endif
 
   Uint32 sdlFlags = SDL_INIT_VIDEO;
 
