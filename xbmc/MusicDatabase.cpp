@@ -54,8 +54,8 @@ using namespace MEDIA_DETECT;
 #define MUSIC_DATABASE_OLD_VERSION 1.6f
 #define MUSIC_DATABASE_VERSION        10
 #define MUSIC_DATABASE_NAME "MyMusic7.db"
-#define RECENTLY_ADDED_LIMIT  25
-#define RECENTLY_PLAYED_LIMIT 25
+#define RECENTLY_ADDED_LIMIT  g_guiSettings.GetInt("musiclibrary.recentcount")
+#define RECENTLY_PLAYED_LIMIT g_guiSettings.GetInt("musiclibrary.recentcount")
 #define MIN_FULL_SEARCH_LENGTH 3
 
 using namespace CDDB;

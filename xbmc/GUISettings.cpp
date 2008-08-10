@@ -272,11 +272,12 @@ CGUISettings::CGUISettings(void)
   AddBool(3,"musiclibrary.autoalbuminfo", 20192, false);
   AddBool(4,"musiclibrary.autoartistinfo", 20193, false);
   AddString(5, "musiclibrary.defaultscraper", 20194, "Allmusic", SPIN_CONTROL_TEXT);
-  AddBool(6, "musiclibrary.updateonstartup", 22000, false);
-  AddSeparator(7,"musiclibrary.sep2");
-  AddString(8, "musiclibrary.cleanup", 334, "", BUTTON_CONTROL_STANDARD);
-  AddString(9, "musiclibrary.export", 20196, "", BUTTON_CONTROL_STANDARD);
-  AddString(10, "musiclibrary.import", 20197, "", BUTTON_CONTROL_STANDARD);
+  AddInt(6, "musiclibrary.recentcount", 20250, 25, 10, 5, 250, SPIN_CONTROL_INT_PLUS, -1);
+  AddBool(7, "musiclibrary.updateonstartup", 22000, false);
+  AddSeparator(8,"musiclibrary.sep2");
+  AddString(9, "musiclibrary.cleanup", 334, "", BUTTON_CONTROL_STANDARD);
+  AddString(10, "musiclibrary.export", 20196, "", BUTTON_CONTROL_STANDARD);
+  AddString(11, "musiclibrary.import", 20197, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(3, "musicplayer", 16003);
   AddString(1, "musicplayer.jumptoaudiohardware", 16001, "", BUTTON_CONTROL_STANDARD);
@@ -469,13 +470,14 @@ CGUISettings::CGUISettings(void)
   AddBool(4, "videolibrary.seasonthumbs", 20382, true);
   AddBool(5, "videolibrary.actorthumbs", 20402, false);
   AddBool(6, "videolibrary.singleseason", 20412, true);
-  AddSeparator(7, "videolibrary.sep1");
-  AddBool(8, "videolibrary.updateonstartup", 22000, false);
-  AddBool(9, "videolibrary.backgroundupdate", 22001, false);
-  AddSeparator(10, "videolibrary.sep2");
-  AddString(11, "videolibrary.cleanup", 334, "", BUTTON_CONTROL_STANDARD);
-  AddString(12, "videolibrary.export", 647, "", BUTTON_CONTROL_STANDARD);
-  AddString(13, "videolibrary.import", 648, "", BUTTON_CONTROL_STANDARD);
+  AddInt(7, "videolibrary.recentcount", 20475, 25, 10, 5, 250, SPIN_CONTROL_INT_PLUS, -1);
+  AddSeparator(8, "videolibrary.sep1");
+  AddBool(9, "videolibrary.updateonstartup", 22000, false);
+  AddBool(10, "videolibrary.backgroundupdate", 22001, false);
+  AddSeparator(11, "videolibrary.sep2");
+  AddString(12, "videolibrary.cleanup", 334, "", BUTTON_CONTROL_STANDARD);
+  AddString(13, "videolibrary.export", 647, "", BUTTON_CONTROL_STANDARD);
+  AddString(14, "videolibrary.import", 648, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(5, "videoplayer", 16003);
   AddString(1, "videoplayer.calibrate", 214, "", BUTTON_CONTROL_STANDARD);

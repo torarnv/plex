@@ -46,7 +46,7 @@ using namespace VIDEO;
 #define VIDEO_DATABASE_VERSION 21
 #define VIDEO_DATABASE_OLD_VERSION 3.f
 #define VIDEO_DATABASE_NAME "MyVideos34.db"
-#define RECENTLY_ADDED_LIMIT  25
+#define RECENTLY_ADDED_LIMIT  g_guiSettings.GetInt("videolibrary.recentcount")
 
 CBookmark::CBookmark()
 {

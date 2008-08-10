@@ -1658,6 +1658,7 @@
   <string id="20197">Import Music Library</string>
   <string id="20198">No Artist found!</string>
   <string id="20199">Downloading artist info failed</string>
+  <string id="20250">Recent Music Count</string>
 
   <!-- string id's 20200 thru 20211 are reserved for speedstrings (LocalizeStrings.cpp)-->
   
@@ -1791,6 +1792,8 @@
   <string id="20422">Always</string>
   <string id="20423">Has Trailer</string>
   <string id="20424">False</string>
+  
+  <string id="20475">Recent Videos Count</string>
   
   <!-- up to 21329 is reserved for the video db !! !-->
 
