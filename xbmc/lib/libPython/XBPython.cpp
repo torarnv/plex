@@ -299,6 +299,8 @@ void XBPython::Initialize()
 #ifdef _LINUX
       // Required for python to find optimized code (pyo) files
       setenv("PYTHONOPTIMIZE", "1", 1);
+      setenv("PYTHONHOME", _P("Q:/system/python"), 1);
+      setenv("PYTHONPATH", _P("Q:/system/python/python24.zip"), 1);
       //setenv("PYTHONDEBUG", "1", 1);
       //setenv("PYTHONINSPECT", "1", 1);
       //setenv("PYTHONVERBOSE", "1", 1);
@@ -367,7 +369,8 @@ void XBPython::Finalize()
     DllLoaderContainer::ReleaseModule(m_pDll);
 #endif    
     m_hModule = NULL;
-
+    mainThreadState = NULL;
+    
     m_bInitialized = false;
   }
   
@@ -410,7 +413,8 @@ void XBPython::Process()
   if (bStartup)
   {
     bStartup = false;
-    evalFile("Q:\\scripts\\autoexec.py");
+    if (evalFile("U:\\scripts\\autoexec.py") < 0)
+      evalFile("Q:\\scripts\\autoexec.py");
   }
 
   if (bLogin)
