@@ -235,6 +235,8 @@ void CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPr
   CFileItemPtr item = playlist[m_iCurrentSong];
   playlist.SetPlayed(true);
 
+  m_bPlaybackStarted = false;
+
   if (!g_application.PlayFile(*item, bAutoPlay))
   {
     CLog::Log(LOGERROR,"Playlist Player: skipping unplayable item: %i, path [%s]", m_iCurrentSong, item->m_strPath.c_str());
