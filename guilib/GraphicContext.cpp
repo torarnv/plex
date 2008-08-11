@@ -564,6 +564,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
   if ((g_settings.m_ResInfo[m_Resolution].iWidth != g_settings.m_ResInfo[res].iWidth) || (g_settings.m_ResInfo[m_Resolution].iHeight != g_settings.m_ResInfo[res].iHeight))
   { // set the mouse resolution
     g_Mouse.SetResolution(g_settings.m_ResInfo[res].iWidth, g_settings.m_ResInfo[res].iHeight, 1, 1);
+    ResetOverscan(g_settings.m_ResInfo[res]);
   }
 
   SetFullScreenViewWindow(res);
@@ -571,7 +572,11 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
 
   m_Resolution = res;
   if(NeedReset)
+  {
     CLog::Log(LOGDEBUG, "We set resolution %i", m_Resolution);
+    if (m_Resolution != INVALID)
+      g_fontManager.ReloadTTFFonts();
+  }
 
   Unlock();
 }
