@@ -2459,7 +2459,6 @@ CStdString CFileItem::GetCachedVideoFanart() const
       return "";
     return CFileItem::GetCachedVideoFanart(m_bIsFolder ? GetVideoInfoTag()->m_strPath : GetVideoInfoTag()->m_strFileNameAndPath);
   }
-    return CFileItem::GetCachedVideoFanart(m_bIsFolder ? GetVideoInfoTag()->m_strPath : GetVideoInfoTag()->m_strFileNameAndPath);
   return CFileItem::GetCachedVideoFanart(m_strPath);
 }
 
