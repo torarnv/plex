@@ -43,7 +43,7 @@ using namespace XFILE;
 using namespace DIRECTORY;
 using namespace VIDEO;
 
-#define VIDEO_DATABASE_VERSION 21
+#define VIDEO_DATABASE_VERSION 22
 #define VIDEO_DATABASE_OLD_VERSION 3.f
 #define VIDEO_DATABASE_NAME "MyVideos34.db"
 #define RECENTLY_ADDED_LIMIT  g_guiSettings.GetInt("videolibrary.recentcount")
@@ -3066,6 +3066,8 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
         }
       }
     }
+    if (iVersion < 22) // reverse audio/subtitle offsets
+      m_pDS->exec("update settings set SubtitleDelay=-SubtitleDelay and AudioDelay=-AudioDelay");
   }
   catch (...)
   {
