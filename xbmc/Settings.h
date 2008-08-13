@@ -106,6 +106,7 @@ public:
   bool LoadProfile(int index);
   bool SaveSettingsToProfile(int index);
   bool DeleteProfile(int index);
+  void CreateProfileFolders();
 
   VECSOURCES *GetSourcesFromType(const CStdString &type);
   CStdString GetDefaultSourceFromType(const CStdString &type);
