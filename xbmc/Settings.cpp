@@ -2891,7 +2891,6 @@ CStdString CSettings::GetSettingsFile() const
   return _P(settings);
 }
 
-<<<<<<< HEAD:xbmc/Settings.cpp
 CStdString CSettings::GetAvpackSettingsFile() const
 {
   CStdString  strAvpackSettingsFile;
@@ -2900,7 +2899,8 @@ CStdString CSettings::GetAvpackSettingsFile() const
   else
     strAvpackSettingsFile = "P:\\avpacksettings.xml";
   return _P(strAvpackSettingsFile);
-=======
+}
+
 void CSettings::CreateProfileFolders()
 {
   CreateDirectory(GetDatabaseFolder(), NULL);
@@ -2912,6 +2912,7 @@ void CSettings::CreateProfileFolders()
   CreateDirectory(GetMusicArtistThumbFolder().c_str(), NULL);
   CreateDirectory(GetLastFMThumbFolder().c_str(), NULL);
   CreateDirectory(GetVideoThumbFolder().c_str(), NULL);
+  CreateDirectory(GetVideoFanartFolder().c_str(), NULL);
   CreateDirectory(GetBookmarksThumbFolder().c_str(), NULL);
   CreateDirectory(GetProgramsThumbFolder().c_str(), NULL);
   CreateDirectory(GetPicturesThumbFolder().c_str(), NULL);
@@ -2928,5 +2929,4 @@ void CSettings::CreateProfileFolders()
     CUtil::AddFileToFolder(GetVideoThumbFolder(), strHex, strThumbLoc);
     CreateDirectory(strThumbLoc.c_str(),NULL);
   }
->>>>>>> 59a42ca... fixed: Fanart didn't work for newly created profiles (due to fanart folder not being created):xbmc/Settings.cpp
 }
