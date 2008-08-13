@@ -2738,7 +2738,6 @@ void CSettings::CreateProfileFolders()
   CreateDirectory(GetMusicArtistThumbFolder().c_str(), NULL);
   CreateDirectory(GetLastFMThumbFolder().c_str(), NULL);
   CreateDirectory(GetVideoThumbFolder().c_str(), NULL);
-  CreateDirectory(GetVideoFanartFolder().c_str(), NULL);
   CreateDirectory(GetBookmarksThumbFolder().c_str(), NULL);
   CreateDirectory(GetProgramsThumbFolder().c_str(), NULL);
   CreateDirectory(GetPicturesThumbFolder().c_str(), NULL);
