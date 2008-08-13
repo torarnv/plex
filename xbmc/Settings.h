@@ -363,7 +363,6 @@ public:
   CStdString GetVideoFanartFolder() const;
 
   CStdString GetSettingsFile() const;
-  CStdString GetAvpackSettingsFile() const;
 
   bool LoadUPnPXml(const CStdString& strSettingsFile);
   bool SaveUPnPXml(const CStdString& strSettingsFile) const;
@@ -371,7 +370,7 @@ public:
   bool LoadProfiles(const CStdString& strSettingsFile);
   bool SaveProfiles(const CStdString& strSettingsFile) const;
 
-  bool SaveSettings(const CStdString& strSettingsFile) const;
+  bool SaveSettings(const CStdString& strSettingsFile, CGUISettings *localSettings = NULL) const;
 
   bool SaveSources();
 
@@ -415,12 +414,6 @@ protected:
   void LoadUserFolderLayout();
 
   void LoadRSSFeeds();
-
-  bool SaveAvpackXML() const;
-  bool SaveNewAvpackXML() const;
-  bool SaveAvpackSettings(TiXmlNode *io_pRoot) const;
-  bool LoadAvpackXML();
-
 };
 
 extern class CSettings g_settings;
