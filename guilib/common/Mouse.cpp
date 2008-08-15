@@ -22,9 +22,7 @@
 #include "include.h"
 #include "Mouse.h"
 
-#ifdef _XBOX
-#include "XBoxMouse.h"
-#elif defined (HAS_SDL)
+#if defined (HAS_SDL)
 #include "SDLMouse.h"
 #else
 #include "DirectInputMouse.h"
@@ -60,9 +58,7 @@ void CMouse::Initialize(void *appData)
     return; // nothing to do
 
   // create the mouse device
-#ifdef _XBOX
-  m_mouseDevice = new CXBoxMouse();
-#elif defined (HAS_SDL)
+#if defined (HAS_SDL)
   m_mouseDevice = new CSDLMouse();
 #else
   m_mouseDevice = new CDirectInputMouse();
@@ -166,6 +162,12 @@ void CMouse::SetResolution(int maxX, int maxY, float speedX, float speedY)
 bool CMouse::IsActive() const
 {
   return m_mouseState.active && m_mouseEnabled;
+}
+
+// IsEnabled - returns true if mouse is enabled
+bool CMouse::IsEnabled() const
+{
+  return m_mouseEnabled;
 }
 
 // turns off mouse activation
