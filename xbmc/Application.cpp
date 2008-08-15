@@ -81,6 +81,7 @@
 #include "SmartPlaylist.h"
 #include "FileSystem/RarManager.h"
 #include "PlayList.h"
+#include "RssReader.h"
 
 #if defined(FILESYSTEM) && !defined(_LINUX)
 #include "FileSystem/FileDAAP.h"
@@ -4524,7 +4525,7 @@ HRESULT CApplication::Cleanup()
     //  _CrtDumpMemoryLeaks(). Most of the leaks
     //  shown are no real leaks, as parts of the app
     //  are still allocated.
-
+    g_rssManager.Stop();
     g_localizeStrings.Clear();
     g_LangCodeExpander.Clear();
     g_charsetConverter.clear();
