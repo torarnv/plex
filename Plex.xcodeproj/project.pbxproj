@@ -64,6 +64,7 @@
 		E354EF040D99EDC900B55311 /* controlradiobutton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E354EF030D99EDC900B55311 /* controlradiobutton.cpp */; };
 		E35EF2550D380C3D00DB5CD5 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E35EF2540D380C3D00DB5CD5 /* QuickTime.framework */; };
 		E35EF3240D380E1E00DB5CD5 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E35EF3230D380E1E00DB5CD5 /* Carbon.framework */; };
+		E360D8CF0E557A5700643A82 /* GUIWindowTestPattern.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E360D8CD0E557A5700643A82 /* GUIWindowTestPattern.cpp */; };
 		E36384500D767767005744DD /* AppleRemote.m in Sources */ = {isa = PBXBuildFile; fileRef = E363844F0D767767005744DD /* AppleRemote.m */; };
 		E36384800D767AE1005744DD /* XBMCMain.m in Sources */ = {isa = PBXBuildFile; fileRef = E363847F0D767AE1005744DD /* XBMCMain.m */; };
 		E36384CB0D768158005744DD /* CocoaToCppThunk.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E36384CA0D768158005744DD /* CocoaToCppThunk.cpp */; };
@@ -1792,6 +1793,8 @@
 		E354EF030D99EDC900B55311 /* controlradiobutton.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = controlradiobutton.cpp; sourceTree = "<group>"; };
 		E35EF2540D380C3D00DB5CD5 /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
 		E35EF3230D380E1E00DB5CD5 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
+		E360D8CD0E557A5700643A82 /* GUIWindowTestPattern.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowTestPattern.cpp; sourceTree = "<group>"; };
+		E360D8CE0E557A5700643A82 /* GUIWindowTestPattern.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowTestPattern.h; sourceTree = "<group>"; };
 		E363844E0D767767005744DD /* AppleRemote.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppleRemote.h; sourceTree = "<group>"; };
 		E363844F0D767767005744DD /* AppleRemote.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppleRemote.m; sourceTree = "<group>"; };
 		E36384550D7678E0005744DD /* AppleRemoteKeys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppleRemoteKeys.h; sourceTree = "<group>"; };
@@ -4291,6 +4294,8 @@
 		E38E14610D25F9F900618676 /* xbmc */ = {
 			isa = PBXGroup;
 			children = (
+				E360D8CD0E557A5700643A82 /* GUIWindowTestPattern.cpp */,
+				E360D8CE0E557A5700643A82 /* GUIWindowTestPattern.h */,
 				88ACB0200DCF40D00083CFDF /* MusicInfoTagLoaderASAP.cpp */,
 				88ACB0210DCF40D00083CFDF /* MusicInfoTagLoaderASAP.h */,
 				880DBE490DC223FF00E26B71 /* Album.h */,
@@ -8680,6 +8685,7 @@
 				E3B963BC0E3863F80022F663 /* DVDInputStreamRTMP.cpp in Sources */,
 				E3B963EC0E3864C80022F663 /* RSSDirectory.cpp in Sources */,
 				E3B963EF0E3864DB0022F663 /* RssFeed.cpp in Sources */,
+				E360D8CF0E557A5700643A82 /* GUIWindowTestPattern.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
