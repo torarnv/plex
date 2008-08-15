@@ -782,10 +782,7 @@ void CDVDPlayer::Process()
       {
         if(!m_caching && m_playSpeed == DVD_PLAYSPEED_NORMAL)
         {
-          m_clock.SetSpeed(DVD_PLAYSPEED_PAUSE);
-          m_dvdPlayerAudio.SetSpeed(DVD_PLAYSPEED_PAUSE);
-          m_dvdPlayerVideo.SetSpeed(DVD_PLAYSPEED_PAUSE);
-          m_caching = true;
+          SetCaching(true);
         }
       }
     }  
