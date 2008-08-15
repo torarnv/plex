@@ -273,7 +273,6 @@ protected:
   double m_UpdateApplication;
 
   bool m_bAbortRequest;
-  bool m_bPlayingNewFile;
 
   std::string m_filename; // holds the actual filename
   std::string m_content;  // hold a hint to what content file contains (mime type)
@@ -308,6 +307,17 @@ protected:
 
   struct SPlayerState
   {
+    void Clear()
+    {
+      timestamp     = 0;
+      time          = 0;
+      time_total    = 0;
+      chapter       = 0;
+      chapter_count = 0;
+      canrecord     = false;
+      recording     = false;
+    }
+    
     double timestamp;         // last time of update
 
     double time;              // current playback time

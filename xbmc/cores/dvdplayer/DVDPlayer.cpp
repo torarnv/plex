@@ -257,11 +257,10 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
   m_dvd.iSelectedAudioStream = -1;
   m_dvd.iSelectedSPUStream = -1;
 
-  memset(&m_State, 0, sizeof(m_State));
+  m_State.Clear();
   m_UpdateApplication = 0;
 
   m_bAbortRequest = false;
-  m_bPlayingNewFile = false;
   m_errorCount = 0;
   m_playSpeed = DVD_PLAYSPEED_NORMAL;
   m_caching = false;
@@ -307,11 +306,7 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
     // if playing a file close it first
     // this has to be changed so we won't have to close it.
     if(ThreadHandle())
-    {
-      m_bPlayingNewFile = true;
       CloseFile();
-      m_bPlayingNewFile = false;
-    }
 
     m_bAbortRequest = false;
     SetPlaySpeed(DVD_PLAYSPEED_NORMAL);
@@ -682,6 +677,7 @@ void CDVDPlayer::Process()
 
   // make sure application know our info
   UpdateApplication(0);
+  HandlePlayState(0);
 
   int count;
 
@@ -717,7 +713,8 @@ void CDVDPlayer::Process()
   // we are done initializing now, set the readyevent
   SetEvent(m_hReadyEvent);
 
-  m_callback.OnPlayBackStarted();
+  if(m_PlayerOptions.identify == false)
+    m_callback.OnPlayBackStarted();
 
   if (m_pDlgCache && m_pDlgCache->IsCanceled())
     return;
@@ -768,8 +765,8 @@ void CDVDPlayer::Process()
     UpdateApplication(1000);
 
     // if the queues are full, no need to read more
-    if(!m_dvdPlayerAudio.AcceptsData() && m_CurrentAudio.id >= 0
-    || !m_dvdPlayerVideo.AcceptsData() && m_CurrentVideo.id >= 0)
+    if ((!m_dvdPlayerAudio.AcceptsData() && m_CurrentAudio.id >= 0)
+    ||  (!m_dvdPlayerVideo.AcceptsData() && m_CurrentVideo.id >= 0))
     {
       Sleep(10);
       if (m_caching)
@@ -780,8 +777,8 @@ void CDVDPlayer::Process()
     // check if we are too slow and need to recache
     if(!m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
     {
-      if (m_dvdPlayerAudio.IsStalled() && m_CurrentAudio.inited && m_CurrentAudio.id >= 0
-      ||  m_dvdPlayerVideo.IsStalled() && m_CurrentVideo.inited && m_CurrentVideo.id >= 0)
+      if ((m_dvdPlayerAudio.IsStalled() && m_CurrentAudio.inited && m_CurrentAudio.id >= 0)
+      ||  (m_dvdPlayerVideo.IsStalled() && m_CurrentVideo.inited && m_CurrentVideo.id >= 0))
       {
         if(!m_caching && m_playSpeed == DVD_PLAYSPEED_NORMAL)
         {
@@ -823,7 +820,10 @@ void CDVDPlayer::Process()
 
         // stream is holding back data untill demuxer has flushed
         if(pStream->IsHeld())
+        {
           pStream->SkipHold();
+          continue;
+        }
 
         // stills will be skipped
         if(m_dvd.state == DVDSTATE_STILL)
@@ -840,10 +840,8 @@ void CDVDPlayer::Process()
             }
           }
           Sleep(100);
+          continue;
         }
-
-        // we don't consider dvd's ended untill navigator tells us so
-        continue;
       }
 
       // if we are caching, start playing it agian
@@ -863,6 +861,11 @@ void CDVDPlayer::Process()
 
       // any demuxer supporting non blocking reads, should return empty packates
       CLog::Log(LOGINFO, "%s - eof reading from demuxer", __FUNCTION__);
+      
+      // ignore this for dvd's, to allow continuation on errors
+      if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
+        continue;
+      
       break;
     }
 
@@ -1112,8 +1115,8 @@ bool CDVDPlayer::CheckPlayerInit(CCurrentStream& current, unsigned int source)
 {
   if(current.startsync)
   {
-    if(current.startpts < current.dts && current.dts != DVD_NOPTS_VALUE
-    || current.startpts == DVD_NOPTS_VALUE)
+    if ((current.startpts < current.dts && current.dts != DVD_NOPTS_VALUE)
+    ||  (current.startpts == DVD_NOPTS_VALUE))
     {
       if(source == DVDPLAYER_VIDEO)
         m_dvdPlayerVideo.SendMessage(current.startsync);
@@ -1390,14 +1393,6 @@ void CDVDPlayer::OnExit()
     // clean up all selection streams
     m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_NONE);
 
-    // if we didn't stop playing, advance to the next item in xbmc's playlist
-    // N.B. We need to call this if we aborted too, otherwise the application
-    // doesn't know that we're done with the full screen view and video playing!
-    //
-    //printf("Aborted: %d\n", m_bAbortRequest);
-    if (/* !m_bAbortRequest && */ m_bPlayingNewFile == false)
-      m_callback.OnPlayBackEnded();
-
     m_messenger.End();
 
   }
@@ -1590,8 +1585,6 @@ void CDVDPlayer::HandleMessages()
         m_playSpeed = speed;
         m_caching = false;
         m_clock.SetSpeed(speed);
-        m_dvdPlayerAudio.SetSpeed(speed);
-        m_dvdPlayerVideo.SetSpeed(speed);
 
         // TODO - we really shouldn't pause demuxer 
         //        untill our buffers are somewhat filled
@@ -1661,6 +1654,8 @@ void CDVDPlayer::SetCaching(bool enabled)
 void CDVDPlayer::SetPlaySpeed(int speed)
 {
   m_messenger.Put(new CDVDMsgInt(CDVDMsg::PLAYER_SETSPEED, speed));
+  m_dvdPlayerAudio.SetSpeed(speed);
+  m_dvdPlayerVideo.SetSpeed(speed);
   SyncronizeDemuxer(100);
 }
 
@@ -1714,7 +1709,7 @@ void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)
     return;
   }
 #endif
-  if (bLargeStep && GetChapterCount() > 0)
+  if (bLargeStep && GetChapterCount() > 1)
   {
     if(bPlus)
       SeekChapter(GetChapter() + 1);
@@ -2532,17 +2527,43 @@ bool CDVDPlayer::OnAction(const CAction &action)
       case ACTION_NEXT_ITEM:
       case ACTION_PAGE_UP:
         m_messenger.Put(new CDVDMsg(CDVDMsg::PLAYER_CHANNEL_NEXT));
+        g_infoManager.SetDisplayAfterSeek();
         return true;
       break;
 
       case ACTION_PREV_ITEM:
       case ACTION_PAGE_DOWN:
         m_messenger.Put(new CDVDMsg(CDVDMsg::PLAYER_CHANNEL_PREV));
+        g_infoManager.SetDisplayAfterSeek();
         return true;
       break;
     }
   }
 
+  switch (action.wID)
+  {
+  case ACTION_NEXT_ITEM:
+  case ACTION_PAGE_UP:
+    if(GetChapterCount() > 0) 
+    {
+      m_messenger.Put(new CDVDMsgPlayerSeekChapter(GetChapter()+1));
+      g_infoManager.SetDisplayAfterSeek();
+      return true;
+    }
+    else
+      break;
+  case ACTION_PREV_ITEM:
+  case ACTION_PAGE_DOWN:
+    if(GetChapterCount() > 0) 
+    {
+      m_messenger.Put(new CDVDMsgPlayerSeekChapter(GetChapter()-1));
+      g_infoManager.SetDisplayAfterSeek();
+      return true;
+    }
+    else
+      break;
+  }
+  
   // return false to inform the caller we didn't handle the message
   return false;
 }
