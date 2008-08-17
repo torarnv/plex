@@ -1232,9 +1232,9 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
   CStdString output="", tmp="", tag="", thumbFn="", thumbNothingPlaying="", thumb="";
   bool justChange=false, changed=false;
   if (numParas>0)
-    thumbFn=paras[0];
+    thumbFn=_P(paras[0]);
   if (numParas>1)
-    thumbNothingPlaying=paras[1];
+    thumbNothingPlaying=_P(paras[1]);
   if (numParas>2)
     justChange=paras[2].ToLower()=="true";
   CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
@@ -1585,31 +1585,30 @@ int CXbmcHttp::xbmcSlideshowSelect(int numParas, CStdString paras[])
 }
 
 int CXbmcHttp::xbmcAddToSlideshow(int numParas, CStdString paras[])
-//filename (;mask)
+//filename;mask;recursive=1
 {
   CStdString mask="";
   bool recursive=true;
   if (numParas<1)
     return SetResponse(openTag+"Error:Missing parameter");
-  else
+  if (numParas>1)
+    mask=procMask(paras[1]);
+  if (numParas>2)
+    recursive=paras[2]=="1";
+  CFileItemPtr pItem(new CFileItem(paras[0]));
+  pItem->m_bIsShareOrDrive=false;
+  pItem->m_strPath=paras[0].c_str();
+  // if its not a picture type, test to see if its a folder
+  if (!pItem->IsPicture())
   {
-    if (numParas>1)
-      mask=procMask(paras[1]);
-    if (numParas>2)
-      recursive=paras[2]=="1";
-    CFileItemPtr pItem(new CFileItem(paras[0]));
-    pItem->m_strPath=paras[0].c_str();
     IDirectory *pDirectory = CFactoryDirectory::Create(pItem->m_strPath);
     if (!pDirectory)
       return SetResponse(openTag+"Error");  
-    if (mask!="")
-      pDirectory->SetMask(mask);
     bool bResult=pDirectory->Exists(pItem->m_strPath);
     pItem->m_bIsFolder=bResult;
-    pItem->m_bIsShareOrDrive=false;
-    AddItemToPlayList(pItem, -1, 0, mask, recursive); //add to slideshow
-    return SetResponse(openTag+"OK");
   }
+  AddItemToPlayList(pItem, -1, 0, mask, recursive); //add to slideshow
+  return SetResponse(openTag+"OK");
 }
 
 int CXbmcHttp::xbmcSetPlaySpeed(int numParas, CStdString paras[])
@@ -2248,7 +2247,7 @@ int CXbmcHttp::xbmcDownloadInternetFile(int numParas, CStdString paras[])
   {
     src=paras[0];
     if (numParas>1)
-      dest=paras[1];
+      dest=_P(paras[1]);
     if (dest=="")
       dest=_P("Z:\\")+"xbmcDownloadInternetFile.tmp" ;
     if (src=="")
@@ -2296,7 +2295,7 @@ int CXbmcHttp::xbmcSetFile(int numParas, CStdString paras[])
 		  if (paras[2].ToLower() == "last")
 		  {
 		    decodeBase64ToFile(paras[1], tmpFile, true);
-			CFile::Cache(tmpFile, paras[0].c_str(), NULL, NULL) ;
+			CFile::Cache(tmpFile, _P(paras[0].c_str()), NULL, NULL) ;
             ::DeleteFile(tmpFile);
 		  }
 		  else
@@ -2304,7 +2303,7 @@ int CXbmcHttp::xbmcSetFile(int numParas, CStdString paras[])
 	else
 	{
       decodeBase64ToFile(paras[1], tmpFile);
-      CFile::Cache(tmpFile, paras[0].c_str(), NULL, NULL) ;
+      CFile::Cache(tmpFile, _P(paras[0].c_str()), NULL, NULL) ;
       ::DeleteFile(tmpFile);
 	}
     return SetResponse(openTag+"OK");
@@ -2321,7 +2320,7 @@ int CXbmcHttp::xbmcCopyFile(int numParas, CStdString paras[])
   {
     if (CFile::Exists(paras[0].c_str()))
     {
-      CFile::Cache(paras[0].c_str(), paras[1].c_str(), NULL, NULL) ;
+      CFile::Cache(_P(paras[0].c_str()), _P(paras[1].c_str()), NULL, NULL) ;
       return SetResponse(openTag+"OK");
     }
     else
@@ -2336,7 +2335,7 @@ int CXbmcHttp::xbmcFileSize(int numParas, CStdString paras[])
     return SetResponse(openTag+"Error:Missing parameter");
   else
   {
-    __int64 filesize=fileSize(paras[0]);
+    __int64 filesize=fileSize(_P(paras[0]));
     if (filesize>-1)
     {
       CStdString tmp;
@@ -2356,9 +2355,9 @@ int CXbmcHttp::xbmcDeleteFile(int numParas, CStdString paras[])
   {
     try
     {
-      if (CFile::Exists(paras[0].c_str()))
+      if (CFile::Exists(_P(paras[0].c_str())))
       {
-        ::DeleteFile(paras[0].c_str());
+        ::DeleteFile(_P(paras[0].c_str()));
         return SetResponse(openTag+"OK");
       }
       else
@@ -2379,7 +2378,7 @@ int CXbmcHttp::xbmcFileExists(int numParas, CStdString paras[])
   {
     try
     {
-      if (CFile::Exists(paras[0].c_str()))
+      if (CFile::Exists(_P(paras[0].c_str())))
       {
         return SetResponse(openTag+"True");
       }
@@ -2732,7 +2731,7 @@ int CXbmcHttp::xbmcTakeScreenshot(int numParas, CStdString paras[])
     if (paras[0]=="")
       filepath=_P("Z:\\")+"screenshot.jpg";
     else
-      filepath=paras[0];
+      filepath=_P(paras[0]);
     if (numParas>5)
     {
 	  CStdString tmpFile=_P("Z:\\")+"temp.bmp";
