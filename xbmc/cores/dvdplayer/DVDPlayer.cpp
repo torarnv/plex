@@ -2986,8 +2986,10 @@ bool CDVDPlayer::ExtractThumb(const CStdString &strPath, const CStdString &strTa
                 CDVDDemuxUtils::FreeDemuxPacket(pPacket);
             }
             else
+            {
               break;
-          }   while (!bFound);
+            }
+          }  while (!bFound);
 
           if (pPacket)
           {
