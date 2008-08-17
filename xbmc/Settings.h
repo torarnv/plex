@@ -230,6 +230,7 @@ public:
     bool m_fakeFullScreen;
 #endif
     int m_playlistRetries;
+    int m_playlistTimeout;
   };
 
   struct stSettings
