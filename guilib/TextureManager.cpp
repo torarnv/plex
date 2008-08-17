@@ -31,7 +31,7 @@ CTexture::CTexture()
   m_iWidth = m_iHeight = 0;
   m_iLoops = 0;
   m_pPalette = NULL;
-  m_bPacked = false;
+  m_bPacked = false;  
   m_memUsage = 0;
   m_format = D3DFMT_UNKNOWN;
 }
@@ -1113,6 +1113,14 @@ CStdString CGUITextureManager::GetTexturePath(const CStdString &textureName, boo
       }
     }
   }
+  
+  // Finally, check the media directory. I'm honestly not sure why this isn't checked.
+  CStdString path;
+  path.Format("%s\\media\\%s", g_graphicsContext.GetMediaDir(), textureName.c_str());
+  path = _P(path);
+  if (directory && DIRECTORY::CDirectory::Exists(path) || XFILE::CFile::Exists(path))
+    return path;
+  
   return "";
 }
 
