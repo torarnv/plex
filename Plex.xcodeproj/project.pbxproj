@@ -152,8 +152,6 @@
 		E371C28F0E2F2D5400FBF841 /* DNSNameCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16890D25F9FA00618676 /* DNSNameCache.cpp */; };
 		E371C2900E2F2D5400FBF841 /* DownloadQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E310D25F9FD00618676 /* DownloadQueue.cpp */; };
 		E371C2910E2F2D5400FBF841 /* DownloadQueueManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E330D25F9FD00618676 /* DownloadQueueManager.cpp */; };
-		E371C2920E2F2D5400FBF841 /* DTSCDDACodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16010D25F9FA00618676 /* DTSCDDACodec.cpp */; };
-		E371C2930E2F2D5400FBF841 /* DTSCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16030D25F9FA00618676 /* DTSCodec.cpp */; };
 		E371C2940E2F2D5400FBF841 /* DummyVideoPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14F60D25F9F900618676 /* DummyVideoPlayer.cpp */; };
 		E371C2950E2F2D5400FBF841 /* DVDAudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14FC0D25F9F900618676 /* DVDAudio.cpp */; };
 		E371C2960E2F2D5400FBF841 /* DVDAudioCodecFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15070D25F9F900618676 /* DVDAudioCodecFFmpeg.cpp */; };
@@ -1462,10 +1460,6 @@
 		E38E15FE0D25F9FA00618676 /* DllVorbisfile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllVorbisfile.h; sourceTree = "<group>"; };
 		E38E15FF0D25F9FA00618676 /* DllWAVPack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllWAVPack.h; sourceTree = "<group>"; };
 		E38E16000D25F9FA00618676 /* DllWMA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllWMA.h; sourceTree = "<group>"; };
-		E38E16010D25F9FA00618676 /* DTSCDDACodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DTSCDDACodec.cpp; sourceTree = "<group>"; };
-		E38E16020D25F9FA00618676 /* DTSCDDACodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DTSCDDACodec.h; sourceTree = "<group>"; };
-		E38E16030D25F9FA00618676 /* DTSCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DTSCodec.cpp; sourceTree = "<group>"; };
-		E38E16040D25F9FA00618676 /* DTSCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DTSCodec.h; sourceTree = "<group>"; };
 		E38E16060D25F9FA00618676 /* export.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = export.h; sourceTree = "<group>"; };
 		E38E16070D25F9FA00618676 /* format.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = format.h; sourceTree = "<group>"; };
 		E38E16080D25F9FA00618676 /* ordinals.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ordinals.h; sourceTree = "<group>"; };
@@ -4309,10 +4303,6 @@
 				E38E15FE0D25F9FA00618676 /* DllVorbisfile.h */,
 				E38E15FF0D25F9FA00618676 /* DllWAVPack.h */,
 				E38E16000D25F9FA00618676 /* DllWMA.h */,
-				E38E16010D25F9FA00618676 /* DTSCDDACodec.cpp */,
-				E38E16020D25F9FA00618676 /* DTSCDDACodec.h */,
-				E38E16030D25F9FA00618676 /* DTSCodec.cpp */,
-				E38E16040D25F9FA00618676 /* DTSCodec.h */,
 				E38E16050D25F9FA00618676 /* flac */,
 				E38E160A0D25F9FA00618676 /* FLACcodec.cpp */,
 				E38E160B0D25F9FA00618676 /* FLACcodec.h */,
@@ -6354,8 +6344,6 @@
 				E371C28F0E2F2D5400FBF841 /* DNSNameCache.cpp in Sources */,
 				E371C2900E2F2D5400FBF841 /* DownloadQueue.cpp in Sources */,
 				E371C2910E2F2D5400FBF841 /* DownloadQueueManager.cpp in Sources */,
-				E371C2920E2F2D5400FBF841 /* DTSCDDACodec.cpp in Sources */,
-				E371C2930E2F2D5400FBF841 /* DTSCodec.cpp in Sources */,
 				E371C2940E2F2D5400FBF841 /* DummyVideoPlayer.cpp in Sources */,
 				E371C2950E2F2D5400FBF841 /* DVDAudio.cpp in Sources */,
 				E371C2960E2F2D5400FBF841 /* DVDAudioCodecFFmpeg.cpp in Sources */,
