@@ -49,7 +49,8 @@ public:
   virtual ~IRssObserver() {}
 };
 
-class CRssReader : public CThread
+class CRssReader : public CThread, 
+                   public CCriticalSection
 {
 public:
   CRssReader();
@@ -72,6 +73,7 @@ private:
   void AddString(CStdStringW aString, int aColour, int iFeed);
   void UpdateFeed();
   virtual void OnExit();
+  int GetQueueSize();
 
   IRssObserver* m_pObserver;
   
