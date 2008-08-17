@@ -343,7 +343,6 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       }
     }
 
-
     // open the demuxer
     if (m_dllAvFormat.av_open_input_stream(&m_pFormatContext, m_ioContext, strFile.c_str(), iformat, NULL) < 0)
     {
@@ -366,7 +365,6 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       if(m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
         m_pFormatContext->max_analyze_duration = 500000;
     }
-
 
     CLog::Log(LOGDEBUG, "%s - av_find_stream_info starting", __FUNCTION__);
     int iErr = m_dllAvFormat.av_find_stream_info(m_pFormatContext);
