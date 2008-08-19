@@ -196,7 +196,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
         }
         else if (iAction == ACTION_PLAYER_PLAY)
         {
-          OnPlayMedia(iItem);
+          ShowPicture(iItem, true);
           return true;
         }
         else if (iAction == ACTION_SHOW_INFO)
@@ -351,6 +351,11 @@ bool CGUIWindowPictures::OnClick(int iItem)
 
 bool CGUIWindowPictures::OnPlayMedia(int iItem)
 {
+  return ShowPicture(iItem, false);
+}
+
+bool CGUIWindowPictures::ShowPicture(int iItem, bool startSlideShow)
+{
   if ( iItem < 0 || iItem >= (int)m_vecItems->Size() ) return false;
   CFileItem* pItem = m_vecItems->Get(iItem);
   CStdString strPicture = pItem->m_strPath;
@@ -386,7 +391,15 @@ bool CGUIWindowPictures::OnPlayMedia(int iItem)
       pSlideShow->Add(pItem);
     }
   }
-  pSlideShow->Select(strPicture);
+     
+  if (pSlideShow->NumSlides() == 0)
+    return false; 
+
+  pSlideShow->Select(strPicture); 
+
+  if (startSlideShow) 
+    pSlideShow->StartSlideShow(); 
+
   m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
 
   return true;
