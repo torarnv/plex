@@ -48,7 +48,8 @@ void Cocoa_DisplayError(const char* strError)
 
 void InstallCrashReporter() 
 {
-  system([[[NSBundle mainBundle] pathForAuxiliaryExecutable:@"CrashReporter"] UTF8String]);
+  if (access("/Library/InputManagers/Smart Crash Reports/Smart Crash Reports.bundle", R_OK) != 0)
+    system([[[NSBundle mainBundle] pathForAuxiliaryExecutable:@"CrashReporter"] UTF8String]);
 }
 
 void* InitializeAutoReleasePool()
