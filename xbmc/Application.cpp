@@ -561,6 +561,11 @@ void CApplication::InitBasicD3D()
 // This function does not return!
 void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetwork)
 {
+#ifdef __APPLE__
+  Cocoa_DisplayError(g_LoadErrorStr);
+  exit(-1);
+#endif
+  
   // XBMC couldn't start for some reason...
   // g_LoadErrorStr should contain the reason
   CLog::Log(LOGWARNING, "Emergency recovery console starting...");

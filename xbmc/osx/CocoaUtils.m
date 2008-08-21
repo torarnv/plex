@@ -39,6 +39,16 @@ void Cocoa_Initialize(void* pApplication)
     blankingWindows[i] = 0;
 }
 
+void Cocoa_DisplayError(const char* strError)
+{
+  NSAlert *alert = [NSAlert alertWithMessageText:@"Fatal Error"
+                    defaultButton:@"OK" alternateButton:nil otherButton:nil
+                    informativeTextWithFormat:[NSString stringWithUTF8String:strError]];
+                    
+  [alert runModal];
+  [alert release];
+}
+
 void InstallCrashReporter() 
 {
   Boolean authenticationWillBeRequired = FALSE;

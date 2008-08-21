@@ -20,6 +20,7 @@ extern "C"
   //
   void Cocoa_Initialize(void* pApplication);
   void InstallCrashReporter();
+  void Cocoa_DisplayError(const char* error);
 
   //
   // Pools.
