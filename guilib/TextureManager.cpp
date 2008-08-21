@@ -552,10 +552,25 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey,
 
   CStdString strPath;
 
+  // See if texture is being overridden.
+  CStdString strTextureFile = strTextureName;
+  CStdString strTextureOverridePath1;
+  CStdString strTextureOverridePath2;
+  CStdString strExt = CUtil::GetExtension(strTextureFile);
+  CUtil::RemoveExtension(strTextureFile);
+  
+  // Check original format and JPEG.
+  strTextureOverridePath1.Format("%s/media/%s%s", _P("Q:"), strTextureFile.c_str(), strExt.c_str());
+  strTextureOverridePath2.Format("%s/media/%s.jpg", _P("Q:"), strTextureFile.c_str(), strExt.c_str());
+  
   if (checkBundleOnly && bundle == -1)
     return 0;
 
-  if (bundle == -1)
+  if (XFILE::CFile::Exists(strTextureOverridePath1))
+    { strPath = strTextureOverridePath1; bundle = -1; }
+  else if (XFILE::CFile::Exists(strTextureOverridePath2))
+    { strPath = strTextureOverridePath2; bundle = -1; }
+  else if (bundle == -1)
     strPath = GetTexturePath(strTextureName);
   else
     strPath = strTextureName;
