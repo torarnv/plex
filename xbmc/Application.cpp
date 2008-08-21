@@ -4562,6 +4562,15 @@ void CApplication::Stop()
     else
       CLog::Log(LOGNOTICE, "Not saving settings (settings.xml is not present)");
 
+    // Stop the scanners.
+    CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+    if (musicScan && musicScan->IsDialogRunning())
+      musicScan->StopScanning();
+
+    CGUIDialogVideoScan *videoScan = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+    if (videoScan && videoScan->IsDialogRunning())
+      videoScan->StopScanning();
+    
     m_bStop = true;
     CLog::Log(LOGNOTICE, "stop all");
 
@@ -4579,14 +4588,6 @@ void CApplication::Stop()
       delete m_pPlayer;
       m_pPlayer = NULL;
     }
-
-    CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-    if (musicScan && musicScan->IsDialogRunning())
-      musicScan->StopScanning();
-
-    CGUIDialogVideoScan *videoScan = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-    if (videoScan && videoScan->IsDialogRunning())
-      videoScan->StopScanning();
 
 #if HAS_FILESYTEM_DAAP
     CLog::Log(LOGNOTICE, "stop daap clients");
