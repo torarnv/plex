@@ -829,12 +829,18 @@
 		E371C5390E2F2DF500FBF841 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E23910D2626E600618676 /* OpenGL.framework */; };
 		E371C53A0E2F2DF500FBF841 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E35EF2540D380C3D00DB5CD5 /* QuickTime.framework */; };
 		E371C53B0E2F2DF500FBF841 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EFF0820D0E106C11004114E6 /* Security.framework */; };
-		E371C53C0E2F2DF500FBF841 /* SmartCrashReportsAPI.o in Frameworks */ = {isa = PBXBuildFile; fileRef = EFF082090E106C00004114E6 /* SmartCrashReportsAPI.o */; };
-		E371C53D0E2F2DF500FBF841 /* SmartCrashReportsInstall.o in Frameworks */ = {isa = PBXBuildFile; fileRef = EFF0820A0E106C00004114E6 /* SmartCrashReportsInstall.o */; };
 		E371CB160E2F39CD00FBF841 /* Plex.xib in Resources */ = {isa = PBXBuildFile; fileRef = E371C1160E2F130900FBF841 /* Plex.xib */; };
 		E371CB900E303C7100FBF841 /* PlexDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = E371CB8E0E303C7100FBF841 /* PlexDelegate.mm */; };
 		E371CBB10E3044D900FBF841 /* Plex.icns in Resources */ = {isa = PBXBuildFile; fileRef = E371CBB00E3044D900FBF841 /* Plex.icns */; };
 		E371CC1A0E33473A00FBF841 /* AppleRemote.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E371CC190E33473A00FBF841 /* AppleRemote.cpp */; };
+		E38AAB560E5D441000C1B750 /* SmartCrashReportsInstall.o in Frameworks */ = {isa = PBXBuildFile; fileRef = E38AAB550E5D441000C1B750 /* SmartCrashReportsInstall.o */; };
+		E38AAB590E5D444500C1B750 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38AAB580E5D444500C1B750 /* Carbon.framework */; };
+		E38AAB5F0E5D447400C1B750 /* CrashReporter.m in Sources */ = {isa = PBXBuildFile; fileRef = E38AAB5E0E5D447400C1B750 /* CrashReporter.m */; };
+		E38AAB630E5D44D900C1B750 /* SmartCrashReportsAPI.o in Frameworks */ = {isa = PBXBuildFile; fileRef = E38AAB620E5D44D900C1B750 /* SmartCrashReportsAPI.o */; };
+		E38AABBC0E5D456200C1B750 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EFF0820D0E106C11004114E6 /* Security.framework */; };
+		E38AABC00E5D46AE00C1B750 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E38AABBF0E5D46AE00C1B750 /* libz.dylib */; };
+		E38AABC90E5D482900C1B750 /* CrashReporter in Copy CrashReporter */ = {isa = PBXBuildFile; fileRef = E38AAB430E5D438B00C1B750 /* CrashReporter */; };
+		E38AABCD0E5D489100C1B750 /* PlexHelper in Copy PlexHelper */ = {isa = PBXBuildFile; fileRef = E371CBF20E32927F00FBF841 /* PlexHelper */; };
 		E3AC01F50E39E0ED00DD298E /* libSDL-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E3AC01F40E39E0ED00DD298E /* libSDL-osx.a */; };
 		E3AC01F80E39E16B00DD298E /* libSDL_image-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E3AC01F60E39E16B00DD298E /* libSDL_image-osx.a */; };
 		E3AC01F90E39E16B00DD298E /* libSDL_mixer-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E3AC01F70E39E16B00DD298E /* libSDL_mixer-osx.a */; };
@@ -856,7 +862,39 @@
 			remoteGlobalIDString = E371CBF10E32927F00FBF841;
 			remoteInfo = PlexHelper;
 		};
+		E38AAB470E5D43A100C1B750 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E38AAB420E5D438B00C1B750 /* CrashReporter */;
+			remoteInfo = CrashReporter;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		E38AABC60E5D472500C1B750 /* Copy CrashReporter */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 6;
+			files = (
+				E38AABC90E5D482900C1B750 /* CrashReporter in Copy CrashReporter */,
+			);
+			name = "Copy CrashReporter";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E38AABD00E5D489900C1B750 /* Copy PlexHelper */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = Plex;
+			dstSubfolderSpec = 7;
+			files = (
+				E38AABCD0E5D489100C1B750 /* PlexHelper in Copy PlexHelper */,
+			);
+			name = "Copy PlexHelper";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		09AB6884FE841BABC02AAC07 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
@@ -989,6 +1027,13 @@
 		E37D5CB60D3023BB0081D327 /* CocoaUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CocoaUtils.m; sourceTree = "<group>"; };
 		E38A06CC0D95AA5500FF8227 /* GUIDialogKaiToast.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogKaiToast.cpp; sourceTree = "<group>"; };
 		E38A06CD0D95AA5500FF8227 /* GUIDialogKaiToast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogKaiToast.h; sourceTree = "<group>"; };
+		E38AAB430E5D438B00C1B750 /* CrashReporter */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = CrashReporter; sourceTree = BUILT_PRODUCTS_DIR; };
+		E38AAB540E5D441000C1B750 /* SmartCrashReportsInstall.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SmartCrashReportsInstall.h; path = plex/CrashReporterHelper/SmartCrashReportsInstall.h; sourceTree = "<group>"; };
+		E38AAB550E5D441000C1B750 /* SmartCrashReportsInstall.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; name = SmartCrashReportsInstall.o; path = plex/CrashReporterHelper/SmartCrashReportsInstall.o; sourceTree = "<group>"; };
+		E38AAB580E5D444500C1B750 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
+		E38AAB5E0E5D447400C1B750 /* CrashReporter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CrashReporter.m; path = plex/CrashReporterHelper/CrashReporter.m; sourceTree = "<group>"; };
+		E38AAB620E5D44D900C1B750 /* SmartCrashReportsAPI.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; name = SmartCrashReportsAPI.o; path = plex/CrashReporterHelper/SmartCrashReportsAPI.o; sourceTree = "<group>"; };
+		E38AABBF0E5D46AE00C1B750 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		E38CB6B90DF7E5B2002B36E1 /* libXBMS-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libXBMS-osx.a"; path = "xbmc/lib/libXBMS/libXBMS-osx.a"; sourceTree = "<group>"; };
 		E38E138A0D25F9F900618676 /* ActionManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ActionManager.cpp; sourceTree = "<group>"; };
 		E38E138B0D25F9F900618676 /* ActionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActionManager.h; sourceTree = "<group>"; };
@@ -2946,8 +2991,6 @@
 				E371C5390E2F2DF500FBF841 /* OpenGL.framework in Frameworks */,
 				E371C53A0E2F2DF500FBF841 /* QuickTime.framework in Frameworks */,
 				E371C53B0E2F2DF500FBF841 /* Security.framework in Frameworks */,
-				E371C53C0E2F2DF500FBF841 /* SmartCrashReportsAPI.o in Frameworks */,
-				E371C53D0E2F2DF500FBF841 /* SmartCrashReportsInstall.o in Frameworks */,
 				E3AC01F50E39E0ED00DD298E /* libSDL-osx.a in Frameworks */,
 				E3AC01F80E39E16B00DD298E /* libSDL_image-osx.a in Frameworks */,
 				E3AC01F90E39E16B00DD298E /* libSDL_mixer-osx.a in Frameworks */,
@@ -2961,12 +3004,28 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E38AAB410E5D438B00C1B750 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E38AAB560E5D441000C1B750 /* SmartCrashReportsInstall.o in Frameworks */,
+				E38AAB590E5D444500C1B750 /* Carbon.framework in Frameworks */,
+				E38AAB630E5D44D900C1B750 /* SmartCrashReportsAPI.o in Frameworks */,
+				E38AABBC0E5D456200C1B750 /* Security.framework in Frameworks */,
+				E38AABC00E5D46AE00C1B750 /* libz.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		08FB7794FE84155DC02AAC07 /* XBMC */ = {
 			isa = PBXGroup;
 			children = (
+				E38AAB620E5D44D900C1B750 /* SmartCrashReportsAPI.o */,
+				E38AAB5E0E5D447400C1B750 /* CrashReporter.m */,
+				E38AAB540E5D441000C1B750 /* SmartCrashReportsInstall.h */,
+				E38AAB550E5D441000C1B750 /* SmartCrashReportsInstall.o */,
 				E371CC200E3347DF00FBF841 /* Reactor.h */,
 				E371CC210E3347E000FBF841 /* XBox360.h */,
 				E371CC190E33473A00FBF841 /* AppleRemote.cpp */,
@@ -2977,6 +3036,8 @@
 				19C28FBDFE9D53C911CA2CBB /* Products */,
 				E371C1160E2F130900FBF841 /* Plex.xib */,
 				E371C1E10E2F2AC300FBF841 /* Plex-Info.plist */,
+				E38AAB580E5D444500C1B750 /* Carbon.framework */,
+				E38AABBF0E5D46AE00C1B750 /* libz.dylib */,
 			);
 			name = XBMC;
 			sourceTree = "<group>";
@@ -3052,6 +3113,7 @@
 			children = (
 				E371C1DF0E2F2AC300FBF841 /* Plex.app */,
 				E371CBF20E32927F00FBF841 /* PlexHelper */,
+				E38AAB430E5D438B00C1B750 /* CrashReporter */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -6121,11 +6183,14 @@
 				E371C1DC0E2F2AC300FBF841 /* Sources */,
 				E371C1DD0E2F2AC300FBF841 /* Frameworks */,
 				E3AC021F0E3B34FA00DD298E /* ShellScript */,
+				E38AABC60E5D472500C1B750 /* Copy CrashReporter */,
+				E38AABD00E5D489900C1B750 /* Copy PlexHelper */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				E371CC580E34193E00FBF841 /* PBXTargetDependency */,
+				E38AAB480E5D43A100C1B750 /* PBXTargetDependency */,
 			);
 			name = Plex;
 			productName = Plex;
@@ -6148,6 +6213,22 @@
 			productReference = E371CBF20E32927F00FBF841 /* PlexHelper */;
 			productType = "com.apple.product-type.tool";
 		};
+		E38AAB420E5D438B00C1B750 /* CrashReporter */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E38AAB4B0E5D43B700C1B750 /* Build configuration list for PBXNativeTarget "CrashReporter" */;
+			buildPhases = (
+				E38AAB400E5D438B00C1B750 /* Sources */,
+				E38AAB410E5D438B00C1B750 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CrashReporter;
+			productName = CrashReporter;
+			productReference = E38AAB430E5D438B00C1B750 /* CrashReporter */;
+			productType = "com.apple.product-type.tool";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -6162,6 +6243,7 @@
 			targets = (
 				E371C1DE0E2F2AC300FBF841 /* Plex */,
 				E371CBF10E32927F00FBF841 /* PlexHelper */,
+				E38AAB420E5D438B00C1B750 /* CrashReporter */,
 			);
 		};
 /* End PBXProject section */
@@ -6997,6 +7079,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E38AAB400E5D438B00C1B750 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E38AAB5F0E5D447400C1B750 /* CrashReporter.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -7004,6 +7094,11 @@
 			isa = PBXTargetDependency;
 			target = E371CBF10E32927F00FBF841 /* PlexHelper */;
 			targetProxy = E371CC570E34193E00FBF841 /* PBXContainerItemProxy */;
+		};
+		E38AAB480E5D43A100C1B750 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E38AAB420E5D438B00C1B750 /* CrashReporter */;
+			targetProxy = E38AAB470E5D43A100C1B750 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -7315,6 +7410,36 @@
 			};
 			name = Release;
 		};
+		E38AAB450E5D438B00C1B750 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = /usr/local/bin;
+				PREBINDING = NO;
+				PRODUCT_NAME = CrashReporter;
+			};
+			name = Debug;
+		};
+		E38AAB460E5D438B00C1B750 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				PREBINDING = NO;
+				PRODUCT_NAME = CrashReporter;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -7341,6 +7466,15 @@
 			buildConfigurations = (
 				E371CBF40E32928000FBF841 /* Debug */,
 				E371CBF50E32928000FBF841 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E38AAB4B0E5D43B700C1B750 /* Build configuration list for PBXNativeTarget "CrashReporter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E38AAB450E5D438B00C1B750 /* Debug */,
+				E38AAB460E5D438B00C1B750 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

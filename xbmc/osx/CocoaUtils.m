@@ -22,9 +22,6 @@
 #import "XBMCMain.h" 
 #include <SDL/SDL.h>
 
-#import <libSmartCrashReports/SmartCrashReportsInstall.h>
-#import <libSmartCrashReports/SmartCrashReportsAPI.h>
-
 #define MAX_DISPLAYS 32
 static NSWindow* blankingWindows[MAX_DISPLAYS];
 
@@ -51,17 +48,7 @@ void Cocoa_DisplayError(const char* strError)
 
 void InstallCrashReporter() 
 {
-  Boolean authenticationWillBeRequired = FALSE;
-  if (UnsanitySCR_CanInstall(&authenticationWillBeRequired))
-  {
-    // Always do global install for Leopard.
-    printf("Attempting to install Smart Crash Reporter.\n");
-    UnsanitySCR_Install(kUnsanitySCR_GlobalInstall);
-  }
-  else
-  {
-    printf("Cannot install Smart Crash Reporter.\n");
-  }
+  system([[[NSBundle mainBundle] pathForAuxiliaryExecutable:@"CrashReporter"] UTF8String]);
 }
 
 void* InitializeAutoReleasePool()
