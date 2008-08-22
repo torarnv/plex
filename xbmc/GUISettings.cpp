@@ -655,8 +655,8 @@ CGUISettings::CGUISettings(void)
 #endif
 #ifndef __APPLE__
   AddSeparator(9, "locale.sep2");
-  AddBool(10,   "locale.timeserver"       , 168  , false);
-  AddString(11, "locale.timeserveraddress"      , 731  , "pool.ntp.org", BUTTON_CONTROL_INPUT);
+  AddBool(10, "locale.timeserver", 168, false);
+  AddString(11, "locale.timeserveraddress", 731, "pool.ntp.org", EDIT_CONTROL_INPUT);
 #endif
 
   AddCategory(7, "videoscreen", 131);
