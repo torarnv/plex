@@ -434,14 +434,22 @@ void CGUIWindowVideoInfo::Update()
   // Check for resumability
   CGUIWindowVideoFiles *window = (CGUIWindowVideoFiles *)m_gWindowManager.GetWindow(WINDOW_VIDEO_FILES);
   if (window && window->GetResumeItemOffset(m_movieItem.get()) > 0)
+  {
     CONTROL_ENABLE(CONTROL_BTN_RESUME);
+  }
   else
+  {
     CONTROL_DISABLE(CONTROL_BTN_RESUME);
+  }
 
   if (m_movieItem->GetVideoInfoTag()->m_strEpisodeGuide.IsEmpty()) // disable the play button for tv show info
+  {
     CONTROL_ENABLE(CONTROL_BTN_PLAY);
+  }
   else
+  {
     CONTROL_DISABLE(CONTROL_BTN_PLAY);
+  }
 
   // update the thumbnail
   const CGUIControl* pControl = GetControl(CONTROL_IMAGE);
