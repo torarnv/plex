@@ -34,11 +34,6 @@ namespace XFILE
   class IFileCallback;
 }
 
-namespace PLAYLIST
-{
-  class CPlayListItem;
-}
-
 class CFileItem;
 class CFileItemList;
 
@@ -289,7 +284,6 @@ public:
 #endif
   static bool CreateDirectoryEx(const CStdString& strPath);
   static CStdString MakeLegalFileName(const CStdString &strFile, bool isFATX);
-  static void ConvertFileItemToPlayListItem(const CFileItem *pItem, PLAYLIST::CPlayListItem &playlistitem);
   static void AddDirectorySeperator(CStdString& strPath);
   static char GetDirectorySeperator(const CStdString& strFile);
 
