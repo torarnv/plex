@@ -1959,6 +1959,7 @@ void CFileItemList::Stack()
     CStdString fileName, filePath;
     CUtil::Split(item->m_strPath, filePath, fileName);
     CStdString fileTitle, volumeNumber;
+    // hmmm... should this use GetLabel() or fileName?
     if (CUtil::GetVolumeFromFileName(item->GetLabel(), fileTitle, volumeNumber))
     {
       vector<int> stack;
