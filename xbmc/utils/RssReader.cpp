@@ -439,6 +439,7 @@ CRssManager g_rssManager;
 
 CRssManager::CRssManager()
 {
+  m_bActive = false;
 }
 
 CRssManager::~CRssManager()
@@ -446,8 +447,14 @@ CRssManager::~CRssManager()
   Stop();
 }
 
+void CRssManager::Start()
+ { 
+   m_bActive = true;
+}
+
 void CRssManager::Stop()
 {
+  m_bActive = false;
   for (unsigned int i = 0; i < m_readers.size(); i++)
   {
     if (m_readers[i].reader)
