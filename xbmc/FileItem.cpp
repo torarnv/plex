@@ -1194,6 +1194,14 @@ void CFileItemList::ClearItems()
 {
   CSingleLock lock(m_lock);
 
+  // make sure we free the memory of the items (these are GUIControls which may have allocated resources)
+  FreeMemory();
+  for (unsigned int i = 0; i < m_items.size(); i++)
+  {
+    CFileItemPtr item = m_items[i];
+    item->FreeMemory();
+  }
+  
   m_items.clear();
   m_map.clear();
 }
@@ -1476,7 +1484,8 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)
   default:
     break;
   }
-  Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::Ascending : SSortFileItem::Descending);
+  if (sortMethod != SORT_METHOD_NONE)
+    Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::Ascending : SSortFileItem::Descending);
 
   m_sortMethod=sortMethod;
   m_sortOrder=sortOrder;
@@ -1962,7 +1971,12 @@ void CFileItemList::Stack()
         CFileItemPtr item2 = Get(j);
         CStdString fileName2, filePath2;
         CUtil::Split(item2->m_strPath, filePath2, fileName2);
+        // only do a stacking comparison if the first letter of the filename is the same
+        if (fileName2.size() && fileName2.at(0) != fileName.at(0))
+          break;
+        
         CStdString fileTitle2, volumeNumber2;
+        // hmmm... should this use GetLabel() or fileName2?
         if (CUtil::GetVolumeFromFileName(item2->GetLabel(), fileTitle2, volumeNumber2))
         {
           if (fileTitle2.Equals(fileTitle))
@@ -2000,6 +2014,8 @@ void CFileItemList::Stack()
         // the label may be in a different char set from the filename (eg over smb
         // the label is converted from utf8, but the filename is not)
         CUtil::GetVolumeFromFileName(item->GetLabel(), fileTitle, volumeNumber);
+        if (g_guiSettings.GetBool("filelists.hideextensions"))
+          CUtil::RemoveExtension(fileTitle);
         item->SetLabel(fileTitle);
         item->m_dwSize = size;
       }
@@ -2412,6 +2428,9 @@ void CFileItem::CacheFanart() const
     return;
   // We don't have a cached image, so let's see if the user has a local image they want to use
 
+  if (IsInternetStream() || CUtil::IsFTP(m_strPath)) // no local fanart available for these
+    return;
+  
   CStdString localFanart;
   if (m_bIsFolder)
   {
@@ -2472,16 +2491,7 @@ CStdString CFileItem::GetCachedProgramThumb() const
 {
   // get the locally cached thumb
   Crc32 crc;
-  if (IsOnDVD())
-  {
-    CStdString strDesc;
-    CUtil::GetXBEDescription(m_strPath,strDesc);
-    CStdString strCRC;
-    strCRC.Format("%s%u",strDesc.c_str(),CUtil::GetXbeID(m_strPath));
-    crc.ComputeFromLowerCase(strCRC);
-  }
-  else
-    crc.ComputeFromLowerCase(m_strPath);
+  crc.ComputeFromLowerCase(m_strPath);
   CStdString thumb;
   thumb.Format("%s\\%08x.tbn", g_settings.GetProgramsThumbFolder().c_str(), (unsigned __int32)crc);
   return _P(thumb);
@@ -2489,71 +2499,6 @@ CStdString CFileItem::GetCachedProgramThumb() const
 
 CStdString CFileItem::GetCachedGameSaveThumb() const
 {
-  CStdString extension;
-  CUtil::GetExtension(m_strPath,extension);
-  if (extension.Equals(".xbx")) // savemeta.xbx - cache thumb
-  {
-    Crc32 crc;
-    crc.ComputeFromLowerCase(m_strPath);
-    CStdString thumb;
-    thumb.Format("%s\\%08x.tbn", g_settings.GetGameSaveThumbFolder().c_str(),(unsigned __int32)crc);
-
-    thumb = _P(thumb);
-
-    if (!CFile::Exists(thumb))
-    {
-      CStdString strTitleImage, strParent, strParentSave, strParentTitle;
-      CUtil::GetDirectory(m_strPath,strTitleImage);
-      CUtil::GetParentPath(strTitleImage,strParent);
-      CUtil::AddFileToFolder(strTitleImage,"saveimage.xbx",strTitleImage);
-      CUtil::AddFileToFolder(strParent,"saveimage.xbx",strParentSave);
-      CUtil::AddFileToFolder(strParent,"titleimage.xbx",strParentTitle);
-      //CUtil::AddFileToFolder(strTitleImageCur,"titleimage.xbx",m_strPath);
-      if (CFile::Exists(strTitleImage))
-        CUtil::CacheXBEIcon(strTitleImage, thumb);
-      else if (CFile::Exists(strParentSave))
-        CUtil::CacheXBEIcon(strParentSave,thumb);
-      else if (CFile::Exists(strParentTitle))
-        CUtil::CacheXBEIcon(strParentTitle,thumb);
-      else
-        thumb = "";
-    }
-    return thumb;
-  }
-  else if (CDirectory::Exists(m_strPath))
-  {
-    // get the save game id
-    CStdString fullPath(m_strPath);
-    CUtil::RemoveSlashAtEnd(fullPath);
-    CStdString fileName(CUtil::GetFileName(fullPath));
-
-    CStdString thumb;
-    thumb.Format("%s\\%s.tbn", g_settings.GetGameSaveThumbFolder().c_str(), fileName.c_str());
-
-    thumb = _P(thumb);
-
-    CLog::Log(LOGDEBUG, "Thumb  (%s)",thumb.c_str());
-    if (!CFile::Exists(thumb))
-    {
-      CStdString titleimageXBX;
-      CStdString saveimageXBX;
-
-      CUtil::AddFileToFolder(m_strPath, "titleimage.xbx", titleimageXBX);
-      CUtil::AddFileToFolder(m_strPath,"saveimage.xbx",saveimageXBX);
-
-      /*if (CFile::Exists(saveimageXBX))
-      {
-        CUtil::CacheXBEIcon(saveimageXBX, thumb);
-        CLog::Log(LOGDEBUG, "saveimageXBX  (%s)",saveimageXBX.c_str());
-      }*/
-      if (CFile::Exists(titleimageXBX))
-      {
-        CLog::Log(LOGDEBUG, "titleimageXBX  (%s)",titleimageXBX.c_str());
-        CUtil::CacheXBEIcon(titleimageXBX, thumb);
-      }
-    }
-    return thumb;
-  }
   return "";
 }
 
@@ -2596,22 +2541,6 @@ void CFileItem::SetUserProgramThumb()
   { // cache
     CPicture pic;
     if (pic.DoCreateThumbnail(fileThumb, thumb))
-      SetThumbnailImage(thumb);
-  }
-  else if (IsXBE())
-  {
-    // 2. check for avalaunch_icon.jpg
-    CStdString directory;
-    CUtil::GetDirectory(m_strPath, directory);
-    CStdString avalaunchIcon;
-    CUtil::AddFileToFolder(directory, "avalaunch_icon.jpg", avalaunchIcon);
-    if (CFile::Exists(avalaunchIcon))
-    {
-      CPicture pic;
-      if (pic.DoCreateThumbnail(avalaunchIcon, thumb))
-        SetThumbnailImage(thumb);
-    }
-    else if (CUtil::CacheXBEIcon(m_strPath, thumb))
       SetThumbnailImage(thumb);
   }
   else if (m_bIsFolder)
