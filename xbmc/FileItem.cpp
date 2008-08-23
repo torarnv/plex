@@ -1984,10 +1984,6 @@ void CFileItemList::Stack()
             stack.push_back(j);
             size += item2->m_dwSize;
           }
-          else
-          {
-            break;
-          }
         }
 
         // increment index
