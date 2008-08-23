@@ -44,9 +44,8 @@ public:
   const CFileItemList &CurrentDirectory() const;
   int GetViewContainerID() const { return m_viewControl.GetCurrentControl(); };
   virtual bool HasListItems() const { return true; };
-  int GetContainerSortMethod();
-  virtual CFileItemPtr GetCurrentListItem(int offset = 0);
   const CGUIViewState *GetViewState() const;
+  virtual CFileItemPtr GetCurrentListItem(int offset = 0);
 
 protected:
   CGUIControl *GetFirstFocusableControl(int id);

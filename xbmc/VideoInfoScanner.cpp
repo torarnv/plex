@@ -428,16 +428,15 @@ namespace VIDEO
       }
       if (info2.strContent.Equals("tvshows"))
       {
-        long lTvShowId2;
         if (pItem->m_bIsFolder)
-          lTvShowId2 = m_database.GetTvShowId(pItem->m_strPath);
+          lTvShowId = m_database.GetTvShowId(pItem->m_strPath);
         else
         {
           CStdString strPath;
           CUtil::GetDirectory(pItem->m_strPath,strPath);
-          lTvShowId2 = m_database.GetTvShowId(strPath);
+          lTvShowId = m_database.GetTvShowId(strPath);
         }
-        if (lTvShowId2 > -1 && (!bRefresh || !pItem->m_bIsFolder))
+        if (lTvShowId > -1 && (!bRefresh || !pItem->m_bIsFolder))
         {
           // fetch episode guide
           m_database.GetTvShowInfo(pItem->m_strPath,showDetails,lTvShowId);
@@ -482,7 +481,7 @@ namespace VIDEO
           if (m_pObserver)
             m_pObserver->OnDirectoryChanged(pItem->m_strPath);
 
-          OnProcessSeriesFolder(episodes,files,lTvShowId2,IMDB,showDetails.m_strTitle,pDlgProgress);
+          OnProcessSeriesFolder(episodes,files,lTvShowId,IMDB,showDetails.m_strTitle,pDlgProgress);
           continue;
         }
         else

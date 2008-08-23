@@ -542,6 +542,18 @@ void CPluginDirectory::SetContent(int handle, const CStdString &strContent)
   dir->m_listItems->SetContent(strContent);
 }
 
+void CPluginDirectory::SetProperty(int handle, const CStdString &strProperty, const CStdString &strValue)
+{
+  if (handle < 0 || handle >= (int)globalHandles.size())
+  {
+    CLog::Log(LOGERROR, "%s called with an invalid handle.", __FUNCTION__);
+    return;
+  }
+
+  CPluginDirectory *dir = globalHandles[handle];
+  dir->m_listItems->SetProperty(strProperty, strValue);
+}
+
 void CPluginDirectory::LoadPluginStrings(const CURL &url)
 {
   // Path where the plugin resides

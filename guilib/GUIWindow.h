@@ -150,6 +150,7 @@ public:
 
   virtual void QueueAnimation(ANIMATION_TYPE animType);
   virtual bool IsAnimating(ANIMATION_TYPE animType);
+  virtual void ResetAnimations();
 
   virtual void ResetControlStates();
 
