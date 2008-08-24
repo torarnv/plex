@@ -2158,7 +2158,10 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CStdString path = g_guiSettings.GetString(strSetting,false);
     VECSOURCES shares;
+
+    g_mediaManager.GetNetworkLocations(shares);
     g_mediaManager.GetLocalDrives(shares);
+
     UpdateSettings();
     bool bWriteOnly = true;
 #ifdef HAS_TRAINER
