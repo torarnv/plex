@@ -2853,6 +2853,10 @@ int CDVDPlayer::GetCacheSize()
   CFileItem file = g_application.CurrentFileItem();
   CStdString strFile = file.m_strPath;
   printf("Computing cache size for [%s].\n", strFile.c_str());
+  
+  // Special case YouTube videos.
+  if (strFile.Find("http://www.youtube.com") == 0)
+    return 256;
 
   // First, figure out the source of the file.
   bool bFileOnHD = false;
