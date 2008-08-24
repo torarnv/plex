@@ -131,6 +131,22 @@ namespace PYXBMC
     return Py_None;
   }
 
+  // shutdown() method
+  PyDoc_STRVAR(sleepSystem__doc__,
+	"sleepSystem() -- Send the xbox to standby mode.\n"
+	"\n"
+	"example:\n"
+	"  - xbmc.sleepSystem()\n");
+	
+  PyObject* XBMC_SleepSystem(PyObject *self, PyObject *args)
+  {
+	ThreadMessage tMsg = {TMSG_SLEEPSYSTEM};
+	g_application.getApplicationMessenger().SendMessage(tMsg);
+	  
+	Py_INCREF(Py_None);
+	return Py_None;
+  }
+	
   // dashboard() method
   PyDoc_STRVAR(dashboard__doc__,
     "dashboard() -- Boot to dashboard as set in My Pograms/General.\n"
@@ -720,6 +736,7 @@ namespace PYXBMC
 
     {"sleep", (PyCFunction)XBMC_Sleep, METH_VARARGS, sleep__doc__},
     {"shutdown", (PyCFunction)XBMC_Shutdown, METH_VARARGS, shutdown__doc__},
+    {"sleepSystem", (PyCFunction)XBMC_SleepSystem, METH_VARARGS, sleepSystem__doc__},
     {"dashboard", (PyCFunction)XBMC_Dashboard, METH_VARARGS, dashboard__doc__},
     {"restart", (PyCFunction)XBMC_Restart, METH_VARARGS, restart__doc__},
     {"getSkinDir", (PyCFunction)XBMC_GetSkinDir, METH_VARARGS, getSkinDir__doc__},

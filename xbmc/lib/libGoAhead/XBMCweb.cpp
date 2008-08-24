@@ -885,6 +885,7 @@ int CXbmcWeb::xbmcProcessCommand( int eid, webs_t wp, char_t *command, char_t *p
   else if (!strcmp(command, "pause"))					g_application.getApplicationMessenger().MediaPause();
   else if (!strcmp(command, "shutdown"))			g_application.getApplicationMessenger().Shutdown();
   else if (!strcmp(command, "restart"))				g_application.getApplicationMessenger().Restart();
+  else if (!strcmp(command, "sleepSystem"))  g_application.getApplicationMessenger().SleepSystem();
   else if (!strcmp(command, "exit"))					g_application.getApplicationMessenger().RebootToDashBoard();
   else if (!strcmp(command, "show_time"))			return 0;
   else if (!strcmp(command, "remote"))				return xbmcRemoteControl(eid, wp, parameter);			// remote control functions

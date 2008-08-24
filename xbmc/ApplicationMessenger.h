@@ -50,6 +50,7 @@ class CFileItem;
 #define TMSG_RESTARTAPP           304
 #define TMSG_SWITCHTOFULLSCREEN   305
 #define TMSG_TOGGLEFULLSCREEN     306
+#define TMSG_SLEEPSYSTEM          307
 
 #define TMSG_HTTPAPI              400
 
@@ -82,7 +83,6 @@ public:
   void ProcessMessages(); // only call from main thread.
   void ProcessWindowMessages();
 
-
   void MediaPlay(std::string filename);
   void MediaStop();
   void MediaPause();
@@ -102,6 +102,7 @@ public:
   void Reset();
   void SwitchToFullscreen(); //
   void ToggleFullscreen();
+  void SleepSystem();
 
   CStdString GetResponse();
   int SetResponse(CStdString response);
@@ -119,11 +120,9 @@ public:
 private:
   void ProcessMessage(ThreadMessage *pMsg);
 
-
   std::vector<ThreadMessage*> m_vecMessages;
   std::vector<ThreadMessage*> m_vecWindowMessages;
   CCriticalSection m_critSection;
   CCriticalSection m_critBuffer;
   CStdString bufferResponse;
-
 };

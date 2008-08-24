@@ -3532,6 +3532,7 @@ const BUILT_IN commands[] = {
   { "Reboot",                     false,  "Reboot the xbox (power cycle)" },
   { "Restart",                    false,  "Restart the xbox (power cycle)" },
   { "ShutDown",                   false,  "Shutdown the xbox" },
+  { "SleepSystem",                false,  "Go to standby mode"},
   { "Dashboard",                  false,  "Run your dashboard" },
   { "RestartApp",                 false,  "Restart XBMC" },
   { "Credits",                    false,  "Run XBMCs Credits" },
@@ -3655,6 +3656,12 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   else if (execute.Equals("shutdown"))
   {
     g_application.getApplicationMessenger().Shutdown();
+  }
+  else if (execute.Equals("sleepSystem"))
+  {
+#ifdef __APPLE__
+	g_application.getApplicationMessenger().SleepSystem();
+#endif
   }
   else if (execute.Equals("dashboard"))
   {
