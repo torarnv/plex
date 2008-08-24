@@ -137,8 +137,7 @@ bool CCDDARipper::Rip(const CStdString& strTrackFile, const CStdString& strFile,
 {
   int iPercent, iOldPercent = 0;
   bool bCancelled = false;
-  const char* strFilename = strFile.c_str();
-  char tmp[PATH_MAX];
+  CStdString strFilename(strFile);
 
   CLog::Log(LOGINFO, "Start ripping track %s to %s", strTrackFile.c_str(), strFile.c_str());
 
@@ -146,10 +145,19 @@ bool CCDDARipper::Rip(const CStdString& strTrackFile, const CStdString& strFile,
   CFileItem file(strFile, false);
   if (file.IsRemote()) 
   {
-    strncpy(tmp, _P("Z:\\riptrackXXXXXX"), PATH_MAX);
-    mkstemp(tmp);
+    char tmp[MAX_PATH];
+#ifndef _LINUX
+    GetTempFileName(_P("Z:\\"), "riptrack", 0, tmp);
+#else
+    int fd;
+    strncpy(tmp, _P("Z:\\riptrackXXXXXX"), MAX_PATH);
+    if ((fd = mkstemp(tmp)) == -1)
+      strFilename = "";
+    close(fd);
+#endif
     strFilename = tmp;
   }
+  
   if (!strFilename)
   {
     CLog::Log(LOGERROR, "CCDDARipper: Error opening file");
@@ -186,7 +194,7 @@ bool CCDDARipper::Rip(const CStdString& strTrackFile, const CStdString& strFile,
   {
     pDlgProgress->ProgressKeys();
     bCancelled = pDlgProgress->IsCanceled();
-    if (!bCancelled && iPercent > (iOldPercent + 2)) // update each 2%, it's a bit faster then every 1%
+    if (!bCancelled && iPercent > iOldPercent) // update each 2%, it's a bit faster then every 1%
     {
       // update dialog
       iOldPercent = iPercent;
@@ -204,7 +212,7 @@ bool CCDDARipper::Rip(const CStdString& strTrackFile, const CStdString& strFile,
     // copy the ripped track to the share
     if (!CFile::Cache(strFilename, strFile.c_str()))
     {
-      CLog::Log(LOGINFO, "Error copying file from %s to %s", strFilename, strFile.c_str());
+      CLog::Log(LOGINFO, "Error copying file from %s to %s", strFilename.c_str(), strFile.c_str());
       // show error
       g_graphicsContext.Lock();
       CGUIDialogOK* pDlgOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
@@ -221,7 +229,10 @@ bool CCDDARipper::Rip(const CStdString& strTrackFile, const CStdString& strFile,
     CFile::Delete(strFilename);
   }
 
-  if (bCancelled) CLog::Log(LOGWARNING, "User Cancelled CDDA Rip");
+  if (bCancelled) {
+    CLog::Log(LOGWARNING, "User Cancelled CDDA Rip");
+    CFile::Delete(strFilename);
+  }
   else CLog::Log(LOGINFO, "Finished ripping %s", strTrackFile.c_str());
   return !bCancelled;
 }
