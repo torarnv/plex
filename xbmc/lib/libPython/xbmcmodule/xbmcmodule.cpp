@@ -87,7 +87,6 @@ namespace PYXBMC
     if (!PyArg_ParseTuple(args, "s:xb_output", &s_line)) return NULL;
 
     CLog::Log(LOGINFO, "%s", s_line);
-
     ThreadMessage tMsg = {TMSG_WRITE_SCRIPT_OUTPUT};
     tMsg.strParam = s_line;
     g_application.getApplicationMessenger().SendMessage(tMsg);
