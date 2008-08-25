@@ -12,6 +12,8 @@
 		E336EF310E60256000270758 /* GUIViewStateScripts.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E336EF040E60250700270758 /* GUIViewStateScripts.cpp */; };
 		E336EF4C0E602A8B00270758 /* GUIDialogFullScreenInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E336EF4A0E602A8B00270758 /* GUIDialogFullScreenInfo.cpp */; };
 		E336F0890E60D1A800270758 /* libjpeg.62.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E336F0880E60D1A800270758 /* libjpeg.62.dylib */; };
+		E336F09C0E62D1FD00270758 /* libmms-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E336F09B0E62D1FD00270758 /* libmms-osx.a */; };
+		E336F09F0E62D36200270758 /* FileMMS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E336F09D0E62D36200270758 /* FileMMS.cpp */; };
 		E360D8CF0E557A5700643A82 /* GUIWindowTestPattern.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E360D8CD0E557A5700643A82 /* GUIWindowTestPattern.cpp */; };
 		E371C2020E2F2D5400FBF841 /* AACcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15D50D25F9FA00618676 /* AACcodec.cpp */; };
 		E371C2030E2F2D5400FBF841 /* AC3CDDACodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15D70D25F9FA00618676 /* AC3CDDACodec.cpp */; };
@@ -996,6 +998,9 @@
 		E336EF4A0E602A8B00270758 /* GUIDialogFullScreenInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogFullScreenInfo.cpp; sourceTree = "<group>"; };
 		E336EF4B0E602A8B00270758 /* GUIDialogFullScreenInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogFullScreenInfo.h; sourceTree = "<group>"; };
 		E336F0880E60D1A800270758 /* libjpeg.62.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libjpeg.62.dylib; path = ../../../../../../opt/local/lib/libjpeg.62.dylib; sourceTree = SOURCE_ROOT; };
+		E336F09B0E62D1FD00270758 /* libmms-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libmms-osx.a"; path = "xbmc/lib/libmms/libmms-osx.a"; sourceTree = "<group>"; };
+		E336F09D0E62D36200270758 /* FileMMS.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileMMS.cpp; sourceTree = "<group>"; };
+		E336F09E0E62D36200270758 /* FileMMS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileMMS.h; sourceTree = "<group>"; };
 		E33979920D62FC46004ECDDA /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = /usr/lib/libsqlite3.0.dylib; sourceTree = "<absolute>"; };
 		E33979940D62FD47004ECDDA /* DVDInputStreamTV.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDInputStreamTV.cpp; sourceTree = "<group>"; };
 		E33979950D62FD47004ECDDA /* DVDInputStreamTV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDInputStreamTV.h; sourceTree = "<group>"; };
@@ -3003,6 +3008,7 @@
 				E3AC01F80E39E16B00DD298E /* libSDL_image-osx.a in Frameworks */,
 				E3AC01F90E39E16B00DD298E /* libSDL_mixer-osx.a in Frameworks */,
 				E336F0890E60D1A800270758 /* libjpeg.62.dylib in Frameworks */,
+				E336F09C0E62D1FD00270758 /* libmms-osx.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3063,6 +3069,7 @@
 		08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				E336F09B0E62D1FD00270758 /* libmms-osx.a */,
 				E336F0880E60D1A800270758 /* libjpeg.62.dylib */,
 				E3AC01F60E39E16B00DD298E /* libSDL_image-osx.a */,
 				E3AC01F70E39E16B00DD298E /* libSDL_mixer-osx.a */,
@@ -4527,6 +4534,8 @@
 		E38E16940D25F9FA00618676 /* FileSystem */ = {
 			isa = PBXGroup;
 			children = (
+				E336F09D0E62D36200270758 /* FileMMS.cpp */,
+				E336F09E0E62D36200270758 /* FileMMS.h */,
 				E3B963EA0E3864C80022F663 /* RSSDirectory.cpp */,
 				E3B963EB0E3864C80022F663 /* RSSDirectory.h */,
 				E3D4B9950DF7E39B0092A179 /* FileShoutcast.h */,
@@ -7084,6 +7093,7 @@
 				E3B221530E57892500939882 /* ArabicShaping.cpp in Sources */,
 				E3B2218C0E58F42100939882 /* DVDFileInfo.cpp in Sources */,
 				E336EF4C0E602A8B00270758 /* GUIDialogFullScreenInfo.cpp in Sources */,
+				E336F09F0E62D36200270758 /* FileMMS.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7275,6 +7285,7 @@
 					"\"$(SRCROOT)/xbmc/lib/libaften\"",
 					"\"$(SRCROOT)/xbmc/lib/libSDL-OSX\"",
 					"\"$(SRCROOT)/../../../../../../opt/local/lib\"",
+					"\"$(SRCROOT)/xbmc/lib/libmms\"",
 				);
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-header-pad_max_install_names";
@@ -7364,6 +7375,7 @@
 					"\"$(SRCROOT)/xbmc/lib/libaften\"",
 					"\"$(SRCROOT)/xbmc/lib/libSDL-OSX\"",
 					"\"$(SRCROOT)/../../../../../../opt/local/lib\"",
+					"\"$(SRCROOT)/xbmc/lib/libmms\"",
 				);
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (

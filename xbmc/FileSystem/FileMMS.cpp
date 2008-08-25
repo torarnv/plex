@@ -2,6 +2,17 @@
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
  *
+ *  MMST implementation taken from the xine-mms plugin made by
+ *  Major MMS (http://geocities.com/majormms/).
+ *  Ported to MPlayer by Abhijeet Phatak <abhijeetphatak@yahoo.com>.
+ *  Ported to XBMC by team-xbmc
+ *
+ *  Information about the MMS protocol can be found at http://get.to/sdp
+ *
+ *  copyright (C) 2002 Abhijeet Phatak <abhijeetphatak@yahoo.com>
+ *  copyright (C) 2002 the xine project
+ *  copyright (C) 2000-2001 major mms
+ *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2, or (at your option)
@@ -17,10 +28,21 @@
  *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
  *  http://www.gnu.org/copyleft/gpl.html
  *
+ * yuvalt: GetPosition should return how far into the stream you have gotten. I how many bytes
+ * you have read. GetLenght() total length of the stream you are playing in bytes. (or -1 if unknown).
+ * GetContentType should return the mimetype of the stream if known, otherwise empty
  */
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#ifdef _LINUX
+#include <unistd.h>
+#endif
+#include <errno.h>
 #include "stdafx.h"
 #include "FileMMS.h"
+#include "Util.h"
 
 using namespace XFILE;
 
@@ -591,54 +613,84 @@ int CFileMMS::streaming_start(char* hostname, int port, char* path)
 
 CFileMMS::CFileMMS()
 {
+  s = -1;
+  out_buf_len = 0;
+  url_conv = iconv_open("UTF-16LE", "UTF-8");
 }
 
 CFileMMS::~CFileMMS()
 {
+  if (url_conv != (iconv_t) (-1))
+    iconv_close(url_conv);
 }
 
 __int64 CFileMMS::GetPosition()
 {
-  return mms_get_current_pos(m_mms);
+  return 0;
 }
 
 __int64 CFileMMS::GetLength()
 {
-  return mms_get_length(m_mms);
+  return 0;
 }
-
 
 bool CFileMMS::Open(const CURL& url, bool bBinary)
 {
-  CStdString strUrl;
-  url.GetURL(strUrl);
+  CStdString filename = url.GetFileName();
+  CUtil::UrlDecode(filename);
 
-  m_mms = mms_connect(NULL, NULL, strUrl.c_str(), 128*1024);
-  if (!m_mms)
-  {
-     return false;
-  }
+  int result = streaming_start((char*) url.GetHostName().c_str(),
+      url.GetPort(), (char*) filename.c_str());
 
-  return true;
+  return (result >= 0);
 }
 
 unsigned int CFileMMS::Read(void* lpBuf, __int64 uiBufSize)
 {
-  int s = mms_read(NULL, m_mms, (char*) lpBuf, uiBufSize);
-  return s;
+  int sent = 0;
+
+  // First time there is a buffer with the header -- send it
+  if (out_buf_len > 0)
+  {
+    memcpy(lpBuf, out_buf, out_buf_len <= uiBufSize ? out_buf_len : uiBufSize);
+    sent = out_buf_len;
+    out_buf_len = 0;
+  }
+  // otherwise, read normal packets from the stream
+  else
+  {
+    // read until we actually get a packet with data
+    while (out_buf_len == 0)
+    {
+      int ret = get_media_packet(s, plen);
+
+      if (ret <= 0)
+        return ret;
+    }
+
+    memcpy(lpBuf, out_buf, out_buf_len <= uiBufSize ? out_buf_len
+        : uiBufSize);
+    sent = out_buf_len;
+    out_buf_len = 0;
+  }
+
+  return sent;
 }
 
 __int64 CFileMMS::Seek(__int64 iFilePosition, int iWhence)
 {
-   return mms_seek(NULL, m_mms, iFilePosition, 0);
+  return -1;
 }
 
 void CFileMMS::Close()
 {
-   mms_close(m_mms);
+  closesocket(s);
+  s = -1;
 }
 
 CStdString CFileMMS::GetContent()
 {
-   return "audio/x-ms-wma";
+  //return "audio/x-ms-wma";
+  return "";
 }
+
