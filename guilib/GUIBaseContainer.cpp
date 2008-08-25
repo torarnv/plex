@@ -171,9 +171,9 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
         SelectItem(message.GetParam1());
         return true;
       }
-      if (message.GetMessage() == GUI_MSG_LABEL_ADD && message.GetItem())
+      if (message.GetMessage() == GUI_MSG_LABEL_ADD && message.GetLPVOID())
       {
-        CGUIListItemPtr item = message.GetItem();
+        CGUIListItemPtr item = *(CGUIListItemPtr*)message.GetLPVOID();
         m_items.push_back(item);
         UpdateScrollByLetter();
         if (m_pageControl)

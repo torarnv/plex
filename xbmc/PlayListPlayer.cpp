@@ -64,7 +64,7 @@ bool CPlayListPlayer::OnMessage(CGUIMessage &message)
     {
       // update our item if necessary
       CPlayList &playlist = GetPlaylist(m_iCurrentPlayList);
-      CFileItemPtr item = boost::static_pointer_cast<CFileItem>(message.GetItem());
+      CFileItemPtr item = *(CFileItemPtr *)message.GetLPVOID();
       playlist.UpdateItem(item.get());
     }
     break;
