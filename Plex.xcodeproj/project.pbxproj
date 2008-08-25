@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E336F0890E60D1A800270758 /* libjpeg.62.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E336F0880E60D1A800270758 /* libjpeg.62.dylib */; };
 		E360D8CF0E557A5700643A82 /* GUIWindowTestPattern.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E360D8CD0E557A5700643A82 /* GUIWindowTestPattern.cpp */; };
 		E371C2020E2F2D5400FBF841 /* AACcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15D50D25F9FA00618676 /* AACcodec.cpp */; };
 		E371C2030E2F2D5400FBF841 /* AC3CDDACodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15D70D25F9FA00618676 /* AC3CDDACodec.cpp */; };
@@ -983,6 +984,7 @@
 		E30B3E8E0D5D59290030A311 /* libShout-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libShout-osx.a"; path = "xbmc/lib/libshout/libShout-osx.a"; sourceTree = "<group>"; };
 		E33206370D5070AA00435CE3 /* DVDDemuxVobsub.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDDemuxVobsub.cpp; sourceTree = "<group>"; };
 		E33466A50D2E5103005A65EC /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
+		E336F0880E60D1A800270758 /* libjpeg.62.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libjpeg.62.dylib; path = ../../../../../../opt/local/lib/libjpeg.62.dylib; sourceTree = SOURCE_ROOT; };
 		E33979920D62FC46004ECDDA /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = /usr/lib/libsqlite3.0.dylib; sourceTree = "<absolute>"; };
 		E33979940D62FD47004ECDDA /* DVDInputStreamTV.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDInputStreamTV.cpp; sourceTree = "<group>"; };
 		E33979950D62FD47004ECDDA /* DVDInputStreamTV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDInputStreamTV.h; sourceTree = "<group>"; };
@@ -2991,6 +2993,7 @@
 				E3AC01F50E39E0ED00DD298E /* libSDL-osx.a in Frameworks */,
 				E3AC01F80E39E16B00DD298E /* libSDL_image-osx.a in Frameworks */,
 				E3AC01F90E39E16B00DD298E /* libSDL_mixer-osx.a in Frameworks */,
+				E336F0890E60D1A800270758 /* libjpeg.62.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3051,6 +3054,7 @@
 		08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				E336F0880E60D1A800270758 /* libjpeg.62.dylib */,
 				E3AC01F60E39E16B00DD298E /* libSDL_image-osx.a */,
 				E3AC01F70E39E16B00DD298E /* libSDL_mixer-osx.a */,
 				E3AC01F40E39E0ED00DD298E /* libSDL-osx.a */,
@@ -7252,6 +7256,7 @@
 					"\"$(SRCROOT)/system/players/dvdplayer\"",
 					"\"$(SRCROOT)/xbmc/lib/libaften\"",
 					"\"$(SRCROOT)/xbmc/lib/libSDL-OSX\"",
+					"\"$(SRCROOT)/../../../../../../opt/local/lib\"",
 				);
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-header-pad_max_install_names";
@@ -7340,6 +7345,7 @@
 					"\"$(SRCROOT)/system/players/dvdplayer\"",
 					"\"$(SRCROOT)/xbmc/lib/libaften\"",
 					"\"$(SRCROOT)/xbmc/lib/libSDL-OSX\"",
+					"\"$(SRCROOT)/../../../../../../opt/local/lib\"",
 				);
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
