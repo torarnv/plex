@@ -222,19 +222,6 @@ void CGUITextLayout::Filter(CStdString &text)
   g_charsetConverter.wToUTF8(utf16, text);
 }
 
-void CGUITextLayout::Filter(CStdString &text)
-{
-  CStdStringW utf16;
-  utf8ToW(text, utf16);
-  vector<DWORD> colors;
-  vector<DWORD> parsedText;
-  ParseText(utf16, 0, colors, parsedText);
-  utf16.Empty();
-  for (unsigned int i = 0; i < parsedText.size(); i++)
-    utf16 += (WCHAR)(0xffff & parsedText[i]);
-  g_charsetConverter.wToUTF8(utf16, text);
-}
-
 void CGUITextLayout::ParseText(const CStdStringW &text, vector<DWORD> &parsedText)
 {
   if (!m_font)
