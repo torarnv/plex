@@ -395,7 +395,7 @@ class XBox360Controller
           if (verbose)
             printf("Button: %d %d.\n", i+1, event.value);
           
-          if (i+1 == 11 && isProgramRunning("XBMC", 0) == false && serverAddress == "127.0.0.1" && event.value)
+          if (i+1 == 11 && isProgramRunning("Plex", 0) == false && serverAddress == "127.0.0.1" && event.value)
     			{
     				startXBMC();
             return;
