@@ -370,9 +370,15 @@ class XBox360Controller
           if (amount < 0)
             amount = 0;
           
+          int axis = i+1;
+          
+          // Reverse one and three.
+          if (axis == 1 || axis == 3)
+            amount = 65535-amount;
+          
           if (verbose)
-            printf("Axis %d %d.\n", i+1, amount);
-          CPacketBUTTON btn(i+1, "JS1:Wireless 360 Controller", BTN_AXIS | BTN_NO_REPEAT | BTN_USE_AMOUNT | BTN_QUEUE, amount);
+            printf("Axis %d %d.\n", axis, amount);
+          CPacketBUTTON btn(axis, "JS1:Wireless 360 Controller", BTN_AXIS | BTN_NO_REPEAT | BTN_USE_AMOUNT | BTN_QUEUE, amount);
           btn.Send(sockfd, *pServer);
           
           found = true;
