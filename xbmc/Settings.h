@@ -80,6 +80,11 @@ public:
 class CSkinBool
 {
 public:
+  CSkinBool() {}
+  CSkinBool(const char* name, bool value)
+    : name(name)
+    , value(value) {}
+  
   CStdString name;
   bool value;
 };

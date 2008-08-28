@@ -243,9 +243,9 @@ CGUISettings::CGUISettings(void)
   // My Weather settings
   AddGroup(2, 8);
   AddCategory(2, "weather", 16000);
-  AddString(1, "weather.areacode1", 14019, "GMXX0154 - Aachen, Germany", BUTTON_CONTROL_STANDARD);
+  AddString(1, "weather.areacode1", 14019, "USCA0987 - San Francisco, CA", BUTTON_CONTROL_STANDARD);
   AddString(2, "weather.areacode2", 14020, "UKXX0085 - London, United Kingdom", BUTTON_CONTROL_STANDARD);
-  AddString(3, "weather.areacode3", 14021, "CAXX0343 - Ontario, Canada", BUTTON_CONTROL_STANDARD);
+  AddString(3, "weather.areacode3", 14021, "NZXX0049 - Wellington, New Zealand", BUTTON_CONTROL_STANDARD);
   AddSeparator(4, "weather.sep1");
   AddString(5, "weather.jumptolocale", 20026, "", BUTTON_CONTROL_STANDARD);
 
@@ -637,7 +637,7 @@ CGUISettings::CGUISettings(void)
   AddBool(12, "lookandfeel.enablemouse", 21369, true);
 
   AddCategory(7, "locale", 20026);
-  AddString(1, "locale.country", 20026, "", SPIN_CONTROL_TEXT);
+  AddString(1, "locale.country", 20026, "USA", SPIN_CONTROL_TEXT);
   AddString(2, "locale.language",248,"english", SPIN_CONTROL_TEXT);
   AddString(3, "locale.charset",735,"DEFAULT", SPIN_CONTROL_TEXT); // charset is set by the language file
   AddSeparator(4, "locale.sep1");

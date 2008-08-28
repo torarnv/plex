@@ -2216,6 +2216,7 @@ void CSettings::LoadSkinSettings(const TiXmlElement* pRootElement)
   {
     m_skinStrings.clear();
     m_skinBools.clear();
+    
     const TiXmlElement *pChild = pElement->FirstChildElement("setting");
     while (pChild)
     {
@@ -2236,6 +2237,13 @@ void CSettings::LoadSkinSettings(const TiXmlElement* pRootElement)
       }
       pChild = pChild->NextSiblingElement("setting");
     }
+    
+    // Hardwired defaults for MediaStream. Bogus, but works for now and better than editing XML every week.
+    m_skinBools.insert(pair<int, CSkinBool>(number++, CSkinBool("MediaStream.enablecustombghome", true)));
+    m_skinBools.insert(pair<int, CSkinBool>(number++, CSkinBool("MediaStream.hideprograms", true)));
+    m_skinBools.insert(pair<int, CSkinBool>(number++, CSkinBool("MediaStream.hidedvd", true)));
+    m_skinBools.insert(pair<int, CSkinBool>(number++, CSkinBool("MediaStream.showweatheronhome", true)));
+    m_skinBools.insert(pair<int, CSkinBool>(number++, CSkinBool("MediaStream.showmediacount", true)));
   }
 }
 
