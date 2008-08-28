@@ -283,7 +283,7 @@ public:
   static void Stat64ToStat(struct stat *result, struct __stat64 *stat);
 #endif
   static bool CreateDirectoryEx(const CStdString& strPath);
-  static CStdString MakeLegalFileName(const CStdString &strFile, bool isFATX);
+  static CStdString MakeLegalFileName(const CStdString &strFile, bool isFATX=false);
   static void AddDirectorySeperator(CStdString& strPath);
   static char GetDirectorySeperator(const CStdString& strFile);
 
