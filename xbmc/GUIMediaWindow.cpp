@@ -556,8 +556,11 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
     CLog::Log(LOGERROR,"CGUIMediaWindow::GetDirectory(%s) failed", strDirectory.c_str());
     // if the directory is the same as the old directory, then we'll return
     // false.  Else, we assume we can get the previous directory
-    if (strDirectory.Equals(strOldDirectory))
-      return false;
+    
+    // Don't do this or else we'll end up trapped in the directory!
+    //
+    // if (strDirectory.Equals(strOldDirectory))
+    //   return false;
 
     // We assume, we can get the parent
     // directory again, but we have to
