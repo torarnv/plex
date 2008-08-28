@@ -4516,11 +4516,11 @@ void CApplication::Stop()
 
     // Stop the scanners.
     CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-    if (musicScan && musicScan->IsDialogRunning())
+    if (musicScan /*&& musicScan->IsDialogRunning()*/)
       musicScan->StopScanning();
 
     CGUIDialogVideoScan *videoScan = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-    if (videoScan && videoScan->IsDialogRunning())
+    if (videoScan /*&& videoScan->IsDialogRunning()*/)
       videoScan->StopScanning();
     
     m_bStop = true;
