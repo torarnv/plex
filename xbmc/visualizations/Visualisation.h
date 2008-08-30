@@ -62,6 +62,8 @@ public:
   
   // Enhanced API.
   void SetTrackInfo(const char* artist, const char* album, const char* track, int trackNumber, int discNumber, int year, int duration);
+  bool HandlesOwnDisplay();
+  void GetVisualizers(char*** pVisualizers);
 
 protected:
   std::auto_ptr<struct Visualisation> m_pVisz;

@@ -155,6 +155,20 @@ void CVisualisation::SetTrackInfo(const char* artist, const char* album, const c
     m_pVisz->SetTrackInfo(artist, album, track, trackNumber, discNumber, year, duration);
 }
 
+bool CVisualisation::HandlesOwnDisplay()
+{
+  if (m_pVisz->HandlesOwnDisplay != 0)
+    return m_pVisz->HandlesOwnDisplay();
+  
+  return false;
+}
+ 
+void CVisualisation::GetVisualizers(char*** pVisualizers)
+{
+  if (m_pVisz->GetVisualizers != 0)
+    m_pVisz->GetVisualizers(pVisualizers);
+}
+
 bool CVisualisation::IsLocked()
 {
   char *preset;

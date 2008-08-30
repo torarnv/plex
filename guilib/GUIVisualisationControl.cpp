@@ -114,14 +114,14 @@ void CGUIVisualisationControl::FreeVisualisation()
     m_pVisualisation->Stop();
     g_graphicsContext.ApplyStateBlock();
     
-    OutputDebugString("delete Visualisation()\n");
-    delete m_pVisualisation;
-
 #ifdef __APPLE__
-    Cocoa_DestroyChildWindow();
+    // If it's handling its own display, time for it to stop now.
+    if (m_pVisualisation->HandlesOwnDisplay() == true)
+      Cocoa_DestroyChildWindow();
 #endif
 
-    g_graphicsContext.ApplyStateBlock();
+    OutputDebugString("delete Visualisation()\n");
+    delete m_pVisualisation;
 
     /* we released the global vis spot */
     m_globalvis = false;
@@ -175,7 +175,9 @@ void CGUIVisualisationControl::LoadVisualisation()
     if (y + h > g_graphicsContext.GetHeight()) h = g_graphicsContext.GetHeight() - y;
 
 #ifdef __APPLE__
-    Cocoa_MakeChildWindow();
+    // If it's handling its own display, make a child window for it to do so in.
+    if (m_pVisualisation->HandlesOwnDisplay() == true)
+      Cocoa_MakeChildWindow();
 #endif
     
     m_pVisualisation->Create((int)(x+0.5f), (int)(y+0.5f), (int)(w+0.5f), (int)(h+0.5f));
