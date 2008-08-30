@@ -399,7 +399,10 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
   CURL url(strFileNameAndPath);
   if (strFileNameAndPath.Compare("lastfm://") == 0)
   {
-    strFilename = g_localizeStrings.Get(15200);
+    if (strFilename.IsEmpty()) 
+      strFilename = g_localizeStrings.Get(15200); 
+    else 
+      strFilename = g_localizeStrings.Get(15200) + " - " + strFilename; 
   }
   else if (strFileNameAndPath.Compare("smb://") == 0)
   {
