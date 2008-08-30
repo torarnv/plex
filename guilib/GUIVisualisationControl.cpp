@@ -118,7 +118,7 @@ void CGUIVisualisationControl::FreeVisualisation()
     delete m_pVisualisation;
 
 #ifdef __APPLE__
-    //Cocoa_DestroyChildWindow();
+    Cocoa_DestroyChildWindow();
 #endif
 
     g_graphicsContext.ApplyStateBlock();
@@ -175,7 +175,7 @@ void CGUIVisualisationControl::LoadVisualisation()
     if (y + h > g_graphicsContext.GetHeight()) h = g_graphicsContext.GetHeight() - y;
 
 #ifdef __APPLE__
-    //Cocoa_MakeChildWindow();
+    Cocoa_MakeChildWindow();
 #endif
     
     m_pVisualisation->Create((int)(x+0.5f), (int)(y+0.5f), (int)(w+0.5f), (int)(h+0.5f));
@@ -335,7 +335,7 @@ void CGUIVisualisationControl::OnAudioData(const unsigned char* pAudioData, int 
     // Transfer data to our visualisation
     try
     {
-      m_pVisualisation->AudioData(ptrAudioBuffer->Get(), AUDIO_BUFFER_SIZE, m_fFreq, AUDIO_BUFFER_SIZE);
+      m_pVisualisation->AudioData(ptrAudioBuffer->Get(), AUDIO_BUFFER_SIZE/2, m_fFreq, AUDIO_BUFFER_SIZE/2);
     }
     catch (...)
     {
@@ -346,7 +346,7 @@ void CGUIVisualisationControl::OnAudioData(const unsigned char* pAudioData, int 
   { // Transfer data to our visualisation
     try
     {
-      m_pVisualisation->AudioData(ptrAudioBuffer->Get(), AUDIO_BUFFER_SIZE, NULL, 0);
+      m_pVisualisation->AudioData(ptrAudioBuffer->Get(), AUDIO_BUFFER_SIZE/2, NULL, 0);
     }
     catch (...)
     {
