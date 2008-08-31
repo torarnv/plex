@@ -755,12 +755,16 @@ bool CSettings::GetFloat(const TiXmlElement* pRootElement, const char *tagName, 
   return false;
 }
 
-void CSettings::GetViewState(const TiXmlElement *pRootElement, const CStdString &strTagName, CViewState &viewState)
+void CSettings::GetViewState(const TiXmlElement *pRootElement, const CStdString &strTagName, CViewState &viewState, SORT_METHOD defaultSort)
 {
   const TiXmlElement* pNode = pRootElement->FirstChildElement(strTagName);
-  if (!pNode) return;
+  if (!pNode)
+  {
+    viewState.m_sortMethod = defaultSort;
+    return;
+  }
   GetInteger(pNode, "viewmode", viewState.m_viewMode, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX);
-  GetInteger(pNode, "sortmethod", (int&)viewState.m_sortMethod, SORT_METHOD_LABEL, SORT_METHOD_NONE, SORT_METHOD_MAX);
+  GetInteger(pNode, "sortmethod", (int&)viewState.m_sortMethod, defaultSort, SORT_METHOD_NONE, SORT_METHOD_MAX);
   GetInteger(pNode, "sortorder", (int&)viewState.m_sortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
 }
 
@@ -1033,7 +1037,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     GetViewState(pElement, "videonavyears", g_stSettings.m_viewStateVideoNavYears);
     GetViewState(pElement, "videonavgenres", g_stSettings.m_viewStateVideoNavGenres);
     GetViewState(pElement, "videonavtitles", g_stSettings.m_viewStateVideoNavTitles);
-    GetViewState(pElement, "videonavepisodes", g_stSettings.m_viewStateVideoNavEpisodes);
+    GetViewState(pElement, "videonavepisodes", g_stSettings.m_viewStateVideoNavEpisodes, SORT_METHOD_EPISODE);
     GetViewState(pElement, "videonavtvshows", g_stSettings.m_viewStateVideoNavTvShows);
     GetViewState(pElement, "videonavseasons", g_stSettings.m_viewStateVideoNavSeasons);
     GetViewState(pElement, "videonavmusicvideos", g_stSettings.m_viewStateVideoNavMusicVideos);
