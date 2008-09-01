@@ -127,6 +127,8 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &str
   if (nVideoStream != -1)
   {
     CDVDStreamInfo hint(*pStream, true);
+    hint.forPreview = true;
+    
     CDVDVideoCodec *pVideoCodec = CDVDFactoryCodec::CreateVideoCodec( hint );
     if (pVideoCodec)
     {
