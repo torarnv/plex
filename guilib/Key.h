@@ -389,7 +389,6 @@ public:
     fAmount1 = fAmount2 = fRepeat = 0;
     m_dwButtonCode = 0;
     unicode = 0;
-    holdTime = 0;
   };
   WORD wID;
   float fAmount1;
@@ -399,7 +398,6 @@ public:
   CStdString strAction;
   WCHAR unicode; // new feature, does not fit into wID like ASCII, wouldn't be good design either!? Will be set whenever ASCII is set into wID (for backwards compatibility)
   SVKey kKey;
-  unsigned int holdTime; ///< Time the key has been held down (in ms)
 };
 
 /*!
@@ -430,8 +428,6 @@ public:
   void SetFromHttpApi(bool);
   bool GetFromHttpApi() const;
 
-  void SetHeld(unsigned int held);
-  unsigned int GetHeld() const;
 private:
   DWORD m_dwButtonCode;
   BYTE m_bLeftTrigger;
@@ -442,7 +438,6 @@ private:
   float m_fRightThumbY;
   float m_fRepeat; // time since last keypress
   bool m_fromHttpApi;
-  unsigned int m_held;
 };
 #endif
 
