@@ -581,10 +581,13 @@ void CScrobbler::WorkerThread()
     }
 
     // OK, if this was a handshake, it failed since m_bReadyToSubmit isn't true. Submissions get cached.
-    while (!m_bReadyToSubmit && !m_bCloseThread) 
+    while (!m_bReadyToSubmit)
     {
       StatusUpdate(S_HANDHAKE_NOTREADY,"Unable to handshake: sleeping...");
-      Sleep(HS_FAIL_WAIT);
+      // sleep for HS_FAIL_WAIT, or until we have cancelled our thread
+      WaitForSingleObject(m_hWorkerEvent, HS_FAIL_WAIT);
+      if (m_bCloseThread)
+        return;
       // and try again.
       bSuccess=http.Get(m_strHsString, strHtml);
       if (bSuccess)
