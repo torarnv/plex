@@ -22,6 +22,8 @@
 #import "XBMCMain.h" 
 #include <SDL/SDL.h>
 
+extern int GetProcessPid(const char* processName);
+
 #define MAX_DISPLAYS 32
 static NSWindow* blankingWindows[MAX_DISPLAYS];
 
@@ -621,8 +623,15 @@ void Cocoa_UpdateSystemActivity()
 
 void Cocoa_TurnOffScreenSaver()
 {
-  NSAppleScript* stopScript = [[NSAppleScript alloc] initWithSource:@"tell application \"ScreenSaverEngine\" to quit"];
-  [stopScript executeAndReturnError:nil];
+  if (GetProcessPid("ScreenSaverEngin") != -1)
+  {
+    NSAppleScript* stopScript = [[NSAppleScript alloc] initWithSource:@"tell application \"/System/Library/Frameworks/ScreenSaver.framework/Versions/A/Resources/ScreenSaverEngine.app\" to quit"];
+    [stopScript executeAndReturnError:nil];
+  }
+  else
+  {
+    printf("Not running\n");
+  }
 }
                    
 int Cocoa_SleepSystem()
