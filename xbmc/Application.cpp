@@ -1647,7 +1647,14 @@ CProfile* CApplication::InitDirectoriesOSX()
   CStdString strExecutablePath;
   CUtil::GetHomePath(strExecutablePath);
   setenv("PLEX_HOME", strExecutablePath.c_str(), 0);
-
+  
+  // Set the working directory to be the Plex resource directory. This
+  // allows two-step dynamic library loading to work, as long as the load
+  // paths are configured correctly.
+  //
+  CStdString strWorkingDir = strExecutablePath;
+  chdir(strWorkingDir.c_str());
+  
   // Z: common for both
   CIoSupport::RemapDriveLetter('Z',"/tmp/plex");
   CreateDirectory(_P("Z:\\"), NULL);
