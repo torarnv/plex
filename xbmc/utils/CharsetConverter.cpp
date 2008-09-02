@@ -226,7 +226,6 @@ void CCharsetConverter::utf8ToW(const CStdStringA& utf8String, CStdStringW &wStr
 {
   CStdStringA strFlipped;
 
-#if 0
   // Try to flip hebrew/arabic characters, if any
   if (bVisualBiDiFlip)
   {
@@ -234,7 +233,6 @@ void CCharsetConverter::utf8ToW(const CStdStringA& utf8String, CStdStringW &wStr
     convert(m_iconvUtf8toW,sizeof(wchar_t),"UTF-8",WCHAR_CHARSET,strFlipped,wString);
   }
   else
-#endif
     convert(m_iconvUtf8toW,sizeof(wchar_t),"UTF-8",WCHAR_CHARSET,utf8String,wString);
 }
 
