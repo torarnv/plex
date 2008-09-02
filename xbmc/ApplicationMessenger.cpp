@@ -275,9 +275,9 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       g_application.Restart(true);
       break;
 		  
-	case TMSG_SLEEPSYSTEM:
-	  g_application.SleepSystem();
-	  break;
+    case TMSG_SLEEPSYSTEM:
+      g_application.SleepSystem();
+      break;
 		  
     case TMSG_PICTURE_SHOW:
       {
