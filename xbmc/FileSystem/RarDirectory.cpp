@@ -66,6 +66,8 @@ namespace DIRECTORY
       // fill in paths
       for( int iEntry=0;iEntry<items.Size();++iEntry)
       {
+        printf(" =====> %s\n", items[iEntry]->m_strPath.c_str());
+        
         if (items[iEntry]->IsParentFolder())
           continue;
         if ((IsAllowed(items[iEntry]->m_strPath)) || (items[iEntry]->m_bIsFolder))
