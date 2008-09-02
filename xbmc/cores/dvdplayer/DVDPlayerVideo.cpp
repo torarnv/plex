@@ -295,10 +295,7 @@ void CDVDPlayerVideo::Process()
     {
       if (m_speed != DVD_PLAYSPEED_PAUSE)
       {
-        double timeout = static_cast<CDVDMsgDouble*>(pMsg)->m_value;
-
-        CLog::Log(LOGDEBUG, "CDVDPlayerVideo - CDVDMsg::GENERAL_DELAY(%f)", timeout);
-
+        double timeout  = static_cast<CDVDMsgDouble*>(pMsg)->m_value;
         timeout *= (double)DVD_PLAYSPEED_NORMAL / abs(m_speed);
         timeout += CDVDClock::GetAbsoluteClock();
 
