@@ -49,7 +49,7 @@ using namespace MUSIC_INFO;
 #define XBMC_ID				T("id")
 #define XBMC_TYPE			T("type")
 
-#define XBMC_REMOTE_MENU		T("menu")	
+#define XBMC_REMOTE_MENU		T("menu")
 #define XBMC_REMOTE_BACK		T("back")
 #define XBMC_REMOTE_SELECT	T("select")
 #define XBMC_REMOTE_DISPLAY	T("display")
@@ -384,9 +384,9 @@ int CXbmcWeb::xbmcNavigatorState( int eid, webs_t wp, char_t *parameter)
       if((DWORD)xbmcNavigator[cmd].xbmcAppStateCode == navigatorState)
       {
         if( eid != NO_EID) {
-          ejSetResult( eid, xbmcNavigator[cmd].xbmcNavigateParameter);
+          ejSetResult( eid, (char*)xbmcNavigator[cmd].xbmcNavigateParameter);
         } else {
-          cnt = websWrite(wp, xbmcNavigator[cmd].xbmcNavigateParameter);
+          cnt = websWrite(wp, (char*)xbmcNavigator[cmd].xbmcNavigateParameter);
         }
       }
       cmd++;
@@ -415,7 +415,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
 
   // by default the answer to any question is 0
   if( eid != NO_EID) {
-    ejSetResult( eid, "0");
+    ejSetResult( eid, (char*)"0");
   }
 
   // if we are in an interface that supports media catalogs
@@ -428,7 +428,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
     (state == WEB_NAV_MUSICPLAYLIST) ||
     (state == WEB_NAV_VIDEOPLAYLIST))
   {
-    CHAR *output = "error";
+    const char* output = "error";
 
     // get total items in current state
     if (navigatorState == WEB_NAV_MUSICPLAYLIST)
@@ -468,9 +468,9 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
           output = buffer;
         }
       }
-      websHeader(wp); wroteHeader = TRUE;
-      cnt = websWrite(wp, output);
-      websFooter(wp); wroteFooter = TRUE;
+      websWrite(wp, T("<html>\n"));
+      cnt = websWrite(wp, (char*)output);
+      websWrite(wp, T("</html>\n"));
       return cnt;
     }
 
@@ -480,12 +480,12 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
       selectionNumber = catalogNumber( parameter);
       if (navigatorState == WEB_NAV_MUSICPLAYLIST)
       {
-        // we have a music type 
+        // we have a music type
         output = XBMC_CMD_MUSIC;
       }
       else if (navigatorState == WEB_NAV_VIDEOPLAYLIST)
       {
-        // we have a video type 
+        // we have a video type
         output = XBMC_CMD_MUSIC;
       }
       else
@@ -500,7 +500,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
           {
             switch(GetNavigatorState())
             {
-            case WEB_NAV_VIDEOS: 
+            case WEB_NAV_VIDEOS:
               output = XBMC_CMD_VIDEO;
               break;
             case WEB_NAV_MUSIC:
@@ -514,12 +514,12 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
               break;
             }
           }
-        } 
+        }
       }
       if( eid != NO_EID) {
-        ejSetResult( eid, output);
+        ejSetResult( eid, (char*)output);
       } else {
-        cnt = websWrite(wp, output);
+        cnt = websWrite(wp, (char*)output);
       }
       return cnt;
     }
@@ -545,7 +545,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
         itoa(items, buffer, 10);
         ejSetResult( eid, buffer);
       } else {
-        cnt = websWrite(wp, "%i", items);
+        cnt = websWrite(wp, (char*)"%i", (char*)items);
       }
       return cnt;
     }
@@ -614,9 +614,9 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
         else
         {
           if( eid != NO_EID) {
-            ejSetResult( eid, XBMC_NONE);
+            ejSetResult( eid, (char*)XBMC_NONE);
           } else {
-            cnt = websWrite(wp, XBMC_NONE);
+            cnt = websWrite(wp, (char*)XBMC_NONE);
           }
         }
       }
@@ -634,9 +634,9 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
           }
         } else {
           if( eid != NO_EID) {
-            ejSetResult( eid, XBMC_NONE);
+            ejSetResult( eid, (char*)XBMC_NONE);
           } else {
-            cnt = websWrite(wp, XBMC_NONE);
+            cnt = websWrite(wp, (char*)XBMC_NONE);
           }
         }
       }
@@ -693,7 +693,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
             itm->m_strPath = shareZip.strPath;
             itm->m_bIsFolder = true;
           }
-          else if (itm->IsRAR()) // mount rar archive 
+          else if (itm->IsRAR()) // mount rar archive
           {
             CMediaSource shareRar;
             CStdString strRarPath;
@@ -704,7 +704,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
             itm->m_bIsFolder = true;
           }
 
-          if (itm->m_bIsFolder)		
+          if (itm->m_bIsFolder)
           {
             // enter the directory
             if (itm->GetLabel() == "..")
@@ -885,7 +885,6 @@ int CXbmcWeb::xbmcProcessCommand( int eid, webs_t wp, char_t *command, char_t *p
   else if (!strcmp(command, "pause"))					g_application.getApplicationMessenger().MediaPause();
   else if (!strcmp(command, "shutdown"))			g_application.getApplicationMessenger().Shutdown();
   else if (!strcmp(command, "restart"))				g_application.getApplicationMessenger().Restart();
-  else if (!strcmp(command, "sleepSystem"))  g_application.getApplicationMessenger().SleepSystem();
   else if (!strcmp(command, "exit"))					g_application.getApplicationMessenger().RebootToDashBoard();
   else if (!strcmp(command, "show_time"))			return 0;
   else if (!strcmp(command, "remote"))				return xbmcRemoteControl(eid, wp, parameter);			// remote control functions
@@ -909,12 +908,12 @@ int CXbmcWeb::xbmcCommand( int eid, webs_t wp, int argc, char_t **argv)
 {
   char_t	*command, *parameter;
 
-  int parameters = ejArgs(argc, argv, T("%s %s"), &command, &parameter);
+  int parameters = ejArgs(argc, argv, T((char*)"%s %s"), &command, &parameter);
   if (parameters < 1) {
-    websError(wp, 500, T("Insufficient args\n"));
+    websError(wp, 500, T((char*)"Insufficient args\n"));
     return -1;
   }
-  else if (parameters < 2) parameter = "";
+  else if (parameters < 2) parameter = (char*)"";
 
   return xbmcProcessCommand( eid, wp, command, parameter);
 }
@@ -930,17 +929,21 @@ void CXbmcWeb::xbmcForm(webs_t wp, char_t *path, char_t *query)
 {
   char_t	*command, *parameter, *next_page;
 
-  command = websGetVar(wp, WEB_COMMAND, XBMC_NONE); 
-  parameter = websGetVar(wp, WEB_PARAMETER, XBMC_NONE);
+  command = websGetVar(wp, (char*)WEB_COMMAND, (char*)XBMC_NONE);
+  parameter = websGetVar(wp, (char*)WEB_PARAMETER, (char*)XBMC_NONE);
 
   // do the command
-  wroteHeader = false;
-  wroteFooter = false;
+  websWrite(wp, T("HTTP/1.0 200 OK\r\n"));
+  websWrite(wp, T("Pragma: no-cache\r\n"));
+  websWrite(wp, T("Cache-control: no-cache\r\n"));
+  websWrite(wp, T("Content-Type: text/html\r\n"));
+  websWrite(wp, T("\r\n"));
+
   xbmcProcessCommand( NO_EID, wp, command, parameter);
 
   // if we do want to redirect
-  if( websTestVar(wp, WEB_NEXT_PAGE)) {
-    next_page = websGetVar(wp, WEB_NEXT_PAGE, XBMC_NONE); 
+  if( websTestVar(wp, (char*)WEB_NEXT_PAGE)) {
+    next_page = websGetVar(wp, (char*)WEB_NEXT_PAGE, (char*)XBMC_NONE);
     // redirect to another web page
     websRedirect(wp, next_page);
     return;
@@ -1029,11 +1032,11 @@ void CXbmcWeb::SetCurrentMediaItem(CFileItem& newItem)
 
   CUtil::SecondsToTimeString(tag.GetDuration(), strTime);
 
-  strDuration=strText+strTime;		
+  strDuration=strText+strTime;
   }
   }
   }	//	if (tag.Loaded())
-  else 
+  else
   {
   //	If we have a cdda track without cddb information,...
   if (url.GetProtocol()=="cdda" )
@@ -1062,7 +1065,7 @@ void CXbmcWeb::SetCurrentMediaItem(CFileItem& newItem)
 
   strDuration=strText+strTime;
   }
-  }	
+  }
   }
   */
 }
