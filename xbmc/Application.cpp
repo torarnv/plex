@@ -1706,7 +1706,6 @@ CProfile* CApplication::InitDirectoriesOSX()
         strSources.replace(start, 7, strHome.c_str(), strHome.length());
 
       // Write the sample.
-      printf("Writing sample to [%s]\n", sourcesFile.c_str());
       XBMCHelper::WriteFile(sourcesFile.c_str(), strSources);
     }
 
@@ -5057,6 +5056,9 @@ void CApplication::OnQueueNextItem()
 
 void CApplication::OnPlayBackStopped()
 {
+  // Re-enable sounds. 
+  g_audioManager.Enable(true);
+
   // Reset FPS to the display FPS. 
   g_infoManager.ResetFPS(g_graphicsContext.GetFPS());
   
