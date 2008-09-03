@@ -349,6 +349,12 @@ bool CPlayList::Swap(int position1, int position2)
 
 void CPlayList::SetUnPlayable(int iItem)
 {
+  if (iItem < 0)
+  {
+    CLog::Log(LOGWARNING, "Bogus attempt to set unplayable index %d", iItem);
+    return;
+  }
+  
   CFileItemPtr item = m_vecItems[iItem];
   if (!item->GetPropertyBOOL("unplayable"))
   {
