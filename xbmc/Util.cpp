@@ -3478,24 +3478,21 @@ bool CUtil::CreateDirectoryEx(const CStdString& strPath)
 
 CStdString CUtil::MakeLegalFileName(const CStdString &strFile, bool isFATX)
 {
-  CStdString result = strFile;
-  // check if the filename is a legal FATX one.
-  if (isFATX)
-  {
-    CUtil::GetFatXQualifiedPath(result);
-  }
-  else
-  { // just filter out some illegal characters on windows
-    result.Remove('\\');
-    result.Remove('/');
-    result.Remove(':');
-    result.Remove('*');
-    result.Remove('?');
-    result.Remove('\"');
-    result.Remove('<');
-    result.Remove('>');
-    result.Remove('|');
-  }
+  CStdString strPath;
+  GetDirectory(strFile,strPath);
+  CStdString result = GetFileName(strFile);
+  
+  // just filter out some illegal characters on windows
+  result.Remove(':');
+  result.Remove('*');
+  result.Remove('?');
+  result.Remove('\"');
+  result.Remove('<');
+  result.Remove('>');
+  result.Remove('|');
+    
+  result = strPath+result;
+
   return result;
 }
 
