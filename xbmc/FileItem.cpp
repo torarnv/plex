@@ -1270,7 +1270,13 @@ void CFileItemList::Append(const CFileItemList& itemlist)
   CSingleLock lock(m_lock);
 
   for (int i = 0; i < itemlist.Size(); ++i)
-    Add(itemlist[i]);
+  {
+    // Clone.
+    CFileItem* pItem = new CFileItem();
+    (*pItem) = *(itemlist[i].get());
+    
+    Add(CFileItemPtr(pItem));
+  }
 }
 
 void CFileItemList::Assign(const CFileItemList& itemlist, bool append)
