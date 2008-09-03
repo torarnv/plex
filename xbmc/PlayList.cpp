@@ -32,108 +32,6 @@ using namespace std;
 using namespace MUSIC_INFO;
 using namespace XFILE;
 using namespace PLAYLIST;
-/*
-CPlayListItem::CPlayListItem() : m_lDuration(0)
-{
-  m_lStartOffset = 0;
-  m_lEndOffset = 0;
-  m_bUnPlayable = false;
-  m_iprogramCount = 0;
-}
-
-CPlayListItem::CPlayListItem(const CStdString& strDescription, const CStdString& strFileName, long lDuration, long lStartOffset, long lEndOffset)
-{
-  m_strLabel = strDescription;
-  m_strPath = strFileName;
-  m_lDuration = lDuration;
-  m_lStartOffset = lStartOffset;
-  m_lEndOffset = lEndOffset;
-  m_bUnPlayable = false;
-  m_iprogramCount = 0;
-}
-
-CPlayListItem::~CPlayListItem()
-{}
-
-void CPlayListItem::SetFileName(const CStdString& strFileName)
-{
-  m_strPath = strFileName;
-}
-
-const CStdString& CPlayListItem::GetFileName() const
-{
-  return m_strPath;
-}
-
-void CPlayListItem::SetDescription(const CStdString& strDescription)
-{
-  m_strLabel = strDescription;
-}
-
-const CStdString& CPlayListItem::GetDescription() const
-{
-  return m_strLabel;
-}
-
-void CPlayListItem::SetDuration(long lDuration)
-{
-  m_lDuration = lDuration;
-}
-
-long CPlayListItem::GetDuration() const
-{
-  return m_lDuration;
-}
-
-void CPlayListItem::SetStartOffset(long lStartOffset)
-{
-  m_lStartOffset = lStartOffset;
-}
-
-long CPlayListItem::GetStartOffset() const
-{
-  return m_lStartOffset;
-}
-
-void CPlayListItem::SetEndOffset(long lEndOffset)
-{
-  m_lEndOffset = lEndOffset;
-}
-
-long CPlayListItem::GetEndOffset() const
-{
-  return m_lEndOffset;
-}
-
-void CPlayListItem::SetMusicTag(const CMusicInfoTag &tag)
-{
-  *GetMusicInfoTag() = tag;
-}
-
-void CPlayListItem::SetVideoTag(const CVideoInfoTag &tag)
-{
-  *GetVideoInfoTag() = tag;
-}
-
-bool CPlayListItem::LoadMusicTag()
-{
-  if (CFileItem::LoadMusicTag())
-  {
-    SetDuration(GetMusicInfoTag()->GetDuration());
-    return true;
-  }
-  return false;
-}
-
-const CMusicInfoTag* CPlayListItem::GetMusicTag() const
-{
-  return GetMusicInfoTag();
-}
-
-const CVideoInfoTag* CPlayListItem::GetVideoTag() const
-{
-  return GetVideoInfoTag();
-}*/
 
 CPlayList::CPlayList(void)
 {
@@ -158,6 +56,10 @@ void CPlayList::Add(const CFileItemPtr &item, int iPosition, int iOrder)
   else
     item->m_iprogramCount = iOrder;
 
+  // videodb files are not supported by the filesystem as yet
+  if (item->IsVideoDb())
+    item->m_strPath = item->GetVideoInfoTag()->m_strFileNameAndPath;
+
   // increment the playable counter
   item->ClearProperty("unplayable");
   if (m_iPlayableItems < 0)
@@ -165,7 +67,7 @@ void CPlayList::Add(const CFileItemPtr &item, int iPosition, int iOrder)
   else
     m_iPlayableItems++;
 
-  //CLog::Log(LOGDEBUG,"%s item:(%02i/%02i)[%s]", __FUNCTION__, iPosition, item.m_iprogramCount, item.m_strPath.c_str());
+  //CLog::Log(LOGDEBUG,"%s item:(%02i/%02i)[%s]", __FUNCTION__, iPosition, item->m_iprogramCount, item->m_strPath.c_str());
   if (iPosition == iOldSize)
     m_vecItems.push_back(item);
   else
@@ -241,7 +143,7 @@ void CPlayList::DecrementOrder(int iOrder)
     CFileItemPtr item = *it;
     if (item->m_iprogramCount > iOrder)
     {
-      //CLog::Log(LOGDEBUG,"%s fixing item at order %i", __FUNCTION__, item.m_iprogramCount);
+      //CLog::Log(LOGDEBUG,"%s fixing item at order %i", __FUNCTION__, item->m_iprogramCount);
       item->m_iprogramCount--;
     }
     ++it;
@@ -260,7 +162,7 @@ void CPlayList::IncrementOrder(int iPosition, int iOrder)
     CFileItemPtr item = *it;
     if (item->m_iprogramCount >= iOrder)
     {
-      //CLog::Log(LOGDEBUG,"%s fixing item at order %i", __FUNCTION__, item.m_iprogramCount);
+      //CLog::Log(LOGDEBUG,"%s fixing item at order %i", __FUNCTION__, item->m_iprogramCount);
       item->m_iprogramCount++;
     }
     ++it;
@@ -282,11 +184,23 @@ int CPlayList::size() const
 
 const CFileItemPtr CPlayList::operator[] (int iItem) const
 {
+  if (iItem < 0 || iItem >= size())
+  {
+    assert(false);
+    CLog::Log(LOGERROR, "Error trying to retrieve an item that's out of range");
+    return CFileItemPtr();
+  }
   return m_vecItems[iItem];
 }
 
 CFileItemPtr CPlayList::operator[] (int iItem)
 {
+  if (iItem < 0 || iItem >= size())
+  {
+    assert(false);
+    CLog::Log(LOGERROR, "Error trying to retrieve an item that's out of range");
+    return CFileItemPtr();
+  }
   return m_vecItems[iItem];
 }
 
@@ -303,7 +217,7 @@ void CPlayList::Shuffle(int iPosition)
       return;
     if (iPosition < 0)
       iPosition = 0;
-    CLog::Log(LOGDEBUG,"%s :shuffling at pos:%i", __FUNCTION__, iPosition);
+    CLog::Log(LOGDEBUG,"%s shuffling at pos:%i", __FUNCTION__, iPosition);
 
     ivecItems it = m_vecItems.begin() + iPosition;
     random_shuffle(it, m_vecItems.end());
@@ -421,11 +335,10 @@ bool CPlayList::Swap(int position1, int position2)
     return false;
   }
 
-  int iOrder = -1;
   if (!IsShuffled())
   {
     // swap the ordinals before swapping the items!
-    //CLog::Log(LOGDEBUG,"PLAYLIST swapping items at orders (%i, %i)",m_vecItems[position1].m_iprogramCount,m_vecItems[position2].m_iprogramCount);
+    //CLog::Log(LOGDEBUG,"PLAYLIST swapping items at orders (%i, %i)",m_vecItems[position1]->m_iprogramCount,m_vecItems[position2]->m_iprogramCount);
     std::swap(m_vecItems[position1]->m_iprogramCount, m_vecItems[position2]->m_iprogramCount);
   }
 
