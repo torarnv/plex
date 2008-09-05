@@ -860,6 +860,7 @@
 		E3C1A65D0E7126F400CE0104 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3C1A65C0E7126F400CE0104 /* Sparkle.framework */; };
 		E3C1A6610E71275B00CE0104 /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = E3C1A65C0E7126F400CE0104 /* Sparkle.framework */; };
 		E3C1A67D0E72862300CE0104 /* plex in Resources */ = {isa = PBXBuildFile; fileRef = E3C1A67C0E72862300CE0104 /* plex */; };
+		E3C1A6AA0E74E85C00CE0104 /* AsyncFileCopy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3C1A6A90E74E85C00CE0104 /* AsyncFileCopy.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -2943,6 +2944,8 @@
 		E3BBB7A10D7EA8B200CAAFD3 /* libpcre.0.0.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpcre.0.0.1.dylib; path = ../../../../../opt/local/lib/libpcre.0.0.1.dylib; sourceTree = SOURCE_ROOT; };
 		E3C1A65C0E7126F400CE0104 /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Sparkle.framework; path = plex/Frameworks/Sparkle.framework; sourceTree = "<group>"; };
 		E3C1A67C0E72862300CE0104 /* plex */ = {isa = PBXFileReference; lastKnownFileType = folder; path = plex; sourceTree = "<group>"; };
+		E3C1A6A80E74E85C00CE0104 /* AsyncFileCopy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AsyncFileCopy.h; sourceTree = "<group>"; };
+		E3C1A6A90E74E85C00CE0104 /* AsyncFileCopy.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AsyncFileCopy.cpp; sourceTree = "<group>"; };
 		E3D4B9950DF7E39B0092A179 /* FileShoutcast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileShoutcast.h; sourceTree = "<group>"; };
 		E3D4B9960DF7E39B0092A179 /* FileXBMSP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileXBMSP.cpp; sourceTree = "<group>"; };
 		E3D4B9970DF7E39B0092A179 /* FileXBMSP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileXBMSP.h; sourceTree = "<group>"; };
@@ -6043,6 +6046,8 @@
 		E38E1E220D25F9FD00618676 /* utils */ = {
 			isa = PBXGroup;
 			children = (
+				E3C1A6A80E74E85C00CE0104 /* AsyncFileCopy.h */,
+				E3C1A6A90E74E85C00CE0104 /* AsyncFileCopy.cpp */,
 				E3B221520E57892500939882 /* ArabicShaping.cpp */,
 				E3B963ED0E3864DB0022F663 /* RssFeed.cpp */,
 				E3B963EE0E3864DB0022F663 /* RssFeed.h */,
@@ -7122,6 +7127,7 @@
 				E3B2218C0E58F42100939882 /* DVDFileInfo.cpp in Sources */,
 				E336EF4C0E602A8B00270758 /* GUIDialogFullScreenInfo.cpp in Sources */,
 				E336F09F0E62D36200270758 /* FileMMS.cpp in Sources */,
+				E3C1A6AA0E74E85C00CE0104 /* AsyncFileCopy.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
