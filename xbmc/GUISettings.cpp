@@ -1019,6 +1019,7 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
     g_advancedSettings.m_logLevel = LOG_LEVEL_DEBUG_FREEMEM;
     CLog::Log(LOGNOTICE, "Enabled debug logging due to GUI setting");
   }
+#ifndef __APPLE__
   // Get hardware based stuff...
   CLog::Log(LOGNOTICE, "Getting hardware information now...");
   if (GetInt("audiooutput.mode") == AUDIO_DIGITAL && !g_audioConfig.HasDigitalOutput())
@@ -1029,7 +1030,6 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   CLog::Log(LOGINFO, "AC3 pass through is %s", GetBool("audiooutput.ac3passthrough") ? "enabled" : "disabled");
   CLog::Log(LOGINFO, "DTS pass through is %s", GetBool("audiooutput.dtspassthrough") ? "enabled" : "disabled");
 
-#ifndef __APPLE__
   if (g_videoConfig.HasLetterbox())
     SetInt("videooutput.aspect", VIDEO_LETTERBOX);
   else if (g_videoConfig.HasWidescreen())
