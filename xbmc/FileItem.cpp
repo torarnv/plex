@@ -564,6 +564,15 @@ bool CFileItem::IsInternetStream() const
   if (IsOnLAN())
     return false;
 
+  // Check for stacks.
+  if (strProtocol == "stack") 
+  {      
+      CStdString firstStackPath = CStackDirectory::GetFirstStackedFile(m_strPath);
+      CFileItem  fileItem(firstStackPath, false);
+      
+      return fileItem.IsInternetStream();
+  }
+  
   if (strProtocol == "shout" || strProtocol == "mms" ||
       strProtocol == "http"  || strProtocol == "ftp" ||
       strProtocol == "rtsp"  || strProtocol == "rtp" ||
