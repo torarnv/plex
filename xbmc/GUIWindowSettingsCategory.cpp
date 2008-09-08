@@ -3830,7 +3830,11 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting)
     PaDeviceInfo* dev = *iter;
     pControl->AddLabel(dev->name, i);
 
-    if (g_guiSettings.GetString("audiooutput.audiodevice").Equals(dev->name))
+    // Trim out spaces.
+    CStdString strDev = dev->name;
+    strDev = strDev.Trim();
+    
+    if (g_guiSettings.GetString("audiooutput.audiodevice").Equals(strDev))
         pControl->SetValue(i);
 
     ++iter;
