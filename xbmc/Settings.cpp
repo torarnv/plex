@@ -1706,15 +1706,18 @@ bool CSettings::LoadProfile(int index)
 
     g_infoManager.ResetCache();
 
-    // always reload the skin - we need it for the new language strings
-    g_application.LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
-
     if (m_iLastLoadedProfileIndex != 0)
     {
       TiXmlDocument doc;
       if (doc.LoadFile(GetUserDataFolder()+"\\guisettings.xml"))
         g_guiSettings.LoadMasterLock(doc.RootElement());
     }
+    
+    // New display setting.
+    g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE);
+    
+    // always reload the skin - we need it for the new language strings
+    g_application.LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
 
 #ifdef HAS_XBOX_HARDWARE
     if (g_guiSettings.GetBool("system.autotemperature"))

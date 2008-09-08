@@ -342,7 +342,7 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool bDeta
         // save new profile guisettings
         if (CGUIDialogYesNo::ShowAndGetInput(20058,20048,20102,20022,20044,20064))
         {
-          CFile::Cache(CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"guisettings.xml"),
+          CFile::Cache(_P("T:\\guisettings.xml"),
                        CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),
                                               dialog->m_strDirectory+"\\guisettings.xml"));
         }
@@ -373,6 +373,10 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool bDeta
           }
       }
     }
+    
+    // Copy RSS feed.
+    CFile::Cache(CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"RssFeeds.xml"),
+                 CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),dialog->m_strDirectory+"\\RssFeeds.xml"));
 
     /*if (!dialog->m_bIsNewUser)
       if (!CGUIDialogYesNo::ShowAndGetInput(20067,20103,20022,20022))
