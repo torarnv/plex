@@ -1515,9 +1515,8 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     g_graphicsContext.SetVideoResolution(m_NewResolution, TRUE);
     g_guiSettings.m_LookAndFeelResolution = m_NewResolution;
     g_application.ReloadSkin();
-    CGUIDialogYesNo dlg;
-    dlg.SetAutoClose(5000);
-    if (!dlg.ShowAndGetInput(13110, 13111, 20022, 20022))
+    bool cancelled = false;
+    if (!CGUIDialogYesNo::ShowAndGetInput(13110, 13111, 20022, 20022, -1, -1, cancelled, 5000))
     {
       g_guiSettings.SetInt("videoscreen.resolution", lastRes);
       g_graphicsContext.SetVideoResolution(lastRes, TRUE);
