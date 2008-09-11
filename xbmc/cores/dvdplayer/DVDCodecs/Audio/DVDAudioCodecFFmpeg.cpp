@@ -72,10 +72,12 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   // See if we're doing mixdown. This is a special case, though, because if we
   // can play AC3 we're going to transcode.
   //
-  if (g_audioConfig.HasDigitalOutput() == true && g_audioConfig.GetAC3Enabled() == true)
-    ; // Transcode
-  else if (g_audioContext.IsPassthroughActive() == false)
-    m_pCodecContext->request_channels = 2;  
+  if (g_audioConfig.HasDigitalOutput() == false ||
+      (g_audioConfig.GetAC3Enabled() == false && g_audioConfig.GetDTSEnabled() == false))
+  {
+    // Down-mix.
+    m_pCodecContext->request_channels = 2;
+  }
   
   m_pCodecContext->channels = hints.channels;
   m_pCodecContext->sample_rate = hints.samplerate;

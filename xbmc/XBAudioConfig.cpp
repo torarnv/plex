@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "XBAudioConfig.h"
+#include "GUISettings.h"
 
 XBAudioConfig g_audioConfig;
 
@@ -35,8 +36,7 @@ XBAudioConfig::~XBAudioConfig()
 
 bool XBAudioConfig::HasDigitalOutput()
 {
-  // FIXME with what Ryan is doing.
-  return true;
+  return (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL);
 }
 
 void XBAudioConfig::SetAC3Enabled(bool bEnable)

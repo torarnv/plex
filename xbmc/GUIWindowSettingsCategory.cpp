@@ -305,9 +305,6 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
     break;
   case GUI_MSG_WINDOW_DEINIT:
     {
-      // Hardware based stuff
-      // TODO: This should be done in a completely separate screen
-      // to give warning to the user that it writes to the EEPROM.
       if ((g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL))
       {
         g_audioConfig.SetAC3Enabled(g_guiSettings.GetBool("audiooutput.ac3passthrough"));
@@ -493,8 +490,8 @@ void CGUIWindowSettingsCategory::CreateSettings()
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
       pControl->AddLabel(g_localizeStrings.Get(338), AUDIO_ANALOG);
-      if (g_audioConfig.HasDigitalOutput())
-        pControl->AddLabel(g_localizeStrings.Get(339), AUDIO_DIGITAL);
+      //if (g_audioConfig.HasDigitalOutput())
+      pControl->AddLabel(g_localizeStrings.Get(339), AUDIO_DIGITAL);
       pControl->SetValue(pSettingInt->GetData());
     }
     else if (strSetting.Equals("videooutput.aspect"))
