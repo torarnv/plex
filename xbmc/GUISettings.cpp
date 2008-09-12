@@ -268,10 +268,11 @@ CGUISettings::CGUISettings(void)
 
   AddCategory(3,"musiclibrary",14022);
   AddBool(1, "musiclibrary.enabled", 418, true);
-  AddSeparator(2,"musiclibrary.sep1");
-  AddBool(3,"musiclibrary.autoalbuminfo", 20192, false);
-  AddBool(4,"musiclibrary.autoartistinfo", 20193, false);
-  AddString(5, "musiclibrary.defaultscraper", 20194, "Allmusic", SPIN_CONTROL_TEXT);
+  AddBool(2, "musiclibrary.albumartistsonly", 13414, false);
+  AddSeparator(3,"musiclibrary.sep1");
+  AddBool(4,"musiclibrary.autoalbuminfo", 20192, false);
+  AddBool(5,"musiclibrary.autoartistinfo", 20193, false);
+  AddString(6, "musiclibrary.defaultscraper", 20194, "Allmusic", SPIN_CONTROL_TEXT);
   AddInt(6, "musiclibrary.recentcount", 20250, 25, 10, 5, 250, SPIN_CONTROL_INT_PLUS, -1);
   AddBool(7, "musiclibrary.updateonstartup", 22000, false);
   AddSeparator(8,"musiclibrary.sep2");
