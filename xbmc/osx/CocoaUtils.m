@@ -22,6 +22,9 @@
 #import "XBMCMain.h" 
 #include <SDL/SDL.h>
 
+#import <IOKit/graphics/IOGraphicsLib.h>
+#import <ApplicationServices/ApplicationServices.h>
+
 extern int GetProcessPid(const char* processName);
 
 #define MAX_DISPLAYS 32
@@ -727,4 +730,26 @@ void* Cocoa_GetDisplayPort()
   
   WindowRef refWindow = [childWindow windowRef];
   return (void* )GetWindowPort(refWindow);
+}
+
+
+/* Get/set LCD panel brightness */
+
+void Cocoa_GetPanelBrightness(float* brightness)
+{
+  float panelBrightness = HUGE_VALF;
+  CGDisplayErr dErr;
+  
+  dErr = IODisplayGetFloatParameter(CGDisplayIOServicePort(CGMainDisplayID()), kNilOptions, CFSTR(kIODisplayBrightnessKey), &panelBrightness);
+  if (dErr == kIOReturnSuccess)
+    *brightness = panelBrightness;
+  else
+    *brightness = -1.0f;
+}
+
+void Cocoa_SetPanelBrightness(float brightness)
+{
+  if ((brightness >=0.0f) && (brightness <= 1.0f)) {
+    IODisplaySetFloatParameter(CGDisplayIOServicePort(CGMainDisplayID()), kNilOptions, CFSTR(kIODisplayBrightnessKey), brightness);    
+  }
 }

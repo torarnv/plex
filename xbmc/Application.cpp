@@ -6378,6 +6378,20 @@ int CApplication::GetVolume() const
   // converts the hardware volume (in mB) to a percentage
   return int(((float)(g_stSettings.m_nVolumeLevel + g_stSettings.m_dynamicRangeCompressionLevel - VOLUME_MINIMUM)) / (VOLUME_MAXIMUM - VOLUME_MINIMUM)*100.0f + 0.5f);
 }
+  
+#ifdef __APPLE__
+float CApplication::GetPanelBrightness() const
+{
+  float panelBrightness = 0.0f;
+  Cocoa_GetPanelBrightness(&panelBrightness);
+  return panelBrightness;
+}
+
+void CApplication::SetPanelBrightness(float iPanelBrightness)
+{
+  Cocoa_SetPanelBrightness(iPanelBrightness);
+}
+#endif
 
 void CApplication::SetPlaySpeed(int iSpeed)
 {
@@ -6410,11 +6424,12 @@ void CApplication::SetPlaySpeed(int iSpeed)
     m_pPlayer->SetVolume(VOLUME_MINIMUM);
   }
 }
-
+  
 int CApplication::GetPlaySpeed() const
 {
   return m_iPlaySpeed;
 }
+  
 
 // Returns the total time in seconds of the current media.  Fractional
 // portions of a second are possible - but not necessarily supported by the
@@ -6811,3 +6826,4 @@ CPerformanceStats &CApplication::GetPerformanceStats()
   return m_perfStats;
 }
 #endif
+

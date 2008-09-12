@@ -1741,6 +1741,12 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     g_lcd->SetContrast(((CSettingInt *)pSettingControl->GetSetting())->GetData());
   }
 #endif
+#ifdef __APPLE__
+  else if (strSetting.Equals("system.panelbrightness"))
+  {
+    g_application.SetPanelBrightness((float)(g_guiSettings.GetInt("system.panelbrightness")/100.0f));
+  }
+#endif
 #ifdef HAS_XBOX_HARDWARE
   else if (strSetting.Equals("system.targettemperature"))
   {
@@ -3687,6 +3693,8 @@ void CGUIWindowSettingsCategory::OnInitWindow()
   m_strNetworkSubnet = g_guiSettings.GetString("network.subnet");
   m_strNetworkGateway = g_guiSettings.GetString("network.gateway");
   m_strNetworkDNS = g_guiSettings.GetString("network.dns");
+  // Change the panel brightness setting to the current hardware level
+  g_guiSettings.SetInt("system.panelbrightness", ((int)(g_application.GetPanelBrightness()*20))*5);
 #endif
   m_strOldTrackFormat = g_guiSettings.GetString("musicfiles.trackformat");
   m_strOldTrackFormatRight = g_guiSettings.GetString("musicfiles.trackformatright");
