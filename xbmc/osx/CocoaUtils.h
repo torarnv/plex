@@ -92,6 +92,11 @@ extern "C"
   
   void  Cocoa_MakeChildWindow();
   void  Cocoa_DestroyChildWindow();
+  
+  //
+  // Sparkle software update
+  //
+  void Cocoa_CheckForUpdates();
 
 #ifdef __cplusplus
 }

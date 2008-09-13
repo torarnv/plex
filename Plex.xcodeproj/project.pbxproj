@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1A5485B50E7B01CB0025CA32 /* SUPlexUpdater.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1A5485B40E7B01CB0025CA32 /* SUPlexUpdater.mm */; };
+		1A5485E50E7B029C0025CA32 /* SUPlexUpdateDriver.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1A5485E40E7B029C0025CA32 /* SUPlexUpdateDriver.mm */; };
+		1A5487520E7B26830025CA32 /* GUIDialogUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A5487510E7B26830025CA32 /* GUIDialogUtils.cpp */; };
 		E336EF2F0E60256000270758 /* GUIViewStatePictures.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E336EF000E60250700270758 /* GUIViewStatePictures.cpp */; };
 		E336EF300E60256000270758 /* GUIViewStatePrograms.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E336EF020E60250700270758 /* GUIViewStatePrograms.cpp */; };
 		E336EF310E60256000270758 /* GUIViewStateScripts.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E336EF040E60250700270758 /* GUIViewStateScripts.cpp */; };
@@ -917,6 +920,15 @@
 
 /* Begin PBXFileReference section */
 		09AB6884FE841BABC02AAC07 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
+		1A5485B30E7B01CB0025CA32 /* SUPlexUpdater.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUPlexUpdater.h; sourceTree = "<group>"; };
+		1A5485B40E7B01CB0025CA32 /* SUPlexUpdater.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SUPlexUpdater.mm; sourceTree = "<group>"; };
+		1A5485E30E7B029C0025CA32 /* SUPlexUpdateDriver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUPlexUpdateDriver.h; sourceTree = "<group>"; };
+		1A5485E40E7B029C0025CA32 /* SUPlexUpdateDriver.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SUPlexUpdateDriver.mm; sourceTree = "<group>"; };
+		1A5485EF0E7B065B0025CA32 /* SUUpdateDriver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUUpdateDriver.h; sourceTree = "<group>"; };
+		1A5487500E7B26830025CA32 /* GUIDialogUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogUtils.h; sourceTree = "<group>"; };
+		1A5487510E7B26830025CA32 /* GUIDialogUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogUtils.cpp; sourceTree = "<group>"; };
+		1A5487F60E7B36EF0025CA32 /* SUBasicUpdateDriver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUBasicUpdateDriver.h; sourceTree = "<group>"; };
+		1A5488010E7B39F30025CA32 /* SUHost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUHost.h; sourceTree = "<group>"; };
 		6E97BDBC0DA2B5D8003A2A89 /* GUIInfoColor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIInfoColor.cpp; sourceTree = "<group>"; };
 		6E97BDBD0DA2B5D8003A2A89 /* GUIInfoColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIInfoColor.h; sourceTree = "<group>"; };
 		6E97BDBF0DA2B620003A2A89 /* EventClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventClient.h; sourceTree = "<group>"; };
@@ -3225,6 +3237,8 @@
 		E37D5CB40D3023BB0081D327 /* osx */ = {
 			isa = PBXGroup;
 			children = (
+				1A5487500E7B26830025CA32 /* GUIDialogUtils.h */,
+				1A5487510E7B26830025CA32 /* GUIDialogUtils.cpp */,
 				EFF083260E11614A004114E6 /* Info.plist */,
 				840A327C0DFBBD2600AA2033 /* KeyboardLayouts.cpp */,
 				840A327D0DFBBD2600AA2033 /* KeyboardLayouts.h */,
@@ -6222,6 +6236,13 @@
 			isa = PBXGroup;
 			children = (
 				E3C1A67C0E72862300CE0104 /* plex */,
+				1A5485B30E7B01CB0025CA32 /* SUPlexUpdater.h */,
+				1A5485B40E7B01CB0025CA32 /* SUPlexUpdater.mm */,
+				1A5485E30E7B029C0025CA32 /* SUPlexUpdateDriver.h */,
+				1A5485E40E7B029C0025CA32 /* SUPlexUpdateDriver.mm */,
+				1A5485EF0E7B065B0025CA32 /* SUUpdateDriver.h */,
+				1A5488010E7B39F30025CA32 /* SUHost.h */,
+				1A5487F60E7B36EF0025CA32 /* SUBasicUpdateDriver.h */,
 			);
 			name = Plex;
 			sourceTree = "<group>";
@@ -6328,7 +6349,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "./build-number.py";
+			shellScript = "";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -7128,6 +7149,9 @@
 				E336EF4C0E602A8B00270758 /* GUIDialogFullScreenInfo.cpp in Sources */,
 				E336F09F0E62D36200270758 /* FileMMS.cpp in Sources */,
 				E3C1A6AA0E74E85C00CE0104 /* AsyncFileCopy.cpp in Sources */,
+				1A5485B50E7B01CB0025CA32 /* SUPlexUpdater.mm in Sources */,
+				1A5485E50E7B029C0025CA32 /* SUPlexUpdateDriver.mm in Sources */,
+				1A5487520E7B26830025CA32 /* GUIDialogUtils.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7166,7 +7190,7 @@
 		1DEB924C08733DCA0010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APPLICATION_VERSION = "0.5-RC2";
+				APPLICATION_VERSION = 0.5.17;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					_DEBUG,
 					_LINUX,

@@ -5487,6 +5487,13 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
   }
 #endif
 }
+  
+#ifdef __APPLE__
+void CApplication::CheckForUpdates()
+{
+  Cocoa_CheckForUpdates();
+}
+#endif
 
 void CApplication::CheckShutdown()
 {

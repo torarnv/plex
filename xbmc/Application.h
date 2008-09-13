@@ -162,6 +162,9 @@ public:
   void CheckPlayingProgress();
   void CheckAudioScrobblerStatus();
   void ActivateScreenSaver(bool forceType = false);
+#ifdef __APPLE__
+  void CheckForUpdates();
+#endif
 
   virtual void Process();
   void ProcessSlow();

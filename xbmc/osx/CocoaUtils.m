@@ -21,6 +21,7 @@
 #include "CocoaUtils.h"
 #import "XBMCMain.h" 
 #include <SDL/SDL.h>
+#import "SUPlexUpdater.h"
 
 extern int GetProcessPid(const char* processName);
 
@@ -727,4 +728,10 @@ void* Cocoa_GetDisplayPort()
   
   WindowRef refWindow = [childWindow windowRef];
   return (void* )GetWindowPort(refWindow);
+}
+
+
+void Cocoa_CheckForUpdates()
+{
+  [[SUPlexUpdater sharedInstance] checkForUpdates:nil];
 }

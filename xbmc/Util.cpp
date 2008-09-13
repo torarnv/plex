@@ -3619,6 +3619,7 @@ const BUILT_IN commands[] = {
   { "Container.SortDirection",    false,  "Toggle the sort direction" },
   { "Control.Move",               true,   "Tells the specified control to 'move' to another entry specified by offset" },
   { "SendClick",                  true,   "Send a click message from the given control to the given window" },
+  { "CheckForUpdates",            false,  "Check for software updates" },
 };
 
 bool CUtil::IsBuiltIn(const CStdString& execString)
@@ -4616,6 +4617,10 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       CGUIMessage message(GUI_MSG_CLICKED, atoi(params[0].c_str()), m_gWindowManager.GetActiveWindow());
       g_graphicsContext.SendMessage(message);
     }
+  }
+  else if (execute.Equals("checkforupdates"))
+  {
+    g_application.CheckForUpdates();
   }
   else
     return -1;
