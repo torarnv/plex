@@ -443,13 +443,6 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
     *item->GetVideoInfoTag() = movieDetails;
     pDlgInfo->SetMovie(item);
     pDlgInfo->DoModal();
-    if (!info.strContent.Equals("plugin")){
-      CStdString thumb(pDlgInfo->GetThumbnail());
-      if (thumb != item->GetThumbnailImage()) {
-        item->SetThumbnailImage(pDlgInfo->GetThumbnail());
-        return true;
-      }
-    }
     if ( !pDlgInfo->NeedRefresh() ) return false;
   }
   
