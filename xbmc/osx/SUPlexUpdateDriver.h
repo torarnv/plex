@@ -1,5 +1,5 @@
 //
-//  SUPlexUpdater.h
+//  SUPlexUpdateDriver.h
 //  Plex
 //
 //  Created by James Clarke on 12/09/2008.
@@ -8,14 +8,10 @@
 
 #import <Cocoa/Cocoa.h>
 #import <Sparkle/Sparkle.h>
+#import "SUBasicUpdateDriver.h"
 
-id g_plexUpdater;
-
-@interface SUPlexUpdater : SUUpdater {
-
+@interface SUPlexUpdateDriver : SUBasicUpdateDriver {
+  int processedData, totalData;
 }
-
-+ (SUPlexUpdater*)sharedInstance;
-- (IBAction)checkForUpdates:sender;
 
 @end

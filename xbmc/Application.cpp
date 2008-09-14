@@ -1511,6 +1511,9 @@ HRESULT CApplication::Create(HWND hWnd)
 
   if (!m_bQuiet)
     m_bQuiet = !g_guiSettings.GetBool("system.debuglogging");
+  
+  // Check for updates & alert the user if a new version is available
+  Cocoa_CheckForUpdatesInBackground();
 
   return CXBApplicationEx::Create(hWnd);
 }
@@ -2549,6 +2552,9 @@ void CApplication::ReloadSkin()
     CGUIMessage msg3(GUI_MSG_SETFOCUS, m_gWindowManager.GetActiveWindow(), iCtrlID, 0);
     pWindow->OnMessage(msg3);
   }
+  
+  // Make sure dialogs shown from Cocoa are redisplayed
+  Cocoa_SkinStateChanged();
 }
 
 void CApplication::LoadSkin(const CStdString& strSkin)

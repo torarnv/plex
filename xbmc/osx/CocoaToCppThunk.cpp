@@ -10,6 +10,7 @@
 #include "Application.h"
 #include "AppleRemoteKeys.h"
 #include "CocoaToCppThunk.h"
+#include "GUIDialogUtils.h"
 
 void Cocoa_OnAppleRemoteKey(void* application, AppleRemoteEventIdentifier event, bool pressedDown, unsigned int count)
 {
@@ -103,3 +104,7 @@ void Cocoa_OnAppleRemoteKey(void* application, AppleRemoteEventIdentifier event,
   }
 }
 
+void Cocoa_CPPSkinStateChanged()
+{
+  CGUIDialogUtils::SkinStateChanged();
+}

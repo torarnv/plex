@@ -2487,6 +2487,10 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   {
     g_fontManager.ReloadTTFFonts();
   }
+  else if (strSetting.Equals("systemupdate.checknow"))
+  {
+    Cocoa_CheckForUpdates();
+  }
 
   UpdateSettings();
 }

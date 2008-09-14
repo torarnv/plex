@@ -22,6 +22,7 @@
 #import "XBMCMain.h" 
 #include <SDL/SDL.h>
 #import "SUPlexUpdater.h"
+#include "CocoaToCppThunk.h"
 
 extern int GetProcessPid(const char* processName);
 
@@ -730,8 +731,17 @@ void* Cocoa_GetDisplayPort()
   return (void* )GetWindowPort(refWindow);
 }
 
-
 void Cocoa_CheckForUpdates()
 {
-  [[SUPlexUpdater sharedInstance] checkForUpdates:nil];
+  [[SUPlexUpdater sharedInstance] checkForUpdatesWithUI:nil];
+}
+
+void Cocoa_CheckForUpdatesInBackground()
+{
+  [[SUPlexUpdater sharedInstance] checkForUpdatesInBackground];
+}
+
+void Cocoa_SkinStateChanged()
+{
+  Cocoa_CPPSkinStateChanged();
 }

@@ -13,8 +13,46 @@
 #include "GUIDialogOK.h"
 #include "GUIDialogProgress.h"
 #include "GUIDialogYesNo.h"
+#include "LocalizeStrings.h"
+#include "Application.h"
 
 using namespace std;
+
+bool CGUIDialogUtils::progressDialogIsVisible = false;
+string CGUIDialogUtils::progressDialogHeading = "";
+string CGUIDialogUtils::progressDialogLine0 = "";
+string CGUIDialogUtils::progressDialogLine1 = "";
+string CGUIDialogUtils::progressDialogLine2 = "";
+bool CGUIDialogUtils::progressDialogBarVisible = false;
+int CGUIDialogUtils::progressDialogPercentage = 0;
+
+
+const string CGUIDialogUtils::Localize(int dwCode)
+{
+  return g_localizeStrings.Get(dwCode);
+}
+
+//
+// This function is needed to redisplay progress dialogs after the skin state has changed (e.g. the user has toggled fullscreen).
+// Without it, the dialog disappears & the user has no way of knowing whether the operation is still running.
+//
+void CGUIDialogUtils::SkinStateChanged()
+{
+  if (CGUIDialogUtils::progressDialogIsVisible)
+  {
+    CGUIDialogProgress *dialog = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+    if (!dialog) return;
+    CGUIDialogUtils::progressDialogIsVisible = true;
+    dialog->SetHeading(CGUIDialogUtils::progressDialogHeading);
+    dialog->SetLine(0, CGUIDialogUtils::progressDialogLine0);
+    dialog->SetLine(1, CGUIDialogUtils::progressDialogLine1);
+    dialog->SetLine(2, CGUIDialogUtils::progressDialogLine2);
+    dialog->SetPercentage(CGUIDialogUtils::progressDialogPercentage);
+    dialog->ShowProgressBar(CGUIDialogUtils::progressDialogBarVisible);
+    dialog->SetCanCancel(false);
+    dialog->StartModal();
+  }
+}
 
 void CGUIDialogUtils::ShowOKDialog(int heading, int line0, int line1, int line2)
 {
@@ -36,6 +74,7 @@ void CGUIDialogUtils::StartProgressDialog(const string &heading, const string &l
 {
   CGUIDialogProgress *dialog = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
   if (!dialog) return;
+  CGUIDialogUtils::progressDialogIsVisible = true;
   dialog->SetHeading(heading);
   dialog->SetLine(0, line0);
   dialog->SetLine(1, line1);
@@ -43,13 +82,26 @@ void CGUIDialogUtils::StartProgressDialog(const string &heading, const string &l
   dialog->SetPercentage(0);
   dialog->ShowProgressBar(showBar);
   dialog->SetCanCancel(false);
+  
+  // Store the details in case they need to be restored later
+  CGUIDialogUtils::progressDialogHeading = heading;
+  CGUIDialogUtils::progressDialogLine0 = line0;
+  CGUIDialogUtils::progressDialogLine1 = line1;
+  CGUIDialogUtils::progressDialogLine2 = line2;
+  CGUIDialogUtils::progressDialogBarVisible = showBar;
+  CGUIDialogUtils::progressDialogPercentage = 0;
+  
   dialog->StartModal();
 }
 
 void CGUIDialogUtils::CloseProgressDialog()
 {
   CGUIDialogProgress *dialog = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-  if (dialog) dialog->Close(true);
+  if (dialog) 
+  {
+    dialog->Close(true);
+    CGUIDialogUtils::progressDialogIsVisible = false;
+  }
 }
 
 void CGUIDialogUtils::SetProgressDialogPercentage(int iPercentage)
@@ -59,22 +111,41 @@ void CGUIDialogUtils::SetProgressDialogPercentage(int iPercentage)
   {
     dialog->SetPercentage(iPercentage);
     dialog->Progress();
+    CGUIDialogUtils::progressDialogPercentage = iPercentage;
   }
 }
 
 void CGUIDialogUtils::SetProgressDialogLine(int iLine, const string &iString)
 {
   CGUIDialogProgress *dialog = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-  if (dialog) dialog->SetLine(iLine, iString);
+  if (dialog) 
+  {
+    dialog->SetLine(iLine, iString);
+    switch (iLine)
+    {
+      case 0: CGUIDialogUtils::progressDialogLine0 = iString; break;
+      case 1: CGUIDialogUtils::progressDialogLine1 = iString; break;
+      case 2: CGUIDialogUtils::progressDialogLine2 = iString;
+    }
+  }
 }
 
 void CGUIDialogUtils::SetProgressDialogBarVisible(bool iVisible)
 {
   CGUIDialogProgress *dialog = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-  if (dialog) dialog->ShowProgressBar(iVisible);
+  if (dialog)
+  {
+    dialog->ShowProgressBar(iVisible);
+    CGUIDialogUtils::progressDialogBarVisible = iVisible;
+  }
 }
 
 bool CGUIDialogUtils::ShowYesNoDialog(const string &heading, const string &line0, const string &line1, const string &line2)
 {
   return CGUIDialogYesNo::ShowAndGetInput(heading, line0, line1, line2);
+}
+
+void CGUIDialogUtils::QueueToast(const string &caption, const string &description)
+{
+  g_application.m_guiDialogKaiToast.QueueNotification(caption, description);
 }

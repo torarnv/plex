@@ -1,3 +1,4 @@
+#pragma once
 /*
  *  CocoaToCppThunk.h
  *  XBMC
@@ -12,7 +13,8 @@ extern "C"
 #endif
 
 void Cocoa_OnAppleRemoteKey(void* application, AppleRemoteEventIdentifier event, bool pressedDown, unsigned int count);
-
+void Cocoa_CPPSkinStateChanged();
+  
 #ifdef __cplusplus
 }
 #endif

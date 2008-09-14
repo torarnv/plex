@@ -450,6 +450,12 @@ CGUISettings::CGUISettings(void)
   AddBool(8, "masterlock.loginlock",20116,true);
   // hidden masterlock settings
   AddInt(0,"masterlock.maxretries", 12364, 3, 3, 1, 100, SPIN_CONTROL_TEXT);
+  
+  
+  // System update settings
+  AddCategory(4, "systemupdate", 40018);
+  AddString(1, "systemupdate.checknow", 40016, "", BUTTON_CONTROL_STANDARD);
+  AddBool(2, "systemupdate.alertsenabled", 40017, true);
 
   // video settings
   AddGroup(5, 3);

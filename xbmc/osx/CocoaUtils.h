@@ -97,6 +97,8 @@ extern "C"
   // Sparkle software update
   //
   void Cocoa_CheckForUpdates();
+  void Cocoa_CheckForUpdatesInBackground();
+  void Cocoa_SkinStateChanged();
 
 #ifdef __cplusplus
 }

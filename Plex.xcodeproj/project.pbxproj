@@ -7,9 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1A5485B50E7B01CB0025CA32 /* SUPlexUpdater.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1A5485B40E7B01CB0025CA32 /* SUPlexUpdater.mm */; };
-		1A5485E50E7B029C0025CA32 /* SUPlexUpdateDriver.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1A5485E40E7B029C0025CA32 /* SUPlexUpdateDriver.mm */; };
+		1A01F0530E7D2F3400DC186E /* plex in Resources */ = {isa = PBXBuildFile; fileRef = 1A01F0520E7D2F3400DC186E /* plex */; };
+		1A01F0FF0E7D37AA00DC186E /* SUPlexBackgroundUpdateCheckDriver.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1A01F0F90E7D37AA00DC186E /* SUPlexBackgroundUpdateCheckDriver.mm */; };
+		1A01F1000E7D37AA00DC186E /* SUPlexUpdateDriver.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1A01F0FB0E7D37AA00DC186E /* SUPlexUpdateDriver.mm */; };
+		1A01F1010E7D37AA00DC186E /* SUPlexUpdater.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1A01F0FD0E7D37AA00DC186E /* SUPlexUpdater.mm */; };
 		1A5487520E7B26830025CA32 /* GUIDialogUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A5487510E7B26830025CA32 /* GUIDialogUtils.cpp */; };
+		1AA4559B0E7D83C4004CC8D2 /* relaunch in Resources */ = {isa = PBXBuildFile; fileRef = 1AA4558A0E7D81B3004CC8D2 /* relaunch */; };
 		E336EF2F0E60256000270758 /* GUIViewStatePictures.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E336EF000E60250700270758 /* GUIViewStatePictures.cpp */; };
 		E336EF300E60256000270758 /* GUIViewStatePrograms.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E336EF020E60250700270758 /* GUIViewStatePrograms.cpp */; };
 		E336EF310E60256000270758 /* GUIViewStateScripts.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E336EF040E60250700270758 /* GUIViewStateScripts.cpp */; };
@@ -862,7 +865,6 @@
 		E3B963EF0E3864DB0022F663 /* RssFeed.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3B963ED0E3864DB0022F663 /* RssFeed.cpp */; };
 		E3C1A65D0E7126F400CE0104 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3C1A65C0E7126F400CE0104 /* Sparkle.framework */; };
 		E3C1A6610E71275B00CE0104 /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = E3C1A65C0E7126F400CE0104 /* Sparkle.framework */; };
-		E3C1A67D0E72862300CE0104 /* plex in Resources */ = {isa = PBXBuildFile; fileRef = E3C1A67C0E72862300CE0104 /* plex */; };
 		E3C1A6AA0E74E85C00CE0104 /* AsyncFileCopy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3C1A6A90E74E85C00CE0104 /* AsyncFileCopy.cpp */; };
 /* End PBXBuildFile section */
 
@@ -920,15 +922,24 @@
 
 /* Begin PBXFileReference section */
 		09AB6884FE841BABC02AAC07 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
-		1A5485B30E7B01CB0025CA32 /* SUPlexUpdater.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUPlexUpdater.h; sourceTree = "<group>"; };
-		1A5485B40E7B01CB0025CA32 /* SUPlexUpdater.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SUPlexUpdater.mm; sourceTree = "<group>"; };
-		1A5485E30E7B029C0025CA32 /* SUPlexUpdateDriver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUPlexUpdateDriver.h; sourceTree = "<group>"; };
-		1A5485E40E7B029C0025CA32 /* SUPlexUpdateDriver.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SUPlexUpdateDriver.mm; sourceTree = "<group>"; };
-		1A5485EF0E7B065B0025CA32 /* SUUpdateDriver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUUpdateDriver.h; sourceTree = "<group>"; };
+		1A01F0520E7D2F3400DC186E /* plex */ = {isa = PBXFileReference; lastKnownFileType = folder; path = plex; sourceTree = "<group>"; };
+		1A01F0F60E7D37AA00DC186E /* SUBasicUpdateDriver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUBasicUpdateDriver.h; sourceTree = "<group>"; };
+		1A01F0F70E7D37AA00DC186E /* SUHost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUHost.h; sourceTree = "<group>"; };
+		1A01F0F80E7D37AA00DC186E /* SUPlexBackgroundUpdateCheckDriver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUPlexBackgroundUpdateCheckDriver.h; sourceTree = "<group>"; };
+		1A01F0F90E7D37AA00DC186E /* SUPlexBackgroundUpdateCheckDriver.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SUPlexBackgroundUpdateCheckDriver.mm; sourceTree = "<group>"; };
+		1A01F0FA0E7D37AA00DC186E /* SUPlexUpdateDriver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUPlexUpdateDriver.h; sourceTree = "<group>"; };
+		1A01F0FB0E7D37AA00DC186E /* SUPlexUpdateDriver.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SUPlexUpdateDriver.mm; sourceTree = "<group>"; };
+		1A01F0FC0E7D37AA00DC186E /* SUPlexUpdater.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUPlexUpdater.h; sourceTree = "<group>"; };
+		1A01F0FD0E7D37AA00DC186E /* SUPlexUpdater.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SUPlexUpdater.mm; sourceTree = "<group>"; };
+		1A01F0FE0E7D37AA00DC186E /* SUUpdateDriver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUUpdateDriver.h; sourceTree = "<group>"; };
 		1A5487500E7B26830025CA32 /* GUIDialogUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogUtils.h; sourceTree = "<group>"; };
 		1A5487510E7B26830025CA32 /* GUIDialogUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogUtils.cpp; sourceTree = "<group>"; };
-		1A5487F60E7B36EF0025CA32 /* SUBasicUpdateDriver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUBasicUpdateDriver.h; sourceTree = "<group>"; };
-		1A5488010E7B39F30025CA32 /* SUHost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUHost.h; sourceTree = "<group>"; };
+		1AA4556A0E7D7A99004CC8D2 /* SUInstaller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUInstaller.h; sourceTree = "<group>"; };
+		1AA4558A0E7D81B3004CC8D2 /* relaunch */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = relaunch; sourceTree = "<group>"; };
+		1AA455C60E7D8BAA004CC8D2 /* SUPlexInstaller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUPlexInstaller.h; sourceTree = "<group>"; };
+		1AA455C70E7D8BAA004CC8D2 /* SUPlexInstaller.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SUPlexInstaller.m; sourceTree = "<group>"; };
+		1AA456010E7D94FC004CC8D2 /* SUPlainInstaller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SUPlainInstaller.h; path = "../../../Downloads/Sparkle 1.5b5/Extras/Source Code/SUPlainInstaller.h"; sourceTree = SOURCE_ROOT; };
+		1AA456120E7D961D004CC8D2 /* SUConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SUConstants.h; path = "../../../Downloads/Sparkle 1.5b5/Extras/Source Code/SUConstants.h"; sourceTree = SOURCE_ROOT; };
 		6E97BDBC0DA2B5D8003A2A89 /* GUIInfoColor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIInfoColor.cpp; sourceTree = "<group>"; };
 		6E97BDBD0DA2B5D8003A2A89 /* GUIInfoColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIInfoColor.h; sourceTree = "<group>"; };
 		6E97BDBF0DA2B620003A2A89 /* EventClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventClient.h; sourceTree = "<group>"; };
@@ -2955,7 +2966,6 @@
 		E3BBB7980D7EA78A00CAAFD3 /* CMythSession.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CMythSession.cpp; sourceTree = "<group>"; };
 		E3BBB7A10D7EA8B200CAAFD3 /* libpcre.0.0.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpcre.0.0.1.dylib; path = ../../../../../opt/local/lib/libpcre.0.0.1.dylib; sourceTree = SOURCE_ROOT; };
 		E3C1A65C0E7126F400CE0104 /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Sparkle.framework; path = plex/Frameworks/Sparkle.framework; sourceTree = "<group>"; };
-		E3C1A67C0E72862300CE0104 /* plex */ = {isa = PBXFileReference; lastKnownFileType = folder; path = plex; sourceTree = "<group>"; };
 		E3C1A6A80E74E85C00CE0104 /* AsyncFileCopy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AsyncFileCopy.h; sourceTree = "<group>"; };
 		E3C1A6A90E74E85C00CE0104 /* AsyncFileCopy.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AsyncFileCopy.cpp; sourceTree = "<group>"; };
 		E3D4B9950DF7E39B0092A179 /* FileShoutcast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileShoutcast.h; sourceTree = "<group>"; };
@@ -3079,6 +3089,7 @@
 				E371CBB00E3044D900FBF841 /* Plex.icns */,
 				08FB7795FE84155DC02AAC07 /* Source */,
 				C6859E96029091FE04C91782 /* Documentation */,
+				1AA455770E7D816B004CC8D2 /* Resources */,
 				08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */,
 				19C28FBDFE9D53C911CA2CBB /* Products */,
 				E371C1160E2F130900FBF841 /* Plex.xib */,
@@ -3092,7 +3103,7 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				E3C1A66F0E7285EA00CE0104 /* Plex */,
+				1A01F0510E7D2EE300DC186E /* Plex */,
 				E38E13890D25F9F900618676 /* guilib */,
 				E38E14610D25F9F900618676 /* xbmc */,
 			);
@@ -3168,6 +3179,52 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		1A01F0510E7D2EE300DC186E /* Plex */ = {
+			isa = PBXGroup;
+			children = (
+				1A01F0980E7D326500DC186E /* Sparkle */,
+				1A01F0520E7D2F3400DC186E /* plex */,
+			);
+			name = Plex;
+			sourceTree = "<group>";
+		};
+		1A01F0980E7D326500DC186E /* Sparkle */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Sparkle;
+			sourceTree = "<group>";
+		};
+		1A01F0F50E7D379500DC186E /* Sparkle */ = {
+			isa = PBXGroup;
+			children = (
+				1AA456120E7D961D004CC8D2 /* SUConstants.h */,
+				1AA456010E7D94FC004CC8D2 /* SUPlainInstaller.h */,
+				1AA4556A0E7D7A99004CC8D2 /* SUInstaller.h */,
+				1A01F0F60E7D37AA00DC186E /* SUBasicUpdateDriver.h */,
+				1A01F0F70E7D37AA00DC186E /* SUHost.h */,
+				1A01F0F80E7D37AA00DC186E /* SUPlexBackgroundUpdateCheckDriver.h */,
+				1A01F0F90E7D37AA00DC186E /* SUPlexBackgroundUpdateCheckDriver.mm */,
+				1A01F0FA0E7D37AA00DC186E /* SUPlexUpdateDriver.h */,
+				1A01F0FB0E7D37AA00DC186E /* SUPlexUpdateDriver.mm */,
+				1A01F0FC0E7D37AA00DC186E /* SUPlexUpdater.h */,
+				1A01F0FD0E7D37AA00DC186E /* SUPlexUpdater.mm */,
+				1A01F0FE0E7D37AA00DC186E /* SUUpdateDriver.h */,
+				1AA455C60E7D8BAA004CC8D2 /* SUPlexInstaller.h */,
+				1AA455C70E7D8BAA004CC8D2 /* SUPlexInstaller.m */,
+			);
+			name = Sparkle;
+			sourceTree = "<group>";
+		};
+		1AA455770E7D816B004CC8D2 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				1AA4558A0E7D81B3004CC8D2 /* relaunch */,
+			);
+			name = Resources;
+			path = plex;
+			sourceTree = "<group>";
+		};
 		810C9F5F0D67BCC80095F5DD /* MediaConnect */ = {
 			isa = PBXGroup;
 			children = (
@@ -3237,6 +3294,7 @@
 		E37D5CB40D3023BB0081D327 /* osx */ = {
 			isa = PBXGroup;
 			children = (
+				1A01F0F50E7D379500DC186E /* Sparkle */,
 				1A5487500E7B26830025CA32 /* GUIDialogUtils.h */,
 				1A5487510E7B26830025CA32 /* GUIDialogUtils.cpp */,
 				EFF083260E11614A004114E6 /* Info.plist */,
@@ -6232,21 +6290,6 @@
 			path = libRTMP;
 			sourceTree = "<group>";
 		};
-		E3C1A66F0E7285EA00CE0104 /* Plex */ = {
-			isa = PBXGroup;
-			children = (
-				E3C1A67C0E72862300CE0104 /* plex */,
-				1A5485B30E7B01CB0025CA32 /* SUPlexUpdater.h */,
-				1A5485B40E7B01CB0025CA32 /* SUPlexUpdater.mm */,
-				1A5485E30E7B029C0025CA32 /* SUPlexUpdateDriver.h */,
-				1A5485E40E7B029C0025CA32 /* SUPlexUpdateDriver.mm */,
-				1A5485EF0E7B065B0025CA32 /* SUUpdateDriver.h */,
-				1A5488010E7B39F30025CA32 /* SUHost.h */,
-				1A5487F60E7B36EF0025CA32 /* SUBasicUpdateDriver.h */,
-			);
-			name = Plex;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -6331,7 +6374,8 @@
 			files = (
 				E371CB160E2F39CD00FBF841 /* Plex.xib in Resources */,
 				E371CBB10E3044D900FBF841 /* Plex.icns in Resources */,
-				E3C1A67D0E72862300CE0104 /* plex in Resources */,
+				1A01F0530E7D2F3400DC186E /* plex in Resources */,
+				1AA4559B0E7D83C4004CC8D2 /* relaunch in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7149,9 +7193,10 @@
 				E336EF4C0E602A8B00270758 /* GUIDialogFullScreenInfo.cpp in Sources */,
 				E336F09F0E62D36200270758 /* FileMMS.cpp in Sources */,
 				E3C1A6AA0E74E85C00CE0104 /* AsyncFileCopy.cpp in Sources */,
-				1A5485B50E7B01CB0025CA32 /* SUPlexUpdater.mm in Sources */,
-				1A5485E50E7B029C0025CA32 /* SUPlexUpdateDriver.mm in Sources */,
 				1A5487520E7B26830025CA32 /* GUIDialogUtils.cpp in Sources */,
+				1A01F0FF0E7D37AA00DC186E /* SUPlexBackgroundUpdateCheckDriver.mm in Sources */,
+				1A01F1000E7D37AA00DC186E /* SUPlexUpdateDriver.mm in Sources */,
+				1A01F1010E7D37AA00DC186E /* SUPlexUpdater.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7220,6 +7265,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = "";
 				PREBINDING = NO;
+				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = NO;
 				SDKROOT = macosx10.5;
 			};
 			name = Debug;
