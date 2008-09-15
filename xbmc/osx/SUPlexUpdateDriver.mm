@@ -182,11 +182,29 @@ static BOOL AuthorizationExecuteWithPrivilegesAndWait(AuthorizationRef authoriza
 	}
 }
 
+- (void)abortUpdateWithError:(NSError *)error
+{
+	// Alert the user if the update was aborted
+  if ([error code] != SUNoUpdateError) // Let's not bother logging this.
+  {
+    // Display a basic error message 
+    CGUIDialogUtils::ShowOKDialog(CGUIDialogUtils::Localize(40012), CGUIDialogUtils::Localize(40013),  [[error localizedDescription] UTF8String], CGUIDialogUtils::Localize(40014));
+    NSLog(@"Sparkle Error: %@", [error localizedDescription]);
+  }
+  
+  // Log more details to the console
+	if ([error localizedFailureReason])
+		NSLog(@"Sparkle Error (continued): %@", [error localizedFailureReason]);
+	if (download)
+		[download cancel];
+
+	[self abortUpdate];
+}
+
 - (void)abortUpdate
 {
-  // Alert the user if the update was aborted
+  // If the update stops for any reason, make sure the progress dialog is closed
   CGUIDialogUtils::CloseProgressDialog();
-  CGUIDialogUtils::ShowOKDialog(CGUIDialogUtils::Localize(40012), CGUIDialogUtils::Localize(40013),  CGUIDialogUtils::Localize(40014), "");
   [super abortUpdate];
 }
 

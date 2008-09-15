@@ -234,6 +234,7 @@
 #ifdef __APPLE__
 #include "CocoaUtils.h"
 #include "XBMCHelper.h"
+#include "GUIDialogUtils.h"
 #endif
 #ifdef HAS_HAL
 #include "linux/LinuxFileSystem.h"
@@ -1512,16 +1513,6 @@ HRESULT CApplication::Create(HWND hWnd)
   if (!m_bQuiet)
     m_bQuiet = !g_guiSettings.GetBool("system.debuglogging");
   
-  // Check for updates & alert the user if a new version is available
-  if (g_guiSettings.GetBool("softwareupdate.alertsenabled"))
-  {
-    switch(g_guiSettings.GetInt("softwareupdate.alerttype"))
-    {
-      case 0: Cocoa_CheckForUpdatesInBackground(); break;
-      case 1: Cocoa_CheckForUpdatesInBackgroundAndAsk();
-    }
-  }
-
   return CXBApplicationEx::Create(hWnd);
 }
 
@@ -2080,6 +2071,28 @@ HRESULT CApplication::Initialize()
 
   // final check for debugging combo
   CheckForDebugButtonCombo();
+  
+  // On first run, ask if the user wants to enable auto update checks
+  if (g_guiSettings.GetBool("softwareupdate.firstrun"))
+  {
+    g_guiSettings.SetBool("softwareupdate.firstrun", false);
+    bool userWantsAlerts = CGUIDialogUtils::ShowYesNoDialog(CGUIDialogUtils::Localize(40022),
+                                                            CGUIDialogUtils::Localize(40023),
+                                                            CGUIDialogUtils::Localize(40024),
+                                                            "");
+    g_guiSettings.SetBool("softwareupdate.alertsenabled", userWantsAlerts);
+  }
+  
+  // Check for updates & alert the user if a new version is available
+  if (g_guiSettings.GetBool("softwareupdate.alertsenabled"))
+  {
+    switch(g_guiSettings.GetInt("softwareupdate.alerttype"))
+    {
+      case 0: Cocoa_CheckForUpdatesInBackground(); break;
+      case 1: Cocoa_CheckForUpdatesInBackgroundAndAsk();
+    }  
+  }
+  
   return S_OK;
 }
 

@@ -2009,5 +2009,8 @@
   <string id="40019">- If updates are available</string>
   <string id="40020">show a notification</string>
   <string id="40021">ask to install</string>
+  <string id="40022">Enable Automatic Update Check?</string>
+  <string id="40023">Would you like Plex to alert you when updates</string>
+  <string id="40024">are available?</string>
     
 </strings>

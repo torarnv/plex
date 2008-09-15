@@ -457,6 +457,7 @@ CGUISettings::CGUISettings(void)
   AddBool(2, "softwareupdate.alertsenabled", 40017, true);
   //AddInt(<#int iOrder#>, <#const char * strSetting#>, <#int iLabel#>, <#int fSetting#>, <#int iMin#>, <#int iStep#>, <#int iMax#>, <#int iControlType#>, <#const char * strFormat#>)
   AddInt(3, "softwareupdate.alerttype", 40019, UPDATE_NOTIFY, UPDATE_NOTIFY, 1, UPDATE_ASK, SPIN_CONTROL_TEXT);
+  AddBool(0, "softwareupdate.firstrun", 40000, true);
 
   // video settings
   AddGroup(5, 3);
