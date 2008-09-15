@@ -11,6 +11,7 @@
 #import "GUIDialogUtils.h"
 #import <objc/objc-runtime.h>
 
+
 @implementation SUPlexUpdater
 
 + (SUPlexUpdater*)sharedInstance
@@ -23,9 +24,9 @@
   g_plexUpdater = (id)self;
 }
 
-- (IBAction)checkForUpdatesWithUI:(id)sender
+- (BOOL)checkForUpdatesWithPlexDriver:(SUUpdateDriver*)plexDriver
 {
-  // Override the default method to use our custom update driver.
+  // Override the default method to use our custom update drivers.
   // checkForUpdatesWithDriver: is a private method, so check the object
   // will respond before sending the message to prevent compiler warnings
   [self resetUpdateCycle];
@@ -37,17 +38,32 @@
       [driver release];
       driver = nil;
     }
-    CGUIDialogUtils::StartProgressDialog(CGUIDialogUtils::Localize(40000), CGUIDialogUtils::Localize(40015), "", "", false);
-    objc_msgSend(self, selector, [[[SUPlexUpdateDriver alloc] initWithUpdater:self] autorelease]);
+    objc_msgSend(self, selector, plexDriver);
+    return true;
   }
+  return false;
+}
+
+- (IBAction)checkForUpdatesWithUI:(id)sender
+{
+  if ([self checkForUpdatesWithPlexDriver:[[[SUPlexUpdateDriver alloc] initWithUpdater:self] autorelease]])
+    CGUIDialogUtils::StartProgressDialog(CGUIDialogUtils::Localize(40000), CGUIDialogUtils::Localize(40015), "", "", false);
 }
 
 - (void)checkForUpdatesInBackground
 {
+  /*
   [self resetUpdateCycle];
   SEL selector = @selector(checkForUpdatesWithDriver:);
   if ([self respondsToSelector:selector])
     objc_msgSend(self, selector, [[[SUPlexBackgroundUpdateCheckDriver alloc] initWithUpdater:self] autorelease]);
+   */
+  [self checkForUpdatesWithPlexDriver:[[[SUPlexBackgroundUpdateCheckDriver alloc] initWithUpdater:self] autorelease]];
+}
+
+- (void)checkForUpdatesInBackgroundAndAsk
+{
+  [self checkForUpdatesWithPlexDriver:[[[SUPlexUpdateDriver alloc] initWithUpdater:self] autorelease]];
 }
 
 //

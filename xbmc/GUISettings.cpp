@@ -451,11 +451,12 @@ CGUISettings::CGUISettings(void)
   // hidden masterlock settings
   AddInt(0,"masterlock.maxretries", 12364, 3, 3, 1, 100, SPIN_CONTROL_TEXT);
   
-  
-  // System update settings
-  AddCategory(4, "systemupdate", 40018);
-  AddString(1, "systemupdate.checknow", 40016, "", BUTTON_CONTROL_STANDARD);
-  AddBool(2, "systemupdate.alertsenabled", 40017, true);
+  // Software update settings
+  AddCategory(4, "softwareupdate", 40018);
+  AddString(1, "softwareupdate.checknow", 40016, "", BUTTON_CONTROL_STANDARD);
+  AddBool(2, "softwareupdate.alertsenabled", 40017, true);
+  //AddInt(<#int iOrder#>, <#const char * strSetting#>, <#int iLabel#>, <#int fSetting#>, <#int iMin#>, <#int iStep#>, <#int iMax#>, <#int iControlType#>, <#const char * strFormat#>)
+  AddInt(3, "softwareupdate.alerttype", 40019, UPDATE_NOTIFY, UPDATE_NOTIFY, 1, UPDATE_ASK, SPIN_CONTROL_TEXT);
 
   // video settings
   AddGroup(5, 3);

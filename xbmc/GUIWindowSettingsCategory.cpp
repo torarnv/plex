@@ -936,6 +936,14 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(12020), RESUME_ASK);
       pControl->SetValue(pSettingInt->GetData());
     }
+    else if (strSetting.Equals("softwareupdate.alerttype"))
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->AddLabel(g_localizeStrings.Get(40020), UPDATE_NOTIFY);
+      pControl->AddLabel(g_localizeStrings.Get(40021), UPDATE_ASK);
+      pControl->SetValue(pSettingInt->GetData());
+    }
   }
 
   if (m_vecSections[m_iSection]->m_strCategory == "network")
@@ -954,7 +962,15 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     CBaseSettingControl *pSettingControl = m_vecSettings[i];
     pSettingControl->Update();
     CStdString strSetting = pSettingControl->GetSetting()->GetSetting();
-    if (strSetting.Equals("videoscreen.testresolution"))
+    if (strSetting.Equals("softwareupdate.alerttype"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl)
+      {
+        pControl->SetEnabled(g_guiSettings.GetBool("softwareupdate.alertsenabled"));
+      }
+    }
+    else if (strSetting.Equals("videoscreen.testresolution"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl)
@@ -2487,7 +2503,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   {
     g_fontManager.ReloadTTFFonts();
   }
-  else if (strSetting.Equals("systemupdate.checknow"))
+  else if (strSetting.Equals("softwareupdate.checknow"))
   {
     Cocoa_CheckForUpdates();
   }

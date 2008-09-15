@@ -741,6 +741,11 @@ void Cocoa_CheckForUpdatesInBackground()
   [[SUPlexUpdater sharedInstance] checkForUpdatesInBackground];
 }
 
+void Cocoa_CheckForUpdatesInBackgroundAndAsk()
+{
+  [[SUPlexUpdater sharedInstance] checkForUpdatesInBackgroundAndAsk];
+}
+
 void Cocoa_SkinStateChanged()
 {
   Cocoa_CPPSkinStateChanged();

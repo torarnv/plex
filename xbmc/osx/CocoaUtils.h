@@ -98,6 +98,7 @@ extern "C"
   //
   void Cocoa_CheckForUpdates();
   void Cocoa_CheckForUpdatesInBackground();
+  void Cocoa_CheckForUpdatesInBackgroundAndAsk();
   void Cocoa_SkinStateChanged();
 
 #ifdef __cplusplus

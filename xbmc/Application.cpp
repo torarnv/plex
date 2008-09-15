@@ -1513,7 +1513,14 @@ HRESULT CApplication::Create(HWND hWnd)
     m_bQuiet = !g_guiSettings.GetBool("system.debuglogging");
   
   // Check for updates & alert the user if a new version is available
-  Cocoa_CheckForUpdatesInBackground();
+  if (g_guiSettings.GetBool("softwareupdate.alertsenabled"))
+  {
+    switch(g_guiSettings.GetInt("softwareupdate.alerttype"))
+    {
+      case 0: Cocoa_CheckForUpdatesInBackground(); break;
+      case 1: Cocoa_CheckForUpdatesInBackgroundAndAsk();
+    }
+  }
 
   return CXBApplicationEx::Create(hWnd);
 }

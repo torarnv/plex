@@ -17,5 +17,6 @@ id g_plexUpdater;
 
 + (SUPlexUpdater*)sharedInstance;
 - (IBAction)checkForUpdatesWithUI:(id)sender;
+- (void)checkForUpdatesInBackgroundAndAsk;
 
 @end
