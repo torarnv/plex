@@ -12,7 +12,7 @@
 id g_plexUpdater;
 
 @interface SUPlexUpdater : SUUpdater {
-
+  int updateAlertType;
 }
 
 + (SUPlexUpdater*)sharedInstance;

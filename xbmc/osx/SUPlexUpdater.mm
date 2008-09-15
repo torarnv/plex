@@ -52,12 +52,6 @@
 
 - (void)checkForUpdatesInBackground
 {
-  /*
-  [self resetUpdateCycle];
-  SEL selector = @selector(checkForUpdatesWithDriver:);
-  if ([self respondsToSelector:selector])
-    objc_msgSend(self, selector, [[[SUPlexBackgroundUpdateCheckDriver alloc] initWithUpdater:self] autorelease]);
-   */
   [self checkForUpdatesWithPlexDriver:[[[SUPlexBackgroundUpdateCheckDriver alloc] initWithUpdater:self] autorelease]];
 }
 
