@@ -4701,7 +4701,6 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
     dbs.Close();
   }
 
-  if (m_pPlayer) SAFE_DELETE(m_pPlayer);
 
   // calculate the total time of the stack
   CStackDirectory dir;
@@ -4725,9 +4724,6 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
     }
   }
 
-  *m_itemCurrentFile = item;
-  m_currentStackPosition = 0;
-
   double seconds = item.m_lStartOffset / 75.0;
 
   if (!haveTimes || item.m_lStartOffset == STARTOFFSET_RESUME )
@@ -4749,6 +4745,12 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
       dbs.Close();
     }
   }
+
+  m_bPlaybackStarting = true;
+  if (m_pPlayer) SAFE_DELETE(m_pPlayer);
+  *m_itemCurrentFile = item;
+  m_currentStackPosition = 0;
+  m_eCurrentPlayer = EPC_NONE; // must be reset on initial play otherwise last player will be used 
 
   if (seconds > 0)
   {
@@ -4911,7 +4913,6 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 #endif
 
   // tell system we are starting a file
-  while(m_vPlaybackStarting.size()) m_vPlaybackStarting.pop();
   m_bPlaybackStarting = true;
 
   // We should restart the player, unless the previous and next tracks are using
