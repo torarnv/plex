@@ -11,8 +11,10 @@
 		1A01F0FF0E7D37AA00DC186E /* SUPlexBackgroundUpdateCheckDriver.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1A01F0F90E7D37AA00DC186E /* SUPlexBackgroundUpdateCheckDriver.mm */; };
 		1A01F1000E7D37AA00DC186E /* SUPlexUpdateDriver.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1A01F0FB0E7D37AA00DC186E /* SUPlexUpdateDriver.mm */; };
 		1A01F1010E7D37AA00DC186E /* SUPlexUpdater.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1A01F0FD0E7D37AA00DC186E /* SUPlexUpdater.mm */; };
+		1A2C5DE90E7EF479002F23FA /* relaunch.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A2C5DE80E7EF479002F23FA /* relaunch.m */; };
+		1A2C5DEC0E7EF4BD002F23FA /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A2C5DEB0E7EF4BD002F23FA /* AppKit.framework */; };
+		1A2C5DF70E7EF598002F23FA /* relaunch in Copy Relaunch (1) */ = {isa = PBXBuildFile; fileRef = 1A2C5DE30E7EF410002F23FA /* relaunch */; };
 		1A5487520E7B26830025CA32 /* GUIDialogUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A5487510E7B26830025CA32 /* GUIDialogUtils.cpp */; };
-		1AA4559B0E7D83C4004CC8D2 /* relaunch in Resources */ = {isa = PBXBuildFile; fileRef = 1AA4558A0E7D81B3004CC8D2 /* relaunch */; };
 		1AA456B70E7EA3DD004CC8D2 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AA456B60E7EA3DD004CC8D2 /* Security.framework */; };
 		E336EF2F0E60256000270758 /* GUIViewStatePictures.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E336EF000E60250700270758 /* GUIViewStatePictures.cpp */; };
 		E336EF300E60256000270758 /* GUIViewStatePrograms.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E336EF020E60250700270758 /* GUIViewStatePrograms.cpp */; };
@@ -870,6 +872,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		1A2C5DF00E7EF50A002F23FA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1A2C5DE20E7EF410002F23FA /* relaunch */;
+			remoteInfo = relaunch;
+		};
 		E371CC570E34193E00FBF841 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
@@ -887,6 +896,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		1A2C5DF60E7EF593002F23FA /* Copy Relaunch (1) */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 7;
+			files = (
+				1A2C5DF70E7EF598002F23FA /* relaunch in Copy Relaunch (1) */,
+			);
+			name = "Copy Relaunch (1)";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E38AABC60E5D472500C1B750 /* Copy CrashReporter */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -934,9 +954,11 @@
 		1A01F0FD0E7D37AA00DC186E /* SUPlexUpdater.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SUPlexUpdater.mm; sourceTree = "<group>"; };
 		1A01F0FE0E7D37AA00DC186E /* SUUpdateDriver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUUpdateDriver.h; sourceTree = "<group>"; };
 		1A2C5DBB0E7EE410002F23FA /* SUInstaller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUInstaller.h; sourceTree = "<group>"; };
+		1A2C5DE30E7EF410002F23FA /* relaunch */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = relaunch; sourceTree = BUILT_PRODUCTS_DIR; };
+		1A2C5DE80E7EF479002F23FA /* relaunch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = relaunch.m; sourceTree = "<group>"; };
+		1A2C5DEB0E7EF4BD002F23FA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		1A5487500E7B26830025CA32 /* GUIDialogUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogUtils.h; sourceTree = "<group>"; };
 		1A5487510E7B26830025CA32 /* GUIDialogUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogUtils.cpp; sourceTree = "<group>"; };
-		1AA4558A0E7D81B3004CC8D2 /* relaunch */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = relaunch; sourceTree = "<group>"; };
 		1AA456010E7D94FC004CC8D2 /* SUPlainInstaller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SUPlainInstaller.h; path = "../../../Downloads/Sparkle 1.5b5/Extras/Source Code/SUPlainInstaller.h"; sourceTree = SOURCE_ROOT; };
 		1AA456B20E7EA2E7004CC8D2 /* SUConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUConstants.h; sourceTree = "<group>"; };
 		1AA456B60E7EA3DD004CC8D2 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
@@ -2995,6 +3017,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		1A2C5DE10E7EF410002F23FA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1A2C5DEC0E7EF4BD002F23FA /* AppKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E371C1DD0E2F2AC300FBF841 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -3090,13 +3120,13 @@
 				E371CBB00E3044D900FBF841 /* Plex.icns */,
 				08FB7795FE84155DC02AAC07 /* Source */,
 				C6859E96029091FE04C91782 /* Documentation */,
-				1AA455770E7D816B004CC8D2 /* Resources */,
 				08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */,
 				19C28FBDFE9D53C911CA2CBB /* Products */,
 				E371C1160E2F130900FBF841 /* Plex.xib */,
 				E371C1E10E2F2AC300FBF841 /* Plex-Info.plist */,
 				E38AAB580E5D444500C1B750 /* Carbon.framework */,
 				E38AABBF0E5D46AE00C1B750 /* libz.dylib */,
+				1A2C5DEB0E7EF4BD002F23FA /* AppKit.framework */,
 			);
 			name = XBMC;
 			sourceTree = "<group>";
@@ -3177,6 +3207,7 @@
 				E371C1DF0E2F2AC300FBF841 /* Plex.app */,
 				E371CBF20E32927F00FBF841 /* PlexHelper */,
 				E38AAB430E5D438B00C1B750 /* CrashReporter */,
+				1A2C5DE30E7EF410002F23FA /* relaunch */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -3184,22 +3215,15 @@
 		1A01F0510E7D2EE300DC186E /* Plex */ = {
 			isa = PBXGroup;
 			children = (
-				1A01F0980E7D326500DC186E /* Sparkle */,
 				1A01F0520E7D2F3400DC186E /* plex */,
 			);
 			name = Plex;
 			sourceTree = "<group>";
 		};
-		1A01F0980E7D326500DC186E /* Sparkle */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Sparkle;
-			sourceTree = "<group>";
-		};
 		1A01F0F50E7D379500DC186E /* Sparkle */ = {
 			isa = PBXGroup;
 			children = (
+				1A2C5DE80E7EF479002F23FA /* relaunch.m */,
 				1AA457080E7EBD50004CC8D2 /* Headers */,
 				1A01F0F80E7D37AA00DC186E /* SUPlexBackgroundUpdateCheckDriver.h */,
 				1A01F0F90E7D37AA00DC186E /* SUPlexBackgroundUpdateCheckDriver.mm */,
@@ -3210,15 +3234,6 @@
 				1A01F0FE0E7D37AA00DC186E /* SUUpdateDriver.h */,
 			);
 			name = Sparkle;
-			sourceTree = "<group>";
-		};
-		1AA455770E7D816B004CC8D2 /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				1AA4558A0E7D81B3004CC8D2 /* relaunch */,
-			);
-			name = Resources;
-			path = plex;
 			sourceTree = "<group>";
 		};
 		1AA457080E7EBD50004CC8D2 /* Headers */ = {
@@ -6301,6 +6316,22 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		1A2C5DE20E7EF410002F23FA /* relaunch */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1A2C5DE70E7EF435002F23FA /* Build configuration list for PBXNativeTarget "relaunch" */;
+			buildPhases = (
+				1A2C5DE00E7EF410002F23FA /* Sources */,
+				1A2C5DE10E7EF410002F23FA /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = relaunch;
+			productName = relaunch;
+			productReference = 1A2C5DE30E7EF410002F23FA /* relaunch */;
+			productType = "com.apple.product-type.tool";
+		};
 		E371C1DE0E2F2AC300FBF841 /* Plex */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = E371C1E40E2F2AC400FBF841 /* Build configuration list for PBXNativeTarget "Plex" */;
@@ -6312,12 +6343,14 @@
 				E38AABC60E5D472500C1B750 /* Copy CrashReporter */,
 				E38AABD00E5D489900C1B750 /* Copy PlexHelper */,
 				E3C1A66C0E71276000CE0104 /* CopyFiles */,
+				1A2C5DF60E7EF593002F23FA /* Copy Relaunch (1) */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				E371CC580E34193E00FBF841 /* PBXTargetDependency */,
 				E38AAB480E5D43A100C1B750 /* PBXTargetDependency */,
+				1A2C5DF10E7EF50A002F23FA /* PBXTargetDependency */,
 			);
 			name = Plex;
 			productName = Plex;
@@ -6371,6 +6404,7 @@
 				E371C1DE0E2F2AC300FBF841 /* Plex */,
 				E371CBF10E32927F00FBF841 /* PlexHelper */,
 				E38AAB420E5D438B00C1B750 /* CrashReporter */,
+				1A2C5DE20E7EF410002F23FA /* relaunch */,
 			);
 		};
 /* End PBXProject section */
@@ -6383,7 +6417,6 @@
 				E371CB160E2F39CD00FBF841 /* Plex.xib in Resources */,
 				E371CBB10E3044D900FBF841 /* Plex.icns in Resources */,
 				1A01F0530E7D2F3400DC186E /* plex in Resources */,
-				1AA4559B0E7D83C4004CC8D2 /* relaunch in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6407,6 +6440,14 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		1A2C5DE00E7EF410002F23FA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1A2C5DE90E7EF479002F23FA /* relaunch.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E371C1DC0E2F2AC300FBF841 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -7227,6 +7268,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		1A2C5DF10E7EF50A002F23FA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1A2C5DE20E7EF410002F23FA /* relaunch */;
+			targetProxy = 1A2C5DF00E7EF50A002F23FA /* PBXContainerItemProxy */;
+		};
 		E371CC580E34193E00FBF841 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = E371CBF10E32927F00FBF841 /* PlexHelper */;
@@ -7240,6 +7286,36 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		1A2C5DE50E7EF411002F23FA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = /usr/local/bin;
+				PREBINDING = NO;
+				PRODUCT_NAME = relaunch;
+			};
+			name = Debug;
+		};
+		1A2C5DE60E7EF411002F23FA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				PREBINDING = NO;
+				PRODUCT_NAME = relaunch;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
 		1DEB924C08733DCA0010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -7591,6 +7667,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		1A2C5DE70E7EF435002F23FA /* Build configuration list for PBXNativeTarget "relaunch" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1A2C5DE50E7EF411002F23FA /* Debug */,
+				1A2C5DE60E7EF411002F23FA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		1DEB924B08733DCA0010E9CD /* Build configuration list for PBXProject "Plex" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
