@@ -60,7 +60,7 @@ PortAudioDirectSound::PortAudioDirectSound(IAudioCallback* pCallback, int iChann
 	{
 		// Enable AC3 passthrough for digital devices	
 		int mpeg_remapping = 0;
-		if (strAudioCodec == "AAC") mpeg_remapping = 1;
+		if (strAudioCodec == "AAC" || strAudioCodec == "DTS") mpeg_remapping = 1; // DTS uses MPEG channel mapping
 		ac3encoder_init(&m_ac3encoder, iChannels, uiSamplesPerSec, uiBitsPerSample, mpeg_remapping);
 		m_bEncodeAC3 = true;
 		m_bPassthrough = true;
@@ -277,8 +277,8 @@ DWORD PortAudioDirectSound::AddPackets(unsigned char *data, DWORD len)
   //
   if (samplesToWrite > samplesPassedIn)
 	  samplesToWrite = samplesPassedIn;
-	
-  if (m_bEncodeAC3)
+//#warning AC3 disabled
+	if (m_bEncodeAC3)
   {	  
 	  int ac3_frame_count = 0;
 	  if ((ac3_frame_count = ac3encoder_write_samples(&m_ac3encoder, pcmPtr, samplesToWrite)) == 0)
