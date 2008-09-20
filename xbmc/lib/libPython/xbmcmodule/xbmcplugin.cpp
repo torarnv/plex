@@ -279,15 +279,102 @@ namespace PYXBMC
     Py_INCREF(Py_None);
     return Py_None;
   }
-  
+
+  PyDoc_STRVAR(setPluginFanart__doc__,
+    "setPluginFanart(handle, image, color1, color2, color3) -- Sets the plugins fanart and color for skins to display.\n"
+    "\n"
+    "handle      : integer - handle the plugin was started with.\n"
+    "image       : [opt] string - path to fanart image.\n"
+    "color1      : [opt] hexstring - color1. (e.g. '0xFFFFFFFF')\n"
+    "color2      : [opt] hexstring - color2. (e.g. '0xFFFF3300')\n"
+    "color3      : [opt] hexstring - color3. (e.g. '0xFF000000')\n"
+    "\n"
+    "*Note, You can use the above as keywords for arguments.\n"
+    "\n"
+    "example:\n"
+    "  - xbmcplugin.setPluginFanart(int(sys.argv[1]), 'q:\\\\plugins\\\\Apple movie trailers II\\\\fanart.png', color2='0xFFFF3300')\n");
+
+  PyObject* XBMCPLUGIN_SetPluginFanart(PyTypeObject *type, PyObject *args, PyObject *kwds)
+  {
+    static const char *keywords[] = { "handle", "image", "color1", "color2", "color3", NULL };
+    int handle = -1;
+    char *image = NULL;
+    char *color1 = NULL;
+    char *color2 = NULL;
+    char *color3 = NULL;
+    // parse arguments to constructor
+    if (!PyArg_ParseTupleAndKeywords(
+      args,
+      kwds,
+      (char*)"i|ssss",
+      (char**)keywords,
+      &handle,
+      &image,
+      &color1,
+      &color2,
+      &color3
+      ))
+    {
+      return NULL;
+    };
+
+    if (image)
+      DIRECTORY::CPluginDirectory::SetProperty(handle, "fanart_image", image);
+    if (color1)
+      DIRECTORY::CPluginDirectory::SetProperty(handle, "fanart_color1", color1);
+    if (color2)
+      DIRECTORY::CPluginDirectory::SetProperty(handle, "fanart_color2", color2);
+    if (color3)
+      DIRECTORY::CPluginDirectory::SetProperty(handle, "fanart_color3", color3);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+
+  PyDoc_STRVAR(disableCache__doc__,
+    "disableCache(handle) -- Disables the cache to disc in current directory for this plugin.\n"
+    "\n"
+    "handle      : integer - handle the plugin was started with.\n"
+    "\n"
+    "*Note, You can use the above as keywords for arguments.\n"
+    "\n"
+    "       By default caching is time based.\n"
+    "\n"
+    "example:\n"
+    "  - xbmcplugin.disableCache(int(sys.argv[1]))\n");
+
+  PyObject* XBMCPLUGIN_DisableCache(PyTypeObject *type, PyObject *args, PyObject *kwds)
+  {
+    static char *keywords[] = { "handle", NULL };
+    int handle = -1;
+    // parse arguments to constructor
+    if (!PyArg_ParseTupleAndKeywords(
+      args,
+      kwds,
+      (char*)"i",
+      (char**)keywords,
+      &handle
+      ))
+    {
+      return NULL;
+    };
+
+    DIRECTORY::CPluginDirectory::SetCacheToDisc(handle, false);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+
   // define c functions to be used in python here
   PyMethodDef pluginMethods[] = {
-    {"addDirectoryItem", (PyCFunction)XBMCPLUGIN_AddDirectoryItem, METH_VARARGS|METH_KEYWORDS, addDirectoryItem__doc__},
-    {"endOfDirectory", (PyCFunction)XBMCPLUGIN_EndOfDirectory, METH_VARARGS|METH_KEYWORDS, endOfDirectory__doc__},
-    {"addSortMethod", (PyCFunction)XBMCPLUGIN_AddSortMethod, METH_VARARGS|METH_KEYWORDS, addSortMethod__doc__},
-    {"getSetting", (PyCFunction)XBMCPLUGIN_GetSetting, METH_VARARGS|METH_KEYWORDS, getSetting__doc__},
-    {"setContent", (PyCFunction)XBMCPLUGIN_SetContent, METH_VARARGS|METH_KEYWORDS, setContent__doc__},
-    {"setPluginCategory", (PyCFunction)XBMCPLUGIN_SetPluginCategory, METH_VARARGS|METH_KEYWORDS, setPluginCategory__doc__},
+    {(char*)"addDirectoryItem", (PyCFunction)XBMCPLUGIN_AddDirectoryItem, METH_VARARGS|METH_KEYWORDS, addDirectoryItem__doc__},
+    {(char*)"endOfDirectory", (PyCFunction)XBMCPLUGIN_EndOfDirectory, METH_VARARGS|METH_KEYWORDS, endOfDirectory__doc__},
+    {(char*)"addSortMethod", (PyCFunction)XBMCPLUGIN_AddSortMethod, METH_VARARGS|METH_KEYWORDS, addSortMethod__doc__},
+    {(char*)"getSetting", (PyCFunction)XBMCPLUGIN_GetSetting, METH_VARARGS|METH_KEYWORDS, getSetting__doc__},
+    {(char*)"setContent", (PyCFunction)XBMCPLUGIN_SetContent, METH_VARARGS|METH_KEYWORDS, setContent__doc__},
+    {(char*)"setPluginCategory", (PyCFunction)XBMCPLUGIN_SetPluginCategory, METH_VARARGS|METH_KEYWORDS, setPluginCategory__doc__},
+    {(char*)"setPluginFanart", (PyCFunction)XBMCPLUGIN_SetPluginFanart, METH_VARARGS|METH_KEYWORDS, setPluginFanart__doc__},
+    {(char*)"disableCache", (PyCFunction)XBMCPLUGIN_DisableCache, METH_VARARGS|METH_KEYWORDS, disableCache__doc__},
     {NULL, NULL, 0, NULL}
   };
 
@@ -318,11 +405,11 @@ namespace PYXBMC
     if (pXbmcPluginModule == NULL) return;
 	
     // constants
-    PyModule_AddStringConstant(pXbmcPluginModule, "__author__", PY_XBMC_AUTHOR);
-    PyModule_AddStringConstant(pXbmcPluginModule, "__date__", "20 August 2007");
-    PyModule_AddStringConstant(pXbmcPluginModule, "__version__", "1.0");
-    PyModule_AddStringConstant(pXbmcPluginModule, "__credits__", PY_XBMC_CREDITS);
-    PyModule_AddStringConstant(pXbmcPluginModule, "__platform__", PY_XBMC_PLATFORM);
+    PyModule_AddStringConstant(pXbmcPluginModule, (char*)"__author__", (char*)PY_XBMC_AUTHOR);
+    PyModule_AddStringConstant(pXbmcPluginModule, (char*)"__date__", (char*)"20 August 2007");
+    PyModule_AddStringConstant(pXbmcPluginModule, (char*)"__version__", (char*)"1.0");
+    PyModule_AddStringConstant(pXbmcPluginModule, (char*)"__credits__", (char*)PY_XBMC_CREDITS);
+    PyModule_AddStringConstant(pXbmcPluginModule, (char*)"__platform__", (char*)PY_XBMC_PLATFORM);
 
     // sort method constants
     PyModule_AddIntConstant(pXbmcPluginModule, (char*)"SORT_METHOD_NONE", SORT_METHOD_NONE);

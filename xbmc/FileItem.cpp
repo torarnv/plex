@@ -1100,7 +1100,7 @@ CFileItemList::CFileItemList()
 {
   m_fastLookup = false;
   m_bIsFolder=true;
-  m_bCacheToDisc=false;
+  m_cacheToDisc=CACHE_IF_SLOW;
   m_sortMethod=SORT_METHOD_NONE;
   m_sortOrder=SORT_ORDER_NONE;
   m_replaceListing = false;
@@ -1111,7 +1111,7 @@ CFileItemList::CFileItemList(const CStdString& strPath)
   m_strPath=strPath;
   m_fastLookup = false;
   m_bIsFolder=true;
-  m_bCacheToDisc=false;
+  m_cacheToDisc=CACHE_IF_SLOW;
   m_sortMethod=SORT_METHOD_NONE;
   m_sortOrder=SORT_ORDER_NONE;
   m_replaceListing = false;
@@ -1186,7 +1186,7 @@ void CFileItemList::Clear()
   ClearItems();
   m_sortMethod=SORT_METHOD_NONE;
   m_sortOrder=SORT_ORDER_NONE;
-  m_bCacheToDisc=false;
+  m_cacheToDisc=CACHE_IF_SLOW;
   m_sortDetails.clear();
   m_replaceListing = false;
   m_content.Empty();
@@ -1525,7 +1525,7 @@ void CFileItemList::Serialize(CArchive& ar)
 
     ar << (int)m_sortMethod;
     ar << (int)m_sortOrder;
-    ar << m_bCacheToDisc;
+    ar << (int)m_cacheToDisc;
 
     ar << (int)m_sortDetails.size();
     for (unsigned int j = 0; j < m_sortDetails.size(); ++j)
@@ -1581,7 +1581,7 @@ void CFileItemList::Serialize(CArchive& ar)
 
     ar >> (int&)m_sortMethod;
     ar >> (int&)m_sortOrder;
-    ar >> m_bCacheToDisc;
+    ar >> (int&)m_cacheToDisc;
 
     unsigned int detailSize = 0;
     ar >> detailSize;
@@ -1647,6 +1647,17 @@ int CFileItemList::GetFolderCount() const
   }
 
   return nFolderCount;
+}
+
+int CFileItemList::GetObjectCount() const
+{
+  CSingleLock lock(m_lock);
+
+  int numObjects = (int)m_items.size();
+  if (numObjects && m_items[0]->IsParentFolder())
+    numObjects--;
+
+  return numObjects;
 }
 
 int CFileItemList::GetFileCount() const
