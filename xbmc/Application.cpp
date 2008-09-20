@@ -3227,8 +3227,12 @@ bool CApplication::OnKey(CKey& key)
       g_Keyboard.GetCtrl() == true  ||
       g_Keyboard.GetRAlt()  == true)
   {
-    // Ignore modified keys.
-    return false;
+    // Ignore modified + letter (e.g. Apple-F, Apple-Q)
+    if (action.unicode >= 'a' && action.unicode <= 'z' ||
+        action.unicode >= 'A' && action.unicode <= 'Z')
+    {
+      return false;
+    }
   }
   
   // a key has been pressed.
