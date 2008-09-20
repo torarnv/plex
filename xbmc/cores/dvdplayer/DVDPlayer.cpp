@@ -2938,6 +2938,10 @@ int CDVDPlayer::GetCacheSize()
   // Special case YouTube videos.
   if (strFile.Find("http://www.youtube.com") == 0)
     return 256;
+  
+  // Special case for trailers.
+  if (strFile.Find("http://www.totaleclips.com") == 0)
+    return 256;
 
   // First, figure out the source of the file.
   bool bFileOnHD = false;
