@@ -37,6 +37,7 @@ void PortAudioDirectSound::DoWork()
 //
 //////////////////////////////////////////////////////////////////////////////
 PortAudioDirectSound::PortAudioDirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough)
+  : ac3_framebuffer(0)
 {
   CLog::Log(LOGDEBUG,"PortAudioDirectSound::PortAudioDirectSound - opening device");
   
@@ -142,8 +143,10 @@ HRESULT PortAudioDirectSound::Deinitialize()
   if (m_bEncodeAC3)
   {
 	  ac3encoder_free(&m_ac3encoder);
+	  if (ac3_framebuffer != 0) 
+	    free(ac3_framebuffer);
+	  
 	  ac3_framebuffer = 0;
-	  if (ac3_framebuffer != 0) free(ac3_framebuffer);
   }
 	
 	
