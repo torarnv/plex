@@ -39,6 +39,8 @@
 #endif
 #include "utils/Network.h"
 
+#include "CocoaUtils.h"
+
 using namespace std;
 
 // String id's of the masks
@@ -342,6 +344,13 @@ CGUISettings::CGUISettings(void)
   AddInt(2, "system.shutdowntime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
 #ifdef __APPLE__
   AddInt(3, "system.displaysleeptime", 17500, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
+  // add panel brightness setting if supported by the display
+  float panelBrightnessLevel = -1.0f;
+  Cocoa_GetPanelBrightness(&panelBrightnessLevel);
+  if (panelBrightnessLevel >= 0)
+  {
+    AddInt(4, "system.panelbrightness", 17501, 0, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+  }
 #endif
 #ifdef HAS_HAL
   AddInt(3, "system.shutdownstate", 13008, 0, 0, 1, 4, SPIN_CONTROL_TEXT);
