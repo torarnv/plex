@@ -1685,6 +1685,7 @@ CProfile* CApplication::InitDirectoriesOSX()
     // See if the keymap file exists, and if not, copy it from our "virgin" one.
     CopyUserDataIfNeeded(str, "Keymap.xml");
     CopyUserDataIfNeeded(str, "RssFeeds.xml");
+    CopyUserDataIfNeeded(str, "advancedsettings.xml");
 
     // Create a reasonable sources.xml if one doesn't exist already.
     CStdString sourcesFile = str;
