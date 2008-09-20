@@ -1,5 +1,5 @@
 /*
- *  CocoaGUIDialogUtils.cpp
+ *  GUIDialogUtils.cpp
  *  Plex
  *
  *  Created by James Clarke on 12/09/2008.

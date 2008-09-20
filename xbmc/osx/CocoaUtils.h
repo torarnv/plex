@@ -98,7 +98,9 @@ extern "C"
   //
   void Cocoa_CheckForUpdates();
   void Cocoa_CheckForUpdatesInBackground();
-  void Cocoa_CheckForUpdatesInBackgroundAndAsk();
+  void Cocoa_SetUpdateAlertType(int alertType);
+  void Cocoa_SetUpdateSuspended(bool willSuspend);
+  void Cocoa_SetUpdateCheckInterval(double seconds);
   void Cocoa_SkinStateChanged();
 
 #ifdef __cplusplus

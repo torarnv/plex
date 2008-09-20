@@ -454,9 +454,11 @@ CGUISettings::CGUISettings(void)
   // Software update settings
   AddCategory(4, "softwareupdate", 40018);
   AddString(1, "softwareupdate.checknow", 40016, "", BUTTON_CONTROL_STANDARD);
-  AddBool(2, "softwareupdate.alertsenabled", 40017, true);
+  AddSeparator(2, "softwareupdate.sep1");
+  AddBool(3, "softwareupdate.alertsenabled", 40017, true);
   //AddInt(<#int iOrder#>, <#const char * strSetting#>, <#int iLabel#>, <#int fSetting#>, <#int iMin#>, <#int iStep#>, <#int iMax#>, <#int iControlType#>, <#const char * strFormat#>)
-  AddInt(3, "softwareupdate.alerttype", 40019, UPDATE_NOTIFY, UPDATE_NOTIFY, 1, UPDATE_ASK, SPIN_CONTROL_TEXT);
+  AddInt(4, "softwareupdate.checkinterval", 40025, UPDATE_INTERVAL_DAILY, UPDATE_INTERVAL_HOURLY, 1, UPDATE_INTERVAL_WEEKLY, SPIN_CONTROL_TEXT);
+  AddInt(5, "softwareupdate.alerttype", 40019, UPDATE_ASK, UPDATE_NOTIFY, 1, UPDATE_ASK, SPIN_CONTROL_TEXT);
   AddBool(0, "softwareupdate.firstrun", 40000, true);
 
   // video settings

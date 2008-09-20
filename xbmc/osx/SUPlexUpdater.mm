@@ -22,6 +22,10 @@
 - (void)awakeFromNib
 {
   g_plexUpdater = (id)self;
+  isSuspended = NO;
+  userHasBeenAlerted = NO;
+  timer = nil;
+  lastCheckTime = [NSDate distantPast];
 }
 
 - (BOOL)checkForUpdatesWithPlexDriver:(SUUpdateDriver*)plexDriver
@@ -46,18 +50,55 @@
 
 - (IBAction)checkForUpdatesWithUI:(id)sender
 {
+  lastCheckTime = [NSDate date];
   if ([self checkForUpdatesWithPlexDriver:[[[SUPlexUpdateDriver alloc] initWithUpdater:self] autorelease]])
     CGUIDialogUtils::StartProgressDialog(CGUIDialogUtils::Localize(40000), CGUIDialogUtils::Localize(40015), "", "", false);
 }
 
 - (void)checkForUpdatesInBackground
 {
-  [self checkForUpdatesWithPlexDriver:[[[SUPlexBackgroundUpdateCheckDriver alloc] initWithUpdater:self] autorelease]];
+  lastCheckTime = [NSDate date];
+  if (updateAlertType == UPDATE_ALERT_ASK)
+    [self checkForUpdatesWithPlexDriver:[[[SUPlexUpdateDriver alloc] initWithUpdater:self] autorelease]];
+  else
+    [self checkForUpdatesWithPlexDriver:[[[SUPlexBackgroundUpdateCheckDriver alloc] initWithUpdater:self] autorelease]];
 }
 
-- (void)checkForUpdatesInBackgroundAndAsk
+- (void)setAlertType:(int)alertType
 {
-  [self checkForUpdatesWithPlexDriver:[[[SUPlexUpdateDriver alloc] initWithUpdater:self] autorelease]];
+  updateAlertType = alertType;
+}
+
+- (void)checkScheduler
+{
+  // If the check interval has elapsed, the updater is not suspended & the user hasn't been alerted about an update
+  // previously, check for updates
+  if (([[NSDate date] timeIntervalSinceDate:lastCheckTime] > checkInterval) && (!isSuspended) && (!userHasBeenAlerted))
+  {
+    [self checkForUpdatesInBackground];
+  }
+}
+
+- (void)setCheckInterval:(double)seconds
+{
+  checkInterval = seconds;
+  // Release the timer if it already exists
+  if (timer != nil) {
+    [timer release];
+    timer = nil;
+  }
+  // Setting the interval to 0 clears the timer
+  if (checkInterval > 0)
+    timer = [NSTimer scheduledTimerWithTimeInterval:300 target:self selector:@selector(checkScheduler) userInfo:nil repeats:YES];
+}
+
+- (void)setSuspended:(BOOL)willSuspend
+{
+  isSuspended = willSuspend;
+}
+
+- (void)userAlerted {
+  userHasBeenAlerted = YES;
 }
 
 //

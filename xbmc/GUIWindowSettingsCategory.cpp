@@ -936,6 +936,15 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(12020), RESUME_ASK);
       pControl->SetValue(pSettingInt->GetData());
     }
+    else if (strSetting.Equals("softwareupdate.checkinterval"))
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->AddLabel(g_localizeStrings.Get(40026), UPDATE_INTERVAL_HOURLY);
+      pControl->AddLabel(g_localizeStrings.Get(40027), UPDATE_INTERVAL_DAILY);
+      pControl->AddLabel(g_localizeStrings.Get(40028), UPDATE_INTERVAL_WEEKLY);
+      pControl->SetValue(pSettingInt->GetData());
+    }
     else if (strSetting.Equals("softwareupdate.alerttype"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -969,6 +978,11 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       {
         pControl->SetEnabled(g_guiSettings.GetBool("softwareupdate.alertsenabled"));
       }
+    }
+    else if (strSetting.Equals("softwareupdate.checkinterval"))
+    {
+      CGUIControl *pControl = (CGUIControl*)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("softwareupdate.alertsenabled"));
     }
     else if (strSetting.Equals("videoscreen.testresolution"))
     {
@@ -2506,6 +2520,30 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   else if (strSetting.Equals("softwareupdate.checknow"))
   {
     Cocoa_CheckForUpdates();
+  }
+  else if (strSetting.Equals("softwareupdate.checkinterval"))
+  {
+    double interval = 3600;
+    switch (g_guiSettings.GetInt("softwareupdate.checkinterval"))
+    {
+      case UPDATE_INTERVAL_DAILY: interval = 86400; break;
+      case UPDATE_INTERVAL_WEEKLY: interval = 604800; break;
+    }
+    Cocoa_SetUpdateCheckInterval(interval);
+  }
+  else if (strSetting.Equals("softwareupdate.alertsenabled"))
+  {
+    double interval = 0;
+    if (g_guiSettings.GetBool("softwareupdate.alertsenabled"))
+    {
+      switch (g_guiSettings.GetInt("softwareupdate.checkinterval"))
+      {
+        case UPDATE_INTERVAL_HOURLY: interval = 3600; break;
+        case UPDATE_INTERVAL_DAILY: interval = 86400; break;
+        case UPDATE_INTERVAL_WEEKLY: interval = 604800; break;
+      }
+    }
+    Cocoa_SetUpdateCheckInterval(interval);
   }
 
   UpdateSettings();

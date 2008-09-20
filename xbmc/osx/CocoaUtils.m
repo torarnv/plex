@@ -741,9 +741,19 @@ void Cocoa_CheckForUpdatesInBackground()
   [[SUPlexUpdater sharedInstance] checkForUpdatesInBackground];
 }
 
-void Cocoa_CheckForUpdatesInBackgroundAndAsk()
+void Cocoa_SetUpdateAlertType(int alertType)
 {
-  [[SUPlexUpdater sharedInstance] checkForUpdatesInBackgroundAndAsk];
+  [[SUPlexUpdater sharedInstance] setAlertType:alertType];
+}
+
+void Cocoa_SetUpdateSuspended(bool willSuspend)
+{
+  [[SUPlexUpdater sharedInstance] setSuspended:willSuspend];
+}
+
+void Cocoa_SetUpdateCheckInterval(double seconds)
+{
+  [[SUPlexUpdater sharedInstance] setCheckInterval:seconds];
 }
 
 void Cocoa_SkinStateChanged()

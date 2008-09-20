@@ -144,6 +144,10 @@
 #define UPDATE_NOTIFY 0
 #define UPDATE_ASK    1
 
+#define UPDATE_INTERVAL_HOURLY 0
+#define UPDATE_INTERVAL_DAILY  1
+#define UPDATE_INTERVAL_WEEKLY 2
+
 // replay gain settings struct for quick access by the player multiple
 // times per second (saves doing settings lookup)
 struct ReplayGainSettings

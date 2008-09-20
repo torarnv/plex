@@ -2086,11 +2086,15 @@ HRESULT CApplication::Initialize()
   // Check for updates & alert the user if a new version is available
   if (g_guiSettings.GetBool("softwareupdate.alertsenabled"))
   {
-    switch(g_guiSettings.GetInt("softwareupdate.alerttype"))
+    Cocoa_SetUpdateAlertType(g_guiSettings.GetInt("softwareupdate.alerttype"));
+    Cocoa_CheckForUpdatesInBackground();
+    double interval = 3600;
+    switch (g_guiSettings.GetInt("softwareupdate.checkinterval"))
     {
-      case 0: Cocoa_CheckForUpdatesInBackground(); break;
-      case 1: Cocoa_CheckForUpdatesInBackgroundAndAsk();
-    }  
+      case UPDATE_INTERVAL_DAILY: interval = 86400; break;
+      case UPDATE_INTERVAL_WEEKLY: interval = 604800; break;
+    }
+    Cocoa_SetUpdateCheckInterval(interval);
   }
   
   return S_OK;
@@ -5022,6 +5026,9 @@ void CApplication::OnPlayBackEnded()
 #endif
 
   CLog::Log(LOGDEBUG, "Playback has finished");
+  
+  // Restart the updater
+  Cocoa_SetUpdateSuspended(false);
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_ENDED, 0, 0);
 
@@ -5033,6 +5040,9 @@ void CApplication::OnPlayBackEnded()
 
 void CApplication::OnPlayBackStarted()
 {
+  // Suspend the updater
+  Cocoa_SetUpdateSuspended(true);
+  
   // Reset to the claimed video FPS.
   g_infoManager.ResetFPS(m_pPlayer->GetActualFPS());
   
@@ -5100,6 +5110,9 @@ void CApplication::OnPlayBackStopped()
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackStopped;1");
 #endif
 
+  // Restart the updater
+  Cocoa_SetUpdateSuspended(false);
+  
   CLog::Log(LOGDEBUG, "Playback was stopped\n");
 
   CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0 );

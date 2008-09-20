@@ -1,6 +1,6 @@
 #pragma once
 /*
- *  CocoaGUIDialogUtils.h
+ *  GUIDialogUtils.h
  *  Plex
  *
  *  Created by James Clarke on 12/09/2008.

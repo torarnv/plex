@@ -7,6 +7,7 @@
 //
 
 #import "SUPlexUpdateDriver.h"
+//#import "SUPlexUpdater.h"
 #import "SUHost.h"
 #import "SUPlainInstaller.h"
 #import "SUConstants.h"
@@ -16,6 +17,8 @@
 #import <sys/xattr.h>
 #import <dirent.h>
 #import <unistd.h>
+
+@class SUPlexUpdater;
 
 // From SUPlainInstaller
 // Authorization code based on generous contribution from Allan Odgaard. Thanks, Allan!
@@ -42,7 +45,12 @@ static BOOL AuthorizationExecuteWithPrivilegesAndWait(AuthorizationRef authoriza
 
 - (void)didFindValidUpdate
 {
-  // Update found - ask the user if they want to download it
+  // Update found
+  
+  // Flag that the user has been alerted so auto-update won't keep popping up
+  [((SUPlexUpdater*)updater) userAlerted];
+  
+  // Ask the user if they want to download it
   CGUIDialogUtils::CloseProgressDialog();
   if (CGUIDialogUtils::ShowYesNoDialog(CGUIDialogUtils::Localize(40000),
                                        CGUIDialogUtils::Localize(40003),
