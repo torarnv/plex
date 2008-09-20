@@ -51,11 +51,11 @@ namespace PYXBMC
     "addDirectoryItem(handle, url, listitem [,isFolder, totalItems]) -- Callback function to pass directory contents back to XBMC.\n"
     " - Returns a bool for successful completion.\n"
     "\n"
-    "handle      : Integer - handle the plugin was started with.\n"
+    "handle      : integer - handle the plugin was started with.\n"
     "url         : string - url of the entry. would be plugin:// for another virtual directory\n"
     "listitem    : ListItem - item to add.\n"
     "isFolder    : [opt] bool - True=folder / False=not a folder(default).\n"
-    "totalItems  : [opt] Integer - Total number of items that will be passed.(used for progressbar)\n"
+    "totalItems  : [opt] integer - total number of items that will be passed.(used for progressbar)\n"
     "\n"
     "*Note, You can use the above as keywords for arguments and skip certain optional arguments.\n"
     "       Once you use a keyword, all following arguments require the keyword.\n"
@@ -65,7 +65,7 @@ namespace PYXBMC
 
   PyObject* XBMCPLUGIN_AddDirectoryItem(PyTypeObject *type, PyObject *args, PyObject *kwds)
   {
-    static char *keywords[] = { "handle", "url", "listitem", "isFolder", "totalItems", NULL };
+    static const char *keywords[] = { "handle", "url", "listitem", "isFolder", "totalItems", NULL };
     int handle = -1;
     PyObject *pURL = NULL;
     PyObject *pItem = NULL;
@@ -75,8 +75,8 @@ namespace PYXBMC
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      "iOO|bl",
-      keywords,
+      (char*)"iOO|bl",
+      (char**)keywords,
       &handle,
       &pURL,
       &pItem,
@@ -96,44 +96,47 @@ namespace PYXBMC
 
     // call the directory class to add our item
     bool bOk = DIRECTORY::CPluginDirectory::AddItem(handle, pListItem->item.get(), iTotalItems);
-    return Py_BuildValue("b", bOk);
+    return Py_BuildValue((char*)"b", bOk);
   }
 
   PyDoc_STRVAR(endOfDirectory__doc__,
-    "endOfDirectory(handle[, succeeded, updateListing]) -- Callback function to tell XBMC that the end of the directory listing in a virtualPythonFolder module is reached.\n"
+    "endOfDirectory(handle[, succeeded, updateListing, cacheToDisc]) -- Callback function to tell XBMC that the end of the directory listing in a virtualPythonFolder module is reached.\n"
     "\n"
-    "handle           : Integer - handle the plugin was started with.\n"
+    "handle           : integer - handle the plugin was started with.\n"
     "succeeded        : [opt] bool - True=script completed successfully(Default)/False=Script did not.\n"
     "updateListing    : [opt] bool - True=this folder should update the current listing/False=Folder is a subfolder(Default).\n"
+    "cacheToDisc      : [opt] bool - True=Folder will cache if extended time(default)/False=this folder will never cache to disc.\n"
     "\n"
     "*Note, You can use the above as keywords for arguments and skip certain optional arguments.\n"
     "       Once you use a keyword, all following arguments require the keyword.\n"
     "\n"
     "example:\n"
-    "  - xbmcplugin.endOfDirectory(int(sys.argv[1]))\n");
+    "  - xbmcplugin.endOfDirectory(int(sys.argv[1]), cacheToDisc=False)\n");
 
   PyObject* XBMCPLUGIN_EndOfDirectory(PyTypeObject *type, PyObject *args, PyObject *kwds)
   {
-    static char *keywords[] = { "handle", "succeeded", "updateListing", NULL };
+    static const char *keywords[] = { "handle", "succeeded", "updateListing", "cacheToDisc", NULL };
     int handle = -1;
     bool bSucceeded = true;
     bool bUpdateListing = false;
+    bool bCacheToDisc = true;
     // parse arguments to constructor
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      "i|bb",
-      keywords,
+      (char*)"i|bbb",
+      (char**)keywords,
       &handle,
       &bSucceeded,
-      &bUpdateListing
+      &bUpdateListing,
+      &bCacheToDisc
       ))
     {
       return NULL;
     };
 
     // tell the directory class that we're done
-    DIRECTORY::CPluginDirectory::EndOfDirectory(handle, bSucceeded, bUpdateListing);
+    DIRECTORY::CPluginDirectory::EndOfDirectory(handle, bSucceeded, bUpdateListing, bCacheToDisc);
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -142,8 +145,8 @@ namespace PYXBMC
   PyDoc_STRVAR(addSortMethod__doc__,
     "addSortMethod(handle, sortMethod) -- Adds a sorting method for the media list.\n"
     "\n"
-    "handle      : Integer - handle the plugin was started with.\n"
-    "sortMethod  : Integer - Number for sortmethod see FileItem.h.\n"
+    "handle      : integer - handle the plugin was started with.\n"
+    "sortMethod  : integer - number for sortmethod see FileItem.h.\n"
     "\n"
     "*Note, You can use the above as keywords for arguments and skip certain optional arguments.\n"
     "       Once you use a keyword, all following arguments require the keyword.\n"
@@ -153,15 +156,15 @@ namespace PYXBMC
 
   PyObject* XBMCPLUGIN_AddSortMethod(PyTypeObject *type, PyObject *args, PyObject *kwds)
   {
-    static char *keywords[] = { "handle", "sortMethod", NULL };
+    static const char *keywords[] = { "handle", "sortMethod", NULL };
     int handle = -1;
     int sortMethod = -1;
     // parse arguments to constructor
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      "ii",
-      keywords,
+      (char*)"ii",
+      (char**)keywords,
       &handle,
       &sortMethod
       ))
@@ -189,26 +192,26 @@ namespace PYXBMC
 
   PyObject* XBMCPLUGIN_GetSetting(PyObject *self, PyObject *args, PyObject *kwds)
   {
-    static char *keywords[] = { "id", NULL };
+    static const char *keywords[] = { "id", NULL };
     char *id;
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      "s",
-      keywords,
+      (char*)"s",
+      (char**)keywords,
       &id
       ))
     {
       return NULL;
     };
 
-    return Py_BuildValue("s", g_currentPluginSettings.Get(id).c_str());
+    return Py_BuildValue((char*)"s", g_currentPluginSettings.Get(id).c_str());
   }
 
   PyDoc_STRVAR(setContent__doc__,
     "setContent(handle, content) -- Sets the plugins content.\n"
     "\n"
-    "handle      : Integer - handle the plugin was started with.\n"
+    "handle      : integer - handle the plugin was started with.\n"
     "content     : string - content type (eg. movies)\n"
     "\n"
     "*Note, You can use the above as keywords for arguments.\n"
@@ -219,15 +222,15 @@ namespace PYXBMC
 
   PyObject* XBMCPLUGIN_SetContent(PyTypeObject *type, PyObject *args, PyObject *kwds)
   {
-    static char *keywords[] = { "handle", "content", NULL };
+    static const char *keywords[] = { "handle", "content", NULL };
     int handle = -1;
     char *content;
     // parse arguments to constructor
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      "is",
-      keywords,
+      (char*)"is",
+      (char**)keywords,
       &handle,
       &content
       ))
@@ -244,7 +247,7 @@ namespace PYXBMC
   PyDoc_STRVAR(setPluginCategory__doc__,
     "setPluginCategory(handle, category) -- Sets the plugins name for skins to display.\n"
     "\n"
-    "handle      : Integer - handle the plugin was started with.\n"
+    "handle      : integer - handle the plugin was started with.\n"
     "category    : string or unicode - plugins sub category.\n"
     "\n"
     "*Note, You can use the above as keywords for arguments.\n"
@@ -254,15 +257,15 @@ namespace PYXBMC
 
   PyObject* XBMCPLUGIN_SetPluginCategory(PyTypeObject *type, PyObject *args, PyObject *kwds)
   {
-    static char *keywords[] = { "handle", "category", NULL };
+    static const char *keywords[] = { "handle", "category", NULL };
     int handle = -1;
     PyObject *category = NULL;
     // parse arguments to constructor
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      "iO",
-      keywords,
+      (char*)"iO",
+      (char**)keywords,
       &handle,
       &category
       ))
@@ -331,35 +334,46 @@ namespace PYXBMC
     return Py_None;
   }
 
-  PyDoc_STRVAR(disableCache__doc__,
-    "disableCache(handle) -- Disables the cache to disc in current directory for this plugin.\n"
+  PyDoc_STRVAR(setProperty__doc__,
+    "setProperty(handle, key, value) -- Sets a container property for this plugin.\n"
     "\n"
     "handle      : integer - handle the plugin was started with.\n"
+    "key         : string - property name.\n"
+    "value       : string or unicode - value of property.\n"
     "\n"
-    "*Note, You can use the above as keywords for arguments.\n"
-    "\n"
-    "       By default caching is time based.\n"
+    "*Note, Key is NOT case sensitive.\n"
+    "       You can use the above as keywords for arguments.\n"
     "\n"
     "example:\n"
-    "  - xbmcplugin.disableCache(int(sys.argv[1]))\n");
+    "  - xbmcplugin.setProperty(int(sys.argv[1]), 'Emulator', 'M.A.M.E.')\n");
 
-  PyObject* XBMCPLUGIN_DisableCache(PyTypeObject *type, PyObject *args, PyObject *kwds)
+  PyObject* XBMCPLUGIN_SetProperty(PyTypeObject *type, PyObject *args, PyObject *kwds)
   {
-    static char *keywords[] = { "handle", NULL };
+    static const char *keywords[] = { "handle", "key", "value", NULL };
     int handle = -1;
+    char *key = NULL;
+    PyObject *pValue = NULL;
     // parse arguments to constructor
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      (char*)"i",
+      (char*)"isO",
       (char**)keywords,
-      &handle
+      &handle,
+      &key,
+      &pValue
       ))
     {
       return NULL;
     };
 
-    DIRECTORY::CPluginDirectory::SetCacheToDisc(handle, false);
+    if (!key || !pValue) return NULL;
+    CStdString value;
+    if (!PyGetUnicodeString(value, pValue, 1))
+      return NULL;
+
+    CStdString lowerKey = key;
+    DIRECTORY::CPluginDirectory::SetProperty(handle, key, value);
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -374,7 +388,7 @@ namespace PYXBMC
     {(char*)"setContent", (PyCFunction)XBMCPLUGIN_SetContent, METH_VARARGS|METH_KEYWORDS, setContent__doc__},
     {(char*)"setPluginCategory", (PyCFunction)XBMCPLUGIN_SetPluginCategory, METH_VARARGS|METH_KEYWORDS, setPluginCategory__doc__},
     {(char*)"setPluginFanart", (PyCFunction)XBMCPLUGIN_SetPluginFanart, METH_VARARGS|METH_KEYWORDS, setPluginFanart__doc__},
-    {(char*)"disableCache", (PyCFunction)XBMCPLUGIN_DisableCache, METH_VARARGS|METH_KEYWORDS, disableCache__doc__},
+    {(char*)"setProperty", (PyCFunction)XBMCPLUGIN_SetProperty, METH_VARARGS|METH_KEYWORDS, setProperty__doc__},
     {NULL, NULL, 0, NULL}
   };
 
@@ -396,12 +410,12 @@ namespace PYXBMC
   }
 
   PyMODINIT_FUNC
-  InitPluginModule(void)
+  InitPluginModule()
   {
     // init general xbmc modules
     PyObject* pXbmcPluginModule;
 
-    pXbmcPluginModule = Py_InitModule("xbmcplugin", pluginMethods);
+    pXbmcPluginModule = Py_InitModule((char*)"xbmcplugin", pluginMethods);
     if (pXbmcPluginModule == NULL) return;
 	
     // constants
