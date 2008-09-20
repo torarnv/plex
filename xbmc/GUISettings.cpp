@@ -605,7 +605,7 @@ CGUISettings::CGUISettings(void)
 
   // remote events settings
 #ifdef HAS_EVENT_SERVER
-  AddCategory(0, "remoteevents", 790);
+  AddCategory(6, "remoteevents", 790);
   AddBool(1,  "remoteevents.enabled",         791, true);
   AddString(2,"remoteevents.port",            792, "9777", BUTTON_CONTROL_INPUT, false, 792);
   AddInt(3,   "remoteevents.portrange",       793, 10, 1, 1, 100, SPIN_CONTROL_INT);
