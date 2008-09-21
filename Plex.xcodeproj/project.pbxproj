@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1A5535900E86AA9E005AF349 /* AppleHardwareInfo.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1A55358F0E86AA9E005AF349 /* AppleHardwareInfo.mm */; };
+		1A5535E50E86B02F005AF349 /* ModelsWithBattery.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1A5535E40E86B02F005AF349 /* ModelsWithBattery.plist */; };
+		1A5536300E86CCD4005AF349 /* GUIDialogUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A55362F0E86CCD4005AF349 /* GUIDialogUtils.cpp */; };
 		E336EF2F0E60256000270758 /* GUIViewStatePictures.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E336EF000E60250700270758 /* GUIViewStatePictures.cpp */; };
 		E336EF300E60256000270758 /* GUIViewStatePrograms.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E336EF020E60250700270758 /* GUIViewStatePrograms.cpp */; };
 		E336EF310E60256000270758 /* GUIViewStateScripts.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E336EF040E60250700270758 /* GUIViewStateScripts.cpp */; };
@@ -917,6 +920,11 @@
 
 /* Begin PBXFileReference section */
 		09AB6884FE841BABC02AAC07 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
+		1A55358E0E86AA9E005AF349 /* AppleHardwareInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppleHardwareInfo.h; sourceTree = "<group>"; };
+		1A55358F0E86AA9E005AF349 /* AppleHardwareInfo.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AppleHardwareInfo.mm; sourceTree = "<group>"; };
+		1A5535E40E86B02F005AF349 /* ModelsWithBattery.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = ModelsWithBattery.plist; path = plex/ModelsWithBattery.plist; sourceTree = "<group>"; };
+		1A55362E0E86CCD4005AF349 /* GUIDialogUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogUtils.h; sourceTree = "<group>"; };
+		1A55362F0E86CCD4005AF349 /* GUIDialogUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogUtils.cpp; sourceTree = "<group>"; };
 		6E97BDBC0DA2B5D8003A2A89 /* GUIInfoColor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIInfoColor.cpp; sourceTree = "<group>"; };
 		6E97BDBD0DA2B5D8003A2A89 /* GUIInfoColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIInfoColor.h; sourceTree = "<group>"; };
 		6E97BDBF0DA2B620003A2A89 /* EventClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventClient.h; sourceTree = "<group>"; };
@@ -3073,6 +3081,7 @@
 				E371C1E10E2F2AC300FBF841 /* Plex-Info.plist */,
 				E38AAB580E5D444500C1B750 /* Carbon.framework */,
 				E38AABBF0E5D46AE00C1B750 /* libz.dylib */,
+				1A5535E40E86B02F005AF349 /* ModelsWithBattery.plist */,
 			);
 			name = XBMC;
 			sourceTree = "<group>";
@@ -3226,6 +3235,10 @@
 			isa = PBXGroup;
 			children = (
 				EFF083260E11614A004114E6 /* Info.plist */,
+				1A55358E0E86AA9E005AF349 /* AppleHardwareInfo.h */,
+				1A55358F0E86AA9E005AF349 /* AppleHardwareInfo.mm */,
+				1A55362E0E86CCD4005AF349 /* GUIDialogUtils.h */,
+				1A55362F0E86CCD4005AF349 /* GUIDialogUtils.cpp */,
 				840A327C0DFBBD2600AA2033 /* KeyboardLayouts.cpp */,
 				840A327D0DFBBD2600AA2033 /* KeyboardLayouts.h */,
 				E306D12C0DDF7B590052C2AD /* XBMCHelper.cpp */,
@@ -3499,6 +3512,7 @@
 		E38E14610D25F9F900618676 /* xbmc */ = {
 			isa = PBXGroup;
 			children = (
+				E37D5CB40D3023BB0081D327 /* osx */,
 				E336EF4A0E602A8B00270758 /* GUIDialogFullScreenInfo.cpp */,
 				E336EF4B0E602A8B00270758 /* GUIDialogFullScreenInfo.h */,
 				E336EF000E60250700270758 /* GUIViewStatePictures.cpp */,
@@ -3521,7 +3535,6 @@
 				E38A06CC0D95AA5500FF8227 /* GUIDialogKaiToast.cpp */,
 				E38A06CD0D95AA5500FF8227 /* GUIDialogKaiToast.h */,
 				E3E920050D8C6277002BF43D /* ScraperSettings.cpp */,
-				E37D5CB40D3023BB0081D327 /* osx */,
 				E3A478190D29032C00F3C3A6 /* GUIDialogAccessPoints.cpp */,
 				E38E14620D25F9F900618676 /* APEv2Tag.cpp */,
 				E38E14630D25F9F900618676 /* APEv2Tag.h */,
@@ -6311,6 +6324,7 @@
 				E371CB160E2F39CD00FBF841 /* Plex.xib in Resources */,
 				E371CBB10E3044D900FBF841 /* Plex.icns in Resources */,
 				E3C1A67D0E72862300CE0104 /* plex in Resources */,
+				1A5535E50E86B02F005AF349 /* ModelsWithBattery.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7128,6 +7142,8 @@
 				E336EF4C0E602A8B00270758 /* GUIDialogFullScreenInfo.cpp in Sources */,
 				E336F09F0E62D36200270758 /* FileMMS.cpp in Sources */,
 				E3C1A6AA0E74E85C00CE0104 /* AsyncFileCopy.cpp in Sources */,
+				1A5535900E86AA9E005AF349 /* AppleHardwareInfo.mm in Sources */,
+				1A5536300E86CCD4005AF349 /* GUIDialogUtils.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

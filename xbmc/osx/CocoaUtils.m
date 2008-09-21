@@ -21,6 +21,7 @@
 #include "CocoaUtils.h"
 #import "XBMCMain.h" 
 #include <SDL/SDL.h>
+#import "AppleHardwareInfo.h"
 
 extern int GetProcessPid(const char* processName);
 
@@ -728,3 +729,27 @@ void* Cocoa_GetDisplayPort()
   WindowRef refWindow = [childWindow windowRef];
   return (void* )GetWindowPort(refWindow);
 }
+
+const char* Cocoa_GetHardwareModelName()
+{ return [[[AppleHardwareInfo sharedInstance] modelName] UTF8String]; }
+
+bool Cocoa_GetHardwareHasBattery()
+{ return [[AppleHardwareInfo sharedInstance] hasBattery]; }
+
+bool Cocoa_GetHardwareIsOnACPower()
+{ return [[AppleHardwareInfo sharedInstance] isOnACPower]; }
+
+bool Cocoa_GetHardwareIsCharging()
+{ return [[AppleHardwareInfo sharedInstance] isCharging]; }
+
+int  Cocoa_GetHardwareCurrentBatteryCapacity()
+{ return [[AppleHardwareInfo sharedInstance] currentBatteryCapacity]; }
+
+int  Cocoa_GetHardwareTimeToEmpty()
+{ return [[AppleHardwareInfo sharedInstance] timeToEmpty]; }
+
+int  Cocoa_GetHardwareTimeToFullCharge()
+{ return [[AppleHardwareInfo sharedInstance] timeToFullCharge]; }
+
+void Cocoa_EnableLowBatteryWarning()
+{ [[AppleHardwareInfo sharedInstance] setLowBatteryWarningEnabled:YES]; }
