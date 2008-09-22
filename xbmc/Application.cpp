@@ -1686,6 +1686,7 @@ CProfile* CApplication::InitDirectoriesOSX()
     CopyUserDataIfNeeded(str, "Keymap.xml");
     CopyUserDataIfNeeded(str, "RssFeeds.xml");
     CopyUserDataIfNeeded(str, "advancedsettings.xml");
+    CopyUserDataIfNeeded(str, "Database/ViewModes.db");
 
     // Create a reasonable sources.xml if one doesn't exist already.
     CStdString sourcesFile = str;
