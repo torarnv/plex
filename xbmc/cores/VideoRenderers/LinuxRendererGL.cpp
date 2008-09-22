@@ -1,5 +1,5 @@
 /*
-* XBoxMediaCenter
+* XBMC Media Center
 * Linux OpenGL Renderer
 * Copyright (c) 2007 Frodo/jcmarshall/vulkanr/d4rk
 *
@@ -1322,12 +1322,8 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
   }
   
   // determine whether GPU supports NPOT textures
-  CSurface *screen = g_graphicsContext.getScreenSurface();
-  int maj, min;
-  screen->GetGLVersion(maj, min);
   if (!glewIsSupported("GL_ARB_texture_non_power_of_two"))
   {
-    CLog::Log(LOGNOTICE, "GL: OpenGL version %d.%d detected", maj, min);
     if (!glewIsSupported("GL_ARB_texture_rectangle"))
     {
       CLog::Log(LOGNOTICE, "GL: GL_ARB_texture_rectangle not supported and OpenGL version is not 2.x");
@@ -1335,15 +1331,10 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
       m_renderMethod |= RENDER_POT;
     }
     else
-    {
       CLog::Log(LOGNOTICE, "GL: NPOT textures are supported through GL_ARB_texture_rectangle extension");
-    }
   }
   else
-  {
-    CLog::Log(LOGNOTICE, "GL: OpenGL version %d.%d detected", maj, min);
     CLog::Log(LOGNOTICE, "GL: NPOT texture support detected");
-  }
 }
 
 void CLinuxRendererGL::UnInit()
@@ -1463,15 +1454,14 @@ void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
 
   RenderOSD();
 
-  if (g_graphicsContext.IsFullScreenVideo())
+  if (g_graphicsContext.IsFullScreenVideo() && !g_application.IsPaused())
   {
     if (g_application.NeedRenderFullScreen())
     { // render our subtitles and osd
       g_application.RenderFullScreen();
       VerifyGLState();
     }
-    if (g_advancedSettings.m_logLevel <= LOGNOTICE)
-      g_application.RenderMemoryStatus();
+    g_application.RenderMemoryStatus();
     VerifyGLState();
   }
 }
@@ -2234,8 +2224,8 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
       {
         CLog::Log(LOGNOTICE, "GL: Creating Y power of two texture of size %ld x %ld", np2x, np2y);
         glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, np2x, np2y, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
-        im.texcoord_x = ((float)im.width / (float)np2x);
-        im.texcoord_y = ((float)im.height / (float)divfactor / (float)np2y);
+        im.texcoord_x = ((float)(im.width-1.0) / (float)np2x);
+        im.texcoord_y = ((float)(im.height-1.0) / (float)divfactor / (float)np2y);
       }
       else
       {
@@ -2341,12 +2331,12 @@ void CLinuxRendererGL::TextureCallback(DWORD dwContext)
 
 bool CLinuxRendererGL::SupportsBrightness()
 {
-  return (bool)glewIsSupported("GL_ARB_imaging");
+  return glewIsSupported("GL_ARB_imaging") == GL_TRUE;
 }
 
 bool CLinuxRendererGL::SupportsContrast()
 {
-  return (bool)glewIsSupported("GL_ARB_imaging");
+  return glewIsSupported("GL_ARB_imaging") == GL_TRUE;
 }
 
 bool CLinuxRendererGL::SupportsGamma()
@@ -2357,13 +2347,6 @@ bool CLinuxRendererGL::SupportsGamma()
 bool CLinuxRendererGL::SupportsMultiPassRendering()
 {
   return glewIsSupported("GL_EXT_framebuffer_object") && glCreateProgram;
-}
-
-int CLinuxRendererGL::GetMaxTextureSize()
-{
-  GLint texSize; 
-  glGetIntegerv(GL_MAX_TEXTURE_SIZE, &texSize);
-  return texSize;
 }
 
 #endif

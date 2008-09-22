@@ -962,8 +962,7 @@ void CLinuxRenderer::Render(DWORD flags)
       g_application.RenderFullScreen();
     }
 
-    if (g_advancedSettings.m_logLevel <= LOGNOTICE)
-       g_application.RenderMemoryStatus();
+    g_application.RenderMemoryStatus();
   }
 }
 
