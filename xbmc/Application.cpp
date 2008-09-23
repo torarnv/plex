@@ -877,17 +877,28 @@ extern "C" void __stdcall init_emu_environ();
 
 //
 // Utility function used to copy files from the application bundle
-// over to the user data directory in Application Support/XBMC.
+// over to the user data directory in Application Support/Plex.
 //
-static void CopyUserDataIfNeeded(CStdString strPath, LPCTSTR file)
+static void CopyUserDataIfNeeded(const CStdString& libraryPath, const CStdString& strPath, LPCTSTR file)
 {
-  strPath.append(PATH_SEPARATOR_STRING);
-  strPath.append(file);
-  if (access(strPath.c_str(), 0) == -1)
+  CStdString dstPath = libraryPath;
+  dstPath.append(PATH_SEPARATOR_STRING);
+  dstPath.append(strPath);
+  dstPath.append(PATH_SEPARATOR_STRING);
+  dstPath.append(file);
+  printf("Looking for [%s]\n", dstPath.c_str());
+  if (access(dstPath.c_str(), 0) == -1)
   {
-    CStdString srcFile = _P("q:\\userdata\\");
-    srcFile.append(file);
-    CopyFile(srcFile.c_str(), strPath.c_str(), TRUE);
+    CStdString srcPath = _P("q:\\");
+    srcPath.append(strPath);
+    srcPath.append(PATH_SEPARATOR_STRING);
+    srcPath.append(file);
+    printf("Copying from [%s]\n", srcPath.c_str());
+    
+    if (GetFileAttributes(srcPath.c_str()) & FILE_ATTRIBUTE_DIRECTORY)
+      CopyDirectory(srcPath.c_str(), dstPath.c_str(), TRUE);
+    else
+      CopyFile(srcPath.c_str(), dstPath.c_str(), TRUE);
   }
 }
 
@@ -1669,6 +1680,12 @@ CProfile* CApplication::InitDirectoriesOSX()
     // Make sure the required directories exist.
     CStdString str = home;
 
+    // Put the user data folder somewhere standard for the platform.
+    CStdString homeDir = getenv("HOME");
+    homeDir.append("/Library/Application Support/Plex");
+    CIoSupport::RemapDriveLetter('T', homeDir.c_str());
+    CIoSupport::RemapDriveLetter('U', homeDir.c_str());
+    
     str.append("/Library/Application Support");
     CreateDirectory(str.c_str(), NULL);
     str.append("/Plex");
@@ -1679,17 +1696,26 @@ CProfile* CApplication::InitDirectoriesOSX()
     str2 = str;
     str2.append("/skin");
     CreateDirectory(str2.c_str(), NULL);
-    str.append("/userdata");
-    CreateDirectory(str.c_str(), NULL);
+    CStdString str3 = str;
+    str3.append("/userdata");
+    CreateDirectory(str3.c_str(), NULL);
 
-    // See if the keymap file exists, and if not, copy it from our "virgin" one.
-    CopyUserDataIfNeeded(str, "Keymap.xml");
-    CopyUserDataIfNeeded(str, "RssFeeds.xml");
-    CopyUserDataIfNeeded(str, "advancedsettings.xml");
-    CopyUserDataIfNeeded(str, "Database/ViewModes.db");
+    CreateDirectory(_P("U:\\userdata\\Database"), NULL);
+    CreateDirectory(_P("U:\\plugins"), NULL);
+    CreateDirectory(_P("U:\\plugins\\music"), NULL);
+    CreateDirectory(_P("U:\\plugins\\video"), NULL);
+    CreateDirectory(_P("U:\\plugins\\pictures"), NULL);
+    
+    // Install things as needed from our "virgin" copies.
+    CopyUserDataIfNeeded(str, "userdata", "Keymap.xml");
+    CopyUserDataIfNeeded(str, "userdata", "RssFeeds.xml");
+    CopyUserDataIfNeeded(str, "userdata", "advancedsettings.xml");
+    CopyUserDataIfNeeded(str, "userdata", "Database/ViewModes.db");
+    CopyUserDataIfNeeded(str, "plugins/music", "iTunes");
+    CopyUserDataIfNeeded(str, "plugins/pictures", "iPhoto");
 
     // Create a reasonable sources.xml if one doesn't exist already.
-    CStdString sourcesFile = str;
+    CStdString sourcesFile = str3;
     sourcesFile.append("/Sources.xml");
 
     CStdString sampleSourcesFile = strExecutablePath;
@@ -1710,12 +1736,6 @@ CProfile* CApplication::InitDirectoriesOSX()
       // Write the sample.
       XBMCHelper::WriteFile(sourcesFile.c_str(), strSources);
     }
-
-    // Put the user data folder somewhere standard for the platform.
-    str = getenv("HOME");
-    str.append("/Library/Application Support/Plex");
-    CIoSupport::RemapDriveLetter('T', str.c_str());
-    CIoSupport::RemapDriveLetter('U', str.c_str());
   }
 
   g_settings.m_vecProfiles.clear();
