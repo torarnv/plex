@@ -235,6 +235,7 @@ public:
 #endif
     int m_playlistRetries;
     int m_playlistTimeout;
+    bool m_GLRectangleHack;
   };
 
   struct stSettings

@@ -254,6 +254,7 @@ CSettings::CSettings(void)
 
   g_advancedSettings.m_playlistRetries = 100;
   g_advancedSettings.m_playlistTimeout = 20; // 20 seconds timeout
+  g_advancedSettings.m_GLRectangleHack = false;
 }
 
 CSettings::~CSettings(void)

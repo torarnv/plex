@@ -3082,8 +3082,9 @@ void CApplication::Render()
   // Either way, this should fix it!
   //
   static int frameCount = 0;
-  if (frameCount++ % 10 == 0 && g_advancedSettings.m_fullScreen)
-    Cocoa_HideMouse();
+  if (frameCount++ % 10 == 0)
+    if (g_advancedSettings.m_fullScreen)
+      Cocoa_HideMouse();
 #endif
 
   MEASURE_FUNCTION;
@@ -3232,6 +3233,7 @@ bool CApplication::OnKey(CKey& key)
     if (action.unicode >= 'a' && action.unicode <= 'z' ||
         action.unicode >= 'A' && action.unicode <= 'Z')
     {
+      g_Keyboard.Reset();
       return false;
     }
   }

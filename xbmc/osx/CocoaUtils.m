@@ -279,19 +279,19 @@ void Cocoa_GL_UnblankOtherDisplays(int screen)
 }
 
 static NSOpenGLContext* lastOwnedContext = 0;
+static NSWindow* lastWindow = NULL;
 
 void Cocoa_GL_SetFullScreen(int screen, int width, int height, bool fs, bool blankOtherDisplays, bool fakeFullScreen)
 {
   static NSView* lastView = NULL;
   static int fullScreenDisplay = 0;
-  static NSScreen* lastScreen = NULL;
-  static NSWindow* lastWindow = NULL;
+  static int lastDisplay = -1;
 
   // If we're already fullscreen then we must be moving to a different display.
   // Recurse to reset fullscreen mode and then continue.
   //
-  if (fs == true && lastScreen != NULL)
-	Cocoa_GL_SetFullScreen(0, 0, 0, false, blankOtherDisplays, fakeFullScreen);
+  if (fs == true && lastDisplay != -1)
+    Cocoa_GL_SetFullScreen(0, 0, 0, false, blankOtherDisplays, fakeFullScreen);
   
   NSOpenGLContext* context = (NSOpenGLContext*)Cocoa_GL_GetCurrentContext();
   
@@ -310,7 +310,7 @@ void Cocoa_GL_SetFullScreen(int screen, int width, int height, bool fs, bool bla
 
     // Save these values.
     lastView = [context view];
-    lastScreen = [[lastView window] screen];
+    lastDisplay = screen;
     windowedView = lastView;
     
     if (fakeFullScreen == false)
@@ -465,8 +465,9 @@ void Cocoa_GL_SetFullScreen(int screen, int width, int height, bool fs, bool bla
       return;
     
     // Assign view from old context, move back to original screen.
+    NSScreen* screen = [[NSScreen screens] objectAtIndex:lastDisplay];
     [newContext setView:lastView];
-    [[lastView window] setFrameOrigin:[lastScreen frame].origin];
+    [[lastView window] setFrameOrigin:[screen frame].origin];
     
     // Release the fullscreen context.
     if (lastOwnedContext == context)
@@ -484,10 +485,28 @@ void Cocoa_GL_SetFullScreen(int screen, int width, int height, bool fs, bool bla
     
     // Reset.
     lastView = NULL;
-    lastScreen = NULL;
+    lastDisplay = -1;
     fullScreenDisplay = 0;
     windowedView = 0;
   }
+}
+
+int Cocoa_GetCurrentDisplay()
+{
+  NSOpenGLContext* context = (NSOpenGLContext*)Cocoa_GL_GetCurrentContext();
+  NSView* view = [context view];
+  NSScreen* screen = [[view window] screen];
+  
+  int numDisplays = Cocoa_GetNumDisplays();
+  int i = 0;
+  
+  for (i=0; i<numDisplays; i++)
+  {
+    if ([[NSScreen screens] objectAtIndex:i] == screen)
+      return i;
+  }
+  
+  return -1;
 }
 
 void Cocoa_GL_EnableVSync(bool enable)
@@ -630,10 +649,6 @@ void Cocoa_TurnOffScreenSaver()
   {
     NSAppleScript* stopScript = [[NSAppleScript alloc] initWithSource:@"tell application \"/System/Library/Frameworks/ScreenSaver.framework/Versions/A/Resources/ScreenSaverEngine.app\" to quit"];
     [stopScript executeAndReturnError:nil];
-  }
-  else
-  {
-    printf("Not running\n");
   }
 }
                    
