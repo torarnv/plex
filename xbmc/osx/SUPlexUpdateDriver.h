@@ -19,6 +19,6 @@
 - (BOOL)copyPathWithAuthentication:(NSString *)src overPath:(NSString *)dst error:(NSError **)error;
 - (int)removeXAttr:(const char*)name fromFile:(NSString*)file options:(int)options;
 - (void)releaseFromQuarantine:(NSString*)root;
-
+- (void)installUpdateThreaded;
 
 @end

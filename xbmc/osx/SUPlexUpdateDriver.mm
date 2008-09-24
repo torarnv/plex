@@ -144,14 +144,15 @@ static BOOL AuthorizationExecuteWithPrivilegesAndWait(AuthorizationRef authoriza
   // If the archive extracted successfully, install it
   CGUIDialogUtils::StartProgressDialog(CGUIDialogUtils::Localize(40000), CGUIDialogUtils::Localize(40011), "", "", false);
 	if (ua) { CFRelease(ua); }
-	[self installUpdate];
+	[self installUpdateThreaded];
 }
 
 //
 // Mimics the functionality of SUPlainInstaller
 //
-- (void)installUpdate
+- (void)installUpdate:(id)arg
 {
+  NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	if ([[updater delegate] respondsToSelector:@selector(updater:willInstallUpdate:)])
 		[[updater delegate] updater:updater willInstallUpdate:updateItem];
 	// Copy the relauncher (binary from the Sparkle framework) into a temporary directory so we can get to it after the new version's installed.
@@ -188,6 +189,12 @@ static BOOL AuthorizationExecuteWithPrivilegesAndWait(AuthorizationRef authoriza
     BOOL result = [self copyPathWithAuthentication:newAppDownloadPath overPath:[[NSBundle mainBundle] bundlePath] error:&error];
     [SUInstaller _finishInstallationWithResult:result host:host error:error delegate:self];
 	}
+  [pool drain];
+}
+
+- (void)installUpdateThreaded
+{
+  [NSThread detachNewThreadSelector:@selector(installUpdate:) toTarget:self withObject:nil];
 }
 
 - (void)abortUpdateWithError:(NSError *)error
