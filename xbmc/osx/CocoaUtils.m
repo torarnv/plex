@@ -29,6 +29,8 @@ extern int GetProcessPid(const char* processName);
 
 #define MAX_DISPLAYS 32
 static NSWindow* blankingWindows[MAX_DISPLAYS];
+static float blankingBrightness[MAX_DISPLAYS];
+static int mainDisplayScreen;
 
 void Cocoa_Initialize(void* pApplication)
 {
@@ -38,7 +40,11 @@ void Cocoa_Initialize(void* pApplication)
   // Initialize.
   int i;
   for (i=0; i<MAX_DISPLAYS; i++)
+  {
     blankingWindows[i] = 0;
+    blankingBrightness[i] = -1.0f;
+    mainDisplayScreen = 0;
+  }
 }
 
 void Cocoa_DisplayError(const char* strError)
@@ -137,6 +143,7 @@ int Cocoa_GetDisplay(int screen)
   
 	// Get the list of displays.
 	CGGetActiveDisplayList(MAX_DISPLAYS, displayArray, &numDisplays);
+  if (displayArray[screen] == CGMainDisplayID()) mainDisplayScreen = screen;
 	return displayArray[screen];
 }
 
@@ -257,6 +264,27 @@ void Cocoa_GL_BlankOtherDisplays(int screen)
       [blankingWindows[i] setBackgroundColor:[NSColor blackColor]];
       [blankingWindows[i] setLevel:CGShieldingWindowLevel()];
       [blankingWindows[i] makeKeyAndOrderFront:nil];
+      
+      
+      // Get the current backlight level
+      float panelBrightness = HUGE_VALF;
+      CGDisplayErr dErr;
+      dErr = IODisplayGetFloatParameter(CGDisplayIOServicePort(i), kNilOptions, CFSTR(kIODisplayBrightnessKey), &panelBrightness);
+      if (dErr == kIOReturnSuccess)
+      {
+        blankingBrightness[i] = panelBrightness;
+        IODisplaySetFloatParameter(CGDisplayIOServicePort(i), kNilOptions, CFSTR(kIODisplayBrightnessKey), 0.0f);
+      }
+      else
+        blankingBrightness[i] = -1.0f;
+      
+      /*
+      Cocoa_GetPanelBrightness(&unblankBrigtnessLevel);
+      if (unblankBrigtnessLevel > -1.0f)
+      {
+        IODisplaySetFloatParameter(CGDisplayIOServicePort(CGMainDisplayID()), kNilOptions, CFSTR(kIODisplayBrightnessKey), 0.0f);
+        mainDisplayBlanked = true;
+      }*/
     }
   } 
 }
@@ -275,7 +303,13 @@ void Cocoa_GL_UnblankOtherDisplays(int screen)
       [blankingWindows[i] release];
       blankingWindows[i] = 0;
     }
+    if (blankingBrightness[i] >= 0.0f)
+    {
+      // Restore the backlight brightness on supported screens
+      IODisplaySetFloatParameter(CGDisplayIOServicePort(i), kNilOptions, CFSTR(kIODisplayBrightnessKey), blankingBrightness[i]);
+    }
   }
+  
 }
 
 static NSOpenGLContext* lastOwnedContext = 0;
@@ -737,6 +771,13 @@ void* Cocoa_GetDisplayPort()
 
 void Cocoa_GetPanelBrightness(float* brightness)
 {
+//  int mainDisplayId = CGMainDisplayID();
+  printf("Main display: %i\n:", mainDisplayScreen);
+  if (blankingWindows[mainDisplayScreen] != 0)
+  {
+    *brightness = blankingBrightness[mainDisplayScreen];
+    return;
+  }
   float panelBrightness = HUGE_VALF;
   CGDisplayErr dErr;
   
@@ -750,6 +791,9 @@ void Cocoa_GetPanelBrightness(float* brightness)
 void Cocoa_SetPanelBrightness(float brightness)
 {
   if ((brightness >=0.0f) && (brightness <= 1.0f)) {
-    IODisplaySetFloatParameter(CGDisplayIOServicePort(CGMainDisplayID()), kNilOptions, CFSTR(kIODisplayBrightnessKey), brightness);    
+    if (blankingWindows[mainDisplayScreen] == 0)
+      IODisplaySetFloatParameter(CGDisplayIOServicePort(CGMainDisplayID()), kNilOptions, CFSTR(kIODisplayBrightnessKey), brightness);    
+    else
+      blankingBrightness[mainDisplayScreen] = brightness;
   }
 }
