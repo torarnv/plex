@@ -30,14 +30,8 @@
 #include "utils/GUIInfoManager.h"
 #include "Network.h"
 #include "Application.h"
-#ifdef HAS_XBOX_HARDWARE
-#include "xbox/Undocumented.h"
-#include "xbox/XKUtils.h"
-#include "xbox/XKHDD.h"
-#include "xbox/XKflash.h"
-#include "xbox/XKRC4.h"
-extern "C" XPP_DEVICE_TYPE XDEVICE_TYPE_IR_REMOTE_TABLE;
-#endif
+#include "GraphicContext.h"
+#include "Surface.h"
 CSysInfo g_sysinfo;
 
 void CBackgroundSystemInfoLoader::GetInformation()

@@ -1608,3 +1608,8 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
   glXWaitX();
 #endif
 }
+
+void CGraphicContext::Flip()
+{
+  m_screenSurface->Flip();
+}
