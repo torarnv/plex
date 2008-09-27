@@ -3064,18 +3064,32 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
         CVisualisation* viz = vizFactory.LoadVisualisation(pItem->m_strPath);
         if (viz)
         {
-          // Ask the module for a list of visualizers.
+          CStdString strLabel = pItem->GetLabel();
+          strLabel = strLabel.Mid(0, strLabel.size() - 4);
+          
           char** ppViz = 0;
-          viz->GetVisualizers(&ppViz);
+          int count = 0;
+          
+          // Ask the module for a list of visualizers.
+          viz->GetVisualizers(&ppViz, &count);
           if (ppViz)
           {
-            printf("It had its own visualizers...\n");
+            printf("It had its own visualizers (%d)...\n", count);
+            char strName[1024];
+            
+            for (int x=0; x<count; x++)
+            {
+              sprintf(strName, "%s (%s)", ppViz[x], strLabel.c_str());
+              printf("Adding [%s]\n", strName);
+              
+              CStdString label = strName;
+              vecVis.push_back(label);
+            }
           }
           else
           {
             // It doesn't support any sub-visualizer.
-            CStdString strLabel = pItem->GetLabel();
-            vecVis.push_back(strLabel.Mid(0, strLabel.size() - 4));
+            vecVis.push_back(strLabel);
           }
           
           delete viz;

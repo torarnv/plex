@@ -163,10 +163,10 @@ bool CVisualisation::HandlesOwnDisplay()
   return false;
 }
  
-void CVisualisation::GetVisualizers(char*** pVisualizers)
+void CVisualisation::GetVisualizers(char*** pVisualizers, int* numVisualizers)
 {
   if (m_pVisz->GetVisualizers != 0)
-    m_pVisz->GetVisualizers(pVisualizers);
+    m_pVisz->GetVisualizers(pVisualizers, numVisualizers);
 }
 
 bool CVisualisation::IsLocked()
