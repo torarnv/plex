@@ -481,7 +481,7 @@ void CWeather::LoadLocalizedToken()
 {
   // We load the english strings in to get our tokens
   TiXmlDocument xmlDoc;
-  if ( !xmlDoc.LoadFile("Q:\\language\\english\\strings.xml") )
+  if ( !xmlDoc.LoadFile(PTH_IC("Q:\\language\\english\\strings.xml")) )
   {
     return ;
   }
