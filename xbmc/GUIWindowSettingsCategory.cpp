@@ -3074,14 +3074,10 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
           viz->GetVisualizers(&ppViz, &count);
           if (ppViz)
           {
-            printf("It had its own visualizers (%d)...\n", count);
             char strName[1024];
-            
             for (int x=0; x<count; x++)
             {
               sprintf(strName, "%s (%s)", ppViz[x], strLabel.c_str());
-              printf("Adding [%s]\n", strName);
-              
               CStdString label = strName;
               vecVis.push_back(label);
             }

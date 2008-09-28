@@ -39,13 +39,21 @@ CVisualisation* CVisualisationFactory::LoadVisualisation(const CStdString& strVi
   // like goom or spectrum
   CStdString strName = CUtil::GetFileName(strVisz);
   strName = strName.Left(strName.size() - 4);
+  
+  // See if the name implies a sub-visualizer.
+  if (strName.Find("(") != -1)
+  {
+    printf("Got subvisualizer\n");
+  }
 
 #ifdef HAS_VISUALISATION
   // load visualisation
-  DllVisualisation* pDll = new DllVisualisation;
+  DllVisualisation* pDll = new DllVisualisation();
   pDll->SetFile(strVisz);
+  
   //  FIXME: Some Visualisations do not work 
   //  when their dll is not unloaded immediatly
+  //
   pDll->EnableDelayedUnload(false);
   if (!pDll->Load())
   {
