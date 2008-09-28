@@ -34,10 +34,11 @@ using namespace std;
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CVisualisation::CVisualisation(struct Visualisation* pVisz, DllVisualisation* pDll, const CStdString& strVisualisationName)
+CVisualisation::CVisualisation(struct Visualisation* pVisz, DllVisualisation* pDll, const CStdString& strVisualisationName, const CStdString& strSubmodule)
     : m_pVisz(pVisz)
     , m_pDll(pDll)
     , m_strVisualisationName(strVisualisationName)
+    , m_strSubmodule(strSubmodule)
 {}
 
 CVisualisation::~CVisualisation()
@@ -65,7 +66,8 @@ void CVisualisation::Create(int posx, int posy, int width, int height)
   void* dev = 0;
 #endif
   
-  m_pVisz->Create (dev, posx, posy, width, height, m_strVisualisationName.c_str(), pixelRatio);
+  // Create.
+  m_pVisz->Create(dev, posx, posy, width, height, m_strSubmodule.c_str(), pixelRatio);
 #endif
 }
 
