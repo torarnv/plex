@@ -295,6 +295,9 @@ void Cocoa_GL_SetFullScreen(int screen, int width, int height, bool fs, bool bla
   
   NSOpenGLContext* context = (NSOpenGLContext*)Cocoa_GL_GetCurrentContext();
   
+  // Let's whack the child window if there is one.
+  Cocoa_DestroyChildWindow();
+  
   if (!context)
     return;
   
