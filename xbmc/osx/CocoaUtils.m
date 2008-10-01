@@ -21,6 +21,7 @@
 #include "CocoaUtils.h"
 #import "XBMCMain.h" 
 #include <SDL/SDL.h>
+#import "AppleHardwareInfo.h"
 
 #import <IOKit/graphics/IOGraphicsLib.h>
 #import <ApplicationServices/ApplicationServices.h>
@@ -768,3 +769,27 @@ void Cocoa_SetPanelBrightness(float brightness)
     IODisplaySetFloatParameter(CGDisplayIOServicePort(CGMainDisplayID()), kNilOptions, CFSTR(kIODisplayBrightnessKey), brightness);    
   }
 }
+
+const char* Cocoa_GetHardwareModelName()
+{ return [[[AppleHardwareInfo sharedInstance] modelName] UTF8String]; }
+
+bool Cocoa_GetHardwareHasBattery()
+{ return [[AppleHardwareInfo sharedInstance] hasBattery]; }
+
+bool Cocoa_GetHardwareIsOnACPower()
+{ return [[AppleHardwareInfo sharedInstance] isOnACPower]; }
+
+bool Cocoa_GetHardwareIsCharging()
+{ return [[AppleHardwareInfo sharedInstance] isCharging]; }
+
+int  Cocoa_GetHardwareCurrentBatteryCapacity()
+{ return [[AppleHardwareInfo sharedInstance] currentBatteryCapacity]; }
+
+int  Cocoa_GetHardwareTimeToEmpty()
+{ return [[AppleHardwareInfo sharedInstance] timeToEmpty]; }
+
+int  Cocoa_GetHardwareTimeToFullCharge()
+{ return [[AppleHardwareInfo sharedInstance] timeToFullCharge]; }
+
+void Cocoa_EnableLowBatteryWarning()
+{ [[AppleHardwareInfo sharedInstance] setLowBatteryWarningEnabled:YES]; }

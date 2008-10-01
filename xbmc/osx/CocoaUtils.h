@@ -99,6 +99,18 @@ extern "C"
   //
   void Cocoa_GetPanelBrightness(float* brightness);
   void Cocoa_SetPanelBrightness(float brightness);
+  
+  //
+  // Apple hardware info
+  //
+  const char* Cocoa_GetHardwareModelName();
+  bool Cocoa_GetHardwareHasBattery();
+  bool Cocoa_GetHardwareIsOnACPower();
+  bool Cocoa_GetHardwareIsCharging();
+  int  Cocoa_GetHardwareCurrentBatteryCapacity();
+  int  Cocoa_GetHardwareTimeToEmpty();
+  int  Cocoa_GetHardwareTimeToFullCharge();
+  void Cocoa_EnableLowBatteryWarning();
 
 #ifdef __cplusplus
 }

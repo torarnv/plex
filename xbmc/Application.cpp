@@ -2085,6 +2085,9 @@ HRESULT CApplication::Initialize()
   }
 
   m_slowTimer.StartZero();
+  
+  // Register for low battery warnings (ignored on unsupported models)
+  Cocoa_EnableLowBatteryWarning();
 
   CLog::Log(LOGNOTICE, "initialize done");
 
