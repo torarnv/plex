@@ -17,6 +17,7 @@
 #import <sys/xattr.h>
 #import <dirent.h>
 #import <unistd.h>
+#import "CocoaUtils.h"
 
 @class SUPlexUpdater;
 
@@ -108,6 +109,7 @@ static BOOL AuthorizationExecuteWithPrivilegesAndWait(AuthorizationRef authoriza
 
 - (void)download:(NSURLDownload *)download didReceiveDataOfLength:(NSUInteger)length
 {
+  NSLog(@"%@", Cocoa_GL_GetCurrentContext());
   // When data is received, update the progress dialog
   processedData += length;
   if (totalData > 0) {

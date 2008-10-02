@@ -962,6 +962,7 @@
 		1AA456010E7D94FC004CC8D2 /* SUPlainInstaller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SUPlainInstaller.h; path = "../../../Downloads/Sparkle 1.5b5/Extras/Source Code/SUPlainInstaller.h"; sourceTree = SOURCE_ROOT; };
 		1AA456B20E7EA2E7004CC8D2 /* SUConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUConstants.h; sourceTree = "<group>"; };
 		1AA456B60E7EA3DD004CC8D2 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
+		1AF6A6800E94521E00D96BD7 /* SUPlainInstaller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUPlainInstaller.h; sourceTree = "<group>"; };
 		6E97BDBC0DA2B5D8003A2A89 /* GUIInfoColor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIInfoColor.cpp; sourceTree = "<group>"; };
 		6E97BDBD0DA2B5D8003A2A89 /* GUIInfoColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIInfoColor.h; sourceTree = "<group>"; };
 		6E97BDBF0DA2B620003A2A89 /* EventClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventClient.h; sourceTree = "<group>"; };
@@ -3231,6 +3232,7 @@
 				1A01F0FB0E7D37AA00DC186E /* SUPlexUpdateDriver.mm */,
 				1A01F0FC0E7D37AA00DC186E /* SUPlexUpdater.h */,
 				1A01F0FD0E7D37AA00DC186E /* SUPlexUpdater.mm */,
+				1AF6A6800E94521E00D96BD7 /* SUPlainInstaller.h */,
 				1A01F0FE0E7D37AA00DC186E /* SUUpdateDriver.h */,
 			);
 			name = Sparkle;

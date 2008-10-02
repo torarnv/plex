@@ -30,5 +30,6 @@ id g_plexUpdater;
 - (void)setAlertType:(int)alertType;
 - (void)setCheckInterval:(double)seconds;
 - (void)setSuspended:(BOOL)willSuspend;
+- (void)userAlerted;
 
 @end

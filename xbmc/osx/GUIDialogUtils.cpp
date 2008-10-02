@@ -117,6 +117,7 @@ void CGUIDialogUtils::SetProgressDialogPercentage(int iPercentage)
 
 void CGUIDialogUtils::SetProgressDialogLine(int iLine, const string &iString)
 {
+  //Cocoa_GL_GetCurrentContext();
   CGUIDialogProgress *dialog = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
   if (dialog) 
   {
