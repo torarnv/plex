@@ -4828,11 +4828,13 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   if(item.IsTuxBox())
   {
     CLog::Log(LOGDEBUG, "%s - TuxBox URL Detected %s",__FUNCTION__, item.m_strPath.c_str());
+
+    if(g_tuxboxService.IsRunning())
+      g_tuxboxService.Stop();
+
     CFileItem item_new;
     if(g_tuxbox.CreateNewItem(item, item_new))
     {
-      if(g_tuxboxService.IsRunning())
-        g_tuxboxService.Stop();
 
       // Make sure it doesn't have a player
       // so we actually select one normally
@@ -4842,7 +4844,8 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
       // and give the new url to the player
       if(PlayFile(item_new, true))
       {
-        g_tuxboxService.Start();
+        if(!g_tuxboxService.IsRunning())
+          g_tuxboxService.Start();
         return true;
       }
     }
