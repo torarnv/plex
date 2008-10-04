@@ -1556,10 +1556,10 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("videolibrary.enabled"));
     }
-    else if (strSetting.Equals("lookandfeel.rssfeedsrtl"))
+    else if (strSetting.Equals("system.rssfeedsrtl"))
     { // only visible if rss is enabled
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("lookandfeel.enablerssfeeds"));
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("system.enablerssfeeds"));
     }
     else
     {

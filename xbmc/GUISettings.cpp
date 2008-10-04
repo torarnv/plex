@@ -377,6 +377,8 @@ CGUISettings::CGUISettings(void)
   AddInt(12, "system.targettemperature", 13299, 55, 40, 1, 68, SPIN_CONTROL_TEXT);
   AddInt(13, "system.minfanspeed", 13411, 1, 1, 1, 50, SPIN_CONTROL_TEXT);
 #endif
+  AddBool(11, "system.enablerssfeeds",13305,  true);
+  AddBool(0, "system.rssfeedsrtl",13412,  false);
 	
 	AddCategory(4, "locale", 20026);
 	AddString(1, "locale.country", 20026, "USA", SPIN_CONTROL_TEXT);
@@ -703,8 +705,7 @@ CGUISettings::CGUISettings(void)
   AddSeparator(7, "lookandfeel.sep1");
   AddString(8, "lookandfeel.soundskin",15108,"SKINDEFAULT", SPIN_CONTROL_TEXT);
   AddSeparator(10, "lookandfeel.sep2");
-  AddBool(11, "lookandfeel.enablerssfeeds",13305,  true);
-  AddBool(0, "lookandfeel.rssfeedsrtl",13412,  false);
+
 
   AddCategory(7, "filelists", 14018);
   AddBool(1, "filelists.hideparentdiritems", 13306, false);
