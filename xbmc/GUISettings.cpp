@@ -702,7 +702,7 @@ CGUISettings::CGUISettings(void)
 
 #ifdef __APPLE__
   // Default to vsync always on!
-  AddInt(6, "videoscreen.vsync", 13105, 2, 0, 1, 3, SPIN_CONTROL_TEXT);
+  AddInt(0, "videoscreen.vsync", 13105, 2, 0, 1, 3, SPIN_CONTROL_TEXT);
 #else
   AddInt(6, "videoscreen.vsync", 13105, 3, 0, 1, 3, SPIN_CONTROL_TEXT);
 #endif
