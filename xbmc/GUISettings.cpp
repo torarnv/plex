@@ -269,6 +269,8 @@ CGUISettings::CGUISettings(void)
   AddBool(5, "mymusic.clearplaylistsonend",239,false);
 	AddBool(2, "mymusic.outputtoallspeakers", 252, false);
 	AddInt(9, "mymusic.crossfade", 13314, 0, 0, 1, 10, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF);
+	AddBool(10, "mymusic.usecddb", 227, true);
+
 
   AddSeparator(6, "mymusic.sep2");
   AddString(7,"mymusic.recordingpath",20005,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
@@ -306,7 +308,7 @@ CGUISettings::CGUISettings(void)
   AddSeparator(11, "musicplayer.sep3");
   AddString(12, "musicplayer.jumptocache", 439, "", BUTTON_CONTROL_STANDARD);
 
-  AddCategory(3, "musicfiles", 744);
+//  AddCategory(3, "musicfiles", 744);
   AddBool(1, "musicfiles.usetags", 258, true);
   AddString(2, "musicfiles.trackformat", 13307, "[%N. ]%A - %T", BUTTON_CONTROL_INPUT, false, 16016);
   AddString(3, "musicfiles.trackformatright", 13387, "%D", BUTTON_CONTROL_INPUT, false, 16016);
@@ -321,7 +323,6 @@ CGUISettings::CGUISettings(void)
   AddInt(7, "musicfiles.sortorder", 580, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_DESC, SPIN_CONTROL_TEXT);
   AddBool(8, "musicfiles.savefolderviews", 583, true);
   AddSeparator(9, "musicfiles.sep2");
-  AddBool(10, "musicfiles.usecddb", 227, true);
   AddBool(11, "musicfiles.findremotethumbs", 14059, true);
 
   AddCategory(3, "lastfm", 15200);
