@@ -264,7 +264,7 @@ CGUISettings::CGUISettings(void)
   AddString(1, "mymusic.visualisation", 250, "milkdrop.vis", SPIN_CONTROL_TEXT);
 #endif
   AddSeparator(2, "mymusic.sep1");
-  AddBool(3, "mymusic.autoplaynextitem", 489, true);
+  AddBool(0, "mymusic.autoplaynextitem", 489, true);
   //AddBool(4, "musicfiles.repeat", 488, false);
   AddBool(5, "mymusic.clearplaylistsonend",239,false);
   AddSeparator(6, "mymusic.sep2");
