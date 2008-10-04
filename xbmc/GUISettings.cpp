@@ -338,9 +338,9 @@ CGUISettings::CGUISettings(void)
   AddInt(4, "cddaripper.quality", 622, CDDARIP_QUALITY_CBR, CDDARIP_QUALITY_CBR, 1, CDDARIP_QUALITY_EXTREME, SPIN_CONTROL_TEXT);
   AddInt(5, "cddaripper.bitrate", 623, 192, 128, 32, 320, SPIN_CONTROL_INT_PLUS, MASK_KBPS);
 
-  AddCategory(3, "karaoke", 13327);
-  AddBool(1, "karaoke.enabled", 13323, false);
-  AddBool(2, "karaoke.voiceenabled", 13361, false);
+//  AddCategory(3, "karaoke", 13327);
+  AddBool(1, "karaoke.enabled", 13323, enable);
+  AddBool(2, "karaoke.voiceenabled", 13361, enable);
   AddInt(3, "karaoke.volume", 13376, 100, 0, 1, 100, SPIN_CONTROL_INT, MASK_PERCENT);
   AddString(4, "karaoke.port0voicemask", 13382, "None", SPIN_CONTROL_TEXT);
   AddString(5, "karaoke.port1voicemask", 13383, "None", SPIN_CONTROL_TEXT);
