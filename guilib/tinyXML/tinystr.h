@@ -33,7 +33,7 @@ distribution.
  * - added "copy" constructor with length, and most compare operators.
  * - added swap(), clear(), size(), capacity(), operator+().
  */
-
+#define TIXML_USE_STL
 #ifndef TIXML_USE_STL
 
 #ifndef TIXML_STRING_INCLUDED
@@ -80,21 +80,21 @@ class TiXmlString
 	}
 
 	// TiXmlString copy constructor
-	TiXmlString ( const TiXmlString & copy)
+	TiXmlString ( const TiXmlString & copy) : rep_(0)
 	{
 		init(copy.length());
 		memcpy(start(), copy.data(), length());
 	}
 
 	// TiXmlString constructor, based on a string
-	TIXML_EXPLICIT TiXmlString ( const char * copy)
+	TIXML_EXPLICIT TiXmlString ( const char * copy) : rep_(0)
 	{
 		init( static_cast<size_type>( strlen(copy) ));
 		memcpy(start(), copy, length());
 	}
 
 	// TiXmlString constructor, based on a string
-	TIXML_EXPLICIT TiXmlString ( const char * str, size_type len)
+	TIXML_EXPLICIT TiXmlString ( const char * str, size_type len) : rep_(0)
 	{
 		init(len);
 		memcpy(start(), str, len);
