@@ -529,7 +529,6 @@ CGUISettings::CGUISettings(void)
   AddBool(0, "myvideos.treatstackasfile", 20051, true);
   AddInt(0, "myvideos.resumeautomatically", 12017, RESUME_ASK, RESUME_NO, 1, RESUME_ASK, SPIN_CONTROL_TEXT);
   AddBool(0, "myvideos.autothumb",12024, false);
-  AddBool(4, "myvideos.cleanfilenames", 20418, false);
   AddSeparator(5, "myvideos.sep1");
   AddInt(5, "myvideos.viewmode", 582, DEFAULT_VIEW_AUTO, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX, SPIN_CONTROL_TEXT);
   AddInt(6, "myvideos.sortmethod", 581, SORT_METHOD_LABEL, SORT_METHOD_LABEL, 1, SORT_METHOD_MAX, SPIN_CONTROL_TEXT);
@@ -718,6 +717,8 @@ CGUISettings::CGUISettings(void)
   AddBool(8, "filelists.disableaddsourcebuttons", 21382,  false);
   AddSeparator(9, "filelists.sep2");
   AddBool(0, "filelists.showhidden", 21330, false);
+  AddBool(4, "filelists.cleanfilenames", 20418, false);
+
 
   AddCategory(7, "screensaver", 360);
   AddString(1, "screensaver.mode", 356, "Dim", SPIN_CONTROL_TEXT);
