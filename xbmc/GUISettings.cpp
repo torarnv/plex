@@ -652,6 +652,7 @@ CGUISettings::CGUISettings(void)
   // appearance settings
   AddGroup(7, 480);
   AddCategory(7,"lookandfeel", 14037);
+  AddBool(0,"lookandfeel.soundsduringplayback",21370,false);
   AddString(1, "lookandfeel.skin",166,"MediaStream", SPIN_CONTROL_TEXT);
   AddString(2, "lookandfeel.skintheme",15111,"SKINDEFAULT", SPIN_CONTROL_TEXT);
   AddString(3, "lookandfeel.skincolors",14078, "SKINDEFAULT", SPIN_CONTROL_TEXT);
@@ -660,7 +661,6 @@ CGUISettings::CGUISettings(void)
   AddInt(6, "lookandfeel.startupwindow",512,1, WINDOW_HOME, 1, WINDOW_PYTHON_END, SPIN_CONTROL_TEXT);
   AddSeparator(7, "lookandfeel.sep1");
   AddString(8, "lookandfeel.soundskin",15108,"SKINDEFAULT", SPIN_CONTROL_TEXT);
-  AddBool(9,"lookandfeel.soundsduringplayback",21370,false);
   AddSeparator(10, "lookandfeel.sep2");
   AddBool(11, "lookandfeel.enablerssfeeds",13305,  true);
   AddBool(11, "lookandfeel.rssfeedsrtl",13412,  false);
