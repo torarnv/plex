@@ -4464,44 +4464,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     g_passwordManager.m_mapSMBPasswordCache.clear();
     g_passwordManager.bMasterUser = false;
     m_gWindowManager.ActivateWindow(WINDOW_LOGIN_SCREEN);
-#ifdef HAS_XBOX_NETWORK
-    g_application.getNetwork().Initialize(g_guiSettings.GetInt("network.assignment"),
-      g_guiSettings.GetString("network.ipaddress").c_str(),
-      g_guiSettings.GetString("network.subnet").c_str(),
-      g_guiSettings.GetString("network.gateway").c_str(),
-      g_guiSettings.GetString("network.dns").c_str());
-#endif
-  }
-  else if (execute.Left(18).Equals("system.pwmcontrol"))
-  {
-    CStdString strTemp ,strRgbA, strRgbB, strWhiteA, strWhiteB, strTran;
-    CStdStringArray arSplit;
-    int iTrTime = 0;
-    StringUtils::SplitString(parameter,",", arSplit);
-
-    if ((int)arSplit.size() > 1)
-    {
-      strRgbA  = arSplit[0].c_str();
-      strRgbB  = arSplit[1].c_str();
-      strWhiteA= arSplit[2].c_str();
-      strWhiteB= arSplit[3].c_str();
-      strTran  = arSplit[4].c_str();
-      iTrTime  = atoi(arSplit[5].c_str());
-    }
-    else if(parameter.size() > 6)
-    {
-      strRgbA = strRgbB = parameter;
-      strTran = "none";
-    }
-    CUtil::PWMControl(strRgbA,strRgbB,strWhiteA,strWhiteB,strTran, iTrTime);
-  }
-  else if (execute.Equals("backupsysteminfo"))
-  {
-#ifdef HAS_XBOX_HARDWARE
-    g_sysinfo.WriteTXTInfoFile();
-    g_sysinfo.CreateBiosBackup();
-    g_sysinfo.CreateEEPROMBackup();
-#endif
+    g_application.StartEventServer(); // event server could be needed in some situations      
   }
   else if (execute.Equals("pagedown"))
   {
