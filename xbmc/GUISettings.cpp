@@ -349,17 +349,16 @@ CGUISettings::CGUISettings(void)
   AddGroup(4, 13000);
   AddCategory(4, "system", 13281);
   // advanced only configuration
-  AddBool(1, "system.debuglogging", 20191, false);
-  AddInt(2, "system.shutdowntime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
+  AddBool(0, "system.debuglogging", 20191, false);
 #ifdef __APPLE__
-  AddInt(3, "system.displaysleeptime", 17500, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
-  // add panel brightness setting if supported by the display
-  float panelBrightnessLevel = -1.0f;
-  Cocoa_GetPanelBrightness(&panelBrightnessLevel);
-  AddInt(panelBrightnessLevel >= 0 ? 4 : 0, "system.panelbrightness", 17501, 0, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
-
-  // add battery warning setting if on a laptop
-  AddBool(Cocoa_HW_HasBattery() ? 5 : 0, "system.batterywarning", 18009, true);
+	AddInt(3, "system.displaysleeptime", 17500, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
+	// add panel brightness setting if supported by the display
+	float panelBrightnessLevel = -1.0f;
+	Cocoa_GetPanelBrightness(&panelBrightnessLevel);
+	AddInt(panelBrightnessLevel >= 0 ? 4 : 0, "system.panelbrightness", 17501, 0, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+	
+	// add battery warning setting if on a laptop
+	AddBool(Cocoa_HW_HasBattery() ? 5 : 0, "system.batterywarning", 18009, true);
 #endif
 #ifdef HAS_HAL
   AddInt(3, "system.shutdownstate", 13008, 0, 0, 1, 4, SPIN_CONTROL_TEXT);
@@ -406,7 +405,17 @@ CGUISettings::CGUISettings(void)
 	AddCategory(4, "videoscreen", 131);
 	AddInt(1, "videoscreen.resolution",169,(int)AUTORES, (int)HDTV_1080i, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
 	AddString(2, "videoscreen.testresolution",13109,"", BUTTON_CONTROL_STANDARD);
-	
+	AddInt(2, "videoscreen.shutdowntime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
+#ifdef __APPLE__
+	AddInt(3, "videoscreen.displaysleeptime", 17500, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
+	// add panel brightness setting if supported by the display
+	float panelBrightnessLevel = -1.0f;
+	Cocoa_GetPanelBrightness(&panelBrightnessLevel);
+	if (panelBrightnessLevel >= 0)
+	{
+		AddInt(4, "videoscreen.panelbrightness", 17501, 0, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+	}
+#endif
 #ifdef __APPLE__
 	AddInt(3, "videoscreen.displayblanking", 13130, BLANKING_DISABLED, BLANKING_DISABLED, 1, BLANKING_ALL_DISPLAYS, SPIN_CONTROL_TEXT);
 #endif

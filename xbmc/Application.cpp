@@ -1529,7 +1529,7 @@ HRESULT CApplication::Create(HWND hWnd)
   D3DDevice::SetWaitCallback(WaitCallback);
 #endif
 
-  g_Mouse.SetEnabled(g_guiSettings.GetBool("lookandfeel.enablemouse"));
+  g_Mouse.SetEnabled(g_guiSettings.GetBool("appleremote.enablemouse"));
 
   if (!m_bQuiet)
     m_bQuiet = !g_guiSettings.GetBool("system.debuglogging");
@@ -5664,7 +5664,7 @@ void CApplication::CheckShutdown()
   }
   else
   {
-    if ( (long)(timeGetTime() - m_dwSaverTick) >= (long)(g_guiSettings.GetInt("system.shutdowntime")*60*1000L) )
+    if ( (long)(timeGetTime() - m_dwSaverTick) >= (long)(g_guiSettings.GetInt("videoscreen.shutdowntime")*60*1000L) )
     {
       bool bShutDown = false;
       if (m_pPlayer && m_pPlayer->IsPlaying()) // if we're playing something don't shutdown
@@ -5746,7 +5746,7 @@ void CApplication::CheckDisplaySleep()
   }
   else
   {
-    if ( (long)(timeGetTime() - m_dwSaverTick) >= (long)(g_guiSettings.GetInt("system.displaysleeptime")*60*1000L) )
+    if ( (long)(timeGetTime() - m_dwSaverTick) >= (long)(g_guiSettings.GetInt("videoscreen.displaysleeptime")*60*1000L) )
     {
       bool bDisplaySleep = false;
       if (m_pPlayer && m_pPlayer->IsPlaying())
@@ -6287,7 +6287,7 @@ void CApplication::ProcessSlow()
    }
 
   // Only activate display sleep if fullscreen mode.
-  if (g_guiSettings.GetInt("system.displaysleeptime" ) && g_advancedSettings.m_fullScreen)
+  if (g_guiSettings.GetInt("videoscreen.displaysleeptime" ) && g_advancedSettings.m_fullScreen)
   {
     CheckDisplaySleep();
   }
@@ -6295,9 +6295,9 @@ void CApplication::ProcessSlow()
 
   // Check if we need to shutdown (if enabled).
 #ifdef __APPLE__
-  if (g_guiSettings.GetInt("system.shutdowntime") && g_advancedSettings.m_fullScreen)
+  if (g_guiSettings.GetInt("videoscreen.shutdowntime") && g_advancedSettings.m_fullScreen)
 #else
-  if (g_guiSettings.GetInt("system.shutdowntime"))
+  if (g_guiSettings.GetInt("videoscreen.shutdowntime"))
 #endif
   {
     CheckShutdown();

@@ -42,7 +42,7 @@ CGUIRSSControl::CGUIRSSControl(DWORD dwParentID, DWORD dwControlId, float posX, 
   m_pReader = NULL;
   ControlType = GUICONTROL_RSS;
 
-  if (g_guiSettings.GetBool("lookandfeel.rssfeedsrtl"))
+  if (g_guiSettings.GetBool("system.rssfeedsrtl"))
   {
     m_scrollInfo.SetSpeed(-60);
   }
@@ -69,7 +69,7 @@ void CGUIRSSControl::SetIntervals(const vector<int>& vecIntervals)
 void CGUIRSSControl::Render()
 {
   // only render the control if they are enabled
-  if (g_guiSettings.GetBool("lookandfeel.enablerssfeeds") && g_rssManager.IsActive())
+  if (g_guiSettings.GetBool("system.enablerssfeeds") && g_rssManager.IsActive())
   {
     CSingleLock lock(m_criticalSection);
     // Create RSS background/worker thread if needed

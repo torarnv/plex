@@ -2186,7 +2186,7 @@ void CMusicDatabase::DeleteAlbumInfo()
 
 bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
 {
-  if (!g_guiSettings.GetBool("musicfiles.usecddb"))
+  if (!g_guiSettings.GetBool("mymusic.usecddb"))
     return false;
 
   // check network connectivity
