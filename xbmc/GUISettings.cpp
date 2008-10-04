@@ -377,7 +377,30 @@ CGUISettings::CGUISettings(void)
   AddInt(12, "system.targettemperature", 13299, 55, 40, 1, 68, SPIN_CONTROL_TEXT);
   AddInt(13, "system.minfanspeed", 13411, 1, 1, 1, 50, SPIN_CONTROL_TEXT);
 #endif
-
+	
+	AddCategory(4, "locale", 20026);
+	AddString(1, "locale.country", 20026, "USA", SPIN_CONTROL_TEXT);
+	AddString(2, "locale.language",248,"english", SPIN_CONTROL_TEXT);
+	AddString(3, "locale.charset",735,"DEFAULT", SPIN_CONTROL_TEXT); // charset is set by the language file
+	AddSeparator(4, "locale.sep1");
+#ifndef __APPLE__
+	AddString(5, "locale.time", 14065, "", BUTTON_CONTROL_MISC_INPUT);
+	AddString(6, "locale.date", 14064, "", BUTTON_CONTROL_MISC_INPUT);
+#endif
+#ifdef HAS_XBOX_HARDWARE
+	AddInt(7, "locale.timezone", 14074, 0, 0, 1, g_timezone.GetNumberOfTimeZones(), SPIN_CONTROL_TEXT);
+	AddBool(8, "locale.usedst", 14075, false);
+#endif
+#if defined(_LINUX) && !defined(__APPLE__)
+	AddString(8, "locale.timezone", 14081, g_timezone.GetOSConfiguredTimezone(), SPIN_CONTROL_TEXT);
+	AddString(7, "locale.timezonecountry", 14080, g_timezone.GetCountryByTimezone(g_timezone.GetOSConfiguredTimezone()), SPIN_CONTROL_TEXT);
+#endif
+#ifndef __APPLE__
+	AddSeparator(9, "locale.sep2");
+	AddBool(10, "locale.timeserver", 168, false);
+	AddString(11, "locale.timeserveraddress", 731, "pool.ntp.org", EDIT_CONTROL_INPUT);
+#endif
+	
 #ifdef HAS_LCD
   AddCategory(4, "lcd", 448);
 #ifdef _LINUX
@@ -665,29 +688,6 @@ CGUISettings::CGUISettings(void)
   AddBool(11, "lookandfeel.enablerssfeeds",13305,  true);
   AddBool(0, "lookandfeel.rssfeedsrtl",13412,  false);
   AddBool(12, "lookandfeel.enablemouse", 21369, false);
-
-  AddCategory(7, "locale", 20026);
-  AddString(1, "locale.country", 20026, "USA", SPIN_CONTROL_TEXT);
-  AddString(2, "locale.language",248,"english", SPIN_CONTROL_TEXT);
-  AddString(3, "locale.charset",735,"DEFAULT", SPIN_CONTROL_TEXT); // charset is set by the language file
-  AddSeparator(4, "locale.sep1");
-#ifndef __APPLE__
-  AddString(5, "locale.time", 14065, "", BUTTON_CONTROL_MISC_INPUT);
-  AddString(6, "locale.date", 14064, "", BUTTON_CONTROL_MISC_INPUT);
-#endif
-#ifdef HAS_XBOX_HARDWARE
-  AddInt(7, "locale.timezone", 14074, 0, 0, 1, g_timezone.GetNumberOfTimeZones(), SPIN_CONTROL_TEXT);
-  AddBool(8, "locale.usedst", 14075, false);
-#endif
-#if defined(_LINUX) && !defined(__APPLE__)
-  AddString(8, "locale.timezone", 14081, g_timezone.GetOSConfiguredTimezone(), SPIN_CONTROL_TEXT);
-  AddString(7, "locale.timezonecountry", 14080, g_timezone.GetCountryByTimezone(g_timezone.GetOSConfiguredTimezone()), SPIN_CONTROL_TEXT);
-#endif
-#ifndef __APPLE__
-  AddSeparator(9, "locale.sep2");
-  AddBool(10, "locale.timeserver", 168, false);
-  AddString(11, "locale.timeserveraddress", 731, "pool.ntp.org", EDIT_CONTROL_INPUT);
-#endif
 
   AddCategory(7, "videoscreen", 131);
   AddInt(1, "videoscreen.resolution",169,(int)AUTORES, (int)HDTV_1080i, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
