@@ -233,7 +233,7 @@ void* Cocoa_GL_ResizeWindow(void *theContext, int w, int h)
 
 void Cocoa_GL_BlankOtherDisplays(int screen)
 {
-  int numDisplays = Cocoa_GetNumDisplays();
+  int numDisplays = [[NSScreen screens] count];
   int i = 0;
 
   // Blank.
@@ -246,13 +246,12 @@ void Cocoa_GL_BlankOtherDisplays(int screen)
       NSRect    screenRect = [pScreen frame];
           
       // Build a blanking window.
-      screenRect.origin.x = 0.0;
-      screenRect.origin.y = 0.0;
+      screenRect.origin = NSZeroPoint;
       blankingWindows[i] = [[NSWindow alloc] initWithContentRect:screenRect
-                                             styleMask:NSBorderlessWindowMask
-                                             backing:NSBackingStoreBuffered
-                                             defer:NO 
-                                             screen:pScreen];
+                                                      styleMask:NSBorderlessWindowMask
+                                                        backing:NSBackingStoreBuffered
+                                                          defer:NO 
+                                                         screen:pScreen];
                                             
       [blankingWindows[i] setBackgroundColor:[NSColor blackColor]];
       [blankingWindows[i] setLevel:CGShieldingWindowLevel()];
@@ -263,7 +262,7 @@ void Cocoa_GL_BlankOtherDisplays(int screen)
 
 void Cocoa_GL_UnblankOtherDisplays(int screen)
 {
-  int numDisplays = Cocoa_GetNumDisplays();
+  int numDisplays = [[NSScreen screens] count];
   int i = 0;
 
   for (i=0; i<numDisplays; i++)
