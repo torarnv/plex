@@ -115,13 +115,7 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
               CFanController::Instance()->Stop();
 #endif
               g_settings.LoadProfile(m_viewControl.GetSelectedItem());
-#ifdef HAS_XBOX_NETWORK
-              g_application.getNetwork().Initialize(g_guiSettings.GetInt("network.assignment"),
-                g_guiSettings.GetString("network.ipaddress").c_str(),
-                g_guiSettings.GetString("network.subnet").c_str(),
-                g_guiSettings.GetString("network.gateway").c_str(),
-                g_guiSettings.GetString("network.dns").c_str());
-#endif
+              g_application.StartEventServer(); // event server could be needed in some situations
             }
             else
             {
