@@ -1280,6 +1280,9 @@ namespace VIDEO
             m_pObserver->OnSetTitle(CUtil::GetFileName(strPath));
           }
 
+          if(!info.strContent.Equals("tvshows"))
+            GetIMDBDetails(pItem, scrUrl, info, bGrabAny, pDlgProgress); 
+
           return URL_NFO;
         }
       }
