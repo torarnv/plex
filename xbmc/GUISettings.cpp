@@ -413,6 +413,8 @@ CGUISettings::CGUISettings(void)
 	
 	AddString(3, "videoscreen.guicalibration",214,"", BUTTON_CONTROL_STANDARD);
 	AddString(4, "videoscreen.testpattern",226,"", BUTTON_CONTROL_STANDARD);
+	AddInt(6, "videoscreen.highqualityupscaling", 13112, SOFTWARE_UPSCALING_DISABLED, SOFTWARE_UPSCALING_DISABLED, 1, SOFTWARE_UPSCALING_ALWAYS, SPIN_CONTROL_TEXT);
+	AddInt(7, "videoscreen.upscalingalgorithm", 13116, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, 1, VS_SCALINGMETHOD_SINC_SOFTWARE, SPIN_CONTROL_TEXT);
 	
 #ifdef __APPLE__
 	// Default to vsync always on!
@@ -554,16 +556,16 @@ CGUISettings::CGUISettings(void)
   AddString(14, "videolibrary.export", 647, "", BUTTON_CONTROL_STANDARD);
   AddString(15, "videolibrary.import", 648, "", BUTTON_CONTROL_STANDARD);
 
-  AddCategory(5, "videoplayer", 16003);
-  AddString(1, "videoplayer.calibrate", 214, "", BUTTON_CONTROL_STANDARD);
-  AddString(2, "videoplayer.jumptoaudiohardware", 16001, "", BUTTON_CONTROL_STANDARD);
+//  AddCategory(5, "videoplayer", 16003);
   AddSeparator(3, "videoplayer.sep1");
 #ifndef __APPLE__
   AddInt(4, "videoplayer.rendermethod", 13354, RENDER_HQ_RGB_SHADER, RENDER_LQ_RGB_SHADER, 1, RENDER_HQ_RGB_SHADERV2, SPIN_CONTROL_TEXT);
 #endif
-  // FIXME: hide this setting until it is properly respected. In the meanwhile, default to AUTO.
+
+// FIXME: hide this setting until it is properly respected. In the meanwhile, default to AUTO.
   //AddInt(5, "videoplayer.displayresolution", 169, (int)AUTORES, (int)AUTORES, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
   AddInt(0, "videoplayer.displayresolution", 169, (int)AUTORES, (int)AUTORES, 1, (int)AUTORES, SPIN_CONTROL_TEXT);
+
 #ifdef HAS_MPLAYER
   AddInt(6, "videoplayer.framerateconversions", 336, FRAME_RATE_LEAVE_AS_IS, FRAME_RATE_LEAVE_AS_IS, 1, FRAME_RATE_USE_PAL60, SPIN_CONTROL_TEXT);
 #endif
@@ -575,12 +577,16 @@ CGUISettings::CGUISettings(void)
   AddSeparator(10, "videoplayer.sep1.8");
   AddInt(9, "videoplayer.skiploopfilter", 13140, VS_SKIPLOOP_DEFAULT, VS_SKIPLOOP_DEFAULT, 1, VS_SKIPLOOP_ALL, SPIN_CONTROL_TEXT);
 
+
   AddSeparator(10, "videoplayer.sep2");
-  AddString(11, "videoplayer.jumptocache", 439, "", BUTTON_CONTROL_STANDARD);
   AddSeparator(12, "videoplayer.sep3");
-  AddInt(15, "videoplayer.dvdplayerregion", 21372, 0, 0, 1, 8, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
-  AddBool(16, "videoplayer.dvdautomenu", 21882, false);
-  AddBool(17, "videoplayer.editdecision", 22003, false);
+#ifdef HAS_XBOX_HARDWARE
+  AddBool(13, "videoplayer.useexternaldvdplayer", 20001, false);
+  AddString(14, "videoplayer.externaldvdplayer", 20002, "",  BUTTON_CONTROL_PATH_INPUT, true, 655);
+#endif
+  AddInt(0, "videoplayer.dvdplayerregion", 21372, 0, 0, 1, 8, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
+  AddBool(0, "videoplayer.dvdautomenu", 21882, true);
+  AddBool(0, "videoplayer.editdecision", 22003, true);
 
   AddCategory(5, "subtitles", 287);
   AddString(1, "subtitles.font", 288, "Arial", SPIN_CONTROL_TEXT);
