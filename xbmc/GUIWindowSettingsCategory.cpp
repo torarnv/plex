@@ -3700,6 +3700,8 @@ void CGUIWindowSettingsCategory::OnInitWindow()
   m_strNetworkSubnet = g_guiSettings.GetString("network.subnet");
   m_strNetworkGateway = g_guiSettings.GetString("network.gateway");
   m_strNetworkDNS = g_guiSettings.GetString("network.dns");
+#endif
+#ifdef __APPLE__
   // Change the panel brightness setting to the current hardware level
   g_guiSettings.SetInt("system.panelbrightness", ((int)(g_application.GetPanelBrightness()*20))*5);
 #endif
