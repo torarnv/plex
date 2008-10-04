@@ -663,7 +663,7 @@ CGUISettings::CGUISettings(void)
   AddString(8, "lookandfeel.soundskin",15108,"SKINDEFAULT", SPIN_CONTROL_TEXT);
   AddSeparator(10, "lookandfeel.sep2");
   AddBool(11, "lookandfeel.enablerssfeeds",13305,  true);
-  AddBool(11, "lookandfeel.rssfeedsrtl",13412,  false);
+  AddBool(0, "lookandfeel.rssfeedsrtl",13412,  false);
   AddBool(12, "lookandfeel.enablemouse", 21369, false);
 
   AddCategory(7, "locale", 20026);
