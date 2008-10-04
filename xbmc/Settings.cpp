@@ -959,14 +959,21 @@ bool CSettings::SaveCalibration(TiXmlNode* pRootNode) const
 
 bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 {
-  // load the xml file
+  // Load the xml file, and avoid condensing white space. We should probably avoid
+  // this elsewhere, but I'll just do it here for now as it fixes a specific problem
+  // with audio devices with trailing spaces.
+  //
   TiXmlDocument xmlDoc;
-
+  TiXmlBase::SetCondenseWhiteSpace(false);
+  
   if (!xmlDoc.LoadFile(strSettingsFile))
   {
     g_LoadErrorStr.Format("%s, Line %d\n%s", strSettingsFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+    TiXmlBase::SetCondenseWhiteSpace(true);
     return false;
   }
+  
+  TiXmlBase::SetCondenseWhiteSpace(true);
 
   TiXmlElement *pRootElement = xmlDoc.RootElement();
   if (strcmpi(pRootElement->Value(), "settings") != 0)
