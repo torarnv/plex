@@ -1178,10 +1178,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       if (pControl) pControl->SetEnabled((g_guiSettings.GetInt("cddaripper.encoder") != CDDARIP_ENCODER_WAV) &&
                                            (g_guiSettings.GetInt("cddaripper.quality") == CDDARIP_QUALITY_CBR));
     }
-    else if (strSetting.Equals("musicplayer.outputtoallspeakers") ||
-			 strSetting.Equals("audiooutput.ac3passthrough") ||
-			 strSetting.Equals("audiooutput.dtspassthrough") ||
-			 strSetting.Equals("audiooutput.passthroughdevice"))
+    else if (strSetting.Equals("musicplayer.outputtoallspeakers") || strSetting.Equals("audiooutput.ac3passthrough") || strSetting.Equals("audiooutput.dtspassthrough") || strSetting.Equals("audiooutput.passthroughdevice"))
     { // only visible if we are in digital mode
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_audioConfig.UseDigitalOutput());
@@ -1214,10 +1211,10 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       if (pControl) pControl->SetEnabled(g_videoConfig.HasNTSC() && g_videoConfig.HasHDPack());
 #endif
     }
-    else if (strSetting.Equals("musicplayer.crossfadealbumtracks"))
+    else if (strSetting.Equals("mymusic.crossfadealbumtracks"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("musicplayer.crossfade") > 0);
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("mymusic.crossfade") > 0);
     }
     else if (strSetting.Left(12).Equals("karaoke.port") || strSetting.Equals("karaoke.volume"))
     {
@@ -1795,7 +1792,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       CScrobbler::GetInstance()->Term();
     }
   }
-  else if (strSetting.Equals("musicplayer.outputtoallspeakers"))
+  else if (strSetting.Equals("mymusic.outputtoallspeakers"))
   {
     if (!g_application.IsPlaying())
     {

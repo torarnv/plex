@@ -267,6 +267,9 @@ CGUISettings::CGUISettings(void)
   AddBool(0, "mymusic.autoplaynextitem", 489, true);
   //AddBool(4, "musicfiles.repeat", 488, false);
   AddBool(5, "mymusic.clearplaylistsonend",239,false);
+	AddBool(2, "mymusic.outputtoallspeakers", 252, false);
+	AddInt(9, "mymusic.crossfade", 13314, 0, 0, 1, 10, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF);
+
   AddSeparator(6, "mymusic.sep2");
   AddString(7,"mymusic.recordingpath",20005,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
 
@@ -278,30 +281,28 @@ CGUISettings::CGUISettings(void)
   AddInt(4, "backgroundmusic.volume", 18102, 50, 5, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
 
   AddCategory(3,"musiclibrary",14022);
-  AddBool(1, "musiclibrary.enabled", 418, true);
+  AddBool(0, "musiclibrary.enabled", 418, true);
   AddBool(2, "musiclibrary.albumartistsonly", 13414, false);
   AddSeparator(3,"musiclibrary.sep1");
   AddBool(4,"musiclibrary.autoalbuminfo", 20192, false);
   AddBool(5,"musiclibrary.autoartistinfo", 20193, false);
-  AddString(6, "musiclibrary.defaultscraper", 20194, "Allmusic", SPIN_CONTROL_TEXT);
-  AddInt(6, "musiclibrary.recentcount", 20250, 25, 10, 5, 250, SPIN_CONTROL_INT_PLUS, -1);
+  AddString(0, "musiclibrary.defaultscraper", 20194, "Allmusic", SPIN_CONTROL_TEXT);
+  AddInt(0, "musiclibrary.recentcount", 20250, 25, 10, 5, 250, SPIN_CONTROL_INT_PLUS, -1);
   AddBool(7, "musiclibrary.updateonstartup", 22000, false);
   AddSeparator(8,"musiclibrary.sep2");
   AddString(9, "musiclibrary.cleanup", 334, "", BUTTON_CONTROL_STANDARD);
   AddString(10, "musiclibrary.export", 20196, "", BUTTON_CONTROL_STANDARD);
   AddString(11, "musiclibrary.import", 20197, "", BUTTON_CONTROL_STANDARD);
 
-  AddCategory(3, "musicplayer", 16003);
+//  AddCategory(3, "musicplayer", 16003);
   AddString(1, "musicplayer.jumptoaudiohardware", 16001, "", BUTTON_CONTROL_STANDARD);
-  AddBool(2, "musicplayer.outputtoallspeakers", 252, false);
   AddSeparator(3, "musicplayer.sep1");
   AddInt(4, "musicplayer.replaygaintype", 638, REPLAY_GAIN_ALBUM, REPLAY_GAIN_NONE, 1, REPLAY_GAIN_TRACK, SPIN_CONTROL_TEXT);
   AddInt(5, "musicplayer.replaygainpreamp", 641, 89, 77, 1, 101, SPIN_CONTROL_INT_PLUS, MASK_DB);
   AddInt(6, "musicplayer.replaygainnogainpreamp", 642, 89, 77, 1, 101, SPIN_CONTROL_INT_PLUS, MASK_DB);
   AddBool(7, "musicplayer.replaygainavoidclipping", 643, false);
   AddSeparator(8, "musicplayer.sep2");
-  AddInt(9, "musicplayer.crossfade", 13314, 0, 0, 1, 10, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF);
-  AddBool(10, "musicplayer.crossfadealbumtracks", 13400, true);
+  AddBool(10, "mymusic.crossfadealbumtracks", 13400, true);
   AddSeparator(11, "musicplayer.sep3");
   AddString(12, "musicplayer.jumptocache", 439, "", BUTTON_CONTROL_STANDARD);
 
