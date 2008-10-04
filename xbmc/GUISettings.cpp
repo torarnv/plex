@@ -401,6 +401,24 @@ CGUISettings::CGUISettings(void)
 	AddString(11, "locale.timeserveraddress", 731, "pool.ntp.org", EDIT_CONTROL_INPUT);
 #endif
 	
+	AddCategory(4, "videoscreen", 131);
+	AddInt(1, "videoscreen.resolution",169,(int)AUTORES, (int)HDTV_1080i, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
+	AddString(2, "videoscreen.testresolution",13109,"", BUTTON_CONTROL_STANDARD);
+	
+#ifdef __APPLE__
+	AddInt(3, "videoscreen.displayblanking", 13130, BLANKING_DISABLED, BLANKING_DISABLED, 1, BLANKING_ALL_DISPLAYS, SPIN_CONTROL_TEXT);
+#endif
+	
+	AddString(3, "videoscreen.guicalibration",214,"", BUTTON_CONTROL_STANDARD);
+	AddString(4, "videoscreen.testpattern",226,"", BUTTON_CONTROL_STANDARD);
+	
+#ifdef __APPLE__
+	// Default to vsync always on!
+	AddInt(0, "videoscreen.vsync", 13105, 2, 0, 1, 3, SPIN_CONTROL_TEXT);
+#else
+	AddInt(6, "videoscreen.vsync", 13105, 3, 0, 1, 3, SPIN_CONTROL_TEXT);
+#endif
+	
 #ifdef HAS_LCD
   AddCategory(4, "lcd", 448);
 #ifdef _LINUX
@@ -688,24 +706,6 @@ CGUISettings::CGUISettings(void)
   AddBool(11, "lookandfeel.enablerssfeeds",13305,  true);
   AddBool(0, "lookandfeel.rssfeedsrtl",13412,  false);
   AddBool(12, "lookandfeel.enablemouse", 21369, false);
-
-  AddCategory(7, "videoscreen", 131);
-  AddInt(1, "videoscreen.resolution",169,(int)AUTORES, (int)HDTV_1080i, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
-  AddString(2, "videoscreen.testresolution",13109,"", BUTTON_CONTROL_STANDARD);
-
-#ifdef __APPLE__
-  AddInt(3, "videoscreen.displayblanking", 13130, BLANKING_DISABLED, BLANKING_DISABLED, 1, BLANKING_ALL_DISPLAYS, SPIN_CONTROL_TEXT);
-#endif
-
-  AddString(3, "videoscreen.guicalibration",214,"", BUTTON_CONTROL_STANDARD);
-  AddString(4, "videoscreen.testpattern",226,"", BUTTON_CONTROL_STANDARD);
-
-#ifdef __APPLE__
-  // Default to vsync always on!
-  AddInt(0, "videoscreen.vsync", 13105, 2, 0, 1, 3, SPIN_CONTROL_TEXT);
-#else
-  AddInt(6, "videoscreen.vsync", 13105, 3, 0, 1, 3, SPIN_CONTROL_TEXT);
-#endif
 
   AddCategory(7, "filelists", 14018);
   AddBool(1, "filelists.hideparentdiritems", 13306, false);
