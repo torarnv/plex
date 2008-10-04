@@ -537,7 +537,7 @@ CGUISettings::CGUISettings(void)
   AddInt(5, "myvideos.viewmode", 582, DEFAULT_VIEW_AUTO, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX, SPIN_CONTROL_TEXT);
   AddInt(6, "myvideos.sortmethod", 581, SORT_METHOD_LABEL, SORT_METHOD_LABEL, 1, SORT_METHOD_MAX, SPIN_CONTROL_TEXT);
   AddInt(7, "myvideos.sortorder", 580, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_DESC, SPIN_CONTROL_TEXT);
-  AddBool(8, "myvideos.savefolderviews", 583, true);
+  AddBool(0, "myvideos.savefolderviews", 583, true);
   AddCategory(5, "videolibrary", 14022);
 
   AddBool(0, "videolibrary.enabled", 418, true);
