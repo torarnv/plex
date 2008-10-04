@@ -595,7 +595,7 @@ CGUISettings::CGUISettings(void)
   AddInt(4, "subtitles.color", 737, SUBTITLE_COLOR_START + 1, SUBTITLE_COLOR_START, 1, SUBTITLE_COLOR_END, SPIN_CONTROL_TEXT);
   AddString(5, "subtitles.charset", 735, "DEFAULT", SPIN_CONTROL_TEXT);
   AddSeparator(7, "subtitles.sep1");
-  AddBool(9, "subtitles.searchrars", 13249, false);
+  AddBool(0, "subtitles.searchrars", 13249, true);
   AddSeparator(10,"subtitles.sep2");
   AddString(11, "subtitles.custompath", 21366, "", BUTTON_CONTROL_PATH_INPUT, false, 657);
 
