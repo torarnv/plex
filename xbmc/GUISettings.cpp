@@ -536,7 +536,7 @@ CGUISettings::CGUISettings(void)
   AddBool(8, "myvideos.savefolderviews", 583, true);
   AddCategory(5, "videolibrary", 14022);
 
-  AddBool(1, "videolibrary.enabled", 418, true);
+  AddBool(0, "videolibrary.enabled", 418, true);
   AddSeparator(2, "videolibrary.sep1");
   AddBool(3, "videolibrary.hideplots", 20369, false);
   AddBool(4, "videolibrary.seasonthumbs", 20382, true);
