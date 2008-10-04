@@ -1540,9 +1540,9 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetString("lookandfeel.soundskin") != "OFF");
     }
-    else if (strSetting.Equals("lookandfeel.enablemouse"))
+    else if (strSetting.Equals("appleremote.enablemouse"))
     {
-      g_Mouse.SetEnabled(g_guiSettings.GetBool("lookandfeel.enablemouse"));
+      g_Mouse.SetEnabled(g_guiSettings.GetBool("appleremote.enablemouse"));
     }
     else if (!strSetting.Equals("musiclibrary.enabled")
       && strSetting.Left(13).Equals("musiclibrary."))
@@ -2127,9 +2127,9 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     else
       g_audioManager.Enable(!g_application.IsPlaying() || g_application.IsPaused());
   }
-  else if (strSetting.Equals("lookandfeel.enablemouse"))
+  else if (strSetting.Equals("appleremote.enablemouse"))
   {
-    g_Mouse.SetEnabled(g_guiSettings.GetBool("lookandfeel.enablemouse"));
+    g_Mouse.SetEnabled(g_guiSettings.GetBool("appleremote.enablemouse"));
   }
   else if (strSetting.Equals("videoscreen.resolution"))
   { // new resolution choosen... - update if necessary

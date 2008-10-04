@@ -434,14 +434,15 @@ CGUISettings::CGUISettings(void)
   AddInt(7, "lcd.disableonplayback", 20310, LED_PLAYBACK_OFF, LED_PLAYBACK_OFF, 1, LED_PLAYBACK_VIDEO_MUSIC, SPIN_CONTROL_TEXT);
   AddBool(8, "lcd.enableonpaused", 20312, true);
 #endif
-
+	
+	AddCategory(4, "appleremote", 13600);
 #ifdef __APPLE__
-  AddCategory(4, "appleremote", 13600);
   AddInt(1, "appleremote.mode", 13601, APPLE_REMOTE_STANDARD, APPLE_REMOTE_DISABLED, 1, APPLE_REMOTE_UNIVERSAL, SPIN_CONTROL_TEXT);
   AddBool(2, "appleremote.alwayson", 13602, false);
   AddInt(3, "appleremote.sequencetime", 13603, 500, 50, 50, 1000, SPIN_CONTROL_INT_PLUS, MASK_MS, TEXT_OFF);
   AddBool(0, "appleremote.secureinput", 13604, false);
 #endif
+	AddBool(12, "appleremote.enablemouse", 21369, false);
 
   AddCategory(4, "autorun", 447);
   AddBool(1, "autorun.dvd", 240, true);
@@ -705,7 +706,6 @@ CGUISettings::CGUISettings(void)
   AddSeparator(10, "lookandfeel.sep2");
   AddBool(11, "lookandfeel.enablerssfeeds",13305,  true);
   AddBool(0, "lookandfeel.rssfeedsrtl",13412,  false);
-  AddBool(12, "lookandfeel.enablemouse", 21369, false);
 
   AddCategory(7, "filelists", 14018);
   AddBool(1, "filelists.hideparentdiritems", 13306, false);
