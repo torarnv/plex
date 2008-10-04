@@ -204,7 +204,7 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
       // Do we need to reload the language file
       if (!m_strNewLanguage.IsEmpty())
       {
-        g_guiSettings.SetString("locale.language", m_strNewLanguage);
+        g_guiSettings.SetString("system.language", m_strNewLanguage);
         g_settings.Save();
 
         CStdString strLangInfoPath;
@@ -646,7 +646,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       FillInSubtitleFonts(pSetting);
     }
-    else if (strSetting.Equals("subtitles.charset") || strSetting.Equals("locale.charset"))
+    else if (strSetting.Equals("subtitles.charset") || strSetting.Equals("system.charset"))
     {
       FillInCharSets(pSetting);
     }
@@ -662,7 +662,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       FillInSoundSkins(pSetting);
     }
-    else if (strSetting.Equals("locale.language"))
+    else if (strSetting.Equals("system.language"))
     {
       FillInLanguages(pSetting);
     }
@@ -890,7 +890,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       if (pSettingString->GetData().IsEmpty())
         pControl->SetLabel2(g_localizeStrings.Get(20009));
     }
-    else if (strSetting.Equals("locale.country"))
+    else if (strSetting.Equals("system.country"))
     {
       FillInRegions(pSetting);
     }
@@ -1377,7 +1377,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
       pControl->SetEnabled(CUtil::IsUsingTTFSubtitles());
     }
-    else if (strSetting.Equals("locale.charset"))
+    else if (strSetting.Equals("system.charset"))
     { // TODO: Determine whether we are using a TTF font or not.
       //   CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       //   if (pControl) pControl->SetEnabled(g_guiSettings.GetString("lookandfeel.font").Right(4) == ".ttf");
@@ -2049,7 +2049,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       g_charsetConverter.reset();
     }
   }
-  else if (strSetting.Equals("locale.charset"))
+  else if (strSetting.Equals("system.charset"))
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
@@ -2162,7 +2162,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       ILED::CLEDControl(iData);
 #endif
   }
-  else if (strSetting.Equals("locale.language"))
+  else if (strSetting.Equals("system.language"))
   { // new language chosen...
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
@@ -2321,13 +2321,13 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     g_guiSettings.m_replayGain.iNoGainPreAmp = g_guiSettings.GetInt("musicplayer.replaygainnogainpreamp");
     g_guiSettings.m_replayGain.bAvoidClipping = g_guiSettings.GetBool("musicplayer.replaygainavoidclipping");
   }
-  else if (strSetting.Equals("locale.country"))
+  else if (strSetting.Equals("system.country"))
   {
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
 
     const CStdString& strRegion=pControl->GetCurrentLabel();
     g_langInfo.SetCurrentRegion(strRegion);
-    g_guiSettings.SetString("locale.country", strRegion);
+    g_guiSettings.SetString("system.country", strRegion);
   }
   else if (strSetting.Equals("locale.timeserver") || strSetting.Equals("locale.timeserveraddress"))
   {

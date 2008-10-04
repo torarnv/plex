@@ -378,11 +378,12 @@ CGUISettings::CGUISettings(void)
 #endif
   AddBool(11, "system.enablerssfeeds",13305,  true);
   AddBool(0, "system.rssfeedsrtl",13412,  false);
+  AddString(1, "system.country", 20026, "USA", SPIN_CONTROL_TEXT);
+  AddString(2, "system.language",248,"english", SPIN_CONTROL_TEXT);
+  AddString(3, "system.charset",735,"DEFAULT", SPIN_CONTROL_TEXT); // charset is set by the language file
 	
-	AddCategory(4, "locale", 20026);
-	AddString(1, "locale.country", 20026, "USA", SPIN_CONTROL_TEXT);
-	AddString(2, "locale.language",248,"english", SPIN_CONTROL_TEXT);
-	AddString(3, "locale.charset",735,"DEFAULT", SPIN_CONTROL_TEXT); // charset is set by the language file
+	
+//	AddCategory(4, "locale", 20026);
 	AddSeparator(4, "locale.sep1");
 #ifndef __APPLE__
 	AddString(5, "locale.time", 14065, "", BUTTON_CONTROL_MISC_INPUT);
@@ -516,7 +517,7 @@ CGUISettings::CGUISettings(void)
   AddBool(4,  "videooutput.hd1080i", 21380, true);
 #endif
 
-  AddCategory(4, "masterlock", 12360);
+//  AddCategory(4, "masterlock", 12360);
   AddString(1, "masterlock.lockcode"       , 20100, "-", BUTTON_CONTROL_STANDARD);
   AddSeparator(2, "masterlock.sep1");
   AddBool(4, "masterlock.startuplock"      , 20076,false);
@@ -640,7 +641,7 @@ CGUISettings::CGUISettings(void)
   AddString(14, "network.httpproxyserver", 706, "", BUTTON_CONTROL_IP_INPUT);
   AddString(15, "network.httpproxyport", 707, "8080", BUTTON_CONTROL_INPUT, false, 707);
   AddSeparator(16, "network.sep2");
-  AddBool(17, "network.enableinternet", 14054, true);
+  AddBool(0, "network.enableinternet", 14054, true);
 
   // hidden proxy authentication details
   AddString(0, "network.httpproxyusername", 706, "", BUTTON_CONTROL_INPUT);

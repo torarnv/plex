@@ -240,7 +240,7 @@ bool CLangInfo::Load(const CStdString& strFileName)
       pRegion=pRegion->NextSiblingElement("region");
     }
 
-    const CStdString& strName=g_guiSettings.GetString("locale.country");
+    const CStdString& strName=g_guiSettings.GetString("system.country");
     SetCurrentRegion(strName);
   }
 
@@ -272,7 +272,7 @@ void CLangInfo::SetDefaults()
 CStdString CLangInfo::GetGuiCharSet() const
 {
   CStdString strCharSet;
-  strCharSet=g_guiSettings.GetString("locale.charset");
+  strCharSet=g_guiSettings.GetString("system.charset");
   if (strCharSet=="DEFAULT")
     strCharSet=m_currentRegion->m_strGuiCharSet;
 
