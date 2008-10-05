@@ -4592,6 +4592,8 @@ void CApplication::Stop()
 #ifdef __APPLE__
     if (g_xbmcHelper.IsAlwaysOn() == false)
       g_xbmcHelper.Stop();
+    
+    Cocoa_GL_UnblankOtherDisplays(Cocoa_GetCurrentDisplay());
 #endif
 
 /* Python resource freeing must be done after skin has been unloaded, not before
