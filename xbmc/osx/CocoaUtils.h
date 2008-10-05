@@ -103,14 +103,15 @@ extern "C"
   //
   // Apple hardware info
   //
-  const char* Cocoa_GetHardwareModelName();
-  bool Cocoa_GetHardwareHasBattery();
-  bool Cocoa_GetHardwareIsOnACPower();
-  bool Cocoa_GetHardwareIsCharging();
-  int  Cocoa_GetHardwareCurrentBatteryCapacity();
-  int  Cocoa_GetHardwareTimeToEmpty();
-  int  Cocoa_GetHardwareTimeToFullCharge();
-  void Cocoa_EnableLowBatteryWarning();
+  const char* Cocoa_HW_ModelName();
+  const char* Cocoa_HW_LongModelName();
+  bool Cocoa_HW_HasBattery();
+  bool Cocoa_HW_IsOnACPower();
+  bool Cocoa_HW_IsCharging();
+  int  Cocoa_HW_CurrentBatteryCapacity();
+  int  Cocoa_HW_TimeToBatteryEmpty();
+  int  Cocoa_HW_TimeToFullCharge();
+  void Cocoa_HW_SetBatteryWarningEnabled(bool enabled);
 
 #ifdef __cplusplus
 }

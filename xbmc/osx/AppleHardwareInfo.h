@@ -20,6 +20,7 @@
 + (AppleHardwareInfo*)sharedInstance;
 
 - (NSString*)modelName;
+- (NSString*)longModelName;
 - (BOOL)hasBattery;
 
 - (BOOL)isOnACPower;

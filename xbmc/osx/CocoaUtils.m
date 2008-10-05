@@ -770,26 +770,29 @@ void Cocoa_SetPanelBrightness(float brightness)
   }
 }
 
-const char* Cocoa_GetHardwareModelName()
+const char* Cocoa_HW_ModelName()
 { return [[[AppleHardwareInfo sharedInstance] modelName] UTF8String]; }
 
-bool Cocoa_GetHardwareHasBattery()
+const char* Cocoa_HW_LongModelName()
+{ return [[[AppleHardwareInfo sharedInstance] longModelName] UTF8String]; }
+
+bool Cocoa_HW_HasBattery()
 { return [[AppleHardwareInfo sharedInstance] hasBattery]; }
 
-bool Cocoa_GetHardwareIsOnACPower()
+bool Cocoa_HW_IsOnACPower()
 { return [[AppleHardwareInfo sharedInstance] isOnACPower]; }
 
-bool Cocoa_GetHardwareIsCharging()
+bool Cocoa_HW_IsCharging()
 { return [[AppleHardwareInfo sharedInstance] isCharging]; }
 
-int  Cocoa_GetHardwareCurrentBatteryCapacity()
+int  Cocoa_HW_CurrentBatteryCapacity()
 { return [[AppleHardwareInfo sharedInstance] currentBatteryCapacity]; }
 
-int  Cocoa_GetHardwareTimeToEmpty()
+int  Cocoa_HW_TimeToBatteryEmpty()
 { return [[AppleHardwareInfo sharedInstance] timeToEmpty]; }
 
-int  Cocoa_GetHardwareTimeToFullCharge()
+int  Cocoa_HW_TimeToFullCharge()
 { return [[AppleHardwareInfo sharedInstance] timeToFullCharge]; }
 
-void Cocoa_EnableLowBatteryWarning()
-{ [[AppleHardwareInfo sharedInstance] setLowBatteryWarningEnabled:YES]; }
+void Cocoa_HW_SetBatteryWarningEnabled(bool enabled)
+{ [[AppleHardwareInfo sharedInstance] setLowBatteryWarningEnabled:enabled]; }

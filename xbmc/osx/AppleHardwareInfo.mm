@@ -99,6 +99,13 @@ NSString* GetPowerInfoStringForKey(const char* key)
 }
 
 - (NSString*)modelName { return modelName; }
+
+- (NSString*)longModelName
+{
+  NSDictionary* modelNames = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"ModelNames" ofType:@"plist"]];
+  return [modelNames objectForKey:[self modelName]];
+}
+
 - (BOOL)hasBattery { return hasBattery; }
 
 - (BOOL)isOnACPower
@@ -159,10 +166,7 @@ NSString* GetPowerInfoStringForKey(const char* key)
     
     // Enable the timer if required
     if (enabled)
-    {
       batteryCheckTimer = [NSTimer scheduledTimerWithTimeInterval:BATTERY_CHECK_INTERVAL target:self selector:@selector(checkBatteryCapacity) userInfo:nil repeats:YES];
-      NSLog(@"Registered for battery warnings");
-    }
   }
 }
     

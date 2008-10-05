@@ -1472,10 +1472,20 @@
 
   <string id="17500">Display Sleep Timeout</string>
   <string id="17501">Display Brightness</string>
-  <string id="17500">Display Sleep Timeout</string>
   
   <string id="17701">Low Battery</string>
   <string id="17702">Connect to AC Power</string>
+  
+  <string id="18000">Model</string>
+  <string id="18001">Power source</string>
+  <string id="18002">AC power</string>
+  <string id="18003">AC power (charging)</string>
+  <string id="18004">Battery power</string>
+  <string id="18005">Power level</string>
+  <string id="18006">until full</string>
+  <string id="18007">remaining</string>
+  <string id="18008">Calculating time</string>
+  <string id="18009">Enable low battery warning</string>
 
   <string id="20000">CDDA Rip Folder</string>
   <string id="20001">Use external DVD Player</string>

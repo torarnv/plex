@@ -351,6 +351,9 @@ CGUISettings::CGUISettings(void)
   {
     AddInt(4, "system.panelbrightness", 17501, 0, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
   }
+  // add battery warning setting if on a laptop
+  if (Cocoa_HW_HasBattery())
+    AddBool(5, "system.batterywarning", 18009, true);
 #endif
 #ifdef HAS_HAL
   AddInt(3, "system.shutdownstate", 13008, 0, 0, 1, 4, SPIN_CONTROL_TEXT);

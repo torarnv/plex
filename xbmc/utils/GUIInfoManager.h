@@ -409,6 +409,10 @@ class CDateTime;
 #define CONTROL_HAS_FOCUS           30000
 #define BUTTON_SCROLLER_HAS_ICON    30001
 
+#define SYSTEM_MODEL_NAME           30100
+#define SYSTEM_POWER_SOURCE         30101
+#define SYSTEM_POWER_LEVEL          30102
+
 #ifdef SVN_REV
 #define VERSION_STRING "SVN:"SVN_REV
 #else

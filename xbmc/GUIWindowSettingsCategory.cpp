@@ -2495,6 +2495,12 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   {
     g_fontManager.ReloadTTFFonts();
   }
+#ifdef __APPLE__
+  else if (strSetting.Equals("system.batterywarning"))
+  {
+    Cocoa_HW_SetBatteryWarningEnabled(g_guiSettings.GetBool("system.batterywarning"));
+  }
+#endif
 
   UpdateSettings();
 }
