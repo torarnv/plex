@@ -51,7 +51,7 @@ static const int packetSize[] = { 12, 8, 4, 1 };
 CRTMP::CRTMP() : m_socket(INVALID_SOCKET)
 {
   Close();
-  m_strPlayer = "file:///xbmc.flv";
+  m_strPlayer = "http://www.boxee.tv/player.swf";
   m_pBuffer = new char[RTMP_BUFFER_CACHE_SIZE];
 }
 
