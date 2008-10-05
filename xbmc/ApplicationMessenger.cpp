@@ -404,9 +404,9 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       int display = (pMsg->dwMessage == TMSG_MOVE_TO_PREV_SCREEN) ? (currentDisplay + 1) : (currentDisplay - 1 + displayCount);
       display %= displayCount;
       
-      if (g_advancedSettings.m_fullScreen)
+      if (display != currentDisplay)
       {
-        //if (g_graphicsContext.IsFullScreenVideo() == false)
+        if (g_advancedSettings.m_fullScreen)
         {
           // We need to find the display mode that corresponds to the new screen and go to it.
           RESOLUTION theRes = INVALID;
@@ -430,11 +430,11 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
               g_application.ReloadSkin();
           }
         }
-      }
-      else
-      {
-        // Simply move the window to the next screen.
-        Cocoa_MoveWindowToDisplay(display);
+        else
+        {
+          // Simply move the window to the next screen.
+          Cocoa_MoveWindowToDisplay(display);
+        }
       }
 #endif
     }
