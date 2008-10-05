@@ -133,6 +133,7 @@ int Cocoa_GetNumDisplays()
 
   // Get the list of displays.
   CGGetActiveDisplayList(MAX_DISPLAYS, displayArray, &numDisplays);
+  
   return numDisplays;
 }
 
@@ -143,7 +144,9 @@ int Cocoa_GetDisplay(int screen)
   
 	// Get the list of displays.
 	CGGetActiveDisplayList(MAX_DISPLAYS, displayArray, &numDisplays);
-  if (displayArray[screen] == CGMainDisplayID()) mainDisplayScreen = screen;
+  if (displayArray[screen] == CGMainDisplayID()) 
+    mainDisplayScreen = screen;
+    
 	return displayArray[screen];
 }
 
@@ -186,6 +189,19 @@ double Cocoa_GetScreenRefreshRate(int screen)
 void QZ_ChangeWindowSize(int w, int h);
 
 static NSView* windowedView = 0;
+
+void Cocoa_MoveWindowToDisplay(int screen)
+{
+  NSOpenGLContext* context = (NSOpenGLContext*)Cocoa_GL_GetCurrentContext();
+  NSView* view = [context view];
+  NSWindow* window = [view window];
+  
+  NSScreen* pScreen = [[NSScreen screens] objectAtIndex:screen];
+  [window disableScreenUpdatesUntilFlush];
+  [window setFrameOrigin:[pScreen frame].origin];
+  [window center];
+  [window flushWindow];
+}
 
 void* Cocoa_GL_ResizeWindow(void *theContext, int w, int h)
 {
@@ -264,7 +280,6 @@ void Cocoa_GL_BlankOtherDisplays(int screen)
       [blankingWindows[i] setLevel:CGShieldingWindowLevel()];
       [blankingWindows[i] makeKeyAndOrderFront:nil];
       
-      
       // Get the current backlight level
       float panelBrightness = HUGE_VALF;
       CGDisplayErr dErr;
@@ -308,7 +323,6 @@ void Cocoa_GL_UnblankOtherDisplays(int screen)
       IODisplaySetFloatParameter(CGDisplayIOServicePort(i), kNilOptions, CFSTR(kIODisplayBrightnessKey), blankingBrightness[i]);
     }
   }
-  
 }
 
 static NSOpenGLContext* lastOwnedContext = 0;
@@ -530,7 +544,7 @@ int Cocoa_GetCurrentDisplay()
   NSView* view = [context view];
   NSScreen* screen = [[view window] screen];
   
-  int numDisplays = Cocoa_GetNumDisplays();
+  int numDisplays = [[NSScreen screens] count];
   int i = 0;
   
   for (i=0; i<numDisplays; i++)

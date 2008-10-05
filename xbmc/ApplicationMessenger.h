@@ -49,8 +49,11 @@ class CFileItem;
 #define TMSG_RESET                303
 #define TMSG_RESTARTAPP           304
 #define TMSG_SWITCHTOFULLSCREEN   305
-#define TMSG_TOGGLEFULLSCREEN     306
 #define TMSG_SLEEPSYSTEM          307
+
+#define TMSG_TOGGLEFULLSCREEN     320
+#define TMSG_MOVE_TO_PREV_SCREEN  321
+#define TMSG_MOVE_TO_NEXT_SCREEN  322
 
 #define TMSG_HTTPAPI              400
 

@@ -57,6 +57,26 @@ BOOL gCalledAppMainline = FALSE;
  SDL_PushEvent(&event);
 }
 
+- (IBAction)moveToPreviousScreen:(id)sender
+{
+ // Post an toggle full-screen event to the application thread.
+ SDL_Event event;
+ memset(&event, 0, sizeof(event));
+ event.type = PLEX_MESSAGE;
+ event.user.code = TMSG_MOVE_TO_PREV_SCREEN;
+ SDL_PushEvent(&event);
+}
+
+- (IBAction)moveToNextScreen:(id)sender
+{
+ // Post an toggle full-screen event to the application thread.
+ SDL_Event event;
+ memset(&event, 0, sizeof(event));
+ event.type = PLEX_MESSAGE;
+ event.user.code = TMSG_MOVE_TO_NEXT_SCREEN;
+ SDL_PushEvent(&event);
+}
+
 - (void)sendEvent:(NSEvent *)anEvent 
 {
   if(NSKeyDown == [anEvent type] || NSKeyUp == [anEvent type]) 

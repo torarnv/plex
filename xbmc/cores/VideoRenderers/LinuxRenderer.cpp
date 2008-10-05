@@ -584,7 +584,6 @@ void CLinuxRenderer::ChooseBestResolution(float fps)
 
 bool CLinuxRenderer::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags)
 {
-
   CLog::Log(LOGDEBUG,"CLinuxRenderer::Configure - w: %d, h: %d, dw: %d, dh: %d, fps: %4.2f", width, height, d_width, d_height, fps);
 
   m_fps = fps;

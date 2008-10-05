@@ -45,6 +45,10 @@
 #ifdef HAS_HAL
 #include "linux/HalManager.h"
 #endif
+#ifdef __APPLE__
+#include "CocoaUtils.h"
+#include "GUIFontManager.h"
+#endif
 
 using namespace std;
 
@@ -388,6 +392,53 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       g_graphicsContext.ToggleFullScreenRoot();
       g_graphicsContext.Unlock();
       break;
+      
+    case TMSG_MOVE_TO_PREV_SCREEN:
+    case TMSG_MOVE_TO_NEXT_SCREEN:
+    {
+#ifdef __APPLE__
+      int currentDisplay = Cocoa_GetCurrentDisplay();
+      int displayCount = Cocoa_GetNumDisplays();
+      
+      // Figure out which one we're going to.
+      int display = (pMsg->dwMessage == TMSG_MOVE_TO_PREV_SCREEN) ? (currentDisplay + 1) : (currentDisplay - 1 + displayCount);
+      display %= displayCount;
+      
+      if (g_advancedSettings.m_fullScreen)
+      {
+        //if (g_graphicsContext.IsFullScreenVideo() == false)
+        {
+          // We need to find the display mode that corresponds to the new screen and go to it.
+          RESOLUTION theRes = INVALID;
+          vector<RESOLUTION> res;
+          g_graphicsContext.GetAllowedResolutions(res, false);
+          for (vector<RESOLUTION>::iterator it = res.begin(); it != res.end();it++)
+          {
+            RESOLUTION res = *it;
+            if (g_settings.m_ResInfo[res].iScreen == display)
+              theRes = res;
+          }
+          
+          if (theRes != INVALID)
+          {
+            g_guiSettings.SetInt("videoscreen.resolution", theRes);
+            g_guiSettings.m_LookAndFeelResolution = theRes;
+            g_graphicsContext.SetVideoResolution(theRes);
+            g_fontManager.ReloadTTFFonts();
+            
+            if (g_graphicsContext.IsFullScreenVideo() == false)
+              g_application.ReloadSkin();
+          }
+        }
+      }
+      else
+      {
+        // Simply move the window to the next screen.
+        Cocoa_MoveWindowToDisplay(display);
+      }
+#endif
+    }
+    break;
 
     case TMSG_HTTPAPI:
     {

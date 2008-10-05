@@ -37,7 +37,8 @@ extern "C"
   int  Cocoa_GetNumDisplays();
   int  Cocoa_GetDisplay(int screen);
   int Cocoa_GetCurrentDisplay();
-
+  void  Cocoa_MoveWindowToDisplay(int display);
+  
   //
   // Open GL.
   //
@@ -51,6 +52,7 @@ extern "C"
   void* Cocoa_GL_ResizeWindow(void *theContext, int w, int h);
   void  Cocoa_GL_SetFullScreen(int screen, int width, int height, bool fs, bool blankOtherDisplay, bool fakeFullScreen);
   void  Cocoa_GL_EnableVSync(bool enable);
+
 
   //
   // Blanking.

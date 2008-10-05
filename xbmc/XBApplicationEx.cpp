@@ -397,8 +397,8 @@ void CXBApplicationEx::ReadInput()
       break;
       
     case SDL_USEREVENT:
-      if (event.user.code == TMSG_TOGGLEFULLSCREEN)
-        g_graphicsContext.ToggleFullScreenRoot();
+      ThreadMessage tMsg = {event.user.code, 0, 0};
+      g_application.getApplicationMessenger().SendMessage(tMsg, false);
       break;
     }
   }
