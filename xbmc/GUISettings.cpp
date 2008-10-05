@@ -347,10 +347,7 @@ CGUISettings::CGUISettings(void)
   // add panel brightness setting if supported by the display
   float panelBrightnessLevel = -1.0f;
   Cocoa_GetPanelBrightness(&panelBrightnessLevel);
-  if (panelBrightnessLevel >= 0)
-  {
-    AddInt(4, "system.panelbrightness", 17501, 0, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
-  }
+  AddInt(panelBrightnessLevel >= 0 ? 4 : 0, "system.panelbrightness", 17501, 0, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
 #endif
 #ifdef HAS_HAL
   AddInt(3, "system.shutdownstate", 13008, 0, 0, 1, 4, SPIN_CONTROL_TEXT);
