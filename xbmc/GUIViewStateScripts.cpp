@@ -27,8 +27,11 @@
 #include "Settings.h"
 #include "FileSystem/Directory.h"
 #include "Util.h"
+#include <vector>
+#include "MediaSource.h"
 
 using namespace DIRECTORY;
+using namespace std;
 
 CGUIViewStateWindowScripts::CGUIViewStateWindowScripts(const CFileItemList& items) : CGUIViewState(items)
 {
@@ -59,6 +62,18 @@ VECSOURCES& CGUIViewStateWindowScripts::GetSources()
   m_sources.clear();
 
   CMediaSource share;
+  vector<CStdString> scriptPaths;
+  
+  CStdString userScripts = _P("U:\\scripts");
+  CStdString bundleScripts = _P("Q:\\scripts");
+  
+  if (CDirectory::Exists(userScripts))
+    scriptPaths.push_back(userScripts);
+  if (CDirectory::Exists(bundleScripts))
+    scriptPaths.push_back(bundleScripts);
+  
+  share.FromNameAndPaths("", "Combined Scripts", scriptPaths);
+  
   if (g_settings.m_vecProfiles.size() > 1)
   {
     if (CDirectory::Exists("P:\\scripts"))
@@ -73,10 +88,7 @@ VECSOURCES& CGUIViewStateWindowScripts::GetSources()
   }
   else
     share.strName = "Scripts";
-
-  share.strPath = _P("U:\\scripts");
-  if (!CDirectory::Exists(share.strPath))
-    share.strPath = _P("Q:\\scripts");
+  
   share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
   m_sources.push_back(share);
 

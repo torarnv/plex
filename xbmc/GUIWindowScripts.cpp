@@ -29,8 +29,13 @@
 #include "GUIWindowManager.h"
 #include "FileSystem/File.h"
 #include "FileItem.h"
+#include "Directory.h"
+#include "MultiPathDirectory.h"
+#include <vector>
 
 using namespace XFILE;
+using namespace std;
+using namespace DIRECTORY;
 
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
@@ -67,7 +72,20 @@ bool CGUIWindowScripts::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       if (m_vecItems->m_strPath == "?")
-        m_vecItems->m_strPath = g_settings.GetScriptsFolder();
+      {
+        // Combine scripts from bundle & app support folders
+        vector<CStdString> scriptPaths;
+        
+        CStdString userScripts = _P("U:\\scripts");
+        CStdString bundleScripts = _P("Q:\\scripts");
+        
+        if (CDirectory::Exists(userScripts))
+          scriptPaths.push_back(userScripts);
+        if (CDirectory::Exists(bundleScripts))
+          scriptPaths.push_back(bundleScripts);
+        
+        m_vecItems->m_strPath = CMultiPathDirectory::ConstructMultiPath(scriptPaths);
+      }
       return CGUIMediaWindow::OnMessage(message);
     }
     break;

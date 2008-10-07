@@ -1724,7 +1724,6 @@ CProfile* CApplication::InitDirectoriesOSX()
     CopyUserDataIfNeeded(str, "userdata", "Database/ViewModes.db");
     CopyUserDataIfNeeded(str, "plugins/music", "iTunes");
     CopyUserDataIfNeeded(str, "plugins/pictures", "iPhoto");
-    CopyUserDataIfNeeded(str, "scripts", "");
 
     // Create a reasonable sources.xml if one doesn't exist already.
     CStdString sourcesFile = str3;
