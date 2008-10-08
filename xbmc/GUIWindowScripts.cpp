@@ -85,6 +85,7 @@ bool CGUIWindowScripts::OnMessage(CGUIMessage& message)
           scriptPaths.push_back(bundleScripts);
         
         m_vecItems->m_strPath = CMultiPathDirectory::ConstructMultiPath(scriptPaths);
+        scriptPaths.clear();
       }
       return CGUIMediaWindow::OnMessage(message);
     }
@@ -199,11 +200,17 @@ bool CGUIWindowScripts::GetDirectory(const CStdString& strDirectory, CFileItemLi
     if (item->m_bIsFolder && !item->IsParentFolder() && !item->m_bIsShareOrDrive && !item->GetLabel().Left(1).Equals("."))
     { // folder item - let's check for a default.py file, and flatten if we have one
       CStdString defaultPY;
-      CUtil::AddFileToFolder(item->m_strPath, "default.py", defaultPY);
+      
+      // If using a multipath directory, get the first path
+      CStdString firstPath;
+      if (CUtil::IsMultiPath(item->m_strPath)) firstPath = CMultiPathDirectory::GetFirstPath(item->m_strPath);
+      else firstPath = item->m_strPath;
+      
+      CUtil::AddFileToFolder(firstPath, "default.py", defaultPY);
       if (!CFile::Exists(defaultPY)) {
-         CUtil::AddFileToFolder(item->m_strPath, "Default.py", defaultPY);
+         CUtil::AddFileToFolder(firstPath, "Default.py", defaultPY);
          if (!CFile::Exists(defaultPY)) {
-            CUtil::AddFileToFolder(item->m_strPath, "DEFAULT.PY", defaultPY);
+            CUtil::AddFileToFolder(firstPath, "DEFAULT.PY", defaultPY);
          }
       }
 

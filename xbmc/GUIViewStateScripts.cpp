@@ -73,6 +73,7 @@ VECSOURCES& CGUIViewStateWindowScripts::GetSources()
     scriptPaths.push_back(bundleScripts);
   
   share.FromNameAndPaths("", "Combined Scripts", scriptPaths);
+  scriptPaths.clear();
   
   if (g_settings.m_vecProfiles.size() > 1)
   {
