@@ -59,6 +59,7 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   }
 #endif
 
+  strRoot.Replace(" ", "%20");
   CURL url(strRoot);
   CStdString protocol = url.GetProtocol();
   url.SetProtocol("http");
@@ -157,6 +158,7 @@ class PlexMediaNode
        pItem->m_strPath += "/";
      
      pItem->m_strPath += el.Attribute("key");
+     //printf("Key: %s\n", pItem->m_strPath.c_str());
      
      // Let subclass finish.
      DoBuildFileItem(pItem, el);
@@ -182,12 +184,20 @@ class PlexMediaObject : public PlexMediaNode
 
 class PlexMediaArtist : public PlexMediaNode
 {
-  virtual void DoBuildFileItem(CFileItemPtr& pItem, TiXmlElement& el) {}
+  virtual void DoBuildFileItem(CFileItemPtr& pItem, TiXmlElement& el)
+  {
+    pItem->SetLabel(el.Attribute("artist"));
+  }
 };
 
 class PlexMediaAlbum : public PlexMediaNode
 {
-  virtual void DoBuildFileItem(CFileItemPtr& pItem, TiXmlElement& el) {}
+  virtual void DoBuildFileItem(CFileItemPtr& pItem, TiXmlElement& el) 
+  {
+    pItem->GetMusicInfoTag()->SetArtist(el.Attribute("artist"));
+    pItem->GetMusicInfoTag()->SetAlbum(el.Attribute("album"));
+    pItem->GetMusicInfoTag()->SetYear(boost::lexical_cast<int>(el.Attribute("year")));
+  }
 };
 
 class PlexMediaPodcast : public PlexMediaNode
@@ -211,10 +221,15 @@ class PlexMediaTrack : public PlexMediaNode
   virtual void DoBuildFileItem(CFileItemPtr& pItem, TiXmlElement& el)
   {
     pItem->m_bIsFolder = false;
-    //pItem->SetLabel(el.Attribute("artist") + " - " + el.Attribute("track"));
-    pItem->GetMusicInfoTag()->SetArtist(el.Attribute("track"));
+    pItem->GetMusicInfoTag()->SetArtist(el.Attribute("artist"));
     pItem->GetMusicInfoTag()->SetAlbum(el.Attribute("album"));
+    pItem->GetMusicInfoTag()->SetTitle(el.Attribute("track"));
     pItem->GetMusicInfoTag()->SetDuration(boost::lexical_cast<int>(el.Attribute("totalTime"))/1000);
+    
+    CURL url(pItem->m_strPath);
+    url.SetProtocol("http");
+    url.GetURL(pItem->m_strPath);
+    printf("URL: %s\n", pItem->m_strPath.c_str());
   }
 };
 
