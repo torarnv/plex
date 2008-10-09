@@ -112,6 +112,8 @@ public:
 
   virtual ICacheInterface* GetCache() {return NULL;} 
   virtual int IoControl(int request, void* param) { return -1; }
+
+  virtual CStdString GetContent()                            { return "application/octet-stream"; }
 };
 
 class CRedirectException
