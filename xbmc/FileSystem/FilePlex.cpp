@@ -7,6 +7,8 @@
 
 #include "FilePlex.h"
 
+using namespace XFILE;
+
 CFilePlex::CFilePlex()
 {
   // TODO Auto-generated constructor stub

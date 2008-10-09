@@ -1,18 +1,20 @@
+#pragma once
+
 /*
  * FilePlex.h
  *
  *  Created on: Oct 4, 2008
  *      Author: Elan Feingold
  */
+#include "FileCurl.h"
 
-#ifndef FILEPLEX_H_
-#define FILEPLEX_H_
-
-class CFilePlex
+namespace XFILE
+{
+class CFilePlex : public CFileCurl
 {
  public:
   CFilePlex();
   virtual ~CFilePlex();
 };
+}
 
-#endif /* FILEPLEX_H_ */

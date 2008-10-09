@@ -7,6 +7,7 @@
 #include <boost/lexical_cast.hpp>
 
 #include "stdafx.h"
+#include "Album.h"
 #include "PlexDirectory.h"
 #include "DirectoryCache.h"
 #include "Util.h"
@@ -140,6 +141,8 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
 
   //if (dlgProgress) dlgProgress->Close();
   
+  items.AddSortMethod(SORT_METHOD_NONE, 552, LABEL_MASKS("%T", "%D"));
+  
   return true;
 }
 
@@ -194,16 +197,35 @@ class PlexMediaAlbum : public PlexMediaNode
 {
   virtual void DoBuildFileItem(CFileItemPtr& pItem, TiXmlElement& el) 
   {
-    // If we're not in the basic artist/album hierarchy, display artist with album.
+    CAlbum album;
+    
     if (pItem->m_strPath.Find("/Artists/") != -1)
-      pItem->SetLabel(el.Attribute("album"));
+      album.strLabel = el.Attribute("album");
     else
-      pItem->SetLabel(el.Attribute("artist") + string(" - ") + el.Attribute("album"));
-
-    pItem->GetMusicInfoTag()->SetArtist(el.Attribute("artist"));
-    pItem->GetMusicInfoTag()->SetAlbum(el.Attribute("album"));
-    pItem->GetMusicInfoTag()->SetGenre(el.Attribute("genre"));
-    pItem->GetMusicInfoTag()->SetYear(boost::lexical_cast<int>(el.Attribute("year")));
+      album.strLabel = el.Attribute("artist") + string(" - ") + el.Attribute("album");
+    
+    album.idAlbum = boost::lexical_cast<int>(el.Attribute("key"));
+    album.strAlbum = el.Attribute("album");
+    album.strArtist = el.Attribute("artist");
+    album.strGenre = el.Attribute("genre");
+    album.iYear = boost::lexical_cast<int>(el.Attribute("year"));
+    
+    // Construct the thumbnail request.
+    CURL url(pItem->m_strPath);
+    url.SetProtocol("http");
+    
+    string path = el.Attribute("thumb");
+    url.SetFileName(path.substr(1));
+    
+    CStdString theURL;
+    url.GetURL(theURL);
+    album.thumbURL = theURL;
+    
+    CFileItemPtr newItem(new CFileItem(pItem->m_strPath, album));
+    pItem = newItem;
+    
+    //int iRating;
+    //CStdString strType;
   }
 };
 
