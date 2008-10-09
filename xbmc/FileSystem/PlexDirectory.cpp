@@ -194,8 +194,15 @@ class PlexMediaAlbum : public PlexMediaNode
 {
   virtual void DoBuildFileItem(CFileItemPtr& pItem, TiXmlElement& el) 
   {
+    // If we're not in the basic artist/album hierarchy, display artist with album.
+    if (pItem->m_strPath.Find("/Artists/") != -1)
+      pItem->SetLabel(el.Attribute("album"));
+    else
+      pItem->SetLabel(el.Attribute("artist") + string(" - ") + el.Attribute("album"));
+
     pItem->GetMusicInfoTag()->SetArtist(el.Attribute("artist"));
     pItem->GetMusicInfoTag()->SetAlbum(el.Attribute("album"));
+    pItem->GetMusicInfoTag()->SetGenre(el.Attribute("genre"));
     pItem->GetMusicInfoTag()->SetYear(boost::lexical_cast<int>(el.Attribute("year")));
   }
 };
@@ -213,6 +220,14 @@ class PlexMediaPlaylist : public PlexMediaNode
   virtual void DoBuildFileItem(CFileItemPtr& pItem, TiXmlElement& el)
   {
     pItem->SetLabel(el.Attribute("title"));
+  }
+};
+
+class PlexMediaGenre : public PlexMediaNode
+{
+  virtual void DoBuildFileItem(CFileItemPtr& pItem, TiXmlElement& el)
+  {
+    pItem->SetLabel(el.Attribute("genre"));
   }
 };
 
@@ -240,15 +255,19 @@ PlexMediaNode* PlexMediaNode::Create(const string& name)
   else if (name == "Artist")
     return new PlexMediaArtist();
   else if (name == "Album")
-      return new PlexMediaAlbum();
+    return new PlexMediaAlbum();
   else if (name == "Playlist")
-      return new PlexMediaPlaylist();
+    return new PlexMediaPlaylist();
   else if (name == "Podcast")
-      return new PlexMediaPodcast();
+    return new PlexMediaPodcast();
   else if (name == "Track")
-        return new PlexMediaTrack();
+    return new PlexMediaTrack();
+  else if (name == "Genre")
+    return new PlexMediaGenre();
   else
     printf("ERROR: Unknown class [%s]\n", name.c_str());
+  
+  return 0;
 }
   
 bool CPlexDirectory::Parse(const CURL& url, TiXmlElement* root, CFileItemList &items)
