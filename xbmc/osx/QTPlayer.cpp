@@ -11,6 +11,7 @@
 #include "QuickTimeWrapper.h"
 #include "QTPlayer.h"
 #include "FileItem.h"
+#include "Settings.h"
 
 using namespace XFILE;
 
@@ -36,6 +37,7 @@ void QTPlayer::InitQuickTime()
 bool QTPlayer::OpenFile(const CFileItem &file, const CPlayerOptions &options)
 {
   bool bResult = m_qtFile->OpenFile(file.m_strPath);
+  SetVolume(g_stSettings.m_nVolumeLevel);
   m_callback.OnPlayBackStarted();
   if (ThreadHandle() == NULL)
     Create();
