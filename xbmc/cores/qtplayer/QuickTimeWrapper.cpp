@@ -14,6 +14,7 @@
 QuickTimeWrapper::QuickTimeWrapper()
 {
   CLog::Log(LOGDEBUG, "QuickTimeWrapper::QuickTimeWrapper()");
+  EnterMovies();
   m_qtMovie = NULL;
   m_bIsPlaying = false;
   m_bIsPaused = false;
@@ -22,11 +23,7 @@ QuickTimeWrapper::QuickTimeWrapper()
 QuickTimeWrapper::~QuickTimeWrapper()
 {
   CLog::Log(LOGDEBUG, "QuickTimeWrapper::~QuickTimeWrapper()");
-}
-
-void QuickTimeWrapper::InitQuickTime()
-{
-  EnterMovies();
+  ExitMovies();
 }
 
 bool QuickTimeWrapper::OpenFile(const CStdString &fileName)

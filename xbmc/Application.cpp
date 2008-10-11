@@ -2088,8 +2088,6 @@ HRESULT CApplication::Initialize()
   }
 
   m_slowTimer.StartZero();
-  
-  QTPlayer::InitQuickTime();
 
   CLog::Log(LOGNOTICE, "initialize done");
 
