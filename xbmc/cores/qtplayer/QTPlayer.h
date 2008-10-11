@@ -56,7 +56,7 @@ protected:
   
 private:
   QuickTimeWrapper *m_qtFile;
-  CFileItem*        m_currentFile;
+  CFileItem *m_currentFile;
   bool m_bStopPlaying;
   
 };
