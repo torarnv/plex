@@ -95,7 +95,7 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CStdString& 
     CMusicInfoTagLoaderFlac *pTagLoader = new CMusicInfoTagLoaderFlac();
     return (IMusicInfoTagLoader*)pTagLoader;
   }
-  else if (strExtension == "m4a" || strExtension == "mp4")
+  else if (strExtension == "m4a" || strExtension == "mp4" || strExtension == "m4p")
   {
     CMusicInfoTagLoaderMP4 *pTagLoader = new CMusicInfoTagLoaderMP4();
     return (IMusicInfoTagLoader*)pTagLoader;
