@@ -34,9 +34,14 @@ bool QuickTimeWrapper::OpenFile(const CStdString &fileName)
   OSType dataRefType;
   CFStringRef filePath;
   CFURLRef fileLocation;
-  
   filePath = CFStringCreateWithCString(kCFAllocatorDefault, fileName.c_str(), kCFStringEncodingUTF8);
-  fileLocation = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, filePath, kCFURLPOSIXPathStyle, false);
+  
+  // Check whether it's a local or remote file
+  if (fileName.Left(7) == "http://")
+    fileLocation = CFURLCreateWithString(kCFAllocatorDefault, filePath, NULL);
+  else
+    fileLocation = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, filePath, kCFURLPOSIXPathStyle, false);
+  
   error = QTNewDataReferenceFromCFURL(fileLocation, 0, &dataRef, &dataRefType);
   if (error != 0) return false;
 
