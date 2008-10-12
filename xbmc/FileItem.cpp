@@ -86,8 +86,6 @@ CFileItem::CFileItem(const CStdString &path, const CAlbum& album)
   else
     m_strThumbnailImage.clear();
 
-  printf("Thumbnail: %s\n", m_strThumbnailImage.c_str());
-  
   SetProperty("description", album.strReview);
   SetProperty("theme", album.strThemes);
   SetProperty("mood", album.strMoods);

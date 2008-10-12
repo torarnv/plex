@@ -124,6 +124,7 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
     if (iIndex > -1 || strPath.Mid(1, 1) == ":"
 #endif
       || strPath.Left(8).Equals("shout://")
+      || strPath.Left(7).Equals("plex://")
       || strPath.Left(8).Equals("https://")
       || strPath.Left(7).Equals("http://")
       || strPath.Left(7).Equals("daap://")
@@ -133,7 +134,7 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
       || strPath.Left(14).Equals("musicsearch://"))
     {
       // Only cache directory we are getting now
-      if (!strPath.Left(7).Equals("lastfm:") && !strPath.Left(8).Equals("shout://") && !strPath.Left(9).Equals("tuxbox://"))
+      if (!strPath.Left(7).Equals("lastfm:") && !strPath.Left(8).Equals("shout://") && !strPath.Left(7).Equals("plex://") && !strPath.Left(9).Equals("tuxbox://"))
         g_directoryCache.Clear();
       return CDirectory::GetDirectory(strPath, items, m_strFileMask, bUseFileDirectories, m_allowPrompting, m_cacheDirectory);
     }

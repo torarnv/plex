@@ -40,11 +40,9 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   if (CUtil::HasSlashAtEnd(strRoot) && strRoot != "plex://")
     strRoot.Delete(strRoot.size() - 1);
   
-  printf("Path: [%s]\n", strRoot.c_str());
-
   // See if it's cached.
-  //if (g_directoryCache.GetDirectory(strRoot, items))
-  //  return true;
+  if (g_directoryCache.GetDirectory(strRoot, items))
+    return true;
 
 #if 0
   // Show progress dialog.
@@ -126,8 +124,7 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   // Walk the parsed tree.
   Parse(url, root, items);
 
-#if 0
-  CFileItemList vecCacheItems;  
+  CFileItemList vecCacheItems;
   g_directoryCache.ClearDirectory(strRoot);
   for( int i = 0; i <items.Size(); i++ )
   {
@@ -137,7 +134,6 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   }
   
   g_directoryCache.SetDirectory(strRoot, vecCacheItems);
-#endif
 
   //if (dlgProgress) dlgProgress->Close();
   
@@ -224,8 +220,7 @@ class PlexMediaAlbum : public PlexMediaNode
     CFileItemPtr newItem(new CFileItem(pItem->m_strPath, album));
     pItem = newItem;
     
-    //int iRating;
-    //CStdString strType;
+    pItem->SetLabel(album.strLabel);
   }
 };
 
@@ -233,7 +228,26 @@ class PlexMediaPodcast : public PlexMediaNode
 {
   virtual void DoBuildFileItem(CFileItemPtr& pItem, TiXmlElement& el)
   {
-    pItem->SetLabel(el.Attribute("title"));
+    CAlbum album;
+    
+    album.strLabel = el.Attribute("title");
+    album.idAlbum = boost::lexical_cast<int>(el.Attribute("key"));
+    album.strAlbum = el.Attribute("title");
+    //album.iYear = boost::lexical_cast<int>(el.Attribute("year"));
+    
+    // Construct the thumbnail request.
+    CURL url(pItem->m_strPath);
+    url.SetProtocol("http");
+    
+    string path = el.Attribute("thumb");
+    url.SetFileName(path.substr(1));
+    
+    CStdString theURL;
+    url.GetURL(theURL);
+    album.thumbURL = theURL;
+    
+    CFileItemPtr newItem(new CFileItem(pItem->m_strPath, album));
+    pItem = newItem;
   }
 };
 
@@ -258,15 +272,36 @@ class PlexMediaTrack : public PlexMediaNode
   virtual void DoBuildFileItem(CFileItemPtr& pItem, TiXmlElement& el)
   {
     pItem->m_bIsFolder = false;
-    pItem->GetMusicInfoTag()->SetArtist(el.Attribute("artist"));
-    pItem->GetMusicInfoTag()->SetAlbum(el.Attribute("album"));
-    pItem->GetMusicInfoTag()->SetTitle(el.Attribute("track"));
-    pItem->GetMusicInfoTag()->SetDuration(boost::lexical_cast<int>(el.Attribute("totalTime"))/1000);
     
+    CSong song;
+    
+    if (pItem->m_strPath.Find("/Artists/") != -1)
+      song.strTitle = (el.Attribute("track"));
+    else
+      song.strTitle = (el.Attribute("artist") + string(" - ") + el.Attribute("track"));
+
+    song.strArtist = el.Attribute("artist");
+    song.strAlbum = el.Attribute("album");
+    song.iDuration = boost::lexical_cast<int>(el.Attribute("totalTime"))/1000;
+    song.iTrack = boost::lexical_cast<int>(el.Attribute("index"));
+        
+    // Thumbnail.
     CURL url(pItem->m_strPath);
     url.SetProtocol("http");
-    url.GetURL(pItem->m_strPath);
-    printf("URL: %s\n", pItem->m_strPath.c_str());
+    string path = el.Attribute("thumb");
+    url.SetFileName(path.substr(1));
+    CStdString theURL;
+    url.GetURL(song.strThumb);
+    
+    // Replace the item.
+    CFileItemPtr newItem(new CFileItem(song));
+    newItem->m_strPath = pItem->m_strPath;
+    pItem = newItem;
+    
+    // Path to the track.
+    CURL url2(pItem->m_strPath);
+    url2.SetProtocol("http");
+    url2.GetURL(pItem->m_strPath);
   }
 };
 
