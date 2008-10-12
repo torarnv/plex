@@ -26,14 +26,19 @@ using namespace DIRECTORY;
 
 #define MASTER_PLEX_MEDIA_SERVER "http://localhost:32400"
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 CPlexDirectory::CPlexDirectory()
+  : m_bStop(false)
+  , m_bSuccess(true)
 {
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 CPlexDirectory::~CPlexDirectory()
 {
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
   CStdString strRoot = strPath;
@@ -42,87 +47,66 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   
   // See if it's cached.
   if (g_directoryCache.GetDirectory(strRoot, items))
-    return true;
-
-#if 0
-  // Show progress dialog.
-  CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-  if (dlgProgress)
   {
-    dlgProgress->ShowProgressBar(false);
-    dlgProgress->SetHeading(260);
-    dlgProgress->SetLine(0, 14003);
-    dlgProgress->SetLine(1, "");
-    dlgProgress->SetLine(2, "");
-    dlgProgress->StartModal();
+    items.AddSortMethod(SORT_METHOD_NONE, 552, LABEL_MASKS("%T", "%D"));
+    return true;
   }
-#endif
 
   strRoot.Replace(" ", "%20");
-  CURL url(strRoot);
-  CStdString protocol = url.GetProtocol();
-  url.SetProtocol("http");
 
-  CFileCurl http;
-  //http.SetContentEncoding("deflate");
-  if (http.Open(url, false) == false) 
-  {
-    CLog::Log(LOGERROR, "%s - Unable to get Plex Media Server directory", __FUNCTION__);
-    //if (dlgProgress) dlgProgress->Close();
-    return false;
-  }
-
-  // Restore protocol.
-  url.SetProtocol(protocol);
-
-  CStdString content = http.GetContent();
-  if (content.Equals("text/xml;charset=utf-8") == false)
-  {
-    CLog::Log(LOGERROR, "%s - Invalid content type %s", __FUNCTION__, content.c_str());
-    //if (dlgProgress) dlgProgress->Close();
-    return false;
-  }
+  // Start the download thread running.
+  m_url = strRoot;
+  CThread::Create(false, 0);
   
-  int size_read = 0;  
-  int size_total = (int)http.GetLength();
-  int data_size = 0;
-
-  CStdString data;
-  data.reserve(size_total);
-  printf("Content-Length was %d bytes\n", http.GetLength());
+  // Now display progress, look for cancel.
+  CGUIDialogProgress* dlgProgress = 0;
+  int time = GetTickCount();
   
-  // Read response from server into string buffer.
-  char buffer[4096];
-  while ((size_read = http.Read(buffer, sizeof(buffer)-1)) > 0)
+  while (m_downloadEvent.WaitMSec(100) == false)
   {
-    buffer[size_read] = 0;
-    data += buffer;
-    data_size += size_read;
-
-#if 0
-    dlgProgress->Progress();
-    if (dlgProgress->IsCanceled())
+    // If enough time has passed, display the dialog.
+    printf("Time elapsed: %d\n", GetTickCount() - time);
+    if (GetTickCount() - time > 3000)
     {
-      dlgProgress->Close();
-      return false;
+      dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+      if (dlgProgress)
+      {
+        dlgProgress->ShowProgressBar(false);
+        dlgProgress->SetHeading(260);
+        dlgProgress->SetLine(0, 14003);
+        dlgProgress->SetLine(1, "");
+        dlgProgress->SetLine(2, "");
+        dlgProgress->StartModal();
+      }
     }
-#endif
-  }
 
+    if (dlgProgress)
+    {
+      if (dlgProgress->IsCanceled())
+      {
+        printf("Cancelling.....\n");
+        StopThread();
+      }
+      
+      dlgProgress->Progress();
+    }
+  }
+  
   // Parse returned xml.
   TiXmlDocument doc;
-  doc.Parse(data.c_str());
+  doc.Parse(m_data.c_str());
 
   TiXmlElement* root = doc.RootElement();
   if(root == 0)
   {
-    CLog::Log(LOGERROR, "%s - Unable to parse xml\n%s", __FUNCTION__, data.c_str());
-    //if (dlgProgress) dlgProgress->Close();
+    CLog::Log(LOGERROR, "%s - Unable to parse xml\n%s", __FUNCTION__, m_data.c_str());
+    if (dlgProgress) dlgProgress->Close();
     return false;
   }
 
   // Walk the parsed tree.
-  Parse(url, root, items);
+  Parse(m_url, root, items);
+  items.AddSortMethod(SORT_METHOD_NONE, 552, LABEL_MASKS("%T", "%D"));
 
   CFileItemList vecCacheItems;
   g_directoryCache.ClearDirectory(strRoot);
@@ -134,10 +118,7 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   }
   
   g_directoryCache.SetDirectory(strRoot, vecCacheItems);
-
-  //if (dlgProgress) dlgProgress->Close();
-  
-  items.AddSortMethod(SORT_METHOD_NONE, 552, LABEL_MASKS("%T", "%D"));
+  if (dlgProgress) dlgProgress->Close();
   
   return true;
 }
@@ -305,6 +286,7 @@ class PlexMediaTrack : public PlexMediaNode
   }
 };
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 PlexMediaNode* PlexMediaNode::Create(const string& name)
 {
   if (name == "Directory")
@@ -327,6 +309,7 @@ PlexMediaNode* PlexMediaNode::Create(const string& name)
   return 0;
 }
   
+///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CPlexDirectory::Parse(const CURL& url, TiXmlElement* root, CFileItemList &items)
 {
   for (TiXmlElement* element = root->FirstChildElement(); element; element=element->NextSiblingElement())
@@ -336,4 +319,67 @@ bool CPlexDirectory::Parse(const CURL& url, TiXmlElement* root, CFileItemList &i
   }
   
   return true;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CPlexDirectory::Process()
+{
+  CURL url(m_url);
+  CStdString protocol = url.GetProtocol();
+  url.SetProtocol("http");
+
+  CFileCurl http;
+  //http.SetContentEncoding("deflate");
+  if (http.Open(url, false) == false) 
+  {
+    CLog::Log(LOGERROR, "%s - Unable to get Plex Media Server directory", __FUNCTION__);
+    m_bSuccess = false;
+    m_downloadEvent.Set();
+  }
+
+  // Restore protocol.
+  url.SetProtocol(protocol);
+
+  CStdString content = http.GetContent();
+  if (content.Equals("text/xml;charset=utf-8") == false)
+  {
+    CLog::Log(LOGERROR, "%s - Invalid content type %s", __FUNCTION__, content.c_str());
+    m_bSuccess = false;
+    m_downloadEvent.Set();
+  }
+  
+  int size_read = 0;  
+  int size_total = (int)http.GetLength();
+  int data_size = 0;
+
+  m_data.reserve(size_total);
+  printf("Content-Length was %d bytes\n", http.GetLength());
+  
+  // Read response from server into string buffer.
+  char buffer[4096];
+  while (m_bStop == false && (size_read = http.Read(buffer, sizeof(buffer)-1)) > 0)
+  {
+    buffer[size_read] = 0;
+    m_data += buffer;
+    data_size += size_read;
+  }
+  
+  // If we didn't get it all, we failed.
+  if (m_data.size() != size_total)
+    m_bSuccess = false;
+  
+  m_downloadEvent.Set();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CPlexDirectory::OnExit()
+{
+  m_bStop = true;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CPlexDirectory::StopThread()
+{
+  m_bStop = true;
+  CThread::StopThread();
 }
