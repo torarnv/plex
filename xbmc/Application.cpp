@@ -235,6 +235,7 @@
 #ifdef __APPLE__
 #include "CocoaUtils.h"
 #include "XBMCHelper.h"
+#include "QTPlayer.h"
 #endif
 #ifdef HAS_HAL
 #include "linux/LinuxFileSystem.h"
@@ -244,8 +245,6 @@
 #endif
 
 #include "lib/libcdio/logging.h"
-
-#include "QTPlayer.h"
 
 using namespace std;
 using namespace XFILE;
@@ -2089,7 +2088,9 @@ HRESULT CApplication::Initialize()
 
   m_slowTimer.StartZero();
   
+#ifdef __APPLE__
   QTPlayer::InitQuickTime();
+#endif
 
   CLog::Log(LOGNOTICE, "initialize done");
 
