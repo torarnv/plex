@@ -28,7 +28,7 @@
 // forward definitions
 class CVisualisation;
 
-#define AUDIO_BUFFER_SIZE 512 // MUST BE A POWER OF 2!!!
+#define AUDIO_BUFFER_SIZE FFT_BUFFER_SIZE // MUST BE A POWER OF 2!!!
 #define MAX_AUDIO_BUFFERS 16
 
 class CAudioBuffer

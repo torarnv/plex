@@ -32,6 +32,7 @@
 #include "VideoDatabase.h"
 #include "ProgramDatabase.h"
 #include "ViewDatabase.h"
+#include "VisualisationFactory.h"
 #include "XBAudioConfig.h"
 #include "XBVideoConfig.h"
 #ifdef HAS_XBOX_HARDWARE
@@ -3036,8 +3037,11 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
     CGUIMessage msg(GUI_MSG_LABEL_RESET, iWinID, iControlID);
     g_graphicsContext.SendMessage(msg);
   }
+  
+  CVisualisationFactory vizFactory;
   vector<CStdString> vecVis;
-  //find visz....
+  
+  // Find visualizations.
   CHDDirectory directory;
   CFileItemList items;
   CStdString strPath = _P("Q:\\visualisations\\");
@@ -3051,17 +3055,50 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
     if (!pItem->m_bIsFolder)
     {
       CStdString strExtension;
+      printf("Trying %s\n", pItem->m_strPath.c_str());
       CUtil::GetExtension(pItem->m_strPath, strExtension);
       if (strExtension == ".vis")
       {
 #ifdef _LINUX
-        void *handle = dlopen((const char*)pItem->m_strPath, RTLD_LAZY);
-        if (!handle)
+        // Load the visualization.
+        CVisualisation* viz = vizFactory.LoadVisualisation(pItem->m_strPath);
+        if (viz)
+        {
+          CStdString strLabel = pItem->GetLabel();
+          strLabel = strLabel.Mid(0, strLabel.size() - 4);
+          
+          char** ppViz = 0;
+          int count = 0;
+          
+          // Ask the module for a list of visualizers.
+          viz->GetVisualizers(&ppViz, &count);
+          if (ppViz)
+          {
+            char strName[1024];
+            for (int x=0; x<count; x++)
+            {
+              sprintf(strName, "%s (%s)", ppViz[x], strLabel.c_str());
+              CStdString label = strName;
+              vecVis.push_back(label);
+            }
+          }
+          else
+          {
+            // It doesn't support any sub-visualizer.
+            vecVis.push_back(strLabel);
+          }
+          
+          delete viz;
+        }
+        else
+        {
+          // Skip this one.
           continue;
-        dlclose(handle);
-#endif
+        }
+#else
         CStdString strLabel = pItem->GetLabel();
         vecVis.push_back(strLabel.Mid(0, strLabel.size() - 4));
+#endif
       }
     }
   }

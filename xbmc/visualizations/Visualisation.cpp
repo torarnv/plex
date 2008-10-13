@@ -34,10 +34,11 @@ using namespace std;
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CVisualisation::CVisualisation(struct Visualisation* pVisz, DllVisualisation* pDll, const CStdString& strVisualisationName)
+CVisualisation::CVisualisation(struct Visualisation* pVisz, DllVisualisation* pDll, const CStdString& strVisualisationName, const CStdString& strSubmodule)
     : m_pVisz(pVisz)
     , m_pDll(pDll)
     , m_strVisualisationName(strVisualisationName)
+    , m_strSubmodule(strSubmodule)
 {}
 
 CVisualisation::~CVisualisation()
@@ -65,7 +66,8 @@ void CVisualisation::Create(int posx, int posy, int width, int height)
   void* dev = 0;
 #endif
   
-  m_pVisz->Create (dev, posx, posy, width, height, m_strVisualisationName.c_str(), pixelRatio);
+  // Create.
+  m_pVisz->Create(dev, posx, posy, width, height, m_strSubmodule.c_str(), pixelRatio);
 #endif
 }
 
@@ -153,6 +155,20 @@ void CVisualisation::SetTrackInfo(const char* artist, const char* album, const c
 {
   if (m_pVisz->SetTrackInfo != 0)
     m_pVisz->SetTrackInfo(artist, album, track, trackNumber, discNumber, year, duration);
+}
+
+bool CVisualisation::HandlesOwnDisplay()
+{
+  if (m_pVisz->HandlesOwnDisplay != 0)
+    return m_pVisz->HandlesOwnDisplay();
+  
+  return false;
+}
+ 
+void CVisualisation::GetVisualizers(char*** pVisualizers, int* numVisualizers)
+{
+  if (m_pVisz->GetVisualizers != 0)
+    m_pVisz->GetVisualizers(pVisualizers, numVisualizers);
 }
 
 bool CVisualisation::IsLocked()

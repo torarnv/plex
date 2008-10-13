@@ -70,9 +70,11 @@ public:
   void (__cdecl *UpdateSetting)(int num);
   void (__cdecl *GetPresets)(char ***pPresets, int *currentPreset, int *numPresets, bool *locked);
   
-  // Enhanced visualization API:
-  void (__cdecl *SetTrackInfo)(const char* artist, const char* album, const char* track, int trackNumber, int discNumber, int year, int duration);  
-} ;
+  // Enhanced Plex visualization API.
+  void (__cdecl *SetTrackInfo)(const char* artist, const char* album, const char* track, int trackNumber, int discNumber, int year, int duration);
+  bool (__cdecl *HandlesOwnDisplay)();
+  void (__cdecl *GetVisualizers)(char*** pVisualizers, int* numVisualizers);
+};
 
 class DllVisualisationInterface
 {

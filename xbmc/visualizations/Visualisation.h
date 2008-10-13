@@ -43,7 +43,8 @@ public:
                     VIS_ACTION_RATE_PRESET_PLUS,
                     VIS_ACTION_RATE_PRESET_MINUS,
                     VIS_ACTION_UPDATE_ALBUMART};
-  CVisualisation(struct Visualisation* pVisz, DllVisualisation* pDll, const CStdString& strVisualisationName);
+  
+  CVisualisation(struct Visualisation* pVisz, DllVisualisation* pDll, const CStdString& strVisualisationName, const CStdString& strSubmodule);
   ~CVisualisation();
 
   void Create(int posx, int posy, int width, int height);
@@ -62,11 +63,14 @@ public:
   
   // Enhanced API.
   void SetTrackInfo(const char* artist, const char* album, const char* track, int trackNumber, int discNumber, int year, int duration);
+  bool HandlesOwnDisplay();
+  void GetVisualizers(char*** pVisualizers, int* numVisualizers);
 
 protected:
   std::auto_ptr<struct Visualisation> m_pVisz;
   std::auto_ptr<DllVisualisation> m_pDll;
   CStdString m_strVisualisationName;
+  CStdString m_strSubmodule;
 };
 
 

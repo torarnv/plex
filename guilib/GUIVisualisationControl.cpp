@@ -110,18 +110,23 @@ void CGUIVisualisationControl::FreeVisualisation()
   if (m_pVisualisation)
   {
     OutputDebugString("Visualisation::Stop()\n");
-    g_graphicsContext.CaptureStateBlock();
-    m_pVisualisation->Stop();
-    g_graphicsContext.ApplyStateBlock();
     
-    OutputDebugString("delete Visualisation()\n");
-    delete m_pVisualisation;
-
+    if (m_pVisualisation->HandlesOwnDisplay() == false)
+      g_graphicsContext.CaptureStateBlock();
+    
+    m_pVisualisation->Stop();
+    
+    if (m_pVisualisation->HandlesOwnDisplay() == false)
+      g_graphicsContext.ApplyStateBlock();
+    
 #ifdef __APPLE__
-    //Cocoa_DestroyChildWindow();
+    // If it's handling its own display, time for it to stop now.
+    if (m_pVisualisation->HandlesOwnDisplay() == true)
+      Cocoa_DestroyChildWindow();
 #endif
 
-    g_graphicsContext.ApplyStateBlock();
+    OutputDebugString("delete Visualisation()\n");
+    delete m_pVisualisation;
 
     /* we released the global vis spot */
     m_globalvis = false;
@@ -164,7 +169,9 @@ void CGUIVisualisationControl::LoadVisualisation()
   m_pVisualisation = factory.LoadVisualisation(strVisz);
   if (m_pVisualisation)
   {
-    g_graphicsContext.CaptureStateBlock();
+    if (m_pVisualisation->HandlesOwnDisplay() == false)
+      g_graphicsContext.CaptureStateBlock();
+    
     float x = g_graphicsContext.ScaleFinalXCoord(GetXPosition(), GetYPosition());
     float y = g_graphicsContext.ScaleFinalYCoord(GetXPosition(), GetYPosition());
     float w = g_graphicsContext.ScaleFinalXCoord(GetXPosition() + GetWidth(), GetYPosition() + GetHeight()) - x;
@@ -175,11 +182,15 @@ void CGUIVisualisationControl::LoadVisualisation()
     if (y + h > g_graphicsContext.GetHeight()) h = g_graphicsContext.GetHeight() - y;
 
 #ifdef __APPLE__
-    //Cocoa_MakeChildWindow();
+    // If it's handling its own display, make a child window for it to do so in.
+    if (m_pVisualisation->HandlesOwnDisplay() == true)
+      Cocoa_MakeChildWindow();
 #endif
     
     m_pVisualisation->Create((int)(x+0.5f), (int)(y+0.5f), (int)(w+0.5f), (int)(h+0.5f));
-    g_graphicsContext.ApplyStateBlock();
+    
+    if (m_pVisualisation->HandlesOwnDisplay() == false)
+      g_graphicsContext.ApplyStateBlock();
     VerifyGLState();
     
     if (g_application.m_pPlayer)
@@ -211,7 +222,9 @@ void CGUIVisualisationControl::Render()
     {
       LoadVisualisation();
     }
-    CGUIControl::Render();
+    
+    if (m_pVisualisation->HandlesOwnDisplay() == false)
+      CGUIControl::Render();
 
 #ifdef HAS_KARAOKE
     if(g_application.m_pCdgParser && g_guiSettings.GetBool("karaoke.enabled"))
@@ -226,7 +239,10 @@ void CGUIVisualisationControl::Render()
     if (!g_application.IsPlayingAudio())
     { // deinit
       FreeVisualisation();
-      CGUIControl::Render();
+      
+      if (m_pVisualisation->HandlesOwnDisplay() == false)
+        CGUIControl::Render();
+      
       return;
     }
     else if (!m_currentVis.Equals(g_guiSettings.GetString("mymusic.visualisation")))
@@ -238,7 +254,9 @@ void CGUIVisualisationControl::Render()
       g_application.m_pCdgParser->Render();
 #endif
 
-      CGUIControl::Render();
+      if (m_pVisualisation->HandlesOwnDisplay() == false)
+        CGUIControl::Render();
+      
       return;
     }
   }
@@ -250,19 +268,28 @@ void CGUIVisualisationControl::Render()
       // set the viewport - note: We currently don't have any control over how
       // the visualisation renders, so the best we can do is attempt to define
       // a viewport??
-      g_graphicsContext.SetViewPort(m_posX, m_posY, m_width, m_height);
+      //
+      if (m_pVisualisation->HandlesOwnDisplay() == false)
+        g_graphicsContext.SetViewPort(m_posX, m_posY, m_width, m_height);
+      
       try
       {
-        g_graphicsContext.CaptureStateBlock();
+        if (m_pVisualisation->HandlesOwnDisplay() == false)
+          g_graphicsContext.CaptureStateBlock();
+        
         m_pVisualisation->Render();
-        g_graphicsContext.ApplyStateBlock();
+        
+        if (m_pVisualisation->HandlesOwnDisplay() == false)
+          g_graphicsContext.ApplyStateBlock();
       }
       catch (...)
       {
         CLog::Log(LOGERROR, "Exception in Visualisation::Render()");
       }
+      
       // clear the viewport
-      g_graphicsContext.RestoreViewPort();
+      if (m_pVisualisation->HandlesOwnDisplay() == false)
+        g_graphicsContext.RestoreViewPort();
     }
   }
 #ifdef HAS_KARAOKE
@@ -270,7 +297,8 @@ void CGUIVisualisationControl::Render()
     g_application.m_pCdgParser->Render();
 #endif
 
-  CGUIControl::Render();
+  if (m_pVisualisation->HandlesOwnDisplay() == false)
+    CGUIControl::Render();
 }
 
 void CGUIVisualisationControl::OnInitialize(int iChannels, int iSamplesPerSec, int iBitsPerSample)
@@ -335,7 +363,7 @@ void CGUIVisualisationControl::OnAudioData(const unsigned char* pAudioData, int 
     // Transfer data to our visualisation
     try
     {
-      m_pVisualisation->AudioData(ptrAudioBuffer->Get(), AUDIO_BUFFER_SIZE, m_fFreq, AUDIO_BUFFER_SIZE);
+      m_pVisualisation->AudioData(ptrAudioBuffer->Get(), AUDIO_BUFFER_SIZE/2, m_fFreq, AUDIO_BUFFER_SIZE/2);
     }
     catch (...)
     {
@@ -346,7 +374,7 @@ void CGUIVisualisationControl::OnAudioData(const unsigned char* pAudioData, int 
   { // Transfer data to our visualisation
     try
     {
-      m_pVisualisation->AudioData(ptrAudioBuffer->Get(), AUDIO_BUFFER_SIZE, NULL, 0);
+      m_pVisualisation->AudioData(ptrAudioBuffer->Get(), AUDIO_BUFFER_SIZE/2, NULL, 0);
     }
     catch (...)
     {

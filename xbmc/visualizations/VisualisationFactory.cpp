@@ -35,31 +35,54 @@ CVisualisationFactory::~CVisualisationFactory()
 
 CVisualisation* CVisualisationFactory::LoadVisualisation(const CStdString& strVisz) const
 {
-  // strip of the path & extension to get the name of the visualisation
-  // like goom or spectrum
+#ifdef HAS_VISUALISATION
+  printf("VIZ: %s\n", strVisz.c_str());
+  
+  // Strip of the path & extension to get the name of the visualisation like goom or spectrum
   CStdString strName = CUtil::GetFileName(strVisz);
   strName = strName.Left(strName.size() - 4);
 
-#ifdef HAS_VISUALISATION
-  // load visualisation
-  DllVisualisation* pDll = new DllVisualisation;
-  pDll->SetFile(strVisz);
-  //  FIXME: Some Visualisations do not work 
-  //  when their dll is not unloaded immediatly
+  CStdString strLibrary = strVisz;
+  CStdString strVisualization = strName;
+  CStdString strSubmodule = strName;
+  
+  // See if the name implies a sub-visualizer.
+  int start = strName.Find("(");
+  int end   = strName.Find(")");
+  
+  if (start > 0 && end > 0)
+  {
+    // The name is in the format "Module (Visualizer)"
+    strVisualization = strName.substr(start+1, end-start-1);
+    strSubmodule = strName.substr(0, start-1);
+    
+    // Compute the name of the library to load.
+    CUtil::GetDirectory(strVisz, strLibrary);
+    strLibrary = CUtil::AddFileToFolder(strLibrary, strVisualization + ".vis");
+  }
+
+  printf("Got library: [%s] viz: [%s], subvisualizer: [%s]\n", strLibrary.c_str(), strVisualization.c_str(), strSubmodule.c_str());
+  
+  // load visualisation.
+  DllVisualisation* pDll = new DllVisualisation();
+  pDll->SetFile(strLibrary);
+  
+  // FIXME: Some Visualisations do not work when their dll is not unloaded immediately.
   pDll->EnableDelayedUnload(false);
   if (!pDll->Load())
   {
     delete pDll;
-    return NULL;
+    return 0;
   }
 
-  struct Visualisation* pVisz = (struct Visualisation*)malloc(sizeof(struct Visualisation));
+  Visualisation* pVisz = (Visualisation* )malloc(sizeof(struct Visualisation));
   ZeroMemory(pVisz, sizeof(struct Visualisation));
   pDll->GetModule(pVisz);
 
   // and pass it to a new instance of CVisualisation() which will hanle the visualisation
-  return new CVisualisation(pVisz, pDll, strName);
+  return new CVisualisation(pVisz, pDll, strName, strSubmodule);
+  
 #else
-  return NULL;
+  return 0;
 #endif
 }
