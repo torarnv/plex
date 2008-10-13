@@ -30,6 +30,7 @@
 #include "MusicDatabaseDirectory.h"
 #include "MusicSearchDirectory.h"
 #include "VideoDatabaseDirectory.h"
+#include "PlexDirectory.h"
 #include "ShoutcastDirectory.h"
 #include "LastFMDirectory.h"
 #include "FTPDirectory.h"
@@ -123,6 +124,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
   if( g_application.getNetwork().IsAvailable() )
   {
     if (strProtocol == "shout") return new CShoutcastDirectory();
+    if (strProtocol == "plex") return new CPlexDirectory();
     if (strProtocol == "lastfm") return new CLastFMDirectory();
     if (strProtocol == "tuxbox") return new CDirectoryTuxBox();
     if (strProtocol == "ftp"

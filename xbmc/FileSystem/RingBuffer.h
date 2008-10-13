@@ -88,6 +88,7 @@
 
 #ifndef __RingBuffer_h
 #define __RingBuffer_h
+
 #include "utils/CriticalSection.h"
 #include "utils/SingleLock.h"
 #include "utils/log.h"
@@ -99,6 +100,10 @@
 #include "PlatformInclude.h"
 #endif
 
+#ifndef MIN
+#define MIN(a,b) ((a) < (b) ? (a) : (b))
+#endif /* _MINMAX_H */
+
 class CRingBuffer
 {
 protected:
@@ -109,6 +114,7 @@ protected:
   int m_nBufSize;   // the size of the ring buffer
   int m_iReadPtr;   // the read pointer
   int m_iWritePtr;  // the write pointer
+  int m_iBytesWritten;
 
   mutable CRITICAL_SECTION m_critSection;
 
@@ -124,6 +130,7 @@ public:
     m_nBufSize = 0;
     m_iReadPtr = 0;
     m_iWritePtr = 0;
+    m_iBytesWritten = 0;
   }
 
   ///////////////////////////////////////////////////////////////////
@@ -201,6 +208,7 @@ public:
     ::EnterCriticalSection(&m_critSection );
     m_iReadPtr = 0;
     m_iWritePtr = 0;
+    m_iBytesWritten = 0;
     ::LeaveCriticalSection(&m_critSection );
   }
 
@@ -381,6 +389,7 @@ public:
         {
           CopyMemory( &m_pBuf[m_iWritePtr], pBuf, nBufLen );
           m_iWritePtr += nBufLen;
+          m_iBytesWritten += nBufLen;
         }
         else // harder case we need to wrap
         {
@@ -391,6 +400,7 @@ public:
           CopyMemory( &m_pBuf[0], &pBuf[iFirstChunkSize], iSecondChunkSize );
 
           m_iWritePtr = iSecondChunkSize;
+          m_iBytesWritten += iFirstChunkSize + iSecondChunkSize;
         }
         bResult = TRUE;
       }
@@ -481,11 +491,26 @@ public:
 
   BOOL SkipBytes( int nBufLen )
   {
-    // skip back - not currently supported.
-    if (nBufLen < 0 )
-      return FALSE;
-
     ::EnterCriticalSection(&m_critSection );
+    
+    // Skip back.
+    if (nBufLen < 0 )
+    {
+      // We can skip back as many bytes as we're read that are still in the buffer.
+      int bytesToBackup = -nBufLen;
+      int bytesWeCanBackup = MIN(m_iBytesWritten-GetMaxReadSize(), m_nBufSize-GetMaxReadSize());
+      
+      if (bytesToBackup > bytesWeCanBackup)
+        return FALSE;
+      
+      // OK, let's backup.
+      m_iReadPtr -= bytesToBackup;
+      if (m_iReadPtr < 0)
+        m_iReadPtr += m_nBufSize;
+      
+      return TRUE;
+    }
+
     BOOL bResult = FALSE;
     {
       if ( nBufLen <= GetMaxReadSize() )
