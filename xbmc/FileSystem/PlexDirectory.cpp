@@ -65,7 +65,6 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   while (m_downloadEvent.WaitMSec(100) == false)
   {
     // If enough time has passed, display the dialog.
-    printf("Time elapsed: %d\n", GetTickCount() - time);
     if (GetTickCount() - time > 3000)
     {
       dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
@@ -136,12 +135,14 @@ class PlexMediaNode
      url.GetURL(pItem->m_strPath);
      if (pItem->m_strPath[pItem->m_strPath.size()-1] != '/')
        pItem->m_strPath += "/";
-     
      pItem->m_strPath += el.Attribute("key");
-     //printf("Key: %s\n", pItem->m_strPath.c_str());
      
      // Let subclass finish.
      DoBuildFileItem(pItem, el);
+     
+     // Make sure we have the trailing slash.
+     if (pItem->m_bIsFolder == true && pItem->m_strPath[pItem->m_strPath.size()-1] != '/')
+       pItem->m_strPath += "/";
      
      return pItem;
    }
@@ -265,6 +266,7 @@ class PlexMediaTrack : public PlexMediaNode
     song.strAlbum = el.Attribute("album");
     song.iDuration = boost::lexical_cast<int>(el.Attribute("totalTime"))/1000;
     song.iTrack = boost::lexical_cast<int>(el.Attribute("index"));
+    song.strFileName = pItem->m_strPath;
         
     // Thumbnail.
     CURL url(pItem->m_strPath);
