@@ -1581,7 +1581,7 @@ void CDVDPlayer::HandleMessages()
           }
           else
           {
-            CloseAudioStream(false);
+            CloseSubtitleStream(false);
             OpenSubtitleStream(st.id, st.source);
           }
         }
