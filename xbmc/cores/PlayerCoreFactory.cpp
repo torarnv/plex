@@ -33,6 +33,7 @@
 #include "URL.h"
 #include "GUIWindowManager.h"
 #include "FileItem.h"
+#include "QTPlayer.h"
 
 using namespace AUTOPTR;
 
@@ -67,6 +68,7 @@ IPlayer* CPlayerCoreFactory::CreatePlayer(const EPLAYERCORES eCore, IPlayerCallb
     case EPC_MPLAYER:
     case EPC_DVDPLAYER: return new CDVDPlayer(callback);
     case EPC_PAPLAYER: return new PAPlayer(callback); // added by dataratt
+    case EPC_QTPLAYER: return new QTPlayer(callback);
 
     default:
        return NULL; 
@@ -80,6 +82,7 @@ EPLAYERCORES CPlayerCoreFactory::GetPlayerCore(const CStdString& strCore)
 
   if (strCoreLower == "dvdplayer" || strCoreLower == "mplayer") return EPC_DVDPLAYER;
   if (strCoreLower == "paplayer" ) return EPC_PAPLAYER;
+  if (strCoreLower == "qtplayer" ) return EPC_QTPLAYER;
   return EPC_NONE;
 }
 
@@ -89,6 +92,7 @@ CStdString CPlayerCoreFactory::GetPlayerName(const EPLAYERCORES eCore)
   {
     case EPC_DVDPLAYER: return "DVDPlayer";
     case EPC_PAPLAYER: return "PAPlayer";
+    case EPC_QTPLAYER: return "QTPlayer";
     default: return "";
   }
 }
@@ -97,6 +101,7 @@ void CPlayerCoreFactory::GetPlayers( VECPLAYERCORES &vecCores )
 {
   vecCores.push_back(EPC_DVDPLAYER);
   vecCores.push_back(EPC_PAPLAYER);
+  vecCores.push_back(EPC_QTPLAYER);
 }
 
 void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecCores)
@@ -105,6 +110,13 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
 
   CLog::Log(LOGDEBUG,"CPlayerCoreFactor::GetPlayers(%s)",item.m_strPath.c_str());
 
+  // Play audio files with iTunes DRM using QuickTime
+  if (url.GetFileType().Equals("m4p"))
+  {
+    vecCores.push_back(EPC_QTPLAYER);
+    CLog::Log(LOGDEBUG,"CPlayerCoreFactor::GetPlayers(%s) - matched M4P file",item.m_strPath.c_str());
+  }
+  
   // ugly hack for ReplayTV. our filesystem is broken against real ReplayTV's (not the psuevdo DVArchive)
   // it breaks down for small requests. As we can't allow truncated reads for all emulated dll file functions
   // we are often forced to do small reads to fill up the full buffer size wich seems gives garbage back

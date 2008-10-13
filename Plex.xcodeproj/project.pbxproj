@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1AD99BDD0E9EF07200503917 /* QTPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1AD99BDC0E9EF07200503917 /* QTPlayer.cpp */; };
+		1AD99BED0E9EFC2200503917 /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AD99BEC0E9EFC2200503917 /* QTKit.framework */; };
+		1AD99C750E9FB54200503917 /* QuickTimeWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1AD99C740E9FB54200503917 /* QuickTimeWrapper.cpp */; };
 		E336EF2F0E60256000270758 /* GUIViewStatePictures.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E336EF000E60250700270758 /* GUIViewStatePictures.cpp */; };
 		E336EF300E60256000270758 /* GUIViewStatePrograms.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E336EF020E60250700270758 /* GUIViewStatePrograms.cpp */; };
 		E336EF310E60256000270758 /* GUIViewStateScripts.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E336EF040E60250700270758 /* GUIViewStateScripts.cpp */; };
@@ -919,6 +922,11 @@
 
 /* Begin PBXFileReference section */
 		09AB6884FE841BABC02AAC07 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
+		1AD99BDB0E9EF07200503917 /* QTPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTPlayer.h; sourceTree = "<group>"; };
+		1AD99BDC0E9EF07200503917 /* QTPlayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = QTPlayer.cpp; sourceTree = "<group>"; };
+		1AD99BEC0E9EFC2200503917 /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = /System/Library/Frameworks/QTKit.framework; sourceTree = "<absolute>"; };
+		1AD99C730E9FB54200503917 /* QuickTimeWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuickTimeWrapper.h; sourceTree = "<group>"; };
+		1AD99C740E9FB54200503917 /* QuickTimeWrapper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = QuickTimeWrapper.cpp; sourceTree = "<group>"; };
 		6E97BDBC0DA2B5D8003A2A89 /* GUIInfoColor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIInfoColor.cpp; sourceTree = "<group>"; };
 		6E97BDBD0DA2B5D8003A2A89 /* GUIInfoColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIInfoColor.h; sourceTree = "<group>"; };
 		6E97BDBF0DA2B620003A2A89 /* EventClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventClient.h; sourceTree = "<group>"; };
@@ -3034,6 +3042,7 @@
 				E336F0890E60D1A800270758 /* libjpeg.62.dylib in Frameworks */,
 				E336F09C0E62D1FD00270758 /* libmms-osx.a in Frameworks */,
 				E3C1A65D0E7126F400CE0104 /* Sparkle.framework in Frameworks */,
+				1AD99BED0E9EFC2200503917 /* QTKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3096,6 +3105,7 @@
 		08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				1AD99BEC0E9EFC2200503917 /* QTKit.framework */,
 				E336F09B0E62D1FD00270758 /* libmms-osx.a */,
 				E336F0880E60D1A800270758 /* libjpeg.62.dylib */,
 				E3AC01F60E39E16B00DD298E /* libSDL_image-osx.a */,
@@ -3249,6 +3259,10 @@
 				E371C13A0E2F151A00FBF841 /* PlexApplication.mm */,
 				E371CB8D0E303C7100FBF841 /* PlexDelegate.h */,
 				E371CB8E0E303C7100FBF841 /* PlexDelegate.mm */,
+				1AD99BDB0E9EF07200503917 /* QTPlayer.h */,
+				1AD99BDC0E9EF07200503917 /* QTPlayer.cpp */,
+				1AD99C730E9FB54200503917 /* QuickTimeWrapper.h */,
+				1AD99C740E9FB54200503917 /* QuickTimeWrapper.cpp */,
 			);
 			path = osx;
 			sourceTree = "<group>";
@@ -7140,6 +7154,8 @@
 				E3C1A6AA0E74E85C00CE0104 /* AsyncFileCopy.cpp in Sources */,
 				E3FD287C0E9951B500EE77C3 /* FilePlex.cpp in Sources */,
 				E3FD287D0E9951B500EE77C3 /* PlexDirectory.cpp in Sources */,
+				1AD99BDD0E9EF07200503917 /* QTPlayer.cpp in Sources */,
+				1AD99C750E9FB54200503917 /* QuickTimeWrapper.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
