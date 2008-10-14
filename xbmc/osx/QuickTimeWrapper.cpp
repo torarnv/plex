@@ -39,13 +39,26 @@ bool QuickTimeWrapper::OpenFile(const CStdString &fileName)
   CFURLRef fileLocation;
   
   filePath = CFStringCreateWithCString(kCFAllocatorDefault, fileName.c_str(), kCFStringEncodingUTF8);
-  fileLocation = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, filePath, kCFURLPOSIXPathStyle, false);
+  
+  if (fileName.Find("http://") == 0)
+    fileLocation = CFURLCreateWithString(kCFAllocatorDefault, filePath, NULL);
+  else
+    fileLocation = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, filePath, kCFURLPOSIXPathStyle, false);
+  
   error = QTNewDataReferenceFromCFURL(fileLocation, 0, &dataRef, &dataRefType);
-  if (error != 0) return false;
+  if (error != 0)
+  {
+    CLog::Log(LOGERROR, "Error creating URL from %s\n", fileName.c_str());
+    return false;
+  }
 
   short fileID = movieInDataForkResID;
   error = NewMovieFromDataRef(&m_qtMovie, 0, &fileID, dataRef, dataRefType);
-  if (error != 0) return false;
+  if (error != 0) 
+  {
+    CLog::Log(LOGERROR, "Error creating movie from data ref\n");
+    return false;
+  }
   
   StartMovie(m_qtMovie);
   m_bIsPlaying = true;
