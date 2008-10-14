@@ -177,7 +177,7 @@ class PlexMediaAlbum : public PlexMediaNode
   {
     CAlbum album;
     
-    if (pItem->m_strPath.Find("/Artists/") != -1)
+    if (pItem->m_strPath.Find("/Artists/") != -1 || pItem->m_strPath.Find("/Compilations") != -1)
       album.strLabel = el.Attribute("album");
     else
       album.strLabel = el.Attribute("artist") + string(" - ") + el.Attribute("album");
