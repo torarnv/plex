@@ -78,22 +78,31 @@ NSString* GetPowerInfoStringForKey(const char* key)
   // Initialise variables
   batteryCheckTimer = nil;
   runningOnBatteryAndWarningDisplayed = NO;
+
+  id pool = [[NSAutoreleasePool alloc] init];
   
   // Get the model name for the machine
   char modelBuffer[256];
   size_t sz = sizeof(modelBuffer);
-  if (0 == sysctlbyname("hw.model", modelBuffer, &sz, NULL, 0)) {
+  if (0 == sysctlbyname("hw.model", modelBuffer, &sz, NULL, 0)) 
+  {
     modelBuffer[sizeof(modelBuffer) - 1] = 0;
     modelName = [NSString stringWithCString:modelBuffer];
-  } else modelName = @"Unknown";
+  } 
+  else
+  {
+    modelName = @"Unknown";
+  }
   
   // Check the machine model against known models supporting battery functions
   NSArray *modelsWithBattery = [NSArray arrayWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"ModelsWithBattery" ofType:@"plist"]];
   hasBattery = NO;
   int i=0;
-  for (; i < [modelsWithBattery count]; i++) if ([(NSString*)[modelsWithBattery objectAtIndex:i] isEqualToString:modelName]) hasBattery = YES;
+  for (; i < [modelsWithBattery count]; i++) 
+    if ([(NSString*)[modelsWithBattery objectAtIndex:i] isEqualToString:modelName]) 
+       hasBattery = YES;
 
-  [modelsWithBattery release];
+  [pool release];
   
   return _o_sharedMainInstance;
 }
