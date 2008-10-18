@@ -74,6 +74,9 @@
 #include "GUILabelControl.h"  // for CInfoLabel
 #include "GUIWindowVideoInfo.h"
 #include "GUIWindowMusicInfo.h"
+#ifdef __APPLE__
+#include "CocoaUtils.h"
+#endif
 
 using namespace std;
 using namespace XFILE;
@@ -416,6 +419,11 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       return AddMultiInfo(GUIInfo(SYSTEM_GET_CORE_USAGE, atoi(strTest.Mid(17,strTest.size()-18)), 0));
     else if (strTest.Left(17).Equals("system.hascoreid("))
       return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_HAS_CORE_ID : SYSTEM_HAS_CORE_ID, ConditionalStringParameter(strTest.Mid(17,strTest.size()-18)), 0));
+#ifdef __APPLE__
+    else if (strTest.Equals("system.modelname")) ret = SYSTEM_MODEL_NAME;
+    else if (strTest.Equals("system.powersource")) ret = SYSTEM_POWER_SOURCE;
+    else if (strTest.Equals("system.powerlevel")) ret= SYSTEM_POWER_LEVEL;
+#endif
   }
   // library test conditions
   else if (strTest.Left(7).Equals("library"))
@@ -1511,6 +1519,54 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
         return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("fanart_image");
     }
     break;
+#ifdef __APPLE__
+  case SYSTEM_MODEL_NAME:
+    {
+      strLabel.Format("%s: %s", g_localizeStrings.Get(18000), Cocoa_HW_LongModelName());
+    }
+    break;
+  case SYSTEM_POWER_SOURCE:
+    {
+      if (Cocoa_HW_HasBattery())
+      {
+        strLabel = g_localizeStrings.Get(18001) + ": ";
+        if (Cocoa_HW_IsOnACPower() && !Cocoa_HW_IsCharging())
+          strLabel += g_localizeStrings.Get(18002);
+        else if (Cocoa_HW_IsOnACPower())
+          strLabel += g_localizeStrings.Get(18003);
+        else
+          strLabel += g_localizeStrings.Get(18004);
+      }
+    }
+    break;
+    case SYSTEM_POWER_LEVEL:
+    {
+      if (Cocoa_HW_HasBattery())
+      {
+        if (Cocoa_HW_IsCharging() || !Cocoa_HW_IsOnACPower())
+        {
+          int time = -1;
+          CStdString strInfo;
+          if (Cocoa_HW_IsCharging())
+          {
+            time = Cocoa_HW_TimeToFullCharge();
+            strInfo = g_localizeStrings.Get(18006);
+          }
+          else
+          {
+            time = Cocoa_HW_TimeToBatteryEmpty();
+            strInfo = g_localizeStrings.Get(18007);
+          }
+          if (time == -1)
+            strLabel.Format("%s: %d%%   (%s %s)", g_localizeStrings.Get(18005), Cocoa_HW_CurrentBatteryCapacity(), g_localizeStrings.Get(18008), strInfo);
+          else
+            strLabel.Format("%s: %d%%   (%d:%02d %s)", g_localizeStrings.Get(18005), Cocoa_HW_CurrentBatteryCapacity(), time/60, time%60, strInfo);
+        }
+        else
+          strLabel.Format("%s: %d%%", g_localizeStrings.Get(18005), Cocoa_HW_CurrentBatteryCapacity());
+      }
+    }
+#endif
   }
 
   return strLabel;

@@ -22,6 +22,7 @@
 #import "XBMCMain.h" 
 #include <SDL/SDL.h>
 #import "BackgroundMusicPlayer.h"
+#import "AppleHardwareInfo.h"
 
 #import <IOKit/graphics/IOGraphicsLib.h>
 #import <ApplicationServices/ApplicationServices.h>
@@ -878,3 +879,30 @@ void Cocoa_UpdateGlobalVolume(int globalVolume)
 {
   [[BackgroundMusicPlayer sharedInstance] setGlobalVolumeAsPercent:globalVolume];
 }
+
+const char* Cocoa_HW_ModelName()
+{ return [[[AppleHardwareInfo sharedInstance] modelName] UTF8String]; }
+
+const char* Cocoa_HW_LongModelName()
+{ return [[[AppleHardwareInfo sharedInstance] longModelName] UTF8String]; }
+
+bool Cocoa_HW_HasBattery()
+{ return [[AppleHardwareInfo sharedInstance] hasBattery]; }
+
+bool Cocoa_HW_IsOnACPower()
+{ return [[AppleHardwareInfo sharedInstance] isOnACPower]; }
+
+bool Cocoa_HW_IsCharging()
+{ return [[AppleHardwareInfo sharedInstance] isCharging]; }
+
+int  Cocoa_HW_CurrentBatteryCapacity()
+{ return [[AppleHardwareInfo sharedInstance] currentBatteryCapacity]; }
+
+int  Cocoa_HW_TimeToBatteryEmpty()
+{ return [[AppleHardwareInfo sharedInstance] timeToEmpty]; }
+
+int  Cocoa_HW_TimeToFullCharge()
+{ return [[AppleHardwareInfo sharedInstance] timeToFullCharge]; }
+
+void Cocoa_HW_SetBatteryWarningEnabled(bool enabled)
+{ [[AppleHardwareInfo sharedInstance] setLowBatteryWarningEnabled:enabled]; }

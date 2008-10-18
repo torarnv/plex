@@ -8,8 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		1A5484550E79EA340025CA32 /* BackgroundMusicPlayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1A5484540E79EA340025CA32 /* BackgroundMusicPlayer.mm */; };
+		1A5535900E86AA9E005AF349 /* AppleHardwareInfo.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1A55358F0E86AA9E005AF349 /* AppleHardwareInfo.mm */; };
+		1A5535E50E86B02F005AF349 /* ModelsWithBattery.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1A5535E40E86B02F005AF349 /* ModelsWithBattery.plist */; };
+		1A5536300E86CCD4005AF349 /* GUIDialogUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A55362F0E86CCD4005AF349 /* GUIDialogUtils.cpp */; };
 		1AD99BDD0E9EF07200503917 /* QTPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1AD99BDC0E9EF07200503917 /* QTPlayer.cpp */; };
 		1AD99C750E9FB54200503917 /* QuickTimeWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1AD99C740E9FB54200503917 /* QuickTimeWrapper.cpp */; };
+		1AF6A79C0E994BFB00D96BD7 /* ModelNames.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1AF6A79B0E994BFB00D96BD7 /* ModelNames.plist */; };
 		E336EF2F0E60256000270758 /* GUIViewStatePictures.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E336EF000E60250700270758 /* GUIViewStatePictures.cpp */; };
 		E336EF300E60256000270758 /* GUIViewStatePrograms.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E336EF020E60250700270758 /* GUIViewStatePrograms.cpp */; };
 		E336EF310E60256000270758 /* GUIViewStateScripts.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E336EF040E60250700270758 /* GUIViewStateScripts.cpp */; };
@@ -925,10 +929,16 @@
 		09AB6884FE841BABC02AAC07 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
 		1A5484530E79EA340025CA32 /* BackgroundMusicPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BackgroundMusicPlayer.h; sourceTree = "<group>"; };
 		1A5484540E79EA340025CA32 /* BackgroundMusicPlayer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BackgroundMusicPlayer.mm; sourceTree = "<group>"; };
+		1A55358E0E86AA9E005AF349 /* AppleHardwareInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppleHardwareInfo.h; sourceTree = "<group>"; };
+		1A55358F0E86AA9E005AF349 /* AppleHardwareInfo.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AppleHardwareInfo.mm; sourceTree = "<group>"; };
+		1A5535E40E86B02F005AF349 /* ModelsWithBattery.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = ModelsWithBattery.plist; path = plex/ModelsWithBattery.plist; sourceTree = "<group>"; };
+		1A55362E0E86CCD4005AF349 /* GUIDialogUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogUtils.h; sourceTree = "<group>"; };
+		1A55362F0E86CCD4005AF349 /* GUIDialogUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogUtils.cpp; sourceTree = "<group>"; };
 		1AD99BDB0E9EF07200503917 /* QTPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTPlayer.h; sourceTree = "<group>"; };
 		1AD99BDC0E9EF07200503917 /* QTPlayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = QTPlayer.cpp; sourceTree = "<group>"; };
 		1AD99C730E9FB54200503917 /* QuickTimeWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuickTimeWrapper.h; sourceTree = "<group>"; };
 		1AD99C740E9FB54200503917 /* QuickTimeWrapper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = QuickTimeWrapper.cpp; sourceTree = "<group>"; };
+		1AF6A79B0E994BFB00D96BD7 /* ModelNames.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; name = ModelNames.plist; path = plex/ModelNames.plist; sourceTree = "<group>"; };
 		6E97BDBC0DA2B5D8003A2A89 /* GUIInfoColor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIInfoColor.cpp; sourceTree = "<group>"; };
 		6E97BDBD0DA2B5D8003A2A89 /* GUIInfoColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIInfoColor.h; sourceTree = "<group>"; };
 		6E97BDBF0DA2B620003A2A89 /* EventClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventClient.h; sourceTree = "<group>"; };
@@ -3092,6 +3102,8 @@
 				E38AAB580E5D444500C1B750 /* Carbon.framework */,
 				E38AABBF0E5D46AE00C1B750 /* libz.dylib */,
 				E3ADDD130EAA68DC003921C8 /* QTKit.framework */,
+				1A5535E40E86B02F005AF349 /* ModelsWithBattery.plist */,
+				1AF6A79B0E994BFB00D96BD7 /* ModelNames.plist */,
 			);
 			name = XBMC;
 			sourceTree = "<group>";
@@ -3245,6 +3257,10 @@
 			isa = PBXGroup;
 			children = (
 				EFF083260E11614A004114E6 /* Info.plist */,
+				1A55358E0E86AA9E005AF349 /* AppleHardwareInfo.h */,
+				1A55358F0E86AA9E005AF349 /* AppleHardwareInfo.mm */,
+				1A55362E0E86CCD4005AF349 /* GUIDialogUtils.h */,
+				1A55362F0E86CCD4005AF349 /* GUIDialogUtils.cpp */,
 				840A327C0DFBBD2600AA2033 /* KeyboardLayouts.cpp */,
 				840A327D0DFBBD2600AA2033 /* KeyboardLayouts.h */,
 				E306D12C0DDF7B590052C2AD /* XBMCHelper.cpp */,
@@ -3524,6 +3540,7 @@
 		E38E14610D25F9F900618676 /* xbmc */ = {
 			isa = PBXGroup;
 			children = (
+				E37D5CB40D3023BB0081D327 /* osx */,
 				E336EF4A0E602A8B00270758 /* GUIDialogFullScreenInfo.cpp */,
 				E336EF4B0E602A8B00270758 /* GUIDialogFullScreenInfo.h */,
 				E336EF000E60250700270758 /* GUIViewStatePictures.cpp */,
@@ -3546,7 +3563,6 @@
 				E38A06CC0D95AA5500FF8227 /* GUIDialogKaiToast.cpp */,
 				E38A06CD0D95AA5500FF8227 /* GUIDialogKaiToast.h */,
 				E3E920050D8C6277002BF43D /* ScraperSettings.cpp */,
-				E37D5CB40D3023BB0081D327 /* osx */,
 				E3A478190D29032C00F3C3A6 /* GUIDialogAccessPoints.cpp */,
 				E38E14620D25F9F900618676 /* APEv2Tag.cpp */,
 				E38E14630D25F9F900618676 /* APEv2Tag.h */,
@@ -6340,6 +6356,8 @@
 				E371CB160E2F39CD00FBF841 /* Plex.xib in Resources */,
 				E371CBB10E3044D900FBF841 /* Plex.icns in Resources */,
 				E3C1A67D0E72862300CE0104 /* plex in Resources */,
+				1A5535E50E86B02F005AF349 /* ModelsWithBattery.plist in Resources */,
+				1AF6A79C0E994BFB00D96BD7 /* ModelNames.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7162,6 +7180,8 @@
 				E3FD287D0E9951B500EE77C3 /* PlexDirectory.cpp in Sources */,
 				1AD99BDD0E9EF07200503917 /* QTPlayer.cpp in Sources */,
 				1AD99C750E9FB54200503917 /* QuickTimeWrapper.cpp in Sources */,
+				1A5535900E86AA9E005AF349 /* AppleHardwareInfo.mm in Sources */,
+				1A5536300E86CCD4005AF349 /* GUIDialogUtils.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

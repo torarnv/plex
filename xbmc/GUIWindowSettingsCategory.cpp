@@ -2506,7 +2506,6 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   {
     g_fontManager.ReloadTTFFonts();
   }
-  
 #ifdef __APPLE__
   else if (strSetting.Equals("backgroundmusic.enabled"))
   {
@@ -2524,6 +2523,10 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   {
     int i = g_guiSettings.GetInt("backgroundmusic.volume");
     Cocoa_SetBackgroundMusicVolume((float)(i/100.0f));
+  }
+  else if (strSetting.Equals("system.batterywarning"))
+  {
+    Cocoa_HW_SetBatteryWarningEnabled(g_guiSettings.GetBool("system.batterywarning"));
   }
 #endif
 
