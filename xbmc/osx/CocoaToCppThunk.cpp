@@ -10,6 +10,7 @@
 #include "Application.h"
 #include "AppleRemoteKeys.h"
 #include "CocoaToCppThunk.h"
+#include "HTTP.h"
 
 void Cocoa_OnAppleRemoteKey(void* application, AppleRemoteEventIdentifier event, bool pressedDown, unsigned int count)
 {
@@ -103,3 +104,11 @@ void Cocoa_OnAppleRemoteKey(void* application, AppleRemoteEventIdentifier event,
   }
 }
 
+void Cocoa_DownloadFile(const char* remoteFile, const char* localFile)
+{
+  using namespace std;
+  CHTTP http;
+  string fLocal = localFile;
+  string fRemote = remoteFile;
+  http.Download(fRemote, fLocal);
+}

@@ -21,6 +21,7 @@
 #include "CocoaUtils.h"
 #import "XBMCMain.h" 
 #include <SDL/SDL.h>
+#import "BackgroundMusicPlayer.h"
 
 #import <IOKit/graphics/IOGraphicsLib.h>
 #import <ApplicationServices/ApplicationServices.h>
@@ -797,13 +798,11 @@ void* Cocoa_GetDisplayPort()
   return (void* )GetWindowPort(refWindow);
 }
 
-
 /* Get/set LCD panel brightness */
 
 void Cocoa_GetPanelBrightness(float* brightness)
 {
 //  int mainDisplayId = CGMainDisplayID();
-  printf("Main display: %i\n:", mainDisplayScreen);
   if (blankingWindows[mainDisplayScreen] != 0)
   {
     *brightness = blankingBrightness[mainDisplayScreen];
@@ -827,4 +826,55 @@ void Cocoa_SetPanelBrightness(float brightness)
     else
       blankingBrightness[mainDisplayScreen] = brightness;
   }
+}
+
+/* Background music control functions */
+
+void Cocoa_StartBackgroundMusic()
+{
+  [[BackgroundMusicPlayer sharedInstance] startMusic];
+}
+
+void Cocoa_StopBackgroundMusic() 
+{
+  [[BackgroundMusicPlayer sharedInstance] stopMusic];
+}
+
+void Cocoa_SetBackgroundMusicEnabled(bool enabled)
+{
+  [[BackgroundMusicPlayer sharedInstance] setEnabled:enabled];
+}
+
+void Cocoa_SetBackgroundMusicThemesEnabled(bool enabled)
+{
+  [[BackgroundMusicPlayer sharedInstance] setThemeMusicEnabled:enabled];
+}
+
+void Cocoa_SetBackgroundMusicThemeDownloadsEnabled(bool enabled)
+{
+  [[BackgroundMusicPlayer sharedInstance] setThemeDownloadsEnabled:enabled];
+}
+
+void Cocoa_CheckForThemeNamed(const char* themeName)
+{
+  if (themeName != NULL)
+    [[BackgroundMusicPlayer sharedInstance] checkForThemeNamed:[NSString stringWithCString:themeName]];
+}
+
+void Cocoa_SetBackgroundMusicThemeName(const char* themeName)
+{
+  if (themeName == NULL)
+    [[BackgroundMusicPlayer sharedInstance] setThemeMusicName:nil];
+  else
+    [[BackgroundMusicPlayer sharedInstance] setThemeMusicName:[NSString stringWithCString:themeName]];
+}
+
+void Cocoa_SetBackgroundMusicVolume(float volume)
+{
+  [[BackgroundMusicPlayer sharedInstance] setVolume:volume];
+}
+
+void Cocoa_UpdateGlobalVolume(int globalVolume)
+{
+  [[BackgroundMusicPlayer sharedInstance] setGlobalVolumeAsPercent:globalVolume];
 }

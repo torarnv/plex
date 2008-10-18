@@ -1279,6 +1279,14 @@ HRESULT CApplication::Create(HWND hWnd)
   // Note that the screensaver should turn off.
   Cocoa_UpdateSystemActivity();
   Cocoa_TurnOffScreenSaver();
+  
+  // Start background music playing
+  Cocoa_UpdateGlobalVolume(g_application.GetVolume());
+  Cocoa_SetBackgroundMusicThemesEnabled(g_guiSettings.GetBool("backgroundmusic.themesenabled"));
+  Cocoa_SetBackgroundMusicThemeDownloadsEnabled(g_guiSettings.GetBool("backgroundmusic.themedownloadsenabled"));
+  Cocoa_SetBackgroundMusicVolume((float)(g_guiSettings.GetInt("backgroundmusic.volume")/100.0f));
+  Cocoa_StartBackgroundMusic();
+  Cocoa_SetBackgroundMusicEnabled(g_guiSettings.GetBool("backgroundmusic.enabled"));
 #endif
 
 #ifdef HAS_XBOX_HARDWARE
@@ -5044,6 +5052,9 @@ void CApplication::OnPlayBackEnded()
     m_vPlaybackStarting.push(msg);
   else
     m_gWindowManager.SendThreadMessage(msg);
+  
+  // Start the background music (if enabled)
+  Cocoa_StartBackgroundMusic();
 }
 
 void CApplication::OnPlayBackStarted()
@@ -5062,6 +5073,9 @@ void CApplication::OnPlayBackStarted()
   if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackStarted;1");
 #endif
+  
+  // Stop the background music (if enabled)
+  Cocoa_StopBackgroundMusic();
 
   CLog::Log(LOGDEBUG, "Playback has started");
 
@@ -5122,6 +5136,9 @@ void CApplication::OnPlayBackStopped()
     m_vPlaybackStarting.push(msg);
   else
     m_gWindowManager.SendThreadMessage(msg);
+  
+  // Start the background music (if enabled)
+  Cocoa_StartBackgroundMusic();
 }
 
 bool CApplication::IsPlaying() const
@@ -6424,6 +6441,9 @@ void CApplication::SetHardwareVolume(long hardwareVolume)
     if (m_guiDialogMuteBug.IsDialogRunning())
       m_guiDialogMuteBug.Close();
   }
+  
+  // tell Cocoa objects that the volume has changed
+  Cocoa_UpdateGlobalVolume(GetVolume());
 
   // and tell our player to update the volume
   if (m_pPlayer)

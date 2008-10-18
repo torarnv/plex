@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1A5484550E79EA340025CA32 /* BackgroundMusicPlayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1A5484540E79EA340025CA32 /* BackgroundMusicPlayer.mm */; };
 		1AD99BDD0E9EF07200503917 /* QTPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1AD99BDC0E9EF07200503917 /* QTPlayer.cpp */; };
-		1AD99BED0E9EFC2200503917 /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AD99BEC0E9EFC2200503917 /* QTKit.framework */; };
 		1AD99C750E9FB54200503917 /* QuickTimeWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1AD99C740E9FB54200503917 /* QuickTimeWrapper.cpp */; };
 		E336EF2F0E60256000270758 /* GUIViewStatePictures.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E336EF000E60250700270758 /* GUIViewStatePictures.cpp */; };
 		E336EF300E60256000270758 /* GUIViewStatePrograms.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E336EF020E60250700270758 /* GUIViewStatePrograms.cpp */; };
@@ -852,6 +852,7 @@
 		E3AC01F50E39E0ED00DD298E /* libSDL-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E3AC01F40E39E0ED00DD298E /* libSDL-osx.a */; };
 		E3AC01F80E39E16B00DD298E /* libSDL_image-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E3AC01F60E39E16B00DD298E /* libSDL_image-osx.a */; };
 		E3AC01F90E39E16B00DD298E /* libSDL_mixer-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E3AC01F70E39E16B00DD298E /* libSDL_mixer-osx.a */; };
+		E3ADDD140EAA68DC003921C8 /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3ADDD130EAA68DC003921C8 /* QTKit.framework */; };
 		E3B221530E57892500939882 /* ArabicShaping.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3B221520E57892500939882 /* ArabicShaping.cpp */; };
 		E3B2218C0E58F42100939882 /* DVDFileInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3B2218A0E58F42100939882 /* DVDFileInfo.cpp */; };
 		E3B963B70E3863CB0022F663 /* AMFObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3B963870E3860820022F663 /* AMFObject.cpp */; };
@@ -922,9 +923,10 @@
 
 /* Begin PBXFileReference section */
 		09AB6884FE841BABC02AAC07 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
+		1A5484530E79EA340025CA32 /* BackgroundMusicPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BackgroundMusicPlayer.h; sourceTree = "<group>"; };
+		1A5484540E79EA340025CA32 /* BackgroundMusicPlayer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BackgroundMusicPlayer.mm; sourceTree = "<group>"; };
 		1AD99BDB0E9EF07200503917 /* QTPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTPlayer.h; sourceTree = "<group>"; };
 		1AD99BDC0E9EF07200503917 /* QTPlayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = QTPlayer.cpp; sourceTree = "<group>"; };
-		1AD99BEC0E9EFC2200503917 /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = /System/Library/Frameworks/QTKit.framework; sourceTree = "<absolute>"; };
 		1AD99C730E9FB54200503917 /* QuickTimeWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuickTimeWrapper.h; sourceTree = "<group>"; };
 		1AD99C740E9FB54200503917 /* QuickTimeWrapper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = QuickTimeWrapper.cpp; sourceTree = "<group>"; };
 		6E97BDBC0DA2B5D8003A2A89 /* GUIInfoColor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIInfoColor.cpp; sourceTree = "<group>"; };
@@ -2931,6 +2933,7 @@
 		E3AC01F40E39E0ED00DD298E /* libSDL-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libSDL-osx.a"; path = "xbmc/lib/libSDL-OSX/libSDL-osx.a"; sourceTree = "<group>"; };
 		E3AC01F60E39E16B00DD298E /* libSDL_image-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libSDL_image-osx.a"; path = "xbmc/lib/libSDL-OSX/libSDL_image-osx.a"; sourceTree = "<group>"; };
 		E3AC01F70E39E16B00DD298E /* libSDL_mixer-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libSDL_mixer-osx.a"; path = "xbmc/lib/libSDL-OSX/libSDL_mixer-osx.a"; sourceTree = "<group>"; };
+		E3ADDD130EAA68DC003921C8 /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = System/Library/Frameworks/QTKit.framework; sourceTree = SDKROOT; };
 		E3B221520E57892500939882 /* ArabicShaping.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ArabicShaping.cpp; sourceTree = "<group>"; };
 		E3B2218A0E58F42100939882 /* DVDFileInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDFileInfo.cpp; sourceTree = "<group>"; };
 		E3B2218B0E58F42100939882 /* DVDFileInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDFileInfo.h; sourceTree = "<group>"; };
@@ -3042,7 +3045,7 @@
 				E336F0890E60D1A800270758 /* libjpeg.62.dylib in Frameworks */,
 				E336F09C0E62D1FD00270758 /* libmms-osx.a in Frameworks */,
 				E3C1A65D0E7126F400CE0104 /* Sparkle.framework in Frameworks */,
-				1AD99BED0E9EFC2200503917 /* QTKit.framework in Frameworks */,
+				E3ADDD140EAA68DC003921C8 /* QTKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3088,6 +3091,7 @@
 				E371C1E10E2F2AC300FBF841 /* Plex-Info.plist */,
 				E38AAB580E5D444500C1B750 /* Carbon.framework */,
 				E38AABBF0E5D46AE00C1B750 /* libz.dylib */,
+				E3ADDD130EAA68DC003921C8 /* QTKit.framework */,
 			);
 			name = XBMC;
 			sourceTree = "<group>";
@@ -3105,7 +3109,6 @@
 		08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				1AD99BEC0E9EFC2200503917 /* QTKit.framework */,
 				E336F09B0E62D1FD00270758 /* libmms-osx.a */,
 				E336F0880E60D1A800270758 /* libjpeg.62.dylib */,
 				E3AC01F60E39E16B00DD298E /* libSDL_image-osx.a */,
@@ -3263,6 +3266,8 @@
 				1AD99BDC0E9EF07200503917 /* QTPlayer.cpp */,
 				1AD99C730E9FB54200503917 /* QuickTimeWrapper.h */,
 				1AD99C740E9FB54200503917 /* QuickTimeWrapper.cpp */,
+				1A5484530E79EA340025CA32 /* BackgroundMusicPlayer.h */,
+				1A5484540E79EA340025CA32 /* BackgroundMusicPlayer.mm */,
 			);
 			path = osx;
 			sourceTree = "<group>";
@@ -7151,6 +7156,7 @@
 				E3B2218C0E58F42100939882 /* DVDFileInfo.cpp in Sources */,
 				E336EF4C0E602A8B00270758 /* GUIDialogFullScreenInfo.cpp in Sources */,
 				E336F09F0E62D36200270758 /* FileMMS.cpp in Sources */,
+				1A5484550E79EA340025CA32 /* BackgroundMusicPlayer.mm in Sources */,
 				E3C1A6AA0E74E85C00CE0104 /* AsyncFileCopy.cpp in Sources */,
 				E3FD287C0E9951B500EE77C3 /* FilePlex.cpp in Sources */,
 				E3FD287D0E9951B500EE77C3 /* PlexDirectory.cpp in Sources */,

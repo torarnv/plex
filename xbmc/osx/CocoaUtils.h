@@ -102,6 +102,19 @@ extern "C"
   void Cocoa_GetPanelBrightness(float* brightness);
   void Cocoa_SetPanelBrightness(float brightness);
 
+  //
+  // Background music control functions
+  //
+  void Cocoa_StartBackgroundMusic();
+  void Cocoa_StopBackgroundMusic();
+  void Cocoa_SetBackgroundMusicEnabled(bool enabled);
+  void Cocoa_SetBackgroundMusicThemesEnabled(bool enabled);
+  void Cocoa_SetBackgroundMusicThemeDownloadsEnabled(bool enabled);
+  void Cocoa_CheckForThemeNamed(const char* themeName);
+  void Cocoa_SetBackgroundMusicThemeName(const char* themeName);
+  void Cocoa_SetBackgroundMusicVolume(float volume);
+  void Cocoa_UpdateGlobalVolume(int globalVolume);
+
 #ifdef __cplusplus
 }
 #endif

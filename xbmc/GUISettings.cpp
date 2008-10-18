@@ -268,6 +268,13 @@ CGUISettings::CGUISettings(void)
   AddSeparator(6, "mymusic.sep2");
   AddString(7,"mymusic.recordingpath",20005,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
 
+  //Additions for background music settings
+  AddCategory(3, "backgroundmusic", 18000);
+  AddBool(1, "backgroundmusic.enabled", 18001, true);
+  AddBool(2, "backgroundmusic.themesenabled", 18003, true);
+  AddBool(3, "backgroundmusic.themedownloadsenabled", 18004, true);
+  AddInt(4, "backgroundmusic.volume", 18002, 50, 5, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+  
   AddCategory(3,"musiclibrary",14022);
   AddBool(1, "musiclibrary.enabled", 418, true);
   AddBool(2, "musiclibrary.albumartistsonly", 13414, false);

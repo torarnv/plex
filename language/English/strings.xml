@@ -1473,6 +1473,12 @@
   <string id="17500">Display Sleep Timeout</string>
   <string id="17501">Display Brightness</string>
 
+  <string id="18000">Background</string>
+  <string id="18001">Enable Background Music</string>
+  <string id="18002">Background Music Volume</string>
+  <string id="18003">Enable Theme Music</string>
+  <string id="18004">Automatically Download Theme Music</string>
+
   <string id="20000">CDDA Rip Folder</string>
   <string id="20001">Use external DVD Player</string>
   <string id="20002">External DVD Player</string>

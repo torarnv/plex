@@ -35,6 +35,7 @@
 #include "GUIDialogProgress.h"
 #include "Settings.h"
 #include "FileItem.h"
+#include "CocoaUtils.h"
 
 #define REGEXSAMPLEFILE "[-\\._ ](sample|trailer)[-\\._ ]"
 
@@ -450,6 +451,10 @@ namespace VIDEO
         {
           // fetch episode guide
           m_database.GetTvShowInfo(pItem->m_strPath,showDetails,lTvShowId);
+          
+          // check for a theme file
+          Cocoa_CheckForThemeNamed(showDetails.m_strTitle.c_str());
+          
           files.clear();
           EnumerateSeriesFolder(pItem.get(),files);
           if (files.size() == 0) // no update or no files
