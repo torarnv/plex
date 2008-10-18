@@ -2098,8 +2098,6 @@ HRESULT CApplication::Initialize()
   m_slowTimer.StartZero();
   
 #ifdef __APPLE__
-  QTPlayer::InitQuickTime();
-
   // Register for low battery warnings (ignored on unsupported models)
   Cocoa_HW_SetBatteryWarningEnabled(g_guiSettings.GetBool("system.batterywarning"));
 #endif

@@ -3280,6 +3280,17 @@
 			name = Headers;
 			sourceTree = "<group>";
 		};
+		1AD9A0EC0EA0D6F400503917 /* qtplayer */ = {
+			isa = PBXGroup;
+			children = (
+				1AD99BDB0E9EF07200503917 /* QTPlayer.h */,
+				1AD99BDC0E9EF07200503917 /* QTPlayer.cpp */,
+				1AD99C730E9FB54200503917 /* QuickTimeWrapper.h */,
+				1AD99C740E9FB54200503917 /* QuickTimeWrapper.cpp */,
+			);
+			path = qtplayer;
+			sourceTree = "<group>";
+		};
 		810C9F5F0D67BCC80095F5DD /* MediaConnect */ = {
 			isa = PBXGroup;
 			children = (
@@ -4089,6 +4100,7 @@
 		E38E149A0D25F9F900618676 /* cores */ = {
 			isa = PBXGroup;
 			children = (
+				1AD9A0EC0EA0D6F400503917 /* qtplayer */,
 				E3A478090D29029A00F3C3A6 /* dlgcache.cpp */,
 				E38E149D0D25F9F900618676 /* DllLoader */,
 				E38E14F60D25F9F900618676 /* DummyVideoPlayer.cpp */,

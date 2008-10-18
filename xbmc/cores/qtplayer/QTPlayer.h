@@ -20,8 +20,6 @@ public:
   QTPlayer(IPlayerCallback &callback);
   virtual ~QTPlayer();
   
-  static void InitQuickTime();
-  
   virtual void RegisterAudioCallback(IAudioCallback *pCallback) {}
   virtual void UnRegisterAudioCallback() {}
   virtual bool OpenFile(const CFileItem &file, const CPlayerOptions &options);
@@ -56,7 +54,8 @@ protected:
   
 private:
   QuickTimeWrapper *m_qtFile;
-  CFileItem*        m_currentFile;
+  CFileItem *m_currentFile;
   bool m_bStopPlaying;
+  CStdString m_strPath;
   
 };

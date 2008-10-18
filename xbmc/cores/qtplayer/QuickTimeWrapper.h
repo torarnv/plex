@@ -15,8 +15,6 @@ public:
   QuickTimeWrapper();
   virtual ~QuickTimeWrapper();
   
-  static void InitQuickTime();
-  
   virtual bool OpenFile(const CStdString &fileName);
   virtual bool CloseFile();
   virtual void Pause();

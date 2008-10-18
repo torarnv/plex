@@ -11,6 +11,7 @@
 #include "QuickTimeWrapper.h"
 #include "QTPlayer.h"
 #include "FileItem.h"
+#include "Settings.h"
 
 using namespace XFILE;
 
@@ -28,18 +29,12 @@ QTPlayer::~QTPlayer()
   m_qtFile = NULL;
 }
 
-void QTPlayer::InitQuickTime()
-{
-  QuickTimeWrapper::InitQuickTime();
-}
-
 bool QTPlayer::OpenFile(const CFileItem &file, const CPlayerOptions &options)
 {
-  bool bResult = m_qtFile->OpenFile(file.m_strPath);
-  m_callback.OnPlayBackStarted();
+  m_strPath = file.m_strPath;
   if (ThreadHandle() == NULL)
     Create();
-  return bResult;
+  return true;
 }
 
 bool QTPlayer::CloseFile()
@@ -99,6 +94,10 @@ void QTPlayer::Process()
 {
   CLog::Log(LOGDEBUG, "QTPlayer: Thread started");
     
+  m_qtFile->OpenFile(m_strPath);
+  SetVolume(g_stSettings.m_nVolumeLevel);
+  m_callback.OnPlayBackStarted();
+  
   do
   {
     Sleep(100);
