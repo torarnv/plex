@@ -25,7 +25,7 @@
 	<key>CFBundleVersion</key>
 	<string>BUNDLE_VERSION</string>
 	<key>CFBundleShortVersionString</key>
-	<string>${APPLICATION_VERSION}</string>
+	<string>0.5.18</string>
 	<key>SmartCrashReports_CompanyName</key>
 	<string>Plex</string>
 	<key>SmartCrashReports_EmailTicket</key>

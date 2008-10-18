@@ -128,6 +128,16 @@ extern "C"
   void Cocoa_SetBackgroundMusicVolume(float volume);
   void Cocoa_UpdateGlobalVolume(int globalVolume);
 
+  //
+  // Sparkle software update
+  //
+  void Cocoa_CheckForUpdates();
+  void Cocoa_CheckForUpdatesInBackground();
+  void Cocoa_SetUpdateAlertType(int alertType);
+  void Cocoa_SetUpdateSuspended(bool willSuspend);
+  void Cocoa_SetUpdateCheckInterval(double seconds);
+  void Cocoa_SkinStateChanged();
+
 #ifdef __cplusplus
 }
 #endif

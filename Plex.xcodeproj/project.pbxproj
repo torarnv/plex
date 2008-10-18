@@ -7,10 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1A01F0530E7D2F3400DC186E /* plex in Resources */ = {isa = PBXBuildFile; fileRef = 1A01F0520E7D2F3400DC186E /* plex */; };
+		1A01F0FF0E7D37AA00DC186E /* SUPlexBackgroundUpdateCheckDriver.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1A01F0F90E7D37AA00DC186E /* SUPlexBackgroundUpdateCheckDriver.mm */; };
+		1A01F1000E7D37AA00DC186E /* SUPlexUpdateDriver.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1A01F0FB0E7D37AA00DC186E /* SUPlexUpdateDriver.mm */; };
+		1A01F1010E7D37AA00DC186E /* SUPlexUpdater.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1A01F0FD0E7D37AA00DC186E /* SUPlexUpdater.mm */; };
+		1A2C5DE90E7EF479002F23FA /* relaunch.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A2C5DE80E7EF479002F23FA /* relaunch.m */; };
+		1A2C5DEC0E7EF4BD002F23FA /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A2C5DEB0E7EF4BD002F23FA /* AppKit.framework */; };
+		1A2C5DF70E7EF598002F23FA /* relaunch in Copy Relaunch (1) */ = {isa = PBXBuildFile; fileRef = 1A2C5DE30E7EF410002F23FA /* relaunch */; };
 		1A5484550E79EA340025CA32 /* BackgroundMusicPlayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1A5484540E79EA340025CA32 /* BackgroundMusicPlayer.mm */; };
 		1A5535900E86AA9E005AF349 /* AppleHardwareInfo.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1A55358F0E86AA9E005AF349 /* AppleHardwareInfo.mm */; };
 		1A5535E50E86B02F005AF349 /* ModelsWithBattery.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1A5535E40E86B02F005AF349 /* ModelsWithBattery.plist */; };
 		1A5536300E86CCD4005AF349 /* GUIDialogUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A55362F0E86CCD4005AF349 /* GUIDialogUtils.cpp */; };
+		1AA456B70E7EA3DD004CC8D2 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AA456B60E7EA3DD004CC8D2 /* Security.framework */; };
 		1AD99BDD0E9EF07200503917 /* QTPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1AD99BDC0E9EF07200503917 /* QTPlayer.cpp */; };
 		1AD99C750E9FB54200503917 /* QuickTimeWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1AD99C740E9FB54200503917 /* QuickTimeWrapper.cpp */; };
 		1AF6A79C0E994BFB00D96BD7 /* ModelNames.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1AF6A79B0E994BFB00D96BD7 /* ModelNames.plist */; };
@@ -867,13 +875,19 @@
 		E3B963EF0E3864DB0022F663 /* RssFeed.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3B963ED0E3864DB0022F663 /* RssFeed.cpp */; };
 		E3C1A65D0E7126F400CE0104 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3C1A65C0E7126F400CE0104 /* Sparkle.framework */; };
 		E3C1A6610E71275B00CE0104 /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = E3C1A65C0E7126F400CE0104 /* Sparkle.framework */; };
-		E3C1A67D0E72862300CE0104 /* plex in Resources */ = {isa = PBXBuildFile; fileRef = E3C1A67C0E72862300CE0104 /* plex */; };
 		E3C1A6AA0E74E85C00CE0104 /* AsyncFileCopy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3C1A6A90E74E85C00CE0104 /* AsyncFileCopy.cpp */; };
 		E3FD287C0E9951B500EE77C3 /* FilePlex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3FD28780E9951B500EE77C3 /* FilePlex.cpp */; };
 		E3FD287D0E9951B500EE77C3 /* PlexDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3FD287A0E9951B500EE77C3 /* PlexDirectory.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		1A2C5DF00E7EF50A002F23FA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1A2C5DE20E7EF410002F23FA;
+			remoteInfo = relaunch;
+		};
 		E371CC570E34193E00FBF841 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
@@ -891,6 +905,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		1A2C5DF60E7EF593002F23FA /* Copy Relaunch (1) */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 7;
+			files = (
+				1A2C5DF70E7EF598002F23FA /* relaunch in Copy Relaunch (1) */,
+			);
+			name = "Copy Relaunch (1)";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E38AABC60E5D472500C1B750 /* Copy CrashReporter */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -927,17 +952,37 @@
 
 /* Begin PBXFileReference section */
 		09AB6884FE841BABC02AAC07 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
+		1A01F0520E7D2F3400DC186E /* plex */ = {isa = PBXFileReference; lastKnownFileType = folder; path = plex; sourceTree = "<group>"; };
+		1A01F0F60E7D37AA00DC186E /* SUBasicUpdateDriver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUBasicUpdateDriver.h; sourceTree = "<group>"; };
+		1A01F0F70E7D37AA00DC186E /* SUHost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUHost.h; sourceTree = "<group>"; };
+		1A01F0F80E7D37AA00DC186E /* SUPlexBackgroundUpdateCheckDriver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUPlexBackgroundUpdateCheckDriver.h; sourceTree = "<group>"; };
+		1A01F0F90E7D37AA00DC186E /* SUPlexBackgroundUpdateCheckDriver.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SUPlexBackgroundUpdateCheckDriver.mm; sourceTree = "<group>"; };
+		1A01F0FA0E7D37AA00DC186E /* SUPlexUpdateDriver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUPlexUpdateDriver.h; sourceTree = "<group>"; };
+		1A01F0FB0E7D37AA00DC186E /* SUPlexUpdateDriver.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SUPlexUpdateDriver.mm; sourceTree = "<group>"; };
+		1A01F0FC0E7D37AA00DC186E /* SUPlexUpdater.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUPlexUpdater.h; sourceTree = "<group>"; };
+		1A01F0FD0E7D37AA00DC186E /* SUPlexUpdater.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SUPlexUpdater.mm; sourceTree = "<group>"; };
+		1A01F0FE0E7D37AA00DC186E /* SUUpdateDriver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUUpdateDriver.h; sourceTree = "<group>"; };
+		1A2C5DBB0E7EE410002F23FA /* SUInstaller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUInstaller.h; sourceTree = "<group>"; };
+		1A2C5DE30E7EF410002F23FA /* relaunch */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = relaunch; sourceTree = BUILT_PRODUCTS_DIR; };
+		1A2C5DE80E7EF479002F23FA /* relaunch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = relaunch.m; sourceTree = "<group>"; };
+		1A2C5DEB0E7EF4BD002F23FA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		1A5484530E79EA340025CA32 /* BackgroundMusicPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BackgroundMusicPlayer.h; sourceTree = "<group>"; };
 		1A5484540E79EA340025CA32 /* BackgroundMusicPlayer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BackgroundMusicPlayer.mm; sourceTree = "<group>"; };
+		1A5487500E7B26830025CA32 /* GUIDialogUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogUtils.h; sourceTree = "<group>"; };
+		1A5487510E7B26830025CA32 /* GUIDialogUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogUtils.cpp; sourceTree = "<group>"; };
 		1A55358E0E86AA9E005AF349 /* AppleHardwareInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppleHardwareInfo.h; sourceTree = "<group>"; };
 		1A55358F0E86AA9E005AF349 /* AppleHardwareInfo.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AppleHardwareInfo.mm; sourceTree = "<group>"; };
 		1A5535E40E86B02F005AF349 /* ModelsWithBattery.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = ModelsWithBattery.plist; path = plex/ModelsWithBattery.plist; sourceTree = "<group>"; };
 		1A55362E0E86CCD4005AF349 /* GUIDialogUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogUtils.h; sourceTree = "<group>"; };
 		1A55362F0E86CCD4005AF349 /* GUIDialogUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogUtils.cpp; sourceTree = "<group>"; };
+		1AA456010E7D94FC004CC8D2 /* SUPlainInstaller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SUPlainInstaller.h; path = "../../../Downloads/Sparkle 1.5b5/Extras/Source Code/SUPlainInstaller.h"; sourceTree = SOURCE_ROOT; };
+		1AA456B20E7EA2E7004CC8D2 /* SUConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUConstants.h; sourceTree = "<group>"; };
+		1AA456B60E7EA3DD004CC8D2 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
 		1AD99BDB0E9EF07200503917 /* QTPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTPlayer.h; sourceTree = "<group>"; };
 		1AD99BDC0E9EF07200503917 /* QTPlayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = QTPlayer.cpp; sourceTree = "<group>"; };
 		1AD99C730E9FB54200503917 /* QuickTimeWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuickTimeWrapper.h; sourceTree = "<group>"; };
 		1AD99C740E9FB54200503917 /* QuickTimeWrapper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = QuickTimeWrapper.cpp; sourceTree = "<group>"; };
+		1AF6A6800E94521E00D96BD7 /* SUPlainInstaller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUPlainInstaller.h; sourceTree = "<group>"; };
 		1AF6A79B0E994BFB00D96BD7 /* ModelNames.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; name = ModelNames.plist; path = plex/ModelNames.plist; sourceTree = "<group>"; };
 		6E97BDBC0DA2B5D8003A2A89 /* GUIInfoColor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIInfoColor.cpp; sourceTree = "<group>"; };
 		6E97BDBD0DA2B5D8003A2A89 /* GUIInfoColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIInfoColor.h; sourceTree = "<group>"; };
@@ -2966,7 +3011,6 @@
 		E3BBB7980D7EA78A00CAAFD3 /* CMythSession.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CMythSession.cpp; sourceTree = "<group>"; };
 		E3BBB7A10D7EA8B200CAAFD3 /* libpcre.0.0.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpcre.0.0.1.dylib; path = ../../../../../opt/local/lib/libpcre.0.0.1.dylib; sourceTree = SOURCE_ROOT; };
 		E3C1A65C0E7126F400CE0104 /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Sparkle.framework; path = plex/Frameworks/Sparkle.framework; sourceTree = "<group>"; };
-		E3C1A67C0E72862300CE0104 /* plex */ = {isa = PBXFileReference; lastKnownFileType = folder; path = plex; sourceTree = "<group>"; };
 		E3C1A6A80E74E85C00CE0104 /* AsyncFileCopy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AsyncFileCopy.h; sourceTree = "<group>"; };
 		E3C1A6A90E74E85C00CE0104 /* AsyncFileCopy.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AsyncFileCopy.cpp; sourceTree = "<group>"; };
 		E3D4B9950DF7E39B0092A179 /* FileShoutcast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileShoutcast.h; sourceTree = "<group>"; };
@@ -3000,6 +3044,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		1A2C5DE10E7EF410002F23FA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1A2C5DEC0E7EF4BD002F23FA /* AppKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E371C1DD0E2F2AC300FBF841 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -3056,6 +3108,7 @@
 				E336F09C0E62D1FD00270758 /* libmms-osx.a in Frameworks */,
 				E3C1A65D0E7126F400CE0104 /* Sparkle.framework in Frameworks */,
 				E3ADDD140EAA68DC003921C8 /* QTKit.framework in Frameworks */,
+				1AA456B70E7EA3DD004CC8D2 /* Security.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3104,6 +3157,7 @@
 				E3ADDD130EAA68DC003921C8 /* QTKit.framework */,
 				1A5535E40E86B02F005AF349 /* ModelsWithBattery.plist */,
 				1AF6A79B0E994BFB00D96BD7 /* ModelNames.plist */,
+				1A2C5DEB0E7EF4BD002F23FA /* AppKit.framework */,
 			);
 			name = XBMC;
 			sourceTree = "<group>";
@@ -3111,7 +3165,7 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				E3C1A66F0E7285EA00CE0104 /* Plex */,
+				1A01F0510E7D2EE300DC186E /* Plex */,
 				E38E13890D25F9F900618676 /* guilib */,
 				E38E14610D25F9F900618676 /* xbmc */,
 			);
@@ -3121,6 +3175,7 @@
 		08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				1AA456B60E7EA3DD004CC8D2 /* Security.framework */,
 				E336F09B0E62D1FD00270758 /* libmms-osx.a */,
 				E336F0880E60D1A800270758 /* libjpeg.62.dylib */,
 				E3AC01F60E39E16B00DD298E /* libSDL_image-osx.a */,
@@ -3183,8 +3238,46 @@
 				E371C1DF0E2F2AC300FBF841 /* Plex.app */,
 				E371CBF20E32927F00FBF841 /* PlexHelper */,
 				E38AAB430E5D438B00C1B750 /* CrashReporter */,
+				1A2C5DE30E7EF410002F23FA /* relaunch */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		1A01F0510E7D2EE300DC186E /* Plex */ = {
+			isa = PBXGroup;
+			children = (
+				1A01F0520E7D2F3400DC186E /* plex */,
+			);
+			name = Plex;
+			sourceTree = "<group>";
+		};
+		1A01F0F50E7D379500DC186E /* Sparkle */ = {
+			isa = PBXGroup;
+			children = (
+				1A2C5DE80E7EF479002F23FA /* relaunch.m */,
+				1AA457080E7EBD50004CC8D2 /* Headers */,
+				1A01F0F80E7D37AA00DC186E /* SUPlexBackgroundUpdateCheckDriver.h */,
+				1A01F0F90E7D37AA00DC186E /* SUPlexBackgroundUpdateCheckDriver.mm */,
+				1A01F0FA0E7D37AA00DC186E /* SUPlexUpdateDriver.h */,
+				1A01F0FB0E7D37AA00DC186E /* SUPlexUpdateDriver.mm */,
+				1A01F0FC0E7D37AA00DC186E /* SUPlexUpdater.h */,
+				1A01F0FD0E7D37AA00DC186E /* SUPlexUpdater.mm */,
+				1AF6A6800E94521E00D96BD7 /* SUPlainInstaller.h */,
+				1A01F0FE0E7D37AA00DC186E /* SUUpdateDriver.h */,
+			);
+			name = Sparkle;
+			sourceTree = "<group>";
+		};
+		1AA457080E7EBD50004CC8D2 /* Headers */ = {
+			isa = PBXGroup;
+			children = (
+				1AA456B20E7EA2E7004CC8D2 /* SUConstants.h */,
+				1AA456010E7D94FC004CC8D2 /* SUPlainInstaller.h */,
+				1A01F0F60E7D37AA00DC186E /* SUBasicUpdateDriver.h */,
+				1A2C5DBB0E7EE410002F23FA /* SUInstaller.h */,
+				1A01F0F70E7D37AA00DC186E /* SUHost.h */,
+			);
+			name = Headers;
 			sourceTree = "<group>";
 		};
 		810C9F5F0D67BCC80095F5DD /* MediaConnect */ = {
@@ -3256,6 +3349,9 @@
 		E37D5CB40D3023BB0081D327 /* osx */ = {
 			isa = PBXGroup;
 			children = (
+				1A01F0F50E7D379500DC186E /* Sparkle */,
+				1A5487500E7B26830025CA32 /* GUIDialogUtils.h */,
+				1A5487510E7B26830025CA32 /* GUIDialogUtils.cpp */,
 				EFF083260E11614A004114E6 /* Info.plist */,
 				1A55358E0E86AA9E005AF349 /* AppleHardwareInfo.h */,
 				1A55358F0E86AA9E005AF349 /* AppleHardwareInfo.mm */,
@@ -6263,17 +6359,25 @@
 			path = libRTMP;
 			sourceTree = "<group>";
 		};
-		E3C1A66F0E7285EA00CE0104 /* Plex */ = {
-			isa = PBXGroup;
-			children = (
-				E3C1A67C0E72862300CE0104 /* plex */,
-			);
-			name = Plex;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		1A2C5DE20E7EF410002F23FA /* relaunch */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1A2C5DE70E7EF435002F23FA /* Build configuration list for PBXNativeTarget "relaunch" */;
+			buildPhases = (
+				1A2C5DE00E7EF410002F23FA /* Sources */,
+				1A2C5DE10E7EF410002F23FA /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = relaunch;
+			productName = relaunch;
+			productReference = 1A2C5DE30E7EF410002F23FA /* relaunch */;
+			productType = "com.apple.product-type.tool";
+		};
 		E371C1DE0E2F2AC300FBF841 /* Plex */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = E371C1E40E2F2AC400FBF841 /* Build configuration list for PBXNativeTarget "Plex" */;
@@ -6285,12 +6389,14 @@
 				E38AABC60E5D472500C1B750 /* Copy CrashReporter */,
 				E38AABD00E5D489900C1B750 /* Copy PlexHelper */,
 				E3C1A66C0E71276000CE0104 /* CopyFiles */,
+				1A2C5DF60E7EF593002F23FA /* Copy Relaunch (1) */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				E371CC580E34193E00FBF841 /* PBXTargetDependency */,
 				E38AAB480E5D43A100C1B750 /* PBXTargetDependency */,
+				1A2C5DF10E7EF50A002F23FA /* PBXTargetDependency */,
 			);
 			name = Plex;
 			productName = Plex;
@@ -6344,6 +6450,7 @@
 				E371C1DE0E2F2AC300FBF841 /* Plex */,
 				E371CBF10E32927F00FBF841 /* PlexHelper */,
 				E38AAB420E5D438B00C1B750 /* CrashReporter */,
+				1A2C5DE20E7EF410002F23FA /* relaunch */,
 			);
 		};
 /* End PBXProject section */
@@ -6355,9 +6462,9 @@
 			files = (
 				E371CB160E2F39CD00FBF841 /* Plex.xib in Resources */,
 				E371CBB10E3044D900FBF841 /* Plex.icns in Resources */,
-				E3C1A67D0E72862300CE0104 /* plex in Resources */,
 				1A5535E50E86B02F005AF349 /* ModelsWithBattery.plist in Resources */,
 				1AF6A79C0E994BFB00D96BD7 /* ModelNames.plist in Resources */,
+				1A01F0530E7D2F3400DC186E /* plex in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6375,12 +6482,20 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "./build-number.py";
+			shellScript = "";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		1A2C5DE00E7EF410002F23FA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1A2C5DE90E7EF479002F23FA /* relaunch.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E371C1DC0E2F2AC300FBF841 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -7182,6 +7297,9 @@
 				1AD99C750E9FB54200503917 /* QuickTimeWrapper.cpp in Sources */,
 				1A5535900E86AA9E005AF349 /* AppleHardwareInfo.mm in Sources */,
 				1A5536300E86CCD4005AF349 /* GUIDialogUtils.cpp in Sources */,
+				1A01F0FF0E7D37AA00DC186E /* SUPlexBackgroundUpdateCheckDriver.mm in Sources */,
+				1A01F1000E7D37AA00DC186E /* SUPlexUpdateDriver.mm in Sources */,
+				1A01F1010E7D37AA00DC186E /* SUPlexUpdater.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7204,6 +7322,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		1A2C5DF10E7EF50A002F23FA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1A2C5DE20E7EF410002F23FA /* relaunch */;
+			targetProxy = 1A2C5DF00E7EF50A002F23FA /* PBXContainerItemProxy */;
+		};
 		E371CC580E34193E00FBF841 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = E371CBF10E32927F00FBF841 /* PlexHelper */;
@@ -7217,10 +7340,40 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		1A2C5DE50E7EF411002F23FA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = /usr/local/bin;
+				PREBINDING = NO;
+				PRODUCT_NAME = relaunch;
+			};
+			name = Debug;
+		};
+		1A2C5DE60E7EF411002F23FA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				PREBINDING = NO;
+				PRODUCT_NAME = relaunch;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
 		1DEB924C08733DCA0010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APPLICATION_VERSION = "0.5-RC2";
+				APPLICATION_VERSION = 0.5.18;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					_DEBUG,
 					_LINUX,
@@ -7250,6 +7403,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = "";
 				PREBINDING = NO;
+				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = NO;
 				SDKROOT = macosx10.5;
 			};
 			name = Debug;
@@ -7567,6 +7721,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		1A2C5DE70E7EF435002F23FA /* Build configuration list for PBXNativeTarget "relaunch" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1A2C5DE50E7EF411002F23FA /* Debug */,
+				1A2C5DE60E7EF411002F23FA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		1DEB924B08733DCA0010E9CD /* Build configuration list for PBXProject "Plex" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

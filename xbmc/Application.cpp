@@ -236,6 +236,7 @@
 #include "CocoaUtils.h"
 #include "XBMCHelper.h"
 #include "QTPlayer.h"
+#include "GUIDialogUtils.h"
 #endif
 #ifdef HAS_HAL
 #include "linux/LinuxFileSystem.h"
@@ -1532,7 +1533,7 @@ HRESULT CApplication::Create(HWND hWnd)
 
   if (!m_bQuiet)
     m_bQuiet = !g_guiSettings.GetBool("system.debuglogging");
-
+  
   return CXBApplicationEx::Create(hWnd);
 }
 
@@ -2109,6 +2110,32 @@ HRESULT CApplication::Initialize()
 
   // final check for debugging combo
   CheckForDebugButtonCombo();
+  
+  // On first run, ask if the user wants to enable auto update checks
+  if (g_guiSettings.GetBool("softwareupdate.firstrun"))
+  {
+    g_guiSettings.SetBool("softwareupdate.firstrun", false);
+    bool userWantsAlerts = CGUIDialogUtils::ShowYesNoDialog(CGUIDialogUtils::Localize(40022),
+                                                            CGUIDialogUtils::Localize(40023),
+                                                            CGUIDialogUtils::Localize(40024),
+                                                            "");
+    g_guiSettings.SetBool("softwareupdate.alertsenabled", userWantsAlerts);
+  }
+  
+  // Check for updates & alert the user if a new version is available
+  if (g_guiSettings.GetBool("softwareupdate.alertsenabled"))
+  {
+    Cocoa_SetUpdateAlertType(g_guiSettings.GetInt("softwareupdate.alerttype"));
+    Cocoa_CheckForUpdatesInBackground();
+    double interval = 3600;
+    switch (g_guiSettings.GetInt("softwareupdate.checkinterval"))
+    {
+      case UPDATE_INTERVAL_DAILY: interval = 86400; break;
+      case UPDATE_INTERVAL_WEEKLY: interval = 604800; break;
+    }
+    Cocoa_SetUpdateCheckInterval(interval);
+  }
+  
   return S_OK;
 }
 
@@ -2588,6 +2615,9 @@ void CApplication::ReloadSkin()
     CGUIMessage msg3(GUI_MSG_SETFOCUS, m_gWindowManager.GetActiveWindow(), iCtrlID, 0);
     pWindow->OnMessage(msg3);
   }
+  
+  // Make sure dialogs shown from Cocoa are redisplayed
+  Cocoa_SkinStateChanged();
 }
 
 void CApplication::LoadSkin(const CStdString& strSkin)
@@ -5048,6 +5078,9 @@ void CApplication::OnPlayBackEnded()
 #endif
 
   CLog::Log(LOGDEBUG, "Playback has finished");
+  
+  // Restart the updater
+  Cocoa_SetUpdateSuspended(false);
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_ENDED, 0, 0);
 
@@ -5062,6 +5095,9 @@ void CApplication::OnPlayBackEnded()
 
 void CApplication::OnPlayBackStarted()
 {
+  // Suspend the updater
+  Cocoa_SetUpdateSuspended(true);
+  
   // Reset to the claimed video FPS.
   g_infoManager.ResetFPS(m_pPlayer->GetActualFPS());
   
@@ -5132,6 +5168,9 @@ void CApplication::OnPlayBackStopped()
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackStopped;1");
 #endif
 
+  // Restart the updater
+  Cocoa_SetUpdateSuspended(false);
+  
   CLog::Log(LOGDEBUG, "Playback was stopped\n");
 
   CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0 );
@@ -5560,6 +5599,13 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
   }
 #endif
 }
+  
+#ifdef __APPLE__
+void CApplication::CheckForUpdates()
+{
+  Cocoa_CheckForUpdates();
+}
+#endif
 
 void CApplication::CheckShutdown()
 {

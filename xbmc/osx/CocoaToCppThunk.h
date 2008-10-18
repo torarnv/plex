@@ -1,3 +1,4 @@
+#pragma once
 /*
  *  CocoaToCppThunk.h
  *  XBMC
@@ -16,6 +17,7 @@ extern "C"
 
 void Cocoa_OnAppleRemoteKey(void* application, AppleRemoteEventIdentifier event, bool pressedDown, unsigned int count);
 void Cocoa_DownloadFile(const char* remoteFile, const char* localFile);
+void Cocoa_CPPSkinStateChanged();
   
 #ifdef __cplusplus
 }

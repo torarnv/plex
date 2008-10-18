@@ -26,6 +26,8 @@
 
 #import <IOKit/graphics/IOGraphicsLib.h>
 #import <ApplicationServices/ApplicationServices.h>
+#import "SUPlexUpdater.h"
+#include "CocoaToCppThunk.h"
 
 extern int GetProcessPid(const char* processName);
 
@@ -906,3 +908,33 @@ int  Cocoa_HW_TimeToFullCharge()
 
 void Cocoa_HW_SetBatteryWarningEnabled(bool enabled)
 { [[AppleHardwareInfo sharedInstance] setLowBatteryWarningEnabled:enabled]; }
+
+void Cocoa_CheckForUpdates()
+{
+  [[SUPlexUpdater sharedInstance] checkForUpdatesWithUI:nil];
+}
+
+void Cocoa_CheckForUpdatesInBackground()
+{
+  [[SUPlexUpdater sharedInstance] checkForUpdatesInBackground];
+}
+
+void Cocoa_SetUpdateAlertType(int alertType)
+{
+  [[SUPlexUpdater sharedInstance] setAlertType:alertType];
+}
+
+void Cocoa_SetUpdateSuspended(bool willSuspend)
+{
+  [[SUPlexUpdater sharedInstance] setSuspended:willSuspend];
+}
+
+void Cocoa_SetUpdateCheckInterval(double seconds)
+{
+  [[SUPlexUpdater sharedInstance] setCheckInterval:seconds];
+}
+
+void Cocoa_SkinStateChanged()
+{
+  Cocoa_CPPSkinStateChanged();
+}

@@ -11,6 +11,7 @@
 #include "AppleRemoteKeys.h"
 #include "CocoaToCppThunk.h"
 #include "HTTP.h"
+#include "GUIDialogUtils.h"
 
 void Cocoa_OnAppleRemoteKey(void* application, AppleRemoteEventIdentifier event, bool pressedDown, unsigned int count)
 {
@@ -111,4 +112,9 @@ void Cocoa_DownloadFile(const char* remoteFile, const char* localFile)
   string fLocal = localFile;
   string fRemote = remoteFile;
   http.Download(fRemote, fLocal);
+}
+
+void Cocoa_CPPSkinStateChanged()
+{
+  CGUIDialogUtils::SkinStateChanged();
 }
