@@ -175,6 +175,7 @@ public:
 
   // Gets the cached thumb filename (no existence checks)
   CStdString GetCachedVideoThumb() const;
+  CStdString GetCachedMusicThumb() const;
   CStdString GetCachedPictureThumb() const;
   CStdString GetCachedArtistThumb() const;
   CStdString GetCachedProgramThumb() const;

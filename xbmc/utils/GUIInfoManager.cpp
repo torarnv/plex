@@ -61,6 +61,8 @@
 #include "PlayList.h"
 #include "TuxBoxUtil.h"
 
+#include "Picture.h"
+
 // stuff for current song
 #if defined(HAS_FILESYSTEM) && defined(HAS_XBOX_HARDWARE)
 #include "FileSystem/SndtrkDirectory.h"
@@ -3049,6 +3051,25 @@ void CGUIInfoManager::SetCurrentSong(CFileItem &item)
       CStdString strThumb = streamingItem.GetThumbnailImage();
       if (CFile::Exists(strThumb))
         m_currentFile->SetThumbnailImage(strThumb);
+    }
+    else
+    {
+      // look for remote thumbs
+      CStdString thumb(m_currentFile->GetThumbnailImage());
+      if (!CURL::IsFileOnly(thumb) && !CUtil::IsHD(thumb))
+       {
+         CStdString cachedThumb(m_currentFile->GetCachedMusicThumb());
+         if(CFile::Exists(cachedThumb))
+           m_currentFile->SetThumbnailImage(cachedThumb);
+         else
+         {
+           CPicture pic;
+           if(pic.DoCreateThumbnail(thumb, cachedThumb))
+             m_currentFile->SetThumbnailImage(cachedThumb);
+           else
+             m_currentFile->SetThumbnailImage("");
+         }
+       }  
     }
   }
   else

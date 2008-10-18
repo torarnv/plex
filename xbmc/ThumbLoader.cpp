@@ -173,7 +173,7 @@ bool CMusicThumbLoader::LoadItem(CFileItem* pItem)
     CStdString thumb(pItem->GetThumbnailImage());
     if (!CURL::IsFileOnly(thumb) && !CUtil::IsHD(thumb))
     {
-      CStdString cachedThumb(pItem->GetCachedVideoThumb());
+      CStdString cachedThumb(pItem->GetCachedMusicThumb());
       if(CFile::Exists(cachedThumb))
         pItem->SetThumbnailImage(cachedThumb);
       else

@@ -2303,6 +2303,27 @@ void CFileItem::SetCachedPictureThumb()
     SetThumbnailImage(cachedThumb);
 }
 
+CStdString CFileItem::GetCachedMusicThumb() const
+{
+  // get the locally cached thumb
+  Crc32 crc;
+  if (IsStack())
+  {
+    CStackDirectory dir;
+    crc.ComputeFromLowerCase(dir.GetFirstStackedFile(m_strPath));
+  }
+  else
+  {
+    crc.ComputeFromLowerCase(m_strPath);
+  }
+
+  CStdString hex;
+  hex.Format("%08x", (__int32)crc);
+  CStdString thumb;
+  thumb.Format("%s\\%c\\%08x.tbn", g_settings.GetMusicThumbFolder().c_str(), hex[0],(unsigned __int32)crc);
+  return _P(thumb);
+}
+
 CStdString CFileItem::GetCachedVideoThumb() const
 {
   // get the locally cached thumb

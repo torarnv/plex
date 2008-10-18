@@ -56,10 +56,13 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
 
   // Start the download thread running.
   m_url = strRoot;
-  CThread::Create(false, 0);
-  
+  //CThread::Create(false, 0);
+  Process();
+
   // Now display progress, look for cancel.
   CGUIDialogProgress* dlgProgress = 0;
+  
+#if 0
   int time = GetTickCount();
   
   while (m_downloadEvent.WaitMSec(100) == false)
@@ -90,6 +93,7 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
       dlgProgress->Progress();
     }
   }
+#endif
   
   // Parse returned xml.
   TiXmlDocument doc;
@@ -116,7 +120,7 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
       vecCacheItems.Add(pItem);
   }
   
-  g_directoryCache.SetDirectory(strRoot, vecCacheItems);
+  //g_directoryCache.SetDirectory(strRoot, vecCacheItems);
   if (dlgProgress) dlgProgress->Close();
   
   return true;
@@ -215,7 +219,9 @@ class PlexMediaPodcast : public PlexMediaNode
     album.strLabel = el.Attribute("title");
     album.idAlbum = boost::lexical_cast<int>(el.Attribute("key"));
     album.strAlbum = el.Attribute("title");
-    //album.iYear = boost::lexical_cast<int>(el.Attribute("year"));
+    
+    if (strlen(el.Attribute("year")) > 0)
+      album.iYear = boost::lexical_cast<int>(el.Attribute("year"));
     
     // Construct the thumbnail request.
     CURL url(pItem->m_strPath);
