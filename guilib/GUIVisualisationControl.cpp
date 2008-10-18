@@ -223,7 +223,7 @@ void CGUIVisualisationControl::Render()
       LoadVisualisation();
     }
     
-    if (m_pVisualisation->HandlesOwnDisplay() == false)
+    if (m_pVisualisation && m_pVisualisation->HandlesOwnDisplay() == false)
       CGUIControl::Render();
 
 #ifdef HAS_KARAOKE
@@ -240,7 +240,7 @@ void CGUIVisualisationControl::Render()
     { // deinit
       FreeVisualisation();
       
-      if (m_pVisualisation->HandlesOwnDisplay() == false)
+      if (m_pVisualisation && m_pVisualisation->HandlesOwnDisplay() == false)
         CGUIControl::Render();
       
       return;
@@ -254,7 +254,7 @@ void CGUIVisualisationControl::Render()
       g_application.m_pCdgParser->Render();
 #endif
 
-      if (m_pVisualisation->HandlesOwnDisplay() == false)
+      if (m_pVisualisation && m_pVisualisation->HandlesOwnDisplay() == false)
         CGUIControl::Render();
       
       return;
@@ -297,7 +297,7 @@ void CGUIVisualisationControl::Render()
     g_application.m_pCdgParser->Render();
 #endif
 
-  if (m_pVisualisation->HandlesOwnDisplay() == false)
+  if (m_pVisualisation && m_pVisualisation->HandlesOwnDisplay() == false)
     CGUIControl::Render();
 }
 
