@@ -262,6 +262,9 @@
 
 #define ACTION_TOGGLE_FULLSCREEN      199 // switch 2 desktop resolution
 
+#define ACTION_HOME                   300
+#define ACTION_END                    301
+
 // Window ID defines to make the code a bit more readable
 #define WINDOW_INVALID                     9999
 #define WINDOW_HOME                       10000

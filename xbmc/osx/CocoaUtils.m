@@ -938,3 +938,26 @@ void Cocoa_SkinStateChanged()
 {
   Cocoa_CPPSkinStateChanged();
 }
+
+void Cocoa_SetGammaRamp(unsigned short* pRed, unsigned short* pGreen, unsigned short* pBlue)
+{
+  const CGTableCount tableSize = 255;
+  CGGammaValue redTable[tableSize];
+  CGGammaValue greenTable[tableSize];
+  CGGammaValue blueTable[tableSize];
+
+  int i;
+
+  // Extract gamma values into separate tables, convert to floats between 0.0 and 1.0.
+  for (i = 0; i < 256; i++)
+  {
+      redTable[i]   = pRed[i]   / 65535.0;
+      greenTable[i] = pGreen[i] / 65535.0;
+      blueTable[i]  = pBlue[i]  / 65535.0;
+  }
+
+  // Look up the current display for Plex and set the gamma ramp.
+  int iScreen = Cocoa_GetCurrentDisplay();
+  CGDirectDisplayID displayID = (CGDirectDisplayID)Cocoa_GetDisplay(iScreen);
+  CGSetDisplayTransferByTable(displayID, tableSize, redTable, greenTable, blueTable);
+}

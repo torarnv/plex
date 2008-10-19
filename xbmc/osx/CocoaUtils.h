@@ -138,6 +138,10 @@ extern "C"
   void Cocoa_SetUpdateCheckInterval(double seconds);
   void Cocoa_SkinStateChanged();
 
+  // Display dimming.
+  //
+  void Cocoa_SetGammaRamp(unsigned short* pRed, unsigned short* pGreen, unsigned short* pBlue);
+
 #ifdef __cplusplus
 }
 #endif

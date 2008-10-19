@@ -90,7 +90,15 @@ bool CGUIWindowVideoNav::OnAction(const CAction &action)
 {
   if (action.wID == ACTION_PREVIOUS_MENU)
     Cocoa_SetBackgroundMusicThemeName(NULL);
-  
+
+  if (action.wID == ACTION_PARENT_DIR)
+  {
+    if (g_advancedSettings.m_bUseEvilB && m_vecItems->m_strPath == m_startDirectory)
+    {
+      m_gWindowManager.PreviousWindow();
+      return true;
+    }
+  }
   return CGUIWindowVideoBase::OnAction(action);
 }
 
@@ -199,14 +207,22 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
       if (!CGUIWindowVideoBase::OnMessage(message))
         return false;
 
+      if (message.GetParam1() != WINDOW_INVALID)
+      { // first time to this window - make sure we set the root path
+        m_startDirectory = returning ? destPath : "";
+      }
+
       //  base class has opened the database, do our check
       m_database.Open();
       DisplayEmptyDatabaseMessage(!m_database.HasContent());
 
       if (m_bDisplayEmptyDatabaseMessage)
       {
+        // no library - make sure we focus on a known control, and default to the root.
         SET_CONTROL_FOCUS(CONTROL_BTNTYPE, 0);
-        Update(m_vecItems->m_strPath);  // Will remove content from the list/thumb control
+        m_vecItems->m_strPath = "";
+        SetHistoryForPath("");
+        Update("");
       }
 
       m_database.Close();
@@ -818,6 +834,9 @@ void CGUIWindowVideoNav::OnInfo(CFileItem* pItem, const SScraperInfo& info)
 void CGUIWindowVideoNav::OnDeleteItem(int iItem)
 {
   if (iItem < 0 || iItem >= (int)m_vecItems->Size()) return;
+
+  if (m_vecItems->IsPluginFolder())
+    return;
 
   if (m_vecItems->m_strPath.Equals("special://videoplaylists/"))
   {

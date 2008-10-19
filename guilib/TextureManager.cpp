@@ -859,16 +859,9 @@ void CGUITextureManager::ReleaseTexture(const CStdString& strTextureName, int iP
         delete pMap;
         i = m_vecTextures.erase(i);
       }
-      else
-      {
-        ++i;
-      }
-      //++i;
+      return;
     }
-    else
-    {
-      ++i;
-    }
+    ++i;
   }
   CLog::Log(LOGWARNING, "%s: Unable to release texture %s", __FUNCTION__, strTextureName.c_str());
 }
