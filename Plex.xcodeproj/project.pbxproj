@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1A01F0530E7D2F3400DC186E /* plex in Resources */ = {isa = PBXBuildFile; fileRef = 1A01F0520E7D2F3400DC186E /* plex */; };
-		1A01F0FF0E7D37AA00DC186E /* SUPlexBackgroundUpdateCheckDriver.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1A01F0F90E7D37AA00DC186E /* SUPlexBackgroundUpdateCheckDriver.mm */; };
+		1A01F0FF0E7D37AA00DC186E /* SUPlexBackgroundUpdateToastDriver.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1A01F0F90E7D37AA00DC186E /* SUPlexBackgroundUpdateToastDriver.mm */; };
 		1A01F1000E7D37AA00DC186E /* SUPlexUpdateDriver.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1A01F0FB0E7D37AA00DC186E /* SUPlexUpdateDriver.mm */; };
 		1A01F1010E7D37AA00DC186E /* SUPlexUpdater.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1A01F0FD0E7D37AA00DC186E /* SUPlexUpdater.mm */; };
 		1A2C5DE90E7EF479002F23FA /* relaunch.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A2C5DE80E7EF479002F23FA /* relaunch.m */; };
@@ -18,6 +18,7 @@
 		1A5535900E86AA9E005AF349 /* AppleHardwareInfo.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1A55358F0E86AA9E005AF349 /* AppleHardwareInfo.mm */; };
 		1A5535E50E86B02F005AF349 /* ModelsWithBattery.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1A5535E40E86B02F005AF349 /* ModelsWithBattery.plist */; };
 		1A5536300E86CCD4005AF349 /* GUIDialogUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A55362F0E86CCD4005AF349 /* GUIDialogUtils.cpp */; };
+		1A6927FB0EAAB06100A01B8A /* SUPlexBackgroundUpdateDialogDriver.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A6927FA0EAAB06100A01B8A /* SUPlexBackgroundUpdateDialogDriver.m */; };
 		1AA456B70E7EA3DD004CC8D2 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AA456B60E7EA3DD004CC8D2 /* Security.framework */; };
 		1AD99BDD0E9EF07200503917 /* QTPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1AD99BDC0E9EF07200503917 /* QTPlayer.cpp */; };
 		1AD99C750E9FB54200503917 /* QuickTimeWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1AD99C740E9FB54200503917 /* QuickTimeWrapper.cpp */; };
@@ -955,8 +956,8 @@
 		1A01F0520E7D2F3400DC186E /* plex */ = {isa = PBXFileReference; lastKnownFileType = folder; path = plex; sourceTree = "<group>"; };
 		1A01F0F60E7D37AA00DC186E /* SUBasicUpdateDriver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUBasicUpdateDriver.h; sourceTree = "<group>"; };
 		1A01F0F70E7D37AA00DC186E /* SUHost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUHost.h; sourceTree = "<group>"; };
-		1A01F0F80E7D37AA00DC186E /* SUPlexBackgroundUpdateCheckDriver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUPlexBackgroundUpdateCheckDriver.h; sourceTree = "<group>"; };
-		1A01F0F90E7D37AA00DC186E /* SUPlexBackgroundUpdateCheckDriver.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SUPlexBackgroundUpdateCheckDriver.mm; sourceTree = "<group>"; };
+		1A01F0F80E7D37AA00DC186E /* SUPlexBackgroundUpdateToastDriver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUPlexBackgroundUpdateToastDriver.h; sourceTree = "<group>"; };
+		1A01F0F90E7D37AA00DC186E /* SUPlexBackgroundUpdateToastDriver.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SUPlexBackgroundUpdateToastDriver.mm; sourceTree = "<group>"; };
 		1A01F0FA0E7D37AA00DC186E /* SUPlexUpdateDriver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUPlexUpdateDriver.h; sourceTree = "<group>"; };
 		1A01F0FB0E7D37AA00DC186E /* SUPlexUpdateDriver.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SUPlexUpdateDriver.mm; sourceTree = "<group>"; };
 		1A01F0FC0E7D37AA00DC186E /* SUPlexUpdater.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUPlexUpdater.h; sourceTree = "<group>"; };
@@ -975,6 +976,8 @@
 		1A5535E40E86B02F005AF349 /* ModelsWithBattery.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = ModelsWithBattery.plist; path = plex/ModelsWithBattery.plist; sourceTree = "<group>"; };
 		1A55362E0E86CCD4005AF349 /* GUIDialogUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogUtils.h; sourceTree = "<group>"; };
 		1A55362F0E86CCD4005AF349 /* GUIDialogUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogUtils.cpp; sourceTree = "<group>"; };
+		1A6927F90EAAB06100A01B8A /* SUPlexBackgroundUpdateDialogDriver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUPlexBackgroundUpdateDialogDriver.h; sourceTree = "<group>"; };
+		1A6927FA0EAAB06100A01B8A /* SUPlexBackgroundUpdateDialogDriver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SUPlexBackgroundUpdateDialogDriver.m; sourceTree = "<group>"; };
 		1AA456010E7D94FC004CC8D2 /* SUPlainInstaller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SUPlainInstaller.h; path = "../../../Downloads/Sparkle 1.5b5/Extras/Source Code/SUPlainInstaller.h"; sourceTree = SOURCE_ROOT; };
 		1AA456B20E7EA2E7004CC8D2 /* SUConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUConstants.h; sourceTree = "<group>"; };
 		1AA456B60E7EA3DD004CC8D2 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
@@ -3256,8 +3259,10 @@
 			children = (
 				1A2C5DE80E7EF479002F23FA /* relaunch.m */,
 				1AA457080E7EBD50004CC8D2 /* Headers */,
-				1A01F0F80E7D37AA00DC186E /* SUPlexBackgroundUpdateCheckDriver.h */,
-				1A01F0F90E7D37AA00DC186E /* SUPlexBackgroundUpdateCheckDriver.mm */,
+				1A6927F90EAAB06100A01B8A /* SUPlexBackgroundUpdateDialogDriver.h */,
+				1A6927FA0EAAB06100A01B8A /* SUPlexBackgroundUpdateDialogDriver.m */,
+				1A01F0F80E7D37AA00DC186E /* SUPlexBackgroundUpdateToastDriver.h */,
+				1A01F0F90E7D37AA00DC186E /* SUPlexBackgroundUpdateToastDriver.mm */,
 				1A01F0FA0E7D37AA00DC186E /* SUPlexUpdateDriver.h */,
 				1A01F0FB0E7D37AA00DC186E /* SUPlexUpdateDriver.mm */,
 				1A01F0FC0E7D37AA00DC186E /* SUPlexUpdater.h */,
@@ -7309,9 +7314,10 @@
 				1AD99C750E9FB54200503917 /* QuickTimeWrapper.cpp in Sources */,
 				1A5535900E86AA9E005AF349 /* AppleHardwareInfo.mm in Sources */,
 				1A5536300E86CCD4005AF349 /* GUIDialogUtils.cpp in Sources */,
-				1A01F0FF0E7D37AA00DC186E /* SUPlexBackgroundUpdateCheckDriver.mm in Sources */,
+				1A01F0FF0E7D37AA00DC186E /* SUPlexBackgroundUpdateToastDriver.mm in Sources */,
 				1A01F1000E7D37AA00DC186E /* SUPlexUpdateDriver.mm in Sources */,
 				1A01F1010E7D37AA00DC186E /* SUPlexUpdater.mm in Sources */,
+				1A6927FB0EAAB06100A01B8A /* SUPlexBackgroundUpdateDialogDriver.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

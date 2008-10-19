@@ -1,15 +1,15 @@
 //
-//  SUPlexBackgroundUpdateCheckDriver.m
+//  SUPlexBackgroundUpdateToastDriver.m
 //  Plex
 //
 //  Created by James Clarke on 14/09/2008.
 //  Copyright 2008 __MyCompanyName__. All rights reserved.
 //
 
-#import "SUPlexBackgroundUpdateCheckDriver.h"
+#import "SUPlexBackgroundUpdateToastDriver.h"
 #import "GUIDialogUtils.h"
 
-@implementation SUPlexBackgroundUpdateCheckDriver
+@implementation SUPlexBackgroundUpdateToastDriver
 
 - (void)didFindValidUpdate
 {
