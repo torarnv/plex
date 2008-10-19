@@ -9,10 +9,10 @@
 
 #import "CocoaToCppThunk.h"
 
-#define BACKGROUND_MUSIC_APP_SUPPORT_SUBDIR @"/Plex/BackgroundMusic"
+#define BACKGROUND_MUSIC_APP_SUPPORT_SUBDIR       @"/Plex/Background Music"
 //#define BACKGROUND_MUSIC_THEME_DOWNLOADS_ENABLED
-#define BACKGROUND_MUSIC_THEME_DOWNLOAD_URL @"http://localhost/~james/BackgroundMusicTest"
-
+#define BACKGROUND_MUSIC_THEME_DOWNLOAD_URL       @"http://localhost/~james/BackgroundMusicTest"
+#define BACKGROUND_MUSIC_THEME_LIST_CACHE_TIME    3600
 @implementation BackgroundMusicPlayer
 
 static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
@@ -61,6 +61,9 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
     }
   }
   
+  remoteThemeMusicNames = nil;
+  remoteThemeListCacheDate = [NSDate distantPast];
+  
   return _o_sharedMainInstance;
 }
 
@@ -108,7 +111,6 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
 
 - (NSString*)safeThemeName:(NSString*)themeMusicName
 {
-  
   return [[[themeMusicName stringByReplacingOccurrencesOfString:@":" withString:@""]
            stringByReplacingOccurrencesOfString:@"/" withString:@""]
           stringByReplacingOccurrencesOfString:@"\\" withString:@""];
@@ -119,19 +121,50 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
 #ifdef BACKGROUND_MUSIC_THEME_DOWNLOADS_ENABLED
   if (isEnabled && isThemeMusicEnabled && isThemeDownloadingEnabled)
   {
-    // If there's no theme music, check the web service for an available file
-    NSString *localFile = [themeMusicPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.mp3", [self safeThemeName:themeMusicName]]];
+    // If the remote themes array hasn't been initialized yet, or it's been cached for a while, download it
+    if ((remoteThemeMusicNames == nil) || ([remoteThemeListCacheDate timeIntervalSinceNow] < -BACKGROUND_MUSIC_THEME_LIST_CACHE_TIME))
+    {
+      // Release the list if already in memory
+      if (remoteThemeMusicNames != nil)
+        [remoteThemeMusicNames release];
+      remoteThemeMusicNames = [[NSArray arrayWithContentsOfURL:
+                                [NSURL URLWithString:
+                                 [NSString stringWithFormat:@"%@/Themes.plist", BACKGROUND_MUSIC_THEME_DOWNLOAD_URL]]] retain];
+      // Record the current date for comparison
+      [remoteThemeListCacheDate release];
+      remoteThemeListCacheDate = [[NSDate date] retain];
+    }
+
+    // Strip unsafe characters from the show name
+    NSString* safeName = [self safeThemeName:themeMusicName];
+
+    // If there's already a theme file, return
+    NSString *localFile = [themeMusicPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.mp3", safeName]];
     if ([[NSFileManager defaultManager] fileExistsAtPath:localFile]) return;
-    NSString *remoteFile = [[NSString stringWithFormat:@"%@/%@.mp3", BACKGROUND_MUSIC_THEME_DOWNLOAD_URL, [self safeThemeName:themeMusicName]]
-                            stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    Cocoa_DownloadFile([remoteFile UTF8String], [localFile UTF8String]);
+    
+    // Check whether the remote service claims to have the theme
+    BOOL remoteHasTheme = false;
+    int i=0;
+    for (; i < [remoteThemeMusicNames count]; i++)
+    {
+      if ([[(NSString*)[remoteThemeMusicNames objectAtIndex:i] lowercaseString] isEqualToString:[safeName lowercaseString]])
+        remoteHasTheme = true;
+    }
+    
+    // Construct the theme URL and attempt to download the file
+    if (remoteHasTheme)
+    {
+      NSString *remoteFile = [[NSString stringWithFormat:@"%@/%@.mp3", BACKGROUND_MUSIC_THEME_DOWNLOAD_URL, safeName]
+                              stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+      Cocoa_DownloadFile([remoteFile UTF8String], [localFile UTF8String]);
+    }
   }
 #endif
 }
 
 - (void)download:(NSURLDownload *)download didReceiveResponse:(NSURLResponse *)response
 {
-  NSLog(@"Did receive response");
+//  NSLog(@"Did receive response");
 }
 
 - (BOOL)isPlaying { return isPlaying; }
@@ -169,7 +202,7 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
 
 - (void)loadNextTrack
 {
-  if (isEnabled && isAvailable) {
+  if (isEnabled && isAvailable && ([mainMusicNames count] > 0)) {
     // Load a random track from the mainMusicNames array
     if (mainMusic != nil) [mainMusic release];
     int index = (random() % [mainMusicNames count]);

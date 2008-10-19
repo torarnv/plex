@@ -1716,6 +1716,9 @@ CProfile* CApplication::InitDirectoriesOSX()
     CreateDirectory(_P("U:\\plugins\\music"), NULL);
     CreateDirectory(_P("U:\\plugins\\video"), NULL);
     CreateDirectory(_P("U:\\plugins\\pictures"), NULL);
+    CreateDirectory(_P("U:\\Background Music"), NULL);
+    CreateDirectory(_P("U:\\Background Music\\Main"), NULL);
+    CreateDirectory(_P("U:\\Background Music\\Themes"), NULL);
     
     // Install things as needed from our "virgin" copies.
     CopyUserDataIfNeeded(str, "userdata", "Keymap.xml");
