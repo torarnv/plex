@@ -19,6 +19,7 @@
 #import <unistd.h>
 #import "CocoaUtils.h"
 
+
 @class SUPlexUpdater;
 
 // From SUPlainInstaller
@@ -89,6 +90,7 @@ static BOOL AuthorizationExecuteWithPrivilegesAndWait(AuthorizationRef authoriza
   totalData = [response expectedContentLength];
   if (totalData > 0) {
     CGUIDialogUtils::SetProgressDialogBarVisible(true);
+    Cocoa_UpdateProgressDialog();
   }
 }
 
@@ -109,7 +111,6 @@ static BOOL AuthorizationExecuteWithPrivilegesAndWait(AuthorizationRef authoriza
 
 - (void)download:(NSURLDownload *)download didReceiveDataOfLength:(NSUInteger)length
 {
-  NSLog(@"%@", Cocoa_GL_GetCurrentContext());
   // When data is received, update the progress dialog
   processedData += length;
   if (totalData > 0) {
@@ -119,6 +120,7 @@ static BOOL AuthorizationExecuteWithPrivilegesAndWait(AuthorizationRef authoriza
   } else {
     CGUIDialogUtils::SetProgressDialogLine(2, [[NSString stringWithFormat:[NSString stringWithCString:(CGUIDialogUtils::Localize(40009).c_str())], [self _humanReadableSizeFromDouble:(double)processedData]] UTF8String]);
   }
+  Cocoa_UpdateProgressDialog();
 }
 
 - (void)extractUpdate
@@ -139,6 +141,7 @@ static BOOL AuthorizationExecuteWithPrivilegesAndWait(AuthorizationRef authoriza
     CGUIDialogUtils::SetProgressDialogBarVisible(true);
   }
   CGUIDialogUtils::SetProgressDialogPercentage((int)(((float)processedData/(float)totalData)*100.0f));
+  Cocoa_UpdateProgressDialog();
 }
 
 - (void)unarchiverDidFinish:(SUUnarchiver *)ua

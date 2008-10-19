@@ -2615,7 +2615,7 @@ void CApplication::ReloadSkin()
   }
   
   // Make sure dialogs shown from Cocoa are redisplayed
-  Cocoa_SkinStateChanged();
+  Cocoa_UpdateProgressDialog();
 }
 
 void CApplication::LoadSkin(const CStdString& strSkin)

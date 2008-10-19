@@ -136,7 +136,7 @@ extern "C"
   void Cocoa_SetUpdateAlertType(int alertType);
   void Cocoa_SetUpdateSuspended(bool willSuspend);
   void Cocoa_SetUpdateCheckInterval(double seconds);
-  void Cocoa_SkinStateChanged();
+  void Cocoa_UpdateProgressDialog();
 
   // Display dimming.
   //

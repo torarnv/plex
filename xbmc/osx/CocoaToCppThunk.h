@@ -17,7 +17,7 @@ extern "C"
 
 void Cocoa_OnAppleRemoteKey(void* application, AppleRemoteEventIdentifier event, bool pressedDown, unsigned int count);
 void Cocoa_DownloadFile(const char* remoteFile, const char* localFile);
-void Cocoa_CPPSkinStateChanged();
+void Cocoa_CPPUpdateProgressDialog();
   
 #ifdef __cplusplus
 }

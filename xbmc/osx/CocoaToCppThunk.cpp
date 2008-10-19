@@ -8,6 +8,7 @@
  */
 #include "stdafx.h"
 #include "Application.h"
+#include "ApplicationMessenger.h"
 #include "AppleRemoteKeys.h"
 #include "CocoaToCppThunk.h"
 #include "HTTP.h"
@@ -114,7 +115,8 @@ void Cocoa_DownloadFile(const char* remoteFile, const char* localFile)
   http.Download(fRemote, fLocal);
 }
 
-void Cocoa_CPPSkinStateChanged()
+void Cocoa_CPPUpdateProgressDialog()
 {
-  CGUIDialogUtils::SkinStateChanged();
+  ThreadMessage tMsg = {TMSG_GUI_UPDATE_COCOA_DIALOGS};
+  g_application.getApplicationMessenger().SendMessage(tMsg);
 }

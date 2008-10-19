@@ -934,9 +934,9 @@ void Cocoa_SetUpdateCheckInterval(double seconds)
   [[SUPlexUpdater sharedInstance] setCheckInterval:seconds];
 }
 
-void Cocoa_SkinStateChanged()
+void Cocoa_UpdateProgressDialog()
 {
-  Cocoa_CPPSkinStateChanged();
+  Cocoa_CPPUpdateProgressDialog();
 }
 
 void Cocoa_SetGammaRamp(unsigned short* pRed, unsigned short* pGreen, unsigned short* pBlue)
