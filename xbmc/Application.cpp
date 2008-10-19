@@ -5205,25 +5205,14 @@ bool CApplication::IsPaused() const
 bool CApplication::IsPlayingAudio() const
 {
   if (!m_pPlayer)
-  {
     return false;
-    CLog::Log(LOGDEBUG, "CApplication::IsPlayingAudio() is false (no player)");
-  }
   if (!m_pPlayer->IsPlaying())
-  {
-    CLog::Log(LOGDEBUG, "CApplication::IsPlayingAudio() is false (not playing)");
     return false;
-  }
   if (m_pPlayer->HasVideo())
-  {
-    CLog::Log(LOGDEBUG, "CApplication::IsPlayingAudio() is false (has video)");
     return false;
-  }
   if (m_pPlayer->HasAudio())
-  {
-    //CLog::Log(LOGDEBUG, "CApplication::IsPlayingAudio() is true");
     return true;
-  }
+
   return false;
 }
 
