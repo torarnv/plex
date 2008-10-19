@@ -48,6 +48,7 @@
 #ifdef __APPLE__
 #include "CocoaUtils.h"
 #include "GUIFontManager.h"
+#include "GUIDialogUtils.h"
 #endif
 
 using namespace std;
@@ -543,6 +544,9 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       break;
     case TMSG_GUI_WIN_MANAGER_RENDER:
       m_gWindowManager.Render_Internal();
+      break;
+    case TMSG_GUI_UPDATE_COCOA_DIALOGS:
+      CGUIDialogUtils::UpdateProgressDialog();
       break;
   }
 }

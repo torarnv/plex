@@ -65,6 +65,8 @@ class CFileItem;
 #define TMSG_GUI_WIN_MANAGER_RENDER   603
 #define TMSG_GUI_ACTIVATE_WINDOW      604
 
+#define TMSG_GUI_UPDATE_COCOA_DIALOGS 700
+
 typedef struct
 {
   DWORD dwMessage;
