@@ -108,6 +108,16 @@ bool CGUIFixedListContainer::OnAction(const CAction &action)
 {
   switch (action.wID)
   {
+  case ACTION_HOME:
+    {
+      SelectItem(0);
+    }
+    break;
+  case ACTION_END:
+    {
+      SelectItem(m_items.size()-1); 
+    }
+    break;
   case ACTION_PAGE_UP:
     {
       if (m_offset + m_cursor < m_itemsPerPage)
