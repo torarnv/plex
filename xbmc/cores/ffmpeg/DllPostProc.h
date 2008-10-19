@@ -14,8 +14,8 @@ extern "C" {
 #endif
   
 #ifdef __APPLE__
-#include "libffmpeg-OSX/avutil.h"
-#include "libffmpeg-OSX/postprocess.h"
+#include "libffmpeg-OSX/libavutil/avutil.h"
+#include "libffmpeg-OSX/libpostproc/postprocess.h"
 #else
 #include "avutil.h"
 #include "postprocess.h"

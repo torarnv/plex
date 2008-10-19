@@ -147,7 +147,7 @@ static int dvd_file_write(URLContext *h, BYTE* buf, int size)
   return -1;
 }
 */
-static offset_t dvd_file_seek(URLContext *h, offset_t pos, int whence)
+static int64_t dvd_file_seek(URLContext *h, int64_t pos, int whence)
 {
   if(interrupt_cb())
     return -1;
@@ -395,7 +395,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   UpdateCurrentPTS();
 
   // add the ffmpeg streams to our own stream array
-  if (m_pFormatContext->nb_programs)
+  if (m_pFormatContext->nb_programs && m_pFormatContext->programs)
   {
     m_program = UINT_MAX;
     // look for first non empty stream and discard nonselected programs
@@ -608,7 +608,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
     {
       AVStream *stream = m_pFormatContext->streams[pkt.stream_index];
 
-      if (m_pFormatContext->nb_programs)
+      if (m_pFormatContext->nb_programs && m_pFormatContext->programs)
       {
         /* check so packet belongs to selected program */
         for (unsigned int i = 0; i < m_pFormatContext->programs[m_program]->nb_stream_indexes; i++)

@@ -23,7 +23,7 @@
 #include "DVDDemuxUtils.h"
 #ifdef __APPLE__
 extern "C" {
-#include "libffmpeg-OSX/avcodec.h"
+#include "libffmpeg-OSX/libavcodec/avcodec.h"
 }
 #else
 #include "../../ffmpeg/avcodec.h"
