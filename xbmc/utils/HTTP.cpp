@@ -489,8 +489,8 @@ bool CHTTP::Connect()
     return false;
   }
   
-  
-  while (!m_cancelled)
+  int retries = 5;
+  while (!m_cancelled && retries>0)
   {
     fd_set socks;
     FD_ZERO(&socks);
@@ -511,7 +511,14 @@ bool CHTTP::Connect()
     {
       break;
     }
+    else
+    {
+      retries--;
+    }
   }
+  
+  if (retries == 0)
+    return false;
   
   // Check if the socket connected
   int value = 0;
