@@ -6499,7 +6499,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "";
+			shellScript = "./build-number.py";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
