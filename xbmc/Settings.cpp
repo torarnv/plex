@@ -53,6 +53,9 @@
 #include "win32/WIN32Util.h"
 #endif
 #include "FileSystem/SMBDirectory.h"
+#ifdef __APPLE__
+#include "CocoaUtils.h"
+#endif
 
 
 using namespace std;
@@ -1523,6 +1526,17 @@ void CSettings::LoadAdvancedSettings()
         CDNSNameCache::Add(name, value);
       element = element->NextSiblingElement("entry");
     }
+  }
+  
+  // Override the default battery warning settings in AppleHardwareInfo
+  TiXmlElement* pBatteryWarnings = pRootElement->FirstChildElement("batterywarnings");
+  if (pBatteryWarnings)
+  {
+    int iValue;
+    if (XMLUtils::GetInt(pBatteryWarnings, "timeremaining", iValue))
+      Cocoa_HW_SetBatteryTimeWarning(iValue);
+    if (XMLUtils::GetInt(pBatteryWarnings, "percentremaining", iValue))
+      Cocoa_HW_SetBatteryCapacityWarning(iValue);
   }
 
   // load in the GUISettings overrides:
