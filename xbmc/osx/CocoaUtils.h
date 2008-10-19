@@ -114,6 +114,8 @@ extern "C"
   int  Cocoa_HW_TimeToBatteryEmpty();
   int  Cocoa_HW_TimeToFullCharge();
   void Cocoa_HW_SetBatteryWarningEnabled(bool enabled);
+  void Cocoa_HW_SetBatteryTimeWarning(int timeWarning);
+  void Cocoa_HW_SetBatteryCapacityWarning(int capacityWarning);
 
   //
   // Background music control functions

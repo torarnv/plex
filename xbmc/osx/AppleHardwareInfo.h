@@ -15,7 +15,13 @@
   
   NSTimer *batteryCheckTimer;
   BOOL runningOnBatteryAndWarningDisplayed;
+  
+  int batteryTimeWarning;
+  int batteryCapacityWarning;
 }
+
+@property (assign) int batteryTimeWarning;
+@property (assign) int batteryCapacityWarning;
 
 + (AppleHardwareInfo*)sharedInstance;
 
