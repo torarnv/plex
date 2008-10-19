@@ -7,7 +7,8 @@
 //
 #import "SUPlexUpdater.h"
 #import "SUPlexUpdateDriver.h"
-#import "SUPlexBackgroundUpdateCheckDriver.h"
+#import "SUPlexBackgroundUpdateToastDriver.h"
+#import "SUPlexBackgroundUpdateDialogDriver.h"
 #import "GUIDialogUtils.h"
 #import <objc/objc-runtime.h>
 
@@ -59,9 +60,9 @@
 {
   lastCheckTime = [NSDate date];
   if (updateAlertType == UPDATE_ALERT_ASK)
-    [self checkForUpdatesWithPlexDriver:[[[SUPlexUpdateDriver alloc] initWithUpdater:self] autorelease]];
+    [self checkForUpdatesWithPlexDriver:[[[SUPlexBackgroundUpdateDialogDriver alloc] initWithUpdater:self] autorelease]];
   else
-    [self checkForUpdatesWithPlexDriver:[[[SUPlexBackgroundUpdateCheckDriver alloc] initWithUpdater:self] autorelease]];
+    [self checkForUpdatesWithPlexDriver:[[[SUPlexBackgroundUpdateToastDriver alloc] initWithUpdater:self] autorelease]];
 }
 
 - (void)setAlertType:(int)alertType

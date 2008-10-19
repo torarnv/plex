@@ -9,7 +9,7 @@
 #import <Cocoa/Cocoa.h>
 #import "SUBasicUpdateDriver.h"
 
-@interface SUPlexBackgroundUpdateCheckDriver : SUBasicUpdateDriver {
+@interface SUPlexBackgroundUpdateToastDriver : SUBasicUpdateDriver {
 
 }
 
