@@ -800,7 +800,6 @@ void* Cocoa_GetDisplayPort()
 void Cocoa_GetPanelBrightness(float* brightness)
 {
 //  int mainDisplayId = CGMainDisplayID();
-  printf("Main display: %i\n:", mainDisplayScreen);
   if (blankingWindows[mainDisplayScreen] != 0)
   {
     *brightness = blankingBrightness[mainDisplayScreen];
@@ -843,6 +842,7 @@ void Cocoa_SetGammaRamp(unsigned short* pRed, unsigned short* pGreen, unsigned s
       blueTable[i]  = pBlue[i]  / 65535.0;
   }
 
+  // Look up the current display for Plex and set the gamma ramp.
   int iScreen = Cocoa_GetCurrentDisplay();
   CGDirectDisplayID displayID = (CGDirectDisplayID)Cocoa_GetDisplay(iScreen);
   CGSetDisplayTransferByTable(displayID, tableSize, redTable, greenTable, blueTable);

@@ -5526,7 +5526,11 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
         RampBlue[i] = (Uint16)((float)m_OldRampBlue[i] * fade);
       }
       Sleep(5);
+#ifdef __APPLE__
+      Cocoa_SetGammaRamp(RampRed, RampGreen, RampBlue);
+#else
       SDL_SetGammaRamp(RampRed, RampGreen, RampBlue);
+#endif
     }
   }
 #endif
