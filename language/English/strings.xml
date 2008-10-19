@@ -1487,11 +1487,11 @@
   <string id="18008">Calculating time</string>
   <string id="18009">Enable low battery warning</string>
 
-  <string id="18000">Background</string>
-  <string id="18001">Enable Background Music</string>
-  <string id="18002">Background Music Volume</string>
-  <string id="18003">Enable Theme Music</string>
-  <string id="18004">Automatically Download Theme Music</string>
+  <string id="18100">Background</string>
+  <string id="18101">Enable Background Music</string>
+  <string id="18102">Background Music Volume</string>
+  <string id="18103">Enable Theme Music</string>
+  <string id="18104">Automatically Download Theme Music</string>
 
   <string id="20000">CDDA Rip Folder</string>
   <string id="20001">Use external DVD Player</string>

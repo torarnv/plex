@@ -27,6 +27,8 @@
   NSString *themeMusicPath;
   NSArray *mainMusicNames;
   NSArray *themeMusicNames;
+  NSArray *remoteThemeMusicNames;
+  NSDate *remoteThemeListCacheDate;
   
   NSString *currentTheme;
   
