@@ -101,6 +101,11 @@ extern "C"
   //
   void Cocoa_GetPanelBrightness(float* brightness);
   void Cocoa_SetPanelBrightness(float brightness);
+  
+  //
+  // Display dimming.
+  //
+  void Cocoa_SetGammaRamp(unsigned short* pRed, unsigned short* pGreen, unsigned short* pBlue);
 
 #ifdef __cplusplus
 }

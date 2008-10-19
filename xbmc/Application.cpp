@@ -5373,9 +5373,17 @@ bool CApplication::ResetScreenSaverWindow()
          RampBlue[i] = (Uint16)((float)m_OldRampBlue[i] * fade);
        }
        Sleep(5);
+#ifdef __APPLE__
+       Cocoa_SetGammaRamp(RampRed, RampGreen, RampBlue);
+#else
        SDL_SetGammaRamp(RampRed, RampGreen, RampBlue);
+#endif
      }
+#ifdef __APPLE__
+     Cocoa_SetGammaRamp(RampRed, RampGreen, RampBlue);
+#else
      SDL_SetGammaRamp(m_OldRampRed, m_OldRampGreen, m_OldRampBlue);
+#endif
    }
 #endif
     return true;
