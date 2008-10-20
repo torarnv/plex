@@ -28,6 +28,9 @@
 #include "EventClient.h"
 #include "Socket.h"
 #include "CriticalSection.h"
+#include "Application.h"
+#include "Util.h"
+#include "ButtonTranslator.h"
 #include "SingleLock.h"
 #include <map>
 #include <queue>
@@ -134,7 +137,8 @@ void CEventServer::Cleanup()
     free(m_pPacketBuffer);
     m_pPacketBuffer = NULL;
   }
-  
+  CSingleLock lock(m_critSection);
+
   map<unsigned long, CEventClient*>::iterator iter = m_clients.begin();
   while (iter != m_clients.end())
   {
@@ -213,8 +217,8 @@ void CEventServer::Run()
       }
     }
 
-    // execute events
-    ExecuteEvents();
+    // process events and queue the necessary actions and button codes
+    ProcessEvents();
 
     // refresh client list
     RefreshClients();
@@ -232,6 +236,12 @@ void CEventServer::ProcessPacket(CAddress& addr, int pSize)
 {
   // check packet validity
   CEventPacket* packet = new CEventPacket(pSize, m_pPacketBuffer);
+  if(packet == NULL)
+  {
+    CLog::Log(LOGERROR, "ES: Out of memory, cannot accept packet");
+    return;
+  }
+
   unsigned int clientToken;
 
   if (!packet->IsValid())
@@ -245,6 +255,8 @@ void CEventServer::ProcessPacket(CAddress& addr, int pSize)
   if (!clientToken)
     clientToken = addr.ULong(); // use IP if packet doesn't have a token
 
+  CSingleLock lock(m_critSection);
+
   // first check if we have a client for this address
   map<unsigned long, CEventClient*>::iterator iter = m_clients.find(clientToken);
 
@@ -253,6 +265,7 @@ void CEventServer::ProcessPacket(CAddress& addr, int pSize)
     if ( m_clients.size() >= (unsigned int)m_iMaxClients)
     {
       CLog::Log(LOGWARNING, "ES: Cannot accept any more clients, maximum client count reached");
+      delete packet;
       return;
     }
 
@@ -261,6 +274,7 @@ void CEventServer::ProcessPacket(CAddress& addr, int pSize)
     if (client==NULL)
     {
       CLog::Log(LOGERROR, "ES: Out of memory, cannot accept new client connection");
+      delete packet;
       return;
     }
 
@@ -278,9 +292,9 @@ void CEventServer::RefreshClients()
   {
     if (! (iter->second->Alive()))
     {
-      CLog::Log(LOGNOTICE, "ES: Client %s from %s timed out", iter->second->Name().c_str(), 
+      CLog::Log(LOGNOTICE, "ES: Client %s from %s timed out", iter->second->Name().c_str(),
                 iter->second->Address().Address());
-      delete iter->second;   
+      delete iter->second;
       m_clients.erase(iter);
       iter = m_clients.begin();
     }
@@ -296,15 +310,53 @@ void CEventServer::RefreshClients()
   m_bRefreshSettings = false;
 }
 
-void CEventServer::ExecuteEvents()
+void CEventServer::ProcessEvents()
 {
+  CSingleLock lock(m_critSection);
   map<unsigned long, CEventClient*>::iterator iter = m_clients.begin();
 
   while (iter != m_clients.end())
   {
-    iter->second->ExecuteEvents();
+    iter->second->ProcessEvents();
     iter++;
   }
+}
+
+bool CEventServer::ExecuteNextAction()
+{
+  EnterCriticalSection(&m_critSection);
+
+  CEventAction actionEvent;
+  CAction action;
+  map<unsigned long, CEventClient*>::iterator iter = m_clients.begin();
+
+  while (iter != m_clients.end())
+  {
+    if (iter->second->GetNextAction(actionEvent))
+    {
+      // Leave critical section before processing action
+      LeaveCriticalSection(&m_critSection);
+      switch(actionEvent.actionType)
+      {
+      case AT_EXEC_BUILTIN:
+        CUtil::ExecBuiltIn(actionEvent.actionName);
+        break;
+
+      case AT_BUTTON:
+        g_buttonTranslator.TranslateActionString(actionEvent.actionName.c_str(), action.wID);
+        action.strAction = actionEvent.actionName;
+        action.fRepeat  = 0.0f;
+        action.fAmount1 = 1.0f;
+        action.fAmount2 = 1.0f;
+        g_application.OnAction(action);
+        break;
+      }
+      return true;
+    }
+    iter++;
+  }
+  LeaveCriticalSection(&m_critSection);
+  return false;
 }
 
 unsigned short CEventServer::GetButtonCode(std::string& strMapName, bool& isAxis, float& fAmount)
