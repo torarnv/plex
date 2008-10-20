@@ -14,6 +14,7 @@
 		1A2C5DE90E7EF479002F23FA /* relaunch.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A2C5DE80E7EF479002F23FA /* relaunch.m */; };
 		1A2C5DEC0E7EF4BD002F23FA /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A2C5DEB0E7EF4BD002F23FA /* AppKit.framework */; };
 		1A2C5DF70E7EF598002F23FA /* relaunch in Copy Relaunch (1) */ = {isa = PBXBuildFile; fileRef = 1A2C5DE30E7EF410002F23FA /* relaunch */; };
+		1A53C11A0EAC0020009A10F3 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A53C1190EAC0020009A10F3 /* SystemConfiguration.framework */; };
 		1A5484550E79EA340025CA32 /* BackgroundMusicPlayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1A5484540E79EA340025CA32 /* BackgroundMusicPlayer.mm */; };
 		1A5535900E86AA9E005AF349 /* AppleHardwareInfo.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1A55358F0E86AA9E005AF349 /* AppleHardwareInfo.mm */; };
 		1A5535E50E86B02F005AF349 /* ModelsWithBattery.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1A5535E40E86B02F005AF349 /* ModelsWithBattery.plist */; };
@@ -967,6 +968,7 @@
 		1A2C5DE30E7EF410002F23FA /* relaunch */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = relaunch; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A2C5DE80E7EF479002F23FA /* relaunch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = relaunch.m; sourceTree = "<group>"; };
 		1A2C5DEB0E7EF4BD002F23FA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		1A53C1190EAC0020009A10F3 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = /System/Library/Frameworks/SystemConfiguration.framework; sourceTree = "<absolute>"; };
 		1A5484530E79EA340025CA32 /* BackgroundMusicPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BackgroundMusicPlayer.h; sourceTree = "<group>"; };
 		1A5484540E79EA340025CA32 /* BackgroundMusicPlayer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BackgroundMusicPlayer.mm; sourceTree = "<group>"; };
 		1A5487500E7B26830025CA32 /* GUIDialogUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogUtils.h; sourceTree = "<group>"; };
@@ -3112,6 +3114,7 @@
 				E3C1A65D0E7126F400CE0104 /* Sparkle.framework in Frameworks */,
 				E3ADDD140EAA68DC003921C8 /* QTKit.framework in Frameworks */,
 				1AA456B70E7EA3DD004CC8D2 /* Security.framework in Frameworks */,
+				1A53C11A0EAC0020009A10F3 /* SystemConfiguration.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3178,6 +3181,7 @@
 		08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				1A53C1190EAC0020009A10F3 /* SystemConfiguration.framework */,
 				1AA456B60E7EA3DD004CC8D2 /* Security.framework */,
 				E336F09B0E62D1FD00270758 /* libmms-osx.a */,
 				E336F0880E60D1A800270758 /* libjpeg.62.dylib */,

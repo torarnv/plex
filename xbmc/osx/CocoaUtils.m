@@ -29,6 +29,8 @@
 #import "SUPlexUpdater.h"
 #include "CocoaToCppThunk.h"
 
+#import <SystemConfiguration/SystemConfiguration.h>
+
 extern int GetProcessPid(const char* processName);
 
 #define MAX_DISPLAYS 32
@@ -943,4 +945,38 @@ void Cocoa_SetUpdateCheckInterval(double seconds)
 void Cocoa_UpdateProgressDialog()
 {
   Cocoa_CPPUpdateProgressDialog();
+}
+
+bool Cocoa_OSX_Proxy_Enabled()
+{
+  NSDictionary* proxyDict = (NSDictionary*)SCDynamicStoreCopyProxies(NULL);
+  NSLog(@"%@", proxyDict);
+  if ([proxyDict objectForKey:@"HTTPEnable"] == nil) return false;
+  return ([[proxyDict objectForKey:@"HTTPEnable"] boolValue]);
+}
+
+const char* Cocoa_OSX_Proxy_Host()
+{
+  NSDictionary* proxyDict = (NSDictionary*)SCDynamicStoreCopyProxies(NULL);
+  if ([proxyDict objectForKey:@"HTTPProxy"] != nil)
+    return [[proxyDict objectForKey:@"HTTPProxy"] UTF8String];
+  return "";
+}
+
+const char* Cocoa_OSX_Proxy_Port()
+{
+  NSDictionary* proxyDict = (NSDictionary*)SCDynamicStoreCopyProxies(NULL);
+  if ([proxyDict objectForKey:@"HTTPPort"] != nil)
+    return [[NSString stringWithFormat:@"%i", [[proxyDict objectForKey:@"HTTPPort"] intValue]] UTF8String];
+  return "";  
+}
+
+const char* Cocoa_OSX_Proxy_Username()
+{
+  return "";
+}
+
+const char* Cocoa_OSX_Proxy_Password()
+{
+  return "";
 }
