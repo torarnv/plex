@@ -29,6 +29,7 @@
 #ifdef _LINUX
 #include "utils/CPUInfo.h"
 #endif
+#include "GUISettings.h"
 
 #ifndef _LINUX
 #define RINT(x) ((x) >= 0 ? ((int)((x) + 0.5)) : ((int)((x) - 0.5)))
@@ -126,14 +127,12 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
   // set acceleration
   m_pCodecContext->dsp_mask = FF_MM_FORCE | FF_MM_MMX | FF_MM_MMXEXT | FF_MM_SSE;
-  
-  // This doesn't seem to help with the H.264 MT patch. "Basically, the code decodes 
-  // up to 128 macroblocks in one thread while doing prediction+idct+deblock of the 
-  // previously decoded 128 blocks in another thread." This could explain the lack of
-  // much difference.
-  //
-  //m_pCodecContext->skip_loop_filter = AVDISCARD_BIDIR;
 
+  AVDiscard discardVals[] = {AVDISCARD_DEFAULT, AVDISCARD_NONREF, AVDISCARD_BIDIR, AVDISCARD_NONKEY, AVDISCARD_ALL};
+  AVDiscard avDiscard = discardVals[g_guiSettings.GetInt("videoplayer.skiploopfilter")];
+  if (avDiscard != AVDISCARD_DEFAULT)
+    m_pCodecContext->skip_loop_filter = avDiscard;
+  
   // set any special options
   for(CDVDCodecOptions::iterator it = options.begin(); it != options.end(); it++)
   {

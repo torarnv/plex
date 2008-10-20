@@ -273,20 +273,6 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
         g_settings.Save();
       }
 
-      // Reload a resolution
-      // UPDATE: not anymore, resolution is only updated when the 'test resolution'
-      // button is clicked
-      if (m_NewResolution != INVALID)
-      {
-        /*
-        g_guiSettings.SetInt("videoscreen.resolution", m_NewResolution);
-        //set the gui resolution, if newRes is AUTORES newRes will be set to the highest available resolution
-        g_graphicsContext.SetVideoResolution(m_NewResolution, TRUE);
-        //set our lookandfeelres to the resolution set in graphiccontext
-        g_guiSettings.m_LookAndFeelResolution = m_NewResolution;
-        */
-      }
-
       if (IsActive())
         m_returningFromSkinLoad = true;
     }
@@ -768,6 +754,17 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(13119), VS_SCALINGMETHOD_SINC_SOFTWARE);
       pControl->SetValue(pSettingInt->GetData());
     }
+    else if (strSetting.Equals("videoplayer.skiploopfilter"))
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->AddLabel(g_localizeStrings.Get(13141), VS_SKIPLOOP_DEFAULT);
+      pControl->AddLabel(g_localizeStrings.Get(13142), VS_SKIPLOOP_NONREF);
+      pControl->AddLabel(g_localizeStrings.Get(13143), VS_SKIPLOOP_BIDIR);
+      pControl->AddLabel(g_localizeStrings.Get(13144), VS_SKIPLOOP_NONKEY);
+      pControl->AddLabel(g_localizeStrings.Get(13145), VS_SKIPLOOP_ALL);
+      pControl->SetValue(pSettingInt->GetData());
+    }
 #ifdef __APPLE__
     else if (strSetting.Equals("videoscreen.displayblanking"))
     {
@@ -1017,8 +1014,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl)
       {
-        int value = g_guiSettings.GetInt("videoscreen.resolution");
-        //if (strstr(g_settings.m_ResInfo[value].strMode, "Full Screen") != 0)
         if (g_advancedSettings.m_fullScreen == true)
         {
           pControl->SetEnabled(true);

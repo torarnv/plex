@@ -879,6 +879,9 @@
 		E3C1A6AA0E74E85C00CE0104 /* AsyncFileCopy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3C1A6A90E74E85C00CE0104 /* AsyncFileCopy.cpp */; };
 		E3FD287C0E9951B500EE77C3 /* FilePlex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3FD28780E9951B500EE77C3 /* FilePlex.cpp */; };
 		E3FD287D0E9951B500EE77C3 /* PlexDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3FD287A0E9951B500EE77C3 /* PlexDirectory.cpp */; };
+		E3F471BB0EAC481F004BB122 /* utf8tolatin1.c in Sources */ = {isa = PBXBuildFile; fileRef = E3F471B90EAC481F004BB122 /* utf8tolatin1.c */; };
+		E3F471BD0EAC4BBE004BB122 /* NptPosixFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3F471BC0EAC4BBE004BB122 /* NptPosixFile.cpp */; };
+		E3F471BF0EAC4BF9004BB122 /* NptStdcEnvironment.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3F471BE0EAC4BF9004BB122 /* NptStdcEnvironment.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -3037,6 +3040,9 @@
 		E3FD28790E9951B500EE77C3 /* FilePlex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FilePlex.h; sourceTree = "<group>"; };
 		E3FD287A0E9951B500EE77C3 /* PlexDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PlexDirectory.cpp; sourceTree = "<group>"; };
 		E3FD287B0E9951B500EE77C3 /* PlexDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlexDirectory.h; sourceTree = "<group>"; };
+		E3F471B90EAC481F004BB122 /* utf8tolatin1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = utf8tolatin1.c; sourceTree = "<group>"; };
+		E3F471BC0EAC4BBE004BB122 /* NptPosixFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptPosixFile.cpp; sourceTree = "<group>"; };
+		E3F471BE0EAC4BF9004BB122 /* NptStdcEnvironment.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NptStdcEnvironment.cpp; path = StdC/NptStdcEnvironment.cpp; sourceTree = "<group>"; };
 		E3FFF0020D46FD1D003D79C3 /* libavutil-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libavutil-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libavutil-osx.a"; sourceTree = "<group>"; };
 		E3FFF0040D46FD1D003D79C3 /* libavcodec-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libavcodec-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libavcodec-osx.a"; sourceTree = "<group>"; };
 		E3FFF02E0D470BD8003D79C3 /* libavformat-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libavformat-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libavformat-osx.a"; sourceTree = "<group>"; };
@@ -3309,6 +3315,7 @@
 		810C9F690D67BDE20095F5DD /* libcmyth */ = {
 			isa = PBXGroup;
 			children = (
+				E3F471B90EAC481F004BB122 /* utf8tolatin1.c */,
 				810C9F6A0D67BDE20095F5DD /* alloc.c */,
 				810C9F6B0D67BDE20095F5DD /* bookmark.c */,
 				810C9F6C0D67BDE20095F5DD /* cmyth.h */,
@@ -5798,6 +5805,7 @@
 		E38E1C230D25F9FC00618676 /* System */ = {
 			isa = PBXGroup;
 			children = (
+				E3F471BE0EAC4BF9004BB122 /* NptStdcEnvironment.cpp */,
 				E38E1C240D25F9FC00618676 /* Bsd */,
 				E38E1C2C0D25F9FC00618676 /* Posix */,
 				E38E1C400D25F9FC00618676 /* Win32 */,
@@ -5817,6 +5825,7 @@
 		E38E1C2C0D25F9FC00618676 /* Posix */ = {
 			isa = PBXGroup;
 			children = (
+				E3F471BC0EAC4BBE004BB122 /* NptPosixFile.cpp */,
 				E38E1C2D0D25F9FC00618676 /* NptPosixDirectory.cpp */,
 				E38E1C2E0D25F9FC00618676 /* NptPosixQueue.cpp */,
 				E38E1C2F0D25F9FC00618676 /* NptPosixSystem.cpp */,
@@ -7318,6 +7327,9 @@
 				1A01F1000E7D37AA00DC186E /* SUPlexUpdateDriver.mm in Sources */,
 				1A01F1010E7D37AA00DC186E /* SUPlexUpdater.mm in Sources */,
 				1A6927FB0EAAB06100A01B8A /* SUPlexBackgroundUpdateDialogDriver.m in Sources */,
+				E3F471BB0EAC481F004BB122 /* utf8tolatin1.c in Sources */,
+				E3F471BD0EAC4BBE004BB122 /* NptPosixFile.cpp in Sources */,
+				E3F471BF0EAC4BF9004BB122 /* NptStdcEnvironment.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

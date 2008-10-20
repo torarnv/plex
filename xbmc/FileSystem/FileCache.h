@@ -24,6 +24,7 @@
 #include "CacheStrategy.h"
 #include "utils/CriticalSection.h"
 #include "FileSystem/File.h"
+#include "utils/Thread.h"
 
 namespace XFILE
 {  
@@ -59,7 +60,8 @@ namespace XFILE
     IFile *GetFileImp();
 
     virtual int  GetChunkSize() {return m_source.GetChunkSize();}
-    
+
+    virtual CStdString GetContent();
 
   private:
     CCacheStrategy *m_pCache;

@@ -140,6 +140,7 @@ extern "C"
   void Cocoa_SetUpdateCheckInterval(double seconds);
   void Cocoa_UpdateProgressDialog();
 
+  //
   // Display dimming.
   //
   void Cocoa_SetGammaRamp(unsigned short* pRed, unsigned short* pGreen, unsigned short* pBlue);
