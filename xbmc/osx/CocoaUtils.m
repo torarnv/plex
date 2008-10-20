@@ -909,6 +909,12 @@ int  Cocoa_HW_TimeToFullCharge()
 void Cocoa_HW_SetBatteryWarningEnabled(bool enabled)
 { [[AppleHardwareInfo sharedInstance] setLowBatteryWarningEnabled:enabled]; }
 
+void Cocoa_HW_SetBatteryTimeWarning(int timeWarning)
+{ [AppleHardwareInfo sharedInstance].batteryTimeWarning = timeWarning; }
+
+void Cocoa_HW_SetBatteryCapacityWarning(int capacityWarning)
+{ [AppleHardwareInfo sharedInstance].batteryCapacityWarning = capacityWarning; }
+
 void Cocoa_CheckForUpdates()
 {
   [[SUPlexUpdater sharedInstance] checkForUpdatesWithUI:nil];

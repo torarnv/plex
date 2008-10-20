@@ -12,13 +12,16 @@
 #import <IOKit/ps/IOPSKeys.h>
 #import "GUIDialogUtils.h"
 
-#define BATTERY_CHECK_INTERVAL     60      // Seconds between checking battery
+#define BATTERY_CHECK_INTERVAL     60     // Seconds between checking battery
 #define BATTERY_TIME_WARNING       10     // Minutes of power left before warning
 #define BATTERY_CAPACITY_WARNING   5      // Percent of battery left before warning
 
 static AppleHardwareInfo *_o_sharedMainInstance = nil;
 
 @implementation AppleHardwareInfo
+
+@synthesize batteryTimeWarning;
+@synthesize batteryCapacityWarning;
 
 //
 // Retrieve power source information from IOKit for the first power source (battery)
@@ -78,6 +81,8 @@ NSString* GetPowerInfoStringForKey(const char* key)
   // Initialise variables
   batteryCheckTimer = nil;
   runningOnBatteryAndWarningDisplayed = NO;
+  batteryTimeWarning = BATTERY_TIME_WARNING;
+  batteryCapacityWarning = BATTERY_CAPACITY_WARNING;
 
   id pool = [[NSAutoreleasePool alloc] init];
   
@@ -87,7 +92,7 @@ NSString* GetPowerInfoStringForKey(const char* key)
   if (0 == sysctlbyname("hw.model", modelBuffer, &sz, NULL, 0)) 
   {
     modelBuffer[sizeof(modelBuffer) - 1] = 0;
-    modelName = [NSString stringWithCString:modelBuffer];
+    modelName = [[NSString stringWithCString:modelBuffer] retain];
   } 
   else
   {
@@ -112,7 +117,7 @@ NSString* GetPowerInfoStringForKey(const char* key)
 - (NSString*)longModelName
 {
   NSDictionary* modelNames = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"ModelNames" ofType:@"plist"]];
-  return [modelNames objectForKey:[self modelName]];
+  return [modelNames objectForKey:modelName];
 }
 
 - (BOOL)hasBattery { return hasBattery; }
@@ -183,8 +188,8 @@ NSString* GetPowerInfoStringForKey(const char* key)
 {
   // If running on battery with less than the required power or capacity remaining, display a warning (if not already shown)
   if ((![self isOnACPower]) && (!runningOnBatteryAndWarningDisplayed) &&
-      ((([self timeToEmpty] < BATTERY_TIME_WARNING) && ([self timeToEmpty] >= 0)) ||
-       ([self currentBatteryCapacity] < BATTERY_CAPACITY_WARNING)))
+      ((([self timeToEmpty] < batteryTimeWarning) && ([self timeToEmpty] >= 0)) ||
+       ([self currentBatteryCapacity] < batteryCapacityWarning)))
   {
     CGUIDialogUtils::QueueToast(CGUIDialogUtils::Localize(17701), CGUIDialogUtils::Localize(17702));
     // Flag that the warning was displayed so the user isn't constantly bugged

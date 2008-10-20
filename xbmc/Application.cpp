@@ -1710,6 +1710,9 @@ CProfile* CApplication::InitDirectoriesOSX()
     CStdString str3 = str;
     str3.append("/userdata");
     CreateDirectory(str3.c_str(), NULL);
+    CStdString str4 = str;
+    str4.append("/scripts");
+    CreateDirectory(str4.c_str(), NULL);
 
     CreateDirectory(_P("U:\\userdata\\Database"), NULL);
     CreateDirectory(_P("U:\\plugins"), NULL);

@@ -29,8 +29,13 @@
 #include "GUIWindowManager.h"
 #include "FileSystem/File.h"
 #include "FileItem.h"
+#include "Directory.h"
+#include "MultiPathDirectory.h"
+#include <vector>
 
 using namespace XFILE;
+using namespace std;
+using namespace DIRECTORY;
 
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
@@ -67,7 +72,21 @@ bool CGUIWindowScripts::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       if (m_vecItems->m_strPath == "?")
-        m_vecItems->m_strPath = g_settings.GetScriptsFolder();
+      {
+        // Combine scripts from bundle & app support folders
+        vector<CStdString> scriptPaths;
+        
+        CStdString userScripts = _P("U:\\scripts");
+        CStdString bundleScripts = _P("Q:\\scripts");
+        
+        if (CDirectory::Exists(userScripts))
+          scriptPaths.push_back(userScripts);
+        if (CDirectory::Exists(bundleScripts))
+          scriptPaths.push_back(bundleScripts);
+        
+        m_vecItems->m_strPath = CMultiPathDirectory::ConstructMultiPath(scriptPaths);
+        scriptPaths.clear();
+      }
       return CGUIMediaWindow::OnMessage(message);
     }
     break;
@@ -181,11 +200,17 @@ bool CGUIWindowScripts::GetDirectory(const CStdString& strDirectory, CFileItemLi
     if (item->m_bIsFolder && !item->IsParentFolder() && !item->m_bIsShareOrDrive && !item->GetLabel().Left(1).Equals("."))
     { // folder item - let's check for a default.py file, and flatten if we have one
       CStdString defaultPY;
-      CUtil::AddFileToFolder(item->m_strPath, "default.py", defaultPY);
+      
+      // If using a multipath directory, get the first path
+      CStdString firstPath;
+      if (CUtil::IsMultiPath(item->m_strPath)) firstPath = CMultiPathDirectory::GetFirstPath(item->m_strPath);
+      else firstPath = item->m_strPath;
+      
+      CUtil::AddFileToFolder(firstPath, "default.py", defaultPY);
       if (!CFile::Exists(defaultPY)) {
-         CUtil::AddFileToFolder(item->m_strPath, "Default.py", defaultPY);
+         CUtil::AddFileToFolder(firstPath, "Default.py", defaultPY);
          if (!CFile::Exists(defaultPY)) {
-            CUtil::AddFileToFolder(item->m_strPath, "DEFAULT.PY", defaultPY);
+            CUtil::AddFileToFolder(firstPath, "DEFAULT.PY", defaultPY);
          }
       }
 
