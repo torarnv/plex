@@ -862,6 +862,8 @@
 		E3C1A67D0E72862300CE0104 /* plex in Resources */ = {isa = PBXBuildFile; fileRef = E3C1A67C0E72862300CE0104 /* plex */; };
 		E3C1A6AA0E74E85C00CE0104 /* AsyncFileCopy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3C1A6A90E74E85C00CE0104 /* AsyncFileCopy.cpp */; };
 		E3F471BB0EAC481F004BB122 /* utf8tolatin1.c in Sources */ = {isa = PBXBuildFile; fileRef = E3F471B90EAC481F004BB122 /* utf8tolatin1.c */; };
+		E3F471BD0EAC4BBE004BB122 /* NptPosixFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3F471BC0EAC4BBE004BB122 /* NptPosixFile.cpp */; };
+		E3F471BF0EAC4BF9004BB122 /* NptStdcEnvironment.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3F471BE0EAC4BF9004BB122 /* NptStdcEnvironment.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -2965,6 +2967,8 @@
 		E3EB8F030D5D5C0300FFF489 /* libmad.0.2.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmad.0.2.1.dylib; path = /opt/local/lib/libmad.0.2.1.dylib; sourceTree = "<absolute>"; };
 		E3EB8F050D5D5C0300FFF489 /* libvorbis.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libvorbis.dylib; path = /opt/local/lib/libvorbis.dylib; sourceTree = "<absolute>"; };
 		E3F471B90EAC481F004BB122 /* utf8tolatin1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = utf8tolatin1.c; sourceTree = "<group>"; };
+		E3F471BC0EAC4BBE004BB122 /* NptPosixFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptPosixFile.cpp; sourceTree = "<group>"; };
+		E3F471BE0EAC4BF9004BB122 /* NptStdcEnvironment.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NptStdcEnvironment.cpp; path = StdC/NptStdcEnvironment.cpp; sourceTree = "<group>"; };
 		E3FFF0020D46FD1D003D79C3 /* libavutil-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libavutil-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libavutil-osx.a"; sourceTree = "<group>"; };
 		E3FFF0040D46FD1D003D79C3 /* libavcodec-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libavcodec-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libavcodec-osx.a"; sourceTree = "<group>"; };
 		E3FFF02E0D470BD8003D79C3 /* libavformat-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libavformat-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libavformat-osx.a"; sourceTree = "<group>"; };
@@ -5643,6 +5647,7 @@
 		E38E1C230D25F9FC00618676 /* System */ = {
 			isa = PBXGroup;
 			children = (
+				E3F471BE0EAC4BF9004BB122 /* NptStdcEnvironment.cpp */,
 				E38E1C240D25F9FC00618676 /* Bsd */,
 				E38E1C2C0D25F9FC00618676 /* Posix */,
 				E38E1C400D25F9FC00618676 /* Win32 */,
@@ -5662,6 +5667,7 @@
 		E38E1C2C0D25F9FC00618676 /* Posix */ = {
 			isa = PBXGroup;
 			children = (
+				E3F471BC0EAC4BBE004BB122 /* NptPosixFile.cpp */,
 				E38E1C2D0D25F9FC00618676 /* NptPosixDirectory.cpp */,
 				E38E1C2E0D25F9FC00618676 /* NptPosixQueue.cpp */,
 				E38E1C2F0D25F9FC00618676 /* NptPosixSystem.cpp */,
@@ -7132,6 +7138,8 @@
 				E336F09F0E62D36200270758 /* FileMMS.cpp in Sources */,
 				E3C1A6AA0E74E85C00CE0104 /* AsyncFileCopy.cpp in Sources */,
 				E3F471BB0EAC481F004BB122 /* utf8tolatin1.c in Sources */,
+				E3F471BD0EAC4BBE004BB122 /* NptPosixFile.cpp in Sources */,
+				E3F471BF0EAC4BF9004BB122 /* NptStdcEnvironment.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
