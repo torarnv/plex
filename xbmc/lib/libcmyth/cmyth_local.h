@@ -183,6 +183,7 @@ struct cmyth_file {
 	unsigned long long file_start;	/**< file start offest */
 	unsigned long long file_length;	/**< file length */
 	unsigned long long file_pos;	/**< current file position */
+	unsigned long long file_req;	/**< current file position requested */
 	cmyth_conn_t file_control;	/**< master backend connection */
 };
 
@@ -282,6 +283,7 @@ struct cmyth_proginfo {
 	unsigned long proginfo_audioproperties; /* new in v35 */
 	unsigned long proginfo_videoproperties; /* new in v35 */
 	unsigned long proginfo_subtitletype; /* new in v35 */
+	char *proginfo_prodyear; /* new in v40 */
 };
 
 struct cmyth_proglist {
@@ -447,5 +449,7 @@ extern char * cmyth_mysql_query_string(cmyth_mysql_query_t * query);
 extern MYSQL_RES * cmyth_mysql_query_result(cmyth_mysql_query_t * query);
 
 extern int cmyth_mysql_query(cmyth_mysql_query_t * query);
+
+extern char* cmyth_utf8tolatin1(char* s);
 
 #endif /* __CMYTH_LOCAL_H */
