@@ -976,6 +976,13 @@
   <string id="13130">Display Blanking</string>
   <string id="13131">Disabled</string>
   <string id="13132">Blank displays</string>
+  
+  <string id="13140">H.264 Skip Loop Filter</string>
+  <string id="13141">Default</string>
+  <string id="13142">Skip Non-reference Frames</string>
+  <string id="13143">Skip Bidirectional Frames</string>
+  <string id="13144">Skip Non-key frames</string>
+  <string id="13145">Skip Everything</string>
 
   <string id="13150">HDD Key:</string>
   <string id="13151">HDD Temp:</string>
