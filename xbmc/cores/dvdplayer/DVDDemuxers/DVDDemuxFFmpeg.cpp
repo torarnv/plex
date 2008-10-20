@@ -648,7 +648,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
           else
             pkt.pts = AV_NOPTS_VALUE;
         }
-
+        
         // copy contents into our own packet
         pPacket->iSize = pkt.size;
 
@@ -681,6 +681,13 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
               ||  (m_pFormatContext->duration != (int64_t)AV_NOPTS_VALUE && duration > m_pFormatContext->duration))
                 m_pFormatContext->duration = duration;
             }
+        }
+        
+        if (stream->codec->codec_type == CODEC_TYPE_SUBTITLE)
+        {
+          // Use the convergence duration instead.
+          if (pkt.convergence_duration > 0 && pkt.duration == 0)
+            pPacket->duration = DVD_SEC_TO_TIME((double)pkt.convergence_duration * stream->time_base.num / stream->time_base.den);
         }
 
         // check if stream seem to have grown since start
