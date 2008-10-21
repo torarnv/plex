@@ -364,9 +364,16 @@ void CUtil::GetExtension(const CStdString& strFile, CStdString& strExtension)
 /* handles both / and \, and options in urls*/
 const CStdString CUtil::GetFileName(const CStdString& strFileNameAndPath)
 {
+  CStdString fileNameAndPath = strFileNameAndPath;
+  if (strFileNameAndPath.Left(12) == "multipath://")
+  {
+    fileNameAndPath = CMultiPathDirectory::GetFirstPath(strFileNameAndPath);
+    CUtil::RemoveSlashAtEnd(fileNameAndPath);
+  }
+  
   /* find any slashes */
-  const int slash1 = strFileNameAndPath.find_last_of('/');
-  const int slash2 = strFileNameAndPath.find_last_of('\\');
+  const int slash1 = fileNameAndPath.find_last_of('/');
+  const int slash2 = fileNameAndPath.find_last_of('\\');
 
   /* select the last one */
   int slash;
@@ -376,11 +383,11 @@ const CStdString CUtil::GetFileName(const CStdString& strFileNameAndPath)
     slash = slash1;
 
   /* check if there is any options in the url */
-  const int options = strFileNameAndPath.find_first_of('?', slash+1);
+  const int options = fileNameAndPath.find_first_of('?', slash+1);
   if(options < 0)
-    return _P(strFileNameAndPath.substr(slash+1));
+    return _P(fileNameAndPath.substr(slash+1));
   else
-    return _P(strFileNameAndPath.substr(slash+1, options-(slash+1)));
+    return _P(fileNameAndPath.substr(slash+1, options-(slash+1)));
 }
 
 CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bIsFolder /* = false */)
