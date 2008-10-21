@@ -303,13 +303,11 @@ void CXBoxRenderManager::FlipPage(DWORD delay /* = 0LL*/, int source /*= -1*/, E
 float CXBoxRenderManager::GetMaximumFPS()
 {
   float fps;
-  int res = g_graphicsContext.GetVideoResolution();
-  EINTERLACEMETHOD method = g_stSettings.m_currentVideoSettings.m_InterlaceMethod;
 
-  if( res == PAL_4x3 || res == PAL_16x9 )
-    fps = 50.0f;
+  if (g_videoConfig.GetVSyncMode() == VSYNC_ALWAYS || g_videoConfig.GetVSyncMode() == VSYNC_VIDEO) 
+    fps = g_graphicsContext.GetFPS();
   else
-    fps = 60000.0f/1001.0f;
+    fps = 1000.0f;
 
   if( m_rendermethod == RENDER_HQ_RGB_SHADER
    || m_rendermethod == RENDER_HQ_RGB_SHADERV2)
@@ -318,12 +316,6 @@ float CXBoxRenderManager::GetMaximumFPS()
     ||  method == VS_INTERLACEMETHOD_RENDER_BOB )
       fps *= 0.5;
   }
-
-#ifdef __APPLE__
-  // Experimental. Use the actual refresh rate of the display.
-  if (g_videoConfig.GetVSyncMode() == VSYNC_ALWAYS || g_videoConfig.GetVSyncMode() == VSYNC_VIDEO) 
-    fps = g_graphicsContext.GetFPS();
-#endif
   
   return fps;
 }
