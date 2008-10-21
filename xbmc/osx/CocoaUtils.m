@@ -860,18 +860,18 @@ void Cocoa_SetBackgroundMusicThemeDownloadsEnabled(bool enabled)
   [[BackgroundMusicPlayer sharedInstance] setThemeDownloadsEnabled:enabled];
 }
 
-void Cocoa_CheckForThemeNamed(const char* themeName)
+void Cocoa_CheckForThemeWithId(const char* tvShowId)
 {
-  if (themeName != NULL)
-    [[BackgroundMusicPlayer sharedInstance] checkForThemeNamed:[NSString stringWithCString:themeName]];
+  if (tvShowId != NULL)
+    [[BackgroundMusicPlayer sharedInstance] checkForThemeWithId:[NSString stringWithCString:tvShowId]];
 }
 
-void Cocoa_SetBackgroundMusicThemeName(const char* themeName)
+void Cocoa_SetBackgroundMusicThemeId(const char* tvShowId)
 {
-  if (themeName == NULL)
-    [[BackgroundMusicPlayer sharedInstance] setThemeMusicName:nil];
+  if (tvShowId == NULL)
+    [[BackgroundMusicPlayer sharedInstance] setThemeMusicId:nil];
   else
-    [[BackgroundMusicPlayer sharedInstance] setThemeMusicName:[NSString stringWithCString:themeName]];
+    [[BackgroundMusicPlayer sharedInstance] setThemeMusicId:[NSString stringWithCString:tvShowId]];
 }
 
 void Cocoa_SetBackgroundMusicVolume(float volume)

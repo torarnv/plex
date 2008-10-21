@@ -89,7 +89,7 @@ CGUIWindowVideoNav::~CGUIWindowVideoNav(void)
 bool CGUIWindowVideoNav::OnAction(const CAction &action)
 {
   if (action.wID == ACTION_PREVIOUS_MENU)
-    Cocoa_SetBackgroundMusicThemeName(NULL);
+    Cocoa_SetBackgroundMusicThemeId(NULL);
   
   return CGUIWindowVideoBase::OnAction(action);
 }
@@ -469,32 +469,34 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
         }
         
         // Start background theme music if available
-        Cocoa_SetBackgroundMusicThemeName(details.m_strShowTitle.c_str());
+        std::string tvShowId = details.m_strEpisodeGuide.substr(26);
+        tvShowId = tvShowId.substr(0, tvShowId.find(".xml"));
+        Cocoa_SetBackgroundMusicThemeId(tvShowId.c_str());
       }
       else if (node == NODE_TYPE_TITLE_MOVIES || node == NODE_TYPE_RECENTLY_ADDED_MOVIES)
       {
         items.SetContent("movies");
-        Cocoa_SetBackgroundMusicThemeName(NULL);
+        Cocoa_SetBackgroundMusicThemeId(NULL);
       }
       else if (node == NODE_TYPE_TITLE_TVSHOWS)
       {
         items.SetContent("tvshows");
-        Cocoa_SetBackgroundMusicThemeName(NULL);
+        Cocoa_SetBackgroundMusicThemeId(NULL);
       }
       else if (node == NODE_TYPE_TITLE_MUSICVIDEOS ||
                node == NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS)
       {
         items.SetContent("musicvideos");
-        Cocoa_SetBackgroundMusicThemeName(NULL);
+        Cocoa_SetBackgroundMusicThemeId(NULL);
       }
       else
       {
         items.SetContent("");
-        Cocoa_SetBackgroundMusicThemeName(NULL);
+        Cocoa_SetBackgroundMusicThemeId(NULL);
       }
     }
     else
-      Cocoa_SetBackgroundMusicThemeName(NULL);
+      Cocoa_SetBackgroundMusicThemeId(NULL);
   }
 
   // clear the filter

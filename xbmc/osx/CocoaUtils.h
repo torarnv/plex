@@ -125,8 +125,8 @@ extern "C"
   void Cocoa_SetBackgroundMusicEnabled(bool enabled);
   void Cocoa_SetBackgroundMusicThemesEnabled(bool enabled);
   void Cocoa_SetBackgroundMusicThemeDownloadsEnabled(bool enabled);
-  void Cocoa_CheckForThemeNamed(const char* themeName);
-  void Cocoa_SetBackgroundMusicThemeName(const char* themeName);
+  void Cocoa_CheckForThemeWithId(const char* tvShowId);
+  void Cocoa_SetBackgroundMusicThemeId(const char* tvShowId);
   void Cocoa_SetBackgroundMusicVolume(float volume);
   void Cocoa_UpdateGlobalVolume(int globalVolume);
 

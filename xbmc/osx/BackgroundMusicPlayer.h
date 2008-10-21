@@ -27,10 +27,8 @@
   NSString *themeMusicPath;
   NSArray *mainMusicNames;
   NSArray *themeMusicNames;
-  NSArray *remoteThemeMusicNames;
-  NSDate *remoteThemeListCacheDate;
   
-  NSString *currentTheme;
+  NSString *currentId;
   
   QTMovie *mainMusic, *themeMusic;
 }
@@ -42,16 +40,15 @@
 - (BOOL)themeMusicEnabled;
 - (void)setThemeMusicEnabled:(BOOL)enabled;
 - (void)setThemeDownloadsEnabled:(BOOL)enabled;
-- (NSString*)safeThemeName:(NSString*)themeMusicName;
 
-- (void)checkForThemeNamed:(NSString*)themeMusicName;
+- (void)checkForThemeWithId:(NSString*)tvShowId;
 
 - (BOOL)isPlaying;
 
 - (void)startMusic;
 - (void)stopMusic;
 - (void)loadNextTrack;
-- (void)setThemeMusicName:(NSString*)themeMusicName;
+- (void)setThemeMusicId:(NSString*)newId;
 
 - (void)updateMusicVolume;
 - (float)volume;

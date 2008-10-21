@@ -453,7 +453,9 @@ namespace VIDEO
           m_database.GetTvShowInfo(pItem->m_strPath,showDetails,lTvShowId);
           
           // check for a theme file
-          Cocoa_CheckForThemeNamed(showDetails.m_strTitle.c_str());
+          std::string tvShowId = showDetails.m_strEpisodeGuide.substr(26);
+          tvShowId = tvShowId.substr(0, tvShowId.find(".xml"));
+          Cocoa_CheckForThemeWithId(tvShowId.c_str());
           
           files.clear();
           EnumerateSeriesFolder(pItem.get(),files);

@@ -10,8 +10,8 @@
 #import "CocoaToCppThunk.h"
 
 #define BACKGROUND_MUSIC_APP_SUPPORT_SUBDIR       @"/Plex/Background Music"
-//#define BACKGROUND_MUSIC_THEME_DOWNLOADS_ENABLED
-#define BACKGROUND_MUSIC_THEME_DOWNLOAD_URL       @"http://localhost/~james/BackgroundMusicTest"
+#define BACKGROUND_MUSIC_THEME_DOWNLOADS_ENABLED
+#define BACKGROUND_MUSIC_THEME_DOWNLOAD_URL       @"http://tvthemes.plexapp.com"
 #define BACKGROUND_MUSIC_THEME_LIST_CACHE_TIME    3600
 @implementation BackgroundMusicPlayer
 
@@ -61,9 +61,6 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
     }
   }
   
-  remoteThemeMusicNames = nil;
-  remoteThemeListCacheDate = [NSDate distantPast];
-  
   return _o_sharedMainInstance;
 }
 
@@ -109,62 +106,22 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
 - (BOOL)themeDownloadsEnabled { return isThemeDownloadingEnabled; }
 - (void)setThemeDownloadsEnabled:(BOOL)enabled { isThemeDownloadingEnabled = enabled; }
 
-- (NSString*)safeThemeName:(NSString*)themeMusicName
-{
-  return [[[themeMusicName stringByReplacingOccurrencesOfString:@":" withString:@""]
-           stringByReplacingOccurrencesOfString:@"/" withString:@""]
-          stringByReplacingOccurrencesOfString:@"\\" withString:@""];
-}
-
-- (void)checkForThemeNamed:(NSString*)themeMusicName
+- (void)checkForThemeWithId:(NSString*)tvShowId
 {
 #ifdef BACKGROUND_MUSIC_THEME_DOWNLOADS_ENABLED
   if (isEnabled && isThemeMusicEnabled && isThemeDownloadingEnabled)
   {
-    // If the remote themes array hasn't been initialized yet, or it's been cached for a while, download it
-    if ((remoteThemeMusicNames == nil) || ([remoteThemeListCacheDate timeIntervalSinceNow] < -BACKGROUND_MUSIC_THEME_LIST_CACHE_TIME))
-    {
-      // Release the list if already in memory
-      if (remoteThemeMusicNames != nil)
-        [remoteThemeMusicNames release];
-      remoteThemeMusicNames = [[NSArray arrayWithContentsOfURL:
-                                [NSURL URLWithString:
-                                 [NSString stringWithFormat:@"%@/Themes.plist", BACKGROUND_MUSIC_THEME_DOWNLOAD_URL]]] retain];
-      // Record the current date for comparison
-      [remoteThemeListCacheDate release];
-      remoteThemeListCacheDate = [[NSDate date] retain];
-    }
-
-    // Strip unsafe characters from the show name
-    NSString* safeName = [self safeThemeName:themeMusicName];
-
     // If there's already a theme file, return
-    NSString *localFile = [themeMusicPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.mp3", safeName]];
+    NSString *localFile = [themeMusicPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.mp3", tvShowId]];
     if ([[NSFileManager defaultManager] fileExistsAtPath:localFile]) return;
-    
-    // Check whether the remote service claims to have the theme
-    BOOL remoteHasTheme = false;
-    int i=0;
-    for (; i < [remoteThemeMusicNames count]; i++)
-    {
-      if ([[(NSString*)[remoteThemeMusicNames objectAtIndex:i] lowercaseString] isEqualToString:[safeName lowercaseString]])
-        remoteHasTheme = true;
-    }
-    
+
     // Construct the theme URL and attempt to download the file
-    if (remoteHasTheme)
-    {
-      NSString *remoteFile = [[NSString stringWithFormat:@"%@/%@.mp3", BACKGROUND_MUSIC_THEME_DOWNLOAD_URL, safeName]
+    NSString *remoteFile = [[NSString stringWithFormat:@"%@/%@.mp3", BACKGROUND_MUSIC_THEME_DOWNLOAD_URL, tvShowId]
                               stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-      Cocoa_DownloadFile([remoteFile UTF8String], [localFile UTF8String]);
-    }
+    NSLog(@"Beginning download of '%@' to '%@'", remoteFile, localFile);
+    Cocoa_DownloadFile([remoteFile UTF8String], [localFile UTF8String]);
   }
 #endif
-}
-
-- (void)download:(NSURLDownload *)download didReceiveResponse:(NSURLResponse *)response
-{
-//  NSLog(@"Did receive response");
 }
 
 - (BOOL)isPlaying { return isPlaying; }
@@ -174,7 +131,7 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
   if ((!isPlaying) && isAvailable) {
     if (isEnabled)
     {
-      if (currentTheme == nil)
+      if (currentId == nil)
         [mainMusic play];
       else
       {
@@ -191,7 +148,7 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
   if ((isPlaying) && isAvailable) {
     if (isEnabled) 
     {
-      if (currentTheme == nil)
+      if (currentId == nil)
         [mainMusic stop];
       else
         [themeMusic stop];
@@ -220,7 +177,7 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
     [self updateMusicVolume];
     
     //Start playing if required
-    if (isPlaying && (currentTheme == nil)) [mainMusic play];
+    if (isPlaying && (currentId == nil)) [mainMusic play];
   }
 }
 
@@ -231,44 +188,36 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
     [self loadNextTrack];
 }
 
-- (void)setThemeMusicName:(NSString*)newTheme;
+- (void)setThemeMusicId:(NSString*)newId;
 {
   // If we should play music & the theme given is different to the current one...
   if (isEnabled && isAvailable && isThemeMusicEnabled)
   {
     // If the theme is nil, restart the background music
-    if ((newTheme == nil) && (currentTheme != nil) && isPlaying)
+    if ((newId == nil) && (currentId != nil) && isPlaying)
     {
-      //[themeMusic stop];
-      //[themeMusic release];
       [self fadeToTheme:NO];
       [mainMusic play];
-      currentTheme = nil;
+      currentId = nil;
     }
 
     else
     {
-      // Remove bad characters from the show name
-      newTheme = [self safeThemeName:newTheme];
       // If given a new theme, see if there's a file available
-      if (![newTheme isEqual:currentTheme])
+      if (![newId isEqual:currentId])
       {
-        themeMusicNames = [[[NSFileManager defaultManager] enumeratorAtPath:themeMusicPath] allObjects];
-        int i;
-        for (i = 0; i < [themeMusicNames count]; i++)
+        NSString *localFile = [themeMusicPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.mp3", newId]];
+        NSLog(localFile);
+        if ([[NSFileManager defaultManager] fileExistsAtPath:localFile])
         {
-          // If there is, play it
-          if ([[(NSString*)[themeMusicNames objectAtIndex:i] stringByDeletingPathExtension] isEqual:newTheme]) {
-            currentTheme = newTheme;
-            themeMusic = [[QTMovie alloc] initWithFile:[themeMusicPath stringByAppendingPathComponent:[themeMusicNames objectAtIndex:i]] error:nil];  
-            [self updateMusicVolume];
-            if (isPlaying) {
-              //[mainMusic stop];
-              [themeMusic play];
-              [self fadeToTheme:YES];
-            }
-            return;
+          currentId = newId;
+          themeMusic = [[QTMovie alloc] initWithFile:localFile error:nil];  
+          [self updateMusicVolume];
+          if (isPlaying) {
+            [themeMusic play];
+            [self fadeToTheme:YES];
           }
+          return;
         }
       }
     }
