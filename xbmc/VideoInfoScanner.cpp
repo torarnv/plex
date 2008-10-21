@@ -482,7 +482,6 @@ namespace VIDEO
             {
               if (pDlgProgress)
                 pDlgProgress->Close();
-              m_database.RollbackTransaction();
               m_database.Close();
               return false;
             }
@@ -491,7 +490,6 @@ namespace VIDEO
           {
             if (pDlgProgress)
               pDlgProgress->Close();
-            m_database.RollbackTransaction();
             m_database.Close();
             return false;
           }
@@ -546,14 +544,12 @@ namespace VIDEO
             if (pDlgProgress->IsCanceled()) 
             {
               pDlgProgress->Close();
-              m_database.RollbackTransaction();
               m_database.Close();
               return false;
             }
           }
           if (m_bStop)
           {
-            m_database.RollbackTransaction();
             m_database.Close();
             return false;
           }
@@ -648,6 +644,8 @@ namespace VIDEO
     if(pDlgProgress)
       pDlgProgress->ShowProgressBar(false);
 
+    //m_database.CommitTransaction();
+    g_infoManager.ResetPersistentCache();
     m_database.Close();
     return true;
   }
@@ -947,7 +945,6 @@ namespace VIDEO
       {
         if (pDlgProgress)
           pDlgProgress->Close();
-        m_database.RollbackTransaction();
         m_database.Close();
         return;
       }

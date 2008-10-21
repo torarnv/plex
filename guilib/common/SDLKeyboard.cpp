@@ -116,14 +116,14 @@ void CLowLevelKeyboard::Update(SDL_Event& m_keyEvent)
         else if (m_keyEvent.key.keysym.sym == SDLK_KP8) m_VKey = 0x68;
         else if (m_keyEvent.key.keysym.sym == SDLK_KP9) m_VKey = 0x69;
         else if (m_keyEvent.key.keysym.sym == SDLK_KP_ENTER) m_VKey = 0x6C;
-        else if (m_keyEvent.key.keysym.sym == SDLK_UP) m_VKey = 0x26;
-        else if (m_keyEvent.key.keysym.sym == SDLK_DOWN) m_VKey = 0x28;
-        else if (m_keyEvent.key.keysym.sym == SDLK_LEFT) m_VKey = 0x25;
-        else if (m_keyEvent.key.keysym.sym == SDLK_RIGHT) m_VKey = 0x27;
+        else if (m_keyEvent.key.keysym.sym == SDLK_UP)  { m_VKey = 0x26; m_wUnicode = 0; }
+        else if (m_keyEvent.key.keysym.sym == SDLK_DOWN) { m_VKey = 0x28; m_wUnicode = 0; }
+        else if (m_keyEvent.key.keysym.sym == SDLK_LEFT) { m_VKey = 0x25; m_wUnicode = 0; }
+        else if (m_keyEvent.key.keysym.sym == SDLK_RIGHT) { m_VKey = 0x27; m_wUnicode = 0; }
         else if (m_keyEvent.key.keysym.sym == SDLK_INSERT) m_VKey = 0x2D;
         else if (m_keyEvent.key.keysym.sym == SDLK_DELETE) m_VKey = 0x2E;
-        else if (m_keyEvent.key.keysym.sym == SDLK_HOME) m_VKey = 0x24;
-        else if (m_keyEvent.key.keysym.sym == SDLK_END) m_VKey = 0x23;
+        else if (m_keyEvent.key.keysym.sym == SDLK_HOME) { m_VKey = 0x24; m_wUnicode = 0; }
+        else if (m_keyEvent.key.keysym.sym == SDLK_END)  { m_VKey = 0x23; m_wUnicode = 0; }
         else if (m_keyEvent.key.keysym.sym == SDLK_F1) m_VKey = 0x70;
         else if (m_keyEvent.key.keysym.sym == SDLK_F2) m_VKey = 0x71;
         else if (m_keyEvent.key.keysym.sym == SDLK_F3) m_VKey = 0x72;

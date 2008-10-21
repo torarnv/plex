@@ -436,8 +436,9 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       CSingleLock lock (g_graphicsContext);
       g_graphicsContext.SetFullScreenVideo(true);
 #ifdef HAS_VIDEO_PLAYBACK
-      RESOLUTION res = g_renderManager.GetResolution();
-      g_graphicsContext.SetVideoResolution(res, false, false);
+      //FIXME: Use GUI resolution for now
+      //RESOLUTION res = g_renderManager.GetResolution();
+      //g_graphicsContext.SetVideoResolution(res, false, false);
 #endif
       lock.Leave();
 
@@ -489,9 +490,8 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       CSingleLock lock (g_graphicsContext);
       CUtil::RestoreBrightnessContrastGamma();
       g_graphicsContext.SetFullScreenVideo(false);
-#ifndef HAS_SDL
-      g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE);
-#endif
+      //FIXME: Use GUI resolution for now
+      //g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE);
       lock.Leave();
 
 #ifdef HAS_VIDEO_PLAYBACK

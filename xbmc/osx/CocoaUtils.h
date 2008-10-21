@@ -149,6 +149,11 @@ extern "C"
   const char* Cocoa_OSX_Proxy_Username();
   const char* Cocoa_OSX_Proxy_Password();
 
+  //
+  // Display dimming.
+  //
+  void Cocoa_SetGammaRamp(unsigned short* pRed, unsigned short* pGreen, unsigned short* pBlue);
+
 #ifdef __cplusplus
 }
 #endif

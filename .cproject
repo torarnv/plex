@@ -5,6 +5,7 @@
 <storageModule moduleId="org.eclipse.cdt.core.settings">
 <cconfiguration id="cdt.managedbuild.config.gnu.macosx.exe.debug.277492429">
 <storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="cdt.managedbuild.config.gnu.macosx.exe.debug.277492429" moduleId="org.eclipse.cdt.core.settings" name="Debug">
+
 <macros>
 <stringMacro name="HAS_RAR" type="VALUE_TEXT" value="1"/>
 <stringMacro name="HAS_VISUALIZATION" type="VALUE_TEXT" value="1"/>
@@ -2741,6 +2742,7 @@
 </cconfiguration>
 <cconfiguration id="cdt.managedbuild.config.macosx.exe.release.2032528784">
 <storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="cdt.managedbuild.config.macosx.exe.release.2032528784" moduleId="org.eclipse.cdt.core.settings" name="Release">
+
 <macros>
 <stringMacro name="HAS_RAR" type="VALUE_TEXT" value="1"/>
 <stringMacro name="HAS_VISUALIZATION" type="VALUE_TEXT" value="1"/>
@@ -5060,6 +5062,7 @@
 </cconfiguration>
 <cconfiguration id="cdt.managedbuild.config.gnu.macosx.exe.debug.1113016693">
 <storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="cdt.managedbuild.config.gnu.macosx.exe.debug.1113016693" moduleId="org.eclipse.cdt.core.settings" name="Edit">
+
 <macros>
 <stringMacro name="HAS_RAR" type="VALUE_TEXT" value="1"/>
 <stringMacro name="_LINUX" type="VALUE_TEXT" value="1"/>

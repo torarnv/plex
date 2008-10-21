@@ -859,16 +859,9 @@ void CGUITextureManager::ReleaseTexture(const CStdString& strTextureName, int iP
         delete pMap;
         i = m_vecTextures.erase(i);
       }
-      else
-      {
-        ++i;
-      }
-      //++i;
+      return;
     }
-    else
-    {
-      ++i;
-    }
+    ++i;
   }
   CLog::Log(LOGWARNING, "%s: Unable to release texture %s", __FUNCTION__, strTextureName.c_str());
 }
@@ -1045,12 +1038,7 @@ void CGLTexture::LoadToGPU()
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-  static GLint maxSize = 0;
-  if (maxSize == 0)
-  {
-    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxSize);
-  }
-  else
+  static GLint maxSize = g_graphicsContext.GetMaxTextureSize();
   {
     if (textureHeight>maxSize)
     {

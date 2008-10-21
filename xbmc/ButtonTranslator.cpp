@@ -581,6 +581,8 @@ bool CButtonTranslator::TranslateActionString(const char *szAction, WORD &wActio
   else if (strAction.Equals("down")) wAction = ACTION_MOVE_DOWN;
   else if (strAction.Equals("pageup")) wAction = ACTION_PAGE_UP;
   else if (strAction.Equals("pagedown")) wAction = ACTION_PAGE_DOWN;
+  else if (strAction.Equals("home")) wAction = ACTION_HOME;
+  else if (strAction.Equals("end")) wAction = ACTION_END;
   else if (strAction.Equals("select")) wAction = ACTION_SELECT_ITEM;
   else if (strAction.Equals("highlight")) wAction = ACTION_HIGHLIGHT_ITEM;
   else if (strAction.Equals("parentdir")) wAction = ACTION_PARENT_DIR;
