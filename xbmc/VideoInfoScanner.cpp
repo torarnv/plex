@@ -1057,7 +1057,7 @@ namespace VIDEO
         }
       }
     }
-    if (item->m_bIsFolder || bGrabAny && nfoFile.IsEmpty())
+    if (item->m_bIsFolder || (bGrabAny || item->m_strPath.Find("/VIDEO_TS.IFO") == item->m_strPath.length()-13) && nfoFile.IsEmpty())
     {
       // see if there is a unique nfo file in this folder, and if so, use that
       CFileItemList items;
@@ -1067,22 +1067,15 @@ namespace VIDEO
         CUtil::GetDirectory(item->m_strPath,strPath);
       if (dir.GetDirectory(strPath, items, ".nfo") && items.Size())
       {
-        int numNFO = -1;
-        for (int i = 0; i < items.Size(); i++)
+        int nfoIndex = -1;
+        for (int i = 0; i < items.Size() && nfoIndex == -1; i++)
         {
           if (items[i]->IsNFO())
-          {
-            if (numNFO == -1)
-              numNFO = i;
-            else
-            {
-              numNFO = -1;
-              break;
-            }
-          }
+            nfoIndex = i;
         }
-        if (numNFO > -1)
-          return items[numNFO]->m_strPath;
+        
+        if (nfoIndex >= 0)
+          return items[nfoIndex]->m_strPath;
       }
     }
     
