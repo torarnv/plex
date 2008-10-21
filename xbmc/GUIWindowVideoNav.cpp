@@ -90,8 +90,6 @@ bool CGUIWindowVideoNav::OnAction(const CAction &action)
 {
   if (action.wID == ACTION_PREVIOUS_MENU)
     Cocoa_SetBackgroundMusicThemeId(NULL);
-  
-    Cocoa_SetBackgroundMusicThemeName(NULL);
 
   if (action.wID == ACTION_PARENT_DIR)
   {
