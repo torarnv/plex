@@ -194,20 +194,23 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
   if (isEnabled && isAvailable && isThemeMusicEnabled)
   {
     // If the theme is nil, restart the background music
-    if ((newId == nil) && (currentId != nil) && isPlaying)
+    if (newId == nil)
     {
-      [self fadeToTheme:NO];
-      [mainMusic play];
+      if ((currentId != nil) && (isPlaying))
+      {
+        [self fadeToTheme:NO];
+        [mainMusic play];
+      }
       currentId = nil;
     }
 
     else
     {
       // If given a new theme, see if there's a file available
-      if (![newId isEqual:currentId])
+      if (![newId isEqualToString:currentId])
       {
         NSString *localFile = [themeMusicPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.mp3", newId]];
-        NSLog(localFile);
+        NSLog(@"Playing theme at %@", localFile);
         if ([[NSFileManager defaultManager] fileExistsAtPath:localFile])
         {
           currentId = newId;
