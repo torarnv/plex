@@ -406,9 +406,9 @@ CGUISettings::CGUISettings(void)
 	AddCategory(4, "videoscreen", 131);
 	AddInt(1, "videoscreen.resolution",169,(int)AUTORES, (int)HDTV_1080i, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
 	AddString(2, "videoscreen.testresolution",13109,"", BUTTON_CONTROL_STANDARD);
-	AddInt(2, "videoscreen.shutdowntime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
+	AddInt(6, "videoscreen.shutdowntime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
 #ifdef __APPLE__
-	AddInt(3, "videoscreen.displaysleeptime", 17500, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
+	AddInt(6, "videoscreen.displaysleeptime", 17500, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
 	// add panel brightness setting if supported by the display
 	float panelBrightnessLevel = -1.0f;
 	Cocoa_GetPanelBrightness(&panelBrightnessLevel);
@@ -423,9 +423,7 @@ CGUISettings::CGUISettings(void)
 	
 	AddString(3, "videoscreen.guicalibration",214,"", BUTTON_CONTROL_STANDARD);
 	AddString(4, "videoscreen.testpattern",226,"", BUTTON_CONTROL_STANDARD);
-	AddInt(6, "videoscreen.highqualityupscaling", 13112, SOFTWARE_UPSCALING_DISABLED, SOFTWARE_UPSCALING_DISABLED, 1, SOFTWARE_UPSCALING_ALWAYS, SPIN_CONTROL_TEXT);
-	AddInt(7, "videoscreen.upscalingalgorithm", 13116, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, 1, VS_SCALINGMETHOD_SINC_SOFTWARE, SPIN_CONTROL_TEXT);
-	
+
 #ifdef __APPLE__
 	// Default to vsync always on!
 	AddInt(0, "videoscreen.vsync", 13105, 2, 0, 1, 3, SPIN_CONTROL_TEXT);
@@ -566,7 +564,7 @@ CGUISettings::CGUISettings(void)
   AddString(14, "videolibrary.export", 647, "", BUTTON_CONTROL_STANDARD);
   AddString(15, "videolibrary.import", 648, "", BUTTON_CONTROL_STANDARD);
 
-//  AddCategory(5, "videoplayer", 16003);
+  AddCategory(5, "videoplayer", 16003);
   AddSeparator(3, "videoplayer.sep1");
 #ifndef __APPLE__
   AddInt(4, "videoplayer.rendermethod", 13354, RENDER_HQ_RGB_SHADER, RENDER_LQ_RGB_SHADER, 1, RENDER_HQ_RGB_SHADERV2, SPIN_CONTROL_TEXT);
@@ -588,8 +586,17 @@ CGUISettings::CGUISettings(void)
   AddInt(9, "videoplayer.skiploopfilter", 13140, VS_SKIPLOOP_DEFAULT, VS_SKIPLOOP_DEFAULT, 1, VS_SKIPLOOP_ALL, SPIN_CONTROL_TEXT);
 
 
-  AddSeparator(10, "videoplayer.sep2");
-  AddSeparator(12, "videoplayer.sep3");
+#ifdef HAS_XBOX_HARDWARE
+  AddInt(7, "videoplayer.flicker", 13100, 1, 0, 1, 5, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
+  AddBool(8, "videoplayer.soften", 215, false);
+#endif
+//  AddSeparator(10, "videoplayer.sep2");
+//  AddSeparator(12, "videoplayer.sep3");
+	
+	AddInt(6, "videoplayer.highqualityupscaling", 13112, SOFTWARE_UPSCALING_DISABLED, SOFTWARE_UPSCALING_DISABLED, 1, SOFTWARE_UPSCALING_ALWAYS, SPIN_CONTROL_TEXT);
+	AddInt(7, "videoplayer.upscalingalgorithm", 13116, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, 1, VS_SCALINGMETHOD_SINC_SOFTWARE, SPIN_CONTROL_TEXT);
+	
+	
 #ifdef HAS_XBOX_HARDWARE
   AddBool(13, "videoplayer.useexternaldvdplayer", 20001, false);
   AddString(14, "videoplayer.externaldvdplayer", 20002, "",  BUTTON_CONTROL_PATH_INPUT, true, 655);
@@ -723,7 +730,7 @@ CGUISettings::CGUISettings(void)
   AddSeparator(10, "lookandfeel.sep2");
 
 
-  AddCategory(7, "filelists", 14018);
+//  AddCategory(7, "filelists", 14018);
   AddBool(1, "filelists.hideparentdiritems", 13306, false);
   AddBool(2, "filelists.hideextensions", 497, false);
   AddBool(3, "filelists.ignorethewhensorting", 13399, true);

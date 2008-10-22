@@ -602,7 +602,7 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
 
 ESCALINGMETHOD CLinuxRendererGL::GetDefaultUpscalingMethod()
 {
-  int upscale = g_guiSettings.GetInt("videoscreen.highqualityupscaling");
+  int upscale = g_guiSettings.GetInt("videoplayer.highqualityupscaling");
   
   // See if we're a candiate for upscaling.
   bool candidateForUpscaling = false;

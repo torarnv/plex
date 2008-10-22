@@ -746,7 +746,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->SetValue(pSettingInt->GetData());
     }
 #endif
-    else if (strSetting.Equals("videoscreen.highqualityupscaling"))
+    else if (strSetting.Equals("videoplayer.highqualityupscaling"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
@@ -755,7 +755,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(13115), SOFTWARE_UPSCALING_ALWAYS);
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting.Equals("videoscreen.upscalingalgorithm"))
+    else if (strSetting.Equals("videoplayer.upscalingalgorithm"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
@@ -1028,12 +1028,12 @@ void CGUIWindowSettingsCategory::UpdateSettings()
           pControl->SetEnabled(false);
       }
     }
-    else if (strSetting.Equals("videoscreen.upscalingalgorithm"))
+    else if (strSetting.Equals("videoplayer.upscalingalgorithm"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl)
       {
-        int value = g_guiSettings.GetInt("videoscreen.highqualityupscaling");
+        int value = g_guiSettings.GetInt("videoplayer.highqualityupscaling");
 
         if (value == SOFTWARE_UPSCALING_DISABLED)
           pControl->SetEnabled(false);
