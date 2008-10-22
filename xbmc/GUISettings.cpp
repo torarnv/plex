@@ -302,7 +302,7 @@ CGUISettings::CGUISettings(void)
   AddInt(6, "musicplayer.replaygainnogainpreamp", 642, 89, 77, 1, 101, SPIN_CONTROL_INT_PLUS, MASK_DB);
   AddBool(7, "musicplayer.replaygainavoidclipping", 643, false);
   AddSeparator(8, "musicplayer.sep2");
-  AddBool(10, "mymusic.crossfadealbumtracks", 13400, true);
+  AddBool(0, "mymusic.crossfadealbumtracks", 13400, true);
   AddSeparator(11, "musicplayer.sep3");
   AddString(12, "musicplayer.jumptocache", 439, "", BUTTON_CONTROL_STANDARD);
 
