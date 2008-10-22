@@ -568,8 +568,8 @@
   <string id="701">Removing old songs from the Library</string>
   <string id="702">This path has been scanned before</string>
   <string id="705">Network</string>
-  <string id="706">HTTP Proxy Host</string>
-  <string id="707">HTTP Proxy Port</string>
+  <string id="706">- HTTP Proxy Host</string>
+  <string id="707">- HTTP Proxy Port</string>
   <string id="708">Enable HTTP Proxy</string>
   <string id="709">XLink Kai XTag</string>
   <string id="710">XLink Kai Password</string>
@@ -634,7 +634,7 @@
   <string id="769">Reserved</string>
   <string id="770">Error %i: share not available</string>
   <string id="771">- Auto Fatx Limiter</string>
-  <string id="772">Audio Hardware</string>
+  <string id="772">Audio</string>
   <string id="773">Seeking</string>
   <string id="774">Slideshow Folder</string>
   <string id="775">Network Interface</string>
@@ -1043,7 +1043,7 @@
   <string id="13278">Default</string>
   <string id="13279">Network</string>
   <string id="13280">Video</string>
-  <string id="13281">Hardware</string>
+  <string id="13281">General</string>
   <string id="13282">_</string>
   <string id="13283">Kernel Version:</string>
   <string id="13284">CPU Speed:</string>
@@ -1166,10 +1166,10 @@
   
   <string id="13450">Sleep System</string>
   
-  <string id="13600">Remote Helper</string>
+  <string id="13600">Remote</string>
   <string id="13601">Apple Remote Mode</string>  
-  <string id="13602">Always Running</string>
-  <string id="13603">Sequence Delay Time</string>
+  <string id="13602">- Always Running</string>
+  <string id="13603">- Sequence Delay Time</string>
   <string id="13604">Enable Secure Input</string>  
 
   <string id="13610">Disabled</string>

@@ -5664,7 +5664,7 @@ void CApplication::CheckShutdown()
   }
   else
   {
-    if ( (long)(timeGetTime() - m_dwSaverTick) >= (long)(g_guiSettings.GetInt("videoscreen.shutdowntime")*60*1000L) )
+    if ( (long)(timeGetTime() - m_dwSaverTick) >= (long)(g_guiSettings.GetInt("system.shutdowntime")*60*1000L) )
     {
       bool bShutDown = false;
       if (m_pPlayer && m_pPlayer->IsPlaying()) // if we're playing something don't shutdown
@@ -6295,9 +6295,9 @@ void CApplication::ProcessSlow()
 
   // Check if we need to shutdown (if enabled).
 #ifdef __APPLE__
-  if (g_guiSettings.GetInt("videoscreen.shutdowntime") && g_advancedSettings.m_fullScreen)
+  if (g_guiSettings.GetInt("system.shutdowntime") && g_advancedSettings.m_fullScreen)
 #else
-  if (g_guiSettings.GetInt("videoscreen.shutdowntime"))
+  if (g_guiSettings.GetInt("system.shutdowntime"))
 #endif
   {
     CheckShutdown();

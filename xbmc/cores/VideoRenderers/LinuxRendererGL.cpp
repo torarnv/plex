@@ -623,7 +623,7 @@ ESCALINGMETHOD CLinuxRendererGL::GetDefaultUpscalingMethod()
   
   if (candidateForUpscaling)
   {
-    ret = (ESCALINGMETHOD)g_guiSettings.GetInt("videoscreen.upscalingalgorithm");
+    ret = (ESCALINGMETHOD)g_guiSettings.GetInt("videoplayer.upscalingalgorithm");
     
     // Make sure to override the default setting for the video
     g_stSettings.m_currentVideoSettings.m_ScalingMethod = ret;

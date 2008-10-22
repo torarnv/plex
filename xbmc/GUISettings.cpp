@@ -376,12 +376,13 @@ CGUISettings::CGUISettings(void)
   AddInt(12, "system.targettemperature", 13299, 55, 40, 1, 68, SPIN_CONTROL_TEXT);
   AddInt(13, "system.minfanspeed", 13411, 1, 1, 1, 50, SPIN_CONTROL_TEXT);
 #endif
-  AddBool(11, "system.enablerssfeeds",13305,  true);
+  AddBool(5, "system.enablerssfeeds",13305,  true);
   AddBool(0, "system.rssfeedsrtl",13412,  false);
   AddString(1, "system.country", 20026, "USA", SPIN_CONTROL_TEXT);
   AddString(2, "system.language",248,"english", SPIN_CONTROL_TEXT);
   AddString(3, "system.charset",735,"DEFAULT", SPIN_CONTROL_TEXT); // charset is set by the language file
-	
+	AddInt(6, "system.shutdowntime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
+
 	
 //	AddCategory(4, "locale", 20026);
 	AddSeparator(4, "locale.sep1");
@@ -406,7 +407,6 @@ CGUISettings::CGUISettings(void)
 	AddCategory(4, "videoscreen", 131);
 	AddInt(1, "videoscreen.resolution",169,(int)AUTORES, (int)HDTV_1080i, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
 	AddString(2, "videoscreen.testresolution",13109,"", BUTTON_CONTROL_STANDARD);
-	AddInt(6, "videoscreen.shutdowntime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
 #ifdef __APPLE__
 	AddInt(6, "videoscreen.displaysleeptime", 17500, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
 	// add panel brightness setting if supported by the display
