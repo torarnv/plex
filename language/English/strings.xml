@@ -147,7 +147,7 @@
   <string id="209">Next</string>
   <string id="210">Previous</string>
   <string id="213">Calibrate User Interface...</string>
-  <string id="214">Video Calibration...</string>
+  <string id="214">Display Calibration...</string>
   <string id="215">Soften</string>
   <string id="216">Zoom Amount</string>
   <string id="217">Pixel Ratio</string>
@@ -279,7 +279,7 @@
   <string id="354">Matrix Trails</string>
   <string id="355">Screensaver Idle Timeout</string>
   <string id="356">Screensaver Mode</string>
-  <string id="357">Sleep Idle Timeout</string>
+  <string id="357">Sleep System When Inactive For</string>
   <string id="358">All albums</string>
   <string id="359">Recently Added Albums</string>
   <string id="360">Screensaver</string>
@@ -592,10 +592,10 @@
   <string id="727">Web Server</string>
   <string id="728">FTP Server</string>
   <string id="729">Internet Time</string>
-  <string id="730">Web Server Port</string>
+  <string id="730">- Web Server Port</string>
   <string id="731">Time Server Host</string>
   <string id="732">Save &amp; Apply</string>
-  <string id="733">Web Server Password</string>
+  <string id="733">- Web Server Password</string>
   <string id="734">No Pass</string>
   <string id="735">- Charset</string>
   <string id="736">- Style</string>
@@ -924,7 +924,7 @@
   <string id="12376">Set as default for all Movies</string>
   <string id="12377">This will reset any previously saved values</string>
   <string id="12378">Show each image for</string>
-  <string id="12379">Use Ken Burns effect</string>
+  <string id="12379">Use Ken Burns Effect</string>
   <string id="12380">Play NTSC videos at PAL rates</string>
   <string id="12381">Play PAL videos at NTSC rates</string>
   <string id="12382">Play NTSC videos in PAL60</string>
@@ -971,7 +971,7 @@
   <string id="13114">Enabled For SD Content</string>
   <string id="13115">Always Enabled</string>
   
-  <string id="13116">Upscaling Method</string>
+  <string id="13116">- Upscaling Method</string>
   <string id="13117">Bicubic</string>
   <string id="13118">Lanczos</string>
   <string id="13119">Sinc</string>
@@ -1480,7 +1480,7 @@
   <string id="16308">Lanczos (software)</string>  
   <string id="16309">Sinc (software)</string>
 
-  <string id="17500">Display Sleep Timeout</string>
+  <string id="17500">Sleep Display When Inactive For</string>
   <string id="17501">Display Brightness</string>
   
   <string id="17701">Low Battery</string>
@@ -1787,7 +1787,7 @@
   <string id="20380">Exclude folder from scans</string>
   <string id="20381">Specials</string>
   <string id="20382">Automatically grab season thumbs</string>
-  <string id="20383">Folder contains a single Video</string>
+  <string id="20383">Source contains a single Video</string>
   <string id="20384">Link to TV Show</string>
   <string id="20385">Remove Link to TV Show</string>
   <string id="20386">Recently Added Movies</string>
@@ -1849,10 +1849,10 @@
   <string id="21357">UPnP Video</string>
   <string id="21358">UPnP Pictures</string>
   <string id="21359">Add Media Share...</string>
-  <string id="21360">Enable UPnP Server</string>
-  <string id="21361">Manage UPnP Music Shares</string>
-  <string id="21362">Manage UPnP Video Shares</string>
-  <string id="21363">Manage UPnP Picture Shares</string>
+  <string id="21360">- Enable UPnP Server</string>
+  <string id="21361">- Manage UPnP Music Shares</string>
+  <string id="21362">- Manage UPnP Video Shares</string>
+  <string id="21363">- Manage UPnP Picture Shares</string>
   <string id="21364">Edit Media Share</string>
   <string id="21365">Remove Media Share</string>
   <string id="21366">Custom Subtitle Directory</string>
