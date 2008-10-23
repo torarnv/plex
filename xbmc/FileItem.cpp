@@ -48,6 +48,7 @@
 #include "Song.h"
 #include "URL.h"
 #include "Settings.h"
+#include "CocoaUtils.h"
 
 using namespace std;
 using namespace XFILE;
@@ -1616,7 +1617,15 @@ void CFileItemList::FillInDefaultIcons()
   for (int i = 0; i < (int)m_items.size(); ++i)
   {
     CFileItemPtr pItem = m_items[i];
-    pItem->FillInDefaultIcon();
+    if (Cocoa_IsAppBundle(pItem->m_strPath.c_str()))
+    {
+      pItem->SetThumbnailImage(Cocoa_GetAppIcon(pItem->m_strPath));
+      CStdString itemLabel = pItem->GetLabel();
+      CUtil::RemoveExtension(itemLabel);
+      pItem->SetLabel(itemLabel);
+    }
+    else
+      pItem->FillInDefaultIcon();
   }
 }
 

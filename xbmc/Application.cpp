@@ -1899,8 +1899,7 @@ HRESULT CApplication::Initialize()
   }
 
 #ifdef __APPLE__
-  //printf("%s\n", Cocoa_OSX_Proxy_Host());
-  //
+  // Set proxy server from system configuration
   g_guiSettings.SetString("network.httpproxyserver", Cocoa_OSX_Proxy_Host());
   g_guiSettings.SetString("network.httpproxyport", Cocoa_OSX_Proxy_Port());
   g_guiSettings.SetBool("network.usehttpproxy", Cocoa_OSX_Proxy_Enabled());

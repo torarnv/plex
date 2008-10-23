@@ -973,7 +973,6 @@ void Cocoa_SetGammaRamp(unsigned short* pRed, unsigned short* pGreen, unsigned s
 bool Cocoa_OSX_Proxy_Enabled()
 {
   NSDictionary* proxyDict = (NSDictionary*)SCDynamicStoreCopyProxies(NULL);
-  NSLog(@"%@", proxyDict);
   if ([proxyDict objectForKey:@"HTTPEnable"] == nil) return false;
   return ([[proxyDict objectForKey:@"HTTPEnable"] boolValue]);
 }
@@ -1009,6 +1008,9 @@ void Cocoa_LaunchApp(const char* appToLaunch)
   NSString* appPath = [NSString stringWithCString:appToLaunch];
   if ([[NSWorkspace sharedWorkspace] launchApplication:appPath])
   {
+    // Don't quit when running dashboard
+    if ([appPath rangeOfString:@"/Dashboard.app"].location != NSNotFound) return;
+    
     // If the application launched successfully, wait until it's running & get the process ID
     int i;
     BOOL isRunning = false;
@@ -1027,12 +1029,17 @@ void Cocoa_LaunchApp(const char* appToLaunch)
       }
       sleep(1);
     }
-    NSLog(@"Running Mac OS X application: %d", [pid intValue]);
     
     // Restart Plex when the launched app quits
-    [NSTask launchedTaskWithLaunchPath:[[NSBundle mainBundle] pathForResource:@"relaunch" ofType:@""] arguments:[NSArray arrayWithObjects:[[NSBundle mainBundle] bundlePath], [NSString stringWithFormat:@"%d", [pid intValue]], nil]];    
-    [NSApp terminate:nil];    
+    [NSTask launchedTaskWithLaunchPath:[[NSBundle mainBundle] pathForResource:@"relaunch" ofType:@""] arguments:[NSArray arrayWithObjects:[[NSBundle mainBundle] bundlePath], [NSString stringWithFormat:@"%d", [pid intValue]], nil]];
+    [NSApp terminate:nil];
   }
+}
+
+void Cocoa_LaunchFrontRow()
+{
+  [NSTask launchedTaskWithLaunchPath:[[NSBundle mainBundle] pathForResource:@"frontrowlauncher" ofType:@""] arguments:[NSArray arrayWithObjects:[[NSBundle mainBundle] bundlePath], nil]];    
+  [NSApp terminate:nil];    
 }
 
 const char* Cocoa_GetAppIcon(const char *applicationPath)
@@ -1061,4 +1068,16 @@ const char* Cocoa_GetAppIcon(const char *applicationPath)
     [icon release];
   }
   return [pngFile UTF8String];
+}
+
+bool Cocoa_IsAppBundle(const char* filePath)
+{
+  NSString* appPath = [NSString stringWithUTF8String:filePath];
+  NSFileManager* fm = [NSFileManager defaultManager];
+  return (([appPath rangeOfString:@".app"].location != NSNotFound) &&
+          [fm fileExistsAtPath:appPath] &&
+          [fm fileExistsAtPath:[appPath stringByAppendingPathComponent:@"/Contents/Info.plist"]] &&
+          [fm fileExistsAtPath:[appPath stringByAppendingPathComponent:@"/Contents/MacOS"]]);
+                                           
+                                           
 }

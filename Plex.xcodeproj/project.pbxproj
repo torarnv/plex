@@ -13,8 +13,11 @@
 		1A01F1010E7D37AA00DC186E /* SUPlexUpdater.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1A01F0FD0E7D37AA00DC186E /* SUPlexUpdater.mm */; };
 		1A2C5DE90E7EF479002F23FA /* relaunch.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A2C5DE80E7EF479002F23FA /* relaunch.m */; };
 		1A2C5DEC0E7EF4BD002F23FA /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A2C5DEB0E7EF4BD002F23FA /* AppKit.framework */; };
-		1A2C5DF70E7EF598002F23FA /* relaunch in Copy Relaunch (1) */ = {isa = PBXBuildFile; fileRef = 1A2C5DE30E7EF410002F23FA /* relaunch */; };
+		1A2C5DF70E7EF598002F23FA /* relaunch in Copy Relaunch */ = {isa = PBXBuildFile; fileRef = 1A2C5DE30E7EF410002F23FA /* relaunch */; };
 		1A53C11A0EAC0020009A10F3 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A53C1190EAC0020009A10F3 /* SystemConfiguration.framework */; };
+		1A53C7490EB00AD1009A10F3 /* frontrowlauncher.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A53C7480EB00AD1009A10F3 /* frontrowlauncher.m */; };
+		1A53C7FC0EB00B43009A10F3 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A2C5DEB0E7EF4BD002F23FA /* AppKit.framework */; };
+		1A53C86B0EB02B7F009A10F3 /* frontrowlauncher in Copy Relaunch */ = {isa = PBXBuildFile; fileRef = 1A53C7400EB00A52009A10F3 /* frontrowlauncher */; };
 		1A5484550E79EA340025CA32 /* BackgroundMusicPlayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1A5484540E79EA340025CA32 /* BackgroundMusicPlayer.mm */; };
 		1A5535900E86AA9E005AF349 /* AppleHardwareInfo.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1A55358F0E86AA9E005AF349 /* AppleHardwareInfo.mm */; };
 		1A5535E50E86B02F005AF349 /* ModelsWithBattery.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1A5535E40E86B02F005AF349 /* ModelsWithBattery.plist */; };
@@ -893,6 +896,13 @@
 			remoteGlobalIDString = 1A2C5DE20E7EF410002F23FA;
 			remoteInfo = relaunch;
 		};
+		1A53C8690EB02B72009A10F3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1A53C73F0EB00A52009A10F3;
+			remoteInfo = frontrowlauncher;
+		};
 		E371CC570E34193E00FBF841 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
@@ -910,15 +920,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		1A2C5DF60E7EF593002F23FA /* Copy Relaunch (1) */ = {
+		1A2C5DF60E7EF593002F23FA /* Copy Relaunch */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 7;
 			files = (
-				1A2C5DF70E7EF598002F23FA /* relaunch in Copy Relaunch (1) */,
+				1A53C86B0EB02B7F009A10F3 /* frontrowlauncher in Copy Relaunch */,
+				1A2C5DF70E7EF598002F23FA /* relaunch in Copy Relaunch */,
 			);
-			name = "Copy Relaunch (1)";
+			name = "Copy Relaunch";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		E38AABC60E5D472500C1B750 /* Copy CrashReporter */ = {
@@ -972,6 +983,8 @@
 		1A2C5DE80E7EF479002F23FA /* relaunch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = relaunch.m; sourceTree = "<group>"; };
 		1A2C5DEB0E7EF4BD002F23FA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		1A53C1190EAC0020009A10F3 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = /System/Library/Frameworks/SystemConfiguration.framework; sourceTree = "<absolute>"; };
+		1A53C7400EB00A52009A10F3 /* frontrowlauncher */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = frontrowlauncher; sourceTree = BUILT_PRODUCTS_DIR; };
+		1A53C7480EB00AD1009A10F3 /* frontrowlauncher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = frontrowlauncher.m; sourceTree = "<group>"; };
 		1A5484530E79EA340025CA32 /* BackgroundMusicPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BackgroundMusicPlayer.h; sourceTree = "<group>"; };
 		1A5484540E79EA340025CA32 /* BackgroundMusicPlayer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BackgroundMusicPlayer.mm; sourceTree = "<group>"; };
 		1A5487500E7B26830025CA32 /* GUIDialogUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogUtils.h; sourceTree = "<group>"; };
@@ -3063,6 +3076,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		1A53C73E0EB00A52009A10F3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1A53C7FC0EB00B43009A10F3 /* AppKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E371C1DD0E2F2AC300FBF841 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -3252,6 +3273,7 @@
 				E371CBF20E32927F00FBF841 /* PlexHelper */,
 				E38AAB430E5D438B00C1B750 /* CrashReporter */,
 				1A2C5DE30E7EF410002F23FA /* relaunch */,
+				1A53C7400EB00A52009A10F3 /* frontrowlauncher */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -3376,6 +3398,7 @@
 		E37D5CB40D3023BB0081D327 /* osx */ = {
 			isa = PBXGroup;
 			children = (
+				1A53C7480EB00AD1009A10F3 /* frontrowlauncher.m */,
 				1A01F0F50E7D379500DC186E /* Sparkle */,
 				1A5487500E7B26830025CA32 /* GUIDialogUtils.h */,
 				1A5487510E7B26830025CA32 /* GUIDialogUtils.cpp */,
@@ -6408,6 +6431,22 @@
 			productReference = 1A2C5DE30E7EF410002F23FA /* relaunch */;
 			productType = "com.apple.product-type.tool";
 		};
+		1A53C73F0EB00A52009A10F3 /* frontrowlauncher */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1A53C7470EB00A98009A10F3 /* Build configuration list for PBXNativeTarget "frontrowlauncher" */;
+			buildPhases = (
+				1A53C73D0EB00A52009A10F3 /* Sources */,
+				1A53C73E0EB00A52009A10F3 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = frontrowlauncher;
+			productName = frontrowlauncher;
+			productReference = 1A53C7400EB00A52009A10F3 /* frontrowlauncher */;
+			productType = "com.apple.product-type.tool";
+		};
 		E371C1DE0E2F2AC300FBF841 /* Plex */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = E371C1E40E2F2AC400FBF841 /* Build configuration list for PBXNativeTarget "Plex" */;
@@ -6419,7 +6458,7 @@
 				E38AABC60E5D472500C1B750 /* Copy CrashReporter */,
 				E38AABD00E5D489900C1B750 /* Copy PlexHelper */,
 				E3C1A66C0E71276000CE0104 /* CopyFiles */,
-				1A2C5DF60E7EF593002F23FA /* Copy Relaunch (1) */,
+				1A2C5DF60E7EF593002F23FA /* Copy Relaunch */,
 			);
 			buildRules = (
 			);
@@ -6427,6 +6466,7 @@
 				E371CC580E34193E00FBF841 /* PBXTargetDependency */,
 				E38AAB480E5D43A100C1B750 /* PBXTargetDependency */,
 				1A2C5DF10E7EF50A002F23FA /* PBXTargetDependency */,
+				1A53C86A0EB02B72009A10F3 /* PBXTargetDependency */,
 			);
 			name = Plex;
 			productName = Plex;
@@ -6481,6 +6521,7 @@
 				E371CBF10E32927F00FBF841 /* PlexHelper */,
 				E38AAB420E5D438B00C1B750 /* CrashReporter */,
 				1A2C5DE20E7EF410002F23FA /* relaunch */,
+				1A53C73F0EB00A52009A10F3 /* frontrowlauncher */,
 			);
 		};
 /* End PBXProject section */
@@ -6523,6 +6564,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				1A2C5DE90E7EF479002F23FA /* relaunch.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1A53C73D0EB00A52009A10F3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1A53C7490EB00AD1009A10F3 /* frontrowlauncher.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7361,6 +7410,11 @@
 			target = 1A2C5DE20E7EF410002F23FA /* relaunch */;
 			targetProxy = 1A2C5DF00E7EF50A002F23FA /* PBXContainerItemProxy */;
 		};
+		1A53C86A0EB02B72009A10F3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1A53C73F0EB00A52009A10F3 /* frontrowlauncher */;
+			targetProxy = 1A53C8690EB02B72009A10F3 /* PBXContainerItemProxy */;
+		};
 		E371CC580E34193E00FBF841 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = E371CBF10E32927F00FBF841 /* PlexHelper */;
@@ -7400,6 +7454,52 @@
 				INSTALL_PATH = /usr/local/bin;
 				PREBINDING = NO;
 				PRODUCT_NAME = relaunch;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		1A53C7420EB00A53009A10F3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = frontrowlauncher;
+			};
+			name = Debug;
+		};
+		1A53C7430EB00A53009A10F3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = frontrowlauncher;
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -7760,6 +7860,15 @@
 			buildConfigurations = (
 				1A2C5DE50E7EF411002F23FA /* Debug */,
 				1A2C5DE60E7EF411002F23FA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1A53C7470EB00A98009A10F3 /* Build configuration list for PBXNativeTarget "frontrowlauncher" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1A53C7420EB00A53009A10F3 /* Debug */,
+				1A53C7430EB00A53009A10F3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

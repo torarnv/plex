@@ -118,7 +118,6 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
     // Construct the theme URL and attempt to download the file
     NSString *remoteFile = [[NSString stringWithFormat:@"%@/%@.mp3", BACKGROUND_MUSIC_THEME_DOWNLOAD_URL, tvShowId]
                               stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    NSLog(@"Beginning download of '%@' to '%@'", remoteFile, localFile);
     Cocoa_DownloadFile([remoteFile UTF8String], [localFile UTF8String]);
   }
 #endif
@@ -210,7 +209,6 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
       if (![newId isEqualToString:currentId])
       {
         NSString *localFile = [themeMusicPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.mp3", newId]];
-        NSLog(@"Playing theme at %@", localFile);
         if ([[NSFileManager defaultManager] fileExistsAtPath:localFile])
         {
           currentId = newId;

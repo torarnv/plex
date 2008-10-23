@@ -158,7 +158,9 @@ extern "C"
   // Application launching
   //
   void Cocoa_LaunchApp(const char* appToLaunch);
+  void Cocoa_LaunchFrontRow();
   const char* Cocoa_GetAppIcon(const char *applicationPath);
+  bool Cocoa_IsAppBundle(const char* filePath);
 
 #ifdef __cplusplus
 }
