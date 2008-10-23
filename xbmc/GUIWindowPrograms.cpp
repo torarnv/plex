@@ -37,6 +37,7 @@
 #include "FileSystem/File.h"
 #include "FileSystem/RarManager.h"
 #include "FileItem.h"
+#include "CocoaUtils.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -324,6 +325,11 @@ int CGUIWindowPrograms::GetRegion(int iItem, bool bReload)
 
 bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
+  if (strDirectory.Find(".app/") > 0)
+  {
+    Cocoa_LaunchApp(strDirectory.c_str());
+    return true;
+  }
   bool bFlattened=false;
   if (CUtil::IsDVD(strDirectory))
   {
@@ -405,6 +411,18 @@ bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemL
     }
     if (!shortcutPath.IsEmpty())
       item->m_strPath = shortcutPath;
+    
+    // Special case for OS X application bundles
+    if (item->GetLabel().Find(".app") > 0) {
+      //Remove .app from the end of the label
+      CStdString itemLabel = item->GetLabel();
+      CUtil::RemoveExtension(itemLabel);
+      item->SetLabel(itemLabel);
+      //Get the app's icon
+      CStdString appIcon = Cocoa_GetAppIcon(item->m_strPath.c_str());
+      if (appIcon != NULL)
+        item->SetThumbnailImage(appIcon);
+    }
   }
   m_database.CommitTransaction();
   // set the cached thumbs

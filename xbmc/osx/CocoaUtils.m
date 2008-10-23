@@ -1003,3 +1003,62 @@ const char* Cocoa_OSX_Proxy_Password()
 {
   return "";
 }
+
+void Cocoa_LaunchApp(const char* appToLaunch)
+{
+  NSString* appPath = [NSString stringWithCString:appToLaunch];
+  if ([[NSWorkspace sharedWorkspace] launchApplication:appPath])
+  {
+    // If the application launched successfully, wait until it's running & get the process ID
+    int i;
+    BOOL isRunning = false;
+    NSString* runningPath;
+    NSNumber* pid;
+    while (!isRunning)
+    {
+      for (i=0; i < [[[NSWorkspace sharedWorkspace] launchedApplications] count]; i++)
+      {
+        runningPath = [[[[NSWorkspace sharedWorkspace] launchedApplications] objectAtIndex:i] objectForKey:@"NSApplicationPath"];
+        if ([appPath rangeOfString:runningPath].location != NSNotFound)
+        {
+          isRunning = YES;
+          pid = [[[[NSWorkspace sharedWorkspace] launchedApplications] objectAtIndex:i] objectForKey:@"NSApplicationProcessIdentifier"];
+        }
+      }
+      sleep(1);
+    }
+    NSLog(@"Running Mac OS X application: %d", [pid intValue]);
+    
+    // Restart Plex when the launched app quits
+    [NSTask launchedTaskWithLaunchPath:[[NSBundle mainBundle] pathForResource:@"relaunch" ofType:@""] arguments:[NSArray arrayWithObjects:[[NSBundle mainBundle] bundlePath], [NSString stringWithFormat:@"%d", [pid intValue]], nil]];    
+    [NSApp terminate:nil];    
+  }
+}
+
+const char* Cocoa_GetAppIcon(const char *applicationPath)
+{
+  // Check for info.plist inside the bundle
+  NSString* appPath = [NSString stringWithCString:applicationPath];
+  NSDictionary* appPlist = [NSDictionary dictionaryWithContentsOfFile:[appPath stringByAppendingPathComponent:@"Contents/Info.plist"]];
+  if (!appPlist) return NULL;
+  
+  // Get the path to the target PNG icon
+  NSString* pngFile = [[NSString stringWithFormat:@"~/Library/Application Support/Plex/userdata/Thumbnails/Programs/%@.png",
+                        [appPlist objectForKey:@"CFBundleIdentifier"]] stringByExpandingTildeInPath];
+  
+  // If no PNG has been created, open the app's ICNS file & convert
+  if (![[NSFileManager defaultManager] fileExistsAtPath:pngFile])
+  {
+    NSString* iconFile = [appPath stringByAppendingPathComponent:[NSString stringWithFormat:@"/Contents/Resources/%@", [appPlist objectForKey:@"CFBundleIconFile"]]];
+    if ([iconFile rangeOfString:@".icns"].location == NSNotFound) iconFile = [iconFile stringByAppendingString:@".icns"];
+    NSImage* icon = [[NSImage alloc] initWithContentsOfFile:iconFile];
+    if (!icon) return NULL;
+    NSBitmapImageRep* rep = [[NSBitmapImageRep alloc] initWithData:[icon TIFFRepresentation]];
+    NSData* png = [rep representationUsingType:NSPNGFileType properties:nil];
+    [png writeToFile:pngFile atomically:YES];
+    [png release];
+    [rep release];
+    [icon release];
+  }
+  return [pngFile UTF8String];
+}

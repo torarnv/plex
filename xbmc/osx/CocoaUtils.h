@@ -153,6 +153,12 @@ extern "C"
   // Display dimming.
   //
   void Cocoa_SetGammaRamp(unsigned short* pRed, unsigned short* pGreen, unsigned short* pBlue);
+  
+  //
+  // Application launching
+  //
+  void Cocoa_LaunchApp(const char* appToLaunch);
+  const char* Cocoa_GetAppIcon(const char *applicationPath);
 
 #ifdef __cplusplus
 }
