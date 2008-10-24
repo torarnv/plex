@@ -23,6 +23,11 @@ QuickTimeWrapper::QuickTimeWrapper()
 QuickTimeWrapper::~QuickTimeWrapper()
 {
   CLog::Log(LOGDEBUG, "QuickTimeWrapper::~QuickTimeWrapper()");
+  if (m_qtMovie != NULL)
+  {
+    DisposeMovie(m_qtMovie);
+    m_qtMovie = NULL;
+  }
   ExitMovies();
 }
 
@@ -35,28 +40,34 @@ bool QuickTimeWrapper::OpenFile(const CStdString &fileName)
   CFStringRef filePath;
   CFURLRef fileLocation;
   filePath = CFStringCreateWithCString(kCFAllocatorDefault, fileName.c_str(), kCFStringEncodingUTF8);
-  
+
   // Check whether it's a local or remote file
   if (fileName.Left(7) == "http://")
     fileLocation = CFURLCreateWithString(kCFAllocatorDefault, filePath, NULL);
   else
     fileLocation = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, filePath, kCFURLPOSIXPathStyle, false);
-  
+  CFRelease(filePath);
+
   error = QTNewDataReferenceFromCFURL(fileLocation, 0, &dataRef, &dataRefType);
-  if (error != 0)
+  CFRelease(fileLocation);
+  if (error != noErr)
   {
     CLog::Log(LOGERROR, "Error creating URL from %s\n", fileName.c_str());
+    DisposeHandle(dataRef);
     return false;
   }
 
   short fileID = movieInDataForkResID;
   error = NewMovieFromDataRef(&m_qtMovie, 0, &fileID, dataRef, dataRefType);
-  if (error != 0) 
+  if (error != noErr)
   {
     CLog::Log(LOGERROR, "Error creating movie from data ref\n");
+    DisposeHandle(dataRef);
     return false;
   }
-  
+
+  DisposeHandle(dataRef);
+
   StartMovie(m_qtMovie);
   m_bIsPlaying = true;
   m_bIsPaused = false;
