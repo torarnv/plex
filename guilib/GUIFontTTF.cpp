@@ -256,7 +256,7 @@ bool CGUIFontTTF::Load(const CStdString& strFile, float height, float aspect, fl
   CStdString strFilename = strFile;
   
 #ifdef __APPLE__
-  // Hardware to the unicode version that's built into every system.
+  // Hardwire to the unicode version that's built into every system.
   if (strFilename.Right(9) == "Arial.ttf")
     strFilename = "/Library/Fonts/Arial Unicode.ttf";
 #endif
