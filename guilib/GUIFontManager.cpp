@@ -42,6 +42,60 @@ GUIFontManager::GUIFontManager(void)
 GUIFontManager::~GUIFontManager(void)
 {}
 
+bool GUIFontManager::FindSystemFontPath(const CStdString& strFilename, CStdString *fontPath)
+{
+  std::vector<std::string> systemPaths;
+  std::vector<std::string> fontExtensions;
+
+  systemPaths.push_back(g_graphicsContext.GetMediaDir() + "\\fonts\\");
+  systemPaths.push_back("Q:\\media\\Fonts\\");
+
+#ifdef __APPLE__
+  // TODO: Add all the sub folders in each of these system paths
+  std::string home = getenv("HOME");
+  if (*home.rbegin() == '/')
+    home.erase(home.end()-1, home.end());
+
+  systemPaths.push_back(home + "/Library/Fonts/");
+  systemPaths.push_back("/Library/Fonts/");
+  systemPaths.push_back("/System/Library/Fonts/");
+
+  fontExtensions.push_back("");
+#endif
+
+  fontExtensions.push_back(".ttf");
+  fontExtensions.push_back(".dfont");
+
+  std::string foundPath;
+  std::string foundFullPath;
+
+  bool iterateExtensions = (CUtil::GetExtension(strFilename).length() == 0);
+  for (int i = 0; i < systemPaths.size(); i++)
+  {
+    foundPath = systemPaths[i] + strFilename.c_str();
+    for (int j = 0; j < fontExtensions.size(); j++)
+    {
+      foundFullPath = foundPath;
+      if (iterateExtensions && fontExtensions[j].size() != 0)
+        foundFullPath += fontExtensions[j];
+
+#ifdef _LINUX
+      foundFullPath = PTH_IC(foundFullPath);
+#endif
+
+      if (XFILE::CFile::Exists(foundFullPath))
+      {
+        *fontPath = foundFullPath.c_str();
+        return TRUE;
+      }
+
+      if (!iterateExtensions)
+        break;
+    }
+  }
+  return FALSE;
+}
+
 CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdString& strFilename, DWORD textColor, DWORD shadowColor, const int iSize, const int iStyle, float lineSpacing, float aspect, RESOLUTION sourceRes)
 {
   float originalAspect = aspect;
@@ -53,7 +107,6 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
 
   if (sourceRes == INVALID) // no source res specified, so assume the skin res
     sourceRes = m_skinResolution;
-
 
   // set scaling resolution so that we can scale our font sizes correctly
   // as fonts aren't scaled at render time (due to aliasing) we must scale
@@ -68,55 +121,19 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
   aspect *= g_graphicsContext.GetGUIScaleY() / g_graphicsContext.GetGUIScaleX();
   float newSize = (float) iSize / g_graphicsContext.GetGUIScaleY();
   
-  // First try to load the font from the skin
-  CStdString strPath;
-  if (strFilename[1] != ':' && strFilename[0] != '/')
-  {
-    strPath = g_graphicsContext.GetMediaDir();
-    strPath += "\\fonts\\";
-    strPath += CUtil::GetFileName(strFilename);
-  }
-  else
-    strPath = strFilename;
-
+  // First try to load the font from the file specified
 #ifdef _LINUX
-  strPath = PTH_IC(strPath);
+  CStdString strPath = PTH_IC(strFilename);
+#else
+  CStdString strPath = strFilename;
 #endif
 
-  // Check if the file exists, otherwise try loading it from the global media dir
+  // If the font doesn't exist at the file name specified, then lets go look for it.
   if (!XFILE::CFile::Exists(strPath) && strFilename[1] != ':')
   {
-    strPath = _P("Q:\\media\\Fonts\\");
-    strPath += CUtil::GetFileName(strFilename);
-#ifdef _LINUX
-    strPath = PTH_IC(strPath);
-#endif
+    FindSystemFontPath(CUtil::GetFileName(strFilename), &strPath);
+    // TODO: Should we set strFilename to the new file name of the found path (because it may have changed)
   }
-  
-#ifdef __APPLE__
-  // If the font is not stored in the skin path nor in the media path, see if it's a system font.
-  if (!XFILE::CFile::Exists(strPath) && strFilename[1] != ':')
-  {
-    CStdString fontPath;
-    fontPath += "/System/Library/Fonts/" + CUtil::GetFileName(strFilename);
-    if (CUtil::GetExtension(strFilename).length() == 0)
-      fontPath += ".ttf";
-    
-    if (XFILE::CFile::Exists(fontPath))
-    {
-      strPath = fontPath;
-    }
-    else
-    {
-      fontPath = "/Library/Fonts/" + CUtil::GetFileName(strFilename);
-      if (CUtil::GetExtension(strFilename).length() == 0)
-        fontPath += ".ttf";
-      
-      if (XFILE::CFile::Exists(fontPath))
-        strPath = fontPath;
-    }
-  }
-#endif
   
   // check if we already have this font file loaded (font object could differ only by color or style)
   CStdString TTFfontName;
@@ -350,7 +367,12 @@ void GUIFontManager::LoadFonts(const TiXmlNode* fontNode)
         if (pNode)
         {
           CStdString strFontFileName = pNode->FirstChild()->Value();
-          if (strFontFileName.Find(".ttf") >= 0)
+          CStdString extension = CUtil::GetExtension(strFontFileName);
+#ifdef __APPLE__
+          if (extension.Equals(".ttf") || extension.Equals(".dfont") || extension.length() == 0)
+#else
+          if (extension.Equals(".ttf") || extension.Equals(".dfont"))
+#endif
           {
             int iSize = 20;
             int iStyle = FONT_STYLE_NORMAL;

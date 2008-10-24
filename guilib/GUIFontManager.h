@@ -71,6 +71,7 @@ protected:
   void LoadFonts(const TiXmlNode* fontNode);
   CGUIFontTTF* GetFontFile(const CStdString& strFontFile);
   bool OpenFontFile(TiXmlDocument& xmlDoc);
+  bool FindSystemFontPath(const CStdString& strFilename, CStdString *fontPath);
 
   std::vector<CGUIFont*> m_vecFonts;
   std::vector<CGUIFontTTF*> m_vecFontFiles;
