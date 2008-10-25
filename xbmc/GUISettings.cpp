@@ -383,7 +383,7 @@ CGUISettings::CGUISettings(void)
   AddString(3, "system.charset",735,"DEFAULT", SPIN_CONTROL_TEXT); // charset is set by the language file
 	AddInt(6, "system.shutdowntime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
 
-	
+
 //	AddCategory(4, "locale", 20026);
 	AddSeparator(4, "locale.sep1");
 #ifndef __APPLE__
@@ -403,7 +403,7 @@ CGUISettings::CGUISettings(void)
 	AddBool(10, "locale.timeserver", 168, false);
 	AddString(11, "locale.timeserveraddress", 731, "pool.ntp.org", EDIT_CONTROL_INPUT);
 #endif
-	
+
 	AddCategory(4, "videoscreen", 131);
 	AddInt(1, "videoscreen.resolution",169,(int)AUTORES, (int)HDTV_1080i, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
 	AddString(2, "videoscreen.testresolution",13109,"", BUTTON_CONTROL_STANDARD);
@@ -420,7 +420,7 @@ CGUISettings::CGUISettings(void)
 #ifdef __APPLE__
 	AddInt(3, "videoscreen.displayblanking", 13130, BLANKING_DISABLED, BLANKING_DISABLED, 1, BLANKING_ALL_DISPLAYS, SPIN_CONTROL_TEXT);
 #endif
-	
+
 	AddString(3, "videoscreen.guicalibration",214,"", BUTTON_CONTROL_STANDARD);
 	AddString(4, "videoscreen.testpattern",226,"", BUTTON_CONTROL_STANDARD);
 
@@ -430,7 +430,7 @@ CGUISettings::CGUISettings(void)
 #else
 	AddInt(6, "videoscreen.vsync", 13105, 3, 0, 1, 3, SPIN_CONTROL_TEXT);
 #endif
-	
+
 #ifdef HAS_LCD
   AddCategory(4, "lcd", 448);
 #ifdef _LINUX
@@ -446,7 +446,7 @@ CGUISettings::CGUISettings(void)
   AddInt(7, "lcd.disableonplayback", 20310, LED_PLAYBACK_OFF, LED_PLAYBACK_OFF, 1, LED_PLAYBACK_VIDEO_MUSIC, SPIN_CONTROL_TEXT);
   AddBool(8, "lcd.enableonpaused", 20312, true);
 #endif
-	
+
 	AddCategory(4, "appleremote", 13600);
 #ifdef __APPLE__
   AddInt(1, "appleremote.mode", 13601, APPLE_REMOTE_STANDARD, APPLE_REMOTE_DISABLED, 1, APPLE_REMOTE_UNIVERSAL, SPIN_CONTROL_TEXT);
@@ -592,11 +592,11 @@ CGUISettings::CGUISettings(void)
 #endif
 //  AddSeparator(10, "videoplayer.sep2");
 //  AddSeparator(12, "videoplayer.sep3");
-	
+
 	AddInt(6, "videoplayer.highqualityupscaling", 13112, SOFTWARE_UPSCALING_DISABLED, SOFTWARE_UPSCALING_DISABLED, 1, SOFTWARE_UPSCALING_ALWAYS, SPIN_CONTROL_TEXT);
 	AddInt(7, "videoplayer.upscalingalgorithm", 13116, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, 1, VS_SCALINGMETHOD_SINC_SOFTWARE, SPIN_CONTROL_TEXT);
-	
-	
+
+
 #ifdef HAS_XBOX_HARDWARE
   AddBool(13, "videoplayer.useexternaldvdplayer", 20001, false);
   AddString(14, "videoplayer.externaldvdplayer", 20002, "",  BUTTON_CONTROL_PATH_INPUT, true, 655);
@@ -803,14 +803,16 @@ void CGUISettings::AddBool(int iOrder, const char *strSetting, int iLabel, bool 
   if (!pSetting) return ;
   settingsMap.insert(pair<CStdString, CSetting*>(CStdString(strSetting).ToLower(), pSetting));
 }
+
 bool CGUISettings::GetBool(const char *strSetting) const
 {
   ASSERT(settingsMap.size());
-  constMapIter it = settingsMap.find(CStdString(strSetting).ToLower());
+  constMapIter it = FindSetting(CStdString(strSetting).ToLower());
   if (it != settingsMap.end())
   { // old category
     return ((CSettingBool*)(*it).second)->GetData();
   }
+
   // Assert here and write debug output
   CLog::Log(LOGDEBUG,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
   return false;
@@ -819,12 +821,13 @@ bool CGUISettings::GetBool(const char *strSetting) const
 void CGUISettings::SetBool(const char *strSetting, bool bSetting)
 {
   ASSERT(settingsMap.size());
-  mapIter it = settingsMap.find(CStdString(strSetting).ToLower());
+  constMapIter it = FindSetting(CStdString(strSetting).ToLower());
   if (it != settingsMap.end())
   { // old category
     ((CSettingBool*)(*it).second)->SetData(bSetting);
     return ;
   }
+
   // Assert here and write debug output
   CLog::Log(LOGDEBUG,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
 }
@@ -832,12 +835,13 @@ void CGUISettings::SetBool(const char *strSetting, bool bSetting)
 void CGUISettings::ToggleBool(const char *strSetting)
 {
   ASSERT(settingsMap.size());
-  mapIter it = settingsMap.find(CStdString(strSetting).ToLower());
+  constMapIter it = FindSetting(CStdString(strSetting).ToLower());
   if (it != settingsMap.end())
   { // old category
     ((CSettingBool*)(*it).second)->SetData(!((CSettingBool *)(*it).second)->GetData());
     return ;
   }
+
   // Assert here and write debug output
   CLog::Log(LOGDEBUG,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
 }
@@ -852,13 +856,13 @@ void CGUISettings::AddFloat(int iOrder, const char *strSetting, int iLabel, floa
 float CGUISettings::GetFloat(const char *strSetting) const
 {
   ASSERT(settingsMap.size());
-  constMapIter it = settingsMap.find(CStdString(strSetting).ToLower());
+  constMapIter it = FindSetting(CStdString(strSetting).ToLower());
   if (it != settingsMap.end())
   {
     return ((CSettingFloat *)(*it).second)->GetData();
   }
+
   // Assert here and write debug output
-  ASSERT(false);
   CLog::Log(LOGDEBUG,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
   return 0.0f;
 }
@@ -866,36 +870,35 @@ float CGUISettings::GetFloat(const char *strSetting) const
 void CGUISettings::SetFloat(const char *strSetting, float fSetting)
 {
   ASSERT(settingsMap.size());
-  mapIter it = settingsMap.find(CStdString(strSetting).ToLower());
+  constMapIter it = FindSetting(CStdString(strSetting).ToLower());
   if (it != settingsMap.end())
   {
     ((CSettingFloat *)(*it).second)->SetData(fSetting);
     return ;
   }
+
   // Assert here and write debug output
-  ASSERT(false);
   CLog::Log(LOGDEBUG,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
 }
 
 void CGUISettings::LoadMasterLock(TiXmlElement *pRootElement)
 {
-  std::map<CStdString,CSetting*>::iterator it = settingsMap.find("masterlock.enableshutdown");
+  constMapIter it = FindSetting("masterlock.enableshutdown");
   if (it != settingsMap.end())
     LoadFromXML(pRootElement, it);
-  it = settingsMap.find("masterlock.maxretries");
+  it = FindSetting("masterlock.maxretries");
   if (it != settingsMap.end())
     LoadFromXML(pRootElement, it);
-  it = settingsMap.find("masterlock.automastermode");
+  it = FindSetting("masterlock.automastermode");
   if (it != settingsMap.end())
     LoadFromXML(pRootElement, it);
-  it = settingsMap.find("masterlock.startuplock");
+  it = FindSetting("masterlock.startuplock");
   if (it != settingsMap.end())
     LoadFromXML(pRootElement, it);
-    it = settingsMap.find("autodetect.nickname");
+    it = FindSetting("autodetect.nickname");
   if (it != settingsMap.end())
     LoadFromXML(pRootElement, it);
 }
-
 
 void CGUISettings::AddInt(int iOrder, const char *strSetting, int iLabel, int iData, int iMin, int iStep, int iMax, int iControlType, const char *strFormat)
 {
@@ -921,21 +924,21 @@ void CGUISettings::AddHex(int iOrder, const char *strSetting, int iLabel, int iD
 int CGUISettings::GetInt(const char *strSetting) const
 {
   ASSERT(settingsMap.size());
-  constMapIter it = settingsMap.find(CStdString(strSetting).ToLower());
+  constMapIter it = FindSetting(CStdString(strSetting).ToLower());
   if (it != settingsMap.end())
   {
     return ((CSettingInt *)(*it).second)->GetData();
   }
+
   // Assert here and write debug output
   CLog::Log(LOGERROR,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
-  ASSERT(false);
   return 0;
 }
 
 void CGUISettings::SetInt(const char *strSetting, int iSetting)
 {
   ASSERT(settingsMap.size());
-  mapIter it = settingsMap.find(CStdString(strSetting).ToLower());
+  constMapIter it = FindSetting(CStdString(strSetting).ToLower());
   if (it != settingsMap.end())
   {
     ((CSettingInt *)(*it).second)->SetData(iSetting);
@@ -943,8 +946,9 @@ void CGUISettings::SetInt(const char *strSetting, int iSetting)
       g_guiSettings.m_LookAndFeelResolution = (RESOLUTION)iSetting;
     return ;
   }
+
   // Assert here and write debug output
-  ASSERT(false);
+  CLog::Log(LOGDEBUG,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
 }
 
 void CGUISettings::AddString(int iOrder, const char *strSetting, int iLabel, const char *strData, int iControlType, bool bAllowEmpty, int iHeadingString)
@@ -957,7 +961,7 @@ void CGUISettings::AddString(int iOrder, const char *strSetting, int iLabel, con
 const CStdString &CGUISettings::GetString(const char *strSetting, bool bPrompt) const
 {
   ASSERT(settingsMap.size());
-  constMapIter it = settingsMap.find(CStdString(strSetting).ToLower());
+  constMapIter it = FindSetting(CStdString(strSetting).ToLower());
   if (it != settingsMap.end())
   {
     CSettingString* result = ((CSettingString *)(*it).second);
@@ -999,9 +1003,10 @@ const CStdString &CGUISettings::GetString(const char *strSetting, bool bPrompt) 
     }
     return result->GetData();
   }
+
   // Assert here and write debug output
   CLog::Log(LOGDEBUG,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
-  ASSERT(false);
+
   // hardcoded return value so that compiler is happy
   return ((CSettingString *)(*settingsMap.begin()).second)->GetData();
 }
@@ -1009,21 +1014,21 @@ const CStdString &CGUISettings::GetString(const char *strSetting, bool bPrompt) 
 void CGUISettings::SetString(const char *strSetting, const char *strData)
 {
   ASSERT(settingsMap.size());
-  mapIter it = settingsMap.find(CStdString(strSetting).ToLower());
+  constMapIter it = FindSetting(CStdString(strSetting).ToLower());
   if (it != settingsMap.end())
   {
     ((CSettingString *)(*it).second)->SetData(strData);
     return ;
   }
+
   // Assert here and write debug output
-  ASSERT(false);
   CLog::Log(LOGDEBUG,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
 }
 
 CSetting *CGUISettings::GetSetting(const char *strSetting)
 {
   ASSERT(settingsMap.size());
-  mapIter it = settingsMap.find(CStdString(strSetting).ToLower());
+  constMapIter it = FindSetting(CStdString(strSetting).ToLower());
   if (it != settingsMap.end())
     return (*it).second;
   else
@@ -1062,9 +1067,23 @@ void CGUISettings::GetSettingsGroup(const char *strGroup, vecSettings &settings)
   }
 }
 
+std::map<CStdString, CSetting*>::const_iterator CGUISettings::FindSetting(CStdString strSetting) const
+{
+  /* The following section is for backwards compatibility with older skin names. */
+  if (strSetting == "lookandfeel.enablerssfeeds")
+    strSetting = "system.enablerssfeeds";
+/*
+  else if (strSetting == "another.setting")
+    strSetting = "system.setting";
+ */
+
+  constMapIter it = settingsMap.find(strSetting.ToLower());
+  return it;
+}
+
 void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = false */)
 { // load our stuff...
-  for (mapIter it = settingsMap.begin(); it != settingsMap.end(); it++)
+  for (constMapIter it = settingsMap.begin(); it != settingsMap.end(); it++)
   {
     LoadFromXML(pRootElement, it, hideSettings);
   }
@@ -1150,7 +1169,7 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
 #endif
 }
 
-void CGUISettings::LoadFromXML(TiXmlElement *pRootElement, mapIter &it, bool advanced /* = false */)
+void CGUISettings::LoadFromXML(TiXmlElement *pRootElement, constMapIter &it, bool advanced /* = false */)
 {
   CStdStringArray strSplit;
   StringUtils::SplitString((*it).first, ".", strSplit);
@@ -1220,6 +1239,3 @@ void CGUISettings::Clear()
     delete settingsGroups[i];
   settingsGroups.clear();
 }
-
-
-
