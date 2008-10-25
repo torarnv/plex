@@ -3371,7 +3371,6 @@ int CGUIInfoManager::TranslateBooleanExpression(const CStdString &expression)
 
 void CGUIInfoManager::Clear()
 {
-  m_currentFile->Reset();
   m_CombinedValues.clear();
 }
 
