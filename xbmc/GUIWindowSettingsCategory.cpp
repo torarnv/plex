@@ -953,6 +953,21 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(40021), UPDATE_ASK);
       pControl->SetValue(pSettingInt->GetData());
     }
+    else
+    {
+      continue;
+    }
+
+    CGUIControl *pSettingControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
+    if (!pSettingControl)
+      continue;
+
+    CGUIControl::GUICONTROLTYPES controlType = pSettingControl->GetControlType();
+    if (controlType != CGUIControl::GUICONTROL_SPIN && controlType != CGUIControl::GUICONTROL_SPINEX)
+      continue;
+
+    if (((CGUISpinControl *)pSettingControl)->GetCount() <= 1)
+      pSettingControl->SetEnabled(FALSE);
   }
 
   if (m_vecSections[m_iSection]->m_strCategory == "network")
@@ -1505,6 +1520,21 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("lookandfeel.enablerssfeeds"));
     }
+    else
+    {
+      continue;
+    }
+
+    CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+    if (!pControl)
+      continue;
+
+    CGUIControl::GUICONTROLTYPES controlType = pControl->GetControlType();
+    if (controlType != CGUIControl::GUICONTROL_SPIN && controlType != CGUIControl::GUICONTROL_SPINEX)
+      continue;
+
+    if (((CGUISpinControl *)pControl)->GetCount() <= 1)
+      pControl->SetEnabled(FALSE);
   }
 }
 
@@ -3123,10 +3153,10 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
     CGUIMessage msg(GUI_MSG_LABEL_RESET, iWinID, iControlID);
     g_graphicsContext.SendMessage(msg);
   }
-  
+
   CVisualisationFactory vizFactory;
   vector<CStdString> vecVis;
-  
+
   // Find visualizations.
   CHDDirectory directory;
   CFileItemList items;
@@ -3152,10 +3182,10 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
         {
           CStdString strLabel = pItem->GetLabel();
           strLabel = strLabel.Mid(0, strLabel.size() - 4);
-          
+
           char** ppViz = 0;
           int count = 0;
-          
+
           // Ask the module for a list of visualizers.
           viz->GetVisualizers(&ppViz, &count);
           if (ppViz)
@@ -3173,7 +3203,7 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
             // It doesn't support any sub-visualizer.
             vecVis.push_back(strLabel);
           }
-          
+
           delete viz;
         }
         else

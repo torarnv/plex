@@ -86,7 +86,7 @@ public:
   bool IsFocusedOnUp() const;
 
   virtual bool IsVisible() const;
-
+  int GetCount() const { return m_vecLabels.size(); }
 protected:
   void PageUp();
   void PageDown();
