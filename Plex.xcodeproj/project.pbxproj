@@ -27,6 +27,8 @@
 		1AD99BDD0E9EF07200503917 /* QTPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1AD99BDC0E9EF07200503917 /* QTPlayer.cpp */; };
 		1AD99C750E9FB54200503917 /* QuickTimeWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1AD99C740E9FB54200503917 /* QuickTimeWrapper.cpp */; };
 		1AF6A79C0E994BFB00D96BD7 /* ModelNames.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1AF6A79B0E994BFB00D96BD7 /* ModelNames.plist */; };
+		94B1852B0EB48264008C38FA /* CoreAudioAUHAL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 94B185280EB48264008C38FA /* CoreAudioAUHAL.cpp */; };
+		94B1852C0EB48264008C38FA /* CoreAudioPlexSupport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 94B1852A0EB48264008C38FA /* CoreAudioPlexSupport.cpp */; };
 		E32B456E0EB2DC4D00E19A30 /* GUIListGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E32B456C0EB2DC4D00E19A30 /* GUIListGroup.cpp */; };
 		E336EF2F0E60256000270758 /* GUIViewStatePictures.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E336EF000E60250700270758 /* GUIViewStatePictures.cpp */; };
 		E336EF300E60256000270758 /* GUIViewStatePrograms.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E336EF020E60250700270758 /* GUIViewStatePrograms.cpp */; };
@@ -651,7 +653,6 @@
 		E371C46A0E2F2D5400FBF841 /* PltUPnP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1AF70D25F9FB00618676 /* PltUPnP.cpp */; };
 		E371C46B0E2F2D5400FBF841 /* PluginDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17440D25F9FA00618676 /* PluginDirectory.cpp */; };
 		E371C46C0E2F2D5400FBF841 /* PluginSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DEF0D25F9FD00618676 /* PluginSettings.cpp */; };
-		E371C46D0E2F2D5400FBF841 /* PortaudioDirectSound.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E159D0D25F9FA00618676 /* PortaudioDirectSound.cpp */; };
 		E371C46E0E2F2D5400FBF841 /* posmap.c in Sources */ = {isa = PBXBuildFile; fileRef = 810C9F7F0D67BDE20095F5DD /* posmap.c */; };
 		E371C46F0E2F2D5400FBF841 /* Profile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DF10D25F9FD00618676 /* Profile.cpp */; };
 		E371C4700E2F2D5400FBF841 /* proginfo.c in Sources */ = {isa = PBXBuildFile; fileRef = 810C9F800D67BDE20095F5DD /* proginfo.c */; };
@@ -1086,6 +1087,10 @@
 		9409C1EB0E01D696001626C3 /* aften.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = aften.h; path = ../../lib/libaften/aften.h; sourceTree = "<group>"; };
 		9409C1EC0E01D696001626C3 /* ringbuffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ringbuffer.c; path = AC3Encoder/ringbuffer.c; sourceTree = "<group>"; };
 		9409C1ED0E01D696001626C3 /* ringbuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ringbuffer.h; path = AC3Encoder/ringbuffer.h; sourceTree = "<group>"; };
+		94B185280EB48264008C38FA /* CoreAudioAUHAL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CoreAudioAUHAL.cpp; sourceTree = "<group>"; };
+		94B185290EB48264008C38FA /* CoreAudioAUHAL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreAudioAUHAL.h; sourceTree = "<group>"; };
+		94B1852A0EB48264008C38FA /* CoreAudioPlexSupport.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CoreAudioPlexSupport.cpp; sourceTree = "<group>"; };
+		94B185340EB482D3008C38FA /* CoreAudioPlexSupport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreAudioPlexSupport.h; sourceTree = "<group>"; };
 		B1A921F30DF6D14F0024CC4F /* libbz2.1.0.4.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libbz2.1.0.4.dylib; path = /opt/local/lib/libbz2.1.0.4.dylib; sourceTree = "<absolute>"; };
 		E306D12C0DDF7B590052C2AD /* XBMCHelper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMCHelper.cpp; sourceTree = "<group>"; };
 		E306D12D0DDF7B590052C2AD /* XBMCHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCHelper.h; sourceTree = "<group>"; };
@@ -1574,8 +1579,6 @@
 		E38E15960D25F9FA00618676 /* DVDSubtitleStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDSubtitleStream.cpp; sourceTree = "<group>"; };
 		E38E15970D25F9FA00618676 /* DVDSubtitleStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDSubtitleStream.h; sourceTree = "<group>"; };
 		E38E159A0D25F9FA00618676 /* IDVDPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IDVDPlayer.h; sourceTree = "<group>"; };
-		E38E159D0D25F9FA00618676 /* PortaudioDirectSound.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PortaudioDirectSound.cpp; sourceTree = "<group>"; };
-		E38E159E0D25F9FA00618676 /* PortaudioDirectSound.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PortaudioDirectSound.h; sourceTree = "<group>"; };
 		E38E15A50D25F9FA00618676 /* DllAvCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllAvCodec.h; sourceTree = "<group>"; };
 		E38E15A60D25F9FA00618676 /* DllAvFormat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllAvFormat.h; sourceTree = "<group>"; };
 		E38E15A70D25F9FA00618676 /* DllPostProc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllPostProc.h; sourceTree = "<group>"; };
@@ -4305,8 +4308,10 @@
 				E38E158D0D25F9FA00618676 /* DVDStreamInfo.h */,
 				E38E158E0D25F9FA00618676 /* DVDSubtitles */,
 				E38E159A0D25F9FA00618676 /* IDVDPlayer.h */,
-				E38E159D0D25F9FA00618676 /* PortaudioDirectSound.cpp */,
-				E38E159E0D25F9FA00618676 /* PortaudioDirectSound.h */,
+				94B185280EB48264008C38FA /* CoreAudioAUHAL.cpp */,
+				94B185290EB48264008C38FA /* CoreAudioAUHAL.h */,
+				94B1852A0EB48264008C38FA /* CoreAudioPlexSupport.cpp */,
+				94B185340EB482D3008C38FA /* CoreAudioPlexSupport.h */,
 			);
 			path = dvdplayer;
 			sourceTree = "<group>";
@@ -7202,7 +7207,6 @@
 				E371C46A0E2F2D5400FBF841 /* PltUPnP.cpp in Sources */,
 				E371C46B0E2F2D5400FBF841 /* PluginDirectory.cpp in Sources */,
 				E371C46C0E2F2D5400FBF841 /* PluginSettings.cpp in Sources */,
-				E371C46D0E2F2D5400FBF841 /* PortaudioDirectSound.cpp in Sources */,
 				E371C46E0E2F2D5400FBF841 /* posmap.c in Sources */,
 				E371C46F0E2F2D5400FBF841 /* Profile.cpp in Sources */,
 				E371C4700E2F2D5400FBF841 /* proginfo.c in Sources */,
@@ -7389,6 +7393,8 @@
 				E3F471BD0EAC4BBE004BB122 /* NptPosixFile.cpp in Sources */,
 				E3F471BF0EAC4BF9004BB122 /* NptStdcEnvironment.cpp in Sources */,
 				E32B456E0EB2DC4D00E19A30 /* GUIListGroup.cpp in Sources */,
+				94B1852B0EB48264008C38FA /* CoreAudioAUHAL.cpp in Sources */,
+				94B1852C0EB48264008C38FA /* CoreAudioPlexSupport.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
