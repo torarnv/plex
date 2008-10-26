@@ -214,18 +214,6 @@ void CDVDPlayerSubtitle::Process(double pts)
 
     m_lastPts = pts;
   }
-
-#if 0
-  printf("===================================================\n");
-  printf("Asked for %d, have %d subtitles\n", (int)(pts/1000), m_pOverlayContainer->GetOverlays()->size());
-  for (int i=0; i<m_pOverlayContainer->GetOverlays()->size(); i++)
-  {
-    CDVDOverlayText* text = (CDVDOverlayText* )m_pOverlayContainer->GetOverlays()->at(i);
-    printf(" Overlay [%d - %d]:\n", (int)(text->iPTSStartTime/1000), (int)(text->iPTSStopTime/1000));
-    text->Dump();
-  }
-  printf("---------------------------------------------------\n");
-#endif
 }
 
 bool CDVDPlayerSubtitle::AcceptsData()
