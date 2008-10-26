@@ -7,10 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1A01F0530E7D2F3400DC186E /* plex in Resources */ = {isa = PBXBuildFile; fileRef = 1A01F0520E7D2F3400DC186E /* plex */; };
 		1A01F0FF0E7D37AA00DC186E /* SUPlexBackgroundUpdateToastDriver.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1A01F0F90E7D37AA00DC186E /* SUPlexBackgroundUpdateToastDriver.mm */; };
 		1A01F1000E7D37AA00DC186E /* SUPlexUpdateDriver.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1A01F0FB0E7D37AA00DC186E /* SUPlexUpdateDriver.mm */; };
 		1A01F1010E7D37AA00DC186E /* SUPlexUpdater.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1A01F0FD0E7D37AA00DC186E /* SUPlexUpdater.mm */; };
 		1A2C5DE90E7EF479002F23FA /* relaunch.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A2C5DE80E7EF479002F23FA /* relaunch.m */; };
+		1A2C5DEC0E7EF4BD002F23FA /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A2C5DEB0E7EF4BD002F23FA /* AppKit.framework */; };
 		1A2C5DF70E7EF598002F23FA /* relaunch in Copy Relaunch (1) */ = {isa = PBXBuildFile; fileRef = 1A2C5DE30E7EF410002F23FA /* relaunch */; };
 		1A5484550E79EA340025CA32 /* BackgroundMusicPlayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1A5484540E79EA340025CA32 /* BackgroundMusicPlayer.mm */; };
 		1A5535900E86AA9E005AF349 /* AppleHardwareInfo.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1A55358F0E86AA9E005AF349 /* AppleHardwareInfo.mm */; };
@@ -844,6 +846,7 @@
 		E371C5350E2F2DF500FBF841 /* libvorbis.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3EB8F050D5D5C0300FFF489 /* libvorbis.dylib */; };
 		E371C5360E2F2DF500FBF841 /* libXBMS-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E38CB6B90DF7E5B2002B36E1 /* libXBMS-osx.a */; };
 		E371C5370E2F2DF500FBF841 /* libxdaap-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E25680D2639F100618676 /* libxdaap-osx.a */; };
+		E371C5380E2F2DF500FBF841 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E24290D26317D00618676 /* libz.dylib */; };
 		E371C5390E2F2DF500FBF841 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E23910D2626E600618676 /* OpenGL.framework */; };
 		E371C53A0E2F2DF500FBF841 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E35EF2540D380C3D00DB5CD5 /* QuickTime.framework */; };
 		E371C53B0E2F2DF500FBF841 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EFF0820D0E106C11004114E6 /* Security.framework */; };
@@ -851,7 +854,10 @@
 		E371CB900E303C7100FBF841 /* PlexDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = E371CB8E0E303C7100FBF841 /* PlexDelegate.mm */; };
 		E371CBB10E3044D900FBF841 /* Plex.icns in Resources */ = {isa = PBXBuildFile; fileRef = E371CBB00E3044D900FBF841 /* Plex.icns */; };
 		E371CC1A0E33473A00FBF841 /* AppleRemote.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E371CC190E33473A00FBF841 /* AppleRemote.cpp */; };
+		E38AAB560E5D441000C1B750 /* SmartCrashReportsInstall.o in Frameworks */ = {isa = PBXBuildFile; fileRef = E38AAB550E5D441000C1B750 /* SmartCrashReportsInstall.o */; };
 		E38AAB590E5D444500C1B750 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38AAB580E5D444500C1B750 /* Carbon.framework */; };
+		E38AAB5F0E5D447400C1B750 /* CrashReporter.m in Sources */ = {isa = PBXBuildFile; fileRef = E38AAB5E0E5D447400C1B750 /* CrashReporter.m */; };
+		E38AAB630E5D44D900C1B750 /* SmartCrashReportsAPI.o in Frameworks */ = {isa = PBXBuildFile; fileRef = E38AAB620E5D44D900C1B750 /* SmartCrashReportsAPI.o */; };
 		E38AABBC0E5D456200C1B750 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EFF0820D0E106C11004114E6 /* Security.framework */; };
 		E38AABC00E5D46AE00C1B750 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E38AABBF0E5D46AE00C1B750 /* libz.dylib */; };
 		E38AABC90E5D482900C1B750 /* CrashReporter in Copy CrashReporter */ = {isa = PBXBuildFile; fileRef = E38AAB430E5D438B00C1B750 /* CrashReporter */; };
@@ -871,16 +877,11 @@
 		E3C1A65D0E7126F400CE0104 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3C1A65C0E7126F400CE0104 /* Sparkle.framework */; };
 		E3C1A6610E71275B00CE0104 /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = E3C1A65C0E7126F400CE0104 /* Sparkle.framework */; };
 		E3C1A6AA0E74E85C00CE0104 /* AsyncFileCopy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3C1A6A90E74E85C00CE0104 /* AsyncFileCopy.cpp */; };
+		E3FD287C0E9951B500EE77C3 /* FilePlex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3FD28780E9951B500EE77C3 /* FilePlex.cpp */; };
+		E3FD287D0E9951B500EE77C3 /* PlexDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3FD287A0E9951B500EE77C3 /* PlexDirectory.cpp */; };
 		E3F471BB0EAC481F004BB122 /* utf8tolatin1.c in Sources */ = {isa = PBXBuildFile; fileRef = E3F471B90EAC481F004BB122 /* utf8tolatin1.c */; };
 		E3F471BD0EAC4BBE004BB122 /* NptPosixFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3F471BC0EAC4BBE004BB122 /* NptPosixFile.cpp */; };
 		E3F471BF0EAC4BF9004BB122 /* NptStdcEnvironment.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3F471BE0EAC4BF9004BB122 /* NptStdcEnvironment.cpp */; };
-		E3FD287C0E9951B500EE77C3 /* FilePlex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3FD28780E9951B500EE77C3 /* FilePlex.cpp */; };
-		E3FD287D0E9951B500EE77C3 /* PlexDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3FD287A0E9951B500EE77C3 /* PlexDirectory.cpp */; };
-		EF2C69110EB28756006A320E /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E238D0D2626E600618676 /* Cocoa.framework */; };
-		EF2C691B0EB2878A006A320E /* CrashReporter.m in Sources */ = {isa = PBXBuildFile; fileRef = EF2C68FA0EB28529006A320E /* CrashReporter.m */; };
-		EF2C692A0EB2882E006A320E /* SmartCrashReportsInstall.o in Frameworks */ = {isa = PBXBuildFile; fileRef = EF2C69200EB287AF006A320E /* SmartCrashReportsInstall.o */; };
-		EF2C69410EB2888A006A320E /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09AB6884FE841BABC02AAC07 /* CoreFoundation.framework */; };
-		EF2C69420EB288A4006A320E /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E38AABBF0E5D46AE00C1B750 /* libz.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -955,6 +956,7 @@
 
 /* Begin PBXFileReference section */
 		09AB6884FE841BABC02AAC07 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
+		1A01F0520E7D2F3400DC186E /* plex */ = {isa = PBXFileReference; lastKnownFileType = folder; path = plex; sourceTree = "<group>"; };
 		1A01F0F60E7D37AA00DC186E /* SUBasicUpdateDriver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUBasicUpdateDriver.h; sourceTree = "<group>"; };
 		1A01F0F70E7D37AA00DC186E /* SUHost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUHost.h; sourceTree = "<group>"; };
 		1A01F0F80E7D37AA00DC186E /* SUPlexBackgroundUpdateToastDriver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUPlexBackgroundUpdateToastDriver.h; sourceTree = "<group>"; };
@@ -967,6 +969,7 @@
 		1A2C5DBB0E7EE410002F23FA /* SUInstaller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUInstaller.h; sourceTree = "<group>"; };
 		1A2C5DE30E7EF410002F23FA /* relaunch */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = relaunch; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A2C5DE80E7EF479002F23FA /* relaunch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = relaunch.m; sourceTree = "<group>"; };
+		1A2C5DEB0E7EF4BD002F23FA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		1A5484530E79EA340025CA32 /* BackgroundMusicPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BackgroundMusicPlayer.h; sourceTree = "<group>"; };
 		1A5484540E79EA340025CA32 /* BackgroundMusicPlayer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BackgroundMusicPlayer.mm; sourceTree = "<group>"; };
 		1A5487500E7B26830025CA32 /* GUIDialogUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogUtils.h; sourceTree = "<group>"; };
@@ -1129,7 +1132,11 @@
 		E38A06CC0D95AA5500FF8227 /* GUIDialogKaiToast.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogKaiToast.cpp; sourceTree = "<group>"; };
 		E38A06CD0D95AA5500FF8227 /* GUIDialogKaiToast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogKaiToast.h; sourceTree = "<group>"; };
 		E38AAB430E5D438B00C1B750 /* CrashReporter */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = CrashReporter; sourceTree = BUILT_PRODUCTS_DIR; };
+		E38AAB540E5D441000C1B750 /* SmartCrashReportsInstall.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SmartCrashReportsInstall.h; path = plex/CrashReporterHelper/SmartCrashReportsInstall.h; sourceTree = "<group>"; };
+		E38AAB550E5D441000C1B750 /* SmartCrashReportsInstall.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; name = SmartCrashReportsInstall.o; path = plex/CrashReporterHelper/SmartCrashReportsInstall.o; sourceTree = "<group>"; };
 		E38AAB580E5D444500C1B750 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
+		E38AAB5E0E5D447400C1B750 /* CrashReporter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CrashReporter.m; path = plex/CrashReporterHelper/CrashReporter.m; sourceTree = "<group>"; };
+		E38AAB620E5D44D900C1B750 /* SmartCrashReportsAPI.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; name = SmartCrashReportsAPI.o; path = plex/CrashReporterHelper/SmartCrashReportsAPI.o; sourceTree = "<group>"; };
 		E38AABBF0E5D46AE00C1B750 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		E38CB6B90DF7E5B2002B36E1 /* libXBMS-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libXBMS-osx.a"; path = "xbmc/lib/libXBMS/libXBMS-osx.a"; sourceTree = "<group>"; };
 		E38E138A0D25F9F900618676 /* ActionManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ActionManager.cpp; sourceTree = "<group>"; };
@@ -2936,6 +2943,7 @@
 		E38E24250D26317D00618676 /* libGLEW.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libGLEW.dylib; path = /opt/local/lib/libGLEW.dylib; sourceTree = "<absolute>"; };
 		E38E24260D26317D00618676 /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = /opt/local/lib/libiconv.dylib; sourceTree = "<absolute>"; };
 		E38E24270D26317D00618676 /* liblzo.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = liblzo.dylib; path = /opt/local/lib/liblzo.dylib; sourceTree = "<absolute>"; };
+		E38E24290D26317D00618676 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /opt/local/lib/libz.dylib; sourceTree = "<absolute>"; };
 		E38E25330D26365C00618676 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		E38E25340D26365C00618676 /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = /System/Library/Frameworks/ApplicationServices.framework; sourceTree = "<absolute>"; };
 		E38E25410D2636F300618676 /* libstdc++.6.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.6.dylib"; path = "/usr/lib/libstdc++.6.dylib"; sourceTree = "<absolute>"; };
@@ -3028,19 +3036,17 @@
 		E3E920050D8C6277002BF43D /* ScraperSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ScraperSettings.cpp; sourceTree = "<group>"; };
 		E3EB8F030D5D5C0300FFF489 /* libmad.0.2.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmad.0.2.1.dylib; path = /opt/local/lib/libmad.0.2.1.dylib; sourceTree = "<absolute>"; };
 		E3EB8F050D5D5C0300FFF489 /* libvorbis.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libvorbis.dylib; path = /opt/local/lib/libvorbis.dylib; sourceTree = "<absolute>"; };
-		E3F471B90EAC481F004BB122 /* utf8tolatin1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = utf8tolatin1.c; sourceTree = "<group>"; };
-		E3F471BC0EAC4BBE004BB122 /* NptPosixFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptPosixFile.cpp; sourceTree = "<group>"; };
-		E3F471BE0EAC4BF9004BB122 /* NptStdcEnvironment.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NptStdcEnvironment.cpp; path = StdC/NptStdcEnvironment.cpp; sourceTree = "<group>"; };
 		E3FD28780E9951B500EE77C3 /* FilePlex.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FilePlex.cpp; sourceTree = "<group>"; };
 		E3FD28790E9951B500EE77C3 /* FilePlex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FilePlex.h; sourceTree = "<group>"; };
 		E3FD287A0E9951B500EE77C3 /* PlexDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PlexDirectory.cpp; sourceTree = "<group>"; };
 		E3FD287B0E9951B500EE77C3 /* PlexDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlexDirectory.h; sourceTree = "<group>"; };
+		E3F471B90EAC481F004BB122 /* utf8tolatin1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = utf8tolatin1.c; sourceTree = "<group>"; };
+		E3F471BC0EAC4BBE004BB122 /* NptPosixFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptPosixFile.cpp; sourceTree = "<group>"; };
+		E3F471BE0EAC4BF9004BB122 /* NptStdcEnvironment.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NptStdcEnvironment.cpp; path = StdC/NptStdcEnvironment.cpp; sourceTree = "<group>"; };
 		E3FFF0020D46FD1D003D79C3 /* libavutil-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libavutil-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libavutil-osx.a"; sourceTree = "<group>"; };
 		E3FFF0040D46FD1D003D79C3 /* libavcodec-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libavcodec-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libavcodec-osx.a"; sourceTree = "<group>"; };
 		E3FFF02E0D470BD8003D79C3 /* libavformat-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libavformat-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libavformat-osx.a"; sourceTree = "<group>"; };
-		EF2C68FA0EB28529006A320E /* CrashReporter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CrashReporter.m; path = plex/CrashReporterHelper/CrashReporter.m; sourceTree = "<group>"; };
-		EF2C68FC0EB28529006A320E /* SmartCrashReportsInstall.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SmartCrashReportsInstall.h; path = plex/CrashReporterHelper/SmartCrashReportsInstall.h; sourceTree = "<group>"; };
-		EF2C69200EB287AF006A320E /* SmartCrashReportsInstall.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; name = SmartCrashReportsInstall.o; path = plex/CrashReporterHelper/SmartCrashReportsInstall.o; sourceTree = "<group>"; };
+		EFF082090E106C00004114E6 /* SmartCrashReportsAPI.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; name = SmartCrashReportsAPI.o; path = xbmc/lib/libSmartCrashReports/SmartCrashReportsAPI.o; sourceTree = "<group>"; };
 		EFF0820A0E106C00004114E6 /* SmartCrashReportsInstall.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; name = SmartCrashReportsInstall.o; path = xbmc/lib/libSmartCrashReports/SmartCrashReportsInstall.o; sourceTree = "<group>"; };
 		EFF0820D0E106C11004114E6 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		EFF083260E11614A004114E6 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -3051,7 +3057,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EF2C69110EB28756006A320E /* Cocoa.framework in Frameworks */,
+				1A2C5DEC0E7EF4BD002F23FA /* AppKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3100,6 +3106,7 @@
 				E371C5350E2F2DF500FBF841 /* libvorbis.dylib in Frameworks */,
 				E371C5360E2F2DF500FBF841 /* libXBMS-osx.a in Frameworks */,
 				E371C5370E2F2DF500FBF841 /* libxdaap-osx.a in Frameworks */,
+				E371C5380E2F2DF500FBF841 /* libz.dylib in Frameworks */,
 				E371C5390E2F2DF500FBF841 /* OpenGL.framework in Frameworks */,
 				E371C53A0E2F2DF500FBF841 /* QuickTime.framework in Frameworks */,
 				E371C53B0E2F2DF500FBF841 /* Security.framework in Frameworks */,
@@ -3111,7 +3118,6 @@
 				E3C1A65D0E7126F400CE0104 /* Sparkle.framework in Frameworks */,
 				E3ADDD140EAA68DC003921C8 /* QTKit.framework in Frameworks */,
 				1AA456B70E7EA3DD004CC8D2 /* Security.framework in Frameworks */,
-				EF2C69420EB288A4006A320E /* libz.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3126,11 +3132,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E38AAB560E5D441000C1B750 /* SmartCrashReportsInstall.o in Frameworks */,
 				E38AAB590E5D444500C1B750 /* Carbon.framework in Frameworks */,
+				E38AAB630E5D44D900C1B750 /* SmartCrashReportsAPI.o in Frameworks */,
 				E38AABBC0E5D456200C1B750 /* Security.framework in Frameworks */,
 				E38AABC00E5D46AE00C1B750 /* libz.dylib in Frameworks */,
-				EF2C692A0EB2882E006A320E /* SmartCrashReportsInstall.o in Frameworks */,
-				EF2C69410EB2888A006A320E /* CoreFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3140,14 +3146,27 @@
 		08FB7794FE84155DC02AAC07 /* XBMC */ = {
 			isa = PBXGroup;
 			children = (
+				E3C1A65C0E7126F400CE0104 /* Sparkle.framework */,
+				E38AAB620E5D44D900C1B750 /* SmartCrashReportsAPI.o */,
+				E38AAB5E0E5D447400C1B750 /* CrashReporter.m */,
+				E38AAB540E5D441000C1B750 /* SmartCrashReportsInstall.h */,
+				E38AAB550E5D441000C1B750 /* SmartCrashReportsInstall.o */,
 				E371CC200E3347DF00FBF841 /* Reactor.h */,
 				E371CC210E3347E000FBF841 /* XBox360.h */,
 				E371CC190E33473A00FBF841 /* AppleRemote.cpp */,
+				E371CBB00E3044D900FBF841 /* Plex.icns */,
 				08FB7795FE84155DC02AAC07 /* Source */,
 				C6859E96029091FE04C91782 /* Documentation */,
 				08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */,
-				EF2C69080EB28588006A320E /* Resources */,
 				19C28FBDFE9D53C911CA2CBB /* Products */,
+				E371C1160E2F130900FBF841 /* Plex.xib */,
+				E371C1E10E2F2AC300FBF841 /* Plex-Info.plist */,
+				E38AAB580E5D444500C1B750 /* Carbon.framework */,
+				E38AABBF0E5D46AE00C1B750 /* libz.dylib */,
+				E3ADDD130EAA68DC003921C8 /* QTKit.framework */,
+				1A5535E40E86B02F005AF349 /* ModelsWithBattery.plist */,
+				1AF6A79B0E994BFB00D96BD7 /* ModelNames.plist */,
+				1A2C5DEB0E7EF4BD002F23FA /* AppKit.framework */,
 			);
 			name = XBMC;
 			sourceTree = "<group>";
@@ -3165,7 +3184,6 @@
 		08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				E3C1A65C0E7126F400CE0104 /* Sparkle.framework */,
 				1AA456B60E7EA3DD004CC8D2 /* Security.framework */,
 				E336F09B0E62D1FD00270758 /* libmms-osx.a */,
 				E336F0880E60D1A800270758 /* libjpeg.62.dylib */,
@@ -3173,6 +3191,7 @@
 				E3AC01F70E39E16B00DD298E /* libSDL_mixer-osx.a */,
 				E3AC01F40E39E0ED00DD298E /* libSDL-osx.a */,
 				EFF0820D0E106C11004114E6 /* Security.framework */,
+				EFF082090E106C00004114E6 /* SmartCrashReportsAPI.o */,
 				EFF0820A0E106C00004114E6 /* SmartCrashReportsInstall.o */,
 				E3B578950E0E3CDB002B3B3E /* libaften_pcm.a */,
 				E3B578960E0E3CDB002B3B3E /* libaften_static.a */,
@@ -3209,9 +3228,7 @@
 				E38E24250D26317D00618676 /* libGLEW.dylib */,
 				E38E24260D26317D00618676 /* libiconv.dylib */,
 				E38E24270D26317D00618676 /* liblzo.dylib */,
-				E38AAB580E5D444500C1B750 /* Carbon.framework */,
-				E38AABBF0E5D46AE00C1B750 /* libz.dylib */,
-				E3ADDD130EAA68DC003921C8 /* QTKit.framework */,
+				E38E24290D26317D00618676 /* libz.dylib */,
 				E38E238B0D2626E600618676 /* AudioToolbox.framework */,
 				E38E238C0D2626E600618676 /* AudioUnit.framework */,
 				E38E238D0D2626E600618676 /* Cocoa.framework */,
@@ -3238,7 +3255,7 @@
 		1A01F0510E7D2EE300DC186E /* Plex */ = {
 			isa = PBXGroup;
 			children = (
-				EF2C69070EB28540006A320E /* CrashReporter */,
+				1A01F0520E7D2F3400DC186E /* plex */,
 			);
 			name = Plex;
 			sourceTree = "<group>";
@@ -6368,28 +6385,6 @@
 			path = libRTMP;
 			sourceTree = "<group>";
 		};
-		EF2C69070EB28540006A320E /* CrashReporter */ = {
-			isa = PBXGroup;
-			children = (
-				EF2C69200EB287AF006A320E /* SmartCrashReportsInstall.o */,
-				EF2C68FA0EB28529006A320E /* CrashReporter.m */,
-				EF2C68FC0EB28529006A320E /* SmartCrashReportsInstall.h */,
-			);
-			name = CrashReporter;
-			sourceTree = "<group>";
-		};
-		EF2C69080EB28588006A320E /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				E371C1160E2F130900FBF841 /* Plex.xib */,
-				E371C1E10E2F2AC300FBF841 /* Plex-Info.plist */,
-				1A5535E40E86B02F005AF349 /* ModelsWithBattery.plist */,
-				1AF6A79B0E994BFB00D96BD7 /* ModelNames.plist */,
-				E371CBB00E3044D900FBF841 /* Plex.icns */,
-			);
-			name = Resources;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -6495,6 +6490,7 @@
 				E371CBB10E3044D900FBF841 /* Plex.icns in Resources */,
 				1A5535E50E86B02F005AF349 /* ModelsWithBattery.plist in Resources */,
 				1AF6A79C0E994BFB00D96BD7 /* ModelNames.plist in Resources */,
+				1A01F0530E7D2F3400DC186E /* plex in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7349,7 +7345,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EF2C691B0EB2878A006A320E /* CrashReporter.m in Sources */,
+				E38AAB5F0E5D447400C1B750 /* CrashReporter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
