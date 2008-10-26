@@ -47,15 +47,15 @@ GUIFontManager::~GUIFontManager(void)
 
 bool GUIFontManager::FindSystemFontPath(const CStdString& strFilename, CStdString *fontPath)
 {
-  std::vector<std::string> systemPaths;
-  std::vector<std::string> fontExtensions;
+  vector<string> systemPaths;
+  vector<string> fontExtensions;
 
   systemPaths.push_back(g_graphicsContext.GetMediaDir() + "\\fonts\\");
   systemPaths.push_back("Q:\\media\\Fonts\\");
 
 #ifdef __APPLE__
   // TODO: Add all the sub folders in each of these system paths
-  std::string home = getenv("HOME");
+  string home = getenv("HOME");
   if (*home.rbegin() == '/')
     home.erase(home.end()-1, home.end());
 
@@ -69,8 +69,8 @@ bool GUIFontManager::FindSystemFontPath(const CStdString& strFilename, CStdStrin
   fontExtensions.push_back(".ttf");
   fontExtensions.push_back(".dfont");
 
-  std::string foundPath;
-  std::string foundFullPath;
+  string foundPath;
+  string foundFullPath;
 
   bool iterateExtensions = (CUtil::GetExtension(strFilename).length() == 0);
   for (int i = 0; i < systemPaths.size(); i++)
