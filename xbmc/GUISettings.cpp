@@ -1050,10 +1050,12 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
     CLog::Log(LOGNOTICE, "Enabled debug logging due to GUI setting");
   }
 #ifdef __APPLE__
-  // Set the initial settings.
-  g_audioConfig.SetAC3Enabled(GetBool("audiooutput.ac3passthrough"));
-  g_audioConfig.SetDTSEnabled(GetBool("audiooutput.dtspassthrough"));
+	g_audioConfig.SetAC3Enabled(GetBool("audiooutput.ac3passthrough"));
+	g_audioConfig.SetDTSEnabled(GetBool("audiooutput.dtspassthrough"));
+	// Set the initial settings.
+	SetBool("audiooutput.digitalaudiomode", g_audioConfig.HasDigitalOutput());
 #else
+	
   // Get hardware based stuff...
   CLog::Log(LOGNOTICE, "Getting hardware information now...");
   if (GetInt("audiooutput.mode") == AUDIO_DIGITAL && !g_audioConfig.HasDigitalOutput())

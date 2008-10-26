@@ -77,7 +77,7 @@
 #endif
 #endif
 #ifdef __APPLE__
-#include "CPortAudio.h"
+#include "CoreAudioPlexSupport.h"
 #include "XBMCHelper.h"
 #include "CocoaUtils.h"
 #endif
@@ -292,8 +292,8 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
     break;
   case GUI_MSG_WINDOW_DEINIT:
     {
-      if ((g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL))
-      {
+	  if (g_audioConfig.UseDigitalOutput())
+	  {
         g_audioConfig.SetAC3Enabled(g_guiSettings.GetBool("audiooutput.ac3passthrough"));
         g_audioConfig.SetDTSEnabled(g_guiSettings.GetBool("audiooutput.dtspassthrough"));
         if (g_audioConfig.NeedsSave())
@@ -477,10 +477,20 @@ void CGUIWindowSettingsCategory::CreateSettings()
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
       pControl->AddLabel(g_localizeStrings.Get(338), AUDIO_ANALOG);
-      //if (g_audioConfig.HasDigitalOutput())
+      if (g_audioConfig.HasDigitalOutput())
       pControl->AddLabel(g_localizeStrings.Get(339), AUDIO_DIGITAL);
       pControl->SetValue(pSettingInt->GetData());
     }
+#ifdef __APPLE__
+	else if (strSetting.Equals("audiooutput.digitalaudiomode"))
+    {
+		CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+		CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+		pControl->AddLabel(g_localizeStrings.Get(575), DIGITAL_COREAUDIO);
+		pControl->AddLabel(g_localizeStrings.Get(576), DIGITAL_PCM);
+		pControl->SetValue(pSettingInt->GetData());
+    }
+#endif
     else if (strSetting.Equals("videooutput.aspect"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -1168,11 +1178,34 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       if (pControl) pControl->SetEnabled((g_guiSettings.GetInt("cddaripper.encoder") != CDDARIP_ENCODER_WAV) &&
                                            (g_guiSettings.GetInt("cddaripper.quality") == CDDARIP_QUALITY_CBR));
     }
-    else if (strSetting.Equals("musicplayer.outputtoallspeakers") || strSetting.Equals("audiooutput.ac3passthrough") || strSetting.Equals("audiooutput.dtspassthrough") || strSetting.Equals("audiooutput.passthroughdevice"))
+    else if (strSetting.Equals("musicplayer.outputtoallspeakers") || 
+			 strSetting.Equals("audiooutput.ac3passthrough") || 
+			 strSetting.Equals("audiooutput.dtspassthrough") || 
+			 strSetting.Equals("audiooutput.passthroughdevice"))
     { // only visible if we are in digital mode
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL);
+      if (pControl) pControl->SetEnabled(g_audioConfig.UseDigitalOutput());
     }
+#ifdef __APPLE__
+	else if (strSetting.Equals("audiooutput.digitalaudiomode"))
+    { 	  // only enabled if device does not support CoreAudio digital out
+		CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+		if (pControl) pControl->SetEnabled(!g_audioConfig.HasDigitalOutput());
+    }
+	else if (strSetting.Equals("audiooutput.audiodevice"))
+	{
+		// force devices that advertise digital out to use CA
+ 		if (g_audioConfig.HasDigitalOutput())
+		{
+			CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting("audiooutput.digitalaudiomode")->GetID());
+			if (pControl) 
+			{
+				pControl->SetValue(DIGITAL_COREAUDIO);
+				g_guiSettings.SetBool("audiooutput.digitalaudiomode", DIGITAL_COREAUDIO);
+			}
+		}
+	}
+#endif	  
     else if (strSetting.Equals("videooutput.hd480p") || strSetting.Equals("videooutput.hd720p") || strSetting.Equals("videooutput.hd1080i"))
     {
 #ifdef HAS_XBOX_HARDWARE
@@ -1654,7 +1687,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     g_guiSettings.SetString("karaoke.port2voicemask", pControl->GetCurrentLabel());
     FillInVoiceMaskValues(2, g_guiSettings.GetSetting("karaoke.port2voicemask"));
   }
-  else if (strSetting.Equals("karaoke.port2voicemask"))
+  else if (strSetting.Equals("karaoke.port3voicemask"))
   {
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
     g_guiSettings.SetString("karaoke.port3voicemask", pControl->GetCurrentLabel());
@@ -1782,6 +1815,12 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
       g_guiSettings.SetString("audiooutput.audiodevice", pControl->GetCurrentLabel());
   }
+  else if (strSetting.Equals("audiooutput.digitalaudiomode"))
+  {
+	  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+	  g_guiSettings.SetBool("audiooutput.digitalaudiomode", pControl->GetValue());
+  }
+	
 #endif
 #ifdef HAS_KAI
   else if (strSetting.Equals("xlinkkai.enabled"))
@@ -4005,21 +4044,14 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting)
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->Clear();
 
-  std::vector<PaDeviceInfo* > deviceList = CPortAudio::GetDeviceList();
-  std::vector<PaDeviceInfo* >::const_iterator iter = deviceList.begin();
-
-  for (int i=0; iter != deviceList.end(); i++)
-  {
-    PaDeviceInfo* dev = *iter;
-    pControl->AddLabel(dev->name, i);
-
-    CStdString strDev = dev->name;
-    if (g_guiSettings.GetString("audiooutput.audiodevice").Equals(strDev))
-        pControl->SetValue(i);
-
-    ++iter;
-  }
-
+    AudioDeviceArray* deviceList = CoreAudioPlexSupport::GetDeviceArray();
+	
+	for (int i=0; i < deviceList->deviceCount; i++)
+	{
+		pControl->AddLabel(deviceList->device[i]->deviceName, i);
+		if (g_guiSettings.GetString("audiooutput.audiodevice").Equals(deviceList->device[i]->deviceName))
+			pControl->SetValue(i);
+	}
 #endif
 }
 

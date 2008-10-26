@@ -33,7 +33,9 @@
 #include "pa_ringbuffer.h"
 #include "../mplayer/IDirectSoundRenderer.h"
 #include "../../utils/PCMAmplifier.h"
-#include "ac3encoder.h"
+extern "C" {
+#include "ac3encoder.h"	
+};
 
 #include "CoreAudioPlexSupport.h"
 
