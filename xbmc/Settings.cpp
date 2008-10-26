@@ -53,6 +53,9 @@
 #include "win32/WIN32Util.h"
 #endif
 #include "FileSystem/SMBDirectory.h"
+#ifdef __APPLE__
+#include "CocoaUtils.h"
+#endif
 
 
 using namespace std;
@@ -1524,6 +1527,17 @@ void CSettings::LoadAdvancedSettings()
       element = element->NextSiblingElement("entry");
     }
   }
+  
+  // Override the default battery warning settings in AppleHardwareInfo
+  TiXmlElement* pBatteryWarnings = pRootElement->FirstChildElement("batterywarnings");
+  if (pBatteryWarnings)
+  {
+    int iValue;
+    if (XMLUtils::GetInt(pBatteryWarnings, "timeremaining", iValue))
+      Cocoa_HW_SetBatteryTimeWarning(iValue);
+    if (XMLUtils::GetInt(pBatteryWarnings, "percentremaining", iValue))
+      Cocoa_HW_SetBatteryCapacityWarning(iValue);
+  }
 
   // load in the GUISettings overrides:
   g_guiSettings.LoadXML(pRootElement, true);  // true to hide the settings we read in
@@ -1567,11 +1581,8 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
   if (!pNode) return false;
 
   SetInteger(pNode, "startwindow", g_stSettings.m_iVideoStartWindow);
-  
-  int iStack = g_stSettings.m_iMyVideoStack;  // make sure we only save this without the temporary flag
-  iStack &= ~STACK_UNAVAILABLE;
-  SetInteger(pNode, "stackvideomode", iStack);
-  
+  SetInteger(pNode, "stackvideomode", g_stSettings.m_iMyVideoStack);
+
   SetString(pNode, "cleantokens", g_stSettings.m_szMyVideoCleanTokens);
   SetString(pNode, "cleanseparators", g_stSettings.m_szMyVideoCleanSeparators);
   SetString(pNode, "defaultlibview", g_settings.m_defaultVideoLibSource);

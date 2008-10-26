@@ -273,6 +273,7 @@ protected:
   std::string m_filename; // holds the actual filename
   std::string m_content;  // hold a hint to what content file contains (mime type)
   bool        m_caching;  // player is filling up the demux queue
+  bool        m_seeking;  // player is currently trying to fullfill a seek request
 
   CCurrentStream m_CurrentAudio;
   CCurrentStream m_CurrentVideo;
@@ -332,6 +333,14 @@ protected:
     bool recording;           // are we currently recording
   } m_State;
   CCriticalSection m_StateSection;
+
+  class CPlayerSeek
+  {
+  public:
+    CPlayerSeek(CDVDPlayer* player);
+    ~CPlayerSeek();
+    CDVDPlayer& m_player;
+  };
 
   HANDLE m_hReadyEvent;
   CRITICAL_SECTION m_critStreamSection; // need to have this lock when switching streams (audio / video)

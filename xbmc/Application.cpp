@@ -1898,6 +1898,13 @@ HRESULT CApplication::Initialize()
     g_guiSettings.SetBool("locale.timeserver", false);
   }
 
+#ifdef __APPLE__
+  // Set proxy server from system configuration
+  g_guiSettings.SetString("network.httpproxyserver", Cocoa_OSX_Proxy_Host());
+  g_guiSettings.SetString("network.httpproxyport", Cocoa_OSX_Proxy_Port());
+  g_guiSettings.SetBool("network.usehttpproxy", Cocoa_OSX_Proxy_Enabled());
+#endif
+  
   StartServices();
 
   m_gWindowManager.Add(new CGUIWindowHome);                     // window id = 0
@@ -2829,6 +2836,8 @@ void CApplication::UnloadSkin()
   g_colorManager.Clear();
 
   g_charsetConverter.reset();
+
+  g_infoManager.Clear();
 }
 
 bool CApplication::LoadUserWindows(const CStdString& strSkinPath)
@@ -4560,7 +4569,6 @@ HRESULT CApplication::Cleanup()
 #ifdef HAS_EVENT_SERVER
     CEventServer::RemoveInstance();
 #endif
-    g_infoManager.Clear();
     DllLoaderContainer::Clear();
     g_playlistPlayer.Clear();
     g_settings.Clear();

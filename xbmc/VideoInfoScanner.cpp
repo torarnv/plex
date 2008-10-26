@@ -211,10 +211,7 @@ namespace VIDEO
 
       CDirectory::GetDirectory(strDirectory,items,g_stSettings.m_videoExtensions);
       items.m_strPath = strDirectory;
-      int iOldStack = g_stSettings.m_iMyVideoStack;
-      g_stSettings.m_iMyVideoStack = STACK_SIMPLE;
       items.Stack();
-      g_stSettings.m_iMyVideoStack = iOldStack;
       int numFilesInFolder = GetPathHash(items, hash);
 
       if (!m_database.GetPathHash(strDirectory, dbHash) || dbHash != hash)
@@ -335,10 +332,17 @@ namespace VIDEO
 
       if (m_bStop)
         break;
+
       // if we have a directory item (non-playlist) we then recurse into that folder
       if (pItem->m_bIsFolder && !pItem->GetLabel().Equals("sample") && !pItem->GetLabel().Equals("subs") && !pItem->IsParentFolder() && !pItem->IsPlayList() && settings.recurse > 0 && !m_info.strContent.Equals("tvshows")) // do not recurse for tv shows - we have already looked recursively for episodes
       {
         CStdString strPath=pItem->m_strPath;
+
+        // do not process items which will be scanned by main loop
+        std::map<CStdString,VIDEO::SScanSettings>::iterator it = m_pathsToScan.find(strPath);
+        if (it != m_pathsToScan.end())
+          continue;
+
         SScanSettings settings2;
         settings2.recurse = settings.recurse-1;
         settings2.parent_name_root = settings.parent_name;
@@ -453,7 +457,9 @@ namespace VIDEO
           m_database.GetTvShowInfo(pItem->m_strPath,showDetails,lTvShowId);
           
           // check for a theme file
-          Cocoa_CheckForThemeNamed(showDetails.m_strTitle.c_str());
+          std::string tvShowId = showDetails.m_strEpisodeGuide.substr(26);
+          tvShowId = tvShowId.substr(0, tvShowId.find(".xml"));
+          Cocoa_CheckForThemeWithId(tvShowId.c_str());
           
           files.clear();
           EnumerateSeriesFolder(pItem.get(),files);
@@ -588,6 +594,9 @@ namespace VIDEO
               m_database.GetScraperForPath(pItem->m_strPath,info3,settings);
               info3.strPath = info2.strPath;
               m_database.SetScraperForPath(pItem->m_strPath,info3,settings);
+              if (!bRefresh)
+                i--;
+              continue;
             }
           }
 
@@ -752,9 +761,13 @@ namespace VIDEO
       bool bMatched=false;
       for (unsigned int j=0;j<expression.size();++j)
       {
+        if (bMatched)
+          break;
+
         CRegExp reg;
         if (!reg.RegComp(expression[j]))
           break;
+
         CStdString strLabel=items[i]->m_strPath;
         strLabel.MakeLower();
         CLog::Log(LOGDEBUG,"running expression %s on label %s",expression[j].c_str(),strLabel.c_str());
@@ -1062,7 +1075,7 @@ namespace VIDEO
         }
       }
     }
-    if (item->m_bIsFolder || bGrabAny && nfoFile.IsEmpty())
+    if (item->m_bIsFolder || (bGrabAny || item->m_strPath.Find("/VIDEO_TS.IFO") == item->m_strPath.length()-13) && nfoFile.IsEmpty())
     {
       // see if there is a unique nfo file in this folder, and if so, use that
       CFileItemList items;
@@ -1072,22 +1085,15 @@ namespace VIDEO
         CUtil::GetDirectory(item->m_strPath,strPath);
       if (dir.GetDirectory(strPath, items, ".nfo") && items.Size())
       {
-        int numNFO = -1;
-        for (int i = 0; i < items.Size(); i++)
+        int nfoIndex = -1;
+        for (int i = 0; i < items.Size() && nfoIndex == -1; i++)
         {
           if (items[i]->IsNFO())
-          {
-            if (numNFO == -1)
-              numNFO = i;
-            else
-            {
-              numNFO = -1;
-              break;
-            }
-          }
+            nfoIndex = i;
         }
-        if (numNFO > -1)
-          return items[numNFO]->m_strPath;
+        
+        if (nfoIndex >= 0)
+          return items[nfoIndex]->m_strPath;
       }
     }
     

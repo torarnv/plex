@@ -373,6 +373,12 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
       share2.m_ignore = true;
       extraShares.push_back(share2);
     }
+    
+    CMediaSource share2;
+    share2.strPath = "/Applications/";
+    share2.strName = "Applications Folder";g_localizeStrings.Get(1043); // Program Plugins
+    //share2.m_ignore = true;
+    extraShares.push_back(share2);
   }
   if (CGUIDialogFileBrowser::ShowAndGetSource(path, allowNetworkShares, extraShares.size()==0?NULL:&extraShares))
   {

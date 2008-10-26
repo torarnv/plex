@@ -7,8 +7,8 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import <Sparkle/Sparkle.h>
-#import "SUBasicUpdateDriver.h"
+
+@class SUBasicUpdateDriver;
 
 @interface SUPlexUpdateDriver : SUBasicUpdateDriver {
   int processedData, totalData;

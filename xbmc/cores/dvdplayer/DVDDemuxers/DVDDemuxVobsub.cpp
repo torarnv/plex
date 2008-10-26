@@ -237,7 +237,7 @@ bool CDVDDemuxVobsub::ParseTimestamp(SState& state, char* line)
   STimestamp timestamp;
 
   while(*line == ' ') line++;
-  if(sscanf(line, "%d:%d:%d:%d, filepos:%lld", &h, &m, &s, &ms, &timestamp.pos) != 5)
+  if(sscanf(line, "%d:%d:%d:%d, filepos:%"PRId64, &h, &m, &s, &ms, &timestamp.pos) != 5)
     return false;
 
   timestamp.id  = state.id;
@@ -245,3 +245,4 @@ bool CDVDDemuxVobsub::ParseTimestamp(SState& state, char* line)
   m_Timestamps.push_back(timestamp);
   return true;
 }
+

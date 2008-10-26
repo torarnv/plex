@@ -210,7 +210,7 @@ void CGUIDialogProfileSettings::OnSettingChanged(unsigned int num)
         CFile::Delete(m_strThumb);
 
       pImage->SetFileName("");
-      pImage->Update();
+      pImage->SetInvalid();
 
       if (!strThumb.Equals("thumb://None"))
       {
