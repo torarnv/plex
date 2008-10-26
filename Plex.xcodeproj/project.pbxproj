@@ -23,6 +23,7 @@
 		1AD99BDD0E9EF07200503917 /* QTPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1AD99BDC0E9EF07200503917 /* QTPlayer.cpp */; };
 		1AD99C750E9FB54200503917 /* QuickTimeWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1AD99C740E9FB54200503917 /* QuickTimeWrapper.cpp */; };
 		1AF6A79C0E994BFB00D96BD7 /* ModelNames.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1AF6A79B0E994BFB00D96BD7 /* ModelNames.plist */; };
+		E32B456E0EB2DC4D00E19A30 /* GUIListGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E32B456C0EB2DC4D00E19A30 /* GUIListGroup.cpp */; };
 		E336EF2F0E60256000270758 /* GUIViewStatePictures.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E336EF000E60250700270758 /* GUIViewStatePictures.cpp */; };
 		E336EF300E60256000270758 /* GUIViewStatePrograms.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E336EF020E60250700270758 /* GUIViewStatePrograms.cpp */; };
 		E336EF310E60256000270758 /* GUIViewStateScripts.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E336EF040E60250700270758 /* GUIViewStateScripts.cpp */; };
@@ -1074,6 +1075,8 @@
 		E306D12C0DDF7B590052C2AD /* XBMCHelper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMCHelper.cpp; sourceTree = "<group>"; };
 		E306D12D0DDF7B590052C2AD /* XBMCHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCHelper.h; sourceTree = "<group>"; };
 		E30B3E8E0D5D59290030A311 /* libShout-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libShout-osx.a"; path = "xbmc/lib/libshout/libShout-osx.a"; sourceTree = "<group>"; };
+		E32B456C0EB2DC4D00E19A30 /* GUIListGroup.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIListGroup.cpp; sourceTree = "<group>"; };
+		E32B456D0EB2DC4D00E19A30 /* GUIListGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIListGroup.h; sourceTree = "<group>"; };
 		E33206370D5070AA00435CE3 /* DVDDemuxVobsub.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDDemuxVobsub.cpp; sourceTree = "<group>"; };
 		E33466A50D2E5103005A65EC /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
 		E336EF000E60250700270758 /* GUIViewStatePictures.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIViewStatePictures.cpp; sourceTree = "<group>"; };
@@ -3410,6 +3413,8 @@
 		E38E13890D25F9F900618676 /* guilib */ = {
 			isa = PBXGroup;
 			children = (
+				E32B456C0EB2DC4D00E19A30 /* GUIListGroup.cpp */,
+				E32B456D0EB2DC4D00E19A30 /* GUIListGroup.h */,
 				6E97BDBC0DA2B5D8003A2A89 /* GUIInfoColor.cpp */,
 				6E97BDBD0DA2B5D8003A2A89 /* GUIInfoColor.h */,
 				E3A478150D29030100F3C3A6 /* GUIMultiSelectText.cpp */,
@@ -7330,6 +7335,7 @@
 				E3F471BB0EAC481F004BB122 /* utf8tolatin1.c in Sources */,
 				E3F471BD0EAC4BBE004BB122 /* NptPosixFile.cpp in Sources */,
 				E3F471BF0EAC4BF9004BB122 /* NptStdcEnvironment.cpp in Sources */,
+				E32B456E0EB2DC4D00E19A30 /* GUIListGroup.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7494,6 +7500,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
 				GCC_PREPROCESSOR_DEFINITIONS = (
+					"APPLICATION_VERSION=\\\"$(APPLICATION_VERSION)\\\"",
 					_DEBUG,
 					_LINUX,
 					_REENTRANT,
@@ -7587,6 +7594,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
 				GCC_PREPROCESSOR_DEFINITIONS = (
+					"APPLICATION_VERSION=\\\"$(APPLICATION_VERSION)\\\"",
 					_DEBUG,
 					_LINUX,
 					_REENTRANT,
