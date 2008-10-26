@@ -196,18 +196,18 @@ void CDVDPlayerSubtitle::CloseStream(bool flush)
 
 void CDVDPlayerSubtitle::Process(double pts)
 {
-  if(pts == DVD_NOPTS_VALUE)
-    return;
-
-  // Clear the container if we're moving backwards in time.
-  if (pts < m_lastPts)
-    m_pOverlayContainer->Clear();
-
-  if(!AcceptsData())
-    return;
-
   if (m_pSubtitleFileParser)
   {
+    if(pts == DVD_NOPTS_VALUE)
+      return;
+
+    // Clear the container if we're moving backwards in time.
+    if (pts < m_lastPts)
+      m_pOverlayContainer->Clear();
+
+    if(m_pOverlayContainer->GetSize() >= 5)
+      return;
+
     CDVDOverlay* pOverlay = m_pSubtitleFileParser->Parse(pts);
     if (pOverlay)
       m_pOverlayContainer->Add(pOverlay);
@@ -226,11 +226,12 @@ void CDVDPlayerSubtitle::Process(double pts)
   }
   printf("---------------------------------------------------\n");
 #endif
+  }
 }
 
 bool CDVDPlayerSubtitle::AcceptsData()
 {
-  return m_pOverlayContainer->GetSize() < 5;
+  return true;
 }
 
 bool CDVDPlayerSubtitle::GetCurrentSubtitle(CStdString& strSubtitle, double pts)
