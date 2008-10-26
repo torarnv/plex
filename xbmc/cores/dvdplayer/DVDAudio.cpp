@@ -101,14 +101,14 @@ bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec)
     m_pAudioDecoder = new CASyncDirectSound(m_pCallback, audioframe.channels, audioframe.sample_rate, audioframe.bits_per_sample, codecstring);
 #elif __APPLE__
 
-  PortAudioDirectSound* paDecoder = new PortAudioDirectSound(m_pCallback, audioframe.channels, audioframe.sample_rate, audioframe.bits_per_sample, false, codecstring, false, audioframe.passthrough);
-  if (paDecoder->IsValid() == false)
+      CoreAudioAUHAL* caDecoder = new CoreAudioAUHAL(m_pCallback, audioframe.channels, audioframe.sample_rate, audioframe.bits_per_sample, false, codecstring, false, audioframe.passthrough);
+	if (caDecoder->IsValid() == false)
   {
-    delete paDecoder;
-    paDecoder = 0;
+    delete caDecoder;
+    caDecoder = 0;
   }
   
-  m_pAudioDecoder = paDecoder;
+  m_pAudioDecoder = caDecoder;
 
 #elif _LINUX
 

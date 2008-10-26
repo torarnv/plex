@@ -29,6 +29,7 @@
 		1AF6A79C0E994BFB00D96BD7 /* ModelNames.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1AF6A79B0E994BFB00D96BD7 /* ModelNames.plist */; };
 		94B1852B0EB48264008C38FA /* CoreAudioAUHAL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 94B185280EB48264008C38FA /* CoreAudioAUHAL.cpp */; };
 		94B1852C0EB48264008C38FA /* CoreAudioPlexSupport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 94B1852A0EB48264008C38FA /* CoreAudioPlexSupport.cpp */; };
+		94B185540EB48568008C38FA /* pa_ringbuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 94B185520EB48568008C38FA /* pa_ringbuffer.c */; };
 		E32B456E0EB2DC4D00E19A30 /* GUIListGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E32B456C0EB2DC4D00E19A30 /* GUIListGroup.cpp */; };
 		E336EF2F0E60256000270758 /* GUIViewStatePictures.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E336EF000E60250700270758 /* GUIViewStatePictures.cpp */; };
 		E336EF300E60256000270758 /* GUIViewStatePrograms.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E336EF020E60250700270758 /* GUIViewStatePrograms.cpp */; };
@@ -1091,6 +1092,9 @@
 		94B185290EB48264008C38FA /* CoreAudioAUHAL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreAudioAUHAL.h; sourceTree = "<group>"; };
 		94B1852A0EB48264008C38FA /* CoreAudioPlexSupport.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CoreAudioPlexSupport.cpp; sourceTree = "<group>"; };
 		94B185340EB482D3008C38FA /* CoreAudioPlexSupport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreAudioPlexSupport.h; sourceTree = "<group>"; };
+		94B185510EB48568008C38FA /* pa_memorybarrier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pa_memorybarrier.h; path = AC3Encoder/pa_memorybarrier.h; sourceTree = "<group>"; };
+		94B185520EB48568008C38FA /* pa_ringbuffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pa_ringbuffer.c; path = AC3Encoder/pa_ringbuffer.c; sourceTree = "<group>"; };
+		94B185530EB48568008C38FA /* pa_ringbuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pa_ringbuffer.h; path = AC3Encoder/pa_ringbuffer.h; sourceTree = "<group>"; };
 		B1A921F30DF6D14F0024CC4F /* libbz2.1.0.4.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libbz2.1.0.4.dylib; path = /opt/local/lib/libbz2.1.0.4.dylib; sourceTree = "<absolute>"; };
 		E306D12C0DDF7B590052C2AD /* XBMCHelper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMCHelper.cpp; sourceTree = "<group>"; };
 		E306D12D0DDF7B590052C2AD /* XBMCHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCHelper.h; sourceTree = "<group>"; };
@@ -3383,6 +3387,9 @@
 		9409C1E50E01D680001626C3 /* AC3Encoder */ = {
 			isa = PBXGroup;
 			children = (
+				94B185510EB48568008C38FA /* pa_memorybarrier.h */,
+				94B185520EB48568008C38FA /* pa_ringbuffer.c */,
+				94B185530EB48568008C38FA /* pa_ringbuffer.h */,
 				9409C1E80E01D696001626C3 /* ac3encoder.c */,
 				9409C1E90E01D696001626C3 /* ac3encoder.h */,
 				9409C1EA0E01D696001626C3 /* aften-types.h */,
@@ -7395,6 +7402,7 @@
 				E32B456E0EB2DC4D00E19A30 /* GUIListGroup.cpp in Sources */,
 				94B1852B0EB48264008C38FA /* CoreAudioAUHAL.cpp in Sources */,
 				94B1852C0EB48264008C38FA /* CoreAudioPlexSupport.cpp in Sources */,
+				94B185540EB48568008C38FA /* pa_ringbuffer.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
