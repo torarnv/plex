@@ -440,17 +440,19 @@ CGUISettings::CGUISettings(void)
   AddInt(14, "cacheunknown.internet", 14060, 4096, 256, 512, 32768, SPIN_CONTROL_INT_PLUS, MASK_KB);
 
   AddCategory(4, "audiooutput", 772);
-  AddInt(3, "audiooutput.mode", 337, AUDIO_ANALOG, AUDIO_ANALOG, 1, AUDIO_DIGITAL, SPIN_CONTROL_TEXT);
-  AddBool(4, "audiooutput.ac3passthrough", 364, true);
-  AddBool(5, "audiooutput.dtspassthrough", 254, true);
 #ifdef __APPLE__
-  AddString(6, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
-  //AddString(7, "audiooutput.passthroughdevice", 546, "S/PDIF", BUTTON_CONTROL_INPUT);
-#elif defined(_LINUX)
-  AddString(6, "audiooutput.audiodevice", 545, "default", BUTTON_CONTROL_INPUT);
-  AddString(7, "audiooutput.passthroughdevice", 546, "iec958", BUTTON_CONTROL_INPUT);
+	AddString(1, "audiooutput.audiodevice", 545, "Line Out", SPIN_CONTROL_TEXT);
+	AddInt(2, "audiooutput.digitalaudiomode", 574,  DIGITAL_COREAUDIO, DIGITAL_COREAUDIO, 1, DIGITAL_PCM, SPIN_CONTROL_TEXT);
+	AddBool(3, "audiooutput.ac3passthrough", 364, true);
+	AddBool(4, "audiooutput.dtspassthrough", 254, true);	
+#else
+	AddInt(3, "audiooutput.mode", 337, AUDIO_ANALOG, AUDIO_ANALOG, 1, AUDIO_DIGITAL, SPIN_CONTROL_TEXT);
+	AddBool(4, "audiooutput.ac3passthrough", 364, true);
+	AddBool(5, "audiooutput.dtspassthrough", 254, true);
+	AddString(6, "audiooutput.audiodevice", 545, "default", BUTTON_CONTROL_INPUT);
+	AddString(7, "audiooutput.passthroughdevice", 546, "iec958", BUTTON_CONTROL_INPUT);
 #endif
-
+	
 #ifndef __APPLE__
   AddCategory(4, "videooutput", 21373);
   AddInt(1, "videooutput.aspect", 21374, VIDEO_NORMAL, VIDEO_NORMAL, 1, VIDEO_WIDESCREEN, SPIN_CONTROL_TEXT);

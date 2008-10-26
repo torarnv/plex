@@ -22,6 +22,9 @@
 #include "stdafx.h"
 #include "XBAudioConfig.h"
 #include "GUISettings.h"
+#ifdef __APPLE__
+#include "CoreAudioPlexSupport.h"
+#endif
 
 XBAudioConfig g_audioConfig;
 
@@ -36,7 +39,23 @@ XBAudioConfig::~XBAudioConfig()
 
 bool XBAudioConfig::HasDigitalOutput()
 {
-  return (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL);
+#ifndef __APPLE__
+	return (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL);
+#else
+	AudioDeviceID deviceID = 
+	CoreAudioPlexSupport::GetAudioDeviceIDByName(g_guiSettings.GetString("audiooutput.audiodevice"));
+	
+	return CoreAudioPlexSupport::AudioDeviceSupportsDigital(deviceID);
+#endif
+}
+
+bool XBAudioConfig::UseDigitalOutput()
+{
+#ifdef __APPLE__
+	return (HasDigitalOutput() || g_guiSettings.GetBool("audiooutput.digitalaudiomode") == DIGITAL_PCM);
+#else
+	return HasDigitalOutput();
+#endif
 }
 
 void XBAudioConfig::SetAC3Enabled(bool bEnable)
