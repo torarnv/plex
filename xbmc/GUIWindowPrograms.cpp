@@ -37,6 +37,8 @@
 #include "FileSystem/File.h"
 #include "FileSystem/RarManager.h"
 #include "FileItem.h"
+#include "CocoaUtils.h"
+#include "XBMCHelper.h"           
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -79,6 +81,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
       m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
       // check for a passed destination path
+
       CStdString strDestination = message.GetStringParam();
       if (!strDestination.IsEmpty())
       {
@@ -324,6 +327,27 @@ int CGUIWindowPrograms::GetRegion(int iItem, bool bReload)
 
 bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
+  // Launch Mac OS X apps
+  if (Cocoa_IsAppBundle(strDirectory.c_str()))
+  {
+    if (strDirectory.Find("/Front Row.app/") > 0)
+    {
+      g_xbmcHelper.Stop();
+      Cocoa_LaunchFrontRow();
+      return true;
+    }
+    else
+    {
+      // Special cases for app compatibility
+      if ((strDirectory.Find("/DVD Player.app/") > 0) ||
+          (strDirectory.Find("/iTunes.app/") > 0))
+        g_xbmcHelper.Stop();
+      
+      Cocoa_LaunchApp(strDirectory.c_str());
+      return true;
+    }  
+  }
+  
   bool bFlattened=false;
   if (CUtil::IsDVD(strDirectory))
   {
@@ -343,7 +367,21 @@ bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemL
       return false;
 
   if (items.IsVirtualDirectoryRoot())
+  {
+    // Set thumbnail images for OS X apps added as sources
+    for (int i = 0; i < items.Size(); i++)
+    {
+      CFileItemPtr item = items[i];
+      if (item->m_strPath.Find(".app/") > 0);
+      {
+        //Get the app's icon
+        CStdString appIcon = Cocoa_GetAppIcon(item->m_strPath.c_str());
+        if (appIcon != NULL)
+          item->SetThumbnailImage(appIcon);
+      }
+    }
     return true;
+  }
 
   // flatten any folders
   m_database.BeginTransaction();
@@ -405,6 +443,18 @@ bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemL
     }
     if (!shortcutPath.IsEmpty())
       item->m_strPath = shortcutPath;
+    
+    // Special case for OS X application bundles
+    if (item->GetLabel().Find(".app") > 0) {
+      //Remove .app from the end of the label
+      CStdString itemLabel = item->GetLabel();
+      CUtil::RemoveExtension(itemLabel);
+      item->SetLabel(itemLabel);
+      //Get the app's icon
+      CStdString appIcon = Cocoa_GetAppIcon(item->m_strPath.c_str());
+      if (appIcon != NULL)
+        item->SetThumbnailImage(appIcon);
+    }
   }
   m_database.CommitTransaction();
   // set the cached thumbs

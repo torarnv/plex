@@ -125,8 +125,8 @@ extern "C"
   void Cocoa_SetBackgroundMusicEnabled(bool enabled);
   void Cocoa_SetBackgroundMusicThemesEnabled(bool enabled);
   void Cocoa_SetBackgroundMusicThemeDownloadsEnabled(bool enabled);
-  void Cocoa_CheckForThemeNamed(const char* themeName);
-  void Cocoa_SetBackgroundMusicThemeName(const char* themeName);
+  void Cocoa_CheckForThemeWithId(const char* tvShowId);
+  void Cocoa_SetBackgroundMusicThemeId(const char* tvShowId);
   void Cocoa_SetBackgroundMusicVolume(float volume);
   void Cocoa_UpdateGlobalVolume(int globalVolume);
 
@@ -139,11 +139,28 @@ extern "C"
   void Cocoa_SetUpdateSuspended(bool willSuspend);
   void Cocoa_SetUpdateCheckInterval(double seconds);
   void Cocoa_UpdateProgressDialog();
+  
+  //
+  // Mac OS X System Preferences
+  //
+  bool Cocoa_OSX_Proxy_Enabled();
+  const char* Cocoa_OSX_Proxy_Host();
+  const char* Cocoa_OSX_Proxy_Port();
+  const char* Cocoa_OSX_Proxy_Username();
+  const char* Cocoa_OSX_Proxy_Password();
 
   //
   // Display dimming.
   //
   void Cocoa_SetGammaRamp(unsigned short* pRed, unsigned short* pGreen, unsigned short* pBlue);
+  
+  //
+  // Application launching
+  //
+  void Cocoa_LaunchApp(const char* appToLaunch);
+  void Cocoa_LaunchFrontRow();
+  const char* Cocoa_GetAppIcon(const char *applicationPath);
+  bool Cocoa_IsAppBundle(const char* filePath);
 
 #ifdef __cplusplus
 }

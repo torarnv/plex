@@ -29,6 +29,8 @@
 #import "SUPlexUpdater.h"
 #include "CocoaToCppThunk.h"
 
+#import <SystemConfiguration/SystemConfiguration.h>
+
 extern int GetProcessPid(const char* processName);
 
 #define MAX_DISPLAYS 32
@@ -858,18 +860,18 @@ void Cocoa_SetBackgroundMusicThemeDownloadsEnabled(bool enabled)
   [[BackgroundMusicPlayer sharedInstance] setThemeDownloadsEnabled:enabled];
 }
 
-void Cocoa_CheckForThemeNamed(const char* themeName)
+void Cocoa_CheckForThemeWithId(const char* tvShowId)
 {
-  if (themeName != NULL)
-    [[BackgroundMusicPlayer sharedInstance] checkForThemeNamed:[NSString stringWithCString:themeName]];
+  if (tvShowId != NULL)
+    [[BackgroundMusicPlayer sharedInstance] checkForThemeWithId:[NSString stringWithCString:tvShowId]];
 }
 
-void Cocoa_SetBackgroundMusicThemeName(const char* themeName)
+void Cocoa_SetBackgroundMusicThemeId(const char* tvShowId)
 {
-  if (themeName == NULL)
-    [[BackgroundMusicPlayer sharedInstance] setThemeMusicName:nil];
+  if (tvShowId == NULL)
+    [[BackgroundMusicPlayer sharedInstance] setThemeMusicId:nil];
   else
-    [[BackgroundMusicPlayer sharedInstance] setThemeMusicName:[NSString stringWithCString:themeName]];
+    [[BackgroundMusicPlayer sharedInstance] setThemeMusicId:[NSString stringWithCString:tvShowId]];
 }
 
 void Cocoa_SetBackgroundMusicVolume(float volume)
@@ -966,4 +968,116 @@ void Cocoa_SetGammaRamp(unsigned short* pRed, unsigned short* pGreen, unsigned s
   int iScreen = Cocoa_GetCurrentDisplay();
   CGDirectDisplayID displayID = (CGDirectDisplayID)Cocoa_GetDisplay(iScreen);
   CGSetDisplayTransferByTable(displayID, tableSize, redTable, greenTable, blueTable);
+}
+
+bool Cocoa_OSX_Proxy_Enabled()
+{
+  NSDictionary* proxyDict = (NSDictionary*)SCDynamicStoreCopyProxies(NULL);
+  if ([proxyDict objectForKey:@"HTTPEnable"] == nil) return false;
+  return ([[proxyDict objectForKey:@"HTTPEnable"] boolValue]);
+}
+
+const char* Cocoa_OSX_Proxy_Host()
+{
+  NSDictionary* proxyDict = (NSDictionary*)SCDynamicStoreCopyProxies(NULL);
+  if ([proxyDict objectForKey:@"HTTPProxy"] != nil)
+    return [[proxyDict objectForKey:@"HTTPProxy"] UTF8String];
+  return "";
+}
+
+const char* Cocoa_OSX_Proxy_Port()
+{
+  NSDictionary* proxyDict = (NSDictionary*)SCDynamicStoreCopyProxies(NULL);
+  if ([proxyDict objectForKey:@"HTTPPort"] != nil)
+    return [[NSString stringWithFormat:@"%i", [[proxyDict objectForKey:@"HTTPPort"] intValue]] UTF8String];
+  return "";  
+}
+
+const char* Cocoa_OSX_Proxy_Username()
+{
+  return "";
+}
+
+const char* Cocoa_OSX_Proxy_Password()
+{
+  return "";
+}
+
+void Cocoa_LaunchApp(const char* appToLaunch)
+{
+  NSString* appPath = [NSString stringWithCString:appToLaunch];
+  if ([[NSWorkspace sharedWorkspace] launchApplication:appPath])
+  {
+    // Don't quit when running dashboard
+    if ([appPath rangeOfString:@"/Dashboard.app"].location != NSNotFound) return;
+    
+    // If the application launched successfully, wait until it's running & get the process ID
+    int i;
+    BOOL isRunning = false;
+    NSString* runningPath;
+    NSNumber* pid;
+    while (!isRunning)
+    {
+      for (i=0; i < [[[NSWorkspace sharedWorkspace] launchedApplications] count]; i++)
+      {
+        runningPath = [[[[NSWorkspace sharedWorkspace] launchedApplications] objectAtIndex:i] objectForKey:@"NSApplicationPath"];
+        if ([appPath rangeOfString:runningPath].location != NSNotFound)
+        {
+          isRunning = YES;
+          pid = [[[[NSWorkspace sharedWorkspace] launchedApplications] objectAtIndex:i] objectForKey:@"NSApplicationProcessIdentifier"];
+        }
+      }
+      sleep(1);
+    }
+    
+    // Restart Plex when the launched app quits
+    [NSTask launchedTaskWithLaunchPath:[[NSBundle mainBundle] pathForResource:@"relaunch" ofType:@""] arguments:[NSArray arrayWithObjects:[[NSBundle mainBundle] bundlePath], [NSString stringWithFormat:@"%d", [pid intValue]], nil]];
+    [NSApp terminate:nil];
+  }
+}
+
+void Cocoa_LaunchFrontRow()
+{
+  [NSTask launchedTaskWithLaunchPath:[[NSBundle mainBundle] pathForResource:@"frontrowlauncher" ofType:@""] arguments:[NSArray arrayWithObjects:[[NSBundle mainBundle] bundlePath], nil]];    
+  [NSApp terminate:nil];    
+}
+
+const char* Cocoa_GetAppIcon(const char *applicationPath)
+{
+  // Check for info.plist inside the bundle
+  NSString* appPath = [NSString stringWithCString:applicationPath];
+  NSDictionary* appPlist = [NSDictionary dictionaryWithContentsOfFile:[appPath stringByAppendingPathComponent:@"Contents/Info.plist"]];
+  if (!appPlist) return NULL;
+  
+  // Get the path to the target PNG icon
+  NSString* pngFile = [[NSString stringWithFormat:@"~/Library/Application Support/Plex/userdata/Thumbnails/Programs/%@.png",
+                        [appPlist objectForKey:@"CFBundleIdentifier"]] stringByExpandingTildeInPath];
+  
+  // If no PNG has been created, open the app's ICNS file & convert
+  if (![[NSFileManager defaultManager] fileExistsAtPath:pngFile])
+  {
+    NSString* iconFile = [appPath stringByAppendingPathComponent:[NSString stringWithFormat:@"/Contents/Resources/%@", [appPlist objectForKey:@"CFBundleIconFile"]]];
+    if ([iconFile rangeOfString:@".icns"].location == NSNotFound) iconFile = [iconFile stringByAppendingString:@".icns"];
+    NSImage* icon = [[NSImage alloc] initWithContentsOfFile:iconFile];
+    if (!icon) return NULL;
+    NSBitmapImageRep* rep = [[NSBitmapImageRep alloc] initWithData:[icon TIFFRepresentation]];
+    NSData* png = [rep representationUsingType:NSPNGFileType properties:nil];
+    [png writeToFile:pngFile atomically:YES];
+    [png release];
+    [rep release];
+    [icon release];
+  }
+  return [pngFile UTF8String];
+}
+
+bool Cocoa_IsAppBundle(const char* filePath)
+{
+  NSString* appPath = [NSString stringWithUTF8String:filePath];
+  NSFileManager* fm = [NSFileManager defaultManager];
+  return (([appPath rangeOfString:@".app"].location != NSNotFound) &&
+          [fm fileExistsAtPath:appPath] &&
+          [fm fileExistsAtPath:[appPath stringByAppendingPathComponent:@"/Contents/Info.plist"]] &&
+          [fm fileExistsAtPath:[appPath stringByAppendingPathComponent:@"/Contents/MacOS"]]);
+                                           
+                                           
 }

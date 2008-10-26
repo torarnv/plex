@@ -38,6 +38,7 @@
 #include "FileSystem/Directory.h"
 #include "FileSystem/File.h"
 #include "FileItem.h"
+#include "CocoaUtils.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -386,6 +387,7 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
     CFileItemPtr pItem = (*m_vecItems)[i];
     strPath2 = pItem->m_strPath;
     CUtil::RemoveSlashAtEnd(strPath2);
+    
     if (strPath2 == strSelectedItem)
     {
       m_viewControl.SetSelectedItem(i);
@@ -445,7 +447,18 @@ void CGUIDialogFileBrowser::OnClick(int iItem)
   CFileItemPtr pItem = (*m_vecItems)[iItem];
   CStdString strPath = pItem->m_strPath;
 
-  if (pItem->m_bIsFolder)
+  // Select OS X app bundles
+  if (Cocoa_IsAppBundle(pItem->m_strPath.c_str()))
+  {
+    //TODO: Better check for bundles
+    Update(strPath);
+    m_selectedPath = pItem->m_strPath;
+    m_bConfirmed = true;
+    Close();
+    return;
+  }
+
+  else if (pItem->m_bIsFolder)
   {
     if (pItem->m_strPath == "net://")
     { // special "Add Network Location" item

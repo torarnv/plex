@@ -2976,7 +2976,15 @@ int CDVDPlayer::GetCacheSize()
   if (strFile.Find("http://www.youtube.com") == 0     ||
       strFile.Find("http://www.totaleclips.com") == 0 ||
       strFile.Find("http://blip.tv") == 0             ||
-      strFile.Find("http://vid.cnn.com") == 0)
+      strFile.Find("http://vid.cnn.com") == 0         ||
+      
+      // Check for BBC iPlayer streams
+      (strFile.Find(".edgefcs.net:1935/ondemand?_fcs_vhost=") > 0 &&
+       strFile.Find(".edgefcs.net&auth=") > 0                     &&
+       strFile.Find("&aifp=v001&slist=secure/") > 0               &&
+       strFile.Find("streaming") > 0
+      ))
+       
     return 256;
   
   // First, figure out the source of the file.

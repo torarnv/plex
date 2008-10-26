@@ -6,6 +6,7 @@
 //  Copyright 2008 __MyCompanyName__. All rights reserved.
 //
 #import "SUPlexUpdater.h"
+#import "SUBasicUpdateDriver.h"
 #import "SUPlexUpdateDriver.h"
 #import "SUPlexBackgroundUpdateToastDriver.h"
 #import "SUPlexBackgroundUpdateDialogDriver.h"
@@ -14,6 +15,8 @@
 
 
 @implementation SUPlexUpdater
+
+id g_plexUpdater;
 
 + (SUPlexUpdater*)sharedInstance
 {

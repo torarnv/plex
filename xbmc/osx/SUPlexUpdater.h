@@ -12,8 +12,6 @@
 #define UPDATE_ALERT_NOTIFY 0
 #define UPDATE_ALERT_ASK 1
 
-id g_plexUpdater;
-
 @interface SUPlexUpdater : SUUpdater {
 @private
   int updateAlertType;

@@ -6,8 +6,10 @@
 //  Copyright 2008 __MyCompanyName__. All rights reserved.
 //
 
+#import "SUBasicUpdateDriver.h"
+#import "SUPlexUpdater.h"
 #import "SUPlexUpdateDriver.h"
-//#import "SUPlexUpdater.h"
+#import <Sparkle/Sparkle.h>
 #import "SUHost.h"
 #import "SUPlainInstaller.h"
 #import "SUConstants.h"
@@ -20,7 +22,7 @@
 #import "CocoaUtils.h"
 
 
-@class SUPlexUpdater;
+//@class SUPlexUpdater;
 
 // From SUPlainInstaller
 // Authorization code based on generous contribution from Allan Odgaard. Thanks, Allan!

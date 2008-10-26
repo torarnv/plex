@@ -92,6 +92,7 @@ void QuickTimeWrapper::Pause()
 
 bool QuickTimeWrapper::IsPlayerDone()
 {
+  MoviesTask(m_qtMovie, 0);
   if ((m_qtMovie == NULL) || (!m_bIsPlaying)) return true;
   return IsMovieDone(m_qtMovie);
 }
