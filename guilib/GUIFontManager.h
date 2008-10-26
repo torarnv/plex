@@ -66,6 +66,7 @@ public:
   bool GetFirstFontSetUnicode(CStdString& strFontSet);
   
   void ReloadTTFFonts(void);
+  std::vector<std::string> GetSystemFontNames();
 
 protected:
   void LoadFonts(const TiXmlNode* fontNode);
