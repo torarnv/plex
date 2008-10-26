@@ -211,10 +211,10 @@ void CDVDPlayerSubtitle::Process(double pts)
     CDVDOverlay* pOverlay = m_pSubtitleFileParser->Parse(pts);
     if (pOverlay)
       m_pOverlayContainer->Add(pOverlay);
+    
+    m_lastPts = pts;
   }
   
-  m_lastPts = pts;
-
 #if 0
   printf("===================================================\n");
   printf("Asked for %d, have %d subtitles\n", (int)(pts/1000), m_pOverlayContainer->GetOverlays()->size());
@@ -226,7 +226,6 @@ void CDVDPlayerSubtitle::Process(double pts)
   }
   printf("---------------------------------------------------\n");
 #endif
-  }
 }
 
 bool CDVDPlayerSubtitle::AcceptsData()
