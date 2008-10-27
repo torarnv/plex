@@ -1201,7 +1201,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
 			if (pControl) 
 			{
 				pControl->SetValue(DIGITAL_COREAUDIO);
-				g_guiSettings.SetBool("audiooutput.digitalaudiomode", DIGITAL_COREAUDIO);
+				g_guiSettings.SetInt("audiooutput.digitalaudiomode", DIGITAL_COREAUDIO);
 			}
 		}
 	}
@@ -1818,7 +1818,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   else if (strSetting.Equals("audiooutput.digitalaudiomode"))
   {
 	  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-	  g_guiSettings.SetBool("audiooutput.digitalaudiomode", pControl->GetValue());
+	  g_guiSettings.SetInt("audiooutput.digitalaudiomode", pControl->GetValue());
   }
 	
 #endif

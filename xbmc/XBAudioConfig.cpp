@@ -52,7 +52,7 @@ bool XBAudioConfig::HasDigitalOutput()
 bool XBAudioConfig::UseDigitalOutput()
 {
 #ifdef __APPLE__
-	return (HasDigitalOutput() || g_guiSettings.GetBool("audiooutput.digitalaudiomode") == DIGITAL_PCM);
+	return (HasDigitalOutput() || g_guiSettings.GetInt("audiooutput.digitalaudiomode") == DIGITAL_PCM);
 #else
 	return HasDigitalOutput();
 #endif

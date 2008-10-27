@@ -441,8 +441,8 @@ CGUISettings::CGUISettings(void)
 
   AddCategory(4, "audiooutput", 772);
 #ifdef __APPLE__
-	AddString(1, "audiooutput.audiodevice", 545, "Line Out", SPIN_CONTROL_TEXT);
-	AddInt(2, "audiooutput.digitalaudiomode", 574,  DIGITAL_COREAUDIO, DIGITAL_COREAUDIO, 1, DIGITAL_PCM, SPIN_CONTROL_TEXT);
+	AddString(1, "audiooutput.audiodevice", 545, "Built-in Output", SPIN_CONTROL_TEXT);
+	AddInt(2, "audiooutput.digitalaudiomode", 574,  DIGITAL_COREAUDIO, DIGITAL_PCM, 1, DIGITAL_COREAUDIO, SPIN_CONTROL_TEXT);
 	AddBool(3, "audiooutput.ac3passthrough", 364, true);
 	AddBool(4, "audiooutput.dtspassthrough", 254, true);	
 #else
@@ -477,7 +477,6 @@ CGUISettings::CGUISettings(void)
   AddString(1, "softwareupdate.checknow", 40016, "", BUTTON_CONTROL_STANDARD);
   AddSeparator(2, "softwareupdate.sep1");
   AddBool(3, "softwareupdate.alertsenabled", 40017, true);
-  //AddInt(<#int iOrder#>, <#const char * strSetting#>, <#int iLabel#>, <#int fSetting#>, <#int iMin#>, <#int iStep#>, <#int iMax#>, <#int iControlType#>, <#const char * strFormat#>)
   AddInt(4, "softwareupdate.checkinterval", 40025, UPDATE_INTERVAL_DAILY, UPDATE_INTERVAL_HOURLY, 1, UPDATE_INTERVAL_WEEKLY, SPIN_CONTROL_TEXT);
   AddInt(5, "softwareupdate.alerttype", 40019, UPDATE_ASK, UPDATE_NOTIFY, 1, UPDATE_ASK, SPIN_CONTROL_TEXT);
   AddBool(0, "softwareupdate.firstrun", 40000, true);
@@ -1052,8 +1051,6 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
 #ifdef __APPLE__
 	g_audioConfig.SetAC3Enabled(GetBool("audiooutput.ac3passthrough"));
 	g_audioConfig.SetDTSEnabled(GetBool("audiooutput.dtspassthrough"));
-	// Set the initial settings.
-	SetBool("audiooutput.digitalaudiomode", g_audioConfig.HasDigitalOutput());
 #else
 	
   // Get hardware based stuff...
