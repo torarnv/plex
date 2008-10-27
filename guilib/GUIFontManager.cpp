@@ -163,8 +163,14 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
   // If the font doesn't exist at the file name specified, then lets go look for it.
   if (!XFILE::CFile::Exists(strPath) && strFilename[1] != ':')
   {
-    FindSystemFontPath(CUtil::GetFileName(strFilename), &strPath);
-    // TODO: Should we set strFilename to the new file name of the found path (because it may have changed)
+    if (!FindSystemFontPath(CUtil::GetFileName(strFilename), &strPath))
+    {
+#ifdef __APPLE__
+      CStdString fontPath = Cocoa_GetSystemFontPathFromDisplayName(strFilename);
+      if (XFILE::CFile::Exists(fontPath))
+        strPath = fontPath;
+#endif
+    }
   }
 
   // check if we already have this font file loaded (font object could differ only by color or style)
