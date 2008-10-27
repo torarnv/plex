@@ -71,15 +71,15 @@ class CoreAudioAUHAL : public IDirectSoundRenderer
 		bool IsValid();
 		
 	private:
-		virtual bool CreateOutputStream(const CStdString& strName, int channels, int sampleRate, int bitsPerSample, bool isDigital, bool useCoreAudio, int packetSize);
-		virtual int OpenPCM(struct CoreAudioDeviceParameters *deviceParameters, const CStdString& strName, int channels, int sampleRate, int bitsPerSample, bool isDigital, bool useCoreAudio, int packetSize);
+		virtual bool CreateOutputStream(const CStdString& strName, int channels, float sampleRate, int bitsPerSample, bool isDigital, bool useCoreAudio, int packetSize);
+		virtual int OpenPCM(struct CoreAudioDeviceParameters *deviceParameters, const CStdString& strName, int channels, float sampleRate, int bitsPerSample, bool isDigital, bool useCoreAudio, int packetSize);
 		static OSStatus RenderCallbackAnalog(struct CoreAudioDeviceParameters *deviceParameters,
 															  int *ioActionFlags,
 															  const AudioTimeStamp *inTimeStamp,
 															  unsigned int inBusNummer,
 															  unsigned int inNumberFrames,
 											  AudioBufferList *ioData );
-		virtual int OpenSPDIF(struct CoreAudioDeviceParameters *deviceParameters, const CStdString& strName, int channels, int sampleRate, int bitsPerSample, bool isDigital, bool useCoreAudio, int packetSize);
+		virtual int OpenSPDIF(struct CoreAudioDeviceParameters *deviceParameters, const CStdString& strName, int channels, float sampleRate, int bitsPerSample, bool isDigital, bool useCoreAudio, int packetSize);
 		virtual int AudioStreamChangeFormat(CoreAudioDeviceParameters *deviceParameters, AudioStreamID i_stream_id, AudioStreamBasicDescription change_format);
 		static OSStatus RenderCallbackSPDIF(AudioDeviceID inDevice,
 													 const AudioTimeStamp * inNow,

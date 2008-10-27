@@ -98,7 +98,7 @@ CoreAudioAUHAL::CoreAudioAUHAL(IAudioCallback* pCallback, int iChannels, unsigne
 	m_bIsAllocated = false;
 	ac3_framebuffer = NULL;
 	
-	m_dwPacketSize = iChannels*(uiBitsPerSample/8)*512;
+	m_dwPacketSize = iChannels*(uiBitsPerSample/8)*256;
 	m_dwNumPackets = 16;
 	
 	if (g_audioConfig.UseDigitalOutput() && 
@@ -498,7 +498,7 @@ void CoreAudioAUHAL::SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers)
 /*****************************************************************************
  * Open: open macosx audio output
  *****************************************************************************/
-bool CoreAudioAUHAL::CreateOutputStream(const CStdString& strName, int channels, int sampleRate, int bitsPerSample, bool isDigital, bool useCoreAudio, int packetSize)
+bool CoreAudioAUHAL::CreateOutputStream(const CStdString& strName, int channels, float sampleRate, int bitsPerSample, bool isDigital, bool useCoreAudio, int packetSize)
 {
     OSStatus                err = noErr;
     UInt32                  i_param_size = 0;
@@ -607,7 +607,7 @@ error:
 /*****************************************************************************
  * Open: open and setup a HAL AudioUnit to do analog (multichannel) audio output
  *****************************************************************************/
-int CoreAudioAUHAL::OpenPCM(struct CoreAudioDeviceParameters *deviceParameters, const CStdString& strName, int channels, int sampleRate, int bitsPerSample, bool isDigital, bool useCoreAudio, int packetSize)
+int CoreAudioAUHAL::OpenPCM(struct CoreAudioDeviceParameters *deviceParameters, const CStdString& strName, int channels, float sampleRate, int bitsPerSample, bool isDigital, bool useCoreAudio, int packetSize)
 {
     OSStatus                    err = noErr;
     UInt32                      i_param_size = 0, i = 0;
@@ -771,7 +771,6 @@ OSStatus CoreAudioAUHAL::RenderCallbackAnalog(struct CoreAudioDeviceParameters *
     // initial calc
 	int framesToWrite = inNumberFrames;
 	int framesAvailable = PaUtil_GetRingBufferReadAvailable(deviceParameters->outputBuffer);
-	CLog::Log(LOGDEBUG, "Available: %i, Write: %i", framesAvailable, framesToWrite);
 	
 	if (framesToWrite > framesAvailable)
 	{
@@ -798,7 +797,7 @@ OSStatus CoreAudioAUHAL::RenderCallbackAnalog(struct CoreAudioDeviceParameters *
 /*****************************************************************************
  * Setup a encoded digital stream (SPDIF)
  *****************************************************************************/
-int CoreAudioAUHAL::OpenSPDIF(struct CoreAudioDeviceParameters *deviceParameters, const CStdString& strName, int channels, int sampleRate, int bitsPerSample, bool isDigital, bool useCoreAudio, int packetSize)
+int CoreAudioAUHAL::OpenSPDIF(struct CoreAudioDeviceParameters *deviceParameters, const CStdString& strName, int channels, float sampleRate, int bitsPerSample, bool isDigital, bool useCoreAudio, int packetSize)
 
 {
 	OSStatus                err = noErr;
