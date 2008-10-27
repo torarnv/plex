@@ -459,6 +459,7 @@ namespace VIDEO
           // check for a theme file
           std::string tvShowId = showDetails.m_strEpisodeGuide.substr(26);
           tvShowId = tvShowId.substr(0, tvShowId.find(".xml"));
+          CLog::Log(LOGINFO, "Downloading TV theme %s", tvShowId.c_str());
           Cocoa_CheckForThemeWithId(tvShowId.c_str());
           
           files.clear();
@@ -631,6 +632,12 @@ namespace VIDEO
                   m_database.GetTvShowInfo(pItem->m_strPath,details,lResult);
                   if (!details.m_strEpisodeGuide.IsEmpty()) // assume local-only series if no episode guide url
                   {
+                    // check for a theme file
+                    std::string tvShowId = details.m_strEpisodeGuide.substr(26);
+                    tvShowId = tvShowId.substr(0, tvShowId.find(".xml"));
+                    CLog::Log(LOGINFO, "Downloading TV theme %s", tvShowId.c_str());
+                    Cocoa_CheckForThemeWithId(tvShowId.c_str());
+                    
                     CScraperUrl url;
                     url.ParseEpisodeGuide(details.m_strEpisodeGuide);
                     EnumerateSeriesFolder(pItem.get(),files);
