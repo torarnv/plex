@@ -64,7 +64,7 @@ struct CoreAudioDeviceParameters
     AudioUnit                   au_unit;        /* The AudioUnit we use */
 	PaUtilRingBuffer*			outputBuffer;
 	void*						outputBufferData;
-    uint32_t					hardwareFrameLatency;
+    float						hardwareFrameLatency;
 	bool						b_digital;      /* Are we running in digital mode? */
 
 	
@@ -448,14 +448,10 @@ DWORD CoreAudioAUHAL::AddPackets(unsigned char *data, DWORD len)
 //***********************************************************************************************
 FLOAT CoreAudioAUHAL::GetDelay()
 {
-	// For now hardwire to about +15ms from "base", which is what we're observing.
-#warning set programmatically
-	FLOAT delay = CA_BUFFER_FACTOR;
+	FLOAT delay = CA_BUFFER_FACTOR + (deviceParameters->hardwareFrameLatency / deviceParameters->stream_format.mSampleRate);
 	
-	//if (m_bEncodeAC3)
-	//	delay += 0.032; // 1536/48000 = 0.032 (one AC3 packet)
-	//else
-	//	delay += 0.008;
+	if (m_bEncodeAC3)
+		delay += 0.032; 
 	
 	return delay;
 }
@@ -711,7 +707,7 @@ int CoreAudioAUHAL::OpenPCM(struct CoreAudioDeviceParameters *deviceParameters, 
 	// Get AU hardware buffer size
 	
 	uint32_t audioDeviceLatency, audioDeviceBufferFrameSize, audioDeviceSafetyOffset;
-	deviceParameters->hardwareFrameLatency = 0;
+	deviceParameters->hardwareFrameLatency = 0.0;
 	
 	verify_noerr( AudioUnitGetProperty(deviceParameters->au_unit,
 									   kAudioDevicePropertyLatency,
@@ -737,9 +733,12 @@ int CoreAudioAUHAL::OpenPCM(struct CoreAudioDeviceParameters *deviceParameters, 
 									   0,
 									   &audioDeviceSafetyOffset,
 									   &i_param_size ));
-	
+	\
 	deviceParameters->hardwareFrameLatency += audioDeviceSafetyOffset;
-	CLog::Log(LOGDEBUG, "Hardware latency: %i frames", deviceParameters->hardwareFrameLatency;
+	
+	CLog::Log(LOGINFO, "Hardware latency: %.0f frames (%.2f msec @ %.0fHz)", deviceParameters->hardwareFrameLatency, 
+			  deviceParameters->hardwareFrameLatency / deviceParameters->stream_format.mSampleRate * 1000,
+			  deviceParameters->stream_format.mSampleRate);
 	
 	// initialise the CoreAudio sink buffer
 	uint32_t framecount = 1;
