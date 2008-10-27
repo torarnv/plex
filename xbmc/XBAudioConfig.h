@@ -31,6 +31,7 @@ public:
   ~XBAudioConfig();
 
   bool HasDigitalOutput();
+  bool UseDigitalOutput();
 
   bool GetAC3Enabled();
   void SetAC3Enabled(bool bEnable);

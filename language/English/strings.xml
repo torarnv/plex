@@ -488,6 +488,9 @@
   <string id="570">Date Added</string>
   <string id="571">Default</string>
   <string id="572">Studio</string>
+  <string id="574">Digital Output Support</string>
+  <string id="575">Autodetect (CoreAudio)</string>
+  <string id="576">Force Digital (PCM)</string>
 
   <string id="580">Sort Direction</string>
   <string id="581">Sort Method</string>

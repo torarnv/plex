@@ -219,7 +219,7 @@ bool CDVDAudioCodecLibFaad::OpenDecoder()
 		// modify some stuff here
 		pConfiguration->outputFormat = FAAD_FMT_16BIT; // already default
 		
-		if (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL)
+		if (g_audioConfig.UseDigitalOutput())
 		{
 			// Downmatrix with analog devices or if device doesn't support AC3
 			pConfiguration->downMatrix = !(g_audioConfig.GetAC3Enabled());
