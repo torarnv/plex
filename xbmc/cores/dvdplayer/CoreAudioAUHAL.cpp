@@ -981,6 +981,49 @@ int CoreAudioAUHAL::OpenSPDIF(struct CoreAudioDeviceParameters *deviceParameters
     if( !AudioStreamChangeFormat(deviceParameters, deviceParameters->i_stream_id, deviceParameters->stream_format))
         return false;
 	
+	
+	// Get device hardware buffer size
+	
+	uint32_t audioDeviceLatency, audioStreamLatency, audioDeviceBufferFrameSize, audioDeviceSafetyOffset;
+	deviceParameters->hardwareFrameLatency = 0.0;
+	
+	AudioDeviceGetProperty(deviceParameters->device_id, 
+						   0, false, 
+						   kAudioDevicePropertyLatency, 
+						   &i_param_size, 
+						   &audioDeviceLatency);
+	
+	deviceParameters->hardwareFrameLatency += audioDeviceLatency;
+	
+	AudioDeviceGetProperty(deviceParameters->device_id, 
+						   0, false, 
+						   kAudioDevicePropertyBufferFrameSize, 
+						   &i_param_size, 
+						   &audioDeviceBufferFrameSize);
+	
+	deviceParameters->hardwareFrameLatency += audioDeviceBufferFrameSize;
+	
+	AudioDeviceGetProperty(deviceParameters->device_id, 
+						   0, false, 
+						   kAudioDevicePropertySafetyOffset, 
+						   &i_param_size, 
+						   &audioDeviceSafetyOffset);
+	
+	deviceParameters->hardwareFrameLatency += audioDeviceSafetyOffset;
+	
+	AudioStreamGetProperty(deviceParameters->i_stream_id, 
+						   0, 
+						   kAudioStreamPropertyLatency, 
+						   &i_param_size, 
+						   &audioStreamLatency);
+	
+	deviceParameters->hardwareFrameLatency += audioStreamLatency;
+	
+	
+	CLog::Log(LOGINFO, "Hardware latency: %.0f frames (%.2f msec @ %.0fHz)", deviceParameters->hardwareFrameLatency, 
+			  deviceParameters->hardwareFrameLatency / deviceParameters->stream_format.mSampleRate * 1000,
+			  deviceParameters->stream_format.mSampleRate);
+	
   	// initialise the CoreAudio sink buffer
 	uint32_t framecount = 1;
 	while(framecount <= deviceParameters->stream_format.mSampleRate) // ensure power of 2
