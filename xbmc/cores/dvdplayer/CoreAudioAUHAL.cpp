@@ -981,8 +981,6 @@ int CoreAudioAUHAL::OpenSPDIF(struct CoreAudioDeviceParameters *deviceParameters
     if( !AudioStreamChangeFormat(deviceParameters, deviceParameters->i_stream_id, deviceParameters->stream_format))
         return false;
 	
-<<<<<<< HEAD:xbmc/cores/dvdplayer/CoreAudioAUHAL.cpp
-	
 	// Get device hardware buffer size
 	
 	uint32_t audioDeviceLatency, audioStreamLatency, audioDeviceBufferFrameSize, audioDeviceSafetyOffset;
@@ -1026,8 +1024,6 @@ int CoreAudioAUHAL::OpenSPDIF(struct CoreAudioDeviceParameters *deviceParameters
 			  deviceParameters->hardwareFrameLatency / deviceParameters->stream_format.mSampleRate * 1000,
 			  deviceParameters->stream_format.mSampleRate);
 	
-=======
->>>>>>> b4436b5... Implement hardware latency for SPDIF output (untested):xbmc/cores/dvdplayer/CoreAudioAUHAL.cpp
   	// initialise the CoreAudio sink buffer
 	uint32_t framecount = 1;
 	while(framecount <= deviceParameters->stream_format.mSampleRate) // ensure power of 2
