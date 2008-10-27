@@ -188,7 +188,7 @@ CStdString CDirectoryNode::BuildPath()
 
   if (!m_strName.IsEmpty())
     array.insert(array.begin(), m_strName);
-  
+
   CDirectoryNode* pParent=m_pParent;
   while (pParent!=NULL)
   {
@@ -266,7 +266,7 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
     return;
 
   // no need for "all" item when only one item
-  if (items.Size() == 0 || items.Size() == 1 || items.Size() == 2 && items[0]->IsParentFolder())
+  if (items.GetObjectCount() <= 1)
     return;
 
   // hack - as the season node might return episodes

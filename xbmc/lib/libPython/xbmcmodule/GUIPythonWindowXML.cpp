@@ -229,7 +229,7 @@ void CGUIPythonWindowXML::AddItem(CFileItemPtr fileItem, int itemPosition)
   else if (itemPosition <  -1 &&  !(itemPosition*-1 < m_vecItems->Size()))
   {
     m_vecItems->AddFront(fileItem,0);
-  } 
+  }
   else
   {
     m_vecItems->AddFront(fileItem,itemPosition);
@@ -261,7 +261,7 @@ void CGUIPythonWindowXML::SetCurrentListPosition(int item)
 }
 
 CFileItemPtr CGUIPythonWindowXML::GetListItem(int position)
-{ 
+{
   if (position < 0 || position >= m_vecItems->Size()) return CFileItemPtr();
   return m_vecItems->Get(position);
 }
@@ -454,14 +454,8 @@ void CGUIPythonWindowXML::UpdateButtons()
     SET_CONTROL_LABEL(CONTROL_BTNSORTBY, sortLabel);
   }
 
-  int iItems = m_vecItems->Size();
-  if (iItems)
-  {
-    CFileItemPtr pItem = m_vecItems->Get(0);
-    if (pItem->IsParentFolder()) iItems--;
-  }
   CStdString items;
-  items.Format("%i %s", iItems, g_localizeStrings.Get(127).c_str());
+  items.Format("%i %s", m_vecItems->GetObjectCount(), g_localizeStrings.Get(127).c_str());
   SET_CONTROL_LABEL(CONTROL_LABELFILES, items);
 }
 
@@ -481,7 +475,7 @@ CGUIControl *CGUIPythonWindowXML::GetFirstFocusableControl(int id)
   return CGUIWindow::GetFirstFocusableControl(id);
 }
 
-const CFileItemList& CGUIPythonWindowXML::CurrentDirectory() const 
-{ 
+const CFileItemList& CGUIPythonWindowXML::CurrentDirectory() const
+{
   return *m_vecItems;
 }
