@@ -58,16 +58,13 @@
 
 struct CoreAudioDeviceParameters
 {
-    mtime_t                     clock_diff;     /* Difference between VLC clock and Device clock */
-	
     /* AUHAL specific */
 	AudioDeviceID				device_id; 
     Component                   au_component;   /* The Audiocomponent we use */
     AudioUnit                   au_unit;        /* The AudioUnit we use */
 	PaUtilRingBuffer*			outputBuffer;
 	void*						outputBufferData;
-    uint32_t                    i_read_bytes;
-    uint32_t                    i_total_bytes;
+    uint32_t					hardwareFrameLatency;
 	bool						b_digital;      /* Are we running in digital mode? */
 
 	
@@ -708,12 +705,41 @@ int CoreAudioAUHAL::OpenPCM(struct CoreAudioDeviceParameters *deviceParameters, 
 									   kAudioUnitScope_Global,
 									   0, &input, sizeof(input)));
 	
-    /* AU initiliaze */
-    verify_noerr( AudioUnitInitialize(deviceParameters->au_unit) );
+    /* AU initialize */
+    verify_noerr( AudioUnitInitialize(deviceParameters->au_unit));
 	
-    /* Find the difference between device clock and mdate clock */
-    deviceParameters->clock_diff = - (mtime_t)AudioConvertHostTimeToNanos(AudioGetCurrentHostTime()) / 1000;
-    deviceParameters->clock_diff += CoreAudioPlexSupport::mdate();
+	// Get AU hardware buffer size
+	
+	uint32_t audioDeviceLatency, audioDeviceBufferFrameSize, audioDeviceSafetyOffset;
+	deviceParameters->hardwareFrameLatency = 0;
+	
+	verify_noerr( AudioUnitGetProperty(deviceParameters->au_unit,
+									   kAudioDevicePropertyLatency,
+									   kAudioUnitScope_Global,
+									   0,
+									   &audioDeviceLatency,
+									   &i_param_size ));
+	
+	deviceParameters->hardwareFrameLatency += audioDeviceLatency;
+	
+	verify_noerr( AudioUnitGetProperty(deviceParameters->au_unit,
+									   kAudioDevicePropertyBufferFrameSize,
+									   kAudioUnitScope_Global,
+									   0,
+									   &audioDeviceBufferFrameSize,
+									   &i_param_size ));
+	
+	deviceParameters->hardwareFrameLatency += audioDeviceBufferFrameSize;
+	
+	verify_noerr( AudioUnitGetProperty(deviceParameters->au_unit,
+									   kAudioDevicePropertySafetyOffset,
+									   kAudioUnitScope_Global,
+									   0,
+									   &audioDeviceSafetyOffset,
+									   &i_param_size ));
+	
+	deviceParameters->hardwareFrameLatency += audioDeviceSafetyOffset;
+	CLog::Log(LOGDEBUG, "Hardware latency: %i frames", deviceParameters->hardwareFrameLatency;
 	
 	// initialise the CoreAudio sink buffer
 	uint32_t framecount = 1;
@@ -748,22 +774,6 @@ OSStatus CoreAudioAUHAL::RenderCallbackAnalog(struct CoreAudioDeviceParameters *
 									  unsigned int inNumberFrames,
 									  AudioBufferList *ioData )
 {
-    AudioTimeStamp  host_time;
-    mtime_t         current_date = 0;
-    uint32_t        i_mData_bytes = 0;
-	
-	
-	
-    host_time.mFlags = kAudioTimeStampHostTimeValid;
-    AudioDeviceTranslateTime( deviceParameters->device_id, inTimeStamp, &host_time );
-	
-    /* Check for the difference between the Device clock and mdate */
-    deviceParameters->clock_diff = - (mtime_t) AudioConvertHostTimeToNanos( AudioGetCurrentHostTime() ) / 1000;
-    deviceParameters->clock_diff += CoreAudioPlexSupport::mdate();
-	
-    current_date = deviceParameters->clock_diff + AudioConvertHostTimeToNanos( host_time.mHostTime ) / 1000;
-	- ((mtime_t) 1000000 / deviceParameters->stream_format.mSampleRate * 31 ); // 31 = Latency in Frames. retrieve somewhere
-	
     // initial calc
 	int framesToWrite = inNumberFrames;
 	int framesAvailable = PaUtil_GetRingBufferReadAvailable(deviceParameters->outputBuffer);
@@ -995,11 +1005,6 @@ int CoreAudioAUHAL::OpenSPDIF(struct CoreAudioDeviceParameters *deviceParameters
 		CLog::Log(LOGERROR, "AudioDeviceAddIOProcID failed: [%4.4s]", (char *)&err );
         return false;
     }
-	
-    /* Check for the difference between the Device clock and mdate */
-    deviceParameters->clock_diff = - (mtime_t)
-	AudioConvertHostTimeToNanos( AudioGetCurrentHostTime() ) / 1000;
-    //deviceParameters->clock_diff += mdate();
 	
     /* Start device */
     err = AudioDeviceStart(deviceParameters->device_id, (AudioDeviceIOProc)RenderCallbackSPDIF );
