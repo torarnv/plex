@@ -41,6 +41,8 @@ struct AudioDeviceArray {
 	int deviceCount;
 };
 
+typedef int64_t mtime_t;
+
 class CoreAudioPlexSupport
 	{
 	public:
@@ -51,6 +53,7 @@ class CoreAudioPlexSupport
 		static AudioDeviceArray* GetDeviceArray();
 		static AudioDeviceID GetAudioDeviceIDByName(const char *audioDeviceName);
 		static int AudioDeviceSupportsDigital(AudioDeviceID i_dev_id);
+		static mtime_t mdate();
 
 	private:
 		static int AudioDeviceHasOutput(AudioDeviceID i_dev_id);

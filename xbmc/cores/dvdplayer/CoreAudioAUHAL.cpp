@@ -53,7 +53,6 @@
  * epoch). Note that date and time intervals can be manipulated using regular
  * arithmetic operators, and that no special functions are required.
  */
-typedef int64_t mtime_t;
 #define BUFSIZE 0xffffff
 #define CA_BUFFER_FACTOR 0.05
 
@@ -713,9 +712,8 @@ int CoreAudioAUHAL::OpenPCM(struct CoreAudioDeviceParameters *deviceParameters, 
     verify_noerr( AudioUnitInitialize(deviceParameters->au_unit) );
 	
     /* Find the difference between device clock and mdate clock */
-    deviceParameters->clock_diff = - (mtime_t)
-	AudioConvertHostTimeToNanos( AudioGetCurrentHostTime() ) / 1000;
-    //deviceParameters->clock_diff += mdate();
+    deviceParameters->clock_diff = - (mtime_t)AudioConvertHostTimeToNanos(AudioGetCurrentHostTime()) / 1000;
+    deviceParameters->clock_diff += CoreAudioPlexSupport::mdate();
 	
 	// initialise the CoreAudio sink buffer
 	uint32_t framecount = 1;
@@ -750,23 +748,21 @@ OSStatus CoreAudioAUHAL::RenderCallbackAnalog(struct CoreAudioDeviceParameters *
 									  unsigned int inNumberFrames,
 									  AudioBufferList *ioData )
 {
-//    AudioTimeStamp  host_time;
-  //  mtime_t         current_date = 0;
-    //uint32_t        i_mData_bytes = 0;
+    AudioTimeStamp  host_time;
+    mtime_t         current_date = 0;
+    uint32_t        i_mData_bytes = 0;
 	
 	
 	
-    //host_time.mFlags = kAudioTimeStampHostTimeValid;
-    //AudioDeviceTranslateTime( deviceParameters->device_id, inTimeStamp, &host_time );
+    host_time.mFlags = kAudioTimeStampHostTimeValid;
+    AudioDeviceTranslateTime( deviceParameters->device_id, inTimeStamp, &host_time );
 	
     /* Check for the difference between the Device clock and mdate */
-    //p_sys->clock_diff = - (mtime_t)
-	//AudioConvertHostTimeToNanos( AudioGetCurrentHostTime() ) / 1000;
-    //p_sys->clock_diff += mdate();
+    deviceParameters->clock_diff = - (mtime_t) AudioConvertHostTimeToNanos( AudioGetCurrentHostTime() ) / 1000;
+    deviceParameters->clock_diff += CoreAudioPlexSupport::mdate();
 	
-    //current_date = deviceParameters->clock_diff +
-	//AudioConvertHostTimeToNanos( host_time.mHostTime ) / 1000;
-	//- ((mtime_t) 1000000 / p_aout->output.output.i_rate * 31 ); // 31 = Latency in Frames. retrieve somewhere
+    current_date = deviceParameters->clock_diff + AudioConvertHostTimeToNanos( host_time.mHostTime ) / 1000;
+	- ((mtime_t) 1000000 / deviceParameters->stream_format.mSampleRate * 31 ); // 31 = Latency in Frames. retrieve somewhere
 	
     // initial calc
 	int framesToWrite = inNumberFrames;
