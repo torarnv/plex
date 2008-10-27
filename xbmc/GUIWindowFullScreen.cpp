@@ -40,6 +40,9 @@
 
 #include <stdio.h>
 
+#ifdef __APPLE__
+#include "CocoaUtilsPlus.h"
+#endif
 
 #define BLUE_BAR                          0
 #define LABEL_ROW1                       10
@@ -455,16 +458,19 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       {
         CSingleLock lock (m_fontLock);
 
-        CStdString fontPath = _P("Q:\\media\\Fonts\\");
-        fontPath += g_guiSettings.GetString("subtitles.font");
 #ifdef __APPLE__
+        CStdString fontPath = Cocoa_GetSystemFontPathFromDisplayName(g_guiSettings.GetString("subtitles.font"));
+
         // We scale based on PAL16x9 - this at least ensures all sizing is constant across resolutions.
         // I'm picking 16x9 because the 4x3 aspect below gives me squashed subtitles.
         //
-        CGUIFont *subFont = g_fontManager.LoadTTF("__subtitle__", PTH_IC(fontPath), color[g_guiSettings.GetInt("subtitles.color")], 0, g_guiSettings.GetInt("subtitles.height"), g_guiSettings.GetInt("subtitles.style"), 1.0f, 1.0f, PAL_16x9);
+        CGUIFont *subFont = g_fontManager.LoadTTF("__subtitle__", fontPath, color[g_guiSettings.GetInt("subtitles.color")], 0, g_guiSettings.GetInt("subtitles.height"), g_guiSettings.GetInt("subtitles.style"), 1.0f, 1.0f, PAL_16x9);
 #else
+        CStdString fontPath = _P("Q:\\media\\Fonts\\");
+        fontPath += g_guiSettings.GetString("subtitles.font");
+
         // We scale based on PAL4x3 - this at least ensures all sizing is constant across resolutions
-        CGUIFont *subFont = g_fontManager.LoadTTF("__subtitle__", PTH_IC(fontPath), color[g_guiSettings.GetInt("subtitles.color")], 0, g_guiSettings.GetInt("subtitles.height"), g_guiSettings.GetInt("subtitles.style"), 1.0f, 1.0f, PAL_4x3);
+        CGUIFont *subFont = g_fontManager.LoadTTF("__subtitle__", fontPath, color[g_guiSettings.GetInt("subtitles.color")], 0, g_guiSettings.GetInt("subtitles.height"), g_guiSettings.GetInt("subtitles.style"), 1.0f, 1.0f, PAL_4x3);
 #endif
         if (!subFont)
           CLog::Log(LOGERROR, "CGUIWindowFullScreen::OnMessage(WINDOW_INIT) - Unable to load subtitle font");

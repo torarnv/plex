@@ -22,6 +22,7 @@ extern "C"
   // Fonts
   //
   vector<string> Cocoa_GetSystemFonts();
+  string Cocoa_GetSystemFontPathFromDisplayName(const string displayName);
 
 #ifdef __cplusplus
 }
