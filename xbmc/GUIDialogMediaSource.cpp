@@ -376,8 +376,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     
     CMediaSource share2;
     share2.strPath = "/Applications/";
-    share2.strName = "Applications Folder";g_localizeStrings.Get(1043); // Program Plugins
-    //share2.m_ignore = true;
+    share2.strName = "Applications Folder";
     extraShares.push_back(share2);
   }
   if (CGUIDialogFileBrowser::ShowAndGetSource(path, allowNetworkShares, extraShares.size()==0?NULL:&extraShares))
@@ -389,6 +388,11 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
       url.GetURLWithoutUserDetails(m_name);
       CUtil::RemoveSlashAtEnd(m_name);
       m_name = CUtil::GetTitleFromPath(m_name);
+      if ((m_type == "programs") && (m_name.Right(4) == ".app"))
+      {
+        CUtil::RemoveExtension(m_name);
+        OnOK();
+      }
     }
     UpdateButtons();
   }

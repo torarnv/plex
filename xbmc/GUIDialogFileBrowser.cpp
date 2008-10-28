@@ -450,7 +450,6 @@ void CGUIDialogFileBrowser::OnClick(int iItem)
   // Select OS X app bundles
   if (Cocoa_IsAppBundle(pItem->m_strPath.c_str()))
   {
-    //TODO: Better check for bundles
     Update(strPath);
     m_selectedPath = pItem->m_strPath;
     m_bConfirmed = true;
