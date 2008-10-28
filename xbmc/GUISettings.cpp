@@ -480,14 +480,15 @@ CGUISettings::CGUISettings(void)
   AddBool(4, "videolibrary.seasonthumbs", 20382, true);
   AddBool(5, "videolibrary.actorthumbs", 20402, false);
   AddInt(6, "videolibrary.flattentvshows", 20412, 1, 0, 1, 2, SPIN_CONTROL_TEXT);
-  AddBool(7, "videolibrary.removeduplicates", 20419, true);
-  AddSeparator(7, "videolibrary.sep1");
-  AddBool(8, "videolibrary.updateonstartup", 22000, false);
-  AddBool(9, "videolibrary.backgroundupdate", 22001, false);
-  AddSeparator(10, "videolibrary.sep2");
-  AddString(11, "videolibrary.cleanup", 334, "", BUTTON_CONTROL_STANDARD);
-  AddString(12, "videolibrary.export", 647, "", BUTTON_CONTROL_STANDARD);
-  AddString(13, "videolibrary.import", 648, "", BUTTON_CONTROL_STANDARD);
+  AddInt(7, "videolibrary.recentcount", 20475, 25, 10, 5, 250, SPIN_CONTROL_INT_PLUS, -1);
+  AddBool(8, "videolibrary.removeduplicates", 20419, true);
+  AddSeparator(9, "videolibrary.sep1");
+  AddBool(10, "videolibrary.updateonstartup", 22000, false);
+  AddBool(11, "videolibrary.backgroundupdate", 22001, false);
+  AddSeparator(12, "videolibrary.sep2");
+  AddString(13, "videolibrary.cleanup", 334, "", BUTTON_CONTROL_STANDARD);
+  AddString(14, "videolibrary.export", 647, "", BUTTON_CONTROL_STANDARD);
+  AddString(15, "videolibrary.import", 648, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(5, "videoplayer", 16003);
   AddString(1, "videoplayer.calibrate", 214, "", BUTTON_CONTROL_STANDARD);
