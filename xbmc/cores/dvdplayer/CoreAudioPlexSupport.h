@@ -26,7 +26,7 @@ sfm.mFormatFlags, sfm.mBytesPerPacket, \
 sfm.mFramesPerPacket, sfm.mBytesPerFrame, \
 sfm.mChannelsPerFrame, sfm.mBitsPerChannel
 
-struct AudioDeviceInfo {	
+struct AudioDeviceInfo {
 	AudioDeviceID deviceID;
 	char *deviceName;
 	int supportsDigital;
@@ -46,7 +46,7 @@ typedef int64_t mtime_t;
 class CoreAudioPlexSupport
 	{
 	public:
-		
+
 		//
 		// Get a list of output devices.
 		//

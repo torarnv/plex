@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #include "stdafx.h"
 #include "DVDPlayerSubtitle.h"
 #include "DVDCodecs/Overlay/DVDOverlay.h"
@@ -39,7 +39,7 @@ using namespace std;
 CDVDPlayerSubtitle::CDVDPlayerSubtitle(CDVDOverlayContainer* pOverlayContainer)
 {
   m_pOverlayContainer = pOverlayContainer;
-  
+
   m_pSubtitleFileParser = NULL;
   m_pSubtitleStream = NULL;
   m_pOverlayCodec = NULL;
@@ -51,7 +51,7 @@ CDVDPlayerSubtitle::~CDVDPlayerSubtitle()
   CloseStream(false);
 }
 
-  
+
 void CDVDPlayerSubtitle::Flush()
 {
   SendMessage(new CDVDMsg(CDVDMsg::GENERAL_FLUSH));
@@ -98,7 +98,7 @@ void CDVDPlayerSubtitle::SendMessage(CDVDMsg* pMsg)
           overlay->Release();
         }
       }
-    } 
+    }
     else if (m_streaminfo.codec == CODEC_ID_DVD_SUBTITLE)
     {
       CSPUInfo* pSPUInfo = m_dvdspus.AddData(pPacket->pData, pPacket->iSize, pPacket->pts);
@@ -129,12 +129,12 @@ void CDVDPlayerSubtitle::SendMessage(CDVDMsg* pMsg)
   else if( pMsg->IsType(CDVDMsg::GENERAL_FLUSH) )
   {
     m_dvdspus.Reset();
-    if (m_pSubtitleFileParser) 
+    if (m_pSubtitleFileParser)
       m_pSubtitleFileParser->Reset();
 
     if (m_pOverlayCodec)
       m_pOverlayCodec->Flush();
-    
+
     m_lastPts = 0.0;
   }
 
@@ -211,10 +211,10 @@ void CDVDPlayerSubtitle::Process(double pts)
     CDVDOverlay* pOverlay = m_pSubtitleFileParser->Parse(pts);
     if (pOverlay)
       m_pOverlayContainer->Add(pOverlay);
-    
+
     m_lastPts = pts;
   }
-  
+
 #if 0
   printf("===================================================\n");
   printf("Asked for %d, have %d subtitles\n", (int)(pts/1000), m_pOverlayContainer->GetOverlays()->size());
@@ -236,7 +236,7 @@ bool CDVDPlayerSubtitle::AcceptsData()
 bool CDVDPlayerSubtitle::GetCurrentSubtitle(CStdString& strSubtitle, double pts)
 {
   strSubtitle = "";
-  
+
   Process(pts); // TODO: move to separate thread?
 
   m_pOverlayContainer->Lock();
@@ -247,7 +247,7 @@ bool CDVDPlayerSubtitle::GetCurrentSubtitle(CStdString& strSubtitle, double pts)
     {
       CDVDOverlay* pOverlay = *it;
 
-      if (pOverlay->IsOverlayType(DVDOVERLAY_TYPE_TEXT) 
+      if (pOverlay->IsOverlayType(DVDOVERLAY_TYPE_TEXT)
       && (pOverlay->iPTSStartTime <= pts)
       && (pOverlay->iPTSStopTime >= pts || pOverlay->iPTSStopTime == 0LL))
       {

@@ -1178,9 +1178,9 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       if (pControl) pControl->SetEnabled((g_guiSettings.GetInt("cddaripper.encoder") != CDDARIP_ENCODER_WAV) &&
                                            (g_guiSettings.GetInt("cddaripper.quality") == CDDARIP_QUALITY_CBR));
     }
-    else if (strSetting.Equals("musicplayer.outputtoallspeakers") || 
-			 strSetting.Equals("audiooutput.ac3passthrough") || 
-			 strSetting.Equals("audiooutput.dtspassthrough") || 
+    else if (strSetting.Equals("musicplayer.outputtoallspeakers") ||
+			 strSetting.Equals("audiooutput.ac3passthrough") ||
+			 strSetting.Equals("audiooutput.dtspassthrough") ||
 			 strSetting.Equals("audiooutput.passthroughdevice"))
     { // only visible if we are in digital mode
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
@@ -1198,14 +1198,14 @@ void CGUIWindowSettingsCategory::UpdateSettings()
  		if (g_audioConfig.HasDigitalOutput())
 		{
 			CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting("audiooutput.digitalaudiomode")->GetID());
-			if (pControl) 
+			if (pControl)
 			{
 				pControl->SetValue(DIGITAL_COREAUDIO);
 				g_guiSettings.SetInt("audiooutput.digitalaudiomode", DIGITAL_COREAUDIO);
 			}
 		}
 	}
-#endif	  
+#endif
     else if (strSetting.Equals("videooutput.hd480p") || strSetting.Equals("videooutput.hd720p") || strSetting.Equals("videooutput.hd1080i"))
     {
 #ifdef HAS_XBOX_HARDWARE
@@ -1820,7 +1820,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
 	  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
 	  g_guiSettings.SetInt("audiooutput.digitalaudiomode", pControl->GetValue());
   }
-	
+
 #endif
 #ifdef HAS_KAI
   else if (strSetting.Equals("xlinkkai.enabled"))
@@ -2932,65 +2932,22 @@ void CGUIWindowSettingsCategory::FillInSubtitleFonts(CSetting *pSetting)
   }
 #endif
 
-#ifndef __APPLE__
-  // find TTF fonts
+  // find usable fonts
   {
-    CHDDirectory directory;
-    CFileItemList items;
-    CStdString strPath = _P("Q:\\media\\Fonts\\");
-    if (directory.GetDirectory(strPath, items))
+    std::vector<std::string> fonts = g_fontManager.GetSystemFontNames();
+    CLog::Log(LOGINFO, "Number of system fonts: %d", fonts.size());
+    for (int i = 0; i < fonts.size(); i++)
     {
-      for (int i = 0; i < items.Size(); ++i)
-      {
-        CFileItemPtr pItem = items[i];
+      CStdString strFont = fonts[i];
 
-        if (!pItem->m_bIsFolder)
-        {
+      // See if it's the current one.
+      if (strFont.Equals(pSettingString->GetData(), false))
+        iCurrentFont = iFont;
 
-          if ( !CUtil::GetExtension(pItem->GetLabel()).Equals(".ttf") ) continue;
-          if (pItem->GetLabel().Equals(pSettingString->GetData(), false))
-            iCurrentFont = iFont;
-
-          pControl->AddLabel(pItem->GetLabel(), iFont++);
-        }
-
-      }
+      // Add it.
+      pControl->AddLabel(strFont, iFont++);
     }
   }
-#else
-  const char* fonts[] = {
-      "Andale Mono",
-      "Arial",
-      "Arial Black",
-      "Arial Narrow Bold",
-      "Arial Rounded Bold",
-      "Arial Unicode",
-      "Brush Script",
-      "Georgia",
-      "Georgia Bold",
-      "Tahoma",
-      "Tahoma Bold",
-      "Times New Roman",
-      "Times New Roman Bold",
-      "Trebuchet MS",
-      "Trebuchet MS Bold",
-      "Verdana",
-      "Verdana Bold",
-      0
-  };
-
-  for (int i=0; fonts[i]; i++)
-  {
-    CStdString strFont = fonts[i];
-
-    // See if it's the current one.
-    if (strFont.Equals(pSettingString->GetData(), false))
-          iCurrentFont = iFont;
-
-    // Add it.
-    pControl->AddLabel(strFont, iFont++);
-  }
-#endif
 
   pControl->SetValue(iCurrentFont);
 }
@@ -4045,7 +4002,7 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting)
   pControl->Clear();
 
     AudioDeviceArray* deviceList = CoreAudioPlexSupport::GetDeviceArray();
-	
+
 	for (int i=0; i < deviceList->deviceCount; i++)
 	{
 		pControl->AddLabel(deviceList->device[i]->deviceName, i);

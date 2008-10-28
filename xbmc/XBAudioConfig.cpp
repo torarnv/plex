@@ -42,9 +42,9 @@ bool XBAudioConfig::HasDigitalOutput()
 #ifndef __APPLE__
 	return (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL);
 #else
-	AudioDeviceID deviceID = 
+	AudioDeviceID deviceID =
 	CoreAudioPlexSupport::GetAudioDeviceIDByName(g_guiSettings.GetString("audiooutput.audiodevice"));
-	
+
 	return CoreAudioPlexSupport::AudioDeviceSupportsDigital(deviceID);
 #endif
 }

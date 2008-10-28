@@ -889,6 +889,7 @@
 		E3F471BF0EAC4BF9004BB122 /* NptStdcEnvironment.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3F471BE0EAC4BF9004BB122 /* NptStdcEnvironment.cpp */; };
 		E3FD287C0E9951B500EE77C3 /* FilePlex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3FD28780E9951B500EE77C3 /* FilePlex.cpp */; };
 		E3FD287D0E9951B500EE77C3 /* PlexDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3FD287A0E9951B500EE77C3 /* PlexDirectory.cpp */; };
+		EF5D577B0EB4833200B16174 /* CocoaUtilsPlus.mm in Sources */ = {isa = PBXBuildFile; fileRef = EF5D577A0EB4833200B16174 /* CocoaUtilsPlus.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -3071,6 +3072,8 @@
 		E3FFF0020D46FD1D003D79C3 /* libavutil-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libavutil-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libavutil-osx.a"; sourceTree = "<group>"; };
 		E3FFF0040D46FD1D003D79C3 /* libavcodec-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libavcodec-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libavcodec-osx.a"; sourceTree = "<group>"; };
 		E3FFF02E0D470BD8003D79C3 /* libavformat-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libavformat-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libavformat-osx.a"; sourceTree = "<group>"; };
+		EF5D57790EB4833200B16174 /* CocoaUtilsPlus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CocoaUtilsPlus.h; sourceTree = "<group>"; };
+		EF5D577A0EB4833200B16174 /* CocoaUtilsPlus.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CocoaUtilsPlus.mm; sourceTree = "<group>"; };
 		EFF082090E106C00004114E6 /* SmartCrashReportsAPI.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; name = SmartCrashReportsAPI.o; path = xbmc/lib/libSmartCrashReports/SmartCrashReportsAPI.o; sourceTree = "<group>"; };
 		EFF0820A0E106C00004114E6 /* SmartCrashReportsInstall.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; name = SmartCrashReportsInstall.o; path = xbmc/lib/libSmartCrashReports/SmartCrashReportsInstall.o; sourceTree = "<group>"; };
 		EFF0820D0E106C11004114E6 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
@@ -3443,6 +3446,8 @@
 				1AD99C740E9FB54200503917 /* QuickTimeWrapper.cpp */,
 				1A5484530E79EA340025CA32 /* BackgroundMusicPlayer.h */,
 				1A5484540E79EA340025CA32 /* BackgroundMusicPlayer.mm */,
+				EF5D57790EB4833200B16174 /* CocoaUtilsPlus.h */,
+				EF5D577A0EB4833200B16174 /* CocoaUtilsPlus.mm */,
 			);
 			path = osx;
 			sourceTree = "<group>";
@@ -7400,6 +7405,7 @@
 				E3F471BD0EAC4BBE004BB122 /* NptPosixFile.cpp in Sources */,
 				E3F471BF0EAC4BF9004BB122 /* NptStdcEnvironment.cpp in Sources */,
 				E32B456E0EB2DC4D00E19A30 /* GUIListGroup.cpp in Sources */,
+				EF5D577B0EB4833200B16174 /* CocoaUtilsPlus.mm in Sources */,
 				94B1852B0EB48264008C38FA /* CoreAudioAUHAL.cpp in Sources */,
 				94B1852C0EB48264008C38FA /* CoreAudioPlexSupport.cpp in Sources */,
 				94B185540EB48568008C38FA /* pa_ringbuffer.c in Sources */,

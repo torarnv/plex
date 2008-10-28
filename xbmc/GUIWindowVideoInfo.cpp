@@ -107,7 +107,7 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
 
       m_bRefresh = false;
       m_bRefreshAll = true;
-      
+
       CGUIDialog::OnMessage(message);
       m_bViewReview = true;
       CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_DISC);
@@ -268,7 +268,7 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
           if (iItem < 0 || iItem >= m_castList->Size())
             break;
           CStdString strItem = m_castList->Get(iItem)->GetLabel();
-          CStdString strFind; 
+          CStdString strFind;
           strFind.Format(" %s ",g_localizeStrings.Get(20347));
           int iPos = strItem.Find(strFind);
           if (iPos == -1)
@@ -417,7 +417,7 @@ void CGUIWindowVideoInfo::Update()
   CStdString strYear;
   if (m_movieItem->GetVideoInfoTag()->m_iYear)
     strYear.Format("%i", m_movieItem->GetVideoInfoTag()->m_iYear);
-  else  
+  else
     strYear = g_infoManager.GetItemLabel(m_movieItem.get(),LISTITEM_PREMIERED);
   SetLabel(CONTROL_YEAR, strYear);
 
@@ -733,7 +733,7 @@ void CGUIWindowVideoInfo::OnGetThumb()
     item->SetLabel(g_localizeStrings.Get(20016));
     items.Add(item);
   }
-  
+
   // Grab the thumbnails from the web
   int i=1;
   for (std::vector<CScraperUrl::SUrlEntry>::iterator iter=m_movieItem->GetVideoInfoTag()->m_strPictureURL.m_url.begin();iter != m_movieItem->GetVideoInfoTag()->m_strPictureURL.m_url.end();++iter)
@@ -779,7 +779,7 @@ void CGUIWindowVideoInfo::OnGetThumb()
 
   CStdString result;
   VECSOURCES sources(g_settings.m_videoSources);
-  g_mediaManager.GetLocalDrives(sources);  
+  g_mediaManager.GetLocalDrives(sources);
   if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(20019), result))
     return;   // user cancelled
 
@@ -811,7 +811,7 @@ void CGUIWindowVideoInfo::OnGetThumb()
     CPicture pic;
     pic.DoCreateThumbnail(result, cachedThumb);
   }
-  else 
+  else
     result = "thumb://None";
 
   if (result == "thumb://None")
@@ -873,7 +873,7 @@ void CGUIWindowVideoInfo::OnGetFanart()
 
   CStdString result;
   VECSOURCES sources(g_settings.m_videoSources);
-  g_mediaManager.GetLocalDrives(sources);  
+  g_mediaManager.GetLocalDrives(sources);
   if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(20019), result))
     return;   // user cancelled
 
@@ -957,7 +957,7 @@ void CGUIWindowVideoInfo::SetLabel(int iControl, const CStdString &strLabel)
   }
 }
 
-const CStdString& CGUIWindowVideoInfo::GetThumbnail() const 
-{ 
-  return m_movieItem->GetThumbnailImage(); 
+const CStdString& CGUIWindowVideoInfo::GetThumbnail() const
+{
+  return m_movieItem->GetThumbnailImage();
 }

@@ -34,7 +34,7 @@
 #include "../mplayer/IDirectSoundRenderer.h"
 #include "../../utils/PCMAmplifier.h"
 extern "C" {
-#include "ac3encoder.h"	
+#include "ac3encoder.h"
 };
 
 #include "CoreAudioPlexSupport.h"
@@ -48,14 +48,14 @@ class CoreAudioAUHAL : public IDirectSoundRenderer
 		virtual FLOAT GetDelay();
 		CoreAudioAUHAL(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec = "", bool bIsMusic=false, bool bPassthrough = false);
 		virtual ~CoreAudioAUHAL();
-		
+
 		virtual DWORD AddPackets(unsigned char* data, DWORD len);
 		virtual DWORD GetSpace();
 		virtual HRESULT Deinitialize();
 		virtual HRESULT Pause();
 		virtual HRESULT Stop();
 		virtual HRESULT Resume();
-		
+
 		virtual LONG GetMinimumVolume() const;
 		virtual LONG GetMaximumVolume() const;
 		virtual LONG GetCurrentVolume() const;
@@ -65,11 +65,11 @@ class CoreAudioAUHAL : public IDirectSoundRenderer
 		virtual void WaitCompletion();
 		virtual void SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers);
 		virtual void Flush();
-		
+
 		static AudioDeviceInfo* GetDeviceArray();
-		
+
 		bool IsValid();
-		
+
 	private:
 		virtual bool CreateOutputStream(const CStdString& strName, int channels, float sampleRate, int bitsPerSample, bool isDigital, bool useCoreAudio, int packetSize);
 		virtual int OpenPCM(struct CoreAudioDeviceParameters *deviceParameters, const CStdString& strName, int channels, float sampleRate, int bitsPerSample, bool isDigital, bool useCoreAudio, int packetSize);
@@ -92,31 +92,31 @@ class CoreAudioAUHAL : public IDirectSoundRenderer
 									   UInt32 inChannel,
 									   AudioDevicePropertyID inPropertyID,
 									   void * inClientData );
-		
+
 
 
 		CPCMAmplifier 	m_amp;
-		
+
 		LONG m_nCurrentVolume;
 		DWORD m_dwPacketSize;
 		DWORD m_dwNumPackets;
 		bool m_bPause;
 		bool m_bIsAllocated;
 		bool m_bCanPause;
-		
+
 		unsigned int m_uiSamplesPerSec;
 		unsigned int m_uiBitsPerSample;
 		unsigned int m_uiChannels;
-		
+
 		bool m_bPassthrough;
-		
+
 		bool m_bEncodeAC3;
 		AC3Encoder m_ac3encoder;
 		unsigned char* ac3_framebuffer;
-		
+
 		AudioDeviceArray* deviceArray;
 		struct CoreAudioDeviceParameters* deviceParameters;
 	};
 
-#endif 
+#endif
 

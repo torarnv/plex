@@ -276,7 +276,7 @@ CGUISettings::CGUISettings(void)
   AddBool(2, "backgroundmusic.themesenabled", 18103, true);
   AddBool(3, "backgroundmusic.themedownloadsenabled", 18104, true);
   AddInt(4, "backgroundmusic.volume", 18102, 50, 5, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
-  
+
   AddCategory(3,"musiclibrary",14022);
   AddBool(1, "musiclibrary.enabled", 418, true);
   AddBool(2, "musiclibrary.albumartistsonly", 13414, false);
@@ -444,7 +444,7 @@ CGUISettings::CGUISettings(void)
 	AddString(1, "audiooutput.audiodevice", 545, "Built-in Output", SPIN_CONTROL_TEXT);
 	AddInt(2, "audiooutput.digitalaudiomode", 574,  DIGITAL_COREAUDIO, DIGITAL_PCM, 1, DIGITAL_COREAUDIO, SPIN_CONTROL_TEXT);
 	AddBool(3, "audiooutput.ac3passthrough", 364, true);
-	AddBool(4, "audiooutput.dtspassthrough", 254, true);	
+	AddBool(4, "audiooutput.dtspassthrough", 254, true);
 #else
 	AddInt(3, "audiooutput.mode", 337, AUDIO_ANALOG, AUDIO_ANALOG, 1, AUDIO_DIGITAL, SPIN_CONTROL_TEXT);
 	AddBool(4, "audiooutput.ac3passthrough", 364, true);
@@ -452,7 +452,7 @@ CGUISettings::CGUISettings(void)
 	AddString(6, "audiooutput.audiodevice", 545, "default", BUTTON_CONTROL_INPUT);
 	AddString(7, "audiooutput.passthroughdevice", 546, "iec958", BUTTON_CONTROL_INPUT);
 #endif
-	
+
 #ifndef __APPLE__
   AddCategory(4, "videooutput", 21373);
   AddInt(1, "videooutput.aspect", 21374, VIDEO_NORMAL, VIDEO_NORMAL, 1, VIDEO_WIDESCREEN, SPIN_CONTROL_TEXT);
@@ -471,7 +471,7 @@ CGUISettings::CGUISettings(void)
   AddBool(8, "masterlock.loginlock",20116,true);
   // hidden masterlock settings
   AddInt(0,"masterlock.maxretries", 12364, 3, 3, 1, 100, SPIN_CONTROL_TEXT);
-  
+
   // Software update settings
   AddCategory(4, "softwareupdate", 40018);
   AddString(1, "softwareupdate.checknow", 40016, "", BUTTON_CONTROL_STANDARD);
@@ -528,8 +528,8 @@ CGUISettings::CGUISettings(void)
   AddSeparator(7, "videoplayer.sep1.5");
   AddInt(8, "videoplayer.highqualityupscaling", 13112, SOFTWARE_UPSCALING_DISABLED, SOFTWARE_UPSCALING_DISABLED, 1, SOFTWARE_UPSCALING_ALWAYS, SPIN_CONTROL_TEXT);
   AddInt(9, "videoplayer.upscalingalgorithm", 13116, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, 1, VS_SCALINGMETHOD_SINC_SOFTWARE, SPIN_CONTROL_TEXT);
-  
-  AddSeparator(10, "videoplayer.sep1.8");  
+
+  AddSeparator(10, "videoplayer.sep1.8");
   AddInt(9, "videoplayer.skiploopfilter", 13140, VS_SKIPLOOP_DEFAULT, VS_SKIPLOOP_DEFAULT, 1, VS_SKIPLOOP_ALL, SPIN_CONTROL_TEXT);
 
   AddSeparator(10, "videoplayer.sep2");
@@ -1053,7 +1053,7 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
 	g_audioConfig.SetAC3Enabled(GetBool("audiooutput.ac3passthrough"));
 	g_audioConfig.SetDTSEnabled(GetBool("audiooutput.dtspassthrough"));
 #else
-	
+
   // Get hardware based stuff...
   CLog::Log(LOGNOTICE, "Getting hardware information now...");
   if (GetInt("audiooutput.mode") == AUDIO_DIGITAL && !g_audioConfig.HasDigitalOutput())
