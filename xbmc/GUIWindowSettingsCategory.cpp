@@ -2623,11 +2623,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     int i = g_guiSettings.GetInt("backgroundmusic.volume");
     Cocoa_SetBackgroundMusicVolume((float)(i/100.0f));
   }
-  else if (strSetting.Equals("system.batterywarning"))
-  {
-    Cocoa_HW_SetBatteryWarningEnabled(g_guiSettings.GetBool("system.batterywarning"));
-  }
-  else if (strSetting.Equals("softwareupdate.checknow"))
+   else if (strSetting.Equals("softwareupdate.checknow"))
   {
     Cocoa_CheckForUpdates();
   }
