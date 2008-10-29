@@ -700,6 +700,16 @@ CGUISettings::CGUISettings(void)
   AddInt(9,   "remoteevents.continuousdelay", 796, 25, 5, 5, 10000, SPIN_CONTROL_INT);
 #endif
 
+	// Software update settings
+	AddCategory(6, "softwareupdate", 40018);
+	AddString(1, "softwareupdate.checknow", 40016, "", BUTTON_CONTROL_STANDARD);
+	AddSeparator(2, "softwareupdate.sep1");
+	AddBool(3, "softwareupdate.alertsenabled", 40017, true);
+	//AddInt(<#int iOrder#>, <#const char * strSetting#>, <#int iLabel#>, <#int fSetting#>, <#int iMin#>, <#int iStep#>, <#int iMax#>, <#int iControlType#>, <#const char * strFormat#>)
+	AddInt(4, "softwareupdate.checkinterval", 40025, UPDATE_INTERVAL_DAILY, UPDATE_INTERVAL_HOURLY, 1, UPDATE_INTERVAL_WEEKLY, SPIN_CONTROL_TEXT);
+	AddInt(0, "softwareupdate.alerttype", 40019, UPDATE_ASK, UPDATE_NOTIFY, 1, UPDATE_ASK, SPIN_CONTROL_TEXT);
+	AddBool(0, "softwareupdate.firstrun", 40000, true);
+	
   // appearance settings
   AddGroup(7, 480);
   AddCategory(7,"lookandfeel", 14037);
