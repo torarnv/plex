@@ -535,7 +535,7 @@ CGUISettings::CGUISettings(void)
   AddBool(0, "videolibrary.actorthumbs", 20402, true);
   AddBool(0, "videolibrary.singleseason", 20412, true);
   AddInt(0, "videolibrary.recentcount", 20475, 25, 10, 5, 250, SPIN_CONTROL_INT_PLUS, -1);
-  AddBool(8, "videolibrary.removeduplicates", 20419, true);
+  AddBool(0, "videolibrary.removeduplicates", 20419, true);
   AddSeparator(9, "videolibrary.sep1");
   AddBool(10, "videolibrary.updateonstartup", 22000, false);
   AddBool(11, "videolibrary.backgroundupdate", 22001, false);
