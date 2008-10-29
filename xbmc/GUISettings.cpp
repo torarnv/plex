@@ -655,7 +655,11 @@ CGUISettings::CGUISettings(void)
   AddString(8,"servers.webserverpassword",733, "", BUTTON_CONTROL_HIDDEN_INPUT, true, 733);
 #endif
 #endif
-
+	AddBool(10, "servers.upnpserver", 21360, false);
+	AddString(11, "servers.musicshares", 21361, "", BUTTON_CONTROL_STANDARD);
+	AddString(12, "servers.videohares", 21362, "", BUTTON_CONTROL_STANDARD);
+	AddString(13, "servers.pictureshares", 21363, "", BUTTON_CONTROL_STANDARD);
+	
 #ifdef _XBOX
   AddCategory(6,"autodetect",           1250  );
   AddBool(1,    "autodetect.onoff",     1251, true);
@@ -674,14 +678,11 @@ CGUISettings::CGUISettings(void)
   AddBool  (5, "smb.mountshares", 1208,   false);
 #endif
 
-  AddCategory(6, "upnp", 20110);
-  AddBool(1,    "upnp.client", 20111, false);
-  AddBool(2, "upnp.renderer", 21881, false);
+//  AddCategory(6, "upnp", 20110);
+  AddBool(1,    "upnp.client", 20111, true);
+  AddBool(2, "upnp.renderer", 21881, true);
   AddSeparator(3,"upnp.sep1");
-  AddBool(4, "upnp.server", 21360, false);
-  AddString(5, "upnp.musicshares", 21361, "", BUTTON_CONTROL_STANDARD);
-  AddString(6, "upnp.videoshares", 21362, "", BUTTON_CONTROL_STANDARD);
-  AddString(7, "upnp.pictureshares", 21363, "", BUTTON_CONTROL_STANDARD);
+
 
   // remote events settings
 #ifdef HAS_EVENT_SERVER
