@@ -1291,7 +1291,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
     strLabel = g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getName();
     break;
   case SYSTEM_LANGUAGE:
-    strLabel = g_guiSettings.GetString("locale.language");
+    strLabel = g_guiSettings.GetString("system.language");
     break;
   case SYSTEM_PROGRESS_BAR:
     {

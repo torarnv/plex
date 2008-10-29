@@ -386,7 +386,8 @@ private:
   typedef std::map<CStdString, CSetting*>::const_iterator constMapIter;
   std::map<CStdString, CSetting*> settingsMap;
   std::vector<CSettingsGroup *> settingsGroups;
-  void LoadFromXML(TiXmlElement *pRootElement, mapIter &it, bool advanced = false);
+  std::map<CStdString, CSetting*>::const_iterator FindSetting(CStdString strSetting) const;
+  void LoadFromXML(TiXmlElement *pRootElement, constMapIter &it, bool advanced = false);
 };
 
 extern class CGUISettings g_guiSettings;

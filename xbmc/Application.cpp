@@ -1283,11 +1283,11 @@ HRESULT CApplication::Create(HWND hWnd)
   
   // Start background music playing
   Cocoa_UpdateGlobalVolume(g_application.GetVolume());
-  Cocoa_SetBackgroundMusicThemesEnabled(g_guiSettings.GetBool("backgroundmusic.themesenabled"));
-  Cocoa_SetBackgroundMusicThemeDownloadsEnabled(g_guiSettings.GetBool("backgroundmusic.themedownloadsenabled"));
-  Cocoa_SetBackgroundMusicVolume((float)(g_guiSettings.GetInt("backgroundmusic.volume")/100.0f));
+  Cocoa_SetBackgroundMusicThemesEnabled(g_guiSettings.GetBool("audiooutput.bgmusicenabled"));
+  Cocoa_SetBackgroundMusicThemeDownloadsEnabled(g_guiSettings.GetBool("audiooutput.themedownloadsenabled"));
+  Cocoa_SetBackgroundMusicVolume((float)(g_guiSettings.GetInt("audiooutput.bgmusicvolume")/100.0f));
   Cocoa_StartBackgroundMusic();
-  Cocoa_SetBackgroundMusicEnabled(g_guiSettings.GetBool("backgroundmusic.enabled"));
+  Cocoa_SetBackgroundMusicEnabled(g_guiSettings.GetBool("audiooutput.bgmusicenabled"));
 #endif
 
 #ifdef HAS_XBOX_HARDWARE
@@ -1458,7 +1458,7 @@ HRESULT CApplication::Create(HWND hWnd)
   g_charsetConverter.reset();
 
   // Load the langinfo to have user charset <-> utf-8 conversion
-  CStdString strLanguage = g_guiSettings.GetString("locale.language");
+  CStdString strLanguage = g_guiSettings.GetString("system.language");
   strLanguage[0] = toupper(strLanguage[0]);
 
   CStdString strLangInfoPath;
@@ -1529,7 +1529,7 @@ HRESULT CApplication::Create(HWND hWnd)
   D3DDevice::SetWaitCallback(WaitCallback);
 #endif
 
-  g_Mouse.SetEnabled(g_guiSettings.GetBool("lookandfeel.enablemouse"));
+  g_Mouse.SetEnabled(g_guiSettings.GetBool("appleremote.enablemouse"));
 
   if (!m_bQuiet)
     m_bQuiet = !g_guiSettings.GetBool("system.debuglogging");
@@ -2112,7 +2112,7 @@ HRESULT CApplication::Initialize()
   
 #ifdef __APPLE__
   // Register for low battery warnings (ignored on unsupported models)
-  Cocoa_HW_SetBatteryWarningEnabled(g_guiSettings.GetBool("system.batterywarning"));
+  Cocoa_HW_SetBatteryWarningEnabled(true);
 #endif
 
   CLog::Log(LOGNOTICE, "initialize done");
@@ -2439,7 +2439,7 @@ void CApplication::StopUPnPClient()
 void CApplication::StartUPnPServer()
 {
 #ifdef HAS_UPNP
-  if (g_guiSettings.GetBool("upnp.server"))
+  if (g_guiSettings.GetBool("servers.upnpserver"))
   {
     CLog::Log(LOGNOTICE, "starting upnp server");
     CUPnP::GetInstance()->StartServer();
@@ -2705,7 +2705,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
       g_settings.Save();
     }
     else
-      CLog::Log(LOGERROR, "    no ttf font found, but needed for the language %s.", g_guiSettings.GetString("locale.language").c_str());
+      CLog::Log(LOGERROR, "    no ttf font found, but needed for the language %s.", g_guiSettings.GetString("system.language").c_str());
   }
   g_colorManager.Load(g_guiSettings.GetString("lookandfeel.skincolors"));
 
@@ -2714,7 +2714,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   // load in the skin strings
   CStdString skinPath, skinEnglishPath;
   CUtil::AddFileToFolder(strSkinPath, "language", skinPath);
-  CUtil::AddFileToFolder(skinPath, g_guiSettings.GetString("locale.language"), skinPath);
+  CUtil::AddFileToFolder(skinPath, g_guiSettings.GetString("system.language"), skinPath);
   CUtil::AddFileToFolder(skinPath, "strings.xml", skinPath);
 
   CUtil::AddFileToFolder(strSkinPath, "language", skinEnglishPath);
@@ -5746,7 +5746,7 @@ void CApplication::CheckDisplaySleep()
   }
   else
   {
-    if ( (long)(timeGetTime() - m_dwSaverTick) >= (long)(g_guiSettings.GetInt("system.displaysleeptime")*60*1000L) )
+    if ( (long)(timeGetTime() - m_dwSaverTick) >= (long)(g_guiSettings.GetInt("videoscreen.displaysleeptime")*60*1000L) )
     {
       bool bDisplaySleep = false;
       if (m_pPlayer && m_pPlayer->IsPlaying())
@@ -6287,7 +6287,7 @@ void CApplication::ProcessSlow()
    }
 
   // Only activate display sleep if fullscreen mode.
-  if (g_guiSettings.GetInt("system.displaysleeptime" ) && g_advancedSettings.m_fullScreen)
+  if (g_guiSettings.GetInt("videoscreen.displaysleeptime" ) && g_advancedSettings.m_fullScreen)
   {
     CheckDisplaySleep();
   }

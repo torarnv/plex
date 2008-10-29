@@ -204,7 +204,7 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
       // Do we need to reload the language file
       if (!m_strNewLanguage.IsEmpty())
       {
-        g_guiSettings.SetString("locale.language", m_strNewLanguage);
+        g_guiSettings.SetString("system.language", m_strNewLanguage);
         g_settings.Save();
 
         CStdString strLangInfoPath;
@@ -646,7 +646,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       FillInSubtitleFonts(pSetting);
     }
-    else if (strSetting.Equals("subtitles.charset") || strSetting.Equals("locale.charset"))
+    else if (strSetting.Equals("subtitles.charset") || strSetting.Equals("system.charset"))
     {
       FillInCharSets(pSetting);
     }
@@ -662,7 +662,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       FillInSoundSkins(pSetting);
     }
-    else if (strSetting.Equals("locale.language"))
+    else if (strSetting.Equals("system.language"))
     {
       FillInLanguages(pSetting);
     }
@@ -890,7 +890,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       if (pSettingString->GetData().IsEmpty())
         pControl->SetLabel2(g_localizeStrings.Get(20009));
     }
-    else if (strSetting.Equals("locale.country"))
+    else if (strSetting.Equals("system.country"))
     {
       FillInRegions(pSetting);
     }
@@ -1178,10 +1178,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       if (pControl) pControl->SetEnabled((g_guiSettings.GetInt("cddaripper.encoder") != CDDARIP_ENCODER_WAV) &&
                                            (g_guiSettings.GetInt("cddaripper.quality") == CDDARIP_QUALITY_CBR));
     }
-    else if (strSetting.Equals("musicplayer.outputtoallspeakers") ||
-			 strSetting.Equals("audiooutput.ac3passthrough") ||
-			 strSetting.Equals("audiooutput.dtspassthrough") ||
-			 strSetting.Equals("audiooutput.passthroughdevice"))
+    else if (strSetting.Equals("musicplayer.outputtoallspeakers") || strSetting.Equals("audiooutput.ac3passthrough") || strSetting.Equals("audiooutput.dtspassthrough") || strSetting.Equals("audiooutput.passthroughdevice"))
     { // only visible if we are in digital mode
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_audioConfig.UseDigitalOutput());
@@ -1214,10 +1211,10 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       if (pControl) pControl->SetEnabled(g_videoConfig.HasNTSC() && g_videoConfig.HasHDPack());
 #endif
     }
-    else if (strSetting.Equals("musicplayer.crossfadealbumtracks"))
+    else if (strSetting.Equals("mymusic.crossfadealbumtracks"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("musicplayer.crossfade") > 0);
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("mymusic.crossfade") > 0);
     }
     else if (strSetting.Left(12).Equals("karaoke.port") || strSetting.Equals("karaoke.volume"))
     {
@@ -1380,7 +1377,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
       pControl->SetEnabled(CUtil::IsUsingTTFSubtitles());
     }
-    else if (strSetting.Equals("locale.charset"))
+    else if (strSetting.Equals("system.charset"))
     { // TODO: Determine whether we are using a TTF font or not.
       //   CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       //   if (pControl) pControl->SetEnabled(g_guiSettings.GetString("lookandfeel.font").Right(4) == ".ttf");
@@ -1540,9 +1537,9 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetString("lookandfeel.soundskin") != "OFF");
     }
-    else if (strSetting.Equals("lookandfeel.enablemouse"))
+    else if (strSetting.Equals("appleremote.enablemouse"))
     {
-      g_Mouse.SetEnabled(g_guiSettings.GetBool("lookandfeel.enablemouse"));
+      g_Mouse.SetEnabled(g_guiSettings.GetBool("appleremote.enablemouse"));
     }
     else if (!strSetting.Equals("musiclibrary.enabled")
       && strSetting.Left(13).Equals("musiclibrary."))
@@ -1556,10 +1553,10 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("videolibrary.enabled"));
     }
-    else if (strSetting.Equals("lookandfeel.rssfeedsrtl"))
+    else if (strSetting.Equals("system.rssfeedsrtl"))
     { // only visible if rss is enabled
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("lookandfeel.enablerssfeeds"));
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("system.enablerssfeeds"));
     }
     else
     {
@@ -1795,7 +1792,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       CScrobbler::GetInstance()->Term();
     }
   }
-  else if (strSetting.Equals("musicplayer.outputtoallspeakers"))
+  else if (strSetting.Equals("mymusic.outputtoallspeakers"))
   {
     if (!g_application.IsPlaying())
     {
@@ -1862,9 +1859,9 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   }
 #endif
 #ifdef __APPLE__
-  else if (strSetting.Equals("system.panelbrightness"))
+  else if (strSetting.Equals("videoscreen.panelbrightness"))
   {
-    g_application.SetPanelBrightness((float)(g_guiSettings.GetInt("system.panelbrightness")/100.0f));
+    g_application.SetPanelBrightness((float)(g_guiSettings.GetInt("videoscreen.panelbrightness")/100.0f));
   }
 #endif
 #ifdef HAS_XBOX_HARDWARE
@@ -2052,7 +2049,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       g_charsetConverter.reset();
     }
   }
-  else if (strSetting.Equals("locale.charset"))
+  else if (strSetting.Equals("system.charset"))
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
@@ -2127,9 +2124,9 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     else
       g_audioManager.Enable(!g_application.IsPlaying() || g_application.IsPaused());
   }
-  else if (strSetting.Equals("lookandfeel.enablemouse"))
+  else if (strSetting.Equals("appleremote.enablemouse"))
   {
-    g_Mouse.SetEnabled(g_guiSettings.GetBool("lookandfeel.enablemouse"));
+    g_Mouse.SetEnabled(g_guiSettings.GetBool("appleremote.enablemouse"));
   }
   else if (strSetting.Equals("videoscreen.resolution"))
   { // new resolution choosen... - update if necessary
@@ -2165,7 +2162,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       ILED::CLEDControl(iData);
 #endif
   }
-  else if (strSetting.Equals("locale.language"))
+  else if (strSetting.Equals("system.language"))
   { // new language chosen...
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
@@ -2324,13 +2321,13 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     g_guiSettings.m_replayGain.iNoGainPreAmp = g_guiSettings.GetInt("musicplayer.replaygainnogainpreamp");
     g_guiSettings.m_replayGain.bAvoidClipping = g_guiSettings.GetBool("musicplayer.replaygainavoidclipping");
   }
-  else if (strSetting.Equals("locale.country"))
+  else if (strSetting.Equals("system.country"))
   {
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
 
     const CStdString& strRegion=pControl->GetCurrentLabel();
     g_langInfo.SetCurrentRegion(strRegion);
-    g_guiSettings.SetString("locale.country", strRegion);
+    g_guiSettings.SetString("system.country", strRegion);
   }
   else if (strSetting.Equals("locale.timeserver") || strSetting.Equals("locale.timeserveraddress"))
   {
@@ -2626,11 +2623,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     int i = g_guiSettings.GetInt("backgroundmusic.volume");
     Cocoa_SetBackgroundMusicVolume((float)(i/100.0f));
   }
-  else if (strSetting.Equals("system.batterywarning"))
-  {
-    Cocoa_HW_SetBatteryWarningEnabled(g_guiSettings.GetBool("system.batterywarning"));
-  }
-  else if (strSetting.Equals("softwareupdate.checknow"))
+   else if (strSetting.Equals("softwareupdate.checknow"))
   {
     Cocoa_CheckForUpdates();
   }
@@ -3865,7 +3858,7 @@ void CGUIWindowSettingsCategory::OnInitWindow()
 #endif
 #ifdef __APPLE__
   // Change the panel brightness setting to the current hardware level
-  g_guiSettings.SetInt("system.panelbrightness", ((int)(g_application.GetPanelBrightness()*20))*5);
+  g_guiSettings.SetInt("videoscreen.panelbrightness", ((int)(g_application.GetPanelBrightness()*20))*5);
 #endif
   m_strOldTrackFormat = g_guiSettings.GetString("musicfiles.trackformat");
   m_strOldTrackFormatRight = g_guiSettings.GetString("musicfiles.trackformatright");

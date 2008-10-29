@@ -282,7 +282,7 @@ bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileIte
 void CGUIWindowVideoFiles::OnPrepareFileItems(CFileItemList &items)
 {
   CGUIWindowVideoBase::OnPrepareFileItems(items);
-  if (g_guiSettings.GetBool("myvideos.cleanfilenames"))
+  if (g_guiSettings.GetBool("filelists.cleanfilenames"))
     items.CleanFileNames();
 }
 

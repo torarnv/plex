@@ -147,7 +147,7 @@
   <string id="209">Next</string>
   <string id="210">Previous</string>
   <string id="213">Calibrate User Interface...</string>
-  <string id="214">Video Calibration...</string>
+  <string id="214">Display Calibration...</string>
   <string id="215">Soften</string>
   <string id="216">Zoom Amount</string>
   <string id="217">Pixel Ratio</string>
@@ -279,7 +279,7 @@
   <string id="354">Matrix Trails</string>
   <string id="355">Screensaver Idle Timeout</string>
   <string id="356">Screensaver Mode</string>
-  <string id="357">Sleep Idle Timeout</string>
+  <string id="357">Sleep System When Inactive For</string>
   <string id="358">All albums</string>
   <string id="359">Recently Added Albums</string>
   <string id="360">Screensaver</string>
@@ -568,8 +568,8 @@
   <string id="701">Removing old songs from the Library</string>
   <string id="702">This path has been scanned before</string>
   <string id="705">Network</string>
-  <string id="706">HTTP Proxy Host</string>
-  <string id="707">HTTP Proxy Port</string>
+  <string id="706">- HTTP Proxy Host</string>
+  <string id="707">- HTTP Proxy Port</string>
   <string id="708">Enable HTTP Proxy</string>
   <string id="709">XLink Kai XTag</string>
   <string id="710">XLink Kai Password</string>
@@ -592,10 +592,10 @@
   <string id="727">Web Server</string>
   <string id="728">FTP Server</string>
   <string id="729">Internet Time</string>
-  <string id="730">Web Server Port</string>
+  <string id="730">- Web Server Port</string>
   <string id="731">Time Server Host</string>
   <string id="732">Save &amp; Apply</string>
-  <string id="733">Web Server Password</string>
+  <string id="733">- Web Server Password</string>
   <string id="734">No Pass</string>
   <string id="735">- Charset</string>
   <string id="736">- Style</string>
@@ -634,7 +634,7 @@
   <string id="769">Reserved</string>
   <string id="770">Error %i: share not available</string>
   <string id="771">- Auto Fatx Limiter</string>
-  <string id="772">Audio Hardware</string>
+  <string id="772">Audio</string>
   <string id="773">Seeking</string>
   <string id="774">Slideshow Folder</string>
   <string id="775">Network Interface</string>
@@ -924,7 +924,7 @@
   <string id="12376">Set as default for all Movies</string>
   <string id="12377">This will reset any previously saved values</string>
   <string id="12378">Show each image for</string>
-  <string id="12379">Use Pan and Zoom effects</string>
+  <string id="12379">Use Ken Burns Effect</string>
   <string id="12380">Play NTSC videos at PAL rates</string>
   <string id="12381">Play PAL videos at NTSC rates</string>
   <string id="12382">Play NTSC videos in PAL60</string>
@@ -966,12 +966,12 @@
   <string id="13110">Save Resolution?</string>
   <string id="13111">Would you like to keep this resolution?</string>
   
-  <string id="13112">High Quality Software Upscaling</string>
+  <string id="13112">Software Upscaling</string>
   <string id="13113">Disabled</string>
   <string id="13114">Enabled For SD Content</string>
   <string id="13115">Always Enabled</string>
   
-  <string id="13116">Upscaling Method</string>
+  <string id="13116">- Upscaling Method</string>
   <string id="13117">Bicubic</string>
   <string id="13118">Lanczos</string>
   <string id="13119">Sinc</string>
@@ -1043,7 +1043,7 @@
   <string id="13278">Default</string>
   <string id="13279">Network</string>
   <string id="13280">Video</string>
-  <string id="13281">Hardware</string>
+  <string id="13281">General</string>
   <string id="13282">_</string>
   <string id="13283">Kernel Version:</string>
   <string id="13284">CPU Speed:</string>
@@ -1166,10 +1166,10 @@
   
   <string id="13450">Sleep System</string>
   
-  <string id="13600">Remote Helper</string>
+  <string id="13600">Remote</string>
   <string id="13601">Apple Remote Mode</string>  
-  <string id="13602">Always Running</string>
-  <string id="13603">Sequence Delay Time</string>
+  <string id="13602">- Always Running</string>
+  <string id="13603">- Sequence Delay Time</string>
   <string id="13604">Enable Secure Input</string>  
 
   <string id="13610">Disabled</string>
@@ -1480,7 +1480,7 @@
   <string id="16308">Lanczos (software)</string>  
   <string id="16309">Sinc (software)</string>
 
-  <string id="17500">Display Sleep Timeout</string>
+  <string id="17500">Sleep Display When Inactive For</string>
   <string id="17501">Display Brightness</string>
   
   <string id="17701">Low Battery</string>
@@ -1499,9 +1499,9 @@
 
   <string id="18100">Background</string>
   <string id="18101">Enable Background Music</string>
-  <string id="18102">Background Music Volume</string>
+  <string id="18102">- Background Music Volume</string>
   <string id="18103">Enable Theme Music</string>
-  <string id="18104">Automatically Download Theme Music</string>
+  <string id="18104">- Automatically Download Theme Music</string>
 
   <string id="20000">CDDA Rip Folder</string>
   <string id="20001">Use external DVD Player</string>
@@ -1787,7 +1787,7 @@
   <string id="20380">Exclude folder from scans</string>
   <string id="20381">Specials</string>
   <string id="20382">Automatically grab season thumbs</string>
-  <string id="20383">Folder contains a single Video</string>
+  <string id="20383">Source contains a single Video</string>
   <string id="20384">Link to TV Show</string>
   <string id="20385">Remove Link to TV Show</string>
   <string id="20386">Recently Added Movies</string>
@@ -1850,9 +1850,9 @@
   <string id="21358">UPnP Pictures</string>
   <string id="21359">Add Media Share...</string>
   <string id="21360">Enable UPnP Server</string>
-  <string id="21361">Manage UPnP Music Shares</string>
-  <string id="21362">Manage UPnP Video Shares</string>
-  <string id="21363">Manage UPnP Picture Shares</string>
+  <string id="21361">- Manage UPnP Music Shares</string>
+  <string id="21362">- Manage UPnP Video Shares</string>
+  <string id="21363">- Manage UPnP Picture Shares</string>
   <string id="21364">Edit Media Share</string>
   <string id="21365">Remove Media Share</string>
   <string id="21366">Custom Subtitle Directory</string>
@@ -2035,16 +2035,16 @@
   <string id="40013">An error has occurred.</string>
   <string id="40014">Please check the console for more details.</string>
   <string id="40015">Checking for updates</string>
-  <string id="40016">Check for updates</string>
-  <string id="40017">Automatically check for updates</string>
+  <string id="40016">Check For Update Now...</string>
+  <string id="40017">Automatically Check For Updates</string>
   <string id="40018">Update</string>
-  <string id="40019">- If updates are available</string>
+  <string id="40019">- If Updates Are Available</string>
   <string id="40020">show a notification</string>
   <string id="40021">ask to install</string>
   <string id="40022">Enable Automatic Update Check?</string>
   <string id="40023">Would you like Plex to alert you when updates</string>
   <string id="40024">are available?</string>
-  <string id="40025">- Check for updates</string>
+  <string id="40025">- Check For Updates</string>
   <string id="40026">every hour</string>
   <string id="40027">every day</string>
   <string id="40028">every week</string>

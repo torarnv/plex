@@ -193,16 +193,14 @@ CGUISettings::CGUISettings(void)
   // Pictures settings
   AddGroup(0, 1);
   AddCategory(0, "pictures", 16000);
-  AddInt(1, "pictures.viewmode", 582, DEFAULT_VIEW_AUTO, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX, SPIN_CONTROL_TEXT);
-  AddInt(2, "pictures.sortmethod", 581, SORT_METHOD_LABEL, SORT_METHOD_LABEL, 1, SORT_METHOD_MAX, SPIN_CONTROL_TEXT);
-  AddInt(3, "pictures.sortorder", 580, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_DESC, SPIN_CONTROL_TEXT);
+  AddInt(0, "pictures.viewmode", 582, DEFAULT_VIEW_AUTO, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX, SPIN_CONTROL_TEXT);
+  AddInt(0, "pictures.sortmethod", 581, SORT_METHOD_LABEL, SORT_METHOD_LABEL, 1, SORT_METHOD_MAX, SPIN_CONTROL_TEXT);
+  AddInt(0, "pictures.sortorder", 580, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_DESC, SPIN_CONTROL_TEXT);
   AddBool(4, "pictures.savefolderviews", 583, true);
   AddSeparator(5,"pictures.sep1");
   AddBool(6, "pictures.useexifrotation", 20184, true);
-  AddBool(7, "pictures.usetags", 258, true);
-  // FIXME: hide this setting until it is properly respected. In the meanwhile, default to AUTO.
-  //AddInt(8, "pictures.displayresolution", 169, (int)AUTORES, (int)HDTV_1080i, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
-  AddInt(0, "pictures.displayresolution", 169, (int)AUTORES, (int)AUTORES, 1, (int)AUTORES, SPIN_CONTROL_TEXT);
+  AddBool(0, "pictures.usetags", 258, true);
+  AddInt(0, "pictures.displayresolution", 169, (int)AUTORES, (int)HDTV_1080i, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
   AddSeparator(9,"pictures.sep2");
   AddString(10,"pictures.screenshotpath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
 
@@ -264,9 +262,14 @@ CGUISettings::CGUISettings(void)
   AddString(1, "mymusic.visualisation", 250, "milkdrop.vis", SPIN_CONTROL_TEXT);
 #endif
   AddSeparator(2, "mymusic.sep1");
-  AddBool(3, "mymusic.autoplaynextitem", 489, true);
+  AddBool(0, "mymusic.autoplaynextitem", 489, true);
   //AddBool(4, "musicfiles.repeat", 488, false);
   AddBool(5, "mymusic.clearplaylistsonend",239,false);
+	AddBool(2, "mymusic.outputtoallspeakers", 252, false);
+	AddInt(9, "mymusic.crossfade", 13314, 0, 0, 1, 10, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF);
+	AddBool(10, "mymusic.usecddb", 227, true);
+
+
   AddSeparator(6, "mymusic.sep2");
   AddString(7,"mymusic.recordingpath",20005,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
 
@@ -278,34 +281,32 @@ CGUISettings::CGUISettings(void)
   AddInt(4, "backgroundmusic.volume", 18102, 50, 5, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
 
   AddCategory(3,"musiclibrary",14022);
-  AddBool(1, "musiclibrary.enabled", 418, true);
+  AddBool(0, "musiclibrary.enabled", 418, true);
   AddBool(2, "musiclibrary.albumartistsonly", 13414, false);
   AddSeparator(3,"musiclibrary.sep1");
   AddBool(4,"musiclibrary.autoalbuminfo", 20192, false);
   AddBool(5,"musiclibrary.autoartistinfo", 20193, false);
-  AddString(6, "musiclibrary.defaultscraper", 20194, "Allmusic", SPIN_CONTROL_TEXT);
-  AddInt(6, "musiclibrary.recentcount", 20250, 25, 10, 5, 250, SPIN_CONTROL_INT_PLUS, -1);
+  AddString(0, "musiclibrary.defaultscraper", 20194, "Allmusic", SPIN_CONTROL_TEXT);
+  AddInt(0, "musiclibrary.recentcount", 20250, 25, 10, 5, 250, SPIN_CONTROL_INT_PLUS, -1);
   AddBool(7, "musiclibrary.updateonstartup", 22000, false);
   AddSeparator(8,"musiclibrary.sep2");
   AddString(9, "musiclibrary.cleanup", 334, "", BUTTON_CONTROL_STANDARD);
   AddString(10, "musiclibrary.export", 20196, "", BUTTON_CONTROL_STANDARD);
   AddString(11, "musiclibrary.import", 20197, "", BUTTON_CONTROL_STANDARD);
 
-  AddCategory(3, "musicplayer", 16003);
+//  AddCategory(3, "musicplayer", 16003);
   AddString(1, "musicplayer.jumptoaudiohardware", 16001, "", BUTTON_CONTROL_STANDARD);
-  AddBool(2, "musicplayer.outputtoallspeakers", 252, false);
   AddSeparator(3, "musicplayer.sep1");
   AddInt(4, "musicplayer.replaygaintype", 638, REPLAY_GAIN_ALBUM, REPLAY_GAIN_NONE, 1, REPLAY_GAIN_TRACK, SPIN_CONTROL_TEXT);
   AddInt(5, "musicplayer.replaygainpreamp", 641, 89, 77, 1, 101, SPIN_CONTROL_INT_PLUS, MASK_DB);
   AddInt(6, "musicplayer.replaygainnogainpreamp", 642, 89, 77, 1, 101, SPIN_CONTROL_INT_PLUS, MASK_DB);
   AddBool(7, "musicplayer.replaygainavoidclipping", 643, false);
   AddSeparator(8, "musicplayer.sep2");
-  AddInt(9, "musicplayer.crossfade", 13314, 0, 0, 1, 10, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF);
-  AddBool(10, "musicplayer.crossfadealbumtracks", 13400, true);
+  AddBool(0, "mymusic.crossfadealbumtracks", 13400, true);
   AddSeparator(11, "musicplayer.sep3");
   AddString(12, "musicplayer.jumptocache", 439, "", BUTTON_CONTROL_STANDARD);
 
-  AddCategory(3, "musicfiles", 744);
+//  AddCategory(3, "musicfiles", 744);
   AddBool(1, "musicfiles.usetags", 258, true);
   AddString(2, "musicfiles.trackformat", 13307, "[%N. ]%A - %T", BUTTON_CONTROL_INPUT, false, 16016);
   AddString(3, "musicfiles.trackformatright", 13387, "%D", BUTTON_CONTROL_INPUT, false, 16016);
@@ -320,7 +321,6 @@ CGUISettings::CGUISettings(void)
   AddInt(7, "musicfiles.sortorder", 580, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_DESC, SPIN_CONTROL_TEXT);
   AddBool(8, "musicfiles.savefolderviews", 583, true);
   AddSeparator(9, "musicfiles.sep2");
-  AddBool(10, "musicfiles.usecddb", 227, true);
   AddBool(11, "musicfiles.findremotethumbs", 14059, true);
 
   AddCategory(3, "lastfm", 15200);
@@ -329,16 +329,16 @@ CGUISettings::CGUISettings(void)
   AddString(3,"lastfm.username", 15202, "", BUTTON_CONTROL_INPUT, false, 15202);
   AddString(4,"lastfm.password", 15203, "", BUTTON_CONTROL_HIDDEN_INPUT, false, 15203);
 
-  AddCategory(3, "cddaripper", 620);
+//  AddCategory(3, "cddaripper", 620);
   AddString(1, "cddaripper.path", 20000, "select writable folder", BUTTON_CONTROL_PATH_INPUT, false, 657);
   AddString(2, "cddaripper.trackformat", 13307, "[%N. ]%T - %A", BUTTON_CONTROL_INPUT, false, 16016);
   AddInt(3, "cddaripper.encoder", 621, CDDARIP_ENCODER_LAME, CDDARIP_ENCODER_LAME, 1, CDDARIP_ENCODER_WAV, SPIN_CONTROL_TEXT);
   AddInt(4, "cddaripper.quality", 622, CDDARIP_QUALITY_CBR, CDDARIP_QUALITY_CBR, 1, CDDARIP_QUALITY_EXTREME, SPIN_CONTROL_TEXT);
   AddInt(5, "cddaripper.bitrate", 623, 192, 128, 32, 320, SPIN_CONTROL_INT_PLUS, MASK_KBPS);
 
-  AddCategory(3, "karaoke", 13327);
-  AddBool(1, "karaoke.enabled", 13323, false);
-  AddBool(2, "karaoke.voiceenabled", 13361, false);
+//  AddCategory(3, "karaoke", 13327);
+  AddBool(1, "karaoke.enabled", 13323, true);
+  AddBool(2, "karaoke.voiceenabled", 13361, true);
   AddInt(3, "karaoke.volume", 13376, 100, 0, 1, 100, SPIN_CONTROL_INT, MASK_PERCENT);
   AddString(4, "karaoke.port0voicemask", 13382, "None", SPIN_CONTROL_TEXT);
   AddString(5, "karaoke.port1voicemask", 13383, "None", SPIN_CONTROL_TEXT);
@@ -349,18 +349,7 @@ CGUISettings::CGUISettings(void)
   AddGroup(4, 13000);
   AddCategory(4, "system", 13281);
   // advanced only configuration
-  AddBool(1, "system.debuglogging", 20191, false);
-  AddInt(2, "system.shutdowntime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
-#ifdef __APPLE__
-  AddInt(3, "system.displaysleeptime", 17500, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
-  // add panel brightness setting if supported by the display
-  float panelBrightnessLevel = -1.0f;
-  Cocoa_GetPanelBrightness(&panelBrightnessLevel);
-  AddInt(panelBrightnessLevel >= 0 ? 4 : 0, "system.panelbrightness", 17501, 0, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
-
-  // add battery warning setting if on a laptop
-  AddBool(Cocoa_HW_HasBattery() ? 5 : 0, "system.batterywarning", 18009, true);
-#endif
+  AddBool(0, "system.debuglogging", 20191, false);
 #ifdef HAS_HAL
   AddInt(3, "system.shutdownstate", 13008, 0, 0, 1, 4, SPIN_CONTROL_TEXT);
 #endif
@@ -376,6 +365,60 @@ CGUISettings::CGUISettings(void)
   AddBool(11, "system.autotemperature", 13301, false);
   AddInt(12, "system.targettemperature", 13299, 55, 40, 1, 68, SPIN_CONTROL_TEXT);
   AddInt(13, "system.minfanspeed", 13411, 1, 1, 1, 50, SPIN_CONTROL_TEXT);
+#endif
+  AddBool(5, "system.enablerssfeeds",13305,  true);
+  AddBool(0, "system.rssfeedsrtl",13412,  false);
+  AddString(1, "system.country", 20026, "USA", SPIN_CONTROL_TEXT);
+  AddString(2, "system.language",248,"english", SPIN_CONTROL_TEXT);
+  AddString(3, "system.charset",735,"DEFAULT", SPIN_CONTROL_TEXT); // charset is set by the language file
+	AddInt(6, "system.shutdowntime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
+
+
+//	AddCategory(4, "locale", 20026);
+	AddSeparator(4, "locale.sep1");
+#ifndef __APPLE__
+	AddString(5, "locale.time", 14065, "", BUTTON_CONTROL_MISC_INPUT);
+	AddString(6, "locale.date", 14064, "", BUTTON_CONTROL_MISC_INPUT);
+#endif
+#ifdef HAS_XBOX_HARDWARE
+	AddInt(7, "locale.timezone", 14074, 0, 0, 1, g_timezone.GetNumberOfTimeZones(), SPIN_CONTROL_TEXT);
+	AddBool(8, "locale.usedst", 14075, false);
+#endif
+#if defined(_LINUX) && !defined(__APPLE__)
+	AddString(8, "locale.timezone", 14081, g_timezone.GetOSConfiguredTimezone(), SPIN_CONTROL_TEXT);
+	AddString(7, "locale.timezonecountry", 14080, g_timezone.GetCountryByTimezone(g_timezone.GetOSConfiguredTimezone()), SPIN_CONTROL_TEXT);
+#endif
+#ifndef __APPLE__
+	AddSeparator(9, "locale.sep2");
+	AddBool(10, "locale.timeserver", 168, false);
+	AddString(11, "locale.timeserveraddress", 731, "pool.ntp.org", EDIT_CONTROL_INPUT);
+#endif
+
+	AddCategory(4, "videoscreen", 131);
+	AddInt(1, "videoscreen.resolution",169,(int)AUTORES, (int)HDTV_1080i, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
+	AddString(2, "videoscreen.testresolution",13109,"", BUTTON_CONTROL_STANDARD);
+#ifdef __APPLE__
+	AddInt(6, "videoscreen.displaysleeptime", 17500, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
+	// add panel brightness setting if supported by the display
+	float panelBrightnessLevel = -1.0f;
+	Cocoa_GetPanelBrightness(&panelBrightnessLevel);
+	if (panelBrightnessLevel >= 0)
+	{
+		AddInt(4, "videoscreen.panelbrightness", 17501, 0, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+	}
+#endif
+#ifdef __APPLE__
+	AddInt(3, "videoscreen.displayblanking", 13130, BLANKING_DISABLED, BLANKING_DISABLED, 1, BLANKING_ALL_DISPLAYS, SPIN_CONTROL_TEXT);
+#endif
+
+	AddString(3, "videoscreen.guicalibration",214,"", BUTTON_CONTROL_STANDARD);
+	AddString(4, "videoscreen.testpattern",226,"", BUTTON_CONTROL_STANDARD);
+
+#ifdef __APPLE__
+	// Default to vsync always on!
+	AddInt(0, "videoscreen.vsync", 13105, 2, 0, 1, 3, SPIN_CONTROL_TEXT);
+#else
+	AddInt(6, "videoscreen.vsync", 13105, 3, 0, 1, 3, SPIN_CONTROL_TEXT);
 #endif
 
 #ifdef HAS_LCD
@@ -394,13 +437,14 @@ CGUISettings::CGUISettings(void)
   AddBool(8, "lcd.enableonpaused", 20312, true);
 #endif
 
+	AddCategory(4, "appleremote", 13600);
 #ifdef __APPLE__
-  AddCategory(4, "appleremote", 13600);
   AddInt(1, "appleremote.mode", 13601, APPLE_REMOTE_STANDARD, APPLE_REMOTE_DISABLED, 1, APPLE_REMOTE_UNIVERSAL, SPIN_CONTROL_TEXT);
   AddBool(2, "appleremote.alwayson", 13602, false);
   AddInt(3, "appleremote.sequencetime", 13603, 500, 50, 50, 1000, SPIN_CONTROL_INT_PLUS, MASK_MS, TEXT_OFF);
   AddBool(0, "appleremote.secureinput", 13604, false);
 #endif
+	AddBool(12, "appleremote.enablemouse", 21369, false);
 
   AddCategory(4, "autorun", 447);
   AddBool(1, "autorun.dvd", 240, true);
@@ -441,18 +485,17 @@ CGUISettings::CGUISettings(void)
 
   AddCategory(4, "audiooutput", 772);
 #ifdef __APPLE__
-	AddString(1, "audiooutput.audiodevice", 545, "Built-in Output", SPIN_CONTROL_TEXT);
-	AddInt(2, "audiooutput.digitalaudiomode", 574,  DIGITAL_COREAUDIO, DIGITAL_PCM, 1, DIGITAL_COREAUDIO, SPIN_CONTROL_TEXT);
-	AddBool(3, "audiooutput.ac3passthrough", 364, true);
-	AddBool(4, "audiooutput.dtspassthrough", 254, true);
-#else
-	AddInt(3, "audiooutput.mode", 337, AUDIO_ANALOG, AUDIO_ANALOG, 1, AUDIO_DIGITAL, SPIN_CONTROL_TEXT);
-	AddBool(4, "audiooutput.ac3passthrough", 364, true);
-	AddBool(5, "audiooutput.dtspassthrough", 254, true);
-	AddString(6, "audiooutput.audiodevice", 545, "default", BUTTON_CONTROL_INPUT);
-	AddString(7, "audiooutput.passthroughdevice", 546, "iec958", BUTTON_CONTROL_INPUT);
+  AddString(2, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
+  //AddString(7, "audiooutput.passthroughdevice", 546, "S/PDIF", BUTTON_CONTROL_INPUT);
+#elif defined(_LINUX)
+  AddString(6, "audiooutput.audiodevice", 545, "default", BUTTON_CONTROL_INPUT);
+  AddString(7, "audiooutput.passthroughdevice", 546, "iec958", BUTTON_CONTROL_INPUT);
 #endif
 
+	AddBool(8, "audiooutput.bgmusicenabled", 18101, true);
+	AddBool(9, "audiooutput.themedownloadsenabled", 18104, true);
+	AddInt(10, "audiooutput.bgmusicvolume", 18102, 50, 5, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+	
 #ifndef __APPLE__
   AddCategory(4, "videooutput", 21373);
   AddInt(1, "videooutput.aspect", 21374, VIDEO_NORMAL, VIDEO_NORMAL, 1, VIDEO_WIDESCREEN, SPIN_CONTROL_TEXT);
@@ -461,7 +504,7 @@ CGUISettings::CGUISettings(void)
   AddBool(4,  "videooutput.hd1080i", 21380, true);
 #endif
 
-  AddCategory(4, "masterlock", 12360);
+//  AddCategory(4, "masterlock", 12360);
   AddString(1, "masterlock.lockcode"       , 20100, "-", BUTTON_CONTROL_STANDARD);
   AddSeparator(2, "masterlock.sep1");
   AddBool(4, "masterlock.startuplock"      , 20076,false);
@@ -472,37 +515,27 @@ CGUISettings::CGUISettings(void)
   // hidden masterlock settings
   AddInt(0,"masterlock.maxretries", 12364, 3, 3, 1, 100, SPIN_CONTROL_TEXT);
 
-  // Software update settings
-  AddCategory(4, "softwareupdate", 40018);
-  AddString(1, "softwareupdate.checknow", 40016, "", BUTTON_CONTROL_STANDARD);
-  AddSeparator(2, "softwareupdate.sep1");
-  AddBool(3, "softwareupdate.alertsenabled", 40017, true);
-  AddInt(4, "softwareupdate.checkinterval", 40025, UPDATE_INTERVAL_DAILY, UPDATE_INTERVAL_HOURLY, 1, UPDATE_INTERVAL_WEEKLY, SPIN_CONTROL_TEXT);
-  AddInt(5, "softwareupdate.alerttype", 40019, UPDATE_ASK, UPDATE_NOTIFY, 1, UPDATE_ASK, SPIN_CONTROL_TEXT);
-  AddBool(0, "softwareupdate.firstrun", 40000, true);
-
   // video settings
   AddGroup(5, 3);
-  AddCategory(5, "myvideos", 16000);
-  AddBool(1, "myvideos.treatstackasfile", 20051, true);
-  AddInt(2, "myvideos.resumeautomatically", 12017, RESUME_ASK, RESUME_NO, 1, RESUME_ASK, SPIN_CONTROL_TEXT);
-  AddBool(3, "myvideos.autothumb",12024, false);
-  AddBool(4, "myvideos.cleanfilenames", 20418, false);
+//  AddCategory(5, "myvideos", 16000);
+  AddBool(0, "myvideos.treatstackasfile", 20051, true);
+  AddInt(0, "myvideos.resumeautomatically", 12017, RESUME_ASK, RESUME_NO, 1, RESUME_ASK, SPIN_CONTROL_TEXT);
+  AddBool(0, "myvideos.autothumb",12024, false);
   AddSeparator(5, "myvideos.sep1");
   AddInt(5, "myvideos.viewmode", 582, DEFAULT_VIEW_AUTO, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX, SPIN_CONTROL_TEXT);
   AddInt(6, "myvideos.sortmethod", 581, SORT_METHOD_LABEL, SORT_METHOD_LABEL, 1, SORT_METHOD_MAX, SPIN_CONTROL_TEXT);
   AddInt(7, "myvideos.sortorder", 580, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_DESC, SPIN_CONTROL_TEXT);
-  AddBool(8, "myvideos.savefolderviews", 583, true);
+  AddBool(0, "myvideos.savefolderviews", 583, true);
   AddCategory(5, "videolibrary", 14022);
 
-  AddBool(1, "videolibrary.enabled", 418, true);
+  AddBool(0, "videolibrary.enabled", 418, true);
   AddSeparator(2, "videolibrary.sep1");
   AddBool(3, "videolibrary.hideplots", 20369, false);
-  AddBool(4, "videolibrary.seasonthumbs", 20382, true);
-  AddBool(5, "videolibrary.actorthumbs", 20402, false);
-  AddInt(6, "videolibrary.flattentvshows", 20412, 1, 0, 1, 2, SPIN_CONTROL_TEXT);
-  AddInt(7, "videolibrary.recentcount", 20475, 25, 10, 5, 250, SPIN_CONTROL_INT_PLUS, -1);
-  AddBool(8, "videolibrary.removeduplicates", 20419, true);
+  AddBool(0, "videolibrary.seasonthumbs", 20382, true);
+  AddBool(0, "videolibrary.actorthumbs", 20402, true);
+  AddBool(0, "videolibrary.singleseason", 20412, true);
+  AddInt(0, "videolibrary.recentcount", 20475, 25, 10, 5, 250, SPIN_CONTROL_INT_PLUS, -1);
+  AddBool(0, "videolibrary.removeduplicates", 20419, true);
   AddSeparator(9, "videolibrary.sep1");
   AddBool(10, "videolibrary.updateonstartup", 22000, false);
   AddBool(11, "videolibrary.backgroundupdate", 22001, false);
@@ -512,32 +545,39 @@ CGUISettings::CGUISettings(void)
   AddString(15, "videolibrary.import", 648, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(5, "videoplayer", 16003);
-  AddString(1, "videoplayer.calibrate", 214, "", BUTTON_CONTROL_STANDARD);
-  AddString(2, "videoplayer.jumptoaudiohardware", 16001, "", BUTTON_CONTROL_STANDARD);
   AddSeparator(3, "videoplayer.sep1");
 #ifndef __APPLE__
   AddInt(4, "videoplayer.rendermethod", 13354, RENDER_HQ_RGB_SHADER, RENDER_LQ_RGB_SHADER, 1, RENDER_HQ_RGB_SHADERV2, SPIN_CONTROL_TEXT);
 #endif
-  // FIXME: hide this setting until it is properly respected. In the meanwhile, default to AUTO.
+
+// FIXME: hide this setting until it is properly respected. In the meanwhile, default to AUTO.
   //AddInt(5, "videoplayer.displayresolution", 169, (int)AUTORES, (int)AUTORES, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
   AddInt(0, "videoplayer.displayresolution", 169, (int)AUTORES, (int)AUTORES, 1, (int)AUTORES, SPIN_CONTROL_TEXT);
+
 #ifdef HAS_MPLAYER
   AddInt(6, "videoplayer.framerateconversions", 336, FRAME_RATE_LEAVE_AS_IS, FRAME_RATE_LEAVE_AS_IS, 1, FRAME_RATE_USE_PAL60, SPIN_CONTROL_TEXT);
 #endif
 
   AddSeparator(7, "videoplayer.sep1.5");
-  AddInt(8, "videoplayer.highqualityupscaling", 13112, SOFTWARE_UPSCALING_DISABLED, SOFTWARE_UPSCALING_DISABLED, 1, SOFTWARE_UPSCALING_ALWAYS, SPIN_CONTROL_TEXT);
-  AddInt(9, "videoplayer.upscalingalgorithm", 13116, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, 1, VS_SCALINGMETHOD_SINC_SOFTWARE, SPIN_CONTROL_TEXT);
-
-  AddSeparator(10, "videoplayer.sep1.8");
+  AddInt(10, "videoplayer.highqualityupscaling", 13112, SOFTWARE_UPSCALING_DISABLED, SOFTWARE_UPSCALING_DISABLED, 1, SOFTWARE_UPSCALING_ALWAYS, SPIN_CONTROL_TEXT);
+  AddInt(11, "videoplayer.upscalingalgorithm", 13116, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, 1, VS_SCALINGMETHOD_SINC_SOFTWARE, SPIN_CONTROL_TEXT);
+  
+  AddSeparator(10, "videoplayer.sep1.8");  
   AddInt(9, "videoplayer.skiploopfilter", 13140, VS_SKIPLOOP_DEFAULT, VS_SKIPLOOP_DEFAULT, 1, VS_SKIPLOOP_ALL, SPIN_CONTROL_TEXT);
 
-  AddSeparator(10, "videoplayer.sep2");
-  AddString(11, "videoplayer.jumptocache", 439, "", BUTTON_CONTROL_STANDARD);
-  AddSeparator(12, "videoplayer.sep3");
-  AddInt(15, "videoplayer.dvdplayerregion", 21372, 0, 0, 1, 8, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
-  AddBool(16, "videoplayer.dvdautomenu", 21882, false);
-  AddBool(17, "videoplayer.editdecision", 22003, false);
+
+#ifdef HAS_XBOX_HARDWARE
+  AddInt(7, "videoplayer.flicker", 13100, 1, 0, 1, 5, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
+  AddBool(8, "videoplayer.soften", 215, false);
+#endif
+
+#ifdef HAS_XBOX_HARDWARE
+  AddBool(13, "videoplayer.useexternaldvdplayer", 20001, false);
+  AddString(14, "videoplayer.externaldvdplayer", 20002, "",  BUTTON_CONTROL_PATH_INPUT, true, 655);
+#endif
+  AddInt(0, "videoplayer.dvdplayerregion", 21372, 0, 0, 1, 8, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
+  AddBool(0, "videoplayer.dvdautomenu", 21882, true);
+  AddBool(0, "videoplayer.editdecision", 22003, true);
 
   AddCategory(5, "subtitles", 287);
   AddString(1, "subtitles.font", 288, "Arial", SPIN_CONTROL_TEXT);
@@ -546,7 +586,7 @@ CGUISettings::CGUISettings(void)
   AddInt(4, "subtitles.color", 737, SUBTITLE_COLOR_START + 1, SUBTITLE_COLOR_START, 1, SUBTITLE_COLOR_END, SPIN_CONTROL_TEXT);
   AddString(5, "subtitles.charset", 735, "DEFAULT", SPIN_CONTROL_TEXT);
   AddSeparator(7, "subtitles.sep1");
-  AddBool(9, "subtitles.searchrars", 13249, false);
+  AddBool(0, "subtitles.searchrars", 13249, true);
   AddSeparator(10,"subtitles.sep2");
   AddString(11, "subtitles.custompath", 21366, "", BUTTON_CONTROL_PATH_INPUT, false, 657);
 
@@ -563,7 +603,7 @@ CGUISettings::CGUISettings(void)
 
   // network settings
   AddGroup(6, 705);
-  AddCategory(6, "network", 705);
+//  AddCategory(6, "network", 705);
 #ifndef __APPLE__
   AddString(1, "network.interface",775,"", SPIN_CONTROL_TEXT);
   AddInt(2, "network.assignment", 715, NETWORK_DHCP, NETWORK_DHCP, 1, NETWORK_DISABLED, SPIN_CONTROL_TEXT);
@@ -582,7 +622,7 @@ CGUISettings::CGUISettings(void)
   AddString(14, "network.httpproxyserver", 706, "", BUTTON_CONTROL_IP_INPUT);
   AddString(15, "network.httpproxyport", 707, "8080", BUTTON_CONTROL_INPUT, false, 707);
   AddSeparator(16, "network.sep2");
-  AddBool(17, "network.enableinternet", 14054, true);
+  AddBool(0, "network.enableinternet", 14054, true);
 
   // hidden proxy authentication details
   AddString(0, "network.httpproxyusername", 706, "", BUTTON_CONTROL_INPUT);
@@ -605,7 +645,11 @@ CGUISettings::CGUISettings(void)
   AddString(8,"servers.webserverpassword",733, "", BUTTON_CONTROL_HIDDEN_INPUT, true, 733);
 #endif
 #endif
-
+	AddBool(10, "servers.upnpserver", 21360, false);
+	AddString(11, "servers.musicshares", 21361, "", BUTTON_CONTROL_STANDARD);
+	AddString(12, "servers.videohares", 21362, "", BUTTON_CONTROL_STANDARD);
+	AddString(13, "servers.pictureshares", 21363, "", BUTTON_CONTROL_STANDARD);
+	
 #ifdef _XBOX
   AddCategory(6,"autodetect",           1250  );
   AddBool(1,    "autodetect.onoff",     1251, true);
@@ -615,7 +659,7 @@ CGUISettings::CGUISettings(void)
   AddBool(5,    "autodetect.senduserpw",1255, true); // can be in advanced.xml! default:true
 #endif
 
-  AddCategory(6, "smb", 1200);
+//  AddCategory(6, "smb", 1200);
   AddString(1, "smb.username",    1203,   "", BUTTON_CONTROL_INPUT, true, 1203);
   AddString(2, "smb.password",    1204,   "", BUTTON_CONTROL_HIDDEN_INPUT, true, 1204);
   AddString(3, "smb.winsserver",  1207,   "",  BUTTON_CONTROL_IP_INPUT);
@@ -624,18 +668,15 @@ CGUISettings::CGUISettings(void)
   AddBool  (5, "smb.mountshares", 1208,   false);
 #endif
 
-  AddCategory(6, "upnp", 20110);
-  AddBool(1,    "upnp.client", 20111, false);
-  AddBool(2, "upnp.renderer", 21881, false);
+//  AddCategory(6, "upnp", 20110);
+  AddBool(1,    "upnp.client", 20111, true);
+  AddBool(2, "upnp.renderer", 21881, true);
   AddSeparator(3,"upnp.sep1");
-  AddBool(4, "upnp.server", 21360, false);
-  AddString(5, "upnp.musicshares", 21361, "", BUTTON_CONTROL_STANDARD);
-  AddString(6, "upnp.videoshares", 21362, "", BUTTON_CONTROL_STANDARD);
-  AddString(7, "upnp.pictureshares", 21363, "", BUTTON_CONTROL_STANDARD);
+
 
   // remote events settings
 #ifdef HAS_EVENT_SERVER
-  AddCategory(6, "remoteevents", 790);
+//  AddCategory(6, "remoteevents", 790);
   AddBool(1,  "remoteevents.enabled",         791, true);
   AddString(2,"remoteevents.port",            792, "9777", BUTTON_CONTROL_INPUT, false, 792);
   AddInt(3,   "remoteevents.portrange",       793, 10, 1, 1, 100, SPIN_CONTROL_INT);
@@ -648,85 +689,53 @@ CGUISettings::CGUISettings(void)
   AddInt(8,   "remoteevents.initialdelay",    795, 750, 5, 5, 10000, SPIN_CONTROL_INT);
   AddInt(9,   "remoteevents.continuousdelay", 796, 25, 5, 5, 10000, SPIN_CONTROL_INT);
 #endif
-
+	
+	// Software update settings
+	AddCategory(6, "softwareupdate", 40018);
+	AddString(1, "softwareupdate.checknow", 40016, "", BUTTON_CONTROL_STANDARD);
+	AddSeparator(2, "softwareupdate.sep1");
+	AddBool(3, "softwareupdate.alertsenabled", 40017, true);
+	AddInt(4, "softwareupdate.checkinterval", 40025, UPDATE_INTERVAL_DAILY, UPDATE_INTERVAL_HOURLY, 1, UPDATE_INTERVAL_WEEKLY, SPIN_CONTROL_TEXT);
+	AddInt(0, "softwareupdate.alerttype", 40019, UPDATE_ASK, UPDATE_NOTIFY, 1, UPDATE_ASK, SPIN_CONTROL_TEXT);
+	AddBool(0, "softwareupdate.firstrun", 40000, true);
+	
   // appearance settings
   AddGroup(7, 480);
   AddCategory(7,"lookandfeel", 14037);
+  AddBool(0,"lookandfeel.soundsduringplayback",21370,false);
   AddString(1, "lookandfeel.skin",166,"MediaStream", SPIN_CONTROL_TEXT);
   AddString(2, "lookandfeel.skintheme",15111,"SKINDEFAULT", SPIN_CONTROL_TEXT);
   AddString(3, "lookandfeel.skincolors",14078, "SKINDEFAULT", SPIN_CONTROL_TEXT);
   AddString(4, "lookandfeel.font",13303,"Default", SPIN_CONTROL_TEXT);
-  AddInt(5, "lookandfeel.skinzoom",20109, 0, -20, 2, 20, SPIN_CONTROL_INT, MASK_PERCENT);
+  AddInt(0, "lookandfeel.skinzoom",20109, 0, -20, 2, 20, SPIN_CONTROL_INT, MASK_PERCENT);
   AddInt(6, "lookandfeel.startupwindow",512,1, WINDOW_HOME, 1, WINDOW_PYTHON_END, SPIN_CONTROL_TEXT);
   AddSeparator(7, "lookandfeel.sep1");
   AddString(8, "lookandfeel.soundskin",15108,"SKINDEFAULT", SPIN_CONTROL_TEXT);
-  AddBool(9,"lookandfeel.soundsduringplayback",21370,false);
   AddSeparator(10, "lookandfeel.sep2");
-  AddBool(11, "lookandfeel.enablerssfeeds",13305,  true);
-  AddBool(11, "lookandfeel.rssfeedsrtl",13412,  false);
-  AddBool(12, "lookandfeel.enablemouse", 21369, false);
 
-  AddCategory(7, "locale", 20026);
-  AddString(1, "locale.country", 20026, "USA", SPIN_CONTROL_TEXT);
-  AddString(2, "locale.language",248,"english", SPIN_CONTROL_TEXT);
-  AddString(3, "locale.charset",735,"DEFAULT", SPIN_CONTROL_TEXT); // charset is set by the language file
-  AddSeparator(4, "locale.sep1");
-#ifndef __APPLE__
-  AddString(5, "locale.time", 14065, "", BUTTON_CONTROL_MISC_INPUT);
-  AddString(6, "locale.date", 14064, "", BUTTON_CONTROL_MISC_INPUT);
-#endif
-#ifdef HAS_XBOX_HARDWARE
-  AddInt(7, "locale.timezone", 14074, 0, 0, 1, g_timezone.GetNumberOfTimeZones(), SPIN_CONTROL_TEXT);
-  AddBool(8, "locale.usedst", 14075, false);
-#endif
-#if defined(_LINUX) && !defined(__APPLE__)
-  AddString(8, "locale.timezone", 14081, g_timezone.GetOSConfiguredTimezone(), SPIN_CONTROL_TEXT);
-  AddString(7, "locale.timezonecountry", 14080, g_timezone.GetCountryByTimezone(g_timezone.GetOSConfiguredTimezone()), SPIN_CONTROL_TEXT);
-#endif
-#ifndef __APPLE__
-  AddSeparator(9, "locale.sep2");
-  AddBool(10, "locale.timeserver", 168, false);
-  AddString(11, "locale.timeserveraddress", 731, "pool.ntp.org", EDIT_CONTROL_INPUT);
-#endif
 
-  AddCategory(7, "videoscreen", 131);
-  AddInt(1, "videoscreen.resolution",169,(int)AUTORES, (int)HDTV_1080i, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
-  AddString(2, "videoscreen.testresolution",13109,"", BUTTON_CONTROL_STANDARD);
-
-#ifdef __APPLE__
-  AddInt(3, "videoscreen.displayblanking", 13130, BLANKING_DISABLED, BLANKING_DISABLED, 1, BLANKING_ALL_DISPLAYS, SPIN_CONTROL_TEXT);
-#endif
-
-  AddString(3, "videoscreen.guicalibration",214,"", BUTTON_CONTROL_STANDARD);
-  AddString(4, "videoscreen.testpattern",226,"", BUTTON_CONTROL_STANDARD);
-
-#ifdef __APPLE__
-  // Default to vsync always on!
-  AddInt(6, "videoscreen.vsync", 13105, 2, 0, 1, 3, SPIN_CONTROL_TEXT);
-#else
-  AddInt(6, "videoscreen.vsync", 13105, 3, 0, 1, 3, SPIN_CONTROL_TEXT);
-#endif
-
-  AddCategory(7, "filelists", 14018);
+//  AddCategory(7, "filelists", 14018);
   AddBool(1, "filelists.hideparentdiritems", 13306, false);
   AddBool(2, "filelists.hideextensions", 497, false);
   AddBool(3, "filelists.ignorethewhensorting", 13399, true);
-  AddBool(4, "filelists.unrollarchives",516, false);
-  AddBool(5, "filelists.fulldirectoryhistory", 15106, true);
+  AddBool(0, "filelists.unrollarchives",516, true);
+  AddBool(0, "filelists.fulldirectoryhistory", 15106, true);
   AddSeparator(6, "filelists.sep1");
   AddBool(7, "filelists.allowfiledeletion", 14071, false);
   AddBool(8, "filelists.disableaddsourcebuttons", 21382,  false);
   AddSeparator(9, "filelists.sep2");
-  AddBool(10, "filelists.showhidden", 21330, false);
+  AddBool(0, "filelists.showhidden", 21330, false);
+  AddBool(4, "filelists.cleanfilenames", 20418, false);
+
 
   AddCategory(7, "screensaver", 360);
   AddString(1, "screensaver.mode", 356, "Dim", SPIN_CONTROL_TEXT);
   AddString(2, "screensaver.preview", 1000, "", BUTTON_CONTROL_STANDARD);
   AddInt(3, "screensaver.time", 355, 3, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
   AddBool(4, "screensaver.usemusicvisinstead", 13392, true);
-  AddBool(5, "screensaver.uselock",20140,false);
+  AddBool(0, "screensaver.uselock",20140,false);
   AddSeparator(6, "screensaver.sep1");
-  AddInt(7, "screensaver.dimlevel", 362, 20, 0, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+  AddInt(0, "screensaver.dimlevel", 362, 20, 0, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
   AddString(8, "screensaver.slideshowpath", 774, "F:\\Pictures\\", BUTTON_CONTROL_PATH_INPUT, false, 657);
   AddBool(9, "screensaver.slideshowshuffle", 13319, false);
 
@@ -778,14 +787,16 @@ void CGUISettings::AddBool(int iOrder, const char *strSetting, int iLabel, bool 
   if (!pSetting) return ;
   settingsMap.insert(pair<CStdString, CSetting*>(CStdString(strSetting).ToLower(), pSetting));
 }
+
 bool CGUISettings::GetBool(const char *strSetting) const
 {
   ASSERT(settingsMap.size());
-  constMapIter it = settingsMap.find(CStdString(strSetting).ToLower());
+  constMapIter it = FindSetting(CStdString(strSetting).ToLower());
   if (it != settingsMap.end())
   { // old category
     return ((CSettingBool*)(*it).second)->GetData();
   }
+
   // Assert here and write debug output
   CLog::Log(LOGDEBUG,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
   return false;
@@ -794,12 +805,13 @@ bool CGUISettings::GetBool(const char *strSetting) const
 void CGUISettings::SetBool(const char *strSetting, bool bSetting)
 {
   ASSERT(settingsMap.size());
-  mapIter it = settingsMap.find(CStdString(strSetting).ToLower());
+  constMapIter it = FindSetting(CStdString(strSetting).ToLower());
   if (it != settingsMap.end())
   { // old category
     ((CSettingBool*)(*it).second)->SetData(bSetting);
     return ;
   }
+
   // Assert here and write debug output
   CLog::Log(LOGDEBUG,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
 }
@@ -807,12 +819,13 @@ void CGUISettings::SetBool(const char *strSetting, bool bSetting)
 void CGUISettings::ToggleBool(const char *strSetting)
 {
   ASSERT(settingsMap.size());
-  mapIter it = settingsMap.find(CStdString(strSetting).ToLower());
+  constMapIter it = FindSetting(CStdString(strSetting).ToLower());
   if (it != settingsMap.end())
   { // old category
     ((CSettingBool*)(*it).second)->SetData(!((CSettingBool *)(*it).second)->GetData());
     return ;
   }
+
   // Assert here and write debug output
   CLog::Log(LOGDEBUG,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
 }
@@ -827,13 +840,13 @@ void CGUISettings::AddFloat(int iOrder, const char *strSetting, int iLabel, floa
 float CGUISettings::GetFloat(const char *strSetting) const
 {
   ASSERT(settingsMap.size());
-  constMapIter it = settingsMap.find(CStdString(strSetting).ToLower());
+  constMapIter it = FindSetting(CStdString(strSetting).ToLower());
   if (it != settingsMap.end())
   {
     return ((CSettingFloat *)(*it).second)->GetData();
   }
+
   // Assert here and write debug output
-  ASSERT(false);
   CLog::Log(LOGDEBUG,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
   return 0.0f;
 }
@@ -841,36 +854,35 @@ float CGUISettings::GetFloat(const char *strSetting) const
 void CGUISettings::SetFloat(const char *strSetting, float fSetting)
 {
   ASSERT(settingsMap.size());
-  mapIter it = settingsMap.find(CStdString(strSetting).ToLower());
+  constMapIter it = FindSetting(CStdString(strSetting).ToLower());
   if (it != settingsMap.end())
   {
     ((CSettingFloat *)(*it).second)->SetData(fSetting);
     return ;
   }
+
   // Assert here and write debug output
-  ASSERT(false);
   CLog::Log(LOGDEBUG,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
 }
 
 void CGUISettings::LoadMasterLock(TiXmlElement *pRootElement)
 {
-  std::map<CStdString,CSetting*>::iterator it = settingsMap.find("masterlock.enableshutdown");
+  constMapIter it = FindSetting("masterlock.enableshutdown");
   if (it != settingsMap.end())
     LoadFromXML(pRootElement, it);
-  it = settingsMap.find("masterlock.maxretries");
+  it = FindSetting("masterlock.maxretries");
   if (it != settingsMap.end())
     LoadFromXML(pRootElement, it);
-  it = settingsMap.find("masterlock.automastermode");
+  it = FindSetting("masterlock.automastermode");
   if (it != settingsMap.end())
     LoadFromXML(pRootElement, it);
-  it = settingsMap.find("masterlock.startuplock");
+  it = FindSetting("masterlock.startuplock");
   if (it != settingsMap.end())
     LoadFromXML(pRootElement, it);
-    it = settingsMap.find("autodetect.nickname");
+    it = FindSetting("autodetect.nickname");
   if (it != settingsMap.end())
     LoadFromXML(pRootElement, it);
 }
-
 
 void CGUISettings::AddInt(int iOrder, const char *strSetting, int iLabel, int iData, int iMin, int iStep, int iMax, int iControlType, const char *strFormat)
 {
@@ -896,21 +908,21 @@ void CGUISettings::AddHex(int iOrder, const char *strSetting, int iLabel, int iD
 int CGUISettings::GetInt(const char *strSetting) const
 {
   ASSERT(settingsMap.size());
-  constMapIter it = settingsMap.find(CStdString(strSetting).ToLower());
+  constMapIter it = FindSetting(CStdString(strSetting).ToLower());
   if (it != settingsMap.end())
   {
     return ((CSettingInt *)(*it).second)->GetData();
   }
+
   // Assert here and write debug output
   CLog::Log(LOGERROR,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
-  ASSERT(false);
   return 0;
 }
 
 void CGUISettings::SetInt(const char *strSetting, int iSetting)
 {
   ASSERT(settingsMap.size());
-  mapIter it = settingsMap.find(CStdString(strSetting).ToLower());
+  constMapIter it = FindSetting(CStdString(strSetting).ToLower());
   if (it != settingsMap.end())
   {
     ((CSettingInt *)(*it).second)->SetData(iSetting);
@@ -918,8 +930,9 @@ void CGUISettings::SetInt(const char *strSetting, int iSetting)
       g_guiSettings.m_LookAndFeelResolution = (RESOLUTION)iSetting;
     return ;
   }
+
   // Assert here and write debug output
-  ASSERT(false);
+  CLog::Log(LOGDEBUG,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
 }
 
 void CGUISettings::AddString(int iOrder, const char *strSetting, int iLabel, const char *strData, int iControlType, bool bAllowEmpty, int iHeadingString)
@@ -932,7 +945,7 @@ void CGUISettings::AddString(int iOrder, const char *strSetting, int iLabel, con
 const CStdString &CGUISettings::GetString(const char *strSetting, bool bPrompt) const
 {
   ASSERT(settingsMap.size());
-  constMapIter it = settingsMap.find(CStdString(strSetting).ToLower());
+  constMapIter it = FindSetting(CStdString(strSetting).ToLower());
   if (it != settingsMap.end())
   {
     CSettingString* result = ((CSettingString *)(*it).second);
@@ -974,9 +987,10 @@ const CStdString &CGUISettings::GetString(const char *strSetting, bool bPrompt) 
     }
     return result->GetData();
   }
+
   // Assert here and write debug output
   CLog::Log(LOGDEBUG,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
-  ASSERT(false);
+
   // hardcoded return value so that compiler is happy
   return ((CSettingString *)(*settingsMap.begin()).second)->GetData();
 }
@@ -984,21 +998,21 @@ const CStdString &CGUISettings::GetString(const char *strSetting, bool bPrompt) 
 void CGUISettings::SetString(const char *strSetting, const char *strData)
 {
   ASSERT(settingsMap.size());
-  mapIter it = settingsMap.find(CStdString(strSetting).ToLower());
+  constMapIter it = FindSetting(CStdString(strSetting).ToLower());
   if (it != settingsMap.end())
   {
     ((CSettingString *)(*it).second)->SetData(strData);
     return ;
   }
+
   // Assert here and write debug output
-  ASSERT(false);
   CLog::Log(LOGDEBUG,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
 }
 
 CSetting *CGUISettings::GetSetting(const char *strSetting)
 {
   ASSERT(settingsMap.size());
-  mapIter it = settingsMap.find(CStdString(strSetting).ToLower());
+  constMapIter it = FindSetting(CStdString(strSetting).ToLower());
   if (it != settingsMap.end())
     return (*it).second;
   else
@@ -1037,9 +1051,23 @@ void CGUISettings::GetSettingsGroup(const char *strGroup, vecSettings &settings)
   }
 }
 
+std::map<CStdString, CSetting*>::const_iterator CGUISettings::FindSetting(CStdString strSetting) const
+{
+  /* The following section is for backwards compatibility with older skin names. */
+  if (strSetting == "lookandfeel.enablerssfeeds")
+    strSetting = "system.enablerssfeeds";
+/*
+  else if (strSetting == "another.setting")
+    strSetting = "system.setting";
+ */
+
+  constMapIter it = settingsMap.find(strSetting.ToLower());
+  return it;
+}
+
 void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = false */)
 { // load our stuff...
-  for (mapIter it = settingsMap.begin(); it != settingsMap.end(); it++)
+  for (constMapIter it = settingsMap.begin(); it != settingsMap.end(); it++)
   {
     LoadFromXML(pRootElement, it, hideSettings);
   }
@@ -1125,7 +1153,7 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
 #endif
 }
 
-void CGUISettings::LoadFromXML(TiXmlElement *pRootElement, mapIter &it, bool advanced /* = false */)
+void CGUISettings::LoadFromXML(TiXmlElement *pRootElement, constMapIter &it, bool advanced /* = false */)
 {
   CStdStringArray strSplit;
   StringUtils::SplitString((*it).first, ".", strSplit);
@@ -1195,6 +1223,3 @@ void CGUISettings::Clear()
     delete settingsGroups[i];
   settingsGroups.clear();
 }
-
-
-
