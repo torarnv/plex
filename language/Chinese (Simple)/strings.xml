@@ -1,8 +1,11 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-  <!--Language file translated with Team XBMC Translator-->
-  <!--Date of translation: 07/22/2008-->
-  <!--$Revision$-->
-  <!--Based on english strings version 14277--><strings>
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--Language file translated with Team XBMC Translator-->
+<!--Translator: Tang YiZhi-->
+<!--Email: Kazuyuki@163.com-->
+<!--Date of translation: 10/08/2008-->
+<!--$Revision$-->
+<!--Based on english strings version 15826-->
+<strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
   <string id="2">音乐</string>
@@ -13,7 +16,6 @@
   <string id="7">文件管理</string>
   <string id="8">天气</string>
   <string id="9">xbmc 媒体中心</string>
-
   <string id="11">星期一</string>
   <string id="12">星期二</string>
   <string id="13">星期三</string>
@@ -103,7 +105,7 @@
   <string id="167">启用 FTP 服务器</string>
   <string id="168">自动与时间服务器同步</string>
   <string id="169">分辨率</string>
-  <string id="172">发行时间：</string>
+  <string id="172">发行时间</string>
   <string id="175">音调</string>
   <string id="176">风格</string>
   <string id="179">歌曲</string>
@@ -146,6 +148,7 @@
   <string id="222">取消</string>
   <string id="224">速度</string>
   <string id="225">特效过渡时间</string>
+  <string id="226">测试图案...</string>
   <string id="227">在 freedb 查找音乐 CD 信息</string>
   <string id="228">载入播放列表时打乱顺序</string>
   <string id="229">关闭硬盘 空闲时间(分)</string>
@@ -184,7 +187,7 @@
   <string id="262">脚本输出</string>
   <string id="263">启用 Web 服务器</string>
   <string id="264">录音</string>
-  <string id="265">停止录音</string>
+  <string id="265">停止录音.</string>
   <string id="266">排序：音轨</string>
   <string id="267">排序：时间</string>
   <string id="268">排序：标题</string>
@@ -291,7 +294,7 @@
   <string id="379">下午</string>
   <string id="380">阵雨</string>
   <string id="381">少数</string>
-  <string id="382">间歇性</string>
+  <string id="382">短时有</string>
   <string id="383">风</string>
   <string id="384">强烈</string>
   <string id="385">转晴</string>
@@ -316,8 +319,8 @@
   <string id="404">风</string>
   <string id="405">露点</string>
   <string id="406">湿度</string>
-  <string id="407">来自</string>
-  <string id="408">向</string>
+  <string id="407">风向</string>
+  <string id="408">风速</string>
   <string id="409">默认</string>
   <string id="410">访问 Weather.com</string>
   <string id="411">取得天气数据：</string>
@@ -338,7 +341,7 @@
   <string id="429">请放入下一张 CD/DVD</string>
   <string id="430">排序：DVD#</string>
   <string id="431">无缓存</string>
-  <string id="432">从资料库中移除视频</string>
+  <string id="432">从资料库中移除电影</string>
   <string id="433">确定移除'%s'？</string>
   <string id="437">移动磁盘</string>
   <string id="438">打开文件</string>
@@ -370,7 +373,7 @@
   <string id="465">对比度</string>
   <string id="466">伽码</string>
   <string id="467">类型</string>
-  <string id="468">改变播放 OSD 位置</string>
+  <string id="468">移动条块来改变 OSD 位置</string>
   <string id="469">OSD 位置</string>
   <string id="470">改机者</string>
   <string id="471">改机芯片</string>
@@ -392,7 +395,7 @@
   <string id="492">Vobsubs 字幕缩放</string>
   <string id="493">高级选项(适合专家！)</string>
   <string id="494">总体音量</string>
-  <string id="495">以桌面的解析度播放视频</string>
+  <string id="495">以桌面的分辨率播放视频</string>
   <string id="496">校准</string>
   <string id="497">隐藏媒体扩展名</string>
   <string id="498">排序：类型</string>
@@ -426,7 +429,7 @@
   <string id="529">错误：重复标题</string>
   <string id="530">选择流派</string>
   <string id="531">新的流派</string>
-  <string id="532">额外添加</string>
+  <string id="532">手工添加</string>
   <string id="533">输入流派</string>
   <string id="534">显示：%s</string>
   <string id="535">列表</string>
@@ -464,7 +467,7 @@
   <string id="569">注释</string>
   <string id="570">加入日期</string>
   <string id="571">默认</string>
-  <string id="572">视频制作公司</string>
+  <string id="572">制作公司</string>
   <string id="580">排序方向</string>
   <string id="581">排序方法</string>
   <string id="582">显示模式</string>
@@ -516,7 +519,7 @@
   <string id="642">音量 - 不重复播放的文件</string>
   <string id="643">播放增益时忽略消波失真</string>
   <string id="644">裁剪黑边</string>
-  <string id="645">需要解包一个大文件，是否继续？</string>
+  <string id="645">需要解压一个大文件，是否继续？</string>
   <string id="646">从资料库中移除</string>
   <string id="647">导出视频库</string>
   <string id="648">导入视频库</string>
@@ -539,12 +542,9 @@
   <string id="706">HTTP 代理服务器地址</string>
   <string id="707">HTTP 代理服务器端口</string>
   <string id="708">启用 HTTP 代理</string>
-  <string id="709">XLink Kai 账号</string>
-  <string id="710">XLink Kai 密码</string>
   <string id="711">网络地址(IP)</string>
   <string id="712">无效端口！必须在 1 至 65535 之间。</string>
   <string id="713">HTTP 代理</string>
-  <string id="714">XLink Kai</string>
   <string id="715">IP 设置</string>
   <string id="716">自动(动态分配)</string>
   <string id="717">手动(静态分配)</string>
@@ -556,7 +556,7 @@
   <string id="723">保存和重启</string>
   <string id="724">无效地址！正确格式为：AAA.BBB.CCC.DDD</string>
   <string id="725">从 0 到 255 之间</string>
-  <string id="726">改变未保存，继续不保存吗？</string>
+  <string id="726">改变未保存，继续并不保存吗？</string>
   <string id="727">Web 服务器</string>
   <string id="728">FTP 服务器</string>
   <string id="729">互联网时间</string>
@@ -576,7 +576,7 @@
   <string id="743">黄色</string>
   <string id="744">文件设置</string>
   <string id="745">目前图标无己搜寻信息</string>
-  <string id="746">切换到文件图示</string>
+  <string id="746">切换到文件视图</string>
   <string id="747">图像载入错误</string>
   <string id="748">编辑路径</string>
   <string id="750">确定？</string>
@@ -624,8 +624,6 @@
   <string id="795">初始重复等待时间(ms)</string>
   <string id="796">持续等待时间(ms)</string>
   <string id="797">最大客户数</string>
-  <string id="998">XLink KAI</string>
-  <string id="999">在线游戏</string>
   <string id="1000">屏幕保护预览</string>
   <string id="1001">无法连接</string>
   <string id="1002">XBMC 无法连接到该网上邻居！</string>
@@ -707,12 +705,12 @@
   <string id="1246">FTP 密码</string>
   <string id="1247">用户密码设置成功！</string>
   <string id="1250">自动检测</string>
-  <string id="1251">XBOX 自动检测</string>
+  <string id="1251">自动检测系统</string>
   <string id="1252">昵称</string>
   <string id="1254">确认连接</string>
   <string id="1255">发送 FTP 用户名和密码</string>
   <string id="1256">Ping 间隔</string>
-  <string id="1257">是否连接到自动发现的 XBOX？</string>
+  <string id="1257">是否连接到自动发现的系统？</string>
   <string id="1396">漂流</string>
   <string id="1397">和</string>
   <string id="1398">结冰</string>
@@ -732,7 +730,9 @@
   <string id="1412">风</string>
   <string id="1413">小雨</string>
   <string id="1414">雷雨</string>
-  <string id="2050">运行时间：</string>
+  <string id="1415">毛毛雨</string>
+  <string id="1416">雾</string>
+  <string id="2050">运行时间</string>
   <string id="4501">LCD 类型</string>
   <string id="10000">首页</string>
   <string id="10001">程序</string>
@@ -757,7 +757,7 @@
   <string id="10020">脚本程序</string>
   <string id="10028">视频/播放列表</string>
   <string id="10034">设置-&gt;用户设置</string>
-  <string id="10100">是/否</string>
+  <string id="10100">"是/否"</string>
   <string id="10101">进度</string>
   <string id="10210">查找字幕...</string>
   <string id="10211">缓冲字幕...</string>
@@ -802,7 +802,7 @@
   <string id="12019">是</string>
   <string id="12020">询问</string>
   <string id="12021">从头开始播放</string>
-  <string id="12022">从上次中断处继续播放</string>
+  <string id="12022">从 %s 处继续播放</string>
   <string id="12023">正在验证金手指…</string>
   <string id="12024">自动为没有封面的视频生成缩略图</string>
   <string id="12310">0</string>
@@ -823,7 +823,7 @@
   <string id="12327">输入管理员密码</string>
   <string id="12328">输入解锁密码</string>
   <string id="12329">或按 C 取消</string>
-  <string id="12330">输入 XBOX 手柄按键顺序</string>
+  <string id="12330">输入 XBOX 手柄按键顺序，然后</string>
   <string id="12331">按 Start 确认，或按 Back 取消</string>
   <string id="12332">设置锁定</string>
   <string id="12333">解除锁定</string>
@@ -831,7 +831,7 @@
   <string id="12335">移除锁定</string>
   <string id="12337">数字密码</string>
   <string id="12338">手柄按键组合</string>
-  <string id="12339">文字密码</string>
+  <string id="12339">全文字密码</string>
   <string id="12340">输入新密码</string>
   <string id="12341">确认新密码</string>
   <string id="12342">密码不正确，</string>
@@ -861,14 +861,14 @@
   <string id="12384">24小时制</string>
   <string id="12385">日/月</string>
   <string id="12386">月/日</string>
-  <string id="12390">系统已启动时间</string>
+  <string id="12390">系统开机时间</string>
   <string id="12391">分钟</string>
   <string id="12392">小时</string>
   <string id="12393">天</string>
   <string id="12394">累计开机时间</string>
   <string id="12600">天气</string>
   <string id="12900">屏幕保护</string>
-  <string id="12901">全屏画面调整</string>
+  <string id="12901">全屏 OSD</string>
   <string id="13000">系统设置</string>
   <string id="13001">立即关闭硬盘</string>
   <string id="13002">只有视频</string>
@@ -877,11 +877,14 @@
   <string id="13005">关机</string>
   <string id="13006">Dashboard</string>
   <string id="13007">使用定制 Dashboard 的路径</string>
-  <string id="13008">当关闭XBMC时</string>
-  <string id="13009">不做任何事</string>
+  <string id="13008">默认关机模式</string>
+  <string id="13009">退出</string>
   <string id="13010">休眠</string>
   <string id="13011">待机</string>
+  <string id="13012">退出</string>
+  <string id="13013">重启</string>
   <string id="13100">闪烁过滤</string>
+  <string id="13101">使用驱动选择(需要重启)</string>
   <string id="13105">垂直空白同步</string>
   <string id="13106">停用</string>
   <string id="13107">只在视频播放时开启</string>
@@ -900,6 +903,13 @@
   <string id="13130">显示空白</string>
   <string id="13131">禁止</string>
   <string id="13132">空白显示</string>
+  <string id="13140">检测到活动连接！</string>
+  <string id="13141">如果你处理，你将不再能控制你的</string>
+  <string id="13142">XBMC，你是否确认要停止远程控制？</string>
+  <string id="13144">改变 Apple 遥控器的模式？</string>
+  <string id="13145">如果你现在正在使用 Apple 遥控器</string>
+  <string id="13146">控制 XBMC，修改这些设置将影响对</string>
+  <string id="13147">系统的控制。你确认要处理吗？</string>
   <string id="13150">硬盘密匙：</string>
   <string id="13151">硬盘温度：</string>
   <string id="13152">DVD 型号：</string>
@@ -951,7 +961,7 @@
   <string id="13280">视频</string>
   <string id="13281">硬件</string>
   <string id="13282">_</string>
-  <string id="13283">核心版本：</string>
+  <string id="13283">操作系统：</string>
   <string id="13284">CPU 速度：</string>
   <string id="13285">BIOS 型号：</string>
   <string id="13286">视频芯片：</string>
@@ -976,7 +986,7 @@
   <string id="13305">启用 RSS 显示</string>
   <string id="13306">隐藏上层目录图标</string>
   <string id="13307">音轨命名参数</string>
-  <string id="13308">你想重新启动 XBOX</string>
+  <string id="13308">你想重新启动系统</string>
   <string id="13309">以重新启动 XBMC 吗？</string>
   <string id="13310">放缩效果</string>
   <string id="13311">漂浮效果</string>
@@ -1066,18 +1076,23 @@
   <string id="13409">排名前 250：</string>
   <string id="13410">Tune in on lastfm</string>
   <string id="13411">风扇最低转速</string>
+  <string id="13412"> RSS种子内容为从右到左</string>
+  <string id="13413">正在下载</string>
+  <string id="13414">隐藏只在编辑中出现的艺术家</string>
+  <string id="13415">渲染模式</string>
+  <string id="13416">自动检测</string>
+  <string id="13417">基本着实(ARB)</string>
+  <string id="13418">高级着实(GLSL)</string>
+  <string id="13419">软件着实</string>
   <string id="13600">Apple 遥控器</string>
   <string id="13601">模式</string>
   <string id="13602">始终运行</string>
   <string id="13603">序列延时</string>
   <string id="13610">关闭</string>
   <string id="13611">标准</string>
-  <string id="13612">Universal Remote</string>
-  <string id="13620">已安装 Remote Buddy驱动.</string>
-  <string id="13621">不能打开 Apple 遥控器支持.</string>
-  <string id="13622">请参照 Remote Buddy - FAQ 删除.</string>
-  <string id="13623">Sofa Control 正在运行</string>
-  <string id="13624">请参照 Sofa Control 文档删除.</string>
+  <string id="13612">Universal Remote遥控器</string>
+  <string id="13620">Apple 遥控器错误</string>
+  <string id="13621">能打开 Apple 遥控器支持.</string>
   <string id="14000">视频堆叠</string>
   <string id="14001">堆叠关闭</string>
   <string id="14003">下载播放列表…</string>
@@ -1085,7 +1100,6 @@
   <string id="14005">分析流媒体列表…</string>
   <string id="14006">流媒体列表下载失败</string>
   <string id="14007">播放列表下载失败</string>
-  <string id="14008">启用 Kai 通告</string>
   <string id="14009">游戏目录</string>
   <string id="14010">自动切换为图标显示条件</string>
   <string id="14011">允许自动切换为图标显示</string>
@@ -1117,7 +1131,6 @@
   <string id="14039">XBMC 需要重启改变你的网络设置。</string>
   <string id="14040">你想现在就重启吗？</string>
   <string id="14041">后置处理</string>
-  <string id="14042">主机 IP 地址</string>
   <string id="14043">- 播放时关机</string>
   <string id="14044">%i分</string>
   <string id="14045">%i秒</string>
@@ -1128,7 +1141,7 @@
   <string id="14050">%i.0dB</string>
   <string id="14051">时间显示格式</string>
   <string id="14052">日期显示格式</string>
-  <string id="14053">桌面滤镜</string>
+  <string id="14053">图像界面滤镜</string>
   <string id="14054">启用互联网信息查询</string>
   <string id="14055">使用后台搜寻</string>
   <string id="14056">停止搜寻</string>
@@ -1147,8 +1160,6 @@
   <string id="14069">确定要设置这些参数吗？</string>
   <string id="14070">应用设置</string>
   <string id="14071">允许重命名和删除文件</string>
-  <string id="14072">启用 XLink Kai</string>
-  <string id="14073">XLink Kai 没有被启用！</string>
   <string id="14074">设置时区</string>
   <string id="14075">使用夏令制时间</string>
   <string id="14076">添加到收藏夹</string>
@@ -1156,68 +1167,10 @@
   <string id="14078">皮肤颜色</string>
   <string id="14079">时区-国家</string>
   <string id="14080">时区</string>
-  <string id="15000">XLink Kai</string>
-  <string id="15001">没有连线到服务器</string>
-  <string id="15002">尝试再连线？</string>
-  <string id="15003">输入你的讯息</string>
-  <string id="15004">你被邀请玩 %s。</string>
-  <string id="15005">日期：%s</string>
-  <string id="15006">来自：%s</string>
-  <string id="15007">邀请</string>
-  <string id="15008">你被邀请加入 %s。</string>
-  <string id="15009">离线</string>
-  <string id="15010">好友</string>
-  <string id="15011">显示：好友</string>
-  <string id="15012">加入游戏</string>
-  <string id="15013">语音交谈</string>
-  <string id="15014">邀请</string>
-  <string id="15015">移除</string>
+  <string id="15015">删除</string>
   <string id="15016">游戏</string>
-  <string id="15017">显示：游戏</string>
-  <string id="15018">进入</string>
-  <string id="15019">添加为好友</string>
-  <string id="15020">建立游戏</string>
-  <string id="15021">游戏室</string>
-  <string id="15022">显示：游戏室</string>
-  <string id="15023">开始游戏</string>
-  <string id="15024">添加为好友</string>
-  <string id="15025">建立游戏</string>
-  <string id="15026">聊天室</string>
-  <string id="15027">显示：聊天室</string>
-  <string id="15028">键盘</string>
-  <string id="15029">加入这个游戏室须要密码。</string>
-  <string id="15030">游戏已中断</string>
-  <string id="15031">XLink Kai 认证</string>
-  <string id="15032">名称或密码不正确</string>
-  <string id="15033">请检查设置无误后再尝试。</string>
-  <string id="15034">登陆</string>
-  <string id="15035">启动语音聊天</string>
-  <string id="15036">发送一封你的邀请函</string>
-  <string id="15037">XBMC 无法确定你的网络是否能够连接。</string>
-  <string id="15038">你将会很难加入或建立游戏。</string>
-  <string id="15039">XBMC 无法将游戏自动执行。</string>
-  <string id="15040">放入游戏碟片或按 A 取消，</string>
-  <string id="15041">和开启游戏手册。</string>
-  <string id="15042">存取被拒</string>
-  <string id="15043">%s 加入聊天室。</string>
-  <string id="15044">%s 离开聊天室。</string>
-  <string id="15045">输入你的讯息。</string>
-  <string id="15046">目前游戏室</string>
-  <string id="15047">输入游戏场密码。</string>
-  <string id="15048">输入游戏场说明。</string>
-  <string id="15049">建立游戏</string>
-  <string id="15050">建立个人游戏室</string>
-  <string id="15051">玩家限制</string>
+  <string id="15019">添加</string>
   <string id="15052">密码</string>
-  <string id="15053">简介</string>
-  <string id="15054">邀请函</string>
-  <string id="15055">选择游戏：</string>
-  <string id="15056">输入讯息：</string>
-  <string id="15057">发送</string>
-  <string id="15058">建立游戏</string>
-  <string id="15059">接受邀请！</string>
-  <string id="15060">讯息</string>
-  <string id="15061">邀请玩家 %s。</string>
   <string id="15100">资料库</string>
   <string id="15101">数据库</string>
   <string id="15102">* 所有专辑</string>
@@ -1341,9 +1294,9 @@
   <string id="16104">标记成未看的</string>
   <string id="16105">编辑标题</string>
   <string id="16106">使用 NTSC-M 和 NTSC-J 制式</string>
-  <string id="16107">使用 NTSC-M 制式</string>
-  <string id="16108">使用 NTSC-J 制式</string>
-  <string id="16109">使用 PAL-60 制式</string>
+  <string id="16107">只使用 NTSC-M 制式</string>
+  <string id="16108">只使用 NTSC-J 制式</string>
+  <string id="16109">只使用 PAL-60 制式</string>
   <string id="16110">60hz 游戏设置</string>
   <string id="16200">操作被中断</string>
   <string id="16201">复制文件失败</string>
@@ -1382,8 +1335,6 @@
   <string id="20017">本地缩略图</string>
   <string id="20018">无缩略图</string>
   <string id="20019">选择缩略图</string>
-  <string id="20020">KAI 与金手指不能同时使用</string>
-  <string id="20021">请选择你要使用的项目</string>
   <string id="20023">冲突</string>
   <string id="20024">扫描新的</string>
   <string id="20025">扫描全部</string>
@@ -1398,7 +1349,7 @@
   <string id="20045">进入管理员模式</string>
   <string id="20046">离开管理员模式</string>
   <string id="20047">建立预设文件'%s'？</string>
-  <string id="20048">重回原先设置</string>
+  <string id="20048">应用新的设置开始</string>
   <string id="20049">最适合模式</string>
   <string id="20050">自动切换 16x9 与 4x3 模式</string>
   <string id="20051">视堆叠文件为单一文件</string>
@@ -1423,7 +1374,7 @@
   <string id="20071">启动时刷新媒体来源</string>
   <string id="20072">请确定选择的目录是可写入的</string>
   <string id="20073">且是有效的目录名称</string>
-  <string id="20074">MPAA 分级：</string>
+  <string id="20074">MPAA评分</string>
   <string id="20075">输入管理员密码</string>
   <string id="20076">在开机时询问管理员密码</string>
   <string id="20077">桌面设置</string>
@@ -1431,7 +1382,7 @@
   <string id="20079">启用桌面动画效果</string>
   <string id="20080">播放音乐时关闭 RSS</string>
   <string id="20081">启用快捷方式</string>
-  <string id="20082">显示 XLink Kai 信息</string>
+  <string id="20082">在主界面中显示程序菜单</string>
   <string id="20083">显示音乐讯息</string>
   <string id="20084">显示天气预报</string>
   <string id="20085">显示系统信息</string>
@@ -1480,7 +1431,7 @@
   <string id="20129">交织</string>
   <string id="20130">交织(倒转)</string>
   <string id="20131">混合</string>
-  <string id="20132">从起始处重播视频</string>
+  <string id="20132">从头播放视频</string>
   <string id="20133">编辑网络位置</string>
   <string id="20134">移除网络位置</string>
   <string id="20135">你想扫描这个目录吗？</string>
@@ -1533,14 +1484,15 @@
   <string id="20182">空格</string>
   <string id="20183">重载桌面皮肤</string>
   <string id="20184">根据 EXIF 信息旋转图片</string>
+  <string id="20185">使用海报模式显示电视片</string>
   <string id="20186">请稍候…</string>
   <string id="20187">备份 EEPROM</string>
   <string id="20188">备份 BIOS</string>
-  <string id="20189">启用剧情和评论自动卷动</string>
+  <string id="20189">启用剧情和评论自动滚动</string>
   <string id="20190">自订</string>
   <string id="20191">记录除错信息</string>
-  <string id="20192">通过扫描获取专辑信息</string>
-  <string id="20193">通过扫描获取艺人信息</string>
+  <string id="20192">添加到资料库时获取专辑信息</string>
+  <string id="20193">添加到资料库时获取艺人信息</string>
   <string id="20194">缺省刮削器</string>
   <string id="20195">改变刮削器</string>
   <string id="20196">导出音乐库</string>
@@ -1590,9 +1542,9 @@
   <string id="20344">该目录包含</string>
   <string id="20345">运行自动扫描</string>
   <string id="20346">嵌套查找</string>
-  <string id="20347">以</string>
+  <string id="20347">饰</string>
   <string id="20348">导演</string>
-  <string id="20349">该路径无视频文件！</string>
+  <string id="20349">该目录下无视频文件！</string>
   <string id="20350">票数</string>
   <string id="20351">电视节目资讯</string>
   <string id="20352">影集资讯</string>
@@ -1654,16 +1606,18 @@
   <string id="20410">宣传片</string>
   <string id="20411">弄平</string>
   <string id="20412">如果单季节目则平滑播放</string>
-  <string id="20413">获取影迷</string>
+  <string id="20413">获取剧照图片</string>
   <string id="20414">在视频库中显示影迷</string>
   <string id="20415">扫描新内容</string>
   <string id="20416">最初发表</string>
   <string id="20417">作者</string>
   <string id="20418">清除文件名</string>
-  <string id="20419">堆叠重复的TV Shows</string>
+  <string id="20419">堆叠重复的电视剧</string>
   <string id="20420">从不</string>
   <string id="20421">如果只有一季</string>
   <string id="20422">总是</string>
+  <string id="20423">有宣传片</string>
+  <string id="20424">假</string>
   <string id="21330">显示隐藏文件和目录</string>
   <string id="21331">TuxBox 客户端</string>
   <string id="21332">警告：目标 TuxBox 设备正处于录制模式！</string>
@@ -1764,7 +1718,7 @@
   <string id="21822">制造厂商</string>
   <string id="21823">相机型号</string>
   <string id="21824">注解</string>
-  <string id="21825">韧体</string>
+  <string id="21825">固件</string>
   <string id="21826">光圈值</string>
   <string id="21827">镜头焦长</string>
   <string id="21828">焦点距离</string>
@@ -1828,5 +1782,17 @@
   <string id="22001">总是在幕后更新资料库</string>
   <string id="22002">- DNS 后缀</string>
   <string id="22003">允许编辑和选择列表</string>
+  <string id="22004">延迟： %2.3fs</string>
+  <string id="22005">提前： %2.3fs</string>
+  <string id="22006">字幕位置</string>
+  <string id="22007">OpenGL 提供商：</string>
+  <string id="22008">OpenGL 渲染器：</string>
+  <string id="22009">OpenGL 版本：</string>
+  <string id="22010">显示卡温度：</string>
+  <string id="22011">CPU 温度：</string>
+  <string id="22012">可用内存</string>
+  <string id="22013">预存设置数据</string>
+  <string id="29800">资料库模式</string>
+  <string id="29801">QWERTY 键盘</string>
   <string id="29999">自动开启游戏抗闪烁过滤</string>
 </strings>

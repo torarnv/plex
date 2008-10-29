@@ -757,11 +757,11 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel(g_localizeStrings.Get(13141), VS_SKIPLOOP_DEFAULT);
-      pControl->AddLabel(g_localizeStrings.Get(13142), VS_SKIPLOOP_NONREF);
-      pControl->AddLabel(g_localizeStrings.Get(13143), VS_SKIPLOOP_BIDIR);
-      pControl->AddLabel(g_localizeStrings.Get(13144), VS_SKIPLOOP_NONKEY);
-      pControl->AddLabel(g_localizeStrings.Get(13145), VS_SKIPLOOP_ALL);
+      pControl->AddLabel(g_localizeStrings.Get(13135), VS_SKIPLOOP_DEFAULT);
+      pControl->AddLabel(g_localizeStrings.Get(13136), VS_SKIPLOOP_NONREF);
+      pControl->AddLabel(g_localizeStrings.Get(13137), VS_SKIPLOOP_BIDIR);
+      pControl->AddLabel(g_localizeStrings.Get(13138), VS_SKIPLOOP_NONKEY);
+      pControl->AddLabel(g_localizeStrings.Get(13139), VS_SKIPLOOP_ALL);
     }
     else if (strSetting.Equals("videolibrary.flattentvshows"))
     {
