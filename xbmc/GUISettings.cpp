@@ -485,22 +485,16 @@ CGUISettings::CGUISettings(void)
 
   AddCategory(4, "audiooutput", 772);
 #ifdef __APPLE__
-	AddString(1, "audiooutput.audiodevice", 545, "Built-in Output", SPIN_CONTROL_TEXT);
-	AddInt(2, "audiooutput.digitalaudiomode", 574,  DIGITAL_COREAUDIO, DIGITAL_PCM, 1, DIGITAL_COREAUDIO, SPIN_CONTROL_TEXT);
-	AddBool(3, "audiooutput.ac3passthrough", 364, true);
-	AddBool(4, "audiooutput.dtspassthrough", 254, true);
-#else
-	AddInt(3, "audiooutput.mode", 337, AUDIO_ANALOG, AUDIO_ANALOG, 1, AUDIO_DIGITAL, SPIN_CONTROL_TEXT);
-	AddBool(4, "audiooutput.ac3passthrough", 364, true);
-	AddBool(5, "audiooutput.dtspassthrough", 254, true);
-	AddString(6, "audiooutput.audiodevice", 545, "default", BUTTON_CONTROL_INPUT);
-	AddString(7, "audiooutput.passthroughdevice", 546, "iec958", BUTTON_CONTROL_INPUT);
+  AddString(2, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
+  //AddString(7, "audiooutput.passthroughdevice", 546, "S/PDIF", BUTTON_CONTROL_INPUT);
+#elif defined(_LINUX)
+  AddString(6, "audiooutput.audiodevice", 545, "default", BUTTON_CONTROL_INPUT);
+  AddString(7, "audiooutput.passthroughdevice", 546, "iec958", BUTTON_CONTROL_INPUT);
 #endif
 
 	AddBool(8, "audiooutput.bgmusicenabled", 18101, true);
-	AddBool(9, "audiooutput.themesenabled", 18103, true);
-	AddBool(10, "audiooutput.themedownloadsenabled", 18104, true);
-	AddInt(11, "audiooutput.bgmusicvolume", 18102, 50, 5, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+	AddBool(9, "audiooutput.themedownloadsenabled", 18104, true);
+	AddInt(10, "audiooutput.bgmusicvolume", 18102, 50, 5, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
 	
 #ifndef __APPLE__
   AddCategory(4, "videooutput", 21373);

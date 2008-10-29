@@ -1283,11 +1283,11 @@ HRESULT CApplication::Create(HWND hWnd)
   
   // Start background music playing
   Cocoa_UpdateGlobalVolume(g_application.GetVolume());
-  Cocoa_SetBackgroundMusicThemesEnabled(g_guiSettings.GetBool("backgroundmusic.themesenabled"));
-  Cocoa_SetBackgroundMusicThemeDownloadsEnabled(g_guiSettings.GetBool("backgroundmusic.themedownloadsenabled"));
-  Cocoa_SetBackgroundMusicVolume((float)(g_guiSettings.GetInt("backgroundmusic.volume")/100.0f));
+  Cocoa_SetBackgroundMusicThemesEnabled(g_guiSettings.GetBool("audiooutput.bgmusicenabled"));
+  Cocoa_SetBackgroundMusicThemeDownloadsEnabled(g_guiSettings.GetBool("audiooutput.themedownloadsenabled"));
+  Cocoa_SetBackgroundMusicVolume((float)(g_guiSettings.GetInt("audiooutput.bgmusicvolume")/100.0f));
   Cocoa_StartBackgroundMusic();
-  Cocoa_SetBackgroundMusicEnabled(g_guiSettings.GetBool("backgroundmusic.enabled"));
+  Cocoa_SetBackgroundMusicEnabled(g_guiSettings.GetBool("audiooutput.bgmusicenabled"));
 #endif
 
 #ifdef HAS_XBOX_HARDWARE
@@ -2439,7 +2439,7 @@ void CApplication::StopUPnPClient()
 void CApplication::StartUPnPServer()
 {
 #ifdef HAS_UPNP
-  if (g_guiSettings.GetBool("upnp.server"))
+  if (g_guiSettings.GetBool("servers.upnpserver"))
   {
     CLog::Log(LOGNOTICE, "starting upnp server");
     CUPnP::GetInstance()->StartServer();
