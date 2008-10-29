@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
 <!--$Revision$-->
 <strings>
-  <string id="0">Programs</string>
+  <string id="0">Applications</string>
   <string id="1">Pictures</string>
   <string id="2">Music</string>
   <string id="3">Videos</string>
@@ -272,7 +272,7 @@
   <string id="343">Adjust Framerate</string>
   <string id="344">Actors</string>
   <string id="345">Year</string>
-  <string id="350">Programs</string>
+  <string id="350">Applications</string>
   <string id="351">Off</string>
   <string id="352">Dim</string>
   <string id="353">Black</string>
@@ -785,7 +785,7 @@
   <string id="4501">LCD Type</string>
 
   <string id="10000">Home</string>
-  <string id="10001">Programs</string>
+  <string id="10001">Applications</string>
   <string id="10002">Pictures</string>
   <string id="10003">Filemanager</string>
   <string id="10004">Settings</string>
@@ -2045,5 +2045,10 @@
   <string id="40026">every hour</string>
   <string id="40027">every day</string>
   <string id="40028">every week</string>
+  
+  <string id="40100">Applications</string>
+  <string id="40101">Add Application</string>
+  <string id="40102">Remove Application</string>
+  <string id="40103">Browse for Application</string>
     
 </strings>
