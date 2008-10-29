@@ -350,16 +350,6 @@ CGUISettings::CGUISettings(void)
   AddCategory(4, "system", 13281);
   // advanced only configuration
   AddBool(0, "system.debuglogging", 20191, false);
-#ifdef __APPLE__
-	AddInt(3, "system.displaysleeptime", 17500, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
-	// add panel brightness setting if supported by the display
-	float panelBrightnessLevel = -1.0f;
-	Cocoa_GetPanelBrightness(&panelBrightnessLevel);
-	AddInt(panelBrightnessLevel >= 0 ? 4 : 0, "system.panelbrightness", 17501, 0, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
-	
-	// add battery warning setting if on a laptop
-	AddBool(Cocoa_HW_HasBattery() ? 5 : 0, "system.batterywarning", 18009, true);
-#endif
 #ifdef HAS_HAL
   AddInt(3, "system.shutdownstate", 13008, 0, 0, 1, 4, SPIN_CONTROL_TEXT);
 #endif
@@ -590,12 +580,6 @@ CGUISettings::CGUISettings(void)
   AddInt(7, "videoplayer.flicker", 13100, 1, 0, 1, 5, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
   AddBool(8, "videoplayer.soften", 215, false);
 #endif
-//  AddSeparator(10, "videoplayer.sep2");
-//  AddSeparator(12, "videoplayer.sep3");
-
-	AddInt(6, "videoplayer.highqualityupscaling", 13112, SOFTWARE_UPSCALING_DISABLED, SOFTWARE_UPSCALING_DISABLED, 1, SOFTWARE_UPSCALING_ALWAYS, SPIN_CONTROL_TEXT);
-	AddInt(7, "videoplayer.upscalingalgorithm", 13116, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, 1, VS_SCALINGMETHOD_SINC_SOFTWARE, SPIN_CONTROL_TEXT);
-
 
 #ifdef HAS_XBOX_HARDWARE
   AddBool(13, "videoplayer.useexternaldvdplayer", 20001, false);
@@ -629,7 +613,7 @@ CGUISettings::CGUISettings(void)
 
   // network settings
   AddGroup(6, 705);
-  AddCategory(6, "network", 705);
+//  AddCategory(6, "network", 705);
 #ifndef __APPLE__
   AddString(1, "network.interface",775,"", SPIN_CONTROL_TEXT);
   AddInt(2, "network.assignment", 715, NETWORK_DHCP, NETWORK_DHCP, 1, NETWORK_DISABLED, SPIN_CONTROL_TEXT);
