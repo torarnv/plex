@@ -509,14 +509,14 @@ CGUISettings::CGUISettings(void)
   AddInt(9, "videoplayer.upscalingalgorithm", 13116, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, 1, VS_SCALINGMETHOD_SINC_SOFTWARE, SPIN_CONTROL_TEXT);
   
   AddSeparator(10, "videoplayer.sep1.8");  
-  AddInt(9, "videoplayer.skiploopfilter", 13140, VS_SKIPLOOP_DEFAULT, VS_SKIPLOOP_DEFAULT, 1, VS_SKIPLOOP_ALL, SPIN_CONTROL_TEXT);
+  AddInt(10, "videoplayer.skiploopfilter", 13134, VS_SKIPLOOP_DEFAULT, VS_SKIPLOOP_DEFAULT, 1, VS_SKIPLOOP_ALL, SPIN_CONTROL_TEXT);
 
-  AddSeparator(10, "videoplayer.sep2");
-  AddString(11, "videoplayer.jumptocache", 439, "", BUTTON_CONTROL_STANDARD);
-  AddSeparator(12, "videoplayer.sep3");
-  AddInt(15, "videoplayer.dvdplayerregion", 21372, 0, 0, 1, 8, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
-  AddBool(16, "videoplayer.dvdautomenu", 21882, false);
-  AddBool(17, "videoplayer.editdecision", 22003, false);
+  AddSeparator(11, "videoplayer.sep2");
+  AddString(12, "videoplayer.jumptocache", 439, "", BUTTON_CONTROL_STANDARD);
+  AddSeparator(13, "videoplayer.sep3");
+  AddInt(14, "videoplayer.dvdplayerregion", 21372, 0, 0, 1, 8, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
+  AddBool(15, "videoplayer.dvdautomenu", 21882, false);
+  AddBool(16, "videoplayer.editdecision", 22003, false);
 
   AddCategory(5, "subtitles", 287);
   AddString(1, "subtitles.font", 288, "Arial", SPIN_CONTROL_TEXT);

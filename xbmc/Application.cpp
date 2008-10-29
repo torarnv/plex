@@ -887,14 +887,12 @@ static void CopyUserDataIfNeeded(const CStdString& libraryPath, const CStdString
   dstPath.append(strPath);
   dstPath.append(PATH_SEPARATOR_STRING);
   dstPath.append(file);
-  printf("Looking for [%s]\n", dstPath.c_str());
   if (access(dstPath.c_str(), 0) == -1)
   {
     CStdString srcPath = _P("q:\\");
     srcPath.append(strPath);
     srcPath.append(PATH_SEPARATOR_STRING);
     srcPath.append(file);
-    printf("Copying from [%s]\n", srcPath.c_str());
     
     if (GetFileAttributes(srcPath.c_str()) & FILE_ATTRIBUTE_DIRECTORY)
       CopyDirectory(srcPath.c_str(), dstPath.c_str(), TRUE);
