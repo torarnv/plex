@@ -37,6 +37,7 @@
 #include "GUIWindowManager.h"
 #include "GUIDialogYesNo.h"
 #include "FileItem.h"
+#include "CocoaUtils.h"
 
 using namespace std;
 using namespace MEDIA_DETECT;
@@ -248,20 +249,40 @@ void CGUIDialogContextMenu::GetContextButtons(const CStdString &type, CMediaSour
   {
     if (share)
     {
-      if (!share->m_ignore)
-        buttons.Add(CONTEXT_BUTTON_EDIT_SOURCE, 1027); // Edit Source
-      buttons.Add(CONTEXT_BUTTON_SET_DEFAULT, 13335); // Set as Default
-      if (!share->m_ignore)
-        buttons.Add(CONTEXT_BUTTON_REMOVE_SOURCE, 522); // Remove Source
+      // Don't allow certain actions for OS X app bundles added as sources
+      BOOL isAppBundle = false;
+      if (share->vecPaths.size() > 0)
+        isAppBundle = Cocoa_IsAppBundle(share->vecPaths[0].c_str());
+      if (!isAppBundle)
+      {
+        if (!share->m_ignore)
+          buttons.Add(CONTEXT_BUTTON_EDIT_SOURCE, 1027); // Edit Source
+        buttons.Add(CONTEXT_BUTTON_SET_DEFAULT, 13335); // Set as Default
+        if (!share->m_ignore)
+          buttons.Add(CONTEXT_BUTTON_REMOVE_SOURCE, 522); // Remove Source
+      }
+      else
+      {
+        buttons.Add(CONTEXT_BUTTON_REMOVE_SOURCE, 40102); // Remove Application
+      }
 
-      buttons.Add(CONTEXT_BUTTON_SET_THUMB, 20019);
-      if (share->m_strThumbnailImage != "")
-        buttons.Add(CONTEXT_BUTTON_REMOVE_THUMB, 20057);
+
+      if (!isAppBundle)
+      {
+        buttons.Add(CONTEXT_BUTTON_SET_THUMB, 20019);
+        if (share->m_strThumbnailImage != "")
+          buttons.Add(CONTEXT_BUTTON_REMOVE_THUMB, 20057);
+      }
     }
-    if (!GetDefaultShareNameByType(type).IsEmpty())
-      buttons.Add(CONTEXT_BUTTON_CLEAR_DEFAULT, 13403); // Clear Default
+    if (type != "programs")
+    {
+      if (!GetDefaultShareNameByType(type).IsEmpty())
+        buttons.Add(CONTEXT_BUTTON_CLEAR_DEFAULT, 13403); // Clear Default
 
-    buttons.Add(CONTEXT_BUTTON_ADD_SOURCE, 1026); // Add Source
+      buttons.Add(CONTEXT_BUTTON_ADD_SOURCE, 1026); // Add Source
+    }
+    else
+      buttons.Add(CONTEXT_BUTTON_ADD_SOURCE, 40101); // Add Application
   }
   if (share && LOCK_MODE_EVERYONE != g_settings.m_vecProfiles[0].getLockMode())
   {

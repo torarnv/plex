@@ -140,7 +140,13 @@ bool CGUIDialogMediaSource::ShowAndAddMediaSource(const CStdString &type)
   dialog->Initialize();
   dialog->SetShare(CMediaSource());
   dialog->SetTypeOfMedia(type);
-  dialog->DoModal();
+  
+  // If adding a program source, show the file browser immediately
+  if (type == "programs")
+    dialog->OnPathBrowse(0);
+  else
+    dialog->DoModal();
+  
   bool confirmed(dialog->IsConfirmed());
   if (confirmed)
   { // yay, add this share
@@ -376,11 +382,10 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     
     CMediaSource share2;
     share2.strPath = "/Applications/";
-    share2.strName = "Applications Folder";g_localizeStrings.Get(1043); // Program Plugins
-    //share2.m_ignore = true;
+    share2.strName = "Applications Folder";
     extraShares.push_back(share2);
   }
-  if (CGUIDialogFileBrowser::ShowAndGetSource(path, allowNetworkShares, extraShares.size()==0?NULL:&extraShares))
+  if (CGUIDialogFileBrowser::ShowAndGetSource(path, allowNetworkShares, extraShares.size()==0?NULL:&extraShares, (m_type == "programs")?m_type:""))
   {
     m_paths->Get(item)->m_strPath = path;
     if (!m_bNameChanged || m_name.IsEmpty())
@@ -389,8 +394,27 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
       url.GetURLWithoutUserDetails(m_name);
       CUtil::RemoveSlashAtEnd(m_name);
       m_name = CUtil::GetTitleFromPath(m_name);
+      // For program sources...
+      if (m_type == "programs") 
+      {
+        // Only allow OS X app bundles to be added
+        if (m_name.Right(4) == ".app")
+        {
+          CUtil::RemoveExtension(m_name);
+          OnOK();
+        }
+        else
+        {
+          //OnCancel(); // Prevent normal folders being added as sources in programs
+        }
+      }
     }
     UpdateButtons();
+  }
+  // If adding a programs source & the user dismissed the file browser dialog, cancel adding
+  else if (m_type = "programs")
+  {
+    OnCancel();
   }
 }
 

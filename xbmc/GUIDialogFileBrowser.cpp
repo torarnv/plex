@@ -450,7 +450,6 @@ void CGUIDialogFileBrowser::OnClick(int iItem)
   // Select OS X app bundles
   if (Cocoa_IsAppBundle(pItem->m_strPath.c_str()))
   {
-    //TODO: Better check for bundles
     Update(strPath);
     m_selectedPath = pItem->m_strPath;
     m_bConfirmed = true;
@@ -718,8 +717,9 @@ bool CGUIDialogFileBrowser::ShowAndGetSource(CStdString &path, bool allowNetwork
   // Add it to our window manager
   m_gWindowManager.AddUniqueInstance(browser);
 
+  printf("%s\n", strType.c_str());
   VECSOURCES shares;
-  if (!strType.IsEmpty())
+  if (!strType.IsEmpty() && (strType != "programs"))
   {
     if (strType.Equals("upnpmusic"))
       browser->SetHeading(g_localizeStrings.Get(21361));
@@ -733,7 +733,10 @@ bool CGUIDialogFileBrowser::ShowAndGetSource(CStdString &path, bool allowNetwork
   }
   else
   {
-    browser->SetHeading(g_localizeStrings.Get(1023));
+    if (strType.Equals("programs"))
+      browser->SetHeading(g_localizeStrings.Get(40103));
+    else
+      browser->SetHeading(g_localizeStrings.Get(1023));
 
     g_mediaManager.GetLocalDrives(shares);
 
