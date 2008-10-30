@@ -550,7 +550,7 @@ CGUISettings::CGUISettings(void)
   AddInt(4, "videoplayer.rendermethod", 13354, RENDER_HQ_RGB_SHADER, RENDER_LQ_RGB_SHADER, 1, RENDER_HQ_RGB_SHADERV2, SPIN_CONTROL_TEXT);
 #endif
 
-// FIXME: hide this setting until it is properly respected. In the meanwhile, default to AUTO.
+  // FIXME: hide this setting until it is properly respected. In the meanwhile, default to AUTO.
   //AddInt(5, "videoplayer.displayresolution", 169, (int)AUTORES, (int)AUTORES, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
   AddInt(0, "videoplayer.displayresolution", 169, (int)AUTORES, (int)AUTORES, 1, (int)AUTORES, SPIN_CONTROL_TEXT);
 
@@ -562,8 +562,8 @@ CGUISettings::CGUISettings(void)
   AddInt(10, "videoplayer.highqualityupscaling", 13112, SOFTWARE_UPSCALING_DISABLED, SOFTWARE_UPSCALING_DISABLED, 1, SOFTWARE_UPSCALING_ALWAYS, SPIN_CONTROL_TEXT);
   AddInt(11, "videoplayer.upscalingalgorithm", 13116, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, 1, VS_SCALINGMETHOD_SINC_SOFTWARE, SPIN_CONTROL_TEXT);
   
-  AddSeparator(10, "videoplayer.sep1.8");  
-  AddInt(9, "videoplayer.skiploopfilter", 13140, VS_SKIPLOOP_DEFAULT, VS_SKIPLOOP_DEFAULT, 1, VS_SKIPLOOP_ALL, SPIN_CONTROL_TEXT);
+  AddSeparator(12, "videoplayer.sep1.8");  
+  AddInt(13, "videoplayer.skiploopfilter", 13140, VS_SKIPLOOP_DEFAULT, VS_SKIPLOOP_DEFAULT, 1, VS_SKIPLOOP_ALL, SPIN_CONTROL_TEXT);
 
 
 #ifdef HAS_XBOX_HARDWARE
