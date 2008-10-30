@@ -2067,15 +2067,15 @@
   <string id="40017">Automatically Check For Updates</string>
   <string id="40018">Update</string>
   <string id="40019">- If Updates Are Available</string>
-  <string id="40020">show a notification</string>
-  <string id="40021">ask to install</string>
+  <string id="40020">Ahow a Notification</string>
+  <string id="40021">Ask to Install</string>
   <string id="40022">Enable Automatic Update Check?</string>
   <string id="40023">Would you like Plex to alert you when updates</string>
   <string id="40024">are available?</string>
   <string id="40025">- Check For Updates</string>
-  <string id="40026">every hour</string>
-  <string id="40027">every day</string>
-  <string id="40028">every week</string>
+  <string id="40026">Every Hour</string>
+  <string id="40027">Every Day</string>
+  <string id="40028">Every Week</string>
   
   <string id="40100">Applications</string>
   <string id="40101">Add Application</string>

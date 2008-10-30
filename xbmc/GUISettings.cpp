@@ -269,16 +269,8 @@ CGUISettings::CGUISettings(void)
 	AddInt(9, "mymusic.crossfade", 13314, 0, 0, 1, 10, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF);
 	AddBool(10, "mymusic.usecddb", 227, true);
 
-
   AddSeparator(6, "mymusic.sep2");
   AddString(7,"mymusic.recordingpath",20005,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
-
-  //Additions for background music settings
-  AddCategory(3, "backgroundmusic", 18100);
-  AddBool(1, "backgroundmusic.enabled", 18101, true);
-  AddBool(2, "backgroundmusic.themesenabled", 18103, true);
-  AddBool(3, "backgroundmusic.themedownloadsenabled", 18104, true);
-  AddInt(4, "backgroundmusic.volume", 18102, 50, 5, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
 
   AddCategory(3,"musiclibrary",14022);
   AddBool(0, "musiclibrary.enabled", 418, true);
@@ -486,7 +478,9 @@ CGUISettings::CGUISettings(void)
   AddCategory(4, "audiooutput", 772);
 #ifdef __APPLE__
   AddString(2, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
-  //AddString(7, "audiooutput.passthroughdevice", 546, "S/PDIF", BUTTON_CONTROL_INPUT);
+  AddInt(2, "audiooutput.digitalaudiomode", 574,  DIGITAL_COREAUDIO, DIGITAL_PCM, 1, DIGITAL_COREAUDIO, SPIN_CONTROL_TEXT);
+  AddBool(4, "audiooutput.ac3passthrough", 364, true);
+  AddBool(5, "audiooutput.dtspassthrough", 254, true);
 #elif defined(_LINUX)
   AddString(6, "audiooutput.audiodevice", 545, "default", BUTTON_CONTROL_INPUT);
   AddString(7, "audiooutput.passthroughdevice", 546, "iec958", BUTTON_CONTROL_INPUT);
@@ -563,7 +557,7 @@ CGUISettings::CGUISettings(void)
   AddInt(11, "videoplayer.upscalingalgorithm", 13116, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, 1, VS_SCALINGMETHOD_SINC_SOFTWARE, SPIN_CONTROL_TEXT);
   
   AddSeparator(12, "videoplayer.sep1.8");  
-  AddInt(13, "videoplayer.skiploopfilter", 13140, VS_SKIPLOOP_DEFAULT, VS_SKIPLOOP_DEFAULT, 1, VS_SKIPLOOP_ALL, SPIN_CONTROL_TEXT);
+  AddInt(13, "videoplayer.skiploopfilter", 13134, VS_SKIPLOOP_DEFAULT, VS_SKIPLOOP_DEFAULT, 1, VS_SKIPLOOP_ALL, SPIN_CONTROL_TEXT);
   AddInt(0, "videoplayer.dvdplayerregion", 21372, 0, 0, 1, 8, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
   AddBool(0, "videoplayer.dvdautomenu", 21882, true);
   AddBool(0, "videoplayer.editdecision", 22003, true);
