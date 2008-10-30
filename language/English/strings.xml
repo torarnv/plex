@@ -193,7 +193,7 @@
   <string id="258">Enable tag reading</string>
   <string id="259">Opening</string>
   <string id="260">Shoutcast</string>
-  <string id="261">Waiting for start....</string>
+  <string id="261">Waiting for start...</string>
   <string id="262">Scripts Output</string>
   <string id="263">Enable Web Server</string>
   <string id="264">Record</string>
@@ -435,7 +435,7 @@
   <string id="516">Make archives with one file transparent</string>
   <string id="517">Recently Played Albums</string>
   <string id="518">Launch</string>
-  <string id="519">Launch in..</string>
+  <string id="519">Launch in...</string>
   <string id="520">Edit XBE title</string>
   <string id="521">Compilations</string>
   <string id="522">Remove Source</string>
@@ -795,25 +795,25 @@
   <string id="10005">Music</string>
   <string id="10006">Videos</string>
   <string id="10007">System information</string>
-  <string id="10008">Settings-&gt;General</string>
-  <string id="10009">Settings-&gt;Screen</string>
-  <string id="10010">Settings-&gt;Appearance-&gt;GUI Calibration</string>
-  <string id="10011">Settings-&gt;Videos-&gt;Screen Calibration</string>
-  <string id="10012">Settings-&gt;Pictures</string>
-  <string id="10013">Settings-&gt;Programs</string>
-  <string id="10014">Settings-&gt;Weather</string>
-  <string id="10015">Settings-&gt;Music</string>
-  <string id="10016">Settings-&gt;System</string>
-  <string id="10017">Settings-&gt;Videos</string>
-  <string id="10018">Settings-&gt;Network</string>
-  <string id="10019">Settings-&gt;Appearance</string>
+  <string id="10008">Settings &gt; General</string>
+  <string id="10009">Settings &gt; Screen</string>
+  <string id="10010">Settings &gt; Appearance &gt; GUI Calibration</string>
+  <string id="10011">Settings &gt; Videos &gt; Screen Calibration</string>
+  <string id="10012">Settings &gt; Pictures</string>
+  <string id="10013">Settings &gt; Programs</string>
+  <string id="10014">Settings &gt; Weather</string>
+  <string id="10015">Settings &gt; Music</string>
+  <string id="10016">Settings &gt; System</string>
+  <string id="10017">Settings &gt; Videos</string>
+  <string id="10018">Settings &gt; Network</string>
+  <string id="10019">Settings &gt; Appearance</string>
   <string id="10020">Scripts</string>
   <string id="10021"></string>
   <string id="10022"></string>
   <string id="10023"></string>
   <string id="10025"></string>
   <string id="10028">Videos/Playlist</string>
-  <string id="10034">Settings-&gt;Profiles</string>
+  <string id="10034">Settings &gt; Profiles</string>
 
   <string id="10100">Yes/no dialog</string>
   <string id="10101">Progress dialog</string>
@@ -894,7 +894,7 @@
   <string id="12327">Enter Master Code</string>
   <string id="12328">Enter Unlock Code</string>
   <string id="12329">or press C to cancel</string>
-  <string id="12330">Enter Gamepad button combo and press Start</string>
+  <string id="12330">Enter Gamepad button combo and</string>
   <string id="12331">press Start, or Back to cancel</string>
   <string id="12332">Set Lock</string>
   <string id="12333">Unlock</string>
@@ -952,12 +952,15 @@
   <string id="13005">Shutdown</string>
   <string id="13006">Dashboard</string>
   <string id="13007">Use Custom Dashboard Path</string>
-  <string id="13008">When closing Plex</string>
-  <string id="13009">Do nothing</string>
+  <string id="13008">Default Shutdown mode</string> 
+  <string id="13009">Quit</string> 
   <string id="13010">Hibernate</string>
   <string id="13011">Suspend</string>
+  <string id="13012">Exit</string>
+  <string id="13013">Reboot</string>
 
   <string id="13100">Flicker Filter</string>
+  <string id="13101">Let Driver Choose (requires restart)</string>
   <string id="13105">Vertical Blank Sync</string>
   <string id="13106">Disabled</string>
   <string id="13107">Enabled During Video Playback</string>
@@ -979,7 +982,7 @@
   <string id="13130">Display Blanking</string>
   <string id="13131">Disabled</string>
   <string id="13132">Blank displays</string>
-  
+
   <string id="13134">H.264 Skip Loop Filter</string>
   <string id="13135">Default</string>
   <string id="13136">Skip Non-reference Frames</string>
@@ -1172,7 +1175,6 @@
   <string id="13412">- RSS Feeds Contain Right-To-Left Text</string>
   <string id="13413">Downloading</string>
   <string id="13414">Hide Artists Who Appear Only on Compilations</string>
-  
   <string id="13415">Render Method</string>
   <string id="13416">Auto Detect</string>
   <string id="13417">Basic Shaders (ARB)</string>
@@ -1237,7 +1239,7 @@
   <string id="14039">Plex requires to restart to change your</string>
   <string id="14040">network setup.  Would you like to restart now?</string>
   <string id="14041">Post Processing</string>
-  <string id="14042">Engine IP Address</string>
+  <string id="14042"></string>
   <string id="14043">- Shutdown while playing</string>
   <string id="14044">%i mins</string>
   <string id="14045">%i secs</string>
@@ -1267,8 +1269,8 @@
   <string id="14069">Apply these settings now?</string>
   <string id="14070">Apply Changes Now</string>
   <string id="14071">Allow File Renaming and Deletion</string>
-  <string id="14072">Enable XLink Kai</string>
-  <string id="14073">XLink Kai is not enabled.</string>
+  <string id="14072"></string>
+  <string id="14073"></string>
   <string id="14074">Set Timezone</string>
   <string id="14075">Use Daylight Saving Time</string>
   <string id="14076">Add to Favourites</string>
@@ -1844,9 +1846,8 @@
   <string id="20422">Always</string>
   <string id="20423">Has Trailer</string>
   <string id="20424">False</string>
-  
   <string id="20475">Recent Videos Count</string>
-  
+
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>

@@ -564,17 +564,6 @@ CGUISettings::CGUISettings(void)
   
   AddSeparator(12, "videoplayer.sep1.8");  
   AddInt(13, "videoplayer.skiploopfilter", 13140, VS_SKIPLOOP_DEFAULT, VS_SKIPLOOP_DEFAULT, 1, VS_SKIPLOOP_ALL, SPIN_CONTROL_TEXT);
-
-
-#ifdef HAS_XBOX_HARDWARE
-  AddInt(7, "videoplayer.flicker", 13100, 1, 0, 1, 5, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
-  AddBool(8, "videoplayer.soften", 215, false);
-#endif
-
-#ifdef HAS_XBOX_HARDWARE
-  AddBool(13, "videoplayer.useexternaldvdplayer", 20001, false);
-  AddString(14, "videoplayer.externaldvdplayer", 20002, "",  BUTTON_CONTROL_PATH_INPUT, true, 655);
-#endif
   AddInt(0, "videoplayer.dvdplayerregion", 21372, 0, 0, 1, 8, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
   AddBool(0, "videoplayer.dvdautomenu", 21882, true);
   AddBool(0, "videoplayer.editdecision", 22003, true);
