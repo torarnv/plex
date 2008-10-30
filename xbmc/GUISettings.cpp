@@ -768,7 +768,7 @@ CSettingsGroup *CGUISettings::GetGroup(DWORD dwGroupID)
     if (settingsGroups[i]->GetGroupID() == dwGroupID)
       return settingsGroups[i];
   }
-  CLog::Log(LOGDEBUG, "Error: Requested setting group (%u) was not found.  "
+  CLog::Log(LOGERROR, "Error: Requested setting group (%u) was not found.  "
                       "It must be case-sensitive",
             dwGroupID);
   return NULL;
@@ -798,7 +798,7 @@ bool CGUISettings::GetBool(const char *strSetting) const
   }
 
   // Assert here and write debug output
-  CLog::Log(LOGDEBUG,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
+  CLog::Log(LOGERROR,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
   return false;
 }
 
@@ -813,7 +813,7 @@ void CGUISettings::SetBool(const char *strSetting, bool bSetting)
   }
 
   // Assert here and write debug output
-  CLog::Log(LOGDEBUG,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
+  CLog::Log(LOGERROR,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
 }
 
 void CGUISettings::ToggleBool(const char *strSetting)
@@ -827,7 +827,7 @@ void CGUISettings::ToggleBool(const char *strSetting)
   }
 
   // Assert here and write debug output
-  CLog::Log(LOGDEBUG,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
+  CLog::Log(LOGERROR,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
 }
 
 void CGUISettings::AddFloat(int iOrder, const char *strSetting, int iLabel, float fData, float fMin, float fStep, float fMax, int iControlType)
@@ -847,7 +847,7 @@ float CGUISettings::GetFloat(const char *strSetting) const
   }
 
   // Assert here and write debug output
-  CLog::Log(LOGDEBUG,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
+  CLog::Log(LOGERROR,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
   return 0.0f;
 }
 
@@ -862,7 +862,7 @@ void CGUISettings::SetFloat(const char *strSetting, float fSetting)
   }
 
   // Assert here and write debug output
-  CLog::Log(LOGDEBUG,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
+  CLog::Log(LOGERROR,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
 }
 
 void CGUISettings::LoadMasterLock(TiXmlElement *pRootElement)
@@ -932,7 +932,7 @@ void CGUISettings::SetInt(const char *strSetting, int iSetting)
   }
 
   // Assert here and write debug output
-  CLog::Log(LOGDEBUG,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
+  CLog::Log(LOGERROR,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
 }
 
 void CGUISettings::AddString(int iOrder, const char *strSetting, int iLabel, const char *strData, int iControlType, bool bAllowEmpty, int iHeadingString)
@@ -989,7 +989,7 @@ const CStdString &CGUISettings::GetString(const char *strSetting, bool bPrompt) 
   }
 
   // Assert here and write debug output
-  CLog::Log(LOGDEBUG,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
+  CLog::Log(LOGERROR,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
 
   // hardcoded return value so that compiler is happy
   return ((CSettingString *)(*settingsMap.begin()).second)->GetData();
@@ -1006,7 +1006,7 @@ void CGUISettings::SetString(const char *strSetting, const char *strData)
   }
 
   // Assert here and write debug output
-  CLog::Log(LOGDEBUG,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
+  CLog::Log(LOGERROR,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
 }
 
 CSetting *CGUISettings::GetSetting(const char *strSetting)
