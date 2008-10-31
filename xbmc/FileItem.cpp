@@ -2319,7 +2319,11 @@ CStdString CFileItem::GetCachedMusicThumb() const
   }
   else
   {
-    crc.ComputeFromLowerCase(m_strPath);
+    // For Plex Media Server thumbs, use the thumb path, because multiple items can refer to the same thumb.
+    if (m_strPath.Left(7) == "plex://" || (m_strPath.Left(7) == "http://" && m_strThumbnailImage.size() > 0))
+      crc.ComputeFromLowerCase(m_strThumbnailImage);
+    else
+      crc.ComputeFromLowerCase(m_strPath);
   }
 
   CStdString hex;
