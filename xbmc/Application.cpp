@@ -6259,18 +6259,6 @@ void CApplication::Process()
 
 void CApplication::ProcessSlow()
 {
-#ifdef HAS_XBOX_NETWORK
-  // update our network state
-  m_network.UpdateState();
-#endif
-
-#ifdef HAS_XBOX_HARDWARE
-  // check if we need 2 spin down the harddisk
-  CheckNetworkHDSpinDown();
-  if (!m_bNetworkSpinDown)
-    CheckHDSpindown();
-#endif
-
   // Check if we need to activate the screensaver (if enabled).
   if (g_guiSettings.GetString("screensaver.mode") != "None")
     CheckScreenSaver();
@@ -6307,12 +6295,6 @@ void CApplication::ProcessSlow()
   //  check if we can unload any unreferenced dlls or sections
   CSectionLoader::UnloadDelayed();
 
-#ifdef _XBOX
-  // Xbox Autodetection - Send in X sec PingTime Interval
-  if (m_gWindowManager.GetActiveWindow() != WINDOW_LOGIN_SCREEN) // sorry jm ;D
-    CUtil::AutoDetection();
-#endif
-
   // check for any idle curl connections
   g_curlInterface.CheckIdle();
 
@@ -6326,12 +6308,8 @@ void CApplication::ProcessSlow()
 #endif
 
   // LED - LCD SwitchOn On Paused! m_bIsPaused=TRUE -> LED/LCD is ON!
-  if(IsPaused() != m_bIsPaused)
+  if (IsPaused() != m_bIsPaused)
   {
-    if(g_guiSettings.GetBool("system.ledenableonpaused"))
-      StartLEDControl(m_bIsPaused);
-    if(g_guiSettings.GetBool("lcd.enableonpaused"))
-      DimLCDOnPlayback(m_bIsPaused);
     m_bIsPaused = IsPaused();
   }
 
