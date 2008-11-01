@@ -501,13 +501,17 @@ public:
       int bytesWeCanBackup = MIN(m_iBytesWritten-GetMaxReadSize(), m_nBufSize-GetMaxReadSize());
       
       if (bytesToBackup > bytesWeCanBackup)
+      {
+        ::LeaveCriticalSection(&m_critSection );
         return FALSE;
+      }
       
       // OK, let's backup.
       m_iReadPtr -= bytesToBackup;
       if (m_iReadPtr < 0)
         m_iReadPtr += m_nBufSize;
       
+      ::LeaveCriticalSection(&m_critSection );
       return TRUE;
     }
 
