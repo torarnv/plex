@@ -65,13 +65,13 @@ class CoreAudioAUHAL : public IDirectSoundRenderer
 		virtual void WaitCompletion();
 		virtual void SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers);
 		virtual void Flush();
-
+		CPCMAmplifier *Amplifier() { return &m_amp; }
 		static AudioDeviceInfo* GetDeviceArray();
 
 		bool IsValid();
 
 	private:
-		virtual bool CreateOutputStream(const CStdString& strName, int channels, float sampleRate, int bitsPerSample, bool isDigital, bool useCoreAudio, int packetSize);
+		virtual bool CreateOutputStream(const CStdString& strName, int channels, unsigned int sampleRate, int bitsPerSample, bool isDigital, bool useCoreAudio, int packetSize);
 		virtual int OpenPCM(struct CoreAudioDeviceParameters *deviceParameters, const CStdString& strName, int channels, float sampleRate, int bitsPerSample, bool isDigital, bool useCoreAudio, int packetSize);
 		static OSStatus RenderCallbackAnalog(struct CoreAudioDeviceParameters *deviceParameters,
 															  int *ioActionFlags,

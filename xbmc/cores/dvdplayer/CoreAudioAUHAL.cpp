@@ -490,7 +490,7 @@ void CoreAudioAUHAL::SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers)
 /*****************************************************************************
  * Open: open macosx audio output
  *****************************************************************************/
-bool CoreAudioAUHAL::CreateOutputStream(const CStdString& strName, int channels, float sampleRate, int bitsPerSample, bool isDigital, bool useCoreAudio, int packetSize)
+bool CoreAudioAUHAL::CreateOutputStream(const CStdString& strName, int channels, unsigned int sampleRate, int bitsPerSample, bool isDigital, bool useCoreAudio, int packetSize)
 {
     OSStatus                err = noErr;
     UInt32                  i_param_size = 0;

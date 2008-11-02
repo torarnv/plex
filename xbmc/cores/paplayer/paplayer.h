@@ -26,7 +26,7 @@
 #include "AudioDecoder.h"
 #include "cores/ssrc.h"
 #ifdef __APPLE__
-#include <portaudio.h>
+#include "CoreAudioAUHAL.h"
 #include "../../utils/PCMAmplifier.h"
 #elif defined(HAS_ALSA)
 #define ALSA_PCM_NEW_HW_PARAMS_API
@@ -171,8 +171,8 @@ private:
   LPDIRECTSOUNDBUFFER m_pStream[2];
   DWORD m_nextPacket[2];
 #elif defined(__APPLE__)
-  PaStream*         m_pStream[2];
-  CPCMAmplifier 	m_amp[2];
+  CoreAudioAUHAL*   m_pStream[2];
+  //CPCMAmplifier 	m_amp[2];
   int               m_channelCount[2];
   int               m_sampleRate[2];
   int               m_bitsPerSample[2];
