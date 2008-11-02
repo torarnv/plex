@@ -39,7 +39,7 @@ public:
   virtual int ReadSamples(float *pBuffer, int numsamples, int *actualsamples);
   virtual bool CanInit();
   virtual bool SkipNext();
-//  virtual bool HasFloatData() const { return m_BitsPerSampleInternal == 32; };
+  virtual bool HasFloatData() const { return m_BitsPerSampleInternal == 32; };
 private:
   void OnFileReaderClearEvent();
   void FlushDecoder();
