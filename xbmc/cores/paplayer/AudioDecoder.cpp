@@ -324,17 +324,17 @@ int CAudioDecoder::ReadPCMSamples(float *buffer, int numsamples, int *actualsamp
   {
   case 8:
     for (i = 0; i < *actualsamples; i++)
-   //   m_inputBuffer[i] = 1.0f / 0x7f * (m_pcmInputBuffer[i] - 128);
+      m_inputBuffer[i] = 1.0f / 0x7f * (m_pcmInputBuffer[i] - 128);
     break;
   case 16:
     *actualsamples /= 2;
     for (i = 0; i < *actualsamples; i++)
-   //   m_inputBuffer[i] = 1.0f / 0x7fff * ((short *)m_pcmInputBuffer)[i];
+      m_inputBuffer[i] = 1.0f / 0x7fff * ((short *)m_pcmInputBuffer)[i];
     break;
   case 24:
     *actualsamples /= 3;
     for (i = 0; i < *actualsamples; i++)
-  //    m_inputBuffer[i] = 1.0f / 0x7fffff * (((int)m_pcmInputBuffer[3*i] << 0) | ((int)m_pcmInputBuffer[3*i+1] << 8) | (((int)((char *)m_pcmInputBuffer)[3*i+2]) << 16));
+      m_inputBuffer[i] = 1.0f / 0x7fffff * (((int)m_pcmInputBuffer[3*i] << 0) | ((int)m_pcmInputBuffer[3*i+1] << 8) | (((int)((char *)m_pcmInputBuffer)[3*i+2]) << 16));
     break;
   }
   return result;

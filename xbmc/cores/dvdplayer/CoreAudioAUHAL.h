@@ -103,6 +103,7 @@ class CoreAudioAUHAL : public IDirectSoundRenderer
 		bool m_bPause;
 		bool m_bIsAllocated;
 		bool m_bCanPause;
+		bool m_bIsMusic;
 
 		unsigned int m_uiSamplesPerSec;
 		unsigned int m_uiBitsPerSample;

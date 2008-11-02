@@ -312,9 +312,7 @@ void PAPlayer::FreeStream(int stream)
   if (m_pStream[stream])
   {
       CLog::Log(LOGINFO, "[PortAudio] INFO: Destroying stream 0x%08lx.", stream);
-      //SAFELY(Pa_StopStream(m_pStream[stream]));
-      //SAFELY(Pa_CloseStream(m_pStream[stream]));
-	  m_pStream[stream]->Deinitialize();
+      m_pStream[stream]->Deinitialize();
   }
   m_pStream[stream] = NULL;
   m_channelCount[stream] = -1;
@@ -341,7 +339,6 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
     if (m_pStream[num] != 0 && m_channelCount[num] == channels && m_sampleRate[num] == samplerate && m_bitsPerSample[num] == bitspersample)
     {
         CLog::Log(LOGDEBUG, "[PortAudio] INFO: Using existing stream %i.", num);
-        //Pa_AbortStream(m_pStream[num]);
     }
     else
     {
@@ -353,13 +350,6 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
 #warning fix passthrough detection
 
 		m_pStream[num] = new CoreAudioAUHAL(NULL, channels, m_SampleRateOutput, m_BitsPerSampleOutput, false, codec, true, false);
-        /*m_pStream[num]->CreateOutputStream(g_guiSettings.GetString("audiooutput.audiodevice"),
-                                                       channels,
-                                                       m_SampleRateOutput,
-                                                       m_BitsPerSampleOutput,
-                                                       g_audioConfig.UseDigitalOutput(),
-													   (channels > 2),
-                                                       PACKET_SIZE);*/
 
         // Remember parameters.
         m_channelCount[num] = channels;
@@ -374,7 +364,7 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
         m_BytesPerSecond = (m_BitsPerSampleOutput / 8)*m_SampleRateOutput*channels;
     }
 
-    // Create our resampler, upsample to XBMC_SAMPLE_RATE, only do this for sources with 1 or 2 channels.
+    // Create our resampler
     m_resampler[num].InitConverter(samplerate, bitspersample, channels, m_SampleRateOutput, m_BitsPerSampleOutput, PACKET_SIZE);
 
     // Set initial volume.
@@ -937,13 +927,13 @@ bool PAPlayer::AddPacketsToStream(int stream, CAudioDecoder &dec)
 			
 			// Handle volume de-amp
 			CPCMAmplifier *amplifier = m_pStream[stream]->Amplifier();
-			amplifier->DeAmplify((short *)pcmPtr, m_packet[stream][0].length / 2);
+			amplifier->DeAmplify((short *)pcmPtr, PACKET_SIZE/(m_Channels*m_BitsPerSampleOutput));//m_packet[stream][0].length / 2);
 			
 			StreamCallback(&m_packet[stream][0]);
 			
 			// Write the data.
 			m_pStream[stream]->AddPackets(pcmPtr, PACKET_SIZE);
-			//SAFELY(Pa_WriteStream(m_pStream[stream], pcmPtr, PACKET_SIZE/(m_Channels*2)));
+			//SAFELY(Pa_WriteStream(m_pStream[stream], pcmPtr, PACKET_SIZE/(m_Channels*m_BitsPerSampleOutput)));
 			
 			// something done
 			ret = true;
