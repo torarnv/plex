@@ -48,7 +48,7 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   // See if it's cached.
   if (g_directoryCache.GetDirectory(strRoot, items))
   {
-    items.AddSortMethod(SORT_METHOD_NONE, 552, LABEL_MASKS("%T", "%D"));
+    items.AddSortMethod(SORT_METHOD_NONE, 552, LABEL_MASKS());
     return true;
   }
 
@@ -109,7 +109,7 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
 
   // Walk the parsed tree.
   Parse(m_url, root, items);
-  items.AddSortMethod(SORT_METHOD_NONE, 552, LABEL_MASKS("%T", "%D"));
+  items.AddSortMethod(SORT_METHOD_NONE, 552, LABEL_MASKS());
 
   CFileItemList vecCacheItems;
   g_directoryCache.ClearDirectory(strRoot);
@@ -181,11 +181,7 @@ class PlexMediaAlbum : public PlexMediaNode
   {
     CAlbum album;
     
-    if (pItem->m_strPath.Find("/Artists/") != -1 || pItem->m_strPath.Find("/Compilations") != -1)
-      album.strLabel = el.Attribute("album");
-    else
-      album.strLabel = el.Attribute("artist") + string(" - ") + el.Attribute("album");
-    
+    album.strLabel = el.Attribute("label");
     album.idAlbum = boost::lexical_cast<int>(el.Attribute("key"));
     album.strAlbum = el.Attribute("album");
     album.strArtist = el.Attribute("artist");
