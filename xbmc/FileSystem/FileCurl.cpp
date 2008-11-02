@@ -564,7 +564,6 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
 
 bool CFileCurl::Open(const CURL& url, bool bBinary)
 {
-
   CURL url2(url);
   ParseAndCorrectUrl(url2);
 
@@ -695,7 +694,9 @@ __int64 CFileCurl::Seek(__int64 iFilePosition, int iWhence)
     SetCommonOptions(m_state);
   }
   else
+  {
     m_state->Disconnect();
+  }
 
   /* caller might have changed some headers (needed for daap)*/
   SetRequestHeaders(m_state);

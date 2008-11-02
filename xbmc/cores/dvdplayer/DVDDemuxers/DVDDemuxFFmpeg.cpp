@@ -38,6 +38,7 @@
 #include "Settings.h"
 #include "FileSystem/File.h"
 #include "Util.h"
+#include "FileItem.h"
 
 void CDemuxStreamAudioFFmpeg::GetStreamInfo(std::string& strInfo)
 {
@@ -296,8 +297,15 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
     }
     else
     {
-      if(m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
+      // This seems to work better for Internet sources, needs more testing. Especially
+      // things like MOV over http:// now work much better.
+      //
+      CFileItem fileItem(strFile, false);
+      if (fileItem.IsInternetStream() == true)
         context->is_streamed = 1;
+      
+      //if(m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
+      //  context->is_streamed = 1;
     }
 
 #if LIBAVFORMAT_VERSION_INT >= (52<<16)
