@@ -192,7 +192,7 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
 
     if (bAdd)
     {
-      if( g_guiSettings.GetInt("audiooutput.mode") == AUDIO_ANALOG )
+      if(!g_audioConfig.UseDigitalOutput())
       {
         vecCores.push_back(EPC_PAPLAYER);
       }

@@ -41,6 +41,7 @@
 #include "AudioContext.h"
 #include "Settings.h"
 #include "XBAudioConfig.h"
+#include "AudioDecoder.h"
 
 
 /**
@@ -93,6 +94,7 @@ CoreAudioAUHAL::CoreAudioAUHAL(IAudioCallback* pCallback, int iChannels, unsigne
 	m_bCanPause = false;
 	m_bIsAllocated = false;
 	ac3_framebuffer = NULL;
+	m_bIsMusic = bIsMusic;
 
 	m_dwPacketSize = iChannels*(uiBitsPerSample/8)*256;
 	m_dwNumPackets = 16;
@@ -362,8 +364,15 @@ HRESULT CoreAudioAUHAL::SetCurrentVolume(LONG nVolume)
 //***********************************************************************************************
 DWORD CoreAudioAUHAL::GetSpace()
 {
-	DWORD bufferDataSize = PaUtil_GetRingBufferReadAvailable(deviceParameters->outputBuffer);
-	DWORD fakeCeiling = m_uiSamplesPerSec * CA_BUFFER_FACTOR;
+	DWORD fakeCeiling, bufferDataSize = PaUtil_GetRingBufferReadAvailable(deviceParameters->outputBuffer);
+	if (m_bIsMusic)
+	{
+		fakeCeiling = PACKET_SIZE * 2;
+	}
+	else
+	{
+		fakeCeiling = m_uiSamplesPerSec * CA_BUFFER_FACTOR;
+	}
 
 	if (bufferDataSize < fakeCeiling)
 	{
@@ -435,7 +444,7 @@ DWORD CoreAudioAUHAL::AddPackets(unsigned char *data, DWORD len)
 	else
 	{
 		// Handle volume de-amplification.
-		if (!m_bPassthrough)
+		if (!m_bPassthrough && !m_bIsMusic)
 			m_amp.DeAmplify((short *)pcmPtr, samplesToWrite);
 
 		// Write data to the stream.
@@ -490,7 +499,7 @@ void CoreAudioAUHAL::SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers)
 /*****************************************************************************
  * Open: open macosx audio output
  *****************************************************************************/
-bool CoreAudioAUHAL::CreateOutputStream(const CStdString& strName, int channels, float sampleRate, int bitsPerSample, bool isDigital, bool useCoreAudio, int packetSize)
+bool CoreAudioAUHAL::CreateOutputStream(const CStdString& strName, int channels, unsigned int sampleRate, int bitsPerSample, bool isDigital, bool useCoreAudio, int packetSize)
 {
     OSStatus                err = noErr;
     UInt32                  i_param_size = 0;

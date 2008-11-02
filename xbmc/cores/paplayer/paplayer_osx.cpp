@@ -20,7 +20,6 @@
  */
 
 #ifdef __APPLE__
-#include "CPortAudio.h"
 #include "../../stdafx.h"
 #include "paplayer.h"
 #include "CodecFactory.h"
@@ -28,6 +27,7 @@
 #include "AudioContext.h"
 #include "../../FileSystem/FileShoutcast.h"
 #include "../../Application.h"
+#include "XBAudioConfig.h"
 #ifdef HAS_KARAOKE
 #include "../../CdgParser.h"
 #endif
@@ -187,7 +187,7 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
   m_decoder[m_currentDecoder].Start();  // start playback
 
   // Start the stream.
-  SAFELY(Pa_StartStream(m_pStream[m_currentStream]));
+  //SAFELY(Pa_StartStream(m_pStream[m_currentStream]));
 
   return true;
 }
@@ -312,8 +312,7 @@ void PAPlayer::FreeStream(int stream)
   if (m_pStream[stream])
   {
       CLog::Log(LOGINFO, "[PortAudio] INFO: Destroying stream 0x%08lx.", stream);
-      SAFELY(Pa_StopStream(m_pStream[stream]));
-      SAFELY(Pa_CloseStream(m_pStream[stream]));
+      m_pStream[stream]->Deinitialize();
   }
   m_pStream[stream] = NULL;
   m_channelCount[stream] = -1;
@@ -333,14 +332,13 @@ void PAPlayer::FreeStream(int stream)
 
 bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersample, CStdString codec)
 {
-    m_SampleRateOutput = channels>2 ? samplerate : XBMC_SAMPLE_RATE;
-    m_BitsPerSampleOutput = 16;
+    m_SampleRateOutput = samplerate;
+    m_BitsPerSampleOutput = bitspersample;
 
     // See if we actually need to create a new one or can cache an existing one.
     if (m_pStream[num] != 0 && m_channelCount[num] == channels && m_sampleRate[num] == samplerate && m_bitsPerSample[num] == bitspersample)
     {
-        CLog::Log(LOGDEBUG, "[PortAudio] INFO: Using existing stream.");
-        Pa_AbortStream(m_pStream[num]);
+        CLog::Log(LOGDEBUG, "[PortAudio] INFO: Using existing stream %i.", num);
     }
     else
     {
@@ -349,12 +347,9 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
 
         // Create a new stream.
         CLog::Log(LOGINFO, "[PortAudio] INFO: Creating stream %d.", num);
-        m_pStream[num] = CPortAudio::CreateOutputStream(g_guiSettings.GetString("audiooutput.audiodevice"),
-                                                       channels,
-                                                       m_SampleRateOutput,
-                                                       m_BitsPerSampleOutput,
-                                                       g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL,
-                                                       PACKET_SIZE);
+#warning fix passthrough detection
+
+		m_pStream[num] = new CoreAudioAUHAL(NULL, channels, m_SampleRateOutput, m_BitsPerSampleOutput, false, codec, true, false);
 
         // Remember parameters.
         m_channelCount[num] = channels;
@@ -369,7 +364,7 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
         m_BytesPerSecond = (m_BitsPerSampleOutput / 8)*m_SampleRateOutput*channels;
     }
 
-    // Create our resampler, upsample to XBMC_SAMPLE_RATE, only do this for sources with 1 or 2 channels.
+    // Create our resampler
     m_resampler[num].InitConverter(samplerate, bitspersample, channels, m_SampleRateOutput, m_BitsPerSampleOutput, PACKET_SIZE);
 
     // Set initial volume.
@@ -380,8 +375,8 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
     //
 
     // fire off our init to our callback
-    if (m_pCallback)
-      m_pCallback->OnInitialize(channels, m_SampleRateOutput, m_BitsPerSampleOutput);
+    //if (m_pCallback)
+    //  m_pCallback->OnInitialize(channels, m_SampleRateOutput, m_BitsPerSampleOutput);
 
     return true;
 }
@@ -397,17 +392,17 @@ void PAPlayer::Pause()
   if (m_bPaused)
   {
   // pause both streams if we're crossfading
-    if (m_pStream[m_currentStream])
-        SAFELY(Pa_StopStream(m_pStream[m_currentStream]));
+    //if (m_pStream[m_currentStream])
+      //  SAFELY(Pa_StopStream(m_pStream[m_currentStream]));
 
-  if (m_currentlyCrossFading && m_pStream[1 - m_currentStream])
-        SAFELY(Pa_StopStream(m_pStream[1 - m_currentStream]));
+  //if (m_currentlyCrossFading && m_pStream[1 - m_currentStream])
+  //      SAFELY(Pa_StopStream(m_pStream[1 - m_currentStream]));
 
   CLog::Log(LOGDEBUG, "PAP Player: Playback paused");
   }
   else
   {
-    FlushStreams();
+    //FlushStreams();
     CLog::Log(LOGDEBUG, "PAP Player: Playback resumed");
   }
 }
@@ -415,7 +410,8 @@ void PAPlayer::Pause()
 void PAPlayer::SetVolume(long nVolume)
 {
    // Todo: Grrrr.... no volume level in alsa. We'll need to do the math ourselves.
-  m_amp[m_currentStream].SetVolume(nVolume);
+	CPCMAmplifier *amplifier = m_pStream[m_currentStream]->Amplifier();
+	amplifier->SetVolume(nVolume);
 }
 
 void PAPlayer::SetDynamicRangeCompression(long drc)
@@ -544,7 +540,7 @@ bool PAPlayer::ProcessPAP()
 
           // Resume the stream.
           CLog::Log(LOGDEBUG, "Starting Crossfade - resuming stream %i", m_currentStream);
-          SAFELY(Pa_StartStream(m_pStream[m_currentStream]));
+          //SAFELY(Pa_StartStream(m_pStream[m_currentStream]));
 
           m_callback.OnPlayBackStarted();
           m_timeOffset = m_nextFile->m_lStartOffset * 1000 / 75;
@@ -581,7 +577,7 @@ bool PAPlayer::ProcessPAP()
             if (channels != channels2)
             {
               CLog::Log(LOGWARNING, "PAPlayer: Channel number has changed - restarting direct sound");
-              //FreeStream(m_currentStream);
+              FreeStream(m_currentStream);
               if (!CreateStream(m_currentStream, channels2, samplerate2, bitspersample2))
               {
                 CLog::Log(LOGERROR, "PAPlayer: Error creating stream!");
@@ -589,10 +585,11 @@ bool PAPlayer::ProcessPAP()
               }
 
               // Resume stream.
-              SAFELY(Pa_StartStream(m_pStream[m_currentStream]));
+              //SAFELY(Pa_StartStream(m_pStream[m_currentStream]));
             }
             else if (samplerate != samplerate2 || bitspersample != bitspersample2)
             {
+#warning need to reinit stream here
               CLog::Log(LOGINFO, "PAPlayer: Restarting resampler due to a change in data format");
               m_resampler[m_currentStream].DeInitialize();
               if (!m_resampler[m_currentStream].InitConverter(samplerate2, bitspersample2, channels2, XBMC_SAMPLE_RATE, 16, PACKET_SIZE))
@@ -847,8 +844,9 @@ void PAPlayer::FlushStreams()
   {
     if (m_pStream[stream] && m_packet[stream])
     {
-        SAFELY(Pa_AbortStream(m_pStream[stream]));
-        SAFELY(Pa_StartStream(m_pStream[stream]));
+#warning need to flush stream safely if at all?
+        //SAFELY(Pa_AbortStream(m_pStream[stream]));
+        //SAFELY(Pa_StartStream(m_pStream[stream]));
     }
   }
 }
@@ -906,48 +904,53 @@ bool PAPlayer::HandleFFwdRewd()
 
 void PAPlayer::SetStreamVolume(int stream, long nVolume)
 {
-  CLog::Log(LOGDEBUG,"PAPlayer::SetStreamVolume - stream %d, volume: %lu", stream, nVolume);
-  m_amp[stream].SetVolume(nVolume);
+	CLog::Log(LOGDEBUG,"PAPlayer::SetStreamVolume - stream %d, volume: %lu", stream, nVolume);
+	CPCMAmplifier *amplifier = m_pStream[stream]->Amplifier();
+    amplifier->SetVolume(nVolume);
 }
 
 bool PAPlayer::AddPacketsToStream(int stream, CAudioDecoder &dec)
 {
-  if (!m_pStream[stream] || dec.GetStatus() == STATUS_NO_FILE)
-    return false;
-
+	if (!m_pStream[stream] || dec.GetStatus() == STATUS_NO_FILE)
+		return false;
+	
     bool ret = false;
     unsigned char *pcmPtr = m_packet[stream][0].packet;
-
-    if (m_resampler[stream].GetData(pcmPtr))
-    {
-      // Got some data from our resampler - construct audio packet
-      m_packet[stream][0].length = PACKET_SIZE;
-      m_packet[stream][0].stream = stream;
-
-      StreamCallback(&m_packet[stream][0]);
-
-      // Handle volume de-amp
-      m_amp[stream].DeAmplify((short *)pcmPtr, m_packet[stream][0].length / 2);
-
-      // Write the data.
-      SAFELY(Pa_WriteStream(m_pStream[stream], pcmPtr, PACKET_SIZE/(m_Channels*2)));
-
-      // something done
-      ret = true;
-    }
-    else
-    {
-      // resampler wants more data - let's feed it
-      int amount = m_resampler[stream].GetInputSamples();
-      if (amount > 0 && amount <= (int)dec.GetDataSize())
-      {
-        // needs some data - let's feed it
-        m_resampler[stream].PutFloatData((float *)dec.GetData(amount), amount);
-        ret = true;
-      }
-    }
-
-  return ret;
+	
+	if (m_pStream[stream]->GetSpace() >= PACKET_SIZE)
+	{
+		if (m_resampler[stream].GetData(pcmPtr))
+		{
+			// Got some data from our resampler - construct audio packet
+			m_packet[stream][0].length = PACKET_SIZE;
+			m_packet[stream][0].stream = stream;
+			
+			// Handle volume de-amp
+			CPCMAmplifier *amplifier = m_pStream[stream]->Amplifier();
+			amplifier->DeAmplify((short *)pcmPtr, m_packet[stream][0].length / 2);
+			
+			StreamCallback(&m_packet[stream][0]);
+			
+			// Write the data.
+			m_pStream[stream]->AddPackets(pcmPtr, PACKET_SIZE);
+			//SAFELY(Pa_WriteStream(m_pStream[stream], pcmPtr, PACKET_SIZE/(m_Channels*m_BitsPerSampleOutput)));
+			
+			// something done
+			ret = true;
+		}
+		else
+		{
+			// resampler wants more data - let's feed it
+			int amount = m_resampler[stream].GetInputSamples();
+			if (amount > 0 && amount <= (int)dec.GetDataSize())
+			{
+				// needs some data - let's feed it
+				m_resampler[stream].PutFloatData((float *)dec.GetData(amount), amount);
+				ret = true;
+			}
+		}
+	}
+	return ret;
 }
 
 bool PAPlayer::FindFreePacket( int stream, DWORD* pdwPacket )
