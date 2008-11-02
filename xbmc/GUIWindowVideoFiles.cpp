@@ -267,11 +267,19 @@ bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileIte
     items.SetContent("files");
 
   if (m_database.GetScraperForPath(strDirectory,info2) && info2.strContent.Equals("tvshows"))
-  { // dont stack in tv dirs
+  { 
+    // Don't stack in TV directories.
+    m_stackingAvailable = false;
+  }
+  else if (strDirectory.Left(7) == "plex://")
+  {
+    // Don't stack PMS directories.
     m_stackingAvailable = false;
   }
   else if (!items.IsStack() && g_stSettings.m_iMyVideoStack != STACK_NONE)
+  {
     items.Stack();
+  }
 
   items.SetThumbnailImage("");
   items.SetVideoThumb();
