@@ -524,7 +524,7 @@ CGUISettings::CGUISettings(void)
   AddBool(3, "videolibrary.hideplots", 20369, false);
   AddBool(0, "videolibrary.seasonthumbs", 20382, true);
   AddBool(0, "videolibrary.actorthumbs", 20402, true);
-  AddBool(0, "videolibrary.singleseason", 20412, true);
+  AddInt(0, "videolibrary.flattentvshows", 20412, 1, 0, 1, 2, SPIN_CONTROL_TEXT);
   AddInt(0, "videolibrary.recentcount", 20475, 25, 10, 5, 250, SPIN_CONTROL_INT_PLUS, -1);
   AddBool(0, "videolibrary.removeduplicates", 20419, true);
   AddSeparator(9, "videolibrary.sep1");
