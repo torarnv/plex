@@ -1901,6 +1901,10 @@ HRESULT CApplication::Initialize()
   g_guiSettings.SetString("network.httpproxyserver", Cocoa_OSX_Proxy_Host());
   g_guiSettings.SetString("network.httpproxyport", Cocoa_OSX_Proxy_Port());
   g_guiSettings.SetBool("network.usehttpproxy", Cocoa_OSX_Proxy_Enabled());
+  if (g_guiSettings.GetBool("network.usehttpproxy"))
+    CLog::Log(LOGDEBUG, "Proxy is enabled - %s:%s", g_guiSettings.GetString("network.httpproxyserver").c_str(), g_guiSettings.GetString("network.httpproxyport").c_str());
+  else
+    CLog::Log(LOGDEBUG, "Proxy is disabled");
 #endif
   
   StartServices();
