@@ -290,9 +290,58 @@ class PlexMediaTrack : public PlexMediaNode
   }
 };
 
+class PlexMediaRoll : public PlexMediaNode
+{
+  virtual void DoBuildFileItem(CFileItemPtr& pItem, TiXmlElement& el)
+  {
+    pItem->SetLabel(el.Attribute("label"));
+  }
+};
+
+class PlexMediaPhotoAlbum : public PlexMediaNode
+{
+  virtual void DoBuildFileItem(CFileItemPtr& pItem, TiXmlElement& el)
+  {
+    pItem->SetLabel(el.Attribute("label"));
+  }
+};
+
+class PlexMediaPhotoKeyword : public PlexMediaNode
+{
+  virtual void DoBuildFileItem(CFileItemPtr& pItem, TiXmlElement& el)
+  {
+    pItem->SetLabel(el.Attribute("label"));
+  }
+};
+
+class PlexMediaPhoto : public PlexMediaNode
+{
+  virtual void DoBuildFileItem(CFileItemPtr& pItem, TiXmlElement& el)
+  {
+    pItem->m_bIsFolder = false;
+    pItem->SetLabel(el.Attribute("label"));
+    
+    // Thumbnail.
+    CURL url(pItem->m_strPath);
+    url.SetProtocol("http");
+    string path = el.Attribute("thumb");
+    url.SetFileName(path.substr(1));
+    CStdString thumbPath;
+    url.GetURL(thumbPath);
+
+    pItem->SetThumbnailImage(thumbPath);
+    
+    // Path to the photo.
+    CURL url2(pItem->m_strPath);
+    url2.SetProtocol("http");
+    url2.GetURL(pItem->m_strPath);
+  }
+};
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 PlexMediaNode* PlexMediaNode::Create(const string& name)
 {
+  // FIXME: Move to using factory pattern.
   if (name == "Directory")
     return new PlexMediaDirectory();
   else if (name == "Artist")
@@ -307,6 +356,14 @@ PlexMediaNode* PlexMediaNode::Create(const string& name)
     return new PlexMediaTrack();
   else if (name == "Genre")
     return new PlexMediaGenre();
+  else if (name == "Roll")
+    return new PlexMediaRoll();
+  else if (name == "Photo")
+    return new PlexMediaPhoto();
+  else if (name == "PhotoAlbum")
+    return new PlexMediaPhotoAlbum();
+  else if (name == "PhotoKeyword")
+    return new PlexMediaPhotoKeyword();
   else
     printf("ERROR: Unknown class [%s]\n", name.c_str());
   
