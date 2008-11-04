@@ -981,7 +981,10 @@ const char* Cocoa_OSX_Proxy_Host()
 {
   NSDictionary* proxyDict = (NSDictionary*)SCDynamicStoreCopyProxies(NULL);
   if ([proxyDict objectForKey:@"HTTPProxy"] != nil)
-    return [[proxyDict objectForKey:@"HTTPProxy"] UTF8String];
+  {
+    NSHost* host = [NSHost hostWithName:(NSString*)[proxyDict objectForKey:@"HTTPProxy"]];
+    return [[host address] UTF8String];
+  }
   return "";
 }
 
