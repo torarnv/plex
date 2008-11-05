@@ -185,7 +185,7 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
       m_SampleRate            = m_Formatdata[1];
       m_BitsPerSampleInternal = m_Formatdata[3];
       //m_BitsPerSample holds display value when using 32-bits floats (source is 24 bits), real value otherwise
-      m_BitsPerSample         = m_BitsPerSampleInternal>16?24:m_BitsPerSampleInternal;
+		m_BitsPerSample         = m_BitsPerSampleInternal>16?24:m_BitsPerSampleInternal;
       if (bIsInternetStream) m_Bitrate = m_Formatdata[4];
     }
     else if (result < 0)

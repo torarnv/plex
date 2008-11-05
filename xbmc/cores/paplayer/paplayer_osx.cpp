@@ -333,7 +333,7 @@ void PAPlayer::FreeStream(int stream)
 bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersample, CStdString codec)
 {
     m_SampleRateOutput = samplerate;
-    m_BitsPerSampleOutput = bitspersample;
+    m_BitsPerSampleOutput = (bitspersample == 24 ? 16 : bitspersample);
 
     // See if we actually need to create a new one or can cache an existing one.
     if (m_pStream[num] != 0 && m_channelCount[num] == channels && m_sampleRate[num] == samplerate && m_bitsPerSample[num] == bitspersample)
@@ -349,7 +349,7 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
         CLog::Log(LOGINFO, "[PortAudio] INFO: Creating stream %d.", num);
 #warning fix passthrough detection
 
-		m_pStream[num] = new CoreAudioAUHAL(NULL, channels, m_SampleRateOutput, m_BitsPerSampleOutput, false, codec, true, false);
+		m_pStream[num] = new CoreAudioAUHAL(NULL, channels, (unsigned int)samplerate, (unsigned int)m_BitsPerSampleOutput, false, codec, true, false);
 
         // Remember parameters.
         m_channelCount[num] = channels;
