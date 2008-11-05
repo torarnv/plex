@@ -3093,7 +3093,7 @@ bool Cssrc::InitFilters(void)
     m_iMaxInputSize = nch * (n2b2 + n1x) * bps;
     // Our resampled output buffer
     m_iResampleBufferSize = m_iOutputBufferSize + dbps * nch * (n2b2 / osf + 1);
-    m_pResampleBuffer = new unsigned char[m_iResampleBufferSize];
+    m_pResampleBuffer = new unsigned int[m_iResampleBufferSize];
     m_iResampleBufferPos = 0;
 
     inbuf = new REAL [nch * (n2b2 + n1x)]; // calloc(nch*(n2b2+n1x),sizeof(REAL));
@@ -3121,13 +3121,13 @@ bool Cssrc::InitFilters(void)
     //    |....B....|....C....|   buf1      n1b2+n1b2
     //|.A.|....D....|             buf2  n2x+n1b2
     //
-    // ‚Ü‚¸inbuf‚©‚çB‚Éosf”ƒTƒ“ƒvƒŠƒ“ƒO‚µ‚È‚ª‚çƒRƒs[
-    // C‚ÍƒNƒŠƒA
-    // BC‚Éstage 1 filter‚ğ‚©‚¯‚é
-    // D‚ÉB‚ğ‘«‚·
-    // AD‚Éstage 2 filter‚ğ‚©‚¯‚é
-    // D‚ÌŒã‚ë‚ğA‚ÉˆÚ“®
-    // C‚ğD‚ÉƒRƒs[
+    // Ã‡â€¹Ã‡âˆinbufÃ‡Â©Ã‡ÃBÃ‡â€¦osfÃ®Ã‰TÃ‰Ã¬Ã‰vÃ‰Ã¤Ã‰Ã¬Ã‰OÃ‡ÂµÃ‡Â»Ã‡â„¢Ã‡ÃÃ‰RÃ‰sÃ…[
+    // CÃ‡Ã•Ã‰NÃ‰Ã¤Ã‰A
+    // BCÃ‡â€¦stage 1 filterÃ‡ï£¿Ã‡Â©Ã‡Ã˜Ã‡Ãˆ
+    // DÃ‡â€¦BÃ‡ï£¿Ã«Â´Ã‡âˆ‘
+    // ADÃ‡â€¦stage 2 filterÃ‡ï£¿Ã‡Â©Ã‡Ã˜Ã‡Ãˆ
+    // DÃ‡ÃƒÃ¥â€Ã‡ÃÃ‡ï£¿AÃ‡â€¦Ã â„Ã¬Ã†
+    // CÃ‡ï£¿DÃ‡â€¦Ã‰RÃ‰sÃ…[
 
     buf1 = new REAL * [nch];
     for (int i = 0;i < nch;i++)
@@ -3150,7 +3150,7 @@ bool Cssrc::InitFilters(void)
 
     // Our resampled output buffer
     m_iResampleBufferSize = m_iOutputBufferSize + (int)(dbps * nch * ((double)n1b2 * sfrq / dfrq + 1));
-    m_pResampleBuffer = new unsigned char[m_iResampleBufferSize];
+    m_pResampleBuffer = new unsigned int[m_iResampleBufferSize];
     m_iResampleBufferPos = 0;
 
     inbuf = new REAL [nch * (n1b2 / osf + osf + 1)];
@@ -3194,7 +3194,7 @@ bool Cssrc::InitConverter(int OldFreq, int OldBPS, int Channels, int NewFreq, in
   if (dfrq == sfrq)
   {
     // setup output buffer size'd resample buffer
-    m_pResampleBuffer = new unsigned char[m_iOutputBufferSize];
+    m_pResampleBuffer = new unsigned int[m_iOutputBufferSize];
     m_iResampleBufferPos = 0;
     return (true); // nothing to change so exit
   }
@@ -4150,6 +4150,23 @@ int Cssrc::PutFloatData(float *pInData, int numSamples)
       }
       m_iResampleBufferPos += numSamples * dbps;
     }
+	else if (bps == 3 && dbps == 4)
+	{ // convert to unpacked 24 bit (ie 32 bit) integer
+		int *p24bit = (int *)m_pResampleBuffer;
+		float *pInput = (float *)pInData;
+		for (int i = 0; i < numSamples; i++)
+		{
+			float result = 8388607.0f * pInput[i] + 0.5f;
+			if (result > 8388607.0f)
+				*p24bit++ = 8388607;
+			else if (result < -8388608.0f)
+				*p24bit++ = -8388608;
+			else
+				*p24bit++ = (int)result;
+		}
+		m_iResampleBufferPos += numSamples * dbps;
+	}
+		
     else  // unimplemented
       return 0;
     return numSamples;
