@@ -175,7 +175,7 @@ private:
   int m_iOutputBufferSize;   // Amount to output to next filter in the chain
   int m_iResampleBufferSize;   // Total amount of room in the buffer
   int m_iResampleBufferPos;   // Where we are in the buffer
-  unsigned char *m_pResampleBuffer; // The buffer
+  unsigned int *m_pResampleBuffer; // The buffer
 
   double **shapebuf;
   int shaper_type, shaper_len, shaper_clipmin, shaper_clipmax;

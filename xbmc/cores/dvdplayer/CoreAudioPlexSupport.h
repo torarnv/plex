@@ -20,7 +20,7 @@ sfm.mFramesPerPacket, sfm.mBytesPerFrame, \
 sfm.mChannelsPerFrame, sfm.mBitsPerChannel
 
 #define STREAM_FORMAT_MSG_FULL( pre, sfm ) \
-pre ":\nsamplerate: [%ld]\nFormatID: [%4.4s]\nFormatFlags: [%ld]\nBypesPerPacket: [%ld]\nFramesPerPacket: [%ld]\nBytesPerFrame: [%ld]\nChannelsPerFrame: [%ld]\nBitsPerChannel[%ld]", \
+pre ":\nsamplerate: [%ld]\nFormatID: [%4.4s]\nFormatFlags: [%ld]\nBytesPerPacket: [%ld]\nFramesPerPacket: [%ld]\nBytesPerFrame: [%ld]\nChannelsPerFrame: [%ld]\nBitsPerChannel[%ld]", \
 (UInt32)sfm.mSampleRate, (char *)&sfm.mFormatID, \
 sfm.mFormatFlags, sfm.mBytesPerPacket, \
 sfm.mFramesPerPacket, sfm.mBytesPerFrame, \

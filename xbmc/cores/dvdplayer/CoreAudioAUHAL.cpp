@@ -671,7 +671,7 @@ int CoreAudioAUHAL::OpenPCM(struct CoreAudioDeviceParameters *deviceParameters, 
 	DeviceFormat.mSampleRate = sampleRate;
     DeviceFormat.mFormatID = kAudioFormatLinearPCM;
 
-    DeviceFormat.mFormatFlags = kLinearPCMFormatFlagIsSignedInteger | kLinearPCMFormatFlagIsPacked;
+    DeviceFormat.mFormatFlags = kLinearPCMFormatFlagIsSignedInteger;
     DeviceFormat.mBitsPerChannel = bitsPerSample;
 	DeviceFormat.mChannelsPerFrame = channels;
 
