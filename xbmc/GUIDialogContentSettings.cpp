@@ -326,13 +326,13 @@ void CGUIDialogContentSettings::CreateSettings()
   {
     AddBool(1,20345,&m_bRunScan);
     AddBool(2,20330,&m_bUseDirNames);
-    AddBool(4,20383,&m_bSingleItem, m_bUseDirNames);
+//    AddBool(4,20383,&m_bSingleItem, m_bUseDirNames);
     AddBool(3,20346,&m_bScanRecursive);    
   }
   if (m_info.strContent.Equals("tvshows"))
   {
     AddBool(1,20345,&m_bRunScan);
-    AddBool(2,20379,&m_bSingleItem);
+//    AddBool(2,20379,&m_bSingleItem);
   }
   if (m_info.strContent.Equals("musicvideos"))
   {
