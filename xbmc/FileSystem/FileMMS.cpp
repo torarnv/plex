@@ -42,6 +42,7 @@
 #include <errno.h>
 #include "stdafx.h"
 #include "FileMMS.h"
+#include "Settings.h"
 #include "Util.h"
 
 using namespace XFILE;
