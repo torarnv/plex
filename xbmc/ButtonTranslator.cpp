@@ -26,10 +26,13 @@
 #include "SkinInfo.h"
 #include "Key.h"
 #include "File.h"
+#include "Directory.h"
+#include "FileItem.h"
 
 
 using namespace std;
 using namespace XFILE;
+using namespace DIRECTORY;
 
 CButtonTranslator g_buttonTranslator;
 extern CStdString g_LoadErrorStr;
@@ -47,22 +50,33 @@ bool CButtonTranslator::Load()
   // Load the config file
   CStdString keymapPath;
   bool success = false;
-
+  bool keymapsFound;
+  
   keymapPath = _P("Q:\\system\\Keymap.xml");
   if(CFile::Exists(keymapPath))
     success |= LoadKeymap(keymapPath);
   else
-    CLog::Log(LOGDEBUG, "CButtonTranslator::Load - no system keymap found, skipping");
+    CLog::Log(LOGDEBUG, "CButtonTranslator::Load - no global system keymap found, skipping");
 
   keymapPath = g_settings.GetUserDataItem("Keymap.xml");
   if(CFile::Exists(keymapPath))
     success |= LoadKeymap(keymapPath);
   else
-    CLog::Log(LOGDEBUG, "CButtonTranslator::Load - no userdata keymap found, skipping");
+    CLog::Log(LOGDEBUG, "CButtonTranslator::Load - no global userdata keymap found, skipping");
 
+  keymapPath = _P("Q:\\keymaps");
+  success |= keymapsFound = LoadKeymapsFromDir(keymapPath);
+  if (!keymapsFound)
+    CLog::Log(LOGDEBUG, "CButtonTranslator::Load - no device keymaps found in app bundle, skipping");
+  
+  keymapPath = _P("T:\\keymaps");
+  success |= keymapsFound = LoadKeymapsFromDir(keymapPath);
+  if (!keymapsFound)
+    CLog::Log(LOGDEBUG, "CButtonTranslator::Load - no device keymaps found in Application Support folder, skipping");
+  
   if (!success)
   {
-    g_LoadErrorStr.Format("Error loading keymap: %s", keymapPath.c_str());
+    g_LoadErrorStr.Format("No keymaps found!");
     return false;
   }
 
@@ -86,6 +100,25 @@ bool CButtonTranslator::Load()
 
   // Done!
   return true;
+}
+
+bool CButtonTranslator::LoadKeymapsFromDir(const CStdString &keymapDir)
+{
+  bool success = false;
+  if (CDirectory::Exists(keymapDir))
+  {
+    CFileItemList keymaps;
+    CDirectory::GetDirectory(keymapDir, keymaps);
+    for (int i = 0; i < keymaps.Size(); i++)
+    {
+      //CFileItemPtr* pItem = keymaps[i];
+      CStdString strExtension;
+      CUtil::GetExtension(keymaps[i]->m_strPath, strExtension);
+      if (strExtension == ".xml")
+        success |= LoadKeymap(keymaps[i]->m_strPath);
+    }
+  }
+  return success;
 }
 
 bool CButtonTranslator::LoadKeymap(const CStdString &keymapPath)

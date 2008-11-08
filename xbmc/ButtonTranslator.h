@@ -89,6 +89,7 @@ private:
   void MapAction(WORD wButtonCode, const char *szAction, buttonMap &map);
 
   bool LoadKeymap(const CStdString &keymapPath);
+  bool LoadKeymapsFromDir(const CStdString &keymapDir);
 #ifdef HAS_LIRC
   bool LoadLircMap(const CStdString &lircmapPath);
   void MapRemote(TiXmlNode *pRemote, const char* szDevice);
