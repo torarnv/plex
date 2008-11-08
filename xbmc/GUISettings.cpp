@@ -265,7 +265,7 @@ CGUISettings::CGUISettings(void)
   AddBool(0, "mymusic.autoplaynextitem", 489, true);
   //AddBool(4, "musicfiles.repeat", 488, false);
   AddBool(5, "mymusic.clearplaylistsonend",239,false);
-	AddBool(2, "mymusic.outputtoallspeakers", 252, false);
+	AddBool(0, "mymusic.outputtoallspeakers", 252, false);
 	AddInt(9, "mymusic.crossfade", 13314, 0, 0, 1, 10, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF);
 	AddBool(10, "mymusic.usecddb", 227, true);
 
@@ -524,7 +524,7 @@ CGUISettings::CGUISettings(void)
   AddBool(3, "videolibrary.hideplots", 20369, false);
   AddBool(0, "videolibrary.seasonthumbs", 20382, true);
   AddBool(0, "videolibrary.actorthumbs", 20402, true);
-  AddBool(0, "videolibrary.singleseason", 20412, true);
+  AddInt(0, "videolibrary.flattentvshows", 20412, 1, 0, 1, 2, SPIN_CONTROL_TEXT);
   AddInt(0, "videolibrary.recentcount", 20475, 25, 10, 5, 250, SPIN_CONTROL_INT_PLUS, -1);
   AddBool(0, "videolibrary.removeduplicates", 20419, true);
   AddSeparator(9, "videolibrary.sep1");
