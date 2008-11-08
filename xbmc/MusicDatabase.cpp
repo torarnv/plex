@@ -600,7 +600,11 @@ long CMusicDatabase::AddPath(const CStdString& strPath)
   CStdString strSQL;
   try
   {
-    ASSERT(CUtil::HasSlashAtEnd(strPath));
+    if (CUtil::HasSlashAtEnd(strPath) == false)
+    {
+      CLog::Log(LOGERROR, "%s: no slash at end (%s)", __FUNCTION__, strPath.c_str());
+      return -1;
+    }
 
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
