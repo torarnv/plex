@@ -12,7 +12,7 @@
 #define BACKGROUND_MUSIC_APP_SUPPORT_SUBDIR       @"/Plex/Background Music"
 #define BACKGROUND_MUSIC_THEME_DOWNLOADS_ENABLED
 #define BACKGROUND_MUSIC_THEME_DOWNLOAD_URL       @"http://tvthemes.plexapp.com"
-#define BACKGROUND_MUSIC_THEME_LIST_CACHE_TIME    3600
+#define BACKGROUND_MUSIC_THEME_REQ_LIMIT          3600
 @implementation BackgroundMusicPlayer
 
 static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
@@ -61,6 +61,9 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
     }
   }
   
+  // Create a dictionary to store theme music requests
+  themeMusicRequests = [[NSMutableDictionary alloc] init];
+  
   return _o_sharedMainInstance;
 }
 
@@ -94,7 +97,6 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
         [mainMusic release];
         mainMusic = nil; // Must be set to nil or Plex crashes when disabling then enabling again
         [mainMusicNames release];
-        [themeMusicNames release];
       }
     }
   }
@@ -115,9 +117,19 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
     NSString *localFile = [themeMusicPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.mp3", tvShowId]];
     if ([[NSFileManager defaultManager] fileExistsAtPath:localFile]) return;
 
+    // If the theme has been requested recently, return
+    NSDate* lastRequestDate = [themeMusicRequests objectForKey:tvShowId];
+    if (lastRequestDate != nil)
+      if ([lastRequestDate timeIntervalSinceNow] > -BACKGROUND_MUSIC_THEME_REQ_LIMIT)
+      {
+        NSLog(@"Skipping download of theme %@ - recently requested", tvShowId);
+        return;
+      }
+    
     // Construct the theme URL and attempt to download the file
     NSString *remoteFile = [[NSString stringWithFormat:@"%@/%@.mp3", BACKGROUND_MUSIC_THEME_DOWNLOAD_URL, tvShowId]
                               stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    [themeMusicRequests setObject:[NSDate date] forKey:tvShowId];
     Cocoa_DownloadFile([remoteFile UTF8String], [localFile UTF8String]);
   }
 #endif

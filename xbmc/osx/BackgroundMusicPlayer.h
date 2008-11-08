@@ -26,7 +26,7 @@
   NSString *mainMusicPath;
   NSString *themeMusicPath;
   NSArray *mainMusicNames;
-  NSArray *themeMusicNames;
+  NSMutableDictionary *themeMusicRequests;
   
   NSString *currentId;
   
