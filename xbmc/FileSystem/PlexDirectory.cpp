@@ -388,6 +388,7 @@ void CPlexDirectory::Process()
   CURL url(m_url);
   CStdString protocol = url.GetProtocol();
   url.SetProtocol("http");
+  url.SetPort(32400);  
 
   CFileCurl http;
   //http.SetContentEncoding("deflate");
