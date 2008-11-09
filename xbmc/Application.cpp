@@ -1486,12 +1486,8 @@ CProfile* CApplication::InitDirectoriesOSX()
     CreateDirectory(_P("U:\\Background Music\\Themes"), NULL);
     
     // Install things as needed from our "virgin" copies.
-    CopyUserDataIfNeeded(str, "userdata", "Keymap.xml");
     CopyUserDataIfNeeded(str, "userdata", "RssFeeds.xml");
-    CopyUserDataIfNeeded(str, "userdata", "advancedsettings.xml");
     CopyUserDataIfNeeded(str, "userdata", "Database/ViewModes.db");
-    CopyUserDataIfNeeded(str, "plugins/music", "iTunes");
-    CopyUserDataIfNeeded(str, "plugins/pictures", "iPhoto");
 
     // Create a reasonable sources.xml if one doesn't exist already.
     CStdString sourcesFile = str3;
