@@ -985,16 +985,19 @@ void CGUIWindowSettingsCategory::CreateSettings()
       continue;
     }
 
-    CGUIControl *pSettingControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
-    if (!pSettingControl)
-      continue;
-
-    CGUIControl::GUICONTROLTYPES controlType = pSettingControl->GetControlType();
-    if (controlType != CGUIControl::GUICONTROL_SPIN && controlType != CGUIControl::GUICONTROL_SPINEX)
-      continue;
-
-    if (((CGUISpinControl *)pSettingControl)->GetCount() <= 1)
-      pSettingControl->SetEnabled(FALSE);
+    CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
+    if (pControl)
+    {
+      CGUIControl::GUICONTROLTYPES controlType = pControl->GetControlType();
+      if (controlType == CGUIControl::GUICONTROL_SPIN || controlType == CGUIControl::GUICONTROL_SPINEX)
+      {
+        // Hide if there's no choices to make.
+        if (((CGUISpinControl *)pControl)->GetCount() <= 1)
+          pControl->SetVisible(false);
+        else
+          pControl->SetVisible(true);
+      }
+    }
   }
 
   if (m_vecSections[m_iSection]->m_strCategory == "network")
@@ -1588,15 +1591,18 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     }
 
     CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-    if (!pControl)
-      continue;
-
-    CGUIControl::GUICONTROLTYPES controlType = pControl->GetControlType();
-    if (controlType != CGUIControl::GUICONTROL_SPIN && controlType != CGUIControl::GUICONTROL_SPINEX)
-      continue;
-
-    if (((CGUISpinControl *)pControl)->GetCount() <= 1)
-      pControl->SetEnabled(FALSE);
+    if (pControl)
+    {
+      CGUIControl::GUICONTROLTYPES controlType = pControl->GetControlType();
+      if (controlType == CGUIControl::GUICONTROL_SPIN || controlType == CGUIControl::GUICONTROL_SPINEX)
+      {
+        // Hide if there's no choices to make.
+        if (((CGUISpinControl *)pControl)->GetCount() <= 1)
+          pControl->SetVisible(false);
+        else
+          pControl->SetVisible(true);
+      }
+    }
   }
 }
 
