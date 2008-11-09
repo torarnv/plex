@@ -446,7 +446,7 @@ void processQueue(IOHIDDeviceInterface **hidDeviceInterface, CFMutableArrayRef c
 	queue = (*hidDeviceInterface)->allocQueue(hidDeviceInterface);
 	if (!queue) 
 	{
-	    fprintf(stderr, "Failed to allocate event queue.\n");
+	    printf("Failed to allocate event queue.\n");
 	    return;
 	}
 
@@ -490,8 +490,10 @@ void doRun(IOHIDDeviceInterface **hidDeviceInterface, CFMutableArrayRef cookies)
 
     ioReturnValue = (*hidDeviceInterface)->close(hidDeviceInterface);
   }
-      
-  (*hidDeviceInterface)->Release(hidDeviceInterface);
+  else
+  {
+    printf("Error opening HID device.\n");
+  }
 }
 
 CFMutableArrayRef getHIDCookies(IOHIDDeviceInterface122 **handle)
@@ -570,7 +572,10 @@ void createHIDDeviceInterface(io_object_t hidDevice, IOHIDDeviceInterface ***hdi
                         &score);
 
     if (ioReturnValue != kIOReturnSuccess)
-        return;
+    {
+      printf("Couldn't create plug-in interface.\n");
+      return;
+    }
 
     plugInResult = (*plugInInterface)->QueryInterface(
                         plugInInterface,
@@ -618,7 +623,7 @@ void setupAndRun()
       // Enter the run loop.
       doRun(hidDeviceInterface, cookies);
 
-      if (ioReturnValue == KERN_SUCCESS)
+      if (ioReturnValue == KERN_SUCCESS && hidDeviceInterface)
           ioReturnValue = (*hidDeviceInterface)->close(hidDeviceInterface);
 
       (*hidDeviceInterface)->Release(hidDeviceInterface);
