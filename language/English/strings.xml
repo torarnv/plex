@@ -1183,7 +1183,7 @@
 
   <string id="13450">Sleep System</string>
   
-  <string id="13600">Remote</string>
+  <string id="13600">Controllers</string>
   <string id="13601">Apple Remote Mode</string>  
   <string id="13602">- Always Running</string>
   <string id="13603">- Sequence Delay Time</string>
@@ -1199,6 +1199,13 @@
 
   <string id="13623">Sofa Control is running.</string>
   <string id="13624">Please see Sofa Control documentation to uninstall.</string>
+
+  <string id="13630">Media Server</string>
+  <string id="13631">Mode</string>  
+  <string id="13632">- Always Running</string>
+
+  <string id="13633">Disabled</string>
+  <string id="13634">Enabled</string>
 
   <string id="14000">Stack</string>
   <string id="14001">Unstack</string>

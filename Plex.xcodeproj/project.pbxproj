@@ -30,6 +30,9 @@
 		94B1852B0EB48264008C38FA /* CoreAudioAUHAL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 94B185280EB48264008C38FA /* CoreAudioAUHAL.cpp */; };
 		94B1852C0EB48264008C38FA /* CoreAudioPlexSupport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 94B1852A0EB48264008C38FA /* CoreAudioPlexSupport.cpp */; };
 		94B185540EB48568008C38FA /* pa_ringbuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 94B185520EB48568008C38FA /* pa_ringbuffer.c */; };
+		E31312180EC647FB00629994 /* PlexRemoteHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E31312160EC647FB00629994 /* PlexRemoteHelper.cpp */; };
+		E31312190EC647FB00629994 /* PlexHelperApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E31312170EC647FB00629994 /* PlexHelperApp.cpp */; };
+		E313121E0EC64B7300629994 /* PlexMediaServerHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E313121C0EC64B7300629994 /* PlexMediaServerHelper.cpp */; };
 		E32B456E0EB2DC4D00E19A30 /* GUIListGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E32B456C0EB2DC4D00E19A30 /* GUIListGroup.cpp */; };
 		E336EF2F0E60256000270758 /* GUIViewStatePictures.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E336EF000E60250700270758 /* GUIViewStatePictures.cpp */; };
 		E336EF300E60256000270758 /* GUIViewStatePrograms.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E336EF020E60250700270758 /* GUIViewStatePrograms.cpp */; };
@@ -785,7 +788,6 @@
 		E371C4EE0E2F2D5400FBF841 /* XBAudioConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1EA90D25F9FD00618676 /* XBAudioConfig.cpp */; };
 		E371C4EF0E2F2D5400FBF841 /* XBMCConfiguration.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E19670D25F9FB00618676 /* XBMCConfiguration.cpp */; };
 		E371C4F00E2F2D5400FBF841 /* xbmcguimodule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E259A0D263CE000618676 /* xbmcguimodule.cpp */; };
-		E371C4F10E2F2D5400FBF841 /* XBMCHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E306D12C0DDF7B590052C2AD /* XBMCHelper.cpp */; };
 		E371C4F20E2F2D5400FBF841 /* XBMChttp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E19690D25F9FB00618676 /* XBMChttp.cpp */; };
 		E371C4F30E2F2D5400FBF841 /* XBMCMain.m in Sources */ = {isa = PBXBuildFile; fileRef = E363847F0D767AE1005744DD /* XBMCMain.m */; };
 		E371C4F40E2F2D5400FBF841 /* xbmcmodule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E259B0D263CE000618676 /* xbmcmodule.cpp */; };
@@ -1000,7 +1002,6 @@
 		1A55362F0E86CCD4005AF349 /* GUIDialogUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogUtils.cpp; sourceTree = "<group>"; };
 		1A6927F90EAAB06100A01B8A /* SUPlexBackgroundUpdateDialogDriver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUPlexBackgroundUpdateDialogDriver.h; sourceTree = "<group>"; };
 		1A6927FA0EAAB06100A01B8A /* SUPlexBackgroundUpdateDialogDriver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SUPlexBackgroundUpdateDialogDriver.m; sourceTree = "<group>"; };
-		1AA456010E7D94FC004CC8D2 /* SUPlainInstaller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SUPlainInstaller.h; path = "../../../Downloads/Sparkle 1.5b5/Extras/Source Code/SUPlainInstaller.h"; sourceTree = SOURCE_ROOT; };
 		1AA456B20E7EA2E7004CC8D2 /* SUConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUConstants.h; sourceTree = "<group>"; };
 		1AA456B60E7EA3DD004CC8D2 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
 		1AD99BDB0E9EF07200503917 /* QTPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTPlayer.h; sourceTree = "<group>"; };
@@ -1097,9 +1098,13 @@
 		94B185520EB48568008C38FA /* pa_ringbuffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pa_ringbuffer.c; path = AC3Encoder/pa_ringbuffer.c; sourceTree = "<group>"; };
 		94B185530EB48568008C38FA /* pa_ringbuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pa_ringbuffer.h; path = AC3Encoder/pa_ringbuffer.h; sourceTree = "<group>"; };
 		B1A921F30DF6D14F0024CC4F /* libbz2.1.0.4.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libbz2.1.0.4.dylib; path = /opt/local/lib/libbz2.1.0.4.dylib; sourceTree = "<absolute>"; };
-		E306D12C0DDF7B590052C2AD /* XBMCHelper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMCHelper.cpp; sourceTree = "<group>"; };
-		E306D12D0DDF7B590052C2AD /* XBMCHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCHelper.h; sourceTree = "<group>"; };
 		E30B3E8E0D5D59290030A311 /* libShout-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libShout-osx.a"; path = "xbmc/lib/libshout/libShout-osx.a"; sourceTree = "<group>"; };
+		E31312160EC647FB00629994 /* PlexRemoteHelper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PlexRemoteHelper.cpp; sourceTree = "<group>"; };
+		E31312170EC647FB00629994 /* PlexHelperApp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PlexHelperApp.cpp; sourceTree = "<group>"; };
+		E313121A0EC64B7300629994 /* PlexRemoteHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlexRemoteHelper.h; sourceTree = "<group>"; };
+		E313121B0EC64B7300629994 /* PlexMediaServerHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlexMediaServerHelper.h; sourceTree = "<group>"; };
+		E313121C0EC64B7300629994 /* PlexMediaServerHelper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PlexMediaServerHelper.cpp; sourceTree = "<group>"; };
+		E313121D0EC64B7300629994 /* PlexHelperApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlexHelperApp.h; sourceTree = "<group>"; };
 		E32B456C0EB2DC4D00E19A30 /* GUIListGroup.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIListGroup.cpp; sourceTree = "<group>"; };
 		E32B456D0EB2DC4D00E19A30 /* GUIListGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIListGroup.h; sourceTree = "<group>"; };
 		E33206370D5070AA00435CE3 /* DVDDemuxVobsub.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDDemuxVobsub.cpp; sourceTree = "<group>"; };
@@ -3322,7 +3327,6 @@
 			isa = PBXGroup;
 			children = (
 				1AA456B20E7EA2E7004CC8D2 /* SUConstants.h */,
-				1AA456010E7D94FC004CC8D2 /* SUPlainInstaller.h */,
 				1A01F0F60E7D37AA00DC186E /* SUBasicUpdateDriver.h */,
 				1A2C5DBB0E7EE410002F23FA /* SUInstaller.h */,
 				1A01F0F70E7D37AA00DC186E /* SUHost.h */,
@@ -3414,6 +3418,12 @@
 		E37D5CB40D3023BB0081D327 /* osx */ = {
 			isa = PBXGroup;
 			children = (
+				E313121A0EC64B7300629994 /* PlexRemoteHelper.h */,
+				E313121B0EC64B7300629994 /* PlexMediaServerHelper.h */,
+				E313121C0EC64B7300629994 /* PlexMediaServerHelper.cpp */,
+				E313121D0EC64B7300629994 /* PlexHelperApp.h */,
+				E31312160EC647FB00629994 /* PlexRemoteHelper.cpp */,
+				E31312170EC647FB00629994 /* PlexHelperApp.cpp */,
 				1A53C7480EB00AD1009A10F3 /* frontrowlauncher.m */,
 				1A01F0F50E7D379500DC186E /* Sparkle */,
 				1A5487500E7B26830025CA32 /* GUIDialogUtils.h */,
@@ -3425,8 +3435,6 @@
 				1A55362F0E86CCD4005AF349 /* GUIDialogUtils.cpp */,
 				840A327C0DFBBD2600AA2033 /* KeyboardLayouts.cpp */,
 				840A327D0DFBBD2600AA2033 /* KeyboardLayouts.h */,
-				E306D12C0DDF7B590052C2AD /* XBMCHelper.cpp */,
-				E306D12D0DDF7B590052C2AD /* XBMCHelper.h */,
 				E363844E0D767767005744DD /* AppleRemote.h */,
 				E363844F0D767767005744DD /* AppleRemote.m */,
 				E37D5CB50D3023BB0081D327 /* CocoaUtils.h */,
@@ -7350,7 +7358,6 @@
 				E371C4EE0E2F2D5400FBF841 /* XBAudioConfig.cpp in Sources */,
 				E371C4EF0E2F2D5400FBF841 /* XBMCConfiguration.cpp in Sources */,
 				E371C4F00E2F2D5400FBF841 /* xbmcguimodule.cpp in Sources */,
-				E371C4F10E2F2D5400FBF841 /* XBMCHelper.cpp in Sources */,
 				E371C4F20E2F2D5400FBF841 /* XBMChttp.cpp in Sources */,
 				E371C4F30E2F2D5400FBF841 /* XBMCMain.m in Sources */,
 				E371C4F40E2F2D5400FBF841 /* xbmcmodule.cpp in Sources */,
@@ -7409,6 +7416,9 @@
 				94B1852B0EB48264008C38FA /* CoreAudioAUHAL.cpp in Sources */,
 				94B1852C0EB48264008C38FA /* CoreAudioPlexSupport.cpp in Sources */,
 				94B185540EB48568008C38FA /* pa_ringbuffer.c in Sources */,
+				E31312180EC647FB00629994 /* PlexRemoteHelper.cpp in Sources */,
+				E31312190EC647FB00629994 /* PlexHelperApp.cpp in Sources */,
+				E313121E0EC64B7300629994 /* PlexMediaServerHelper.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

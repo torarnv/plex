@@ -1,24 +1,3 @@
-/*
- *      Copyright (C) 2005-2008 Team XBMC
- *      http://www.xbmc.org
- *
- *  This Program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2, or (at your option)
- *  any later version.
- *
- *  This Program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
- *
- */
-
 #include <sys/types.h>
 #include <sys/sysctl.h>
 #include <sys/stat.h>
@@ -32,7 +11,7 @@
 
 using namespace std;
 
-#include "XBMCHelper.h"
+#include "PlexHelperApp.h"
 
 #include "CocoaUtils.h"
 #include "PlatformDefs.h"
@@ -42,68 +21,48 @@ using namespace std;
 #include "Util.h"
 #include "XFileUtils.h"
 
-XBMCHelper g_xbmcHelper;
-
-#define PLEX_HELPER_PROGRAM "PlexHelper"
-#define SOFA_CONTROL_PROGRAM "Sofa Control"
-#define XBMC_LAUNCH_PLIST "com.plexapp.helper.plist"
 #define RESOURCES_DIR "/Library/Application Support/Plex"
 
 static int GetBSDProcessList(kinfo_proc **procList, size_t *procCount);
 
 /////////////////////////////////////////////////////////////////////////////
-XBMCHelper::XBMCHelper()
+PlexHelperApp::PlexHelperApp()
   : m_errorStarting(false)
-  , m_mode(APPLE_REMOTE_DISABLED)
   , m_alwaysOn(false)
-  , m_sequenceDelay(0)
+{
+}
+
+/////////////////////////////////////////////////////////////////////////////
+void PlexHelperApp::Initialize()
 {
   CStdString homePath;
   CUtil::GetHomePath(homePath);
 
   // Compute the helper filename.
-  m_helperFile = homePath + "/" PLEX_HELPER_PROGRAM;
-
+  m_helperFile = string(homePath) + string("/") + GetHelperBinaryName();
+  
   // Compute the local (pristine) launch agent filename.
-  m_launchAgentLocalFile = homePath + "/" XBMC_LAUNCH_PLIST;
-
+  m_launchAgentLocalFile = string(homePath) + string("/") + GetPlistName();
+  
   // Compute the install path for the launch agent.
   m_launchAgentInstallFile = getenv("HOME");
-  m_launchAgentInstallFile += "/Library/LaunchAgents/" XBMC_LAUNCH_PLIST;
-
+  m_launchAgentInstallFile += "/Library/LaunchAgents/" + GetPlistName();
+  
   // Compute the configuration file name.
   m_configFile = getenv("HOME");
-  m_configFile += RESOURCES_DIR "/" PLEX_HELPER_PROGRAM ".conf";
-
+  m_configFile += RESOURCES_DIR "/" + GetHelperBinaryName() + ".conf";
+  
   // This is where we install the helper.
   m_helperInstalledFile = getenv("HOME");
-  m_helperInstalledFile += RESOURCES_DIR "/" PLEX_HELPER_PROGRAM;
-
+  m_helperInstalledFile += RESOURCES_DIR "/" + GetHelperBinaryName();
+  
   // This is where we store the installed version of helper.
   m_helperInstalledVersionFile = getenv("HOME");
-  m_helperInstalledVersionFile += RESOURCES_DIR "/" PLEX_HELPER_PROGRAM ".version";
-  
-  ////// ONLY ONCE - uninstall and delete old helper, stop.
-  CStdString oldHelper = getenv("HOME");
-  oldHelper += "/Library/LaunchAgents/";
-  oldHelper += "org.xbmc.helper.plist";
-  
-  if (::access(oldHelper.c_str(), R_OK) == 0)
-  {
-    string cmd = "/bin/launchctl unload ";
-    cmd += oldHelper;
-    system(cmd.c_str());
-    DeleteFile(oldHelper.c_str());
-  
-    int pid = GetProcessPid("XBMCHelper");
-    if (pid != -1)
-      kill(pid, SIGKILL);
-  }
-  //////
+  m_helperInstalledVersionFile += RESOURCES_DIR "/" + GetHelperBinaryName() + ".version"; 
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool XBMCHelper::EnsureLatestHelperInstalled()
+bool PlexHelperApp::EnsureLatestHelperInstalled()
 {
   std::string appVersion = Cocoa_GetAppVersion();
   std::string installedVersion = GetInstalledHelperVersion();
@@ -111,7 +70,8 @@ bool XBMCHelper::EnsureLatestHelperInstalled()
   if (/* appVersion.length() > 0 && */ appVersion != installedVersion ||
       ::access(m_helperInstalledFile.c_str(), R_OK) != 0)
   {
-    CLog::Log(LOGNOTICE, "Detected change in helper version, it was '%s,' and application version was '%s'.\n", installedVersion.c_str(), appVersion.c_str());
+    CLog::Log(LOGNOTICE, "Detected change in %s helper version, it was '%s,' and application version was '%s'.\n", 
+              GetHelperBinaryName().c_str(), installedVersion.c_str(), appVersion.c_str());
 
     // Whack old helper.
     DeleteFile(m_helperInstalledFile.c_str());
@@ -129,104 +89,49 @@ bool XBMCHelper::EnsureLatestHelperInstalled()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void XBMCHelper::Start()
+void PlexHelperApp::Start()
 {
-  if (GetProcessPid(PLEX_HELPER_PROGRAM) == -1)
+  if (GetProcessPid(GetHelperBinaryName()) == -1)
   {
-    CLog::Log(LOGNOTICE, "Asking PlexHelper to start.");
-
     string cmd = "\"" + m_helperInstalledFile + "\" -x &";
+    CLog::Log(LOGNOTICE, "Asking %s to start [%s]", GetHelperBinaryName().c_str(), cmd.c_str());
     system(cmd.c_str());
   }
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void XBMCHelper::Stop(bool hup)
+void PlexHelperApp::Stop(bool hup)
 {
   // Kill the process.
-  int pid = GetProcessPid(PLEX_HELPER_PROGRAM);
+  int pid = GetProcessPid(GetHelperBinaryName());
   if (pid != -1)
   {
-    CLog::Log(LOGNOTICE, "Asking PlexHelper to %s.", hup ? "reconfigure" : "stop");
+    CLog::Log(LOGNOTICE, "Asking %s to %s.", GetHelperBinaryName().c_str(), hup ? "reconfigure" : "stop");
     kill(pid, (hup ? SIGHUP : SIGKILL));
   }
   else
   {
-    CLog::Log(LOGNOTICE, "PlexHelper is not running");
+    CLog::Log(LOGNOTICE, "%s is not running.", GetHelperBinaryName().c_str());
   }
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void XBMCHelper::Configure()
+void PlexHelperApp::Configure()
 {
   int oldMode = m_mode;
-  int oldDelay = m_sequenceDelay;
   int oldAlwaysOn = m_alwaysOn;
-  int oldSecureInput = m_secureInput;
 
-  // Read the new configuration.
+  // Assume success.
   m_errorStarting = false;
-  m_mode = g_guiSettings.GetInt("appleremote.mode");
-  m_sequenceDelay = g_guiSettings.GetInt("appleremote.sequencetime");
-  m_alwaysOn = g_guiSettings.GetBool("appleremote.alwayson");
-  m_secureInput = g_guiSettings.GetBool("appleremote.secureinput");
-
-  // Don't let it enable if sofa control or remote buddy is around.
-  if (/* IsRemoteBuddyInstalled() || */ IsSofaControlRunning())
-  {
-    // If we were starting then remember error.
-    if (oldMode == APPLE_REMOTE_DISABLED && m_mode != APPLE_REMOTE_DISABLED)
-      m_errorStarting = true;
-
-    m_mode = APPLE_REMOTE_DISABLED;
-    g_guiSettings.SetInt("appleremote.mode", APPLE_REMOTE_DISABLED);
-  }
+  
+  // Ask the subclass to do its configuration.
+  bool changed = DoConfigure(m_mode, m_alwaysOn, m_errorStarting);
 
   // New configuration.
-  if (oldMode != m_mode || oldDelay != m_sequenceDelay || oldSecureInput != m_secureInput)
+  if (oldMode != m_mode || changed)
   {
-    // Build a new config string.
-    std::string strConfig;
-    if (m_mode == APPLE_REMOTE_UNIVERSAL)
-      strConfig = "--universal ";
-
-    // Delay.
-    char strDelay[64];
-    sprintf(strDelay, "--timeout %d ", m_sequenceDelay);
-    strConfig += strDelay;
-
-    // Secure input.
-    char strSecure[64];
-    sprintf(strSecure, "--secureInput %d ", m_secureInput ? 1 : 0);
-    strConfig += strSecure;
-    
-    // Find out where we're running from.
-    char     given_path[2*MAXPATHLEN];
-    uint32_t path_size = 2*MAXPATHLEN;
-
-    int result = _NSGetExecutablePath(given_path, &path_size);
-    if (result == 0)
-    {
-      char real_path[2*MAXPATHLEN];
-      if (realpath(given_path, real_path) != NULL)
-      {
-        // Move backwards out to the application.
-        for (int x=0; x<4; x++)
-        {
-          for (int n=strlen(real_path)-1; real_path[n] != '/'; n--)
-            real_path[n] = '\0';
-        
-          real_path[strlen(real_path)-1] = '\0';
-        }
-      }
-      
-      strConfig += "--appLocation \"";
-      strConfig += real_path;
-      strConfig += "\"";
-    }
-    
     // Write the new configuration.
-    WriteFile(m_configFile.c_str(), strConfig + "\n");
+    WriteFile(m_configFile.c_str(), GetConfigString());
 
     // If process is running, kill -HUP to have it reload settings.
     Stop(TRUE);
@@ -235,26 +140,26 @@ void XBMCHelper::Configure()
   // Make sure latest helper is installed.
   if (EnsureLatestHelperInstalled() == true)
   {
-    CLog::Log(LOGNOTICE, "Version of helper changed, uninstalling and stopping.");
+    CLog::Log(LOGNOTICE, "Version of %s changed, uninstalling and stopping.", GetHelperBinaryName().c_str());
 
     // Things changed. Uninstall and stop.
     Uninstall();
     Stop();
 
     // Make sure we reinstall/start if needed.
-    oldMode = APPLE_REMOTE_DISABLED;
+    oldMode = MODE_DISABLED;
     oldAlwaysOn = false;
   }
 
   // Turning off?
-  if (oldMode != APPLE_REMOTE_DISABLED && m_mode == APPLE_REMOTE_DISABLED)
+  if (oldMode != MODE_DISABLED && m_mode == MODE_DISABLED)
   {
     Stop();
     Uninstall();
   }
 
   // Turning on.
-  if (oldMode == APPLE_REMOTE_DISABLED && m_mode != APPLE_REMOTE_DISABLED)
+  if (oldMode == MODE_DISABLED && m_mode != MODE_DISABLED)
     Start();
 
   // Installation/uninstallation.
@@ -265,7 +170,7 @@ void XBMCHelper::Configure()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-std::string XBMCHelper::GetInstalledHelperVersion()
+std::string PlexHelperApp::GetInstalledHelperVersion()
 {
   if (::access(m_helperInstalledVersionFile.c_str(), R_OK) == 0)
     return ReadFile(m_helperInstalledVersionFile.c_str());
@@ -274,7 +179,7 @@ std::string XBMCHelper::GetInstalledHelperVersion()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void XBMCHelper::Install()
+void PlexHelperApp::Install()
 {
   if (::access(m_launchAgentLocalFile.c_str(), R_OK) == 0 && // Launch agent template exists
       ::access(m_launchAgentInstallFile.c_str(), R_OK) != 0) // Not already installed.
@@ -289,7 +194,7 @@ void XBMCHelper::Install()
 
     if (plistData != "")
     {
-      CLog::Log(LOGNOTICE, "Installing PlexHelper at %s", m_launchAgentInstallFile.c_str());
+      CLog::Log(LOGNOTICE, "Installing %s at %s", GetHelperBinaryName().c_str(), m_launchAgentInstallFile.c_str());
 
       // Replace it in the file.
       int start = plistData.find("${PATH}");
@@ -306,23 +211,23 @@ void XBMCHelper::Install()
     else
     {
       CLog::Log(LOGERROR, "Unable to install \"%s\". Launch agent template (%s) is corrupted.",
-                PLEX_HELPER_PROGRAM, m_launchAgentLocalFile.c_str());
+                GetHelperBinaryName().c_str(), m_launchAgentLocalFile.c_str());
     }
   }
   else
   {
     if (::access(m_launchAgentLocalFile.c_str(), R_OK) != 0)
       CLog::Log(LOGERROR, "Unable to install \"%s\". Unable to find launch agent template (%s).",
-                 PLEX_HELPER_PROGRAM, m_launchAgentLocalFile.c_str());
+                 GetHelperBinaryName().c_str(), m_launchAgentLocalFile.c_str());
   }
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void XBMCHelper::Uninstall()
+void PlexHelperApp::Uninstall()
 {
   if (::access(m_launchAgentInstallFile.c_str(), R_OK) == 0)
   {
-    CLog::Log(LOGNOTICE, "Uninstalling PlexHelper from %s.", m_launchAgentInstallFile.c_str());
+    CLog::Log(LOGNOTICE, "Uninstalling %s from %s.", GetHelperBinaryName().c_str(), m_launchAgentInstallFile.c_str());
 
     // Call the unloader.
     string cmd = "/bin/launchctl unload ";
@@ -334,29 +239,15 @@ void XBMCHelper::Uninstall()
   }
   else
   {
-    CLog::Log(LOGNOTICE, "Asked to uninstalling PlexHelper, but it wasn't installed.");
+    CLog::Log(LOGNOTICE, "Asked to uninstall %s, but it wasn't installed.", GetHelperBinaryName().c_str());
   }
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool XBMCHelper::IsRemoteBuddyInstalled()
-{
-  // Check for existence of kext file.
-  return ::access("/System/Library/Extensions/RBIOKitHelper.kext", R_OK) != -1;
-}
-
-/////////////////////////////////////////////////////////////////////////////
-bool XBMCHelper::IsSofaControlRunning()
-{
-  // Check for a "Sofa Control" process running.
-  return GetProcessPid(SOFA_CONTROL_PROGRAM) != -1;
-}
-
-/////////////////////////////////////////////////////////////////////////////
-std::string XBMCHelper::ReadFile(const char* fileName)
+std::string PlexHelperApp::ReadFile(const string& fileName)
 {
   ifstream is;
-  is.open(fileName);
+  is.open(fileName.c_str());
   if (!is.is_open())
     return "";
 
@@ -379,9 +270,9 @@ std::string XBMCHelper::ReadFile(const char* fileName)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void XBMCHelper::WriteFile(const char* fileName, const std::string& data)
+void PlexHelperApp::WriteFile(const string& fileName, const std::string& data)
 {
-  ofstream out(fileName);
+  ofstream out(fileName.c_str());
   if (!out)
   {
     CLog::Log(LOGERROR, "PlexHelper: Unable to open file '%s'", fileName);
@@ -398,11 +289,11 @@ void XBMCHelper::WriteFile(const char* fileName, const std::string& data)
 /////////////////////////////////////////////////////////////////////////////
 extern "C" int GetProcessPid(const char* processName)
 {
-  return XBMCHelper::GetProcessPid(processName);
+  return PlexHelperApp::GetProcessPid(processName);
 }
 
 /////////////////////////////////////////////////////////////////////////////
-int XBMCHelper::GetProcessPid(const char* strProgram)
+int PlexHelperApp::GetProcessPid(const string& strProgram)
 {
   kinfo_proc* mylist;
   size_t mycount = 0;
@@ -414,7 +305,7 @@ int XBMCHelper::GetProcessPid(const char* strProgram)
     kinfo_proc *proc = NULL;
     proc = &mylist[k];
     
-    if (strcmp(proc->kp_proc.p_comm, strProgram) == 0)
+    if (strProgram == proc->kp_proc.p_comm)
     {
       //if (ignorePid == 0 || ignorePid != proc->kp_proc.p_pid)
       ret = proc->kp_proc.p_pid;

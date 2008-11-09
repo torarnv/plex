@@ -16,20 +16,21 @@
 #include <mach/mach_interface.h>
 #include <mach/mach_init.h>
 
-#include <IOKit/pwr_mgt/IOPMLib.h>
-#include <IOKit/IOKitLib.h>
-#include "CocoaUtils.h"
-#import "XBMCMain.h" 
-#include <SDL/SDL.h>
-#import "BackgroundMusicPlayer.h"
-#import "AppleHardwareInfo.h"
-
 #import <IOKit/graphics/IOGraphicsLib.h>
 #import <ApplicationServices/ApplicationServices.h>
-#import "SUPlexUpdater.h"
+#import <SystemConfiguration/SystemConfiguration.h>
+
+#include <IOKit/pwr_mgt/IOPMLib.h>
+#include <IOKit/IOKitLib.h>
+#include <SDL/SDL.h>
+
+#include "CocoaUtils.h"
 #include "CocoaToCppThunk.h"
 
-#import <SystemConfiguration/SystemConfiguration.h>
+#import "XBMCMain.h" 
+#import "BackgroundMusicPlayer.h"
+#import "AppleHardwareInfo.h"
+#import "SUPlexUpdater.h"
 
 extern int GetProcessPid(const char* processName);
 
