@@ -194,6 +194,7 @@ class PlexMediaAlbum : public PlexMediaNode
     
     string path = el.Attribute("thumb");
     url.SetFileName(path.substr(1));
+    url.SetPort(32400);
     
     CStdString theURL;
     url.GetURL(theURL);
@@ -222,6 +223,7 @@ class PlexMediaPodcast : public PlexMediaNode
     // Construct the thumbnail request.
     CURL url(pItem->m_strPath);
     url.SetProtocol("http");
+    url.SetPort(32400);
     
     string path = el.Attribute("thumb");
     url.SetFileName(path.substr(1));
@@ -273,6 +275,7 @@ class PlexMediaTrack : public PlexMediaNode
     // Thumbnail.
     CURL url(pItem->m_strPath);
     url.SetProtocol("http");
+    url.SetPort(32400);
     string path = el.Attribute("thumb");
     url.SetFileName(path.substr(1));
     CStdString theURL;
@@ -286,6 +289,7 @@ class PlexMediaTrack : public PlexMediaNode
     // Path to the track.
     CURL url2(pItem->m_strPath);
     url2.SetProtocol("http");
+    url2.SetPort(32400);
     url2.GetURL(pItem->m_strPath);
   }
 };
@@ -324,6 +328,7 @@ class PlexMediaPhoto : public PlexMediaNode
     // Thumbnail.
     CURL url(pItem->m_strPath);
     url.SetProtocol("http");
+    url.SetPort(32400);
     string path = el.Attribute("thumb");
     url.SetFileName(path.substr(1));
     CStdString thumbPath;
@@ -334,6 +339,7 @@ class PlexMediaPhoto : public PlexMediaNode
     // Path to the photo.
     CURL url2(pItem->m_strPath);
     url2.SetProtocol("http");
+    url2.SetPort(32400);
     url2.GetURL(pItem->m_strPath);
   }
 };
