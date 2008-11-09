@@ -2264,7 +2264,7 @@ void CSettings::LoadSkinSettings(const TiXmlElement* pRootElement)
     
     // Hardwired defaults for MediaStream. Bogus, but works for now and better than editing XML every week.
     m_skinBools.insert(pair<int, CSkinBool>(number++, CSkinBool("MediaStream.enablecustombghome", true)));
-    m_skinBools.insert(pair<int, CSkinBool>(number++, CSkinBool("MediaStream.hideprograms", true)));
+    //m_skinBools.insert(pair<int, CSkinBool>(number++, CSkinBool("MediaStream.hideprograms", true)));
     m_skinBools.insert(pair<int, CSkinBool>(number++, CSkinBool("MediaStream.hidedvd", true)));
     m_skinBools.insert(pair<int, CSkinBool>(number++, CSkinBool("MediaStream.showweatheronhome", true)));
     m_skinBools.insert(pair<int, CSkinBool>(number++, CSkinBool("MediaStream.showmediacount", true)));
