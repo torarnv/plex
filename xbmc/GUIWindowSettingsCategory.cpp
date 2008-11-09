@@ -78,7 +78,8 @@
 #endif
 #ifdef __APPLE__
 #include "CoreAudioPlexSupport.h"
-#include "XBMCHelper.h"
+#include "PlexRemoteHelper.h"
+#include "PlexMediaServerHelper.h"
 #include "CocoaUtils.h"
 #endif
 #ifdef HAS_LINUX_NETWORK
@@ -801,6 +802,14 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(13612), APPLE_REMOTE_UNIVERSAL);
       pControl->SetValue(pSettingInt->GetData());
     }
+    else if (strSetting.Equals("plexmediaserver.mode"))
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->AddLabel(g_localizeStrings.Get(13633), PlexMediaServerHelper::MODE_DISABLED);
+      pControl->AddLabel(g_localizeStrings.Get(13634), PlexMediaServerHelper::MODE_ENABLED);
+      pControl->SetValue(pSettingInt->GetData());
+    }
 #endif
 #ifdef HAS_HAL
     else if (strSetting.Equals("system.shutdownstate"))
@@ -1069,14 +1078,12 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     else if (strSetting.Equals("appleremote.mode"))
     {
       // Set new configuration.
-      g_xbmcHelper.Configure();
+      PlexRemoteHelper::Get().Configure();
 
-      if (g_xbmcHelper.ErrorStarting() == true)
+      if (PlexRemoteHelper::Get().ErrorStarting() == true)
       {
         // Display an error.
-        //if (g_xbmcHelper.IsRemoteBuddyInstalled())
-        //  CGUIDialogOK::ShowAndGetInput(13600, 13620, 13621, 13622);
-        if (g_xbmcHelper.IsSofaControlRunning())
+        if (PlexRemoteHelper::Get().IsSofaControlRunning())
           CGUIDialogOK::ShowAndGetInput(13600, 13623, 13621, 13624);
 
         CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
@@ -1107,6 +1114,23 @@ void CGUIWindowSettingsCategory::UpdateSettings()
            pControl->SetEnabled(false);
        }
      }
+     else if (strSetting.Equals("plexmediaserver.mode"))
+     {
+       // Set new configuration.
+       PlexMediaServerHelper::Get().Configure();
+     }
+     else if (strSetting.Equals("plexmediaserver.alwayson"))
+      {
+        CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+        if (pControl)
+        {
+          int value = g_guiSettings.GetInt("plexmediaserver.mode");
+          if (value != PlexHelperApp::MODE_DISABLED)
+            pControl->SetEnabled(true);
+          else
+            pControl->SetEnabled(false);
+        }
+      }
 #endif
     else if (strSetting.Equals("filelists.allowfiledeletion"))
     {

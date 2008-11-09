@@ -38,7 +38,7 @@
 #include "FileSystem/RarManager.h"
 #include "FileItem.h"
 #include "CocoaUtils.h"
-#include "XBMCHelper.h"           
+#include "PlexRemoteHelper.h"           
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -327,12 +327,14 @@ int CGUIWindowPrograms::GetRegion(int iItem, bool bReload)
 
 bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
+#ifdef __APPLE__
+  
   // Launch Mac OS X apps
   if (Cocoa_IsAppBundle(strDirectory.c_str()))
   {
     if (strDirectory.Find("/Front Row.app/") > 0)
     {
-      g_xbmcHelper.Stop();
+      PlexRemoteHelper::Get().Stop();
       Cocoa_LaunchFrontRow();
       return true;
     }
@@ -341,12 +343,14 @@ bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemL
       // Special cases for app compatibility
       if ((strDirectory.Find("/DVD Player.app/") > 0) ||
           (strDirectory.Find("/iTunes.app/") > 0))
-        g_xbmcHelper.Stop();
+        PlexRemoteHelper::Get().Stop();
       
       Cocoa_LaunchApp(strDirectory.c_str());
       return true;
     }  
   }
+  
+#endif
   
   bool bFlattened=false;
   if (CUtil::IsDVD(strDirectory))

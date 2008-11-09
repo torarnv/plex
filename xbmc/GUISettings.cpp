@@ -39,7 +39,10 @@
 #endif
 #include "utils/Network.h"
 
+#ifdef __APPLE__
 #include "CocoaUtils.h"
+#include "PlexMediaServerHelper.h"
+#endif
 
 using namespace std;
 
@@ -426,15 +429,23 @@ CGUISettings::CGUISettings(void)
   AddBool(8, "lcd.enableonpaused", 20312, true);
 #endif
 
-	AddCategory(4, "appleremote", 13600);
+  // Controllers.
+  AddCategory(4, "appleremote", 13600);
 #ifdef __APPLE__
   AddInt(1, "appleremote.mode", 13601, APPLE_REMOTE_STANDARD, APPLE_REMOTE_DISABLED, 1, APPLE_REMOTE_UNIVERSAL, SPIN_CONTROL_TEXT);
   AddBool(2, "appleremote.alwayson", 13602, false);
   AddInt(3, "appleremote.sequencetime", 13603, 500, 50, 50, 1000, SPIN_CONTROL_INT_PLUS, MASK_MS, TEXT_OFF);
   AddBool(0, "appleremote.secureinput", 13604, false);
 #endif
-	AddBool(12, "appleremote.enablemouse", 21369, false);
+  AddBool(12, "appleremote.enablemouse", 21369, false);
 
+  // Plex Media Server.
+  AddCategory(4, "plexmediaserver", 13630);
+#ifdef __APPLE__
+  AddInt(1, "plexmediaserver.mode", 13631, PlexMediaServerHelper::MODE_ENABLED, PlexMediaServerHelper::MODE_DISABLED, 1, PlexMediaServerHelper::MODE_ENABLED, SPIN_CONTROL_TEXT);
+  AddBool(2, "plexmediaserver.alwayson", 13632, false);
+#endif
+  
   AddCategory(4, "autorun", 447);
   AddBool(1, "autorun.dvd", 240, true);
   AddBool(2, "autorun.vcd", 241, true);

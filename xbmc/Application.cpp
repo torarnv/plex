@@ -234,7 +234,8 @@
 #endif
 #ifdef __APPLE__
 #include "CocoaUtils.h"
-#include "XBMCHelper.h"
+#include "PlexRemoteHelper.h"
+#include "PlexMediaServerHelper.h"
 #include "QTPlayer.h"
 #include "GUIDialogUtils.h"
 #endif
@@ -1146,107 +1147,6 @@ HRESULT CApplication::Create(HWND hWnd)
   g_Joystick.Initialize(hWnd);
 #endif
 
-#ifdef HAS_XBOX_HARDWARE
-  // Wait for controller polling to finish. in an elegant way, instead of a Sleep(1000)
-  while (XGetDeviceEnumerationStatus() == XDEVICE_ENUMERATION_BUSY)
-  {
-    ReadInput();
-  }
-  Sleep(10); // needed or the readinput doesnt fetch anything
-  ReadInput();
-#endif
-#ifdef HAS_GAMEPAD
-  //Check for LTHUMBCLICK+RTHUMBCLICK and BLACK+WHITE, no LTRIGGER+RTRIGGER
-  if (((m_DefaultGamepad.wButtons & (XINPUT_GAMEPAD_LEFT_THUMB + XINPUT_GAMEPAD_RIGHT_THUMB)) && !(m_DefaultGamepad.wButtons & (KEY_BUTTON_LEFT_TRIGGER+KEY_BUTTON_RIGHT_TRIGGER))) ||
-      ((m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_BLACK] && m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_WHITE]) && !(m_DefaultGamepad.wButtons & KEY_BUTTON_LEFT_TRIGGER+KEY_BUTTON_RIGHT_TRIGGER)))
-  {
-    CLog::Log(LOGINFO, "Key combination detected for userdata deletion (LTHUMB+RTHUMB or BLACK+WHITE)");
-    InitBasicD3D();
-    // D3D is up, load default font
-    XFONT* pFont;
-    if (XFONT_OpenDefaultFont(&pFont) != S_OK)
-    {
-      CLog::Log(LOGFATAL, "FATAL ERROR: Unable to open default font!");
-      Sleep(INFINITE); // die
-    }
-    // defaults for text
-    pFont->SetBkMode(XFONT_OPAQUE);
-    pFont->SetBkColor(D3DCOLOR_XRGB(0, 0, 0));
-    pFont->SetTextColor(D3DCOLOR_XRGB(0xff, 0x20, 0x20));
-    int iLine = 0;
-    FEH_TextOut(pFont, iLine++, L"Key combination for userdata deletion detected!");
-    FEH_TextOut(pFont, iLine++, L"Are you sure you want to proceed?");
-    iLine++;
-    FEH_TextOut(pFont, iLine++, L"A for yes, any other key for no");
-    bool bAnyAnalogKey = false;
-    while (m_DefaultGamepad.wPressedButtons != XBGAMEPAD_NONE) // wait for user to let go of lclick + rclick
-    {
-      ReadInput();
-    }
-    while (m_DefaultGamepad.wPressedButtons == XBGAMEPAD_NONE && !bAnyAnalogKey)
-    {
-      ReadInput();
-      bAnyAnalogKey = m_DefaultGamepad.bPressedAnalogButtons[0] || m_DefaultGamepad.bPressedAnalogButtons[1] || m_DefaultGamepad.bPressedAnalogButtons[2] || m_DefaultGamepad.bPressedAnalogButtons[3] || m_DefaultGamepad.bPressedAnalogButtons[4] || m_DefaultGamepad.bPressedAnalogButtons[5] || m_DefaultGamepad.bPressedAnalogButtons[6] || m_DefaultGamepad.bPressedAnalogButtons[7];
-    }
-    if (m_DefaultGamepad.bPressedAnalogButtons[XINPUT_GAMEPAD_A])
-    {
-      CUtil::DeleteGUISettings();
-      CUtil::WipeDir(g_settings.GetUserDataFolder()+"\\database\\");
-      CUtil::WipeDir(g_settings.GetUserDataFolder()+"\\thumbnails\\");
-      CUtil::WipeDir(g_settings.GetUserDataFolder()+"\\playlists\\");
-      CUtil::WipeDir(g_settings.GetUserDataFolder()+"\\cache\\");
-      CUtil::WipeDir(g_settings.GetUserDataFolder()+"\\profiles\\");
-      CUtil::WipeDir(g_settings.GetUserDataFolder()+"\\visualisations\\");
-      CFile::Delete(g_settings.GetUserDataFolder()+"\\avpacksettings.xml");
-      g_settings.m_vecProfiles.erase(g_settings.m_vecProfiles.begin()+1,g_settings.m_vecProfiles.end());
-
-      g_settings.SaveProfiles( PROFILES_FILE );
-
-      char szXBEFileName[1024];
-
-      CIoSupport::GetXbePath(szXBEFileName);
-      CUtil::RunXBE(szXBEFileName);
-    }
-    m_pd3dDevice->Release();
-  }
-#endif
-
-#ifdef HAS_XBOX_HARDWARE
-  CIoSupport::RemapDriveLetter('C', "Harddisk0\\Partition2");
-  CIoSupport::RemapDriveLetter('E', "Harddisk0\\Partition1");
-  CIoSupport::Dismount("Cdrom0");
-  CIoSupport::RemapDriveLetter('D', "Cdrom0");
-
-  // Attempt to read the LBA48 v3 patch partition table, if kernel supports the command and it exists.
-  CIoSupport::ReadPartitionTable();
-  if (CIoSupport::HasPartitionTable())
-  {
-    // Mount up to Partition15 (drive O:) if they are available.
-    for (int i=EXTEND_PARTITION_BEGIN; i <= EXTEND_PARTITION_END; i++)
-    {
-      char szDevice[32];
-      if (CIoSupport::PartitionExists(i))
-      {
-        char cDriveLetter = 'A' + i - 1;
-        sprintf(szDevice, "Harddisk0\\Partition%u", i);
-
-        CIoSupport::RemapDriveLetter(cDriveLetter, szDevice);
-      }
-    }
-  }
-  else
-  {
-    if (CIoSupport::DriveExists('F'))
-      CIoSupport::RemapDriveLetter('F', "Harddisk0\\Partition6");
-    if (CIoSupport::DriveExists('G'))
-      CIoSupport::RemapDriveLetter('G', "Harddisk0\\Partition7");
-  }
-
-  CIoSupport::RemapDriveLetter('X',"Harddisk0\\Partition3");
-  CIoSupport::RemapDriveLetter('Y',"Harddisk0\\Partition4");
-  CIoSupport::RemapDriveLetter('Z',"Harddisk0\\Partition5");
-#endif
-
   CLog::Log(LOGINFO, "Drives are mapped");
 
   CLog::Log(LOGNOTICE, "load settings...");
@@ -1259,21 +1159,13 @@ HRESULT CApplication::Create(HWND hWnd)
   if (!m_bAllSettingsLoaded)
     FatalErrorHandler(true, true, true);
 
-  // Check for WHITE + Y for forced Error Handler (to recover if something screwy happens)
-#ifdef HAS_GAMEPAD
-  if (m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_Y] && m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_WHITE])
-  {
-    g_LoadErrorStr = "Key code detected for Error Recovery mode";
-    FatalErrorHandler(true, true, true);
-  }
-#endif
-
-  //Check for X+Y - if pressed, set debug log mode and mplayer debuging on
+  // Check for X+Y - if pressed, set debug log mode and mplayer debuging on
   CheckForDebugButtonCombo();
 
 #ifdef __APPLE__
-  // Configure and possible manually start the helper.
-  g_xbmcHelper.Configure();
+  // Configure and possible manually start the helpers.
+  PlexRemoteHelper::Get().Configure();
+  PlexMediaServerHelper::Get().Configure();
   
   // Note that the screensaver should turn off.
   Cocoa_UpdateSystemActivity();
@@ -1286,93 +1178,6 @@ HRESULT CApplication::Create(HWND hWnd)
   Cocoa_SetBackgroundMusicVolume((float)(g_guiSettings.GetInt("audiooutput.bgmusicvolume")/100.0f));
   Cocoa_StartBackgroundMusic();
   Cocoa_SetBackgroundMusicEnabled(g_guiSettings.GetBool("audiooutput.bgmusicenabled"));
-#endif
-
-#ifdef HAS_XBOX_HARDWARE
-  bool bNeedReboot = false;
-  char temp[1024];
-  CIoSupport::GetXbePath(temp);
-  char temp2[1024];
-  char temp3;
-  temp3 = temp[0];
-  CIoSupport::GetPartition(temp3,temp2);
-  CStdString strTemp(temp+2);
-  int iLastSlash = strTemp.rfind('\\');
-  strcat(temp2,strTemp.substr(0,iLastSlash).c_str());
-  F_VIDEO ForceVideo = VIDEO_NULL;
-  F_COUNTRY ForceCountry = COUNTRY_NULL;
-
-#ifdef HAS_TRAINER
-  if (CUtil::RemoveTrainer())
-    bNeedReboot = true;
-#endif
-
-// now check if we are switching video modes. if, are we in the wrong mode according to eeprom?
-  if (g_guiSettings.GetBool("myprograms.gameautoregion"))
-  {
-    bool fDoPatchTest = false;
-
-    // should use xkeeprom.h :/
-    EEPROMDATA EEPROM;
-    ZeroMemory(&EEPROM, sizeof(EEPROMDATA));
-
-    if( XKUtils::ReadEEPROMFromXBOX((LPBYTE)&EEPROM))
-    {
-      DWORD DWVideo = *(LPDWORD)(&EEPROM.VideoStandard[0]);
-      char temp[1024];
-      CIoSupport::GetXbePath(temp);
-      char temp2[1024];
-      char temp3;
-      temp3 = temp[0];
-      CIoSupport::GetPartition(temp3,temp2);
-      CStdString strTemp(temp+2);
-      int iLastSlash = strTemp.rfind('\\');
-      strcat(temp2,strTemp.substr(0,iLastSlash).c_str());
-
-      if ((DWVideo == XKEEPROM::VIDEO_STANDARD::NTSC_M) && ((XGetVideoStandard() == XC_VIDEO_STANDARD_PAL_I) || (XGetVideoStandard() == XC_VIDEO_STANDARD_NTSC_J) || initialResolution > 5))
-      {
-        CLog::Log(LOGINFO, "Rebooting to change resolution from %s back to NTSC_M", (XGetVideoStandard() == XC_VIDEO_STANDARD_PAL_I) ? "PAL" : "NTSC_J");
-        ForceVideo = VIDEO_NTSCM;
-        ForceCountry = COUNTRY_USA;
-        bNeedReboot = true;
-        fDoPatchTest = true;
-      }
-      else if ((DWVideo == XKEEPROM::VIDEO_STANDARD::PAL_I) && ((XGetVideoStandard() == XC_VIDEO_STANDARD_NTSC_M) || (XGetVideoStandard() == XC_VIDEO_STANDARD_NTSC_J) || initialResolution < 6))
-      {
-        CLog::Log(LOGINFO, "Rebooting to change resolution from %s back to PAL_I", (XGetVideoStandard() == XC_VIDEO_STANDARD_NTSC_M) ? "NTSC_M" : "NTSC_J");
-        ForceVideo = VIDEO_PAL50;
-        ForceCountry = COUNTRY_EUR;
-        bNeedReboot = true;
-        fDoPatchTest = true;
-      }
-      else if ((DWVideo == XKEEPROM::VIDEO_STANDARD::NTSC_J) && ((XGetVideoStandard() == XC_VIDEO_STANDARD_NTSC_M) || (XGetVideoStandard() == XC_VIDEO_STANDARD_PAL_I) || initialResolution > 5))
-      {
-        CLog::Log(LOGINFO, "Rebooting to change resolution from %s back to NTSC_J", (XGetVideoStandard() == XC_VIDEO_STANDARD_PAL_I) ? "PAL" : "NTSC_M");
-        ForceVideo = VIDEO_NTSCJ;
-        ForceCountry = COUNTRY_JAP;
-        bNeedReboot = true;
-        fDoPatchTest = true;
-      }
-      else
-        CUtil::RemoveKernelPatch(); // This removes the Resolution patch from the kernel if it is not needed (if actual resolution matches eeprom setting)
-
-      if (fDoPatchTest) // Is set if we have to test whether our patch is in the kernel & therefore responsible for the mismatch of resolution & eeprom setting
-      {
-        if (!CUtil::LookForKernelPatch()) // If our patch is not present we are not responsible for the mismatch of current resolution & eeprom setting
-        {
-          // We do a hard reset to come back to default resolution and avoid infinite reboots
-          CLog::Log(LOGINFO, "No infinite reboot loop...");
-          m_applicationMessenger.Reset();
-        }
-      }
-    }
-  }
-
-  if (bNeedReboot)
-  {
-    Destroy();
-    CUtil::LaunchXbe(temp2,("D:\\"+strTemp.substr(iLastSlash+1)).c_str(),NULL,ForceVideo,ForceCountry);
-  }
 #endif
 
   CStdString strHomePath = "Q:";
@@ -1407,47 +1212,6 @@ HRESULT CApplication::Create(HWND hWnd)
   g_graphicsContext.SetD3DParameters(&m_d3dpp);
 #endif
   g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE);
-
-  // TODO LINUX SDL - Check that the resolution is ok
-#ifndef HAS_SDL
-  if ( FAILED( hr = m_pD3D->CreateDevice(0, D3DDEVTYPE_HAL, NULL,
-                                         D3DCREATE_MULTITHREADED | D3DCREATE_HARDWARE_VERTEXPROCESSING,
-                                         &m_d3dpp, &m_pd3dDevice ) ) )
-  {
-    // try software vertex processing
-    if ( FAILED( hr = m_pD3D->CreateDevice(0, D3DDEVTYPE_HAL, NULL,
-                                          D3DCREATE_MULTITHREADED | D3DCREATE_SOFTWARE_VERTEXPROCESSING,
-                                          &m_d3dpp, &m_pd3dDevice ) ) )
-    {
-      // and slow as arse reference processing
-      if ( FAILED( hr = m_pD3D->CreateDevice(0, D3DDEVTYPE_REF, NULL,
-                                            D3DCREATE_MULTITHREADED | D3DCREATE_SOFTWARE_VERTEXPROCESSING,
-                                            &m_d3dpp, &m_pd3dDevice ) ) )
-      {
-
-        CLog::Log(LOGFATAL, "XBAppEx: Could not create D3D device!" );
-        CLog::Log(LOGFATAL, " width/height:(%ix%i)" , m_d3dpp.BackBufferWidth, m_d3dpp.BackBufferHeight);
-        CLog::Log(LOGFATAL, " refreshrate:%i" , m_d3dpp.FullScreen_RefreshRateInHz);
-        if (m_d3dpp.Flags & D3DPRESENTFLAG_WIDESCREEN)
-          CLog::Log(LOGFATAL, " 16:9 widescreen");
-        else
-          CLog::Log(LOGFATAL, " 4:3");
-
-        if (m_d3dpp.Flags & D3DPRESENTFLAG_INTERLACED)
-          CLog::Log(LOGFATAL, " interlaced");
-        if (m_d3dpp.Flags & D3DPRESENTFLAG_PROGRESSIVE)
-          CLog::Log(LOGFATAL, " progressive");
-        return hr;
-      }
-    }
-  }
-  g_graphicsContext.SetD3DDevice(m_pd3dDevice);
-  g_graphicsContext.CaptureStateBlock();
-  // set filters
-  g_graphicsContext.Get3DDevice()->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTEXF_LINEAR /*g_stSettings.m_minFilter*/ );
-  g_graphicsContext.Get3DDevice()->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTEXF_LINEAR /*g_stSettings.m_maxFilter*/ );
-  CUtil::InitGamma();
-#endif
 
   // set GUI res and force the clear of the screen
   g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE, true);
@@ -1741,7 +1505,7 @@ CProfile* CApplication::InitDirectoriesOSX()
     {
       // Read the sample.
       CLog::Log(LOGINFO, "Creating sample sources.xml file.");
-      string strSources = XBMCHelper::ReadFile(sampleSourcesFile.c_str());
+      string strSources = PlexHelperApp::ReadFile(sampleSourcesFile.c_str());
 
       // Replace with real home directory.
       CStdString strHome = getenv("HOME");
@@ -1749,7 +1513,7 @@ CProfile* CApplication::InitDirectoriesOSX()
         strSources.replace(start, 7, strHome.c_str(), strHome.length());
 
       // Write the sample.
-      XBMCHelper::WriteFile(sourcesFile.c_str(), strSources);
+      PlexHelperApp::WriteFile(sourcesFile.c_str(), strSources);
     }
   }
 
@@ -4650,8 +4414,11 @@ void CApplication::Stop()
     UnloadSkin();
 
 #ifdef __APPLE__
-    if (g_xbmcHelper.IsAlwaysOn() == false)
-      g_xbmcHelper.Stop();
+    // Stop helpers.
+    if (PlexRemoteHelper::Get().IsAlwaysOn() == false)
+      PlexRemoteHelper::Get().Stop();
+    if (PlexMediaServerHelper::Get().IsAlwaysOn() == false)
+      PlexMediaServerHelper::Get().Stop();
     
     Cocoa_GL_UnblankOtherDisplays(Cocoa_GetCurrentDisplay());
 #endif
