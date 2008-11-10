@@ -29,6 +29,7 @@ static int GetBSDProcessList(kinfo_proc **procList, size_t *procCount);
 PlexHelperApp::PlexHelperApp()
   : m_errorStarting(false)
   , m_alwaysOn(false)
+  , m_mode(MODE_DISABLED)
 {
 }
 
@@ -275,7 +276,7 @@ void PlexHelperApp::WriteFile(const string& fileName, const std::string& data)
   ofstream out(fileName.c_str());
   if (!out)
   {
-    CLog::Log(LOGERROR, "PlexHelper: Unable to open file '%s'", fileName);
+    CLog::Log(LOGERROR, "PlexHelper: Unable to open file '%s'", fileName.c_str());
   }
   else
   {
