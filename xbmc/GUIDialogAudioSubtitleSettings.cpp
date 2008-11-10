@@ -78,16 +78,6 @@ void CGUIDialogAudioSubtitleSettings::CreateSettings()
   OnSettingChanged(m_settings.size()-1);
   AddAudioStreams(AUDIO_SETTINGS_STREAM);
 
-  // only show stuff available in digital mode if we have digital output
-  if(g_audioConfig.HasDigitalOutput())
-  {
-    AddBool(AUDIO_SETTINGS_OUTPUT_TO_ALL_SPEAKERS, 252, &g_stSettings.m_currentVideoSettings.m_OutputToAllSpeakers, g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL);
-
-    int settings[2] = { 338, 339 }; //ANALOG, DIGITAL
-    m_outputmode = g_guiSettings.GetInt("audiooutput.mode");
-    AddSpin(AUDIO_SETTINGS_DIGITAL_ANALOG, 337, &m_outputmode, 2, settings);
-  }
-
   AddSeparator(7);
   m_subtitleVisible = g_application.m_pPlayer->GetSubtitleVisible();
   AddBool(SUBTITLE_SETTINGS_ENABLE, 13397, &m_subtitleVisible);
