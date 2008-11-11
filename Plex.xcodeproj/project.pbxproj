@@ -7799,6 +7799,7 @@
 				);
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
+					"-headerpad_max_install_names",
 					"-framework",
 					Foundation,
 					"-framework",
