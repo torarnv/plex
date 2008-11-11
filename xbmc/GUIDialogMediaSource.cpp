@@ -108,7 +108,7 @@ bool CGUIDialogMediaSource::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       m_confirmed = false;
-      m_bRunScan = false;
+      m_bRunScan = true;
       m_settings.parent_name = false;
       m_settings.recurse = 0;
       UpdateButtons();

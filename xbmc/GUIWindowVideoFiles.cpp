@@ -497,7 +497,7 @@ void CGUIWindowVideoFiles::OnAssignContent(int iItem, int iFound, SScraperInfo& 
     return;
 
   CFileItemPtr item = m_vecItems->Get(iItem);
-  bool bScan=false;
+  bool bScan=true;
   if (iFound == 0)
   {
     m_database.GetScraperForPath(item->m_strPath,info, settings,iFound);
