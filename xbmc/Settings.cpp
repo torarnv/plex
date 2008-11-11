@@ -155,7 +155,7 @@ CSettings::CSettings(void)
   g_advancedSettings.m_videoSmallStepBackDelay = 300;
   g_advancedSettings.m_videoUseTimeSeeking = true;
   g_advancedSettings.m_videoTimeSeekForward = 30;
-  g_advancedSettings.m_videoTimeSeekBackward = -30;
+  g_advancedSettings.m_videoTimeSeekBackward = -15;
   g_advancedSettings.m_videoTimeSeekForwardBig = 600;
   g_advancedSettings.m_videoTimeSeekBackwardBig = -600;
   g_advancedSettings.m_videoPercentSeekForward = 2;

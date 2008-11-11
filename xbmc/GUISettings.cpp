@@ -706,7 +706,7 @@ CGUISettings::CGUISettings(void)
 
 
 //  AddCategory(7, "filelists", 14018);
-  AddBool(1, "filelists.hideparentdiritems", 13306, false);
+  AddBool(1, "filelists.hideparentdiritems", 13306, true);
   AddBool(2, "filelists.hideextensions", 497, false);
   AddBool(3, "filelists.ignorethewhensorting", 13399, true);
   AddBool(0, "filelists.unrollarchives",516, true);
