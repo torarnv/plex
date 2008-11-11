@@ -277,7 +277,7 @@ CGUISettings::CGUISettings(void)
 
   AddCategory(3,"musiclibrary",14022);
   AddBool(0, "musiclibrary.enabled", 418, true);
-  AddBool(2, "musiclibrary.albumartistsonly", 13414, false);
+  AddBool(0, "musiclibrary.albumartistsonly", 13414, false);
   AddSeparator(3,"musiclibrary.sep1");
   AddBool(4,"musiclibrary.autoalbuminfo", 20192, false);
   AddBool(5,"musiclibrary.autoartistinfo", 20193, false);
