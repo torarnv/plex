@@ -30,11 +30,9 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
     _o_sharedMainInstance = [super init];
   
   // Default values
-  isEnabled = NO;
   isThemeMusicEnabled = NO;
   isThemeDownloadingEnabled = NO;
   isPlaying = NO;
-  isAvailable = NO;
   volumeFadeLevel = 100;
   targetVolumeFade = 100;
   fadeIncrement = 5;
@@ -50,56 +48,27 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
     NSString* backgroundMusicPath = [[paths objectAtIndex:0] stringByAppendingPathComponent:BACKGROUND_MUSIC_APP_SUPPORT_SUBDIR];
     mainMusicPath = [backgroundMusicPath stringByAppendingPathComponent:@"Main"];
     themeMusicPath = [backgroundMusicPath stringByAppendingPathComponent:@"Themes"];
-    
-    // Check whether the main music directory is available
-    BOOL isDir = NO;
-    if ([[NSFileManager defaultManager] fileExistsAtPath:mainMusicPath isDirectory:&isDir] && isDir)
-    {
-      // Seed random number generator & set availability
-      srandom(time(NULL));
-      isAvailable = YES;
-    }
   }
+  
+  // Load available music into the array
+  mainMusicNames = [[[NSFileManager defaultManager] enumeratorAtPath:mainMusicPath] allObjects];
   
   // Create a dictionary to store theme music requests
   themeMusicRequests = [[NSMutableDictionary alloc] init];
   
+  // Register for notification when tracks finish playing
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(trackDidEnd:) name:QTMovieDidEndNotification object:mainMusic];
+  
+  // Load a random file
+  [self loadNextTrack];
+  
   return _o_sharedMainInstance;
 }
 
-- (BOOL)enabled { return isEnabled; }
-- (void)setEnabled:(BOOL)enabled
+- (void)dealloc
 {
-  if (isAvailable)
-  {
-    if (enabled != isEnabled)
-    {
-      isEnabled = enabled;
-      
-      // If enabling, load a track ready for playback. Otherwise, release the unused QTMovie.
-      if (enabled)
-      {
-        // Register for notification when tracks finish playing
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(trackDidEnd:) name:QTMovieDidEndNotification object:mainMusic];
-        
-        // Load available music into the array
-        mainMusicNames = [[[NSFileManager defaultManager] enumeratorAtPath:mainMusicPath] allObjects];
-        
-        // Load a random file
-        [self loadNextTrack];
-      }
-      else if (mainMusic != nil)
-      {
-        // Remove from the list of observers
-        [[NSNotificationCenter defaultCenter] removeObserver:self];
-        
-        // Release objects so memory isn't used when music is disabled
-        [mainMusic release];
-        mainMusic = nil; // Must be set to nil or Plex crashes when disabling then enabling again
-        [mainMusicNames release];
-      }
-    }
-  }
+  [themeMusicRequests release];
+  [super dealloc];
 }
 
 - (BOOL)themeMusicEnabled { return isThemeMusicEnabled; }
@@ -110,8 +79,7 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
 
 - (void)checkForThemeWithId:(NSString*)tvShowId
 {
-#ifdef BACKGROUND_MUSIC_THEME_DOWNLOADS_ENABLED
-  if (isEnabled && isThemeMusicEnabled && isThemeDownloadingEnabled)
+  if (isThemeMusicEnabled && isThemeDownloadingEnabled)
   {
     // If there's already a theme file, return
     NSString *localFile = [themeMusicPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.mp3", tvShowId]];
@@ -132,23 +100,19 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
     [themeMusicRequests setObject:[NSDate date] forKey:tvShowId];
     Cocoa_DownloadFile([remoteFile UTF8String], [localFile UTF8String]);
   }
-#endif
 }
 
 - (BOOL)isPlaying { return isPlaying; }
 
 - (void)startMusic
 {
-  if ((!isPlaying) && isAvailable) {
-    if (isEnabled)
+  if (!isPlaying) {
+    if (currentId == nil)
+      [mainMusic play];
+    else
     {
-      if (currentId == nil)
-        [mainMusic play];
-      else
-      {
-        [themeMusic gotoBeginning]; // Make sure theme music always starts at the beginning when returning from video playback
-        [themeMusic play];
-      }
+      [themeMusic gotoBeginning]; // Make sure theme music always starts at the beginning when returning from video playback
+      [themeMusic play];
     }
     isPlaying = YES;
   }
@@ -156,21 +120,18 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
 
 - (void)stopMusic
 {
-  if ((isPlaying) && isAvailable) {
-    if (isEnabled) 
-    {
-      if (currentId == nil)
-        [mainMusic stop];
-      else
-        [themeMusic stop];
-    }
+  if (isPlaying) {
+    if (currentId == nil)
+      [mainMusic stop];
+    else
+      [themeMusic stop];
     isPlaying = NO;
   }
 }
 
 - (void)loadNextTrack
 {
-  if (isEnabled && isAvailable && ([mainMusicNames count] > 0)) {
+  if ([mainMusicNames count] > 0) {
     // Load a random track from the mainMusicNames array
     if (mainMusic != nil) [mainMusic release];
     int index = (random() % [mainMusicNames count]);
@@ -202,7 +163,7 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
 - (void)setThemeMusicId:(NSString*)newId;
 {
   // If we should play music & the theme given is different to the current one...
-  if (isEnabled && isAvailable && isThemeMusicEnabled)
+  if (isThemeMusicEnabled)
   {
     // If the theme is nil, restart the background music
     if (newId == nil)
@@ -251,20 +212,14 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
 
 - (void)setVolume:(float)newVolume
 {
-  if (isAvailable)
-  {
-    volume = newVolume;
-    [self updateMusicVolume];
-  }
+  volume = newVolume;
+  [self updateMusicVolume];
 }
 
 - (void)setGlobalVolumeAsPercent:(int)newGlobalVolumeAsPercent
 {
-  if (isAvailable)
-  {
-    globalVolumeAsPercent = newGlobalVolumeAsPercent;
-    [self updateMusicVolume]; 
-  }
+  globalVolumeAsPercent = newGlobalVolumeAsPercent;
+  [self updateMusicVolume]; 
 }
 
 - (void)fadeToTheme:(BOOL)toTheme
@@ -285,9 +240,9 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
     [NSTimer scheduledTimerWithTimeInterval:0.01 target:self selector:@selector(adjustVolumeFadeLevel) userInfo:nil repeats:NO];
   
   // Stop the silenced track (release if theme music)
-  if ((volumeFadeLevel == 0) && isPlaying && isEnabled && isAvailable)
+  if ((volumeFadeLevel == 0) && isPlaying)
     if (mainMusic != nil) [mainMusic stop];
-  if ((volumeFadeLevel == 100) && isPlaying && isEnabled && isAvailable)
+  if ((volumeFadeLevel == 100) && isPlaying)
     if (themeMusic != nil)
     {
       [themeMusic stop];

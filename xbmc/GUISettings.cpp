@@ -494,9 +494,9 @@ CGUISettings::CGUISettings(void)
   AddString(7, "audiooutput.passthroughdevice", 546, "iec958", BUTTON_CONTROL_INPUT);
 #endif
 
-	AddBool(8, "audiooutput.bgmusicenabled", 18101, true);
-	AddBool(9, "audiooutput.themedownloadsenabled", 18104, true);
-	AddInt(10, "audiooutput.bgmusicvolume", 18102, 50, 5, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+  AddInt(8, "audiooutput.bgmusicvolume", 18101, 50, 5, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+	AddBool(9, "audiooutput.thememusicenabled", 18102, true);
+	AddBool(10, "audiooutput.themedownloadsenabled", 18103, true);
 	
 #ifndef __APPLE__
   AddCategory(4, "videooutput", 21373);

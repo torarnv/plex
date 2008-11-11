@@ -1442,15 +1442,10 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       //                       we have no previos reference LED COLOUR, to set the LED colour back
       pControl->SetEnabled(g_guiSettings.GetInt("system.ledcolour") != LED_COLOUR_NO_CHANGE && g_guiSettings.GetInt("system.ledcolour") != LED_COLOUR_OFF);
     }
-    else if ((strSetting.Equals("backgroundmusic.themesenabled")) || (strSetting.Equals("backgroundmusic.volume")))
-    {
-      CGUIControl* pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->SetEnabled(g_guiSettings.GetBool("backgroundmusic.enabled"));
-    }
-    else if (strSetting.Equals("backgroundmusic.themedownloadsenabled"))
+    else if (strSetting.Equals("audiooutput.themedownloadsenabled"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->SetEnabled(g_guiSettings.GetBool("backgroundmusic.enabled") && g_guiSettings.GetBool("backgroundmusic.themesenabled"));
+      pControl->SetEnabled(g_guiSettings.GetBool("audiooutput.thememusicenabled"));
     }
     else if (strSetting.Equals("musicfiles.trackformat"))
     {
@@ -2636,21 +2631,17 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     g_fontManager.ReloadTTFFonts();
   }
 #ifdef __APPLE__
-  else if (strSetting.Equals("backgroundmusic.enabled"))
+  else if (strSetting.Equals("audiooutput.thememusicenabled"))
   {
-    Cocoa_SetBackgroundMusicEnabled(g_guiSettings.GetBool("backgroundmusic.enabled"));
+    Cocoa_SetBackgroundMusicThemesEnabled(g_guiSettings.GetBool("audiooutput.thememusicenabled"));
   }
-  else if (strSetting.Equals("backgroundmusic.themesenabled"))
+  else if (strSetting.Equals("audiooutput.themedownloadsenabled"))
   {
-    Cocoa_SetBackgroundMusicThemesEnabled(g_guiSettings.GetBool("backgroundmusic.themesenabled"));
+    Cocoa_SetBackgroundMusicThemeDownloadsEnabled(g_guiSettings.GetBool("audiooutput.themedownloadsenabled"));
   }
-  else if (strSetting.Equals("backgroundmusic.themedownloadsenabled"))
+  else if (strSetting.Equals("audiooutput.bgmusicvolume"))
   {
-    Cocoa_SetBackgroundMusicThemeDownloadsEnabled(g_guiSettings.GetBool("backgroundmusic.themedownloadsenabled"));
-  }
-  else if (strSetting.Equals("backgroundmusic.volume"))
-  {
-    int i = g_guiSettings.GetInt("backgroundmusic.volume");
+    int i = g_guiSettings.GetInt("audiooutput.bgmusicvolume");
     Cocoa_SetBackgroundMusicVolume((float)(i/100.0f));
   }
    else if (strSetting.Equals("softwareupdate.checknow"))

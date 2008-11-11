@@ -10,8 +10,6 @@
 
 
 @interface BackgroundMusicPlayer : NSObject {
-  BOOL isAvailable;
-  BOOL isEnabled;
   BOOL isThemeMusicEnabled;
   BOOL isThemeDownloadingEnabled;
   BOOL isPlaying;
@@ -35,8 +33,6 @@
 
 + (BackgroundMusicPlayer *)sharedInstance;
 
-- (BOOL)enabled;
-- (void)setEnabled:(BOOL)enabled;
 - (BOOL)themeMusicEnabled;
 - (void)setThemeMusicEnabled:(BOOL)enabled;
 - (void)setThemeDownloadsEnabled:(BOOL)enabled;
