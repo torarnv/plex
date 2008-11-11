@@ -104,7 +104,10 @@ protected:
     {
       assert(m_texture == NULL);
 #ifdef HAS_SDL_OPENGL
-      m_texture = new CGLTexture(texture, false, true);
+      if (texture)
+        m_texture = new CGLTexture(texture, false, true);
+      else
+        m_texture = NULL; // failed to load the image
 #else
       m_texture = texture;
 #endif
