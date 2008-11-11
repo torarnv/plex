@@ -47,10 +47,7 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   
   // See if it's cached.
   if (g_directoryCache.GetDirectory(strRoot, items))
-  {
-    items.AddSortMethod(SORT_METHOD_NONE, 552, LABEL_MASKS());
     return true;
-  }
 
   strRoot.Replace(" ", "%20");
 
@@ -108,8 +105,11 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   }
 
   // Walk the parsed tree.
-  Parse(m_url, root, items);
-  items.AddSortMethod(SORT_METHOD_NONE, 552, LABEL_MASKS());
+  string strFileLabel = "%N - %T"; 
+  string strDirLabel = "%B";
+  
+  Parse(m_url, root, items, strFileLabel, strDirLabel);
+  items.AddSortMethod(SORT_METHOD_NONE, 552, LABEL_MASKS(strFileLabel, "%D", strDirLabel, "%Y"));
 
   CFileItemList vecCacheItems;
   g_directoryCache.ClearDirectory(strRoot);
@@ -131,7 +131,7 @@ class PlexMediaNode
  public:
    static PlexMediaNode* Create(const string& name);
    
-   CFileItemPtr BuildFileItem(const CURL& url, TiXmlElement& el)
+   CFileItemPtr BuildFileItem(const CURL& url, TiXmlElement& el, string& strFileLabel, string& strDirLabel)
    {
      CFileItemPtr pItem(new CFileItem());
      pItem->m_bIsFolder = true;
@@ -152,6 +152,18 @@ class PlexMediaNode
    }
    
    virtual void DoBuildFileItem(CFileItemPtr& pItem, TiXmlElement& el) = 0;
+   virtual void ComputeLabels(const string& strPath, string& strFileLabel, string& strDirLabel)
+   {
+     strFileLabel = "%N - %T";
+     strDirLabel = "%B";
+     
+     if (strPath.find("/Albums") != -1)
+       strDirLabel = "%B - %A";
+     else if (strPath.find("/Recently%20Played/By%20Artist") != -1)
+       strDirLabel = "%B";
+     else if (strPath.find("/Decades/") != -1 || strPath.find("/Recently%20Added") != -1 || strPath.find("/Recently%20Played/") != -1 || strPath.find("/Genre/") != -1)
+       strDirLabel = "%A - %B";
+   }
 };
 
 class PlexMediaDirectory : public PlexMediaNode
@@ -202,8 +214,6 @@ class PlexMediaAlbum : public PlexMediaNode
     
     CFileItemPtr newItem(new CFileItem(pItem->m_strPath, album));
     pItem = newItem;
-    
-    pItem->SetLabel(album.strLabel);
   }
 };
 
@@ -260,12 +270,7 @@ class PlexMediaTrack : public PlexMediaNode
     pItem->m_bIsFolder = false;
     
     CSong song;
-    
-    if (pItem->m_strPath.Find("/Artists/") != -1)
-      song.strTitle = (el.Attribute("track"));
-    else
-      song.strTitle = (el.Attribute("artist") + string(" - ") + el.Attribute("track"));
-
+    song.strTitle = (el.Attribute("track"));
     song.strArtist = el.Attribute("artist");
     song.strAlbum = el.Attribute("album");
     song.iDuration = boost::lexical_cast<int>(el.Attribute("totalTime"))/1000;
@@ -292,6 +297,26 @@ class PlexMediaTrack : public PlexMediaNode
     url2.SetPort(32400);
     url2.GetURL(pItem->m_strPath);
   }
+  
+  virtual void ComputeLabels(const string& strPath, string& strFileLabel, string& strDirLabel)
+  {
+    strDirLabel = "%B";
+    
+    if (strPath.find("/Artists/") != -1 || strPath.find("/Genre/") != -1 || strPath.find("/Albums/") != -1 || 
+        strPath.find("/Recently%20Played/By%20Album/") != -1 || strPath.find("Recently%20Played/By%20Artist") != -1 ||
+        strPath.find("/Recently%20Added/") != -1)
+      strFileLabel = "%N - %T";
+    else if (strPath.find("/Compilations/") != -1)
+      strFileLabel = "%N - %A - %T";
+    else if (strPath.find("/Tracks/") != -1)
+      strFileLabel = "%T - %A";
+    else if (strPath.find("/Podcasts/") != -1)
+      strFileLabel = "%T";
+    else
+      strFileLabel = "%A - %T";
+  }
+  
+ private:
 };
 
 class PlexMediaRoll : public PlexMediaNode
@@ -377,15 +402,22 @@ PlexMediaNode* PlexMediaNode::Create(const string& name)
 }
   
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-bool CPlexDirectory::Parse(const CURL& url, TiXmlElement* root, CFileItemList &items)
+void CPlexDirectory::Parse(const CURL& url, TiXmlElement* root, CFileItemList &items, string& strFileLabel, string& strDirLabel)
 {
+  PlexMediaNode* mediaNode = 0;
+  
   for (TiXmlElement* element = root->FirstChildElement(); element; element=element->NextSiblingElement())
   {
-    PlexMediaNode* mediaNode = PlexMediaNode::Create(element->Value());
-    items.Add(mediaNode->BuildFileItem(url, *element));
+    mediaNode = PlexMediaNode::Create(element->Value());
+    items.Add(mediaNode->BuildFileItem(url, *element, strFileLabel, strDirLabel));
   }
   
-  return true;
+  if (mediaNode != 0)
+  {
+    CStdString strURL;
+    url.GetURL(strURL);
+    mediaNode->ComputeLabels(strURL, strFileLabel, strDirLabel);
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

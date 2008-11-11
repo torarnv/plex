@@ -6,11 +6,14 @@
  *  Created on: Oct 4, 2008
  *      Author: Elan Feingold
  */
+#include <string>
+
 #include "IDirectory.h"
 #include "Thread.h"
 
 class CURL;
 class TiXmlElement;
+using namespace std;
 
 namespace DIRECTORY
 {
@@ -29,7 +32,7 @@ class CPlexDirectory : public IDirectory,
   virtual void OnExit();
   virtual void StopThread();
    
-  bool Parse(const CURL& url, TiXmlElement* root, CFileItemList &items);
+  void Parse(const CURL& url, TiXmlElement* root, CFileItemList &items, string& strFileLabel, string& strDirLabel);
   
   CEvent     m_downloadEvent;
   bool       m_bStop;
