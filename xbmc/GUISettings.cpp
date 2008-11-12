@@ -361,8 +361,6 @@ CGUISettings::CGUISettings(void)
   AddInt(12, "system.targettemperature", 13299, 55, 40, 1, 68, SPIN_CONTROL_TEXT);
   AddInt(13, "system.minfanspeed", 13411, 1, 1, 1, 50, SPIN_CONTROL_TEXT);
 #endif
-  AddBool(5, "system.enablerssfeeds",13305,  true);
-  AddBool(0, "system.rssfeedsrtl",13412,  false);
   AddString(1, "system.country", 20026, "USA", SPIN_CONTROL_TEXT);
   AddString(2, "system.language",248,"english", SPIN_CONTROL_TEXT);
   AddString(3, "system.charset",735,"DEFAULT", SPIN_CONTROL_TEXT); // charset is set by the language file
@@ -718,6 +716,9 @@ CGUISettings::CGUISettings(void)
   AddBool(0, "filelists.showhidden", 21330, false);
   AddBool(4, "filelists.cleanfilenames", 20418, false);
 
+	AddCategory(7,"rss", 40104);
+	AddBool(1, "rss.enablerssfeeds",13305,  true);
+	AddBool(2, "rss.rssfeedsrtl",13412,  false);
 
   AddCategory(7, "screensaver", 360);
   AddString(1, "screensaver.mode", 356, "Dim", SPIN_CONTROL_TEXT);
@@ -1059,7 +1060,7 @@ std::map<CStdString, CSetting*>::const_iterator CGUISettings::FindSetting(CStdSt
 {
   /* The following section is for backwards compatibility with older skin names. */
   if (strSetting == "lookandfeel.enablerssfeeds")
-    strSetting = "system.enablerssfeeds";
+    strSetting = "rss.enablerssfeeds";
 /*
   else if (strSetting == "another.setting")
     strSetting = "system.setting";

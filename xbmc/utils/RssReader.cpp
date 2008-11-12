@@ -74,7 +74,7 @@ void CRssReader::Create(IRssObserver* aObserver, const vector<string>& aUrls, co
   m_strColors.resize(aUrls.size());
   // set update times
   m_vecUpdateTimes = times;
-  m_rtlText = g_guiSettings.GetBool("system.rssfeedsrtl");
+  m_rtlText = g_guiSettings.GetBool("rss.rssfeedsrtl");
   m_requestRefresh = false;
 
   // update each feed on creation
