@@ -451,7 +451,18 @@ CGUISettings::CGUISettings(void)
   AddBool(5, "autorun.video", 244, true);
   AddBool(6, "autorun.music", 245, true);
   AddBool(7, "autorun.pictures", 246, true);
-
+	
+	AddCategory(4, "screensaver", 360);
+	AddString(1, "screensaver.mode", 356, "Dim", SPIN_CONTROL_TEXT);
+	AddString(2, "screensaver.preview", 1000, "", BUTTON_CONTROL_STANDARD);
+	AddInt(3, "screensaver.time", 355, 3, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
+	AddBool(4, "screensaver.usemusicvisinstead", 13392, true);
+	AddBool(0, "screensaver.uselock",20140,false);
+	AddSeparator(6, "screensaver.sep1");
+	AddInt(0, "screensaver.dimlevel", 362, 20, 0, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+	AddString(8, "screensaver.slideshowpath", 774, "F:\\Pictures\\", BUTTON_CONTROL_PATH_INPUT, false, 657);
+	AddBool(9, "screensaver.slideshowshuffle", 13319, false);
+	
 #ifdef HAS_XBOX_HARDWARE
   AddCategory(4, "harddisk", 440);
   AddInt(1, "harddisk.spindowntime", 229, 0, 0, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF); // Minutes
@@ -723,16 +734,6 @@ CGUISettings::CGUISettings(void)
 	AddBool(1, "rss.enablerssfeeds",13305,  true);
 	AddBool(2, "rss.rssfeedsrtl",13412,  false);
 
-  AddCategory(7, "screensaver", 360);
-  AddString(1, "screensaver.mode", 356, "Dim", SPIN_CONTROL_TEXT);
-  AddString(2, "screensaver.preview", 1000, "", BUTTON_CONTROL_STANDARD);
-  AddInt(3, "screensaver.time", 355, 3, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
-  AddBool(4, "screensaver.usemusicvisinstead", 13392, true);
-  AddBool(0, "screensaver.uselock",20140,false);
-  AddSeparator(6, "screensaver.sep1");
-  AddInt(0, "screensaver.dimlevel", 362, 20, 0, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
-  AddString(8, "screensaver.slideshowpath", 774, "F:\\Pictures\\", BUTTON_CONTROL_PATH_INPUT, false, 657);
-  AddBool(9, "screensaver.slideshowshuffle", 13319, false);
 
   AddString(0,"system.playlistspath",20006,"set default",BUTTON_CONTROL_PATH_INPUT,false);
 }
