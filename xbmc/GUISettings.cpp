@@ -361,7 +361,6 @@ CGUISettings::CGUISettings(void)
   AddInt(12, "system.targettemperature", 13299, 55, 40, 1, 68, SPIN_CONTROL_TEXT);
   AddInt(13, "system.minfanspeed", 13411, 1, 1, 1, 50, SPIN_CONTROL_TEXT);
 #endif
-	AddInt(6, "system.shutdowntime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
 
 
 //	AddCategory(4, "locale", 20026);
@@ -388,7 +387,6 @@ CGUISettings::CGUISettings(void)
 	AddInt(1, "videoscreen.resolution",169,(int)AUTORES, (int)HDTV_1080i, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
 	AddString(2, "videoscreen.testresolution",13109,"", BUTTON_CONTROL_STANDARD);
 #ifdef __APPLE__
-	AddInt(6, "videoscreen.displaysleeptime", 17500, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
 	// add panel brightness setting if supported by the display
 	float panelBrightnessLevel = -1.0f;
 	Cocoa_GetPanelBrightness(&panelBrightnessLevel);
@@ -463,6 +461,10 @@ CGUISettings::CGUISettings(void)
 	AddString(8, "screensaver.slideshowpath", 774, "F:\\Pictures\\", BUTTON_CONTROL_PATH_INPUT, false, 657);
 	AddBool(9, "screensaver.slideshowshuffle", 13319, false);
 	
+	AddCategory(4, "energy", 40105);
+	AddInt(6, "energy.displaysleeptime", 17500, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
+	AddInt(6, "energy.shutdowntime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
+
 #ifdef HAS_XBOX_HARDWARE
   AddCategory(4, "harddisk", 440);
   AddInt(1, "harddisk.spindowntime", 229, 0, 0, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF); // Minutes

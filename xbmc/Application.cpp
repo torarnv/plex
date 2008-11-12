@@ -5428,7 +5428,7 @@ void CApplication::CheckShutdown()
   }
   else
   {
-    if ( (long)(timeGetTime() - m_dwSaverTick) >= (long)(g_guiSettings.GetInt("system.shutdowntime")*60*1000L) )
+    if ( (long)(timeGetTime() - m_dwSaverTick) >= (long)(g_guiSettings.GetInt("energy.shutdowntime")*60*1000L) )
     {
       bool bShutDown = false;
       if (m_pPlayer && m_pPlayer->IsPlaying()) // if we're playing something don't shutdown
@@ -5510,7 +5510,7 @@ void CApplication::CheckDisplaySleep()
   }
   else
   {
-    if ( (long)(timeGetTime() - m_dwSaverTick) >= (long)(g_guiSettings.GetInt("videoscreen.displaysleeptime")*60*1000L) )
+    if ( (long)(timeGetTime() - m_dwSaverTick) >= (long)(g_guiSettings.GetInt("energy.displaysleeptime")*60*1000L) )
     {
       bool bDisplaySleep = false;
       if (m_pPlayer && m_pPlayer->IsPlaying())
@@ -6039,7 +6039,7 @@ void CApplication::ProcessSlow()
    }
 
   // Only activate display sleep if fullscreen mode.
-  if (g_guiSettings.GetInt("videoscreen.displaysleeptime" ) && g_advancedSettings.m_fullScreen)
+  if (g_guiSettings.GetInt("energy.displaysleeptime" ) && g_advancedSettings.m_fullScreen)
   {
     CheckDisplaySleep();
   }
@@ -6047,9 +6047,9 @@ void CApplication::ProcessSlow()
 
   // Check if we need to shutdown (if enabled).
 #ifdef __APPLE__
-  if (g_guiSettings.GetInt("system.shutdowntime") && g_advancedSettings.m_fullScreen)
+  if (g_guiSettings.GetInt("energy.shutdowntime") && g_advancedSettings.m_fullScreen)
 #else
-  if (g_guiSettings.GetInt("system.shutdowntime"))
+  if (g_guiSettings.GetInt("energy.shutdowntime"))
 #endif
   {
     CheckShutdown();
