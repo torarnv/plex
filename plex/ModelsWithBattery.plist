@@ -6,6 +6,7 @@
 	<string>MacBook2,1</string>
 	<string>MacBook3,1</string>
 	<string>MacBook4,1</string>
+	<string>MacBook5,1</string>
 	<string>MacBookAir1,1</string>
 	<string>MacBookPro1,1</string>
 	<string>MacBookPro1,2</string>
@@ -13,5 +14,6 @@
 	<string>MacBookPro2,2</string>
 	<string>MacBookPro3,1</string>
 	<string>MacBookPro4,1</string>
+	<string>MacBookPro5,1</string>
 </array>
 </plist>
