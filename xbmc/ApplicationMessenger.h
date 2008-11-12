@@ -125,8 +125,8 @@ public:
 private:
   void ProcessMessage(ThreadMessage *pMsg);
 
-  std::vector<ThreadMessage*> m_vecMessages;
-  std::vector<ThreadMessage*> m_vecWindowMessages;
+  std::queue<ThreadMessage*> m_vecMessages;
+  std::queue<ThreadMessage*> m_vecWindowMessages;
   CCriticalSection m_critSection;
   CCriticalSection m_critBuffer;
   CStdString bufferResponse;
