@@ -1219,7 +1219,7 @@ HRESULT CApplication::Create(HWND hWnd)
   g_charsetConverter.reset();
 
   // Load the langinfo to have user charset <-> utf-8 conversion
-  CStdString strLanguage = g_guiSettings.GetString("system.language");
+  CStdString strLanguage = g_guiSettings.GetString("region.language");
   strLanguage[0] = toupper(strLanguage[0]);
 
   CStdString strLangInfoPath;
@@ -2466,7 +2466,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
       g_settings.Save();
     }
     else
-      CLog::Log(LOGERROR, "    no ttf font found, but needed for the language %s.", g_guiSettings.GetString("system.language").c_str());
+      CLog::Log(LOGERROR, "    no ttf font found, but needed for the language %s.", g_guiSettings.GetString("region.language").c_str());
   }
   g_colorManager.Load(g_guiSettings.GetString("lookandfeel.skincolors"));
 
@@ -2475,7 +2475,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   // load in the skin strings
   CStdString skinPath, skinEnglishPath;
   CUtil::AddFileToFolder(strSkinPath, "language", skinPath);
-  CUtil::AddFileToFolder(skinPath, g_guiSettings.GetString("system.language"), skinPath);
+  CUtil::AddFileToFolder(skinPath, g_guiSettings.GetString("region.language"), skinPath);
   CUtil::AddFileToFolder(skinPath, "strings.xml", skinPath);
 
   CUtil::AddFileToFolder(strSkinPath, "language", skinEnglishPath);

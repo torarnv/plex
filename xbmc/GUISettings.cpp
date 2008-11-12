@@ -361,9 +361,6 @@ CGUISettings::CGUISettings(void)
   AddInt(12, "system.targettemperature", 13299, 55, 40, 1, 68, SPIN_CONTROL_TEXT);
   AddInt(13, "system.minfanspeed", 13411, 1, 1, 1, 50, SPIN_CONTROL_TEXT);
 #endif
-  AddString(1, "system.country", 20026, "USA", SPIN_CONTROL_TEXT);
-  AddString(2, "system.language",248,"english", SPIN_CONTROL_TEXT);
-  AddString(3, "system.charset",735,"DEFAULT", SPIN_CONTROL_TEXT); // charset is set by the language file
 	AddInt(6, "system.shutdowntime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
 
 
@@ -690,7 +687,13 @@ CGUISettings::CGUISettings(void)
 	
   // appearance settings
   AddGroup(7, 480);
-  AddCategory(7,"lookandfeel", 14037);
+	
+ AddCategory(7,"region", 20026);
+  AddString(1, "region.country", 20026, "USA", SPIN_CONTROL_TEXT);
+  AddString(2, "region.language",248,"english", SPIN_CONTROL_TEXT);
+  AddString(3, "region.charset",735,"DEFAULT", SPIN_CONTROL_TEXT); // charset is set by the language file
+	
+ AddCategory(7,"lookandfeel", 14037);
   AddBool(0,"lookandfeel.soundsduringplayback",21370,false);
   AddString(1, "lookandfeel.skin",166,"MediaStream", SPIN_CONTROL_TEXT);
   AddString(2, "lookandfeel.skintheme",15111,"SKINDEFAULT", SPIN_CONTROL_TEXT);
