@@ -277,14 +277,14 @@
   <string id="352">Dim</string>
   <string id="353">Black</string>
   <string id="354">Matrix Trails</string>
-  <string id="355">Start Screensaver After</string>
-  <string id="356">Screensaver Mode</string>
+  <string id="355">Start Screen Saver After</string>
+  <string id="356">Screen Saver Mode</string>
   <string id="357">Sleep System When Inactive For</string>
   <string id="358">All albums</string>
   <string id="359">Recently Added Albums</string>
-  <string id="360">Screensaver</string>
+  <string id="360">Screen Saver</string>
   <string id="361">R. SlideShow</string>
-  <string id="362">Screensaver Fade Level</string>
+  <string id="362">Screen Saver Fade Level</string>
   <string id="363">Sort by: File</string>
   <string id="364">- Dolby Digital (AC3) Capable Receiver</string>
   <string id="365">Sort by: Name</string>
@@ -664,7 +664,7 @@
 
   <string id="998"></string>
   <string id="999"></string>
-  <string id="1000">Screensaver Preview</string>
+  <string id="1000">Screen Saver Preview</string>
   <string id="1001">Unable to connect</string>
   <string id="1002">Plex was unable to connect to the network location.</string>
   <string id="1003">This could be due to the network not being connected.</string>
@@ -941,7 +941,7 @@
 
   <string id="12600">Weather</string>
 
-  <string id="12900">Screensaver</string>
+  <string id="12900">Screen Saver</string>
   <string id="12901">Fullscreen OSD</string>
 
   <string id="13000">System</string>
@@ -1657,7 +1657,7 @@
   <string id="20137">Memory Unit mounted</string>
   <string id="20138">Unable to mount Memory Unit</string>
   <string id="20139">In port %i, slot %i</string>
-  <string id="20140">Lock Screensaver</string>
+  <string id="20140">Lock Screen Saver</string>
   <string id="20141">Set</string>
   <string id="20142">Username</string>
   <string id="20143">Enter password for</string>
