@@ -3644,7 +3644,7 @@ bool CUtil::IsBuiltIn(const CStdString& execString)
 void CUtil::SplitExecFunction(const CStdString &execString, CStdString &strFunction, CStdString &strParam)
 {
   strParam = "";
-
+  
   int iPos = execString.Find("(");
   int iPos2 = execString.ReverseFind(")");
   if (iPos > 0 && iPos2 > 0)
@@ -3654,10 +3654,12 @@ void CUtil::SplitExecFunction(const CStdString &execString, CStdString &strFunct
   }
   else
     strFunction = execString;
-
-  //xbmc is the standard prefix.. so allways remove this
+  
+  //plex is the standard prefix.. so always remove this
+  //also remove xbmc to retain compatibility
   //all other commands with go through in full
-  if( strFunction.Left(5).Equals("xbmc.", false) )
+  CStdString strPrefix = strFunction.Left(5);
+  if( strPrefix.Equals("plex.", false) || strPrefix.Equals("xbmc.", false) )
     strFunction.Delete(0, 5);
 }
 
