@@ -16,7 +16,7 @@ bool PlexMediaServerHelper::DoConfigure(int& mode, bool& alwaysRunning, bool& er
   bool changed = false;
   
   mode = g_guiSettings.GetInt("plexmediaserver.mode");
-  alwaysRunning = g_guiSettings.GetInt("plexmediaserver.alwayson");
+  alwaysRunning = g_guiSettings.GetBool("plexmediaserver.alwayson");
   
   return changed;
 }

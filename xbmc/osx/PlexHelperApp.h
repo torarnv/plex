@@ -22,7 +22,7 @@ class PlexHelperApp
 
   bool IsAlwaysOn() const { return m_alwaysOn; }
   bool ErrorStarting()    { return m_errorStarting; }
-  bool GetMode() const    { return m_mode; }
+  int  GetMode() const    { return m_mode; }
 
   /// Fill-ins for subclasses.
   virtual string GetHelperBinaryName() = 0;

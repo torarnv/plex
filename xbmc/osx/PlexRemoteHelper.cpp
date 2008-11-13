@@ -24,7 +24,7 @@ bool PlexRemoteHelper::DoConfigure(int& mode, bool& alwaysRunning, bool& errorSt
   int oldMode = mode;
   
   mode = g_guiSettings.GetInt("appleremote.mode");
-  alwaysRunning = g_guiSettings.GetInt("appleremote.alwayson");
+  alwaysRunning = g_guiSettings.GetBool("appleremote.alwayson");
   m_sequenceDelay = g_guiSettings.GetInt("appleremote.sequencetime");
   m_secureInput = g_guiSettings.GetBool("appleremote.secureinput");
 
