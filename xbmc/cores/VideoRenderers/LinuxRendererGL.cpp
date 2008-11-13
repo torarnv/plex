@@ -789,9 +789,9 @@ void CLinuxRendererGL::LoadTextures(int source)
     
     switch (m_scalingMethod)
     {
-    case VS_SCALINGMETHOD_BICUBIC_SOFTWARE: algorithm = SWS_BICUBIC; break;
-    case VS_SCALINGMETHOD_LANCZOS_SOFTWARE: algorithm = SWS_LANCZOS; break;
-    case VS_SCALINGMETHOD_SINC_SOFTWARE:    algorithm = SWS_SINC;    break;
+    case VS_SCALINGMETHOD_BICUBIC_SOFTWARE: algorithm = SWS_BICUBIC; printf("Using BICUBIC\n"); break;
+    case VS_SCALINGMETHOD_LANCZOS_SOFTWARE: algorithm = SWS_LANCZOS; printf("Using LANCZOS\n"); break;
+    case VS_SCALINGMETHOD_SINC_SOFTWARE:    algorithm = SWS_SINC;    printf("Using SINC\n"); break;
     default: break;
     }
     
@@ -1186,6 +1186,8 @@ void CLinuxRendererGL::UpdateVideoFilter()
 {
   if (m_scalingMethod == g_stSettings.m_currentVideoSettings.m_ScalingMethod)
     return;
+  
+  printf("Scaling method changed from %d to %d\n", m_scalingMethod, g_stSettings.m_currentVideoSettings.m_ScalingMethod);
 
   if (m_pVideoFilterShader)
   {
@@ -1199,10 +1201,10 @@ void CLinuxRendererGL::UpdateVideoFilter()
   
   switch (g_stSettings.m_currentVideoSettings.m_ScalingMethod)
   {
-  case VS_SCALINGMETHOD_NEAREST:
-    m_renderQuality = RQ_SINGLEPASS;
-    SetTextureFilter(GL_NEAREST);
-    break;
+//  case VS_SCALINGMETHOD_NEAREST:
+//    m_renderQuality = RQ_SINGLEPASS;
+//    SetTextureFilter(GL_NEAREST);
+//    break;
 
   case VS_SCALINGMETHOD_LINEAR:
     SetTextureFilter(GL_LINEAR);

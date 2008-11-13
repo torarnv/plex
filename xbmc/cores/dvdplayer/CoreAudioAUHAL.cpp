@@ -800,7 +800,7 @@ OSStatus CoreAudioAUHAL::RenderCallbackAnalog(struct CoreAudioDeviceParameters *
 	if (underrunLength > 0)
 	{
 		memset((void *)((uint8_t *)(ioData->mBuffers[0].mData)+currentPos), 0, underrunLength);
-		CLog::Log(LOGERROR, "Buffer underrun by %i bytes", underrunLength);
+		CLog::Log(LOGDEBUG, "Buffer underrun by %i bytes", underrunLength);
 	}
 
     return( noErr );

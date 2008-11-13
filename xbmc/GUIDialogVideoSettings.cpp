@@ -77,8 +77,8 @@ void CGUIDialogVideoSettings::CreateSettings()
   }
   {
 #ifdef __APPLE__
-    const int entries[] = { 16301, 16302, 16307, 16308, 16309 };
-    AddSpin(VIDEO_SETTINGS_SCALINGMETHOD, 16300, (int*)&g_stSettings.m_currentVideoSettings.m_ScalingMethod, 5, entries);
+    const int entries[] = { 16302, 16307 };
+    AddSpin(VIDEO_SETTINGS_SCALINGMETHOD, 16300, (int*)&g_stSettings.m_currentVideoSettings.m_ScalingMethod, 2, entries);
 #else
     const int entries[] = { 16301, 16302, 16303, 16304, 16305, 16306, 16307, 16308, 16309 };
     AddSpin(VIDEO_SETTINGS_SCALINGMETHOD, 16300, (int*)&g_stSettings.m_currentVideoSettings.m_ScalingMethod, 3, entries);

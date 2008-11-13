@@ -530,7 +530,7 @@ CGUISettings::CGUISettings(void)
 //  AddCategory(5, "myvideos", 16000);
   AddBool(0, "myvideos.treatstackasfile", 20051, true);
   AddInt(0, "myvideos.resumeautomatically", 12017, RESUME_ASK, RESUME_NO, 1, RESUME_ASK, SPIN_CONTROL_TEXT);
-  AddBool(0, "myvideos.autothumb",12024, false);
+  AddBool(0, "myvideos.autothumb",12024, true);
   AddSeparator(5, "myvideos.sep1");
   AddInt(5, "myvideos.viewmode", 582, DEFAULT_VIEW_AUTO, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX, SPIN_CONTROL_TEXT);
   AddInt(6, "myvideos.sortmethod", 581, SORT_METHOD_LABEL, SORT_METHOD_LABEL, 1, SORT_METHOD_MAX, SPIN_CONTROL_TEXT);
@@ -570,7 +570,7 @@ CGUISettings::CGUISettings(void)
 
   AddSeparator(7, "videoplayer.sep1.5");
   AddInt(10, "videoplayer.highqualityupscaling", 13112, SOFTWARE_UPSCALING_DISABLED, SOFTWARE_UPSCALING_DISABLED, 1, SOFTWARE_UPSCALING_ALWAYS, SPIN_CONTROL_TEXT);
-  AddInt(11, "videoplayer.upscalingalgorithm", 13116, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, 1, VS_SCALINGMETHOD_SINC_SOFTWARE, SPIN_CONTROL_TEXT);
+  AddInt(11, "videoplayer.upscalingalgorithm", 13116, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, 1, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, SPIN_CONTROL_TEXT);
   
   AddSeparator(12, "videoplayer.sep1.8");  
   AddInt(13, "videoplayer.skiploopfilter", 13134, VS_SKIPLOOP_DISABLED, VS_SKIPLOOP_DISABLED, 1, VS_SKIPLOOP_FULL, SPIN_CONTROL_TEXT);
