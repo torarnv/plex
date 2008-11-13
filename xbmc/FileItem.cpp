@@ -562,6 +562,12 @@ bool CFileItem::IsInternetStream() const
   if (strProtocol.size() == 0)
     return false;
 
+  // PMS files always count as streams (needed for
+  // thumbnails on LAN, strangely enough).
+  //
+  if (url.GetPort() == 32400)
+    return true;
+  
   if (IsOnLAN())
     return false;
 

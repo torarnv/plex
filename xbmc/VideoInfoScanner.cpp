@@ -181,6 +181,8 @@ namespace VIDEO
 
   bool CVideoInfoScanner::DoScan(const CStdString& strDirectory, SScanSettings settings)
   {
+    CLog::Log(LOGINFO, "DoScan(%s)", strDirectory.c_str());
+    
     if (m_bUpdateAll)
     {
       if (m_pObserver)
