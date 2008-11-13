@@ -277,7 +277,7 @@ CGUISettings::CGUISettings(void)
 
   AddCategory(3,"musiclibrary",14022);
   AddBool(0, "musiclibrary.enabled", 418, true);
-  AddBool(2, "musiclibrary.albumartistsonly", 13414, false);
+  AddBool(0, "musiclibrary.albumartistsonly", 13414, false);
   AddSeparator(3,"musiclibrary.sep1");
   AddBool(4,"musiclibrary.autoalbuminfo", 20192, false);
   AddBool(5,"musiclibrary.autoartistinfo", 20193, false);
@@ -361,12 +361,6 @@ CGUISettings::CGUISettings(void)
   AddInt(12, "system.targettemperature", 13299, 55, 40, 1, 68, SPIN_CONTROL_TEXT);
   AddInt(13, "system.minfanspeed", 13411, 1, 1, 1, 50, SPIN_CONTROL_TEXT);
 #endif
-  AddBool(5, "system.enablerssfeeds",13305,  true);
-  AddBool(0, "system.rssfeedsrtl",13412,  false);
-  AddString(1, "system.country", 20026, "USA", SPIN_CONTROL_TEXT);
-  AddString(2, "system.language",248,"english", SPIN_CONTROL_TEXT);
-  AddString(3, "system.charset",735,"DEFAULT", SPIN_CONTROL_TEXT); // charset is set by the language file
-	AddInt(6, "system.shutdowntime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
 
 
 //	AddCategory(4, "locale", 20026);
@@ -393,7 +387,6 @@ CGUISettings::CGUISettings(void)
 	AddInt(1, "videoscreen.resolution",169,(int)AUTORES, (int)HDTV_1080i, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
 	AddString(2, "videoscreen.testresolution",13109,"", BUTTON_CONTROL_STANDARD);
 #ifdef __APPLE__
-	AddInt(6, "videoscreen.displaysleeptime", 17500, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
 	// add panel brightness setting if supported by the display
 	float panelBrightnessLevel = -1.0f;
 	Cocoa_GetPanelBrightness(&panelBrightnessLevel);
@@ -456,6 +449,21 @@ CGUISettings::CGUISettings(void)
   AddBool(5, "autorun.video", 244, true);
   AddBool(6, "autorun.music", 245, true);
   AddBool(7, "autorun.pictures", 246, true);
+	
+	AddCategory(4, "screensaver", 360);
+	AddString(1, "screensaver.mode", 356, "Dim", SPIN_CONTROL_TEXT);
+	AddString(2, "screensaver.preview", 1000, "", BUTTON_CONTROL_STANDARD);
+	AddInt(3, "screensaver.time", 355, 3, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
+	AddBool(4, "screensaver.usemusicvisinstead", 13392, true);
+	AddBool(0, "screensaver.uselock",20140,false);
+	AddSeparator(6, "screensaver.sep1");
+	AddInt(0, "screensaver.dimlevel", 362, 20, 0, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+	AddString(8, "screensaver.slideshowpath", 774, "F:\\Pictures\\", BUTTON_CONTROL_PATH_INPUT, false, 657);
+	AddBool(9, "screensaver.slideshowshuffle", 13319, false);
+	
+	AddCategory(4, "energy", 40105);
+	AddInt(6, "energy.displaysleeptime", 17500, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
+	AddInt(6, "energy.shutdowntime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
 
 #ifdef HAS_XBOX_HARDWARE
   AddCategory(4, "harddisk", 440);
@@ -692,7 +700,13 @@ CGUISettings::CGUISettings(void)
 	
   // appearance settings
   AddGroup(7, 480);
-  AddCategory(7,"lookandfeel", 14037);
+	
+ AddCategory(7,"region", 20026);
+  AddString(1, "region.country", 20026, "USA", SPIN_CONTROL_TEXT);
+  AddString(2, "region.language",248,"english", SPIN_CONTROL_TEXT);
+  AddString(3, "region.charset",735,"DEFAULT", SPIN_CONTROL_TEXT); // charset is set by the language file
+	
+ AddCategory(7,"lookandfeel", 14037);
   AddBool(0,"lookandfeel.soundsduringplayback",21370,false);
   AddString(1, "lookandfeel.skin",166,"MediaStream", SPIN_CONTROL_TEXT);
   AddString(2, "lookandfeel.skintheme",15111,"SKINDEFAULT", SPIN_CONTROL_TEXT);
@@ -718,17 +732,10 @@ CGUISettings::CGUISettings(void)
   AddBool(0, "filelists.showhidden", 21330, false);
   AddBool(4, "filelists.cleanfilenames", 20418, false);
 
+	AddCategory(7,"rss", 40104);
+	AddBool(1, "rss.enablerssfeeds",13305,  true);
+	AddBool(2, "rss.rssfeedsrtl",13412,  false);
 
-  AddCategory(7, "screensaver", 360);
-  AddString(1, "screensaver.mode", 356, "Dim", SPIN_CONTROL_TEXT);
-  AddString(2, "screensaver.preview", 1000, "", BUTTON_CONTROL_STANDARD);
-  AddInt(3, "screensaver.time", 355, 3, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
-  AddBool(4, "screensaver.usemusicvisinstead", 13392, true);
-  AddBool(0, "screensaver.uselock",20140,false);
-  AddSeparator(6, "screensaver.sep1");
-  AddInt(0, "screensaver.dimlevel", 362, 20, 0, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
-  AddString(8, "screensaver.slideshowpath", 774, "F:\\Pictures\\", BUTTON_CONTROL_PATH_INPUT, false, 657);
-  AddBool(9, "screensaver.slideshowshuffle", 13319, false);
 
   AddString(0,"system.playlistspath",20006,"set default",BUTTON_CONTROL_PATH_INPUT,false);
 }
@@ -1059,7 +1066,7 @@ std::map<CStdString, CSetting*>::const_iterator CGUISettings::FindSetting(CStdSt
 {
   /* The following section is for backwards compatibility with older skin names. */
   if (strSetting == "lookandfeel.enablerssfeeds")
-    strSetting = "system.enablerssfeeds";
+    strSetting = "rss.enablerssfeeds";
 /*
   else if (strSetting == "another.setting")
     strSetting = "system.setting";

@@ -1700,7 +1700,7 @@ bool CSettings::LoadProfile(int index)
     g_charsetConverter.reset();
 
     // Load the langinfo to have user charset <-> utf-8 conversion
-    CStdString strLanguage = g_guiSettings.GetString("system.language");
+    CStdString strLanguage = g_guiSettings.GetString("region.language");
     strLanguage[0] = toupper(strLanguage[0]);
 
     CStdString strLangInfoPath;

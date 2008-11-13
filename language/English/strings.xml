@@ -66,7 +66,7 @@
   <string id="128">General</string>
   <string id="129">Slideshow</string>
   <string id="130">System Info</string>
-  <string id="131">Screen</string>
+  <string id="131">Display</string>
   <string id="132">Albums</string>
   <string id="133">Artists</string>
   <string id="134">Songs</string>
@@ -277,7 +277,7 @@
   <string id="352">Dim</string>
   <string id="353">Black</string>
   <string id="354">Matrix Trails</string>
-  <string id="355">Screensaver Idle Timeout</string>
+  <string id="355">Start Screensaver After</string>
   <string id="356">Screensaver Mode</string>
   <string id="357">Sleep System When Inactive For</string>
   <string id="358">All albums</string>
@@ -1183,7 +1183,7 @@
 
   <string id="13450">Sleep System</string>
   
-  <string id="13600">Controllers</string>
+  <string id="13600">Input Devices</string>
   <string id="13601">Apple Remote Mode</string>  
   <string id="13602">- Always Running</string>
   <string id="13603">- Sequence Delay Time</string>
@@ -2086,5 +2086,7 @@
   <string id="40101">Add Application</string>
   <string id="40102">Remove Application</string>
   <string id="40103">Browse for Application</string>
-    
+  <string id="40104">RSS</string>
+  <string id="40105">Energy Saver</string>
+
 </strings>
