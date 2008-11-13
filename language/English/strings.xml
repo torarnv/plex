@@ -983,12 +983,10 @@
   <string id="13131">Disabled</string>
   <string id="13132">Blank displays</string>
 
-  <string id="13134">H.264 Skip Loop Filter</string>
-  <string id="13135">Default</string>
-  <string id="13136">Skip Non-reference Frames</string>
-  <string id="13137">Skip Bidirectional Frames</string>
-  <string id="13138">Skip Non-key frames</string>
-  <string id="13139">Skip Everything</string>
+  <string id="13134">H.264 Speed Boost</string>
+  <string id="13135">Disabled</string>
+  <string id="13136">Medium</string>
+  <string id="13137">High</string>
 
   <string id="13140">Active Connections Detected!</string>
   <string id="13141">If you proceed, you might not be able to control Plex</string>

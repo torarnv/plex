@@ -573,7 +573,7 @@ CGUISettings::CGUISettings(void)
   AddInt(11, "videoplayer.upscalingalgorithm", 13116, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, 1, VS_SCALINGMETHOD_SINC_SOFTWARE, SPIN_CONTROL_TEXT);
   
   AddSeparator(12, "videoplayer.sep1.8");  
-  AddInt(13, "videoplayer.skiploopfilter", 13134, VS_SKIPLOOP_DEFAULT, VS_SKIPLOOP_DEFAULT, 1, VS_SKIPLOOP_ALL, SPIN_CONTROL_TEXT);
+  AddInt(13, "videoplayer.skiploopfilter", 13134, VS_SKIPLOOP_DISABLED, VS_SKIPLOOP_DISABLED, 1, VS_SKIPLOOP_FULL, SPIN_CONTROL_TEXT);
   AddInt(0, "videoplayer.dvdplayerregion", 21372, 0, 0, 1, 8, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
   AddBool(0, "videoplayer.dvdautomenu", 21882, true);
   AddBool(0, "videoplayer.editdecision", 22003, true);

@@ -128,7 +128,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   // set acceleration
   m_pCodecContext->dsp_mask = FF_MM_FORCE | FF_MM_MMX | FF_MM_MMXEXT | FF_MM_SSE;
 
-  AVDiscard discardVals[] = {AVDISCARD_DEFAULT, AVDISCARD_NONREF, AVDISCARD_BIDIR, AVDISCARD_NONKEY, AVDISCARD_ALL};
+  AVDiscard discardVals[] = {AVDISCARD_DEFAULT, AVDISCARD_BIDIR, AVDISCARD_ALL};
   AVDiscard avDiscard = discardVals[g_guiSettings.GetInt("videoplayer.skiploopfilter")];
   if (avDiscard != AVDISCARD_DEFAULT)
     m_pCodecContext->skip_loop_filter = avDiscard;
