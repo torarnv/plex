@@ -1024,6 +1024,7 @@
     <keyboard>
       <delete>Delete</delete>
       <space>Playlist</space>
+      <w>ToggleWatched</w>
     </keyboard>
   </MyVideoLibrary>
 
