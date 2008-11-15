@@ -758,6 +758,12 @@ bool CFileItem::IsDAAP() const
 {
   return CUtil::IsDAAP(m_strPath);
 }
+
+bool CFileItem::IsPlexMediaServer() const
+{
+  return CUtil::IsPlexMediaServer(m_strPath);
+}
+
 bool CFileItem::IsTuxBox() const
 {
   return CUtil::IsTuxBox(m_strPath);

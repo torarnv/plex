@@ -1899,6 +1899,15 @@ bool CUtil::IsZIP(const CStdString& strFile) // also checks for comic books!
   return false;
 }
 
+bool CUtil::IsPlexMediaServer(const CStdString& strFile)
+{
+  CURL url(strFile);
+  if (url.GetProtocol() == "plex" || url.GetPort() == 32400)
+    return true;
+  
+  return false;
+}
+
 bool CUtil::IsCDDA(const CStdString& strFile)
 {
   return strFile.Left(5).Equals("cdda:");
