@@ -789,9 +789,9 @@ void CLinuxRendererGL::LoadTextures(int source)
     
     switch (m_scalingMethod)
     {
-    case VS_SCALINGMETHOD_BICUBIC_SOFTWARE: algorithm = SWS_BICUBIC; printf("Using BICUBIC\n"); break;
-    case VS_SCALINGMETHOD_LANCZOS_SOFTWARE: algorithm = SWS_LANCZOS; printf("Using LANCZOS\n"); break;
-    case VS_SCALINGMETHOD_SINC_SOFTWARE:    algorithm = SWS_SINC;    printf("Using SINC\n"); break;
+    case VS_SCALINGMETHOD_BICUBIC_SOFTWARE: algorithm = SWS_BICUBIC; break;
+    case VS_SCALINGMETHOD_LANCZOS_SOFTWARE: algorithm = SWS_LANCZOS; break;
+    case VS_SCALINGMETHOD_SINC_SOFTWARE:    algorithm = SWS_SINC;    break;
     default: break;
     }
     
