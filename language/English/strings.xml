@@ -1852,8 +1852,9 @@
   <string id="20422">Always</string>
   <string id="20423">Has Trailer</string>
   <string id="20424">False</string>
+  <string id="20425">Fanart Slideshow</string>
   <string id="20475">Recent Videos Count</string>
-
+  
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>
