@@ -13,7 +13,6 @@
 #import "GUIDialogUtils.h"
 #import <objc/objc-runtime.h>
 
-
 @implementation SUPlexUpdater
 
 id g_plexUpdater;
@@ -23,13 +22,19 @@ id g_plexUpdater;
   return (SUPlexUpdater*)g_plexUpdater;
 }
 
+- (void)dealloc
+{
+  [self setLastCheckTime:nil];
+  [super dealloc];
+}
+
 - (void)awakeFromNib
 {
   g_plexUpdater = (id)self;
   isSuspended = NO;
   userHasBeenAlerted = NO;
   timer = nil;
-  lastCheckTime = [NSDate distantPast];
+  [self setLastCheckTime:[NSDate distantPast]];
 }
 
 - (BOOL)checkForUpdatesWithPlexDriver:(SUUpdateDriver*)plexDriver
@@ -40,7 +45,7 @@ id g_plexUpdater;
   [self resetUpdateCycle];
   SEL selector = @selector(checkForUpdatesWithDriver:);
   if ([self respondsToSelector:selector])
-  {  
+  {
     if (driver != nil)
     {
       [driver release];
@@ -54,14 +59,14 @@ id g_plexUpdater;
 
 - (IBAction)checkForUpdatesWithUI:(id)sender
 {
-  lastCheckTime = [NSDate date];
+  [self setLastCheckTime:[NSDate date]];
   if ([self checkForUpdatesWithPlexDriver:[[[SUPlexUpdateDriver alloc] initWithUpdater:self] autorelease]])
     CGUIDialogUtils::StartProgressDialog(CGUIDialogUtils::Localize(40000), CGUIDialogUtils::Localize(40015), "", "", false);
 }
 
 - (void)checkForUpdatesInBackground
 {
-  lastCheckTime = [NSDate date];
+  [self setLastCheckTime:[NSDate date]];
   if (updateAlertType == UPDATE_ALERT_ASK)
     [self checkForUpdatesWithPlexDriver:[[[SUPlexBackgroundUpdateDialogDriver alloc] initWithUpdater:self] autorelease]];
   else
@@ -88,12 +93,12 @@ id g_plexUpdater;
   checkInterval = seconds;
   // Release the timer if it already exists
   if (timer != nil) {
-    [timer release];
+    [timer invalidate];
     timer = nil;
   }
   // Setting the interval to 0 clears the timer
   if (checkInterval > 0)
-    timer = [NSTimer scheduledTimerWithTimeInterval:300 target:self selector:@selector(checkScheduler) userInfo:nil repeats:YES];
+    timer = [NSTimer scheduledTimerWithTimeInterval:checkInterval target:self selector:@selector(checkScheduler) userInfo:nil repeats:NO];
 }
 
 - (void)setSuspended:(BOOL)willSuspend
@@ -103,6 +108,15 @@ id g_plexUpdater;
 
 - (void)userAlerted {
   userHasBeenAlerted = YES;
+}
+
+- (void)setLastCheckTime:(NSDate *)value
+{
+  if (lastCheckTime != value)
+  {
+    [lastCheckTime release];
+    lastCheckTime = [value retain];
+  }
 }
 
 //

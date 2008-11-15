@@ -30,4 +30,5 @@
 - (void)setSuspended:(BOOL)willSuspend;
 - (void)userAlerted;
 
+- (void)setLastCheckTime:(NSDate *)value;
 @end
