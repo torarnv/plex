@@ -33,6 +33,7 @@
 #import "SUPlexUpdater.h"
 
 extern int GetProcessPid(const char* processName);
+extern void CocoaPlus_Initialize();
 
 #define MAX_DISPLAYS 32
 static NSWindow* blankingWindows[MAX_DISPLAYS];
@@ -52,6 +53,8 @@ void Cocoa_Initialize(void* pApplication)
     blankingBrightness[i] = -1.0f;
     mainDisplayScreen = 0;
   }
+    
+  CocoaPlus_Initialize();
 }
 
 void Cocoa_DisplayError(const char* strError)

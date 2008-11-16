@@ -19,6 +19,11 @@ extern "C"
 {
 #endif
   //
+  // Initialization
+  //
+  void CocoaPlus_Initialize();
+  
+  //
   // Fonts
   //
   vector<string> Cocoa_GetSystemFonts();
