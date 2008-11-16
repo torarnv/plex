@@ -68,6 +68,7 @@ public:
                         FIELD_STYLES,
                         FIELD_ALBUMTYPE,
                         FIELD_LABEL,
+                        FIELD_HASTRAILER,
                         FIELD_PLAYLIST,
                         FIELD_RANDOM
                       };
@@ -85,6 +86,8 @@ public:
                          OPERATOR_BEFORE,
                          OPERATOR_IN_THE_LAST,
                          OPERATOR_NOT_IN_THE_LAST,
+                         OPERATOR_TRUE,
+                         OPERATOR_FALSE,
                          OPERATOR_END
                        };
 
@@ -93,9 +96,10 @@ public:
                     NUMERIC_FIELD,
                     DATE_FIELD,
                     PLAYLIST_FIELD,
-                    SECONDS_FIELD
+                    SECONDS_FIELD,
+                    BOOLEAN_FIELD
                   };
- 
+
   CStdString GetWhereClause(const CStdString& strType);
   void TranslateStrings(const char *field, const char *oper, const char *parameter);
   static DATABASE_FIELD TranslateField(const char *field);
@@ -105,7 +109,7 @@ public:
 
   static CStdString     GetLocalizedField(DATABASE_FIELD field);
   static CStdString     GetLocalizedOperator(SEARCH_OPERATOR oper);
-  static std::vector<DATABASE_FIELD> GetFields(const CStdString &type);
+  static std::vector<DATABASE_FIELD> GetFields(const CStdString &type, bool sortOrders = false);
   static FIELD_TYPE     GetFieldType(DATABASE_FIELD field);
 
   CStdString            GetLocalizedRule();
