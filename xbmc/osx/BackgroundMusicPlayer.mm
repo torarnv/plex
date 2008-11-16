@@ -51,7 +51,21 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
   }
   
   // Load available music into the array
-  mainMusicNames = [[[NSFileManager defaultManager] enumeratorAtPath:mainMusicPath] allObjects];
+  NSArray* validExtensions = [NSArray arrayWithObjects:@".mp3", @".m4a", @".m4p", nil];  // File types supported by QuickTime
+  NSArray* directoryContents = [NSArray arrayWithArray:[[[NSFileManager defaultManager] enumeratorAtPath:mainMusicPath] allObjects]];
+  NSMutableArray* validFiles = [[NSMutableArray alloc] init];
+  
+  // Check each file's extension to ensure it's a supported format
+  for (NSString* fileName in directoryContents)
+  {
+    NSString* ext = [[fileName substringFromIndex:[[fileName stringByDeletingPathExtension] length]] lowercaseString];
+    if ([validExtensions containsObject:ext])
+      [validFiles addObject:fileName];
+  }
+  
+  // Create the main music names array containing valid files
+  mainMusicNames = [NSArray arrayWithArray:validFiles];
+  [validFiles release];
   
   // Create a dictionary to store theme music requests
   themeMusicRequests = [[NSMutableDictionary alloc] init];
