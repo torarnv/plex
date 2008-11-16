@@ -324,6 +324,11 @@ CGUISettings::CGUISettings(void)
   AddString(3,"lastfm.username", 15202, "", BUTTON_CONTROL_INPUT, false, 15202);
   AddString(4,"lastfm.password", 15203, "", BUTTON_CONTROL_HIDDEN_INPUT, false, 15203);
 
+  AddCategory(3, "backgroundmusic", 15230);
+  AddInt(8, "backgroundmusic.bgmusicvolume", 18101, 50, 5, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+  AddBool(9, "backgroundmusic.thememusicenabled", 18102, true);
+  AddBool(10, "backgroundmusic.themedownloadsenabled", 18103, true);
+  
 //  AddCategory(3, "cddaripper", 620);
   AddString(1, "cddaripper.path", 20000, "select writable folder", BUTTON_CONTROL_PATH_INPUT, false, 657);
   AddString(2, "cddaripper.trackformat", 13307, "[%N. ]%T - %A", BUTTON_CONTROL_INPUT, false, 16016);
@@ -502,10 +507,6 @@ CGUISettings::CGUISettings(void)
   AddString(7, "audiooutput.passthroughdevice", 546, "iec958", BUTTON_CONTROL_INPUT);
 #endif
 
-  AddInt(8, "audiooutput.bgmusicvolume", 18101, 50, 5, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
-	AddBool(9, "audiooutput.thememusicenabled", 18102, true);
-	AddBool(10, "audiooutput.themedownloadsenabled", 18103, true);
-	
 #ifndef __APPLE__
   AddCategory(4, "videooutput", 21373);
   AddInt(1, "videooutput.aspect", 21374, VIDEO_NORMAL, VIDEO_NORMAL, 1, VIDEO_WIDESCREEN, SPIN_CONTROL_TEXT);

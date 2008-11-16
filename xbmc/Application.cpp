@@ -1173,9 +1173,9 @@ HRESULT CApplication::Create(HWND hWnd)
   
   // Start background music playing
   Cocoa_UpdateGlobalVolume(g_application.GetVolume());
-  Cocoa_SetBackgroundMusicThemesEnabled(g_guiSettings.GetBool("audiooutput.thememusicenabled"));
-  Cocoa_SetBackgroundMusicThemeDownloadsEnabled(g_guiSettings.GetBool("audiooutput.themedownloadsenabled"));
-  Cocoa_SetBackgroundMusicVolume((float)(g_guiSettings.GetInt("audiooutput.bgmusicvolume")/100.0f));
+  Cocoa_SetBackgroundMusicThemesEnabled(g_guiSettings.GetBool("backgroundmusic.thememusicenabled"));
+  Cocoa_SetBackgroundMusicThemeDownloadsEnabled(g_guiSettings.GetBool("backgroundmusic.themedownloadsenabled"));
+  Cocoa_SetBackgroundMusicVolume((float)(g_guiSettings.GetInt("backgroundmusic.bgmusicvolume")/100.0f));
   Cocoa_StartBackgroundMusic();
 #endif
 
