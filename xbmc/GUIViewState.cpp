@@ -285,8 +285,8 @@ int CGUIViewState::GetPlaylist()
 {
   if (m_items.IsPlexMediaServer() == true)
   {
-    if (m_items.m_strPath.Find("/music/") != -1);
-    return PLAYLIST_MUSIC;
+    if (m_items.m_strPath.Find("/music/") != -1)
+      return PLAYLIST_MUSIC;
   }
   
   return PLAYLIST_NONE;
@@ -324,7 +324,7 @@ bool CGUIViewState::UnrollArchives()
 
 bool CGUIViewState::AutoPlayNextItem()
 {
-  if (m_items.IsPlexMediaServer() == true)
+  if (m_items.IsPlexMediaServer() == true && m_items.m_strPath.Find("/music/") != -1)
     return true;
     
   return false;
