@@ -15,7 +15,9 @@
 #if defined(_XBOX)
 #include <xtl.h>
 #else
+#ifndef __APPLE__
 #include <windows.h>
+#endif
 #endif
 
 #include "NptConfig.h"
