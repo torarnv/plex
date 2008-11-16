@@ -269,7 +269,7 @@ CGUISettings::CGUISettings(void)
   //AddBool(4, "musicfiles.repeat", 488, false);
   AddBool(5, "mymusic.clearplaylistsonend",239,false);
 	AddBool(0, "mymusic.outputtoallspeakers", 252, false);
-	AddInt(9, "mymusic.crossfade", 13314, 0, 0, 1, 10, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF);
+	AddInt(9, "mymusic.crossfade", 13314, 8, 0, 1, 10, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF);
 	AddBool(10, "mymusic.usecddb", 227, true);
 
   AddSeparator(6, "mymusic.sep2");
