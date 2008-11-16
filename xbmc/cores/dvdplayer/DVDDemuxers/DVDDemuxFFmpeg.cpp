@@ -148,7 +148,7 @@ static int dvd_file_write(URLContext *h, BYTE* buf, int size)
   return -1;
 }
 */
-static int64_t dvd_file_seek(URLContext *h, int64_t pos, int whence)
+static offset_t dvd_file_seek(URLContext *h, offset_t pos, int whence)
 {
   if(interrupt_cb())
     return -1;
@@ -403,7 +403,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   UpdateCurrentPTS();
 
   // add the ffmpeg streams to our own stream array
-  if (m_pFormatContext->nb_programs && m_pFormatContext->programs)
+  if (m_pFormatContext->nb_programs)
   {
     m_program = UINT_MAX;
     // look for first non empty stream and discard nonselected programs
@@ -621,7 +621,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
     {
       AVStream *stream = m_pFormatContext->streams[pkt.stream_index];
 
-      if (m_pFormatContext->nb_programs && m_pFormatContext->programs)
+      if (m_pFormatContext->nb_programs)
       {
         /* check so packet belongs to selected program */
         for (unsigned int i = 0; i < m_pFormatContext->programs[m_program]->nb_stream_indexes; i++)
@@ -661,7 +661,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
           else
             pkt.pts = AV_NOPTS_VALUE;
         }
-        
+
         // copy contents into our own packet
         pPacket->iSize = pkt.size;
 
@@ -694,13 +694,6 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
               ||  (m_pFormatContext->duration != (int64_t)AV_NOPTS_VALUE && duration > m_pFormatContext->duration))
                 m_pFormatContext->duration = duration;
             }
-        }
-        
-        if (stream->codec->codec_type == CODEC_TYPE_SUBTITLE)
-        {
-          // Use the convergence duration instead.
-          if (pkt.convergence_duration > 0 && pkt.duration == 0)
-            pPacket->duration = DVD_SEC_TO_TIME((double)pkt.convergence_duration * stream->time_base.num / stream->time_base.den);
         }
 
         // check if stream seem to have grown since start

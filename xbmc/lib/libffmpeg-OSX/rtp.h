@@ -18,14 +18,11 @@
  * License along with FFmpeg; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
-#ifndef AVFORMAT_RTP_H
-#define AVFORMAT_RTP_H
+#ifndef FFMPEG_RTP_H
+#define FFMPEG_RTP_H
 
 #include "libavcodec/avcodec.h"
 #include "avformat.h"
-
-typedef struct PayloadContext PayloadContext;
-typedef struct RTPDynamicProtocolHandler_s RTPDynamicProtocolHandler;
 
 #define RTP_MIN_PACKET_LENGTH 12
 #define RTP_MAX_PACKET_LENGTH 1500 /* XXX: suppress this define */
@@ -38,8 +35,6 @@ int rtp_get_payload_type(AVCodecContext *codec);
 typedef struct RTPDemuxContext RTPDemuxContext;
 typedef struct rtp_payload_data_s rtp_payload_data_s;
 RTPDemuxContext *rtp_parse_open(AVFormatContext *s1, AVStream *st, URLContext *rtpc, int payload_type, rtp_payload_data_s *rtp_payload_data);
-void rtp_parse_set_dynamic_protocol(RTPDemuxContext *s, PayloadContext *ctx,
-                                    RTPDynamicProtocolHandler *handler);
 int rtp_parse_packet(RTPDemuxContext *s, AVPacket *pkt,
                      const uint8_t *buf, int len);
 void rtp_parse_close(RTPDemuxContext *s);
@@ -115,4 +110,4 @@ typedef enum {
 } rtcp_sdes_type_t;
 #endif
 
-#endif /* AVFORMAT_RTP_H */
+#endif /* FFMPEG_RTP_H */

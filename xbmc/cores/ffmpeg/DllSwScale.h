@@ -19,9 +19,9 @@ extern "C" {
 #endif
 
 #ifdef __APPLE__
-#include "libffmpeg-OSX/libavutil/avutil.h"
-#include "libffmpeg-OSX/libswscale/swscale.h"
-#include "libffmpeg-OSX/libswscale/rgb2rgb.h"
+#include "libffmpeg-OSX/avutil.h"
+#include "libffmpeg-OSX/swscale.h"
+#include "libffmpeg-OSX/rgb2rgb.h"
 #else
 #include "avutil.h"
 #include "swscale.h"

@@ -18,8 +18,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef POSTPROCESS_POSTPROCESS_H
-#define POSTPROCESS_POSTPROCESS_H
+#ifndef FFMPEG_POSTPROCESS_H
+#define FFMPEG_POSTPROCESS_H
 
 /**
  * @file postprocess.h
@@ -27,10 +27,10 @@
  *     external postprocessing API
  */
 
-#include "libavutil/avutil.h"
+#include "avutil.h"
 
 #define LIBPOSTPROC_VERSION_MAJOR 51
-#define LIBPOSTPROC_VERSION_MINOR  2
+#define LIBPOSTPROC_VERSION_MINOR  1
 #define LIBPOSTPROC_VERSION_MICRO  0
 
 #define LIBPOSTPROC_VERSION_INT AV_VERSION_INT(LIBPOSTPROC_VERSION_MAJOR, \
@@ -42,11 +42,6 @@
 #define LIBPOSTPROC_BUILD       LIBPOSTPROC_VERSION_INT
 
 #define LIBPOSTPROC_IDENT       "postproc" AV_STRINGIFY(LIBPOSTPROC_VERSION)
-
-/**
- * Returns the LIBPOSTPROC_VERSION_INT constant.
- */
-unsigned postproc_version(void);
 
 #define PP_QUALITY_MAX 6
 
@@ -94,4 +89,4 @@ void pp_free_context(pp_context_t *ppContext);
 
 #define PP_PICT_TYPE_QP2  0x00000010 ///< MPEG2 style QScale
 
-#endif /* POSTPROCESS_POSTPROCESS_H */
+#endif /* FFMPEG_POSTPROCESS_H */
