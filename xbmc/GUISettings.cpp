@@ -1068,10 +1068,10 @@ std::map<CStdString, CSetting*>::const_iterator CGUISettings::FindSetting(CStdSt
   /* The following section is for backwards compatibility with older skin names. */
   if (strSetting == "lookandfeel.enablerssfeeds")
     strSetting = "rss.enablerssfeeds";
-/*
-  else if (strSetting == "another.setting")
-    strSetting = "system.setting";
- */
+
+  else if (strSetting == "lookandfeel.enablemouse")
+    strSetting = "appleremote.enablemouse";
+
 
   constMapIter it = settingsMap.find(strSetting.ToLower());
   return it;
