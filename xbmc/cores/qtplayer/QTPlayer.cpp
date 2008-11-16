@@ -104,9 +104,21 @@ void QTPlayer::Process()
   }
   while (!m_qtFile->IsPlayerDone() && !m_bStopPlaying);//(!m_bStopPlaying && m_bIsPlaying && !m_bStop);
     
-    CLog::Log(LOGINFO, "QTPlayer: End of playback reached");
-    if (!m_bStopPlaying && !m_bStop)
-      m_callback.OnPlayBackEnded();
+  CLog::Log(LOGINFO, "QTPlayer: End of playback reached");
+  if (!m_bStopPlaying && !m_bStop)
+    m_callback.OnPlayBackEnded();
 
   CLog::Log(LOGDEBUG, "QTPlayer: Thread end");
+}
+
+void QTPlayer::RegisterAudioCallback(IAudioCallback *pCallback)
+{
+  m_pCallback = pCallback;
+  if (m_pCallback)
+    m_pCallback->OnInitialize(2, 44100, 16);
+}
+
+void QTPlayer::UnRegisterAudioCallback()
+{
+  m_pCallback = 0;
 }

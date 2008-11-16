@@ -17,11 +17,12 @@ class QuickTimeWrapper;
 class QTPlayer : public IPlayer, public CThread
 {
 public:
+
   QTPlayer(IPlayerCallback &callback);
   virtual ~QTPlayer();
   
-  virtual void RegisterAudioCallback(IAudioCallback *pCallback) {}
-  virtual void UnRegisterAudioCallback() {}
+  virtual void RegisterAudioCallback(IAudioCallback *pCallback);
+  virtual void UnRegisterAudioCallback();
   virtual bool OpenFile(const CFileItem &file, const CPlayerOptions &options);
   virtual bool QueueNextFile(const CFileItem &file) { return false; }
   virtual void OnNothingToQueueNotify() {}
@@ -44,18 +45,19 @@ public:
   virtual void Update(bool bPauseDrawing = false) {}
   virtual void GetVideoRect(RECT &srcRect, RECT &destRect) {}
   virtual void GetVideoAspectRatio(float &fAR) {}
-//  virtual void SeekTime(__int64 iTime = 0);
   virtual __int64 GetTime();
   virtual int  GetTotalTime();
   virtual void ToFFRW(int iSpeed = 1);
   
-protected:
+ protected:
+  
   virtual void Process();
   
-private:
+ private:
+  
   QuickTimeWrapper *m_qtFile;
   CFileItem *m_currentFile;
   bool m_bStopPlaying;
   CStdString m_strPath;
-  
+  IAudioCallback*  m_pCallback;
 };
