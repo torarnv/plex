@@ -485,9 +485,16 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
         }
         
         // Start background theme music if available
-        std::string tvShowId = details.m_strEpisodeGuide.substr(26);
-        tvShowId = tvShowId.substr(0, tvShowId.find(".xml"));
-        Cocoa_SetBackgroundMusicThemeId(tvShowId.c_str());
+        if (details.m_strEpisodeGuide.Find("thetvdb.com") != -1)
+        {
+          std::string tvShowId = details.m_strEpisodeGuide.substr(26);
+          tvShowId = tvShowId.substr(0, tvShowId.find(".xml"));
+          Cocoa_SetBackgroundMusicThemeId(tvShowId.c_str());
+        }
+        else
+        {
+          Cocoa_SetBackgroundMusicThemeId(NULL);
+        }
       }
       else if (node == NODE_TYPE_TITLE_MOVIES || node == NODE_TYPE_RECENTLY_ADDED_MOVIES)
       {
