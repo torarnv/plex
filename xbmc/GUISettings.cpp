@@ -325,9 +325,10 @@ CGUISettings::CGUISettings(void)
   AddString(4,"lastfm.password", 15203, "", BUTTON_CONTROL_HIDDEN_INPUT, false, 15203);
 
   AddCategory(3, "backgroundmusic", 15230);
-  AddInt(8, "backgroundmusic.bgmusicvolume", 18101, 50, 5, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
-  AddBool(9, "backgroundmusic.thememusicenabled", 18102, true);
-  AddBool(10, "backgroundmusic.themedownloadsenabled", 18103, true);
+  AddBool(8, "backgroundmusic.bgmusicenabled", 18104, true);
+  AddInt(9, "backgroundmusic.bgmusicvolume", 18101, 50, 5, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+  AddBool(10, "backgroundmusic.thememusicenabled", 18102, true);
+  AddBool(11, "backgroundmusic.themedownloadsenabled", 18103, true);
   
 //  AddCategory(3, "cddaripper", 620);
   AddString(1, "cddaripper.path", 20000, "select writable folder", BUTTON_CONTROL_PATH_INPUT, false, 657);

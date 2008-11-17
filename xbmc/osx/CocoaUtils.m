@@ -849,6 +849,11 @@ void Cocoa_StopBackgroundMusic()
   [[BackgroundMusicPlayer sharedInstance] stopMusic];
 }
 
+void Cocoa_SetBackgroundMusicEnabled(bool enabled)
+{
+  [[BackgroundMusicPlayer sharedInstance] setEnabled:enabled];
+}
+
 void Cocoa_SetBackgroundMusicThemesEnabled(bool enabled)
 {
   [[BackgroundMusicPlayer sharedInstance] setThemeMusicEnabled:enabled];
@@ -947,7 +952,7 @@ void Cocoa_UpdateProgressDialog()
 }
 
 /*
- * I was recently looking into the fade effect on OS X which happens when you switch from windowed mode to full screen and vice versa.  I thought itÕd be better if it only faded the effected display, so I started looking into a great example from Apple. There was an issue though. After retrieving the current gamma value, and subsequently setting the value (to the value just retrieved!) the display would get brighter. Odd, that should only happen if I turn the gamma down. Well, as it turns out, the CGGetDisplayTransferByFormula function doesnÕt actually calculate the current gamma correctly. If you toss the values retrieved from CGGetDisplayTransferByTable into excel and have it calculate the value for you, youÕll see that it doesnÕt match up. The solution was to just throw out the value and calculate it in code. Thanks Apple, you just wasted my week.
+ * I was recently looking into the fade effect on OS X which happens when you switch from windowed mode to full screen and vice versa.  I thought itâ€™d be better if it only faded the effected display, so I started looking into a great example from Apple. There was an issue though. After retrieving the current gamma value, and subsequently setting the value (to the value just retrieved!) the display would get brighter. Odd, that should only happen if I turn the gamma down. Well, as it turns out, the CGGetDisplayTransferByFormula function doesnâ€™t actually calculate the current gamma correctly. If you toss the values retrieved from CGGetDisplayTransferByTable into excel and have it calculate the value for you, youâ€™ll see that it doesnâ€™t match up. The solution was to just throw out the value and calculate it in code. Thanks Apple, you just wasted my week.
 
 For those interested (pay attention Apple!), the following code will do the trick. Note that M_LN2 is the natural log of 2, defined in math.h.
  CGGetDisplayTransferByFormula(display,

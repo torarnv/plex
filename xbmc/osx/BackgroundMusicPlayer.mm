@@ -10,7 +10,6 @@
 #import "CocoaToCppThunk.h"
 
 #define BACKGROUND_MUSIC_APP_SUPPORT_SUBDIR       @"/Plex/Background Music"
-#define BACKGROUND_MUSIC_THEME_DOWNLOADS_ENABLED
 #define BACKGROUND_MUSIC_THEME_DOWNLOAD_URL       @"http://tvthemes.plexapp.com"
 #define BACKGROUND_MUSIC_THEME_REQ_LIMIT          3600
 @implementation BackgroundMusicPlayer
@@ -30,6 +29,7 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
     _o_sharedMainInstance = [super init];
   
   // Default values
+  isEnabled = NO;
   isThemeMusicEnabled = NO;
   isThemeDownloadingEnabled = NO;
   isPlaying = NO;
@@ -85,6 +85,34 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
   [super dealloc];
 }
 
+- (BOOL)enabled { return isEnabled; }
+- (void)setEnabled:(BOOL)enabled
+{
+  if (isEnabled != enabled)
+  {
+    if (enabled)
+    {
+      [self loadNextTrack];
+    }
+    else
+    {
+      if (mainMusic != nil)
+      {
+        [mainMusic release];
+        mainMusic = nil;
+      }
+      
+      if (themeMusic != nil)
+      {
+        [themeMusic release];
+        themeMusic = nil;
+      }
+      [self stopThemeTimer];
+    }
+  }
+  isEnabled = enabled;
+}
+
 - (BOOL)themeMusicEnabled { return isThemeMusicEnabled; }
 - (void)setThemeMusicEnabled:(BOOL)enabled { isThemeMusicEnabled = enabled; }
 
@@ -93,7 +121,7 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
 
 - (void)checkForThemeWithId:(NSString*)tvShowId
 {
-  if (isThemeMusicEnabled && isThemeDownloadingEnabled)
+  if (isEnabled && isThemeMusicEnabled && isThemeDownloadingEnabled)
   {
     // If there's already a theme file, return
     NSString *localFile = [themeMusicPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.mp3", tvShowId]];
@@ -121,12 +149,16 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
 - (void)startMusic
 {
   if (!isPlaying) {
-    if (currentId == nil)
-      [mainMusic play];
-    else
+    if (isEnabled)
     {
-      [themeMusic gotoBeginning]; // Make sure theme music always starts at the beginning when returning from video playback
-      [themeMusic play];
+      if (currentId == nil)
+        [mainMusic play];
+      else
+      {
+        [themeMusic gotoBeginning]; // Make sure theme music always starts at the beginning when returning from video playback
+        [themeMusic play];
+        [self startThemeTimer];
+      }
     }
     isPlaying = YES;
   }
@@ -135,10 +167,14 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
 - (void)stopMusic
 {
   if (isPlaying) {
-    if (currentId == nil)
-      [mainMusic stop];
-    else
-      [themeMusic stop];
+    if (isEnabled)
+    {
+      if (currentId == nil)
+        [mainMusic stop];
+      else
+        [themeMusic stop];
+      [self stopThemeTimer];
+    }
     isPlaying = NO;
   }
 }
@@ -163,7 +199,7 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
     [self updateMusicVolume];
     
     //Start playing if required
-    if (isPlaying && (currentId == nil)) [mainMusic play];
+    if (isEnabled && isPlaying && (currentId == nil)) [mainMusic play];
   }
 }
 
@@ -177,7 +213,7 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
 - (void)setThemeMusicId:(NSString*)newId;
 {
   // If we should play music & the theme given is different to the current one...
-  if (isThemeMusicEnabled)
+  if (isEnabled && isThemeMusicEnabled)
   {
     // If the theme is nil, restart the background music
     if (newId == nil)
@@ -188,6 +224,7 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
         [mainMusic play];
       }
       currentId = nil;
+      [self stopThemeTimer];
     }
 
     else
@@ -204,6 +241,7 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
           if (isPlaying) {
             [themeMusic play];
             [self fadeToTheme:YES];
+            [self startThemeTimer];
           }
           return;
         }
@@ -267,5 +305,33 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
   // Update the volume
   [self updateMusicVolume];
 }
+
+- (void)startThemeTimer
+{
+  if (themeMusic != nil)
+  {
+    [self stopThemeTimer];
+    double duration = ([themeMusic duration].timeValue / [themeMusic duration].timeScale);
+    themeFadeTimer = [NSTimer scheduledTimerWithTimeInterval:(duration - 0.5) target:self selector:@selector(themeTimerDidEnd) userInfo:nil repeats:NO];
+  }
+}
+
+- (void)stopThemeTimer
+{
+  if (themeFadeTimer != nil)
+  {
+    [themeFadeTimer invalidate];
+    [themeFadeTimer release];
+    themeFadeTimer = nil;
+  }
+}
+
+- (void)themeTimerDidEnd
+{
+  [self fadeToTheme:NO];
+  [mainMusic play];
+  [self stopThemeTimer];
+}
+
 
 @end

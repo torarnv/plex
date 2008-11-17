@@ -1441,11 +1441,17 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       //                       we have no previos reference LED COLOUR, to set the LED colour back
       pControl->SetEnabled(g_guiSettings.GetInt("system.ledcolour") != LED_COLOUR_NO_CHANGE && g_guiSettings.GetInt("system.ledcolour") != LED_COLOUR_OFF);
     }
+    else if (strSetting.Equals("backgroundmusic.thememusicenabled") || strSetting.Equals("backgroundmusic.bgmusicvolume"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->SetEnabled(g_guiSettings.GetBool("backgroundmusic.bgmusicenabled"));
+    }
     else if (strSetting.Equals("backgroundmusic.themedownloadsenabled"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->SetEnabled(g_guiSettings.GetBool("backgroundmusic.thememusicenabled"));
+      pControl->SetEnabled(g_guiSettings.GetBool("backgroundmusic.thememusicenabled") && g_guiSettings.GetBool("backgroundmusic.bgmusicenabled"));
     }
+    
     else if (strSetting.Equals("musicfiles.trackformat"))
     {
       if (m_strOldTrackFormat != g_guiSettings.GetString("musicfiles.trackformat"))
@@ -2632,6 +2638,10 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     g_fontManager.ReloadTTFFonts();
   }
 #ifdef __APPLE__
+  else if (strSetting.Equals("backgroundmusic.bgmusicenabled"))
+  {
+    Cocoa_SetBackgroundMusicEnabled(g_guiSettings.GetBool("backgroundmusic.bgmusicenabled"));
+  }
   else if (strSetting.Equals("backgroundmusic.thememusicenabled"))
   {
     Cocoa_SetBackgroundMusicThemesEnabled(g_guiSettings.GetBool("backgroundmusic.thememusicenabled"));

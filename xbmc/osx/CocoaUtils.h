@@ -122,6 +122,7 @@ extern "C"
   //
   void Cocoa_StartBackgroundMusic();
   void Cocoa_StopBackgroundMusic();
+  void Cocoa_SetBackgroundMusicEnabled(bool enabled);
   void Cocoa_SetBackgroundMusicThemesEnabled(bool enabled);
   void Cocoa_SetBackgroundMusicThemeDownloadsEnabled(bool enabled);
   void Cocoa_CheckForThemeWithId(const char* tvShowId);

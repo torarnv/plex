@@ -10,6 +10,7 @@
 
 
 @interface BackgroundMusicPlayer : NSObject {
+  BOOL isEnabled;
   BOOL isThemeMusicEnabled;
   BOOL isThemeDownloadingEnabled;
   BOOL isPlaying;
@@ -29,10 +30,13 @@
   NSString *currentId;
   
   QTMovie *mainMusic, *themeMusic;
+  NSTimer* themeFadeTimer;
 }
 
 + (BackgroundMusicPlayer *)sharedInstance;
 
+- (BOOL)enabled;
+- (void)setEnabled:(BOOL)enabled;
 - (BOOL)themeMusicEnabled;
 - (void)setThemeMusicEnabled:(BOOL)enabled;
 - (void)setThemeDownloadsEnabled:(BOOL)enabled;
@@ -52,5 +56,9 @@
 - (void)setGlobalVolumeAsPercent:(int)newGlobalVolumeAsPercent;
 - (void)fadeToTheme:(BOOL)toTheme;
 - (void)adjustVolumeFadeLevel;
+
+- (void)startThemeTimer;
+- (void)stopThemeTimer;
+- (void)themeTimerDidEnd;
 
 @end
