@@ -90,6 +90,7 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
 {
   if (isEnabled != enabled)
   {
+    isEnabled = enabled;
     if (enabled)
     {
       [self loadNextTrack];
@@ -110,7 +111,6 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
       [self stopThemeTimer];
     }
   }
-  isEnabled = enabled;
 }
 
 - (BOOL)themeMusicEnabled { return isThemeMusicEnabled; }
