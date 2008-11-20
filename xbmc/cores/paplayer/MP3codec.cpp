@@ -114,7 +114,7 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
   m_CallAgainWithSameBuffer = false;
 
   CFileItem item(strFile, false);
-  bool bIsInternetStream = item.IsInternetStream();
+  bool bIsInternetStream = item.IsInternetStream() && !item.IsPlexMediaServer();
   if (!bIsInternetStream)
   {
     // Guess Bitrate and obtain replayGain information etc.
