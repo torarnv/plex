@@ -445,7 +445,7 @@ CGUISettings::CGUISettings(void)
   AddBool(2, "plexmediaserver.alwayson", 13632, false);
 #endif
   
-  AddCategory(0, "autorun", 447);
+//  AddCategory(4, "autorun", 447);
   AddBool(1, "autorun.dvd", 240, true);
   AddBool(2, "autorun.vcd", 241, true);
   AddBool(3, "autorun.cdda", 242, true);
