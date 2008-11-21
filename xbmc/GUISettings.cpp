@@ -703,10 +703,6 @@ CGUISettings::CGUISettings(void)
   // appearance settings
   AddGroup(7, 480);
 	
- AddCategory(7,"region", 20026);
-  AddString(1, "region.country", 20026, "USA", SPIN_CONTROL_TEXT);
-  AddString(2, "region.language",248,"english", SPIN_CONTROL_TEXT);
-  AddString(3, "region.charset",735,"DEFAULT", SPIN_CONTROL_TEXT); // charset is set by the language file
 	
  AddCategory(7,"lookandfeel", 14037);
   AddBool(0,"lookandfeel.soundsduringplayback",21370,false);
@@ -720,7 +716,11 @@ CGUISettings::CGUISettings(void)
   AddString(8, "lookandfeel.soundskin",15108,"SKINDEFAULT", SPIN_CONTROL_TEXT);
   AddSeparator(10, "lookandfeel.sep2");
 
-
+	AddCategory(7,"region", 20026);
+	AddString(1, "region.country", 20026, "USA", SPIN_CONTROL_TEXT);
+	AddString(2, "region.language",248,"english", SPIN_CONTROL_TEXT);
+	AddString(3, "region.charset",735,"DEFAULT", SPIN_CONTROL_TEXT); // charset is set by the language file
+	
 //  AddCategory(7, "filelists", 14018);
   AddBool(1, "filelists.hideparentdiritems", 13306, true);
   AddBool(2, "filelists.hideextensions", 497, false);
