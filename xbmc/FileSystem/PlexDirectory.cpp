@@ -184,6 +184,18 @@ class PlexMediaArtist : public PlexMediaNode
   virtual void DoBuildFileItem(CFileItemPtr& pItem, TiXmlElement& el)
   {
     pItem->SetLabel(el.Attribute("artist"));
+    
+    string path = el.Attribute("thumb");
+    
+    CURL url(pItem->m_strPath);
+    url.SetProtocol("http");
+    url.SetFileName(path.substr(1));
+    url.SetPort(32400);
+    
+    CStdString theURL;
+    url.GetURL(theURL);
+    
+    pItem->SetThumbnailImage(theURL);
   }
 };
 
