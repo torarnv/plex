@@ -34,6 +34,7 @@ public:
   virtual ~CGUIWindowMusicNav(void);
 
   virtual bool OnMessage(CGUIMessage& message);
+  virtual bool OnAction(const CAction& action);
   virtual void Render();
 
   virtual void ClearFileItems();
