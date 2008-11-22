@@ -12,6 +12,8 @@
 #include "QTPlayer.h"
 #include "FileItem.h"
 #include "Settings.h"
+#include "Util.h"
+#include "MusicInfoTag.h"
 
 using namespace XFILE;
 
@@ -32,7 +34,11 @@ QTPlayer::~QTPlayer()
 bool QTPlayer::OpenFile(const CFileItem &file, const CPlayerOptions &options)
 {
   m_strPath = file.m_strPath;
-  if (ThreadHandle() == NULL)
+	
+	// Make sure musicdb:// paths get resolved properly
+	if (m_strPath.Left(7) == "musicdb") m_strPath = file.GetMusicInfoTag()->GetURL().c_str();
+  
+	if (ThreadHandle() == NULL)
     Create();
   return true;
 }
