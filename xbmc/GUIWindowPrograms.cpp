@@ -342,7 +342,8 @@ bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemL
     {
       // Special cases for app compatibility
       if ((strDirectory.Find("/DVD Player.app/") > 0) ||
-          (strDirectory.Find("/iTunes.app/") > 0))
+          (strDirectory.Find("/iTunes.app/") > 0)			||
+					(strDirectory.Find("/EyeTV.app/") > 0))
         PlexRemoteHelper::Get().Stop();
       
       Cocoa_LaunchApp(strDirectory.c_str());
