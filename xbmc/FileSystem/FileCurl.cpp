@@ -227,18 +227,21 @@ long CFileCurl::CReadState::Connect(unsigned int size)
   m_buffer.Destroy();
   m_buffer.Create(size * 3);
 
-  // read some data in to try and obtain the length
-  // maybe there's a better way to get this info??
+  // Read some data in to try and obtain the length. There could be a better way to get this info.
   m_stillRunning = 1;
-  if (!FillBuffer(1))
-  {
-    CLog::Log(LOGERROR, "CFileCurl::CReadState::Open, didn't get any data from stream.");    
-    return -1;
-  }
+  bool couldFillBuffer = FillBuffer(1);
 
+  // Ask for the length, now that we've read the header.
   double length;
   if (CURLE_OK == g_curlInterface.easy_getinfo(m_easyHandle, CURLINFO_CONTENT_LENGTH_DOWNLOAD, &length))
     m_fileSize = m_filePos + (__int64)length;
+  
+  // If we started at the end of the file, then we're of course not able to read a single byte.
+  if (m_fileSize != m_filePos && couldFillBuffer == false)
+  {
+    CLog::Log(LOGERROR, "CFileCurl::CReadState::Open, didn't get any data from stream.");    
+    return -1; 
+  }
 
   long response;
   if (CURLE_OK == g_curlInterface.easy_getinfo(m_easyHandle, CURLINFO_RESPONSE_CODE, &response))
@@ -718,7 +721,7 @@ __int64 CFileCurl::Seek(__int64 iFilePosition, int iWhence)
 
   if(oldstate)
     delete oldstate;
-
+  
   return m_state->m_filePos;
 }
 
@@ -761,7 +764,7 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
 
   CURLcode result = g_curlInterface.easy_perform(m_state->m_easyHandle);
 
-  if (result == CURLE_GOT_NOTHING || CURLE_HTTP_RETURNED_ERROR)
+  if (result == CURLE_GOT_NOTHING || result == CURLE_HTTP_RETURNED_ERROR)
   {
     /* some http servers and shoutcast servers don't give us any data on a head request */
     /* request normal and just fail out, it's their loss */
