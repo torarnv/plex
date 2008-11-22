@@ -445,7 +445,7 @@ CGUISettings::CGUISettings(void)
   AddBool(2, "plexmediaserver.alwayson", 13632, false);
 #endif
   
-  AddCategory(0, "autorun", 447);
+//  AddCategory(4, "autorun", 447);
   AddBool(1, "autorun.dvd", 240, true);
   AddBool(2, "autorun.vcd", 241, true);
   AddBool(3, "autorun.cdda", 242, true);
@@ -703,10 +703,6 @@ CGUISettings::CGUISettings(void)
   // appearance settings
   AddGroup(7, 480);
 	
- AddCategory(7,"region", 20026);
-  AddString(1, "region.country", 20026, "USA", SPIN_CONTROL_TEXT);
-  AddString(2, "region.language",248,"english", SPIN_CONTROL_TEXT);
-  AddString(3, "region.charset",735,"DEFAULT", SPIN_CONTROL_TEXT); // charset is set by the language file
 	
  AddCategory(7,"lookandfeel", 14037);
   AddBool(0,"lookandfeel.soundsduringplayback",21370,false);
@@ -720,7 +716,11 @@ CGUISettings::CGUISettings(void)
   AddString(8, "lookandfeel.soundskin",15108,"SKINDEFAULT", SPIN_CONTROL_TEXT);
   AddSeparator(10, "lookandfeel.sep2");
 
-
+	AddCategory(7,"region", 20026);
+	AddString(1, "region.country", 20026, "USA", SPIN_CONTROL_TEXT);
+	AddString(2, "region.language",248,"english", SPIN_CONTROL_TEXT);
+	AddString(3, "region.charset",735,"DEFAULT", SPIN_CONTROL_TEXT); // charset is set by the language file
+	
 //  AddCategory(7, "filelists", 14018);
   AddBool(1, "filelists.hideparentdiritems", 13306, true);
   AddBool(2, "filelists.hideextensions", 497, false);
@@ -728,7 +728,7 @@ CGUISettings::CGUISettings(void)
   AddBool(0, "filelists.unrollarchives",516, true);
   AddBool(0, "filelists.fulldirectoryhistory", 15106, true);
   AddSeparator(6, "filelists.sep1");
-  AddBool(7, "filelists.allowfiledeletion", 14071, false);
+  AddBool(7, "filelists.allowfiledeletion", 14071, true);
   AddBool(8, "filelists.disableaddsourcebuttons", 21382,  false);
   AddSeparator(9, "filelists.sep2");
   AddBool(0, "filelists.showhidden", 21330, false);
