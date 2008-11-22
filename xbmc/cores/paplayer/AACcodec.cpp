@@ -221,7 +221,6 @@ unsigned __int32 AACCodec::AACOpenCallback(const char *pName, const char *mode, 
 void AACCodec::AACCloseCallback(void *userData)
 {
   AACCodec* codec=(AACCodec*) userData;
-
   if (!codec)
     return;
 
@@ -241,13 +240,10 @@ unsigned __int32 AACCodec::AACReadCallback(void *userData, void *pBuffer, unsign
 __int32 AACCodec::AACSeekCallback(void *userData, unsigned __int64 pos)
 {
   AACCodec* codec=(AACCodec*) userData;
-
   if (!codec)
     return -1;
 
-  codec->m_file.Seek(pos);
-
-  return 0;
+  return (codec->m_file.Seek(pos) == true) ? 0 : -1;
 }
 
 __int64 AACCodec::AACFilesizeCallback(void *userData)
