@@ -133,6 +133,8 @@ public:
   void unknownToUTF8(CStdStringA &sourceDest);
   void unknownToUTF8(const CStdStringA &source, CStdStringA &dest);
 
+  void unknownTo(const CStdStringA& strDestCharset, const CStdStringA& strSource, CStdStringA& strDest);
+  
 private:
   std::vector<CStdString> m_vecCharsetNames;
   std::vector<CStdString> m_vecCharsetLabels;

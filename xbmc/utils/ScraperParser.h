@@ -42,6 +42,7 @@ public:
   const CStdString GetName() { return m_name; }
   const CStdString GetContent() { return m_content; }
   const CStdString GetSearchStringEncoding() { return m_SearchStringEncoding; }
+  const CStdString GetServerContentEncoding() { return m_ServerContentEncoding; }
   const CStdString Parse(const CStdString& strTag, CScraperSettings* pSettings=NULL);
   bool HasFunction(const CStdString& strTag);
 
@@ -62,6 +63,7 @@ private:
   const char* m_name;
   const char* m_content;
   const char* m_SearchStringEncoding;
+  const char* m_ServerContentEncoding;
 
   CScraperSettings* m_settings;
 };
