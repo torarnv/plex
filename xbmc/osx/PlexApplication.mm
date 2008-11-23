@@ -86,7 +86,8 @@ BOOL gCalledAppMainline = FALSE;
   if(NSKeyDown == [anEvent type] || NSKeyUp == [anEvent type]) 
   {
     modif = [anEvent modifierFlags];
-// Convert event to sv_key
+
+    // Convert event to sv_key
     if(NSKeyUp == [anEvent type])
     {
       sv_key.SVKey = (BYTE) [anEvent keyCode];
@@ -95,9 +96,11 @@ BOOL gCalledAppMainline = FALSE;
       sv_key.Alt = ( modif & NSAlternateKeyMask ) != 0;
       sv_key.Ctrl = ( modif & NSControlKeyMask ) != 0;
     }
-//
+
     if(!g_OSXKeyboardLayouts.Process(sv_key) && modif & NSCommandKeyMask)
+    {
 			[super sendEvent: anEvent];
+    }
   }
   else
   {
