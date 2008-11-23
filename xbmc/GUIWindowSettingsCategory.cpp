@@ -798,7 +798,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(13610), APPLE_REMOTE_DISABLED);
       pControl->AddLabel(g_localizeStrings.Get(13611), APPLE_REMOTE_STANDARD);
       pControl->AddLabel(g_localizeStrings.Get(13612), APPLE_REMOTE_UNIVERSAL);
-      pControl->AddLabel(g_localizeStrings.Get(13613), APPLE_REMOTE_HARMONY);
+      pControl->AddLabel(g_localizeStrings.Get(13613), APPLE_REMOTE_MULTICODE);
       pControl->SetValue(pSettingInt->GetData());
     }
     else if (strSetting.Equals("plexmediaserver.mode"))
@@ -1110,7 +1110,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
        if (pControl)
        {
          int value = g_guiSettings.GetInt("appleremote.mode");
-         if (value == APPLE_REMOTE_UNIVERSAL || value == APPLE_REMOTE_HARMONY)
+         if (value == APPLE_REMOTE_UNIVERSAL || value == APPLE_REMOTE_MULTICODE)
            pControl->SetEnabled(true);
          else
            pControl->SetEnabled(false);

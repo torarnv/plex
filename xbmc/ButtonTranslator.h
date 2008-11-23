@@ -82,8 +82,8 @@ private:
   WORD TranslateUniversalRemoteButton(TiXmlElement *pButton);
   WORD TranslateUniversalRemoteString(const char *szButton);
 
-  WORD TranslateHarmonyRemoteButton(TiXmlElement *pButton);
-  WORD TranslateHarmonyRemoteString(const char *szButton);
+  WORD TranslateMultiCodeRemoteButton(TiXmlElement *pButton);
+  WORD TranslateMultiCodeRemoteString(const char *szButton);
 
   WORD TranslateKeyboardString(const char *szButton);
   WORD TranslateKeyboardButton(TiXmlElement *pButton);

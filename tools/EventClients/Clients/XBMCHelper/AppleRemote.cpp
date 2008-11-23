@@ -73,7 +73,7 @@ static struct option long_options[] =
     { "help",       no_argument,         0, 'h' },
     { "server",     required_argument,   0, 's' },
     { "universal",  no_argument,         0, 'u' },
-    { "harmony",    no_argument,         0, 'y' },
+    { "multicode",  no_argument,         0, 'm' },
     { "timeout",    required_argument,   0, 't' },
     { "verbose",    no_argument,         0, 'v' },
     { "externalConfig", no_argument,     0, 'x' },
@@ -81,7 +81,7 @@ static struct option long_options[] =
     { "secureInput", required_argument,  0, 'i' },
     { 0, 0, 0, 0 },
 };
-static const char *options = "hsutvxaiy";
+static const char *options = "hsutvxaim";
  
 const int REMOTE_SWITCH_COOKIE = 39;
 const int IGNORE_CODE = 19;
@@ -97,7 +97,7 @@ void handleSignal(int signal);
 
 #define APPLE_REMOTE "JS0:Apple Remote"
 #define SEQUENTIAL_UNIVERSAL_REMOTE "R1"
-#define HARMONY_UNIVERSAL_REMOTE "LH"
+#define MULTICODE_UNIVERSAL_REMOTE "MCUR"
 
 #define kRemoteButtonUp            1
 #define kRemoteButtonDown          2
@@ -140,8 +140,7 @@ map<int, ButtonConfig> buttonConfigMap;
 int remoteID = FIRST_REMOTE_ID;
 string remoteString = SEQUENTIAL_UNIVERSAL_REMOTE;
 bool isUniversalMode = false;
-bool isHarmonyMode = false;
-bool launchOnMenu = true;
+bool isMultiCodeMode = false;
 int sequenceTimeout = 500;
 bool verbose = false;
 string serverAddress = "127.0.0.1";
@@ -174,7 +173,7 @@ class ReactorAppleRemote : public Reactor
     char           strButton[16];
     int            button = data & kButtonMask;
 
-    if (isHarmonyMode)
+    if (isMultiCodeMode)
     {
       sprintf(strButton, "%d:%d", remoteID, button);
     }
@@ -186,7 +185,7 @@ class ReactorAppleRemote : public Reactor
     if (verbose)
       printf("Received %s button\n", strButton);
     
-    if (launchOnMenu && button == kRemoteButtonMenu)
+    if (button == kRemoteButtonMenu)
 		{
 			// Make sure XBMC is running.
 			if (isProgramRunning(BINARY_NAME) == false && serverAddress == "127.0.0.1")
@@ -319,7 +318,7 @@ void usage()
     printf("  -h, --help               Print this help message and exit.\n");
     printf("  -s, --server <addr>      Send events to the specified IP.\n");
     printf("  -u, --universal          Runs in Universal Remote mode.\n");
-    printf("  -y, --harmony            Runs in Harmony Remote mode.\n");
+    printf("  -m, --multicode          Runs in Multicode Universal remote mode.\n");
     printf("  -t, --timeout <ms>       Timeout length for sequences (default: 500ms).\n");
     printf("  -v, --verbose            Prints lots of debugging information.\n");
     printf("  -a, --appLocation <path> The location of the application.\n");
@@ -717,7 +716,7 @@ int main(int argc, char **argv)
 	keyMap["35_31_18_35_31_18_"] = kRemoteButtonPlay_Hold;
 	keyMap["19_"] = kRemoteControl_Switched;
 	
-  // Mappings for Universal Mode (sequential (non harmony) mode)
+  // Mappings for Universal Mode (sequential mode)
   keyMapUniversal["5_"] = "Select";
   keyMapUniversal["3_"] = "Left";
   keyMapUniversal["9_"] = "Left";
@@ -752,7 +751,7 @@ int main(int argc, char **argv)
   keyMapUniversal["6_1_1_"] = "Play";
   keyMapUniversal["6_1_2_"] = "Pause";
   
-  // Harmony Multi Remote mode key mappings (these include remote id)
+  // Multi Code mode key mappings (these include remote id)
   keyMapUniversal["150:1_"] = "Up";
   keyMapUniversal["150:2_"] = "Down";
   keyMapUniversal["150:3_"] = "Left";
@@ -932,10 +931,10 @@ void parseOptions(int argc, char** argv)
     case 'u':
       isUniversalMode = true;
       break;
-    case 'y':
-      isHarmonyMode = true;
+    case 'm':
+      isMultiCodeMode = true;
       isUniversalMode = true;
-      remoteString = HARMONY_UNIVERSAL_REMOTE;
+      remoteString = MULTICODE_UNIVERSAL_REMOTE;
       break;
     case 't':
       sequenceTimeout = atoi(optarg);
@@ -973,19 +972,7 @@ void parseOptions(int argc, char** argv)
   }
   
   if (readExternal == true)
-    readConfig();
-
-  // Pundy - Temporary for testing only.
-  string noLaunchFile = getenv("HOME");
-  noLaunchFile += "/.plex_nolaunch";
-  ifstream nlifs(noLaunchFile.c_str());
-  if (nlifs)  {
-    printf("~/.plex_nolaunch found - will not launch plex on menu press\n");
-    launchOnMenu = false;
-  } else {
-    printf("~/.plex_nolaunch not found.  Will launch plex on menu press\n");
-  }
-  
+    readConfig(); 
 }
 
 void readConfig()
@@ -1034,7 +1021,7 @@ void handleSignal(int signal)
   {
     // Reset configuration.
     isUniversalMode = false;
-    isHarmonyMode = false;
+    isMultiCodeMode = false;
     remoteString = SEQUENTIAL_UNIVERSAL_REMOTE;
     sequenceTimeout = 500;
     verbose = false;

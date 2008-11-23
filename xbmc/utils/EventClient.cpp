@@ -85,9 +85,9 @@ void CEventButtonState::Load()
       {
         m_iKeyCode = g_buttonTranslator.TranslateUniversalRemoteString( m_buttonName.c_str() );
       }
-      else if  ( m_mapName.compare("LH") == 0 ) // Logitech Harmony Universal Remote
+      else if  ( m_mapName.compare("MCUR") == 0 ) // MultiCode Universal Remote
       {
-        m_iKeyCode = g_buttonTranslator.TranslateHarmonyRemoteString( m_buttonName.c_str() );
+        m_iKeyCode = g_buttonTranslator.TranslateMultiCodeRemoteString( m_buttonName.c_str() );
       }
       else if ( (m_mapName.length() > 3) &&
                 (m_mapName.compare(0, 3, "LI:") == 0) ) // starts with LI: ?
