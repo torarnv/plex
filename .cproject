@@ -8,6 +8,7 @@
 
 <macros>
 <stringMacro name="HAS_RAR" type="VALUE_TEXT" value="1"/>
+<stringMacro name="HAS_EVENT_SERVER" type="VALUE_TEXT" value="1"/>
 <stringMacro name="HAS_VISUALIZATION" type="VALUE_TEXT" value="1"/>
 <stringMacro name="_LINUX" type="VALUE_TEXT" value="1"/>
 <stringMacro name="__APPLE__" type="VALUE_TEXT" value="1"/>
@@ -2745,6 +2746,7 @@
 
 <macros>
 <stringMacro name="HAS_RAR" type="VALUE_TEXT" value="1"/>
+<stringMacro name="HAS_EVENT_SERVER" type="VALUE_TEXT" value="1"/>
 <stringMacro name="HAS_VISUALIZATION" type="VALUE_TEXT" value="1"/>
 <stringMacro name="_LINUX" type="VALUE_TEXT" value="1"/>
 <stringMacro name="__APPLE__" type="VALUE_TEXT" value="1"/>
@@ -5065,6 +5067,7 @@
 
 <macros>
 <stringMacro name="HAS_RAR" type="VALUE_TEXT" value="1"/>
+<stringMacro name="HAS_EVENT_SERVER" type="VALUE_TEXT" value="1"/>
 <stringMacro name="_LINUX" type="VALUE_TEXT" value="1"/>
 <stringMacro name="HAS_SDL_OPENGL" type="VALUE_TEXT" value="1"/>
 <stringMacro name="__APPLE__" type="VALUE_TEXT" value="1"/>
