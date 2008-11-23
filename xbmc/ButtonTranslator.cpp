@@ -575,6 +575,17 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, WORD wWindowID)
       pButton = pButton->NextSiblingElement();
     }
   }
+  if ((pDevice = pWindow->FirstChild("harmonyremote")) != NULL)
+  { // map universal remote actions
+    TiXmlElement *pButton = pDevice->FirstChildElement();
+    while (pButton)
+    {
+      WORD wButtonCode = TranslateHarmonyRemoteString(pButton->Value());
+      if (pButton->FirstChild())
+        MapAction(wButtonCode, pButton->FirstChild()->Value(), map);
+      pButton = pButton->NextSiblingElement();
+    }
+  }  
   if ((pDevice = pWindow->FirstChild("keyboard")) != NULL)
   { // map keyboard actions
     TiXmlElement *pButton = pDevice->FirstChildElement();
@@ -1001,6 +1012,92 @@ WORD CButtonTranslator::TranslateUniversalRemoteString(const char *szButton)
   // Button Code is 255 - OBC (Original Button Code) of the button
   WORD wButtonCode = 255 - (WORD)atol(szCode);
   if (wButtonCode > 255) wButtonCode = 0;
+  return wButtonCode;
+}
+
+WORD CButtonTranslator::TranslateHarmonyRemoteButton(TiXmlElement *pButton)
+{
+  const char *szButton = pButton->Value();
+  return TranslateHarmonyRemoteString(szButton);
+}
+
+WORD CButtonTranslator::TranslateHarmonyRemoteString(const char *szButton)
+{
+  if (!szButton) return 0;
+  WORD wButtonCode = 0;
+  CStdString strButton = szButton;
+  strButton.ToLower();
+  if (strButton.Equals("up")) wButtonCode = HARMONY_IR_REMOTE_UP;
+  else if (strButton.Equals("down")) wButtonCode = HARMONY_IR_REMOTE_DOWN;
+  else if (strButton.Equals("left")) wButtonCode = HARMONY_IR_REMOTE_LEFT;
+  else if (strButton.Equals("right")) wButtonCode = HARMONY_IR_REMOTE_RIGHT;
+  else if (strButton.Equals("ok")) wButtonCode = HARMONY_IR_REMOTE_OK;
+
+  else if (strButton.Equals("stop")) wButtonCode = HARMONY_IR_REMOTE_STOP;
+  else if (strButton.Equals("replay")) wButtonCode = HARMONY_IR_REMOTE_REPLAY;
+  else if (strButton.Equals("skip")) wButtonCode = HARMONY_IR_REMOTE_SKIP;
+  else if (strButton.Equals("play")) wButtonCode = HARMONY_IR_REMOTE_PLAY;  
+
+  else if (strButton.Equals("record")) wButtonCode = HARMONY_IR_REMOTE_RECORD;
+  else if (strButton.Equals("rewind")) wButtonCode = HARMONY_IR_REMOTE_REWIND;
+  else if (strButton.Equals("forward")) wButtonCode = HARMONY_IR_REMOTE_FORWARD;
+  else if (strButton.Equals("pause")) wButtonCode = HARMONY_IR_REMOTE_PAUSE;
+   
+  else if (strButton.Equals("guide")) wButtonCode = HARMONY_IR_REMOTE_GUIDE;
+  else if (strButton.Equals("info")) wButtonCode = HARMONY_IR_REMOTE_INFO;
+  else if (strButton.Equals("exit")) wButtonCode = HARMONY_IR_REMOTE_EXIT;
+  else if (strButton.Equals("menu")) wButtonCode = HARMONY_IR_REMOTE_MENU;
+  else if (strButton.Equals("mute")) wButtonCode = HARMONY_IR_REMOTE_MUTE;  
+  else if (strButton.Equals("prev")) wButtonCode = HARMONY_IR_REMOTE_PREV;
+  
+  else if (strButton.Equals("volumeplus")) wButtonCode = HARMONY_IR_REMOTE_VOLUME_PLUS;
+  else if (strButton.Equals("volumeminus")) wButtonCode = HARMONY_IR_REMOTE_VOLUME_MINUS;
+  else if (strButton.Equals("channelplus")) wButtonCode = HARMONY_IR_REMOTE_CHANNEL_PLUS;
+  else if (strButton.Equals("channelminus")) wButtonCode = HARMONY_IR_REMOTE_CHANNEL_MINUS;
+  else if (strButton.Equals("largeup")) wButtonCode = HARMONY_IR_REMOTE_LARGE_UP;
+  else if (strButton.Equals("largedown")) wButtonCode = HARMONY_IR_REMOTE_LARGE_DOWN;
+  
+  else if (strButton.Equals("zero")) wButtonCode = HARMONY_IR_REMOTE_0;
+  else if (strButton.Equals("one")) wButtonCode = HARMONY_IR_REMOTE_1;
+  else if (strButton.Equals("two")) wButtonCode = HARMONY_IR_REMOTE_2;
+  else if (strButton.Equals("three")) wButtonCode = HARMONY_IR_REMOTE_3;
+  else if (strButton.Equals("four")) wButtonCode = HARMONY_IR_REMOTE_4;
+  else if (strButton.Equals("five")) wButtonCode = HARMONY_IR_REMOTE_5;
+  else if (strButton.Equals("six")) wButtonCode = HARMONY_IR_REMOTE_6;
+  else if (strButton.Equals("seven")) wButtonCode = HARMONY_IR_REMOTE_7;
+  else if (strButton.Equals("eight")) wButtonCode = HARMONY_IR_REMOTE_8;
+  else if (strButton.Equals("nine")) wButtonCode = HARMONY_IR_REMOTE_9;
+  
+  else if (strButton.Equals("clear")) wButtonCode = HARMONY_IR_REMOTE_CLEAR;
+  else if (strButton.Equals("enter")) wButtonCode = HARMONY_IR_REMOTE_ENTER;
+
+  else if (strButton.Equals("power")) wButtonCode = HARMONY_IR_REMOTE_POWER;
+  else if (strButton.Equals("sleep")) wButtonCode = HARMONY_IR_REMOTE_SLEEP;
+  else if (strButton.Equals("aspect")) wButtonCode = HARMONY_IR_REMOTE_ASPECT;
+  else if (strButton.Equals("queue")) wButtonCode = HARMONY_IR_REMOTE_QUEUE;
+
+  else if (strButton.Equals("f1")) wButtonCode = HARMONY_IR_REMOTE_F1;
+  else if (strButton.Equals("f2")) wButtonCode = HARMONY_IR_REMOTE_F2;
+  else if (strButton.Equals("f3")) wButtonCode = HARMONY_IR_REMOTE_F3;
+  else if (strButton.Equals("f4")) wButtonCode = HARMONY_IR_REMOTE_F4;
+  else if (strButton.Equals("f5")) wButtonCode = HARMONY_IR_REMOTE_F5;
+  else if (strButton.Equals("f6")) wButtonCode = HARMONY_IR_REMOTE_F6;
+  else if (strButton.Equals("f7")) wButtonCode = HARMONY_IR_REMOTE_F7;
+  else if (strButton.Equals("f8")) wButtonCode = HARMONY_IR_REMOTE_F8;
+  else if (strButton.Equals("f9")) wButtonCode = HARMONY_IR_REMOTE_F9;
+  else if (strButton.Equals("f10")) wButtonCode = HARMONY_IR_REMOTE_F10;
+  else if (strButton.Equals("f11")) wButtonCode = HARMONY_IR_REMOTE_F11;
+  else if (strButton.Equals("f12")) wButtonCode = HARMONY_IR_REMOTE_F12;
+  else if (strButton.Equals("f13")) wButtonCode = HARMONY_IR_REMOTE_F13;
+  else if (strButton.Equals("f14")) wButtonCode = HARMONY_IR_REMOTE_F14;
+  else if (strButton.Equals("f15")) wButtonCode = HARMONY_IR_REMOTE_F15;
+  
+  else if (strButton.Equals("red")) wButtonCode = HARMONY_IR_REMOTE_RED;
+  else if (strButton.Equals("green")) wButtonCode = HARMONY_IR_REMOTE_GREEN;
+  else if (strButton.Equals("yellow")) wButtonCode = HARMONY_IR_REMOTE_YELLOW;
+  else if (strButton.Equals("blue")) wButtonCode = HARMONY_IR_REMOTE_BLUE;
+  
+  else CLog::Log(LOGERROR, "Harmony Remote Translator: Can't find button %s", strButton.c_str());
   return wButtonCode;
 }
 

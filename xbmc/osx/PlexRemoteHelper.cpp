@@ -53,6 +53,8 @@ string PlexRemoteHelper::GetConfigString()
   std::string strConfig;
   if (GetMode() == APPLE_REMOTE_UNIVERSAL)
     strConfig = "--universal ";
+  else if (GetMode() == APPLE_REMOTE_HARMONY)
+    strConfig = "--harmony ";
 
   // Delay.
   char strDelay[64];
