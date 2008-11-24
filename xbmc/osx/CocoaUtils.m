@@ -1108,14 +1108,24 @@ bool Cocoa_IsAppBundle(const char* filePath)
 void Cocoa_ExecAppleScriptFile(const char* filePath)
 {
 	NSString* scriptFile = [NSString stringWithUTF8String:filePath];
-	NSString* userPath = [@"~/Library/Application Support/Plex/scripts" stringByExpandingTildeInPath];
-	NSString* systemPath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"Contents/Resources/Plex/scripts"];
+	NSString* userScriptsPath = [@"~/Library/Application Support/Plex/scripts" stringByExpandingTildeInPath];
+	NSString* bundleScriptsPath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"Contents/Resources/Plex/scripts"];
+	NSString* bundleSysScriptsPath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"Contents/Resources/Plex/system/AppleScripts"];
 	
-	if ([[NSFileManager defaultManager] fileExistsAtPath:[userPath stringByAppendingPathComponent:scriptFile]]) // Check whether a script exists in the app bundle
-		scriptFile = [userPath stringByAppendingPathComponent:scriptFile];
-	else if ([[NSFileManager defaultManager] fileExistsAtPath:[systemPath stringByAppendingPathComponent:scriptFile]]) // Check whether a script exists in app support
-		scriptFile = [systemPath stringByAppendingPathComponent:scriptFile];
-	else if (![[NSFileManager defaultManager] fileExistsAtPath:scriptFile]) // If no script could be found, check if we were given a full path
+	// Check whether a script exists in the app bundle's AppleScripts folder
+	if ([[NSFileManager defaultManager] fileExistsAtPath:[bundleSysScriptsPath stringByAppendingPathComponent:scriptFile]])
+		scriptFile = [bundleSysScriptsPath stringByAppendingPathComponent:scriptFile];
+	
+	// Check whether a script exists in app support
+	else if ([[NSFileManager defaultManager] fileExistsAtPath:[userScriptsPath stringByAppendingPathComponent:scriptFile]]) // Check whether a script exists in the app bundle
+		scriptFile = [userScriptsPath stringByAppendingPathComponent:scriptFile];
+	
+	// Check whether a script exists in the app bundle's Scripts folder
+	else if ([[NSFileManager defaultManager] fileExistsAtPath:[bundleScriptsPath stringByAppendingPathComponent:scriptFile]]) 
+		scriptFile = [bundleScriptsPath stringByAppendingPathComponent:scriptFile];
+	
+	// If no script could be found, check if we were given a full path
+	else if (![[NSFileManager defaultManager] fileExistsAtPath:scriptFile])
 		return;
 	
 	NSAppleScript* appleScript = [[NSAppleScript alloc] initWithContentsOfURL:[NSURL fileURLWithPath:scriptFile] error:nil];
