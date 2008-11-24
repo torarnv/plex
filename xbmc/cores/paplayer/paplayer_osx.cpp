@@ -925,11 +925,12 @@ bool PAPlayer::AddPacketsToStream(int stream, CAudioDecoder &dec)
 			m_packet[stream][0].length = PACKET_SIZE;
 			m_packet[stream][0].stream = stream;
 			
+			// Pass no-deamped samples to callback.
+			StreamCallback(&m_packet[stream][0]);
+			
 			// Handle volume de-amp
 			CPCMAmplifier *amplifier = m_pStream[stream]->Amplifier();
 			amplifier->DeAmplify((short *)pcmPtr, m_packet[stream][0].length / 2);
-			
-			StreamCallback(&m_packet[stream][0]);
 			
 			// Write the data.
 			m_pStream[stream]->AddPackets(pcmPtr, PACKET_SIZE);
