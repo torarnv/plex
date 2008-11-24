@@ -113,15 +113,25 @@ bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString
 
   CLog::Log(LOGINFO, "Creating thumb from: %s as: %s", strFileName.c_str(),strThumbFileName.c_str());
 
-  // load our dll
-  if (!m_dll.Load()) return false;
-
-  memset(&m_info, 0, sizeof(ImageInfo));
-  if (!m_dll.CreateThumbnail(strFileName.c_str(), strThumbFileName.c_str(), g_advancedSettings.m_thumbSize, g_advancedSettings.m_thumbSize, g_guiSettings.GetBool("pictures.useexifrotation")))
+  CFileItem fileItem(strFileName, false);
+  if (fileItem.IsPlexMediaServer())
   {
-    CLog::Log(LOGERROR, "PICTURE::DoCreateThumbnail: Unable to create thumbfile %s from image %s", strThumbFileName.c_str(), strFileName.c_str());
-    return false;
+    // Trust what we get from the media server.
+    XFILE::CFile::Cache(strFileName, strThumbFileName, 0);
   }
+  else
+  {
+    // load our dll
+    if (!m_dll.Load()) return false;
+  
+    memset(&m_info, 0, sizeof(ImageInfo));
+    if (!m_dll.CreateThumbnail(strFileName.c_str(), strThumbFileName.c_str(), g_advancedSettings.m_thumbSize, g_advancedSettings.m_thumbSize, g_guiSettings.GetBool("pictures.useexifrotation")))
+    {
+      CLog::Log(LOGERROR, "PICTURE::DoCreateThumbnail: Unable to create thumbfile %s from image %s", strThumbFileName.c_str(), strFileName.c_str());
+      return false;
+    }
+  }
+  
   return true;
 }
 
