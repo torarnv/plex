@@ -24,14 +24,15 @@
 #include "cores/IPlayer.h"
 #include "utils/Thread.h"
 #include "AudioDecoder.h"
+#ifndef __APPLE__
 #include "cores/ssrc.h"
+#endif
+#include "../../utils/PCMAmplifier.h"
 #ifdef __APPLE__
 #include "CoreAudioAUHAL.h"
-#include "../../utils/PCMAmplifier.h"
 #elif defined(HAS_ALSA)
 #define ALSA_PCM_NEW_HW_PARAMS_API
 #include <alsa/asoundlib.h>
-#include "../../utils/PCMAmplifier.h"
 #endif
 
 class CFileItem;
@@ -172,10 +173,10 @@ private:
   DWORD m_nextPacket[2];
 #elif defined(__APPLE__)
   CoreAudioAUHAL*   m_pStream[2];
-  //CPCMAmplifier 	m_amp[2];
-  int               m_channelCount[2];
-  int               m_sampleRate[2];
-  int               m_bitsPerSample[2];
+  CPCMAmplifier 	m_amp[2];
+  //int               m_channelCount[2];
+  //int               m_sampleRate[2];
+  //int               m_bitsPerSample[2];
 #elif defined(HAS_ALSA)
   snd_pcm_t*  		m_pStream[2];
   snd_pcm_uframes_t	m_periods[2];
@@ -199,10 +200,6 @@ private:
 
   unsigned int     m_CacheLevel;
   unsigned int     m_LastCacheLevelCheck;
-
-    // resampler
-  Cssrc            m_resampler[2];
-  bool             m_resampleAudio;
 
   // our file
   CFileItem*        m_currentFile;

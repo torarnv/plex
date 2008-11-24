@@ -47,8 +47,26 @@ int  CPCMAmplifier::GetVolume()
   return m_nVolume;
 }
 
-     // only works on 16bit samples
-void CPCMAmplifier::DeAmplify(short *pcm, int nSamples)
+// 32 bit float de-amplifier
+void CPCMAmplifier::DeAmplifyInt16(short *pcm, int nSamples)
+{
+	if (m_dFactor >= 1.0)
+	{
+		// no process required. using >= to make sure no amp is ever done (only de-amp)
+		return;
+	}
+	
+	for (int nSample=0; nSample<nSamples; nSample++)
+	{
+		int nSampleValue = pcm[nSample];
+		nSampleValue = (int)((double)nSampleValue * m_dFactor);		
+		
+		pcm[nSample] = (short)nSampleValue;
+	}
+}
+
+// 32 bit float de-amplifier
+void CPCMAmplifier::DeAmplifyFloat32(float *pcm, int nSamples)
 {
   if (m_dFactor >= 1.0)
   {
@@ -58,9 +76,9 @@ void CPCMAmplifier::DeAmplify(short *pcm, int nSamples)
 
   for (int nSample=0; nSample<nSamples; nSample++)
   {
-    int nSampleValue = pcm[nSample]; // must be int. so that we can check over/under flow
-    nSampleValue = (int)((double)nSampleValue * m_dFactor);
+    float nSampleValue = pcm[nSample];
+    nSampleValue *= m_dFactor;
 
-    pcm[nSample] = (short)nSampleValue;
+    pcm[nSample] = nSampleValue;
   }
 }

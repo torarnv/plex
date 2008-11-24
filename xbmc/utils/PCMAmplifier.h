@@ -31,9 +31,10 @@ public:
 
   void SetVolume(int nVolume);
   int  GetVolume();
-
-  // only works on 16bit samples
-  void DeAmplify(short *pcm, int nSamples);
+	
+	
+  void DeAmplifyInt16(short *pcm, int nSamples);
+  void DeAmplifyFloat32(float *pcm, int nSamples);
 
 protected:
   int m_nVolume;

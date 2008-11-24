@@ -66,13 +66,22 @@ void CAudioBuffer::Set(const unsigned char* psBuffer, int iSize, int iBitsPerSam
       m_pBuffer[i] = ((short)((char *)psBuffer)[i]) << 8;
     }
   }
-  else // assume 24 bit data
+  else if (iBitsPerSample == 24)
   {
     iSize /= 3;
     for (int i = 0; i < iSize && i < m_iLen; i++)
     { // 24 bit -> ignore least significant byte and convert to signed short
       m_pBuffer[i] = (((int)psBuffer[3 * i + 1]) << 0) + (((int)((char *)psBuffer)[3 * i + 2]) << 8);
     }
+  }
+  else // convert 32 bit float
+  {
+	  iSize /= 4;
+	  for (int i = 0; i < iSize && i < m_iLen; i++)
+	  {
+		   // 32 bit float - convert to 16 bit int by multiplying by 32767 (not entirely accurate but fine for vis)
+		  m_pBuffer[i] = ((float *)psBuffer)[i] * 32767;
+	  }
   }
   for (int i = iSize; i < m_iLen;++i) m_pBuffer[i] = 0;
 }

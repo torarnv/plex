@@ -106,7 +106,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_DEINIT:
     if (m_thumbLoader.IsLoading())
-      m_thumbLoader.StopThread();
+      //m_thumbLoader.StopThread();
     m_database.Close();
     break;
 
