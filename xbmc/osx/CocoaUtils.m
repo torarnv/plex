@@ -1105,6 +1105,35 @@ bool Cocoa_IsAppBundle(const char* filePath)
                                            
 }
 
+const char* Cocoa_GetIconFromBundle(const char *_bundlePath, const char* _iconName)
+{
+  NSString* bundlePath = [NSString stringWithCString:_bundlePath];
+	NSString* iconName = [NSString stringWithCString:_iconName];
+	NSBundle* bundle = [NSBundle bundleWithPath:bundlePath];
+	NSString* iconPath = [bundle pathForResource:iconName ofType:@"icns"];
+	NSString* bundleIdentifier = [bundle bundleIdentifier];
+
+	if (![[NSFileManager defaultManager] fileExistsAtPath:iconPath]) return NULL;
+  
+  // Get the path to the target PNG icon
+  NSString* pngFile = [[NSString stringWithFormat:@"~/Library/Application Support/Plex/userdata/Thumbnails/%@-%@.png",
+                        bundleIdentifier, iconName] stringByExpandingTildeInPath];
+
+  // If no PNG has been created, open the ICNS file & convert
+  if (![[NSFileManager defaultManager] fileExistsAtPath:pngFile])
+  {
+    NSImage* icon = [[NSImage alloc] initWithContentsOfFile:iconPath];
+    if (!icon) return NULL;
+    NSBitmapImageRep* rep = [[NSBitmapImageRep alloc] initWithData:[icon TIFFRepresentation]];
+    NSData* png = [rep representationUsingType:NSPNGFileType properties:nil];
+    [png writeToFile:pngFile atomically:YES];
+    [png release];
+    [rep release];
+    [icon release];
+  }
+  return [pngFile UTF8String];
+}
+
 void Cocoa_ExecAppleScriptFile(const char* filePath)
 {
 	NSString* scriptFile = [NSString stringWithUTF8String:filePath];

@@ -234,6 +234,14 @@ bool CGUIWindowScripts::GetDirectory(const CStdString& strDirectory, CFileItemLi
       items.Remove(i);
       i--;
     }
+		// Remove extension & set thumbnail AppleScripts
+		CStdString itemLabel = item->GetLabel();
+		if (CUtil::GetExtension(itemLabel) == ".applescript")
+		{
+			CUtil::RemoveExtension(itemLabel);
+			item->SetLabel(itemLabel);
+			item->SetThumbnailImage(Cocoa_GetIconFromBundle("/Applications/AppleScript/Script Editor.app", "SECompiledScript"));
+		}
   }
 
   items.SetProgramThumbs();

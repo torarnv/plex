@@ -557,7 +557,7 @@ void CUtil::RemoveExtension(CStdString& strFileName)
     strFileMask = g_stSettings.m_pictureExtensions;
     strFileMask += g_stSettings.m_musicExtensions;
     strFileMask += g_stSettings.m_videoExtensions;
-    strFileMask += ".py|.xml|.milk|.xpr|.cdg|.app";
+    strFileMask += ".py|.xml|.milk|.xpr|.cdg|.app|.applescript";
 
     // Only remove if its a valid media extension
     if (strFileMask.Find(strExtension.c_str()) >= 0)
