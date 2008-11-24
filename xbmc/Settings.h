@@ -234,6 +234,8 @@ public:
     int m_playlistRetries;
     int m_playlistTimeout;
     bool m_GLRectangleHack;
+		
+		bool m_alwaysUseDefaultSources;
   };
 
   struct stSettings

@@ -84,7 +84,7 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
       }
 
       // is this the first time the window is opened?
-      if (m_vecItems->m_strPath == "?" && strDestination.IsEmpty())
+      if ((m_vecItems->m_strPath == "?"|| g_advancedSettings.m_alwaysUseDefaultSources) && strDestination.IsEmpty())
       {
         strDestination = g_settings.m_defaultMusicSource;
         m_vecItems->m_strPath=strDestination;
