@@ -86,7 +86,7 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
 
       // is this the first time accessing this window?
       // a quickpath overrides the a default parameter
-      if ((m_vecItems->m_strPath == "?" || g_advancedSettings.m_alwaysUseDefaultSources) && strDestination.IsEmpty())
+      if (m_vecItems->m_strPath == "?" && strDestination.IsEmpty())
       {
         m_vecItems->m_strPath = strDestination = g_settings.m_defaultVideoSource;
         CLog::Log(LOGINFO, "Attempting to default to: %s", strDestination.c_str());

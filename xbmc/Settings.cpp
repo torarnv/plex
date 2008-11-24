@@ -258,8 +258,6 @@ CSettings::CSettings(void)
   g_advancedSettings.m_playlistRetries = 100;
   g_advancedSettings.m_playlistTimeout = 20; // 20 seconds timeout
   g_advancedSettings.m_GLRectangleHack = false;
-	
-	g_advancedSettings.m_alwaysUseDefaultSources = true;
 }
 
 CSettings::~CSettings(void)
@@ -1540,8 +1538,6 @@ void CSettings::LoadAdvancedSettings()
     if (XMLUtils::GetInt(pBatteryWarnings, "percentremaining", iValue))
       Cocoa_HW_SetBatteryCapacityWarning(iValue);
   }
-	
-	  XMLUtils::GetBoolean(pRootElement, "alwaysusedefaultsources", g_advancedSettings.m_alwaysUseDefaultSources);
 
   // load in the GUISettings overrides:
   g_guiSettings.LoadXML(pRootElement, true);  // true to hide the settings we read in
