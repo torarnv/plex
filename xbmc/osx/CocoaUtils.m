@@ -1104,3 +1104,28 @@ bool Cocoa_IsAppBundle(const char* filePath)
                                            
                                            
 }
+
+void Cocoa_ExecAppleScriptFile(const char* filePath)
+{
+	NSString* scriptFile = [NSString stringWithUTF8String:filePath];
+	NSString* userPath = [@"~/Library/Application Support/Plex/scripts" stringByExpandingTildeInPath];
+	NSString* systemPath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"Contents/Resources/Plex/scripts"];
+	
+	if ([[NSFileManager defaultManager] fileExistsAtPath:[userPath stringByAppendingPathComponent:scriptFile]]) // Check whether a script exists in the app bundle
+		scriptFile = [userPath stringByAppendingPathComponent:scriptFile];
+	else if ([[NSFileManager defaultManager] fileExistsAtPath:[systemPath stringByAppendingPathComponent:scriptFile]]) // Check whether a script exists in app support
+		scriptFile = [systemPath stringByAppendingPathComponent:scriptFile];
+	else if (![[NSFileManager defaultManager] fileExistsAtPath:scriptFile]) // If no script could be found, check if we were given a full path
+		return;
+	
+	NSAppleScript* appleScript = [[NSAppleScript alloc] initWithContentsOfURL:[NSURL fileURLWithPath:scriptFile] error:nil];
+	[appleScript executeAndReturnError:nil];
+	[appleScript release];
+}
+
+void Cocoa_ExecAppleScript(const char* scriptSource)
+{
+	NSAppleScript* appleScript = [[NSAppleScript alloc] initWithSource:[NSString stringWithUTF8String:scriptSource]];
+	[appleScript executeAndReturnError:nil];
+	[appleScript release];
+}

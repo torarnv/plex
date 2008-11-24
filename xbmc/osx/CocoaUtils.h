@@ -161,6 +161,12 @@ extern "C"
   void Cocoa_LaunchFrontRow();
   const char* Cocoa_GetAppIcon(const char *applicationPath);
   bool Cocoa_IsAppBundle(const char* filePath);
+	
+	//
+	// AppleScript
+	//
+	void Cocoa_ExecAppleScriptFile(const char* filePath);
+	void Cocoa_ExecAppleScript(const char* scriptSource);
 
 #ifdef __cplusplus
 }
