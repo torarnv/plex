@@ -669,9 +669,9 @@ CGUISettings::CGUISettings(void)
   AddBool  (5, "smb.mountshares", 1208,   false);
 #endif
 
-//  AddCategory(6, "upnp", 20110);
-  AddBool(1,    "upnp.client", 20111, true);
-  AddBool(2, "upnp.renderer", 21881, true);
+  AddCategory(6, "upnp", 20110);
+  AddBool(1,    "upnp.client", 20111, false);
+  AddBool(2, "upnp.renderer", 21881, false);
   AddSeparator(3,"upnp.sep1");
 
 
