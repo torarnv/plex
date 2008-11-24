@@ -397,8 +397,8 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
       // For program sources...
       if (m_type == "programs") 
       {
-        // Only allow OS X app bundles to be added
-        if (m_name.Right(4) == ".app")
+        // Only allow OS X app & workflow bundles to be added
+        if ((m_name.Right(4) == ".app") || (m_name.Right(9) == ".workflow"))
         {
           CUtil::RemoveExtension(m_name);
           OnOK();

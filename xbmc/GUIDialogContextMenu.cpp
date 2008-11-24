@@ -249,11 +249,16 @@ void CGUIDialogContextMenu::GetContextButtons(const CStdString &type, CMediaSour
   {
     if (share)
     {
-      // Don't allow certain actions for OS X app bundles added as sources
+      // Don't allow certain actions for OS X app or workflow bundles added as sources
       BOOL isAppBundle = false;
+			BOOL isWorkflow = false;
       if (share->vecPaths.size() > 0)
+			{
         isAppBundle = Cocoa_IsAppBundle(share->vecPaths[0].c_str());
-      if (!isAppBundle)
+				isWorkflow = Cocoa_IsWflowBundle(share->vecPaths[0].c_str());
+			}
+			
+      if (!(isAppBundle || isWorkflow))
       {
         if (!share->m_ignore)
           buttons.Add(CONTEXT_BUTTON_EDIT_SOURCE, 1027); // Edit Source
@@ -263,7 +268,10 @@ void CGUIDialogContextMenu::GetContextButtons(const CStdString &type, CMediaSour
       }
       else
       {
-        buttons.Add(CONTEXT_BUTTON_REMOVE_SOURCE, 40102); // Remove Application
+				if (isAppBundle)
+					buttons.Add(CONTEXT_BUTTON_REMOVE_SOURCE, 40102); // Remove Application
+				else if (isWorkflow)
+					buttons.Add(CONTEXT_BUTTON_REMOVE_SOURCE, 40106); // Remove Workflow
       }
 
 
@@ -279,7 +287,8 @@ void CGUIDialogContextMenu::GetContextButtons(const CStdString &type, CMediaSour
       if (!GetDefaultShareNameByType(type).IsEmpty())
         buttons.Add(CONTEXT_BUTTON_CLEAR_DEFAULT, 13403); // Clear Default
 
-      buttons.Add(CONTEXT_BUTTON_ADD_SOURCE, 1026); // Add Source
+      buttons.Add(CONTEXT_BUTTON_ADD_SOURCE, 
+									1026); // Add Source
     }
     else
       buttons.Add(CONTEXT_BUTTON_ADD_SOURCE, 40101); // Add Application

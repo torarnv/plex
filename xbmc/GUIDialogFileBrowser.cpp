@@ -447,8 +447,8 @@ void CGUIDialogFileBrowser::OnClick(int iItem)
   CFileItemPtr pItem = (*m_vecItems)[iItem];
   CStdString strPath = pItem->m_strPath;
 
-  // Select OS X app bundles
-  if (Cocoa_IsAppBundle(pItem->m_strPath.c_str()))
+  // Select OS X app & Automator wflow bundles
+  if (Cocoa_IsAppBundle(pItem->m_strPath.c_str()) || Cocoa_IsWflowBundle(pItem->m_strPath.c_str()))
   {
     Update(strPath);
     m_selectedPath = pItem->m_strPath;
@@ -456,7 +456,7 @@ void CGUIDialogFileBrowser::OnClick(int iItem)
     Close();
     return;
   }
-
+	
   else if (pItem->m_bIsFolder)
   {
     if (pItem->m_strPath == "net://")
@@ -717,7 +717,6 @@ bool CGUIDialogFileBrowser::ShowAndGetSource(CStdString &path, bool allowNetwork
   // Add it to our window manager
   m_gWindowManager.AddUniqueInstance(browser);
 
-  printf("%s\n", strType.c_str());
   VECSOURCES shares;
   if (!strType.IsEmpty() && (strType != "programs"))
   {

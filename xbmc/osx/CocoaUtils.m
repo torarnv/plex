@@ -1059,6 +1059,14 @@ void Cocoa_LaunchApp(const char* appToLaunch)
   }
 }
 
+void Cocoa_LaunchAutomatorWorkflow(const char* wflowToLaunch)
+{
+	NSString* path = [NSString stringWithCString:wflowToLaunch];
+	if ([path rangeOfString:@".workflow/"].location == NSNotFound) return;
+	[[NSWorkspace sharedWorkspace] openFile:path withApplication:@"Automator Runner"];
+	[NSApp terminate:nil];
+}
+
 void Cocoa_LaunchFrontRow()
 {
   [NSTask launchedTaskWithLaunchPath:[[NSBundle mainBundle] pathForResource:@"frontrowlauncher" ofType:@""] arguments:[NSArray arrayWithObjects:[[NSBundle mainBundle] bundlePath], nil]];    
@@ -1103,6 +1111,15 @@ bool Cocoa_IsAppBundle(const char* filePath)
           [fm fileExistsAtPath:[appPath stringByAppendingPathComponent:@"/Contents/MacOS"]]);
                                            
                                            
+}
+
+bool Cocoa_IsWflowBundle(const char* filePath)
+{
+  NSString* appPath = [NSString stringWithUTF8String:filePath];
+  NSFileManager* fm = [NSFileManager defaultManager];
+  return (([appPath rangeOfString:@".workflow"].location != NSNotFound) &&
+          [fm fileExistsAtPath:appPath] &&
+          [fm fileExistsAtPath:[appPath stringByAppendingPathComponent:@"/Contents/document.wflow"]]);
 }
 
 const char* Cocoa_GetIconFromBundle(const char *_bundlePath, const char* _iconName)
