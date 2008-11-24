@@ -32,6 +32,7 @@
 #include "Directory.h"
 #include "MultiPathDirectory.h"
 #include <vector>
+#include "CocoaUtils.h"
 
 using namespace XFILE;
 using namespace std;
@@ -139,6 +140,12 @@ bool CGUIWindowScripts::OnPlayMedia(int iItem)
   CFileItemPtr pItem=m_vecItems->Get(iItem);
   CStdString strPath = pItem->m_strPath;
 
+	if (CUtil::GetExtension(pItem->m_strPath) == ".applescript")
+	{
+		Cocoa_ExecAppleScriptFile(pItem->m_strPath.c_str());
+		return true;
+	}
+	
 #ifdef HAS_PYTHON
   /* execute script...
     * if script is already running do not run it again but stop it.
@@ -227,6 +234,14 @@ bool CGUIWindowScripts::GetDirectory(const CStdString& strDirectory, CFileItemLi
       items.Remove(i);
       i--;
     }
+		// Remove extension & set thumbnail AppleScripts
+		CStdString itemLabel = item->GetLabel();
+		if (CUtil::GetExtension(itemLabel) == ".applescript")
+		{
+			CUtil::RemoveExtension(itemLabel);
+			item->SetLabel(itemLabel);
+			item->SetThumbnailImage(Cocoa_GetIconFromBundle("/Applications/AppleScript/Script Editor.app", "SECompiledScript"));
+		}
   }
 
   items.SetProgramThumbs();

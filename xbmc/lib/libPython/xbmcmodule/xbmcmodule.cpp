@@ -45,6 +45,7 @@
 #include "FileSystem/File.h"
 #include "Settings.h"
 #include "TextureManager.h"
+#include "CocoaUtils.h"
 
 // include for constants
 #include "pyutil.h"
