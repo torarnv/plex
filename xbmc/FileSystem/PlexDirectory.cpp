@@ -185,17 +185,24 @@ class PlexMediaArtist : public PlexMediaNode
   {
     pItem->SetLabel(el.Attribute("artist"));
     
-    string path = el.Attribute("thumb");
-    
-    CURL url(pItem->m_strPath);
-    url.SetProtocol("http");
-    url.SetFileName(path.substr(1));
-    url.SetPort(32400);
-    
-    CStdString theURL;
-    url.GetURL(theURL);
-    
-    pItem->SetThumbnailImage(theURL);
+    try
+    {
+      string path = el.Attribute("thumb");
+      
+      CURL url(pItem->m_strPath);
+      url.SetProtocol("http");
+      url.SetFileName(path.substr(1));
+      url.SetPort(32400);
+      
+      CStdString theURL;
+      url.GetURL(theURL);
+      
+      pItem->SetThumbnailImage(theURL);
+    }
+    catch (...)
+    {
+      
+    }
   }
 };
 
