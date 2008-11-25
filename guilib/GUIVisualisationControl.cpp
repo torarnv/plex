@@ -411,7 +411,7 @@ bool CGUIVisualisationControl::UpdateAlbumArt()
 {
   // Update track information.
   const MUSIC_INFO::CMusicInfoTag* tag = g_infoManager.GetCurrentSongTag();
-  if (tag != 0)
+  if (tag && m_pVisualisation)
   {
     m_pVisualisation->SetTrackInfo(tag->GetArtist().c_str(), tag->GetAlbum().c_str(), tag->GetTitle().c_str(),
                                    tag->GetTrackNumber(), tag->GetDiscNumber(), tag->GetYear(), tag->GetDuration());
