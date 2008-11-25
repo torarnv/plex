@@ -520,14 +520,41 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
         items.SetContent("musicvideos");
         Cocoa_SetBackgroundMusicThemeId(NULL);
       }
+      else if (node == NODE_TYPE_GENRE)
+      {
+        items.SetContent("genres");
+        Cocoa_SetBackgroundMusicThemeId(NULL);
+      }
+      else if (node == NODE_TYPE_ACTOR)
+      {
+        items.SetContent("actors");
+        Cocoa_SetBackgroundMusicThemeId(NULL);
+      }
+      else if (node == NODE_TYPE_DIRECTOR)
+      {
+        items.SetContent("directors");
+        Cocoa_SetBackgroundMusicThemeId(NULL);
+      }
+      else if (node == NODE_TYPE_STUDIO)
+      {
+        items.SetContent("studios");
+        Cocoa_SetBackgroundMusicThemeId(NULL);
+      }
+      else if (node == NODE_TYPE_YEAR)
+      {
+        items.SetContent("years");
+        Cocoa_SetBackgroundMusicThemeId(NULL);
+      }
       else
       {
         items.SetContent("");
-        Cocoa_SetBackgroundMusicThemeId(NULL);
+       Cocoa_SetBackgroundMusicThemeId(NULL);
       }
     }
     else
+    {
       Cocoa_SetBackgroundMusicThemeId(NULL);
+    }
   }
 
   // clear the filter
