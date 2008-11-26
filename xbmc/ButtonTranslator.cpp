@@ -575,7 +575,7 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, WORD wWindowID)
       pButton = pButton->NextSiblingElement();
     }
   }
-  if ((pDevice = pWindow->FirstChild("multicoderemote")) != NULL)
+  if ((pDevice = pWindow->FirstChild("harmonyremote")) != NULL)
   { // map universal remote actions
     TiXmlElement *pButton = pDevice->FirstChildElement();
     while (pButton)
