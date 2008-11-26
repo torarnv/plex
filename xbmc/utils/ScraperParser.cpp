@@ -46,6 +46,7 @@ CScraperParser::CScraperParser()
   m_document = NULL;
   m_settings = NULL;
   m_SearchStringEncoding = "UTF-8";
+  m_ServerContentEncoding = "";
 }
 
 CScraperParser::~CScraperParser()
@@ -83,7 +84,8 @@ bool CScraperParser::Load(const CStdString& strXMLFile)
 
     m_name = m_pRootElement->Attribute("name");
     m_content = m_pRootElement->Attribute("content");
-
+    m_ServerContentEncoding = m_pRootElement->Attribute("ServerContentEncoding");
+        
     if (!m_name || !m_content) // FIXME
     {
       delete m_document;

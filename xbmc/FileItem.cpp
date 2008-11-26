@@ -1636,6 +1636,13 @@ void CFileItemList::FillInDefaultIcons()
       CUtil::RemoveExtension(itemLabel);
       pItem->SetLabel(itemLabel);
     }
+		else if (Cocoa_IsWflowBundle(pItem->m_strPath.c_str()))
+    {
+      pItem->SetThumbnailImage(Cocoa_GetIconFromBundle("/Applications/Automator.app", "AutomatorDocument"));
+      CStdString itemLabel = pItem->GetLabel();
+      CUtil::RemoveExtension(itemLabel);
+      pItem->SetLabel(itemLabel);
+    }
     else
       pItem->FillInDefaultIcon();
   }

@@ -66,13 +66,22 @@ void CAudioBuffer::Set(const unsigned char* psBuffer, int iSize, int iBitsPerSam
       m_pBuffer[i] = ((short)((char *)psBuffer)[i]) << 8;
     }
   }
-  else // assume 24 bit data
+  else if (iBitsPerSample == 24)
   {
     iSize /= 3;
     for (int i = 0; i < iSize && i < m_iLen; i++)
     { // 24 bit -> ignore least significant byte and convert to signed short
       m_pBuffer[i] = (((int)psBuffer[3 * i + 1]) << 0) + (((int)((char *)psBuffer)[3 * i + 2]) << 8);
     }
+  }
+  else // convert 32 bit float
+  {
+	  iSize /= 4;
+	  for (int i = 0; i < iSize && i < m_iLen; i++)
+	  {
+		   // 32 bit float - convert to 16 bit int by multiplying by 32767 (not entirely accurate but fine for vis)
+		  m_pBuffer[i] = ((float *)psBuffer)[i] * 32767;
+	  }
   }
   for (int i = iSize; i < m_iLen;++i) m_pBuffer[i] = 0;
 }
@@ -180,7 +189,7 @@ void CGUIVisualisationControl::LoadVisualisation()
     if (y < 0) y = 0;
     if (x + w > g_graphicsContext.GetWidth()) w = g_graphicsContext.GetWidth() - x;
     if (y + h > g_graphicsContext.GetHeight()) h = g_graphicsContext.GetHeight() - y;
-
+    
 #ifdef __APPLE__
     // If it's handling its own display, make a child window for it to do so in.
     if (m_pVisualisation->HandlesOwnDisplay() == true)
@@ -191,6 +200,7 @@ void CGUIVisualisationControl::LoadVisualisation()
     
     if (m_pVisualisation->HandlesOwnDisplay() == false)
       g_graphicsContext.ApplyStateBlock();
+    
     VerifyGLState();
     
     if (g_application.m_pPlayer)
@@ -317,13 +327,6 @@ void CGUIVisualisationControl::OnInitialize(int iChannels, int iSamplesPerSec, i
   OutputDebugString("Visualisation::Start()\n");
   m_pVisualisation->Start(m_iChannels, m_iSamplesPerSec, m_iBitsPerSample, strFile);
   
-  const MUSIC_INFO::CMusicInfoTag* tag = g_infoManager.GetCurrentSongTag();
-  if (tag != 0)
-  {
-    m_pVisualisation->SetTrackInfo(tag->GetArtist().c_str(), tag->GetAlbum().c_str(), tag->GetTitle().c_str(),
-                                   tag->GetTrackNumber(), tag->GetDiscNumber(), tag->GetYear(), tag->GetDuration());
-  }
-    
   if (!m_bInitialized)
   {
     UpdateAlbumArt();
@@ -406,14 +409,23 @@ bool CGUIVisualisationControl::OnAction(const CAction &action)
 
 bool CGUIVisualisationControl::UpdateAlbumArt()
 {
-    m_AlbumThumb = g_infoManager.GetImage(MUSICPLAYER_COVER, WINDOW_INVALID);
-    if (m_AlbumThumb == "defaultAlbumCover.png")
-    {
-      m_AlbumThumb = "";
-    }
-    CLog::Log(LOGDEBUG,"Updating vis albumart: %s", m_AlbumThumb.c_str());
-    if (m_pVisualisation && m_pVisualisation->OnAction(CVisualisation::VIS_ACTION_UPDATE_ALBUMART, (void*)(m_AlbumThumb.c_str()))) return true;
-    return false;
+  // Update track information.
+  const MUSIC_INFO::CMusicInfoTag* tag = g_infoManager.GetCurrentSongTag();
+  if (tag && m_pVisualisation)
+  {
+    m_pVisualisation->SetTrackInfo(tag->GetArtist().c_str(), tag->GetAlbum().c_str(), tag->GetTitle().c_str(),
+                                   tag->GetTrackNumber(), tag->GetDiscNumber(), tag->GetYear(), tag->GetDuration());
+  }
+
+  m_AlbumThumb = g_infoManager.GetImage(MUSICPLAYER_COVER, WINDOW_INVALID);
+  if (m_AlbumThumb == "defaultAlbumCover.png")
+    m_AlbumThumb = "";
+      
+  CLog::Log(LOGDEBUG,"Updating vis albumart: %s", m_AlbumThumb.c_str());
+  if (m_pVisualisation && m_pVisualisation->OnAction(CVisualisation::VIS_ACTION_UPDATE_ALBUMART, (void*)(m_AlbumThumb.c_str()))) 
+    return true;
+    
+  return false;
 }
 
 bool CGUIVisualisationControl::OnMessage(CGUIMessage &message)

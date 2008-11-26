@@ -82,7 +82,7 @@ void CGUIDialogKeyboard::OnInitWindow()
   //
   m_dwDefaultFocusControlID = 300;
 
-  g_OSXKeyboardLayouts.HoldLayout();
+  g_OSXKeyboardLayouts.ChangeLayoutEnable();
 
 #endif
 
@@ -118,7 +118,7 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
   if (m_lastSearchUpdate || m_lastSearchUpdate + SEARCH_DELAY >= now)
     m_lastSearchUpdate = now;
 
-  if(g_OSXKeyboardLayouts.Process(action.kKey)) return true;
+//  if(g_OSXKeyboardLayouts.Process(action.kKey)) return true;
   
   if (action.wID == ACTION_BACKSPACE
 #ifdef __APPLE__
@@ -670,7 +670,7 @@ int CGUIDialogKeyboard::ShowAndVerifyPassword(CStdString& strPassword, const CSt
 void CGUIDialogKeyboard::Close(bool forceClose)
 {
 
-  g_OSXKeyboardLayouts.RepareLayout();
+  g_OSXKeyboardLayouts.ChangeLayoutDisable();
 
   // reset the heading (we don't always have this)
   m_strHeading = "";

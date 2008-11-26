@@ -69,6 +69,7 @@ public:
   void SetScraperInfo(const SScraperInfo& info) { m_info = info; }
 protected:
   void RemoveAllAfter(char* szMovie, const char* szSearch);
+  void ConvertToUTF8(CStdStringA& xml_);
   CHTTP m_http;
 
   CScraperParser m_parser;

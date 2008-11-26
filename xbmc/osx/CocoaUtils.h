@@ -158,9 +158,18 @@ extern "C"
   // Application launching
   //
   void Cocoa_LaunchApp(const char* appToLaunch);
+	void Cocoa_LaunchAutomatorWorkflow(const char* wflowToLaunch);
   void Cocoa_LaunchFrontRow();
   const char* Cocoa_GetAppIcon(const char *applicationPath);
+	const char* Cocoa_GetIconFromBundle(const char *_bundlePath, const char* _iconName);
   bool Cocoa_IsAppBundle(const char* filePath);
+	bool Cocoa_IsWflowBundle(const char* filePath);
+	
+	//
+	// AppleScript
+	//
+	void Cocoa_ExecAppleScriptFile(const char* filePath);
+	void Cocoa_ExecAppleScript(const char* scriptSource);
 
 #ifdef __cplusplus
 }

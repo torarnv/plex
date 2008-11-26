@@ -14,6 +14,7 @@
 #undef DEBUG
 #import <unistd.h>
 #import "PlexApplication.h"
+#import "KeyboardLayouts.h"
 
 extern CApplication g_application;
 
@@ -79,10 +80,27 @@ BOOL gCalledAppMainline = FALSE;
 
 - (void)sendEvent:(NSEvent *)anEvent 
 {
+  SVKey sv_key;
+  NSUInteger modif;
+  
   if(NSKeyDown == [anEvent type] || NSKeyUp == [anEvent type]) 
   {
-    if([anEvent modifierFlags] & NSCommandKeyMask)
+    modif = [anEvent modifierFlags];
+
+    // Convert event to sv_key
+    if(NSKeyUp == [anEvent type])
+    {
+      sv_key.SVKey = (BYTE) [anEvent keyCode];
+      sv_key.Apple = ( modif & NSCommandKeyMask ) != 0;
+      sv_key.Shift = ( modif &  NSShiftKeyMask ) != 0;
+      sv_key.Alt = ( modif & NSAlternateKeyMask ) != 0;
+      sv_key.Ctrl = ( modif & NSControlKeyMask ) != 0;
+    }
+
+    if(!g_OSXKeyboardLayouts.Process(sv_key) && modif & NSCommandKeyMask)
+    {
 			[super sendEvent: anEvent];
+    }
   }
   else
   {

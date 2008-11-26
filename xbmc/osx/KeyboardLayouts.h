@@ -23,10 +23,11 @@
 class COSXKeyboardLayouts
   {
   public:
+// Default setting: change layouts is disabled, we need this..  
     COSXKeyboardLayouts();
     ~COSXKeyboardLayouts();
-    void HoldLayout();
-    void RepareLayout();
+    void ChangeLayoutEnable();
+    void ChangeLayoutDisable();
     bool Process(SVKey key);
     bool SetASCIILayout();
     

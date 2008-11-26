@@ -28,15 +28,15 @@ COSXKeyboardLayouts::COSXKeyboardLayouts()
 }
 COSXKeyboardLayouts::~COSXKeyboardLayouts()
 {
-  if (h_layout != -1) RepareLayout();
+  if (h_layout != -1) ChangeLayoutDisable();
   
   CFRelease(layouts);
 }
-void COSXKeyboardLayouts::HoldLayout()
+void COSXKeyboardLayouts::ChangeLayoutEnable()
 {
   h_layout = c_layout;
 }
-void COSXKeyboardLayouts::RepareLayout()
+void COSXKeyboardLayouts::ChangeLayoutDisable()
 {
   if (h_layout > -1)
     if (h_layout == c_layout) h_layout = -1;
@@ -56,6 +56,10 @@ bool COSXKeyboardLayouts::Process(SVKey key)
       && c_key.Shift == key.Shift
       && c_key.SVKey == key.SVKey)
   {
+    
+    //
+    if (h_layout < 0) return true;
+    //
     if(++c_layout >= CFArrayGetCount(layouts)) c_layout = 0;
     if (TISSelectInputSource((TISInputSourceRef) CFArrayGetValueAtIndex(layouts, c_layout)) == noErr) return true;
     else

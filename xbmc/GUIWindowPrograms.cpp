@@ -342,13 +342,22 @@ bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemL
     {
       // Special cases for app compatibility
       if ((strDirectory.Find("/DVD Player.app/") > 0) ||
-          (strDirectory.Find("/iTunes.app/") > 0))
+          (strDirectory.Find("/iTunes.app/") > 0)			||
+					(strDirectory.Find("/EyeTV.app/") > 0))
         PlexRemoteHelper::Get().Stop();
       
       Cocoa_LaunchApp(strDirectory.c_str());
       return true;
     }  
   }
+	
+	// Launch Automator workflows
+	if (Cocoa_IsWflowBundle(strDirectory.c_str()))
+	{
+		PlexRemoteHelper::Get().Stop();
+		Cocoa_LaunchAutomatorWorkflow(strDirectory.c_str());
+		return true;
+	}
   
 #endif
   
@@ -372,17 +381,21 @@ bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemL
 
   if (items.IsVirtualDirectoryRoot())
   {
-    // Set thumbnail images for OS X apps added as sources
+    // Set thumbnail images for OS X apps & workflows added as sources
     for (int i = 0; i < items.Size(); i++)
     {
       CFileItemPtr item = items[i];
-      if (item->m_strPath.Find(".app/") > 0);
+      if (item->m_strPath.Find(".app/") > 0)
       {
         //Get the app's icon
         CStdString appIcon = Cocoa_GetAppIcon(item->m_strPath.c_str());
         if (appIcon != NULL)
           item->SetThumbnailImage(appIcon);
       }
+			
+			if (item->m_strPath.Find(".workflow/") > 0)
+				item->SetThumbnailImage(Cocoa_GetIconFromBundle("/Applications/Automator.app", "AutomatorDocument"));
+			
     }
     return true;
   }
@@ -459,6 +472,14 @@ bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemL
       if (appIcon != NULL)
         item->SetThumbnailImage(appIcon);
     }
+		
+		// Special case for Automator workflows
+    if (item->GetLabel().Find(".workflow") > 0) {
+      CStdString itemLabel = item->GetLabel();
+      CUtil::RemoveExtension(itemLabel);
+      item->SetLabel(itemLabel);
+			item->SetThumbnailImage(Cocoa_GetIconFromBundle("/Applications/Automator.app", "AutomatorDocument"));	
+		}
   }
   m_database.CommitTransaction();
   // set the cached thumbs

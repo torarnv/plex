@@ -169,11 +169,11 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
   if (isPlaying) {
     if (isEnabled)
     {
-      if (currentId == nil)
-        [mainMusic stop];
-      else
-        [themeMusic stop];
       [self stopThemeTimer];
+      if (mainMusic != nil)
+        [mainMusic stop];
+      if (themeMusic != nil)
+        [themeMusic stop];
     }
     isPlaying = NO;
   }
@@ -313,6 +313,7 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
     [self stopThemeTimer];
     double duration = ([themeMusic duration].timeValue / [themeMusic duration].timeScale);
     themeFadeTimer = [NSTimer scheduledTimerWithTimeInterval:(duration - 0.5) target:self selector:@selector(themeTimerDidEnd) userInfo:nil repeats:NO];
+    [themeFadeTimer retain];
   }
 }
 
@@ -328,8 +329,7 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
 
 - (void)themeTimerDidEnd
 {
-  [self fadeToTheme:NO];
-  [mainMusic play];
+  [self setThemeMusicId:nil];
   [self stopThemeTimer];
 }
 

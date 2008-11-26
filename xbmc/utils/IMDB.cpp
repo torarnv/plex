@@ -110,8 +110,7 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
     return false;
   }
 
-  if (strXML.Find("encoding=\"utf-8\"") < 0)
-    g_charsetConverter.unknownToUTF8(strXML);
+  ConvertToUTF8(strXML);
 
   // ok, now parse the xml file
   TiXmlDocument doc;
@@ -152,8 +151,13 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
     if (title && title->FirstChild() && link && link->FirstChild())
     {
       CStdString strTitle;
+#ifdef __APPLE__
+      // For Mac must be UTF-8 here
+      url.strTitle = title->FirstChild()->Value();
+#else      
       g_charsetConverter.utf8ToStringCharset(title->FirstChild()->Value(), strTitle);
       url.strTitle = strTitle;
+#endif
       while (link && link->FirstChild())
       {
         url.ParseElement(link);
@@ -233,8 +237,7 @@ bool CIMDB::InternalGetEpisodeList(const CScraperUrl& url, IMDB_EPISODELIST& det
       return false;
     }
 
-    if (strXML.Find("encoding=\"utf-8\"") < 0)
-      g_charsetConverter.unknownToUTF8(strXML);
+    ConvertToUTF8(strXML);
 
     TiXmlHandle docHandle( &doc );
     TiXmlElement *movie = docHandle.FirstChild( "episodeguide" ).FirstChild( "episode" ).Element();
@@ -325,11 +328,10 @@ bool CIMDB::InternalGetDetails(const CScraperUrl& url, CVideoInfoTag& movieDetai
   }
 
   // abit ugly, but should work. would have been better if parser
-  // set the charset of the xml, and we made use of that
-  if (strXML.Find("encoding=\"utf-8\"") < 0)
-    g_charsetConverter.unknownToUTF8(strXML);
+  // set the charset of the xml, and we made use of that.
+  ConvertToUTF8(strXML);
 
-    // ok, now parse the xml file
+  // ok, now parse the xml file
   TiXmlBase::SetCondenseWhiteSpace(false);
   TiXmlDocument doc;
   doc.Parse(strXML.c_str(),0,TIXML_ENCODING_UTF8);
@@ -476,8 +478,7 @@ void CIMDB::GetURL(const CStdString &strMovie, CScraperUrl& scrURL, CStdString& 
     strSearch2.Replace('_', ' ');
 
     // convert to utf8 first (if necessary), then to the encoding requested by the parser
-    g_charsetConverter.unknownToUTF8(strSearch2);
-    g_charsetConverter.utf8To(m_parser.GetSearchStringEncoding(), strSearch2, m_parser.m_param[0]);
+    g_charsetConverter.unknownTo(m_parser.GetServerContentEncoding(), strSearch2, m_parser.m_param[0]);
     CUtil::URLEncode(m_parser.m_param[0]);
   }
   scrURL.ParseString(m_parser.Parse("CreateSearchUrl",&m_info.settings));
@@ -682,3 +683,19 @@ bool CIMDB::ScrapeFilename(const CStdString& strFileName, CVideoInfoTag& details
   return false;
 }
 
+void CIMDB::ConvertToUTF8(CStdStringA& xml_)
+{
+  //First
+  CStdString buf = xml_;
+  CStdString server_enc = m_parser.GetServerContentEncoding();
+  if (server_enc != NULL && server_enc != "")
+  {
+    if (server_enc != "UTF-8")
+      g_charsetConverter.stringCharsetToUtf8(server_enc, buf, xml_);
+  }
+  // Second
+  else if (xml_.Find("encoding=\"utf-8\"") < 0)
+  {
+    g_charsetConverter.unknownToUTF8(xml_);
+  }
+}

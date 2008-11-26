@@ -27,6 +27,7 @@
 		1AD99BDD0E9EF07200503917 /* QTPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1AD99BDC0E9EF07200503917 /* QTPlayer.cpp */; };
 		1AD99C750E9FB54200503917 /* QuickTimeWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1AD99C740E9FB54200503917 /* QuickTimeWrapper.cpp */; };
 		1AF6A79C0E994BFB00D96BD7 /* ModelNames.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1AF6A79B0E994BFB00D96BD7 /* ModelNames.plist */; };
+		9421E33A0ED6A99E00A26254 /* CoreAudioRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 943BC2870ED3F1E500B7CB45 /* CoreAudioRenderer.cpp */; };
 		94B1852B0EB48264008C38FA /* CoreAudioAUHAL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 94B185280EB48264008C38FA /* CoreAudioAUHAL.cpp */; };
 		94B1852C0EB48264008C38FA /* CoreAudioPlexSupport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 94B1852A0EB48264008C38FA /* CoreAudioPlexSupport.cpp */; };
 		94B185540EB48568008C38FA /* pa_ringbuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 94B185520EB48568008C38FA /* pa_ringbuffer.c */; };
@@ -111,7 +112,6 @@
 		E371C2440E2F2D5400FBF841 /* controlspin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E25880D263CE000618676 /* controlspin.cpp */; };
 		E371C2450E2F2D5400FBF841 /* controltextbox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E25890D263CE000618676 /* controltextbox.cpp */; };
 		E371C2460E2F2D5400FBF841 /* ConvUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D6A0D25F9FD00618676 /* ConvUtils.cpp */; };
-		E371C2470E2F2D5400FBF841 /* CPortAudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D6C0D25F9FD00618676 /* CPortAudio.cpp */; };
 		E371C2480E2F2D5400FBF841 /* CPUInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E2B0D25F9FD00618676 /* CPUInfo.cpp */; };
 		E371C2490E2F2D5400FBF841 /* crc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1CF10D25F9FC00618676 /* crc.cpp */; settings = {COMPILER_FLAGS = "-DSILENT"; }; };
 		E371C24A0E2F2D5400FBF841 /* Crc32.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16790D25F9FA00618676 /* Crc32.cpp */; };
@@ -1090,6 +1090,8 @@
 		9409C1EB0E01D696001626C3 /* aften.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = aften.h; path = ../../lib/libaften/aften.h; sourceTree = "<group>"; };
 		9409C1EC0E01D696001626C3 /* ringbuffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ringbuffer.c; path = AC3Encoder/ringbuffer.c; sourceTree = "<group>"; };
 		9409C1ED0E01D696001626C3 /* ringbuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ringbuffer.h; path = AC3Encoder/ringbuffer.h; sourceTree = "<group>"; };
+		943BC2860ED3F1E500B7CB45 /* CoreAudioRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreAudioRenderer.h; sourceTree = "<group>"; };
+		943BC2870ED3F1E500B7CB45 /* CoreAudioRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CoreAudioRenderer.cpp; sourceTree = "<group>"; };
 		94B185280EB48264008C38FA /* CoreAudioAUHAL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CoreAudioAUHAL.cpp; sourceTree = "<group>"; };
 		94B185290EB48264008C38FA /* CoreAudioAUHAL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreAudioAUHAL.h; sourceTree = "<group>"; };
 		94B1852A0EB48264008C38FA /* CoreAudioPlexSupport.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CoreAudioPlexSupport.cpp; sourceTree = "<group>"; };
@@ -2662,8 +2664,6 @@
 		E38E1D670D25F9FD00618676 /* zlib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zlib.h; sourceTree = "<group>"; };
 		E38E1D6A0D25F9FD00618676 /* ConvUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ConvUtils.cpp; sourceTree = "<group>"; };
 		E38E1D6B0D25F9FD00618676 /* ConvUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConvUtils.h; sourceTree = "<group>"; };
-		E38E1D6C0D25F9FD00618676 /* CPortAudio.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CPortAudio.cpp; sourceTree = "<group>"; };
-		E38E1D6D0D25F9FD00618676 /* CPortAudio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPortAudio.h; sourceTree = "<group>"; };
 		E38E1D6E0D25F9FD00618676 /* getdelim.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = getdelim.c; sourceTree = "<group>"; };
 		E38E1D6F0D25F9FD00618676 /* getdelim.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = getdelim.h; sourceTree = "<group>"; };
 		E38E1D700D25F9FD00618676 /* LinuxResourceCounter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LinuxResourceCounter.cpp; sourceTree = "<group>"; };
@@ -3405,6 +3405,17 @@
 				9409C1ED0E01D696001626C3 /* ringbuffer.h */,
 			);
 			name = AC3Encoder;
+			sourceTree = "<group>";
+		};
+		943BC2830ED3F1A700B7CB45 /* CoreAudio */ = {
+			isa = PBXGroup;
+			children = (
+				94B185280EB48264008C38FA /* CoreAudioAUHAL.cpp */,
+				94B185290EB48264008C38FA /* CoreAudioAUHAL.h */,
+				94B1852A0EB48264008C38FA /* CoreAudioPlexSupport.cpp */,
+				94B185340EB482D3008C38FA /* CoreAudioPlexSupport.h */,
+			);
+			name = CoreAudio;
 			sourceTree = "<group>";
 		};
 		C6859E96029091FE04C91782 /* Documentation */ = {
@@ -4167,6 +4178,7 @@
 		E38E149A0D25F9F900618676 /* cores */ = {
 			isa = PBXGroup;
 			children = (
+				943BC2830ED3F1A700B7CB45 /* CoreAudio */,
 				1AD9A0EC0EA0D6F400503917 /* qtplayer */,
 				E3A478090D29029A00F3C3A6 /* dlgcache.cpp */,
 				E38E149D0D25F9F900618676 /* DllLoader */,
@@ -4294,6 +4306,8 @@
 				9409C1E50E01D680001626C3 /* AC3Encoder */,
 				E38E14F90D25F9F900618676 /* ALSADirectSound.cpp */,
 				E38E14FA0D25F9F900618676 /* ALSADirectSound.h */,
+				943BC2860ED3F1E500B7CB45 /* CoreAudioRenderer.h */,
+				943BC2870ED3F1E500B7CB45 /* CoreAudioRenderer.cpp */,
 				E38E14FB0D25F9F900618676 /* dvd_config.h */,
 				E38E14FC0D25F9F900618676 /* DVDAudio.cpp */,
 				E38E14FD0D25F9F900618676 /* DVDAudio.h */,
@@ -4328,10 +4342,6 @@
 				E38E158D0D25F9FA00618676 /* DVDStreamInfo.h */,
 				E38E158E0D25F9FA00618676 /* DVDSubtitles */,
 				E38E159A0D25F9FA00618676 /* IDVDPlayer.h */,
-				94B185280EB48264008C38FA /* CoreAudioAUHAL.cpp */,
-				94B185290EB48264008C38FA /* CoreAudioAUHAL.h */,
-				94B1852A0EB48264008C38FA /* CoreAudioPlexSupport.cpp */,
-				94B185340EB482D3008C38FA /* CoreAudioPlexSupport.h */,
 			);
 			path = dvdplayer;
 			sourceTree = "<group>";
@@ -6215,8 +6225,6 @@
 				E3A4781C0D29035000F3C3A6 /* LinuxFileSystem.cpp */,
 				E38E1D6A0D25F9FD00618676 /* ConvUtils.cpp */,
 				E38E1D6B0D25F9FD00618676 /* ConvUtils.h */,
-				E38E1D6C0D25F9FD00618676 /* CPortAudio.cpp */,
-				E38E1D6D0D25F9FD00618676 /* CPortAudio.h */,
 				E38E1D6E0D25F9FD00618676 /* getdelim.c */,
 				E38E1D6F0D25F9FD00618676 /* getdelim.h */,
 				E38E1D700D25F9FD00618676 /* LinuxResourceCounter.cpp */,
@@ -6681,7 +6689,6 @@
 				E371C2440E2F2D5400FBF841 /* controlspin.cpp in Sources */,
 				E371C2450E2F2D5400FBF841 /* controltextbox.cpp in Sources */,
 				E371C2460E2F2D5400FBF841 /* ConvUtils.cpp in Sources */,
-				E371C2470E2F2D5400FBF841 /* CPortAudio.cpp in Sources */,
 				E371C2480E2F2D5400FBF841 /* CPUInfo.cpp in Sources */,
 				E371C2490E2F2D5400FBF841 /* crc.cpp in Sources */,
 				E371C24A0E2F2D5400FBF841 /* Crc32.cpp in Sources */,
@@ -7419,6 +7426,7 @@
 				E31312180EC647FB00629994 /* PlexRemoteHelper.cpp in Sources */,
 				E31312190EC647FB00629994 /* PlexHelperApp.cpp in Sources */,
 				E313121E0EC64B7300629994 /* PlexMediaServerHelper.cpp in Sources */,
+				9421E33A0ED6A99E00A26254 /* CoreAudioRenderer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7620,7 +7628,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				APPLICATION_VERSION = 0.7.0;
+				APPLICATION_VERSION = 0.7.1;
 				CODE_SIGN_IDENTITY = "";
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -7715,7 +7723,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				APPLICATION_VERSION = 0.7.0;
+				APPLICATION_VERSION = 0.7.1;
 				CODE_SIGN_IDENTITY = Plex;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";

@@ -54,7 +54,7 @@ void CGUIViewStateWindowScripts::SaveViewState()
 
 CStdString CGUIViewStateWindowScripts::GetExtensions()
 {
-  return ".py";
+  return ".py|.applescript";
 }
 
 VECSOURCES& CGUIViewStateWindowScripts::GetSources()

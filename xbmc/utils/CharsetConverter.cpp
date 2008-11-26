@@ -554,3 +554,32 @@ bool CCharsetConverter::isValidUtf8(const CStdString& str)
 {
   return isValidUtf8(str.c_str(), str.size());
 }
+
+void CCharsetConverter::unknownTo(const CStdStringA& strDestCharset, const CStdStringA& strSource, CStdStringA& strDest)
+{
+  CStdString strSourceCharset;
+  
+  if (strDestCharset == NULL || strDestCharset == "UTF-8" || strDestCharset == "UTF-8-MAC" || strDest == "UTF-8-MAC")
+  { 
+    if (isValidUtf8(strSource))
+      strDest = strSource;
+    else
+      stringCharsetToUtf8(strSource, strDest);
+    return;
+  }
+  
+  if (isValidUtf8(strSource))
+    strSourceCharset = UTF8_SOURCE;
+  else
+    strSourceCharset = g_langInfo.GetGuiCharSet();
+  
+  if ( strSourceCharset == strDestCharset )
+    strDest = strSource;
+  else    
+  {
+    iconv_t iconvString;
+    ICONV_PREPARE(iconvString);
+    convert(iconvString,UTF8_DEST_MULTIPLIER,strSourceCharset,strDestCharset,strSource,strDest);
+    iconv_close(iconvString);
+  }
+}

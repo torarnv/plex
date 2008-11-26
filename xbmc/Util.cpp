@@ -116,6 +116,7 @@
 #include "GUIDialogKeyboard.h"
 #include "FileSystem/File.h"
 #include "PlayList.h"
+#include "CocoaUtils.h"
 
 using namespace std;
 
@@ -556,7 +557,7 @@ void CUtil::RemoveExtension(CStdString& strFileName)
     strFileMask = g_stSettings.m_pictureExtensions;
     strFileMask += g_stSettings.m_musicExtensions;
     strFileMask += g_stSettings.m_videoExtensions;
-    strFileMask += ".py|.xml|.milk|.xpr|.cdg|.app";
+    strFileMask += ".py|.xml|.milk|.xpr|.cdg|.app|.applescript|.workflow";
 
     // Only remove if its a valid media extension
     if (strFileMask.Find(strExtension.c_str()) >= 0)
@@ -3584,6 +3585,7 @@ const BUILT_IN commands[] = {
   { "ReplaceWindow",              true,   "Replaces the current window with the new one" },
   { "TakeScreenshot",             false,  "Takes a Screenshot" },
   { "RunScript",                  true,   "Run the specified script" },
+  { "RunAppleScript",             true,   "Run the specified AppleScript command" },
   { "RunXBE",                     true,   "Run the specified executeable" },
   { "RunPlugin",                  true,   "Run the specified plugin" },
   { "Extract",                    true,   "Extracts the specified archive" },
@@ -3814,28 +3816,39 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
 #ifdef HAS_PYTHON
   else if (execute.Equals("runscript"))
   {
-    std::vector<CStdString> params;
-    StringUtils::SplitString(strParameterCaseIntact,",",params);
-    if (params.size() > 0)  // we need to construct arguments to pass to python
-    {
-      unsigned int argc = params.size();
-      char ** argv = new char*[argc];
+		if (GetExtension(strParameterCaseIntact) == ".applescript")
+		{
+			Cocoa_ExecAppleScriptFile(strParameterCaseIntact);
+		}
+		else
+		{
+			std::vector<CStdString> params;
+			StringUtils::SplitString(strParameterCaseIntact,",",params);
+			if (params.size() > 0)  // we need to construct arguments to pass to python
+			{
+				unsigned int argc = params.size();
+				char ** argv = new char*[argc];
 
-      std::vector<CStdString> path;
-      //split the path up to find the filename
-      StringUtils::SplitString(params[0],"\\",path);
-      argv[0] = path.size() > 0 ? (char*)path[path.size() - 1].c_str() : (char*)params[0].c_str();
+				std::vector<CStdString> path;
+				//split the path up to find the filename
+				StringUtils::SplitString(params[0],"\\",path);
+				argv[0] = path.size() > 0 ? (char*)path[path.size() - 1].c_str() : (char*)params[0].c_str();
 
-      for(unsigned int i = 1; i < argc; i++)
-        argv[i] = (char*)params[i].c_str();
+				for(unsigned int i = 1; i < argc; i++)
+					argv[i] = (char*)params[i].c_str();
 
-      g_pythonParser.evalFile(params[0].c_str(), argc, (const char**)argv);
-      delete [] argv;
-    }
-    else
-      g_pythonParser.evalFile(strParameterCaseIntact.c_str());
+				g_pythonParser.evalFile(params[0].c_str(), argc, (const char**)argv);
+				delete [] argv;
+			}
+			else
+				g_pythonParser.evalFile(strParameterCaseIntact.c_str());
+		}
   }
 #endif
+	else if (execute.Equals("runapplescript"))
+	{
+		Cocoa_ExecAppleScript(strParameterCaseIntact.c_str());
+	}
 #if defined(_LINUX) || defined(_WIN32PC)
   else if (execute.Equals("system.exec"))
   {
