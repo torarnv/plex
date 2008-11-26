@@ -891,6 +891,7 @@
 		E3F471BF0EAC4BF9004BB122 /* NptStdcEnvironment.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3F471BE0EAC4BF9004BB122 /* NptStdcEnvironment.cpp */; };
 		E3FD287C0E9951B500EE77C3 /* FilePlex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3FD28780E9951B500EE77C3 /* FilePlex.cpp */; };
 		E3FD287D0E9951B500EE77C3 /* PlexDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3FD287A0E9951B500EE77C3 /* PlexDirectory.cpp */; };
+		E3FD41940EF459C100C6172C /* PlayListURL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3FD41930EF459C100C6172C /* PlayListURL.cpp */; };
 		EF5D577B0EB4833200B16174 /* CocoaUtilsPlus.mm in Sources */ = {isa = PBXBuildFile; fileRef = EF5D577A0EB4833200B16174 /* CocoaUtilsPlus.mm */; };
 /* End PBXBuildFile section */
 
@@ -3074,6 +3075,8 @@
 		E3FD28790E9951B500EE77C3 /* FilePlex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FilePlex.h; sourceTree = "<group>"; };
 		E3FD287A0E9951B500EE77C3 /* PlexDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PlexDirectory.cpp; sourceTree = "<group>"; };
 		E3FD287B0E9951B500EE77C3 /* PlexDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlexDirectory.h; sourceTree = "<group>"; };
+		E3FD41920EF459C100C6172C /* PlayListURL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayListURL.h; sourceTree = "<group>"; };
+		E3FD41930EF459C100C6172C /* PlayListURL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PlayListURL.cpp; sourceTree = "<group>"; };
 		E3FFF0020D46FD1D003D79C3 /* libavutil-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libavutil-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libavutil-osx.a"; sourceTree = "<group>"; };
 		E3FFF0040D46FD1D003D79C3 /* libavcodec-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libavcodec-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libavcodec-osx.a"; sourceTree = "<group>"; };
 		E3FFF02E0D470BD8003D79C3 /* libavformat-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libavformat-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libavformat-osx.a"; sourceTree = "<group>"; };
@@ -3725,6 +3728,8 @@
 		E38E14610D25F9F900618676 /* xbmc */ = {
 			isa = PBXGroup;
 			children = (
+				E3FD41920EF459C100C6172C /* PlayListURL.h */,
+				E3FD41930EF459C100C6172C /* PlayListURL.cpp */,
 				E37D5CB40D3023BB0081D327 /* osx */,
 				E336EF4A0E602A8B00270758 /* GUIDialogFullScreenInfo.cpp */,
 				E336EF4B0E602A8B00270758 /* GUIDialogFullScreenInfo.h */,
@@ -7427,6 +7432,7 @@
 				E31312190EC647FB00629994 /* PlexHelperApp.cpp in Sources */,
 				E313121E0EC64B7300629994 /* PlexMediaServerHelper.cpp in Sources */,
 				9421E33A0ED6A99E00A26254 /* CoreAudioRenderer.cpp in Sources */,
+				E3FD41940EF459C100C6172C /* PlayListURL.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
