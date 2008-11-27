@@ -30,6 +30,10 @@ CoreAudioRenderer::CoreAudioRenderer(IAudioCallback* pCallback, int iChannels, u
 	m_bIsMusic = bIsMusic;
 	
 	m_dwPacketSize = iChannels*(uiBitsPerSample/8)*256;
+	if (uiSamplesPerSec < 16000)
+	{
+		m_dwPacketSize /= 5; // use small buffer for low samplerates
+	}
 	m_dwNumPackets = 16;
 	
 	if (g_audioConfig.UseDigitalOutput() &&

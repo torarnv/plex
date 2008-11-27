@@ -277,7 +277,7 @@ HRESULT CoreAudioAUHAL::Deinitialize()
 DWORD CoreAudioAUHAL::GetSpace()
 {
 	DWORD fakeCeiling, bufferDataSize = PaUtil_GetRingBufferReadAvailable(deviceParameters->outputBuffer);
-#warning fix for music
+	
 	if (m_bIsMusic)
 	{
 		fakeCeiling = PACKET_SIZE / deviceParameters->stream_format.mChannelsPerFrame;
@@ -430,6 +430,8 @@ int CoreAudioAUHAL::OpenPCM(struct CoreAudioDeviceParameters *deviceParameters, 
 
 	uint32_t audioDeviceLatency, audioDeviceBufferFrameSize, audioDeviceSafetyOffset;
 	deviceParameters->hardwareFrameLatency = 0.0;
+	
+	i_param_size = sizeof(uint32_t);
 
 	verify_noerr( AudioUnitGetProperty(deviceParameters->au_unit,
 									   kAudioDevicePropertyLatency,
@@ -455,7 +457,7 @@ int CoreAudioAUHAL::OpenPCM(struct CoreAudioDeviceParameters *deviceParameters, 
 									   0,
 									   &audioDeviceSafetyOffset,
 									   &i_param_size ));
-	\
+	
 	deviceParameters->hardwareFrameLatency += audioDeviceSafetyOffset;
 
 	CLog::Log(LOGINFO, "Hardware latency: %.0f frames (%.2f msec @ %.0fHz)", deviceParameters->hardwareFrameLatency,
@@ -498,12 +500,12 @@ OSStatus CoreAudioAUHAL::RenderCallbackAnalog(struct CoreAudioDeviceParameters *
     // initial calc
 	int framesToWrite = inNumberFrames;
 	int framesAvailable = PaUtil_GetRingBufferReadAvailable(deviceParameters->outputBuffer);
-
+	
 	if (framesToWrite > framesAvailable)
 	{
 		framesToWrite = framesAvailable;
 	}
-
+	
 	int currentPos = framesToWrite * deviceParameters->stream_format.mBytesPerFrame;
 	int underrunLength = (inNumberFrames - framesToWrite) * deviceParameters->stream_format.mBytesPerFrame;
 
