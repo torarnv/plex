@@ -29,10 +29,10 @@ CoreAudioRenderer::CoreAudioRenderer(IAudioCallback* pCallback, int iChannels, u
 	ac3_framebuffer = NULL;
 	m_bIsMusic = bIsMusic;
 	
-	m_dwPacketSize = iChannels*(uiBitsPerSample/8)*256;
-	if (uiSamplesPerSec < 16000)
+	m_dwPacketSize = (int)((float)iChannels*(uiBitsPerSample/8)* uiSamplesPerSec * CA_BUFFER_FACTOR / 5); // Pass 20% of the buffer at a time
+	if (uiSamplesPerSec < 32000)
 	{
-		m_dwPacketSize /= 5; // use small buffer for low samplerates
+	//	m_dwPacketSize /= 5; // use small buffer for low samplerates
 	}
 	m_dwNumPackets = 16;
 	
