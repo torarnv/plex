@@ -24,6 +24,9 @@
 
 CPCMAmplifier::CPCMAmplifier() : m_nVolume(VOLUME_MAXIMUM), m_dFactor(0)
 {
+	m_intMax = 0;
+	m_floatMax = 0.0;
+	m_PowerFactor = 1.0;
 }
 
 CPCMAmplifier::~CPCMAmplifier()
@@ -47,19 +50,33 @@ int  CPCMAmplifier::GetVolume()
   return m_nVolume;
 }
 
-// 32 bit float de-amplifier
-void CPCMAmplifier::DeAmplifyInt16(short *pcm, int nSamples)
+// 16 bit integer de-amplifier
+void CPCMAmplifier::DeAmplifyInt16(int16_t *pcm, int nSamples, bool normalise)
 {
-	if (m_dFactor >= 1.0)
+	if (m_dFactor >= 1.0 && !normalise)
 	{
 		// no process required. using >= to make sure no amp is ever done (only de-amp)
 		return;
 	}
 	
-	for (int nSample=0; nSample<nSamples; nSample++)
+	if (!normalise) m_PowerFactor = 1.0;
+	
+	for (int16_t nSample=0; nSample<nSamples; nSample++)
 	{
-		int nSampleValue = pcm[nSample];
-		nSampleValue = (int)((double)nSampleValue * m_dFactor);		
+		int16_t nSampleValue = pcm[nSample];
+		
+		// store maximum level encountered
+		if (normalise && nSampleValue > m_intMax)
+		{
+			m_intMax = nSampleValue;
+			
+			// adjust power factor to normalise to 98%
+			m_PowerFactor = (double)m_intMax / SHRT_MAX * 0.98;
+			if (m_PowerFactor) m_PowerFactor = 1 / m_PowerFactor;
+			if (m_PowerFactor > 3.0) m_PowerFactor = 3.0;
+		}		
+		
+		nSampleValue = (int)((double)nSampleValue * m_PowerFactor * m_dFactor);		
 		
 		pcm[nSample] = (short)nSampleValue;
 	}

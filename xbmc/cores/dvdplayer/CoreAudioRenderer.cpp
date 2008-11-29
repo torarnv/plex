@@ -288,7 +288,7 @@ DWORD CoreAudioRenderer::AddPackets(unsigned char *data, DWORD len)
 	{
 		// Handle volume de-amplification.
 		if (!m_bPassthrough)
-			m_amp.DeAmplifyInt16((short *)pcmPtr, samplesToWrite * m_uiChannels);
+			m_amp.DeAmplifyInt16((int16_t *)pcmPtr, samplesToWrite * m_uiChannels, g_guiSettings.GetBool("audiooutput.normalisevolume"));
 		
 		// Write data to the stream.
 		audioUnit->WriteStream(pcmPtr, samplesToWrite);

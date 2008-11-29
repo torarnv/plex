@@ -230,9 +230,9 @@ HRESULT CoreAudioAUHAL::Deinitialize()
         if( deviceParameters->b_changed_mixing && deviceParameters->sfmt_revert.mFormatID != kAudioFormat60958AC3 )
         {
             int b_mix;
-            Boolean b_writeable;
+            Boolean b_writeable = false;
             /* Revert mixable to true if we are allowed to */
-            err = AudioDeviceGetPropertyInfo( deviceParameters->device_id, 0, FALSE, kAudioDevicePropertySupportsMixing,
+            err = AudioDeviceGetPropertyInfo(deviceParameters->device_id, 0, FALSE, kAudioDevicePropertySupportsMixing,
 											 &i_param_size, &b_writeable );
 			
             err = AudioDeviceGetProperty( deviceParameters->device_id, 0, FALSE, kAudioDevicePropertySupportsMixing,
@@ -536,6 +536,7 @@ int CoreAudioAUHAL::OpenSPDIF(struct CoreAudioDeviceParameters *deviceParameters
 
     /* Start doing the SPDIF setup proces */
     deviceParameters->b_digital = true;
+	deviceParameters->b_changed_mixing = false;
 
     /* Hog the device */
     i_param_size = sizeof(deviceParameters->i_hog_pid);
