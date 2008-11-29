@@ -660,7 +660,7 @@ CGUISettings::CGUISettings(void)
 #endif
 	AddBool(10, "servers.upnpserver", 21360, false);
 	AddString(11, "servers.musicshares", 21361, "", BUTTON_CONTROL_STANDARD);
-	AddString(12, "servers.videohares", 21362, "", BUTTON_CONTROL_STANDARD);
+	AddString(12, "servers.videoshares", 21362, "", BUTTON_CONTROL_STANDARD);
 	AddString(13, "servers.pictureshares", 21363, "", BUTTON_CONTROL_STANDARD);
 	
 #ifdef _XBOX

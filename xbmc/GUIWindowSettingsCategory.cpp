@@ -1176,10 +1176,10 @@ void CGUIWindowSettingsCategory::UpdateSettings()
                                          g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getLockMode() != LOCK_MODE_EVERYONE &&
                                          !g_guiSettings.GetString("screensaver.mode").Equals("Black"));
     }
-    else if (strSetting.Equals("upnp.musicshares") || strSetting.Equals("upnp.videoshares") || strSetting.Equals("upnp.pictureshares"))
+    else if (strSetting.Equals("servers.musicshares") || strSetting.Equals("servers.videoshares") || strSetting.Equals("servers.pictureshares"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("upnp.server"));
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("servers.upnpserver"));
     }
     else if (!strSetting.Equals("remoteevents.enabled")
              && strSetting.Left(13).Equals("remoteevents."))
@@ -2428,10 +2428,10 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       g_application.StopUPnPClient();
 #endif
   }
-  else if (strSetting.Equals("upnp.server"))
+  else if (strSetting.Equals("servers.upnpserver"))
   {
 #ifdef HAS_UPNP
-    if (g_guiSettings.GetBool("upnp.server"))
+    if (g_guiSettings.GetBool("servers.upnpserver"))
       g_application.StartUPnPServer();
     else
       g_application.StopUPnPServer();
@@ -2475,7 +2475,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     }
 #endif
   }
-  else if (strSetting.Equals("upnp.musicshares"))
+  else if (strSetting.Equals("servers.musicshares"))
   {
     CStdString filename;
     CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "upnpserver.xml", filename);
@@ -2486,7 +2486,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     else
       g_settings.LoadUPnPXml(filename);
   }
-  else if (strSetting.Equals("upnp.videoshares"))
+  else if (strSetting.Equals("servers.videoshares"))
   {
     CStdString filename;
     CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "upnpserver.xml", filename);
@@ -2497,7 +2497,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     else
       g_settings.LoadUPnPXml(filename);
   }
-  else if (strSetting.Equals("upnp.pictureshares"))
+  else if (strSetting.Equals("servers.pictureshares"))
   {
     CStdString filename;
     CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "upnpserver.xml", filename);
