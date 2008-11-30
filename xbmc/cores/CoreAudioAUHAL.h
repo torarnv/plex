@@ -34,6 +34,7 @@
 #include "CoreAudioPlexSupport.h"
 #include "stdafx.h"
 #include "XBAudioConfig.h"
+#include "utils/CriticalSection.h"
 
 #define CA_BUFFER_FACTOR 0.05
 
@@ -79,6 +80,7 @@ class CoreAudioAUHAL
 		
 		bool m_bIsMusic;
 		bool m_bIsInitialized;
+		CCriticalSection    m_cs;
 	};
 		
 #endif

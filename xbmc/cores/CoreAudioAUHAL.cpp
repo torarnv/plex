@@ -813,6 +813,8 @@ int CoreAudioAUHAL::AudioStreamChangeFormat(CoreAudioDeviceParameters *devicePar
     int i;
 
     CLog::Log(LOGINFO, STREAM_FORMAT_MSG( "setting stream format: ", change_format ));
+	
+	CSingleLock lock(m_cs); // acquire lock
 
     /* change the format */
     err = AudioStreamSetProperty( i_stream_id, 0, 0,
