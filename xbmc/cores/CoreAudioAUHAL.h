@@ -78,7 +78,7 @@ class CoreAudioAUHAL
 		struct CoreAudioDeviceParameters* deviceParameters;
 		
 		bool m_bIsMusic;
-
+		bool m_bIsInitialized;
 	};
 		
 #endif

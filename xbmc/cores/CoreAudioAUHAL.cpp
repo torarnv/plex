@@ -82,6 +82,7 @@ struct CoreAudioDeviceParameters
  * Open: open macosx audio output
  *****************************************************************************/
 CoreAudioAUHAL::CoreAudioAUHAL(const CStdString& strName, int channels, unsigned int sampleRate, int bitsPerSample, bool isDigital, bool useCoreAudio, bool isMusic, int packetSize)
+  : m_bIsInitialized(false)
 {
     OSStatus                err = noErr;
     UInt32                  i_param_size = 0;
@@ -172,12 +173,18 @@ CoreAudioAUHAL::CoreAudioAUHAL(const CStdString& strName, int channels, unsigned
 	if (isDigital && useCoreAudio)
     {
         if (OpenSPDIF(deviceParameters, strName, channels, sampleRate, bitsPerSample, isDigital, useCoreAudio, packetSize))
-			return;
+        {
+          m_bIsInitialized = true;
+          return;
+        }
     }
     else
     {
         if (OpenPCM(deviceParameters, strName, channels, sampleRate, bitsPerSample, isDigital, useCoreAudio, packetSize))
-            return;
+        {
+          m_bIsInitialized = true;
+          return;
+        }
     }
 
 error:
@@ -190,6 +197,10 @@ error:
 
 HRESULT CoreAudioAUHAL::Deinitialize()
 {
+  // Don't allow double deinitialization.
+  if (m_bIsInitialized == false)
+    return S_OK;
+  
 	CLog::Log(LOGDEBUG,"CoreAudioAUHAL::Deinitialize");
 	
 #warning free structs
@@ -220,11 +231,6 @@ HRESULT CoreAudioAUHAL::Deinitialize()
         if( err != noErr )
         {
             CLog::Log(LOGERROR, "AudioDeviceRemoveIOProc failed: [%4.4s]", (char *)&err );
-        }
-		
-        if( deviceParameters->b_revert )
-        {
-            AudioStreamChangeFormat(deviceParameters, deviceParameters->i_stream_id, deviceParameters->sfmt_revert);
         }
 		
         if( deviceParameters->b_changed_mixing && deviceParameters->sfmt_revert.mFormatID != kAudioFormat60958AC3 )
@@ -269,8 +275,15 @@ HRESULT CoreAudioAUHAL::Deinitialize()
 									 kAudioDevicePropertyHogMode, i_param_size, &deviceParameters->i_hog_pid );
         if( err != noErr ) CLog::Log(LOGERROR, "Could not release hogmode: [%4.4s]", (char *)&err );
     }
-	
+
+    // Revert the stream format *after* we've set all the parameters, as doing it before seems to 
+    // result in a hang under some circumstances, an apparent deadlock in CoreAudio between handing
+    // the stream format change and setting parameters. 
+    //
+    if (deviceParameters->b_digital && deviceParameters->b_revert)
+      AudioStreamChangeFormat(deviceParameters, deviceParameters->i_stream_id, deviceParameters->sfmt_revert);
    
+  m_bIsInitialized = false;
 	return S_OK;
 }
 
