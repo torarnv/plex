@@ -33,7 +33,7 @@ public:
   int  GetVolume();
 	
 	
-  void DeAmplifyInt16(int16_t *pcm, int nSamples, bool normalise);
+  void DeAmplifyInt16(int16_t *pcm, int nSamples, bool normalise, bool deamp);
   void DeAmplifyFloat32(float *pcm, int nSamples);
 
 protected:
@@ -42,6 +42,7 @@ protected:
   double m_PowerFactor;
 	float m_floatMax;
   int16_t m_intMax;
+	
 
 };
 

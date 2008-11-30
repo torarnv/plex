@@ -266,6 +266,9 @@ DWORD CoreAudioRenderer::AddPackets(unsigned char *data, DWORD len)
 	if (m_bEncodeAC3)
 	{
 		int ac3_frame_count = 0;
+		
+		m_amp.DeAmplifyInt16((int16_t *)pcmPtr, samplesToWrite * m_uiChannels, g_guiSettings.GetBool("audiooutput.normalisevolume"), false);
+		
 		if ((ac3_frame_count = ac3encoder_write_samples(&m_ac3encoder, pcmPtr, samplesToWrite)) == 0)
 		{
 			CLog::Log(LOGERROR, "AC3 output buffer underrun");
@@ -288,7 +291,7 @@ DWORD CoreAudioRenderer::AddPackets(unsigned char *data, DWORD len)
 	{
 		// Handle volume de-amplification.
 		if (!m_bPassthrough)
-			m_amp.DeAmplifyInt16((int16_t *)pcmPtr, samplesToWrite * m_uiChannels, g_guiSettings.GetBool("audiooutput.normalisevolume"));
+			m_amp.DeAmplifyInt16((int16_t *)pcmPtr, samplesToWrite * m_uiChannels, g_guiSettings.GetBool("audiooutput.normalisevolume"), true);
 		
 		// Write data to the stream.
 		audioUnit->WriteStream(pcmPtr, samplesToWrite);

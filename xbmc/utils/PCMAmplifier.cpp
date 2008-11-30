@@ -51,7 +51,7 @@ int  CPCMAmplifier::GetVolume()
 }
 
 // 16 bit integer de-amplifier
-void CPCMAmplifier::DeAmplifyInt16(int16_t *pcm, int nSamples, bool normalise)
+void CPCMAmplifier::DeAmplifyInt16(int16_t *pcm, int nSamples, bool normalise, bool deamp)
 {
 	if (m_dFactor >= 1.0 && !normalise)
 	{
@@ -60,6 +60,8 @@ void CPCMAmplifier::DeAmplifyInt16(int16_t *pcm, int nSamples, bool normalise)
 	}
 	
 	if (!normalise) m_PowerFactor = 1.0;
+	
+	double volFactor = deamp ? m_dFactor : 1.0;
 	
 	for (int16_t nSample=0; nSample<nSamples; nSample++)
 	{
@@ -70,16 +72,19 @@ void CPCMAmplifier::DeAmplifyInt16(int16_t *pcm, int nSamples, bool normalise)
 		{
 			m_intMax = nSampleValue;
 			
-			// adjust power factor to normalise to 98%
+			// adjust power factor to normalise to 98% (-0.3dB)
 			m_PowerFactor = (double)m_intMax / SHRT_MAX * 0.98;
 			if (m_PowerFactor) m_PowerFactor = 1 / m_PowerFactor;
 			if (m_PowerFactor > 3.0) m_PowerFactor = 3.0;
+			CLog::Log(LOGDEBUG, "Normalising with power factor %.2f", m_PowerFactor);
+
 		}		
 		
 		nSampleValue = (int)((double)nSampleValue * m_PowerFactor * m_dFactor);		
 		
 		pcm[nSample] = (short)nSampleValue;
 	}
+	
 }
 
 // 32 bit float de-amplifier
