@@ -4617,6 +4617,12 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   {
     g_application.CheckForUpdates();
   }
+  else if (execute.Equals("action"))
+  {
+    CAction action;
+    action.wID = atoi(parameter);
+    g_application.OnAction(action);
+  }
   else
     return -1;
   return 0;
