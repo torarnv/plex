@@ -76,11 +76,9 @@ void CPCMAmplifier::DeAmplifyInt16(int16_t *pcm, int nSamples, bool normalise, b
 			m_PowerFactor = (double)m_intMax / SHRT_MAX * 0.98;
 			if (m_PowerFactor) m_PowerFactor = 1 / m_PowerFactor;
 			if (m_PowerFactor > 3.0) m_PowerFactor = 3.0;
-			CLog::Log(LOGDEBUG, "Normalising with power factor %.2f", m_PowerFactor);
-
 		}		
 		
-		nSampleValue = (int)((double)nSampleValue * m_PowerFactor * m_dFactor);		
+		nSampleValue = (int)((double)nSampleValue * volFactor * m_dFactor);		
 		
 		pcm[nSample] = (short)nSampleValue;
 	}
