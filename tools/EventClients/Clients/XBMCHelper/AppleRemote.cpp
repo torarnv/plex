@@ -796,12 +796,11 @@ int main(int argc, char **argv)
   keyMapUniversalRepeat["152:9_"] = true;
   keyMapUniversalRepeat["152:10_"] = true;  
   
-      
   keyMapUniversal["153:1_"] = "Info";
   keyMapUniversal["153:2_"] = "Prev";
   keyMapUniversal["153:3_"] = "Seven";
   keyMapUniversal["153:4_"] = "Eight";
-  keyMapUniversal["153:5_"] = "Clear";  // (*)
+  // Due to remote programming error, no 153:5 available
   keyMapUniversal["153:6_"] = "Enter";  // (#)
   keyMapUniversal["153:9_"] = "Seven";  // For repeat
   keyMapUniversal["153:10_"] = "Eight"; // For repeat
@@ -815,7 +814,7 @@ int main(int argc, char **argv)
   keyMapUniversal["154:2_"] = "Forward";
   keyMapUniversal["154:3_"] = "Nine";
   keyMapUniversal["154:4_"] = "Zero";
-  keyMapUniversal["154:5_"] = "F15";
+  keyMapUniversal["154:5_"] = "Clear";  // (*)
   keyMapUniversal["154:6_"] = "Sleep";
   keyMapUniversal["154:9_"] = "Nine";   // For repeat
   keyMapUniversal["154:10_"] = "Zero";  // For repeat

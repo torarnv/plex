@@ -1090,7 +1090,6 @@ WORD CButtonTranslator::TranslateMultiCodeRemoteString(const char *szButton)
   else if (strButton.Equals("f12")) wButtonCode = MULTICODE_IR_REMOTE_F12;
   else if (strButton.Equals("f13")) wButtonCode = MULTICODE_IR_REMOTE_F13;
   else if (strButton.Equals("f14")) wButtonCode = MULTICODE_IR_REMOTE_F14;
-  else if (strButton.Equals("f15")) wButtonCode = MULTICODE_IR_REMOTE_F15;
   
   else if (strButton.Equals("red")) wButtonCode = MULTICODE_IR_REMOTE_RED;
   else if (strButton.Equals("green")) wButtonCode = MULTICODE_IR_REMOTE_GREEN;
