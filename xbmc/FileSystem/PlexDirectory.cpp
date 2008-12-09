@@ -136,10 +136,20 @@ class PlexMediaNode
      CFileItemPtr pItem(new CFileItem());
      pItem->m_bIsFolder = true;
      
-     url.GetURL(pItem->m_strPath);
-     if (pItem->m_strPath[pItem->m_strPath.size()-1] != '/')
-       pItem->m_strPath += "/";
-     pItem->m_strPath += el.Attribute("key");
+     string src = el.Attribute("key");
+     if (src.find("://") != -1)
+     {
+       // It's an absolute URL.
+       pItem->m_strPath = src;
+     }
+     else
+     {
+       // It's a relative URL.
+       url.GetURL(pItem->m_strPath);
+       if (pItem->m_strPath[pItem->m_strPath.size()-1] != '/')
+         pItem->m_strPath += "/";
+       pItem->m_strPath += el.Attribute("key");
+     }
      
      // Let subclass finish.
      DoBuildFileItem(pItem, el);
@@ -282,6 +292,35 @@ class PlexMediaGenre : public PlexMediaNode
   }
 };
 
+class PlexMediaVideo : public PlexMediaNode
+{
+  virtual void DoBuildFileItem(CFileItemPtr& pItem, TiXmlElement& el)
+  {
+    pItem->m_bIsFolder = false;
+          
+    // Thumbnail goes back to PMS.
+    CURL url(pItem->m_strPath);
+    url.SetProtocol("http");
+    url.SetPort(32400);
+    string path = el.Attribute("thumb");
+    url.SetFileName(path.substr(1));
+    CStdString theURL;
+    
+    CStdString thumbnail;
+    url.GetURL(thumbnail);
+    pItem->SetThumbnailImage(thumbnail);
+    
+    // Path to the track itself.
+    CURL url2(pItem->m_strPath);
+    if (url2.GetProtocol() == "plex")
+    {
+      url2.SetProtocol("http");
+      url2.SetPort(32400);
+      url2.GetURL(pItem->m_strPath);
+    }
+  }
+};
+
 class PlexMediaTrack : public PlexMediaNode
 {
   virtual void DoBuildFileItem(CFileItemPtr& pItem, TiXmlElement& el)
@@ -414,6 +453,8 @@ PlexMediaNode* PlexMediaNode::Create(const string& name)
     return new PlexMediaPhotoAlbum();
   else if (name == "PhotoKeyword")
     return new PlexMediaPhotoKeyword();
+  else if (name == "Video")
+    return new PlexMediaVideo();
   else
     printf("ERROR: Unknown class [%s]\n", name.c_str());
   
