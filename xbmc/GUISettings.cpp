@@ -508,7 +508,7 @@ CGUISettings::CGUISettings(void)
 #endif
 	AddBool(6, "audiooutput.ac3passthrough", 364, true);
 	AddBool(7, "audiooutput.dtspassthrough", 254, true);
-	AddBool(8, "audiooutput.normalisevolume", 577, true);
+	AddBool(8, "audiooutput.normalisevolume", 577, false);
 
 #ifndef __APPLE__
   AddCategory(4, "videooutput", 21373);
