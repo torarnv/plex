@@ -186,6 +186,25 @@ class PlexMediaDirectory : public PlexMediaNode
   virtual void DoBuildFileItem(CFileItemPtr& pItem, const string& parentPath, TiXmlElement& el)
   {
     pItem->SetLabel(el.Attribute("name"));
+    
+    try
+    {
+      string path = el.Attribute("thumb");
+      
+      CURL url(pItem->m_strPath);
+      url.SetProtocol("http");
+      url.SetFileName(path.substr(1));
+      url.SetPort(32400);
+      
+      CStdString theURL;
+      url.GetURL(theURL);
+      
+      pItem->SetThumbnailImage(theURL);
+    }
+    catch (...)
+    {
+      
+    }
   }
 };
 
@@ -308,9 +327,13 @@ class PlexMediaVideo : public PlexMediaNode
     videoInfo.m_strTitle = el.Attribute("title");
     videoInfo.m_strPlot = videoInfo.m_strPlotOutline = el.Attribute("summary");
     
-    string year = el.Attribute("year");
-    if (year.size() > 0)
-      videoInfo.m_iYear = boost::lexical_cast<int>(year);
+    try
+    {
+      string year = el.Attribute("year");
+      if (year.size() > 0)
+        videoInfo.m_iYear = boost::lexical_cast<int>(year);
+    }
+    catch (...) {}
       
     string duration = el.Attribute("duration");
     if (duration.size() > 0)
@@ -332,7 +355,11 @@ class PlexMediaVideo : public PlexMediaNode
     // Thumbnail.
     CStdString path = el.Attribute("thumb");
     if (path.find("/") == 0)
+    {
+      parentURL.SetProtocol("http");
+      parentURL.SetPort(32400);
       parentURL.SetFileName(path.substr(1));
+    }
     else if (path.find("://") == -1)
       parentURL.SetFileName(path);
 
@@ -350,9 +377,9 @@ class PlexMediaVideo : public PlexMediaNode
     
     videoInfo.m_strFile = pItem->m_strPath;
     CFileItemPtr newItem(new CFileItem(videoInfo));
+    newItem->m_bIsFolder = false;
     newItem->m_strPath = pItem->m_strPath;
     newItem->SetThumbnailImage(thumbnail);
-    
     pItem = newItem;
   }
   
