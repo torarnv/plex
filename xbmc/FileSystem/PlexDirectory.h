@@ -32,7 +32,7 @@ class CPlexDirectory : public IDirectory,
   virtual void OnExit();
   virtual void StopThread();
    
-  void Parse(const CURL& url, TiXmlElement* root, CFileItemList &items, string& strFileLabel, string& strDirLabel);
+  void Parse(const CURL& url, TiXmlElement* root, CFileItemList &items, string& strFileLabel, string& strDirLabel, string& strSecondDirLabel);
   
   CEvent     m_downloadEvent;
   bool       m_bStop;

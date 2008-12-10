@@ -107,9 +107,10 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   // Walk the parsed tree.
   string strFileLabel = "%N - %T"; 
   string strDirLabel = "%B";
+  string strSecondDirLabel = "%Y";
   
-  Parse(m_url, root, items, strFileLabel, strDirLabel);
-  items.AddSortMethod(SORT_METHOD_NONE, 552, LABEL_MASKS(strFileLabel, "%D", strDirLabel, "%Y"));
+  Parse(m_url, root, items, strFileLabel, strDirLabel, strSecondDirLabel);
+  items.AddSortMethod(SORT_METHOD_NONE, 552, LABEL_MASKS(strFileLabel, "%D", strDirLabel, strSecondDirLabel));
 
   CFileItemList vecCacheItems;
   g_directoryCache.ClearDirectory(strRoot);
@@ -131,7 +132,7 @@ class PlexMediaNode
  public:
    static PlexMediaNode* Create(const string& name);
    
-   CFileItemPtr BuildFileItem(const CURL& url, TiXmlElement& el, string& strFileLabel, string& strDirLabel)
+   CFileItemPtr BuildFileItem(const CURL& url, TiXmlElement& el)
    {
      CFileItemPtr pItem(new CFileItem());
      pItem->m_bIsFolder = true;
@@ -165,10 +166,11 @@ class PlexMediaNode
    }
    
    virtual void DoBuildFileItem(CFileItemPtr& pItem, const string& parentPath, TiXmlElement& el) = 0;
-   virtual void ComputeLabels(const string& strPath, string& strFileLabel, string& strDirLabel)
+   virtual void ComputeLabels(const string& strPath, string& strFileLabel, string& strDirLabel, string& strSecondDirLabel)
    {
      strFileLabel = "%N - %T";
      strDirLabel = "%B";
+     strSecondDirLabel = "%Y";
      
      if (strPath.find("/Albums") != -1)
        strDirLabel = "%B - %A";
@@ -304,7 +306,28 @@ class PlexMediaVideo : public PlexMediaNode
     CURL parentURL(parentPath);
     CVideoInfoTag videoInfo;
     videoInfo.m_strTitle = el.Attribute("title");
-    videoInfo.m_strPlot = el.Attribute("summary");
+    videoInfo.m_strPlot = videoInfo.m_strPlotOutline = el.Attribute("summary");
+    
+    string year = el.Attribute("year");
+    if (year.size() > 0)
+      videoInfo.m_iYear = boost::lexical_cast<int>(year);
+      
+    string duration = el.Attribute("duration");
+    if (duration.size() > 0)
+    {
+      int seconds = boost::lexical_cast<int>(duration)/1000;
+      int hours = seconds/3600;
+      int minutes = (seconds / 60) % 60;
+      seconds = seconds % 60;
+
+      CStdString std;
+      if (hours > 0)
+        std.Format("%d:%02d:%02d", hours, minutes, seconds);
+      else
+        std.Format(":%d:%02d", minutes, seconds);
+      
+      videoInfo.m_strRuntime = std;
+    }
     
     // Thumbnail.
     CStdString path = el.Attribute("thumb");
@@ -325,6 +348,7 @@ class PlexMediaVideo : public PlexMediaNode
       url2.GetURL(pItem->m_strPath);
     }
     
+    videoInfo.m_strFile = pItem->m_strPath;
     CFileItemPtr newItem(new CFileItem(videoInfo));
     newItem->m_strPath = pItem->m_strPath;
     newItem->SetThumbnailImage(thumbnail);
@@ -332,10 +356,11 @@ class PlexMediaVideo : public PlexMediaNode
     pItem = newItem;
   }
   
-  virtual void ComputeLabels(const string& strPath, string& strFileLabel, string& strDirLabel)
+  virtual void ComputeLabels(const string& strPath, string& strFileLabel, string& strDirLabel, string& strSecondDirLabel)
   {
     strDirLabel = "%B";
     strFileLabel = "%K";
+    strSecondDirLabel = "%D";
   }
 };
 
@@ -374,7 +399,7 @@ class PlexMediaTrack : public PlexMediaNode
     url2.GetURL(pItem->m_strPath);
   }
   
-  virtual void ComputeLabels(const string& strPath, string& strFileLabel, string& strDirLabel)
+  virtual void ComputeLabels(const string& strPath, string& strFileLabel, string& strDirLabel, string& strSecondDirLabel)
   {
     strDirLabel = "%B";
     
@@ -480,21 +505,21 @@ PlexMediaNode* PlexMediaNode::Create(const string& name)
 }
   
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void CPlexDirectory::Parse(const CURL& url, TiXmlElement* root, CFileItemList &items, string& strFileLabel, string& strDirLabel)
+void CPlexDirectory::Parse(const CURL& url, TiXmlElement* root, CFileItemList &items, string& strFileLabel, string& strDirLabel, string& strSecondDirLabel)
 {
   PlexMediaNode* mediaNode = 0;
   
   for (TiXmlElement* element = root->FirstChildElement(); element; element=element->NextSiblingElement())
   {
     mediaNode = PlexMediaNode::Create(element->Value());
-    items.Add(mediaNode->BuildFileItem(url, *element, strFileLabel, strDirLabel));
+    items.Add(mediaNode->BuildFileItem(url, *element));
   }
   
   if (mediaNode != 0)
   {
     CStdString strURL;
     url.GetURL(strURL);
-    mediaNode->ComputeLabels(strURL, strFileLabel, strDirLabel);
+    mediaNode->ComputeLabels(strURL, strFileLabel, strDirLabel, strSecondDirLabel);
   }
 }
 
