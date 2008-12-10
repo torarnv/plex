@@ -29,7 +29,11 @@ CoreAudioRenderer::CoreAudioRenderer(IAudioCallback* pCallback, int iChannels, u
 	ac3_framebuffer = NULL;
 	m_bIsMusic = bIsMusic;
 	
-	m_dwPacketSize = iChannels*(uiBitsPerSample/8)*256;
+	m_dwPacketSize = (int)((float)iChannels*(uiBitsPerSample/8)* uiSamplesPerSec * CA_BUFFER_FACTOR / 5); // Pass 20% of the buffer at a time
+	if (uiSamplesPerSec < 32000)
+	{
+	//	m_dwPacketSize /= 5; // use small buffer for low samplerates
+	}
 	m_dwNumPackets = 16;
 	
 	if (g_audioConfig.UseDigitalOutput() &&
@@ -262,6 +266,9 @@ DWORD CoreAudioRenderer::AddPackets(unsigned char *data, DWORD len)
 	if (m_bEncodeAC3)
 	{
 		int ac3_frame_count = 0;
+		
+		m_amp.DeAmplifyInt16((int16_t *)pcmPtr, samplesToWrite * m_uiChannels, g_guiSettings.GetBool("audiooutput.normalisevolume"), false);
+		
 		if ((ac3_frame_count = ac3encoder_write_samples(&m_ac3encoder, pcmPtr, samplesToWrite)) == 0)
 		{
 			CLog::Log(LOGERROR, "AC3 output buffer underrun");
@@ -284,7 +291,7 @@ DWORD CoreAudioRenderer::AddPackets(unsigned char *data, DWORD len)
 	{
 		// Handle volume de-amplification.
 		if (!m_bPassthrough)
-			m_amp.DeAmplifyInt16((short *)pcmPtr, samplesToWrite * m_uiChannels);
+			m_amp.DeAmplifyInt16((int16_t *)pcmPtr, samplesToWrite * m_uiChannels, g_guiSettings.GetBool("audiooutput.normalisevolume"), true);
 		
 		// Write data to the stream.
 		audioUnit->WriteStream(pcmPtr, samplesToWrite);

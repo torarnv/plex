@@ -24,6 +24,9 @@
 
 CPCMAmplifier::CPCMAmplifier() : m_nVolume(VOLUME_MAXIMUM), m_dFactor(0)
 {
+	m_intMax = 0;
+	m_floatMax = 0.0;
+	m_PowerFactor = 1.0;
 }
 
 CPCMAmplifier::~CPCMAmplifier()
@@ -47,23 +50,44 @@ int  CPCMAmplifier::GetVolume()
   return m_nVolume;
 }
 
-// 32 bit float de-amplifier
-void CPCMAmplifier::DeAmplifyInt16(short *pcm, int nSamples)
+// 16 bit integer de-amplifier
+void CPCMAmplifier::DeAmplifyInt16(int16_t *pcm, int nSamples, bool normalise, bool deamp)
 {
-	if (m_dFactor >= 1.0)
+	if (m_dFactor >= 1.0 && !normalise)
 	{
 		// no process required. using >= to make sure no amp is ever done (only de-amp)
 		return;
 	}
 	
-	for (int nSample=0; nSample<nSamples; nSample++)
+	if (normalise)
 	{
-		int nSampleValue = pcm[nSample];
-		nSampleValue = (int)((double)nSampleValue * m_dFactor);		
+		for (int16_t nSample=0; nSample<nSamples; nSample++)
+		{
+			// scan buffer and store maximum level encountered
+			m_intMax = MAX(m_intMax, pcm[nSample]);
+		}
+		// adjust power factor to normalise to 98% (-0.3dB) - only change once per buffer to prevent distortion
+		m_PowerFactor = (double)m_intMax / SHRT_MAX * 0.98;
+		if (m_PowerFactor) m_PowerFactor = 1 / m_PowerFactor;
+		if (m_PowerFactor > 1.5) m_PowerFactor = 1.5;
 		
-		pcm[nSample] = (short)nSampleValue;
+		CLog::Log(LOGDEBUG, "Normalising %i samples with power factor %.2f", nSamples, m_PowerFactor);
 	}
+	else m_PowerFactor = 1.0;
+	
+	double volFactor = deamp ? m_dFactor : 1.0;
+	
+	// apply the (possibly new) power factor to the buffer
+	double scale = volFactor * m_PowerFactor;
+	
+	for (int16_t nSample=0; nSample<nSamples; nSample++)
+	{
+		int16_t nSampleValue = pcm[nSample];
+		pcm[nSample]  = nSampleValue * scale;
+	}
+	
 }
+
 
 // 32 bit float de-amplifier
 void CPCMAmplifier::DeAmplifyFloat32(float *pcm, int nSamples)
