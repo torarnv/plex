@@ -137,6 +137,9 @@ class PlexMediaNode
      pItem->m_bIsFolder = true;
      
      string src = el.Attribute("key");
+     CStdString parentPath;
+     url.GetURL(parentPath);
+       
      if (src.find("://") != -1)
      {
        // It's an absolute URL.
@@ -152,7 +155,7 @@ class PlexMediaNode
      }
      
      // Let subclass finish.
-     DoBuildFileItem(pItem, el);
+     DoBuildFileItem(pItem, string(parentPath), el);
      
      // Make sure we have the trailing slash.
      if (pItem->m_bIsFolder == true && pItem->m_strPath[pItem->m_strPath.size()-1] != '/')
@@ -161,7 +164,7 @@ class PlexMediaNode
      return pItem;
    }
    
-   virtual void DoBuildFileItem(CFileItemPtr& pItem, TiXmlElement& el) = 0;
+   virtual void DoBuildFileItem(CFileItemPtr& pItem, const string& parentPath, TiXmlElement& el) = 0;
    virtual void ComputeLabels(const string& strPath, string& strFileLabel, string& strDirLabel)
    {
      strFileLabel = "%N - %T";
@@ -178,7 +181,7 @@ class PlexMediaNode
 
 class PlexMediaDirectory : public PlexMediaNode
 {
-  virtual void DoBuildFileItem(CFileItemPtr& pItem, TiXmlElement& el)
+  virtual void DoBuildFileItem(CFileItemPtr& pItem, const string& parentPath, TiXmlElement& el)
   {
     pItem->SetLabel(el.Attribute("name"));
   }
@@ -186,12 +189,12 @@ class PlexMediaDirectory : public PlexMediaNode
 
 class PlexMediaObject : public PlexMediaNode
 {  
-  virtual void DoBuildFileItem(CFileItemPtr& pItem, TiXmlElement& el) {}
+  virtual void DoBuildFileItem(CFileItemPtr& pItem, const string& parentPath, TiXmlElement& el) {}
 };
 
 class PlexMediaArtist : public PlexMediaNode
 {
-  virtual void DoBuildFileItem(CFileItemPtr& pItem, TiXmlElement& el)
+  virtual void DoBuildFileItem(CFileItemPtr& pItem, const string& parentPath, TiXmlElement& el)
   {
     pItem->SetLabel(el.Attribute("artist"));
     
@@ -218,7 +221,7 @@ class PlexMediaArtist : public PlexMediaNode
 
 class PlexMediaAlbum : public PlexMediaNode
 {
-  virtual void DoBuildFileItem(CFileItemPtr& pItem, TiXmlElement& el) 
+  virtual void DoBuildFileItem(CFileItemPtr& pItem, const string& parentPath, TiXmlElement& el) 
   {
     CAlbum album;
     
@@ -248,7 +251,7 @@ class PlexMediaAlbum : public PlexMediaNode
 
 class PlexMediaPodcast : public PlexMediaNode
 {
-  virtual void DoBuildFileItem(CFileItemPtr& pItem, TiXmlElement& el)
+  virtual void DoBuildFileItem(CFileItemPtr& pItem, const string& parentPath, TiXmlElement& el)
   {
     CAlbum album;
     
@@ -278,7 +281,7 @@ class PlexMediaPodcast : public PlexMediaNode
 
 class PlexMediaPlaylist : public PlexMediaNode
 {
-  virtual void DoBuildFileItem(CFileItemPtr& pItem, TiXmlElement& el)
+  virtual void DoBuildFileItem(CFileItemPtr& pItem, const string& parentPath, TiXmlElement& el)
   {
     pItem->SetLabel(el.Attribute("title"));
   }
@@ -286,7 +289,7 @@ class PlexMediaPlaylist : public PlexMediaNode
 
 class PlexMediaGenre : public PlexMediaNode
 {
-  virtual void DoBuildFileItem(CFileItemPtr& pItem, TiXmlElement& el)
+  virtual void DoBuildFileItem(CFileItemPtr& pItem, const string& parentPath, TiXmlElement& el)
   {
     pItem->SetLabel(el.Attribute("genre"));
   }
@@ -294,21 +297,24 @@ class PlexMediaGenre : public PlexMediaNode
 
 class PlexMediaVideo : public PlexMediaNode
 {
-  virtual void DoBuildFileItem(CFileItemPtr& pItem, TiXmlElement& el)
+  virtual void DoBuildFileItem(CFileItemPtr& pItem, const string& parentPath, TiXmlElement& el)
   {
     pItem->m_bIsFolder = false;
           
-    // Thumbnail goes back to PMS.
-    CURL url(pItem->m_strPath);
-    url.SetProtocol("http");
-    url.SetPort(32400);
-    string path = el.Attribute("thumb");
-    url.SetFileName(path.substr(1));
-    CStdString theURL;
+    CURL parentURL(parentPath);
+    CVideoInfoTag videoInfo;
+    videoInfo.m_strTitle = el.Attribute("title");
+    videoInfo.m_strPlot = el.Attribute("summary");
     
+    // Thumbnail.
+    CStdString path = el.Attribute("thumb");
+    if (path.find("/") == 0)
+      parentURL.SetFileName(path.substr(1));
+    else if (path.find("://") == -1)
+      parentURL.SetFileName(path);
+
     CStdString thumbnail;
-    url.GetURL(thumbnail);
-    pItem->SetThumbnailImage(thumbnail);
+    parentURL.GetURL(thumbnail);
     
     // Path to the track itself.
     CURL url2(pItem->m_strPath);
@@ -318,12 +324,24 @@ class PlexMediaVideo : public PlexMediaNode
       url2.SetPort(32400);
       url2.GetURL(pItem->m_strPath);
     }
+    
+    CFileItemPtr newItem(new CFileItem(videoInfo));
+    newItem->m_strPath = pItem->m_strPath;
+    newItem->SetThumbnailImage(thumbnail);
+    
+    pItem = newItem;
+  }
+  
+  virtual void ComputeLabels(const string& strPath, string& strFileLabel, string& strDirLabel)
+  {
+    strDirLabel = "%B";
+    strFileLabel = "%K";
   }
 };
 
 class PlexMediaTrack : public PlexMediaNode
 {
-  virtual void DoBuildFileItem(CFileItemPtr& pItem, TiXmlElement& el)
+  virtual void DoBuildFileItem(CFileItemPtr& pItem, const string& parentPath, TiXmlElement& el)
   {
     pItem->m_bIsFolder = false;
     
@@ -379,7 +397,7 @@ class PlexMediaTrack : public PlexMediaNode
 
 class PlexMediaRoll : public PlexMediaNode
 {
-  virtual void DoBuildFileItem(CFileItemPtr& pItem, TiXmlElement& el)
+  virtual void DoBuildFileItem(CFileItemPtr& pItem, const string& parentPath, TiXmlElement& el)
   {
     pItem->SetLabel(el.Attribute("label"));
   }
@@ -387,7 +405,7 @@ class PlexMediaRoll : public PlexMediaNode
 
 class PlexMediaPhotoAlbum : public PlexMediaNode
 {
-  virtual void DoBuildFileItem(CFileItemPtr& pItem, TiXmlElement& el)
+  virtual void DoBuildFileItem(CFileItemPtr& pItem, const string& parentPath, TiXmlElement& el)
   {
     pItem->SetLabel(el.Attribute("label"));
   }
@@ -395,7 +413,7 @@ class PlexMediaPhotoAlbum : public PlexMediaNode
 
 class PlexMediaPhotoKeyword : public PlexMediaNode
 {
-  virtual void DoBuildFileItem(CFileItemPtr& pItem, TiXmlElement& el)
+  virtual void DoBuildFileItem(CFileItemPtr& pItem, const string& parentPath, TiXmlElement& el)
   {
     pItem->SetLabel(el.Attribute("label"));
   }
@@ -403,7 +421,7 @@ class PlexMediaPhotoKeyword : public PlexMediaNode
 
 class PlexMediaPhoto : public PlexMediaNode
 {
-  virtual void DoBuildFileItem(CFileItemPtr& pItem, TiXmlElement& el)
+  virtual void DoBuildFileItem(CFileItemPtr& pItem, const string& parentPath, TiXmlElement& el)
   {
     pItem->m_bIsFolder = false;
     pItem->SetLabel(el.Attribute("label"));
