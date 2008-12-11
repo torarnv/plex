@@ -106,6 +106,9 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   
   // Get the fanart.
   const char* fanart = root->Attribute("art");
+  string strFanart;
+  if (fanart)
+    strFanart = ProcessUrl(strPath, fanart);
 
   // Walk the parsed tree.
   string strFileLabel = "%N - %T"; 
@@ -147,20 +150,9 @@ class PlexMediaNode
      string src = el.Attribute("key");
      CStdString parentPath;
      url.GetURL(parentPath);
-       
-     if (src.find("://") != -1)
-     {
-       // It's an absolute URL.
-       pItem->m_strPath = src;
-     }
-     else
-     {
-       // It's a relative URL.
-       url.GetURL(pItem->m_strPath);
-       if (pItem->m_strPath[pItem->m_strPath.size()-1] != '/')
-         pItem->m_strPath += "/";
-       pItem->m_strPath += el.Attribute("key");
-     }
+     
+     // Compute the new path.
+     pItem->m_strPath = CPlexDirectory::ProcessUrl(parentPath, src);
      
      // Let subclass finish.
      DoBuildFileItem(pItem, string(parentPath), el);
@@ -360,18 +352,7 @@ class PlexMediaVideo : public PlexMediaNode
     }
     
     // Thumbnail.
-    CStdString path = el.Attribute("thumb");
-    if (path.find("/") == 0)
-    {
-      parentURL.SetProtocol("http");
-      parentURL.SetPort(32400);
-      parentURL.SetFileName(path.substr(1));
-    }
-    else if (path.find("://") == -1)
-      parentURL.SetFileName(path);
-
-    CStdString thumbnail;
-    parentURL.GetURL(thumbnail);
+    string thumbnail = CPlexDirectory::ProcessUrl(parentPath, el.Attribute("thumb"));
     
     // Path to the track itself.
     CURL url2(pItem->m_strPath);
@@ -619,4 +600,38 @@ void CPlexDirectory::StopThread()
 {
   m_bStop = true;
   CThread::StopThread();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+string CPlexDirectory::ProcessUrl(const string& parent, const string& url)
+{
+  CURL theURL(parent);
+  theURL.SetProtocol("http");
+  theURL.SetPort(32400);
+
+  printf("Parent: [%s]\n", parent.c_str());
+  
+  if (url.find("://"))
+  {
+    // It's got its own protocol, so leave it alone.
+    return url;
+  }
+  else if (url.find("/") == 0)
+  {
+    // Absolute off parent.
+    theURL.SetFileName(url.substr(1));
+  }
+  else
+  {
+    // Relative off parent.
+    string path = theURL.GetFileName();
+    if (path[path.size() -1] != '/')
+      path += '/';
+    
+    theURL.SetFileName(path + url);
+  }
+  
+  CStdString newURL;
+  theURL.GetURL(newURL);
+  return newURL;
 }
