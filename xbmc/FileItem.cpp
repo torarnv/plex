@@ -2486,6 +2486,18 @@ void CFileItem::SetUserVideoThumb()
 /// and cache that image as our fanart.
 void CFileItem::CacheFanart() const
 {
+  // Check for Plex Media Server fan-art.
+  if (m_strFanartUrl.size() > 0)
+  {
+    printf("We have fanart for %s => %s\n", m_strPath.c_str(), m_strFanartUrl.c_str());
+    CStdString localFanart = GetCachedFanart(m_strFanartUrl);
+    if (CFile::Exists(localFanart) == false)
+    {
+      CPicture pic;
+      pic.CacheImage(m_strFanartUrl, localFanart);
+    }
+  }
+  
   if (IsVideoDb())
   {
     if (!HasVideoInfoTag())
@@ -2537,6 +2549,9 @@ void CFileItem::CacheFanart() const
 
 CStdString CFileItem::GetCachedFanart() const
 {
+  if (m_strFanartUrl.size() > 0)
+    return CFileItem::GetCachedFanart(m_strFanartUrl);
+  
   // get the locally cached thumb
   if (IsVideoDb())
   {

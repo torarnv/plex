@@ -103,6 +103,9 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     if (dlgProgress) dlgProgress->Close();
     return false;
   }
+  
+  // Get the fanart.
+  const char* fanart = root->Attribute("art");
 
   // Walk the parsed tree.
   string strFileLabel = "%N - %T"; 
@@ -117,6 +120,10 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   for( int i = 0; i <items.Size(); i++ )
   {
     CFileItemPtr pItem = items[i];
+    
+    if (fanart)
+      pItem->m_strFanartUrl = fanart;
+      
     if (!pItem->IsParentFolder())
       vecCacheItems.Add(pItem);
   }

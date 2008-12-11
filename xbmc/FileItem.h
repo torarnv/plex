@@ -244,6 +244,9 @@ public:
   CStdString m_strLockCode;
   int m_iHasLock; // 0 - no lock 1 - lock, but unlocked 2 - locked
   int m_iBadPwdCount;
+  
+  CStdString m_strFanartUrl;
+  
 private:
   CStdString GetFolderThumb(const CStdString &folderJPG = "folder.jpg") const;
 
