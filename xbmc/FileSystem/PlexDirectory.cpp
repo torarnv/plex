@@ -125,7 +125,7 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     CFileItemPtr pItem = items[i];
     
     if (fanart)
-      pItem->m_strFanartUrl = fanart;
+      pItem->m_strFanartUrl = strFanart;
       
     if (!pItem->IsParentFolder())
       vecCacheItems.Add(pItem);
@@ -617,7 +617,6 @@ string CPlexDirectory::ProcessUrl(const string& parent, const string& url, bool 
   if (url.find("://") != -1)
   {
     // It's got its own protocol, so leave it alone.
-    printf(" -> Returning %s\n", url.c_str());
     return url;
   }
   else if (url.find("/") == 0)
