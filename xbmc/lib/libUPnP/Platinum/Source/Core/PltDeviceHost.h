@@ -44,10 +44,6 @@ public:
 
     virtual void SetBroadcast(bool broadcast) { m_Broadcast = broadcast; }
 
-    // Overridables
-    virtual NPT_Result OnAction(PLT_ActionReference&          action, 
-                                const NPT_HttpRequestContext& context);
-
     // NPT_HttpRequestHandler forward for control/event requests
     virtual NPT_Result ProcessHttpRequest(NPT_HttpRequest&              request,
                                           const NPT_HttpRequestContext& context,
@@ -88,14 +84,19 @@ public:
     
 protected:
     virtual ~PLT_DeviceHost();
-    
+
+    virtual NPT_Result SetupDevice();
     virtual NPT_Result Start(PLT_SsdpListenTask* task);
     virtual NPT_Result Stop(PLT_SsdpListenTask* task);
-
+    virtual NPT_Result SetupServiceSCPDHandler(PLT_Service* service);
+    virtual NPT_Result OnAction(PLT_ActionReference&          action, 
+                                const NPT_HttpRequestContext& context);
+    virtual NPT_Result ProcessGetDescription(NPT_HttpRequest&              request,
+                                             const NPT_HttpRequestContext& context,
+                                             NPT_HttpResponse&             response);
     virtual NPT_Result ProcessHttpPostRequest(NPT_HttpRequest&              request,
                                               const NPT_HttpRequestContext& context,
                                               NPT_HttpResponse&             response);
-
     virtual NPT_Result ProcessHttpSubscriberRequest(NPT_HttpRequest&              request,
                                                     const NPT_HttpRequestContext& context,
                                                     NPT_HttpResponse&             response);
