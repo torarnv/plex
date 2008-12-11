@@ -22,6 +22,7 @@
 #include "include.h"
 #include "GUIDialog.h"
 #include "GUIWindowManager.h"
+#include "GUIInfoManager.h"
 #include "GUILabelControl.h"
 #include "GUIAudioManager.h"
 #include "utils/SingleLock.h"
@@ -234,7 +235,29 @@ void CGUIDialog::Render()
     
   if (m_autoClosing && m_showStartTime + m_showDuration < timeGetTime() && !m_dialogClosing)
   {
-    Close();
+    // Before we close the window, lets check to see if the visibility conditions allow us to close the window
+    // if the visibilitiy conditions dictate that the window would be reopened, then lets just leave the
+    // window open to begin with.
+
+    // The following is an ugly hack to make the g_infoManager to believe that this dialog is already closed,
+    // otherwise, it thinks that this dialog is always active and will never automatically close the dialog box
+    m_dialogClosing = TRUE;
+    if (g_infoManager.GetBool(GetVisibleCondition(), GetID()))
+    {
+      // Conditions dictate that this dialog stays visible...update the showStartTime so that we don't ask to
+      // close it again
+      m_showStartTime = timeGetTime();
+
+      // Restore dialog state to not closing, as we only made it appear as if we were closing so that we could
+      // check to see what the visibility conditions dictate
+      m_dialogClosing = FALSE;
+    }
+    else
+    {
+      // Restore dialog state to not closing, otherwise, it won't animate the window closure
+      m_dialogClosing = FALSE;
+      Close();
+    }
   }
 }
 
