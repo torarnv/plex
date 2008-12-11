@@ -26,7 +26,7 @@ class CPlexDirectory : public IDirectory,
   
   virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
   
-  static string ProcessUrl(const string& parent, const string& url);
+  static string ProcessUrl(const string& parent, const string& url, bool isDirectory);
   
  protected:
    

@@ -108,7 +108,7 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   const char* fanart = root->Attribute("art");
   string strFanart;
   if (fanart)
-    strFanart = ProcessUrl(strPath, fanart);
+    strFanart = ProcessUrl(strPath, fanart, false);
 
   // Walk the parsed tree.
   string strFileLabel = "%N - %T"; 
@@ -152,7 +152,7 @@ class PlexMediaNode
      url.GetURL(parentPath);
      
      // Compute the new path.
-     pItem->m_strPath = CPlexDirectory::ProcessUrl(parentPath, src);
+     pItem->m_strPath = CPlexDirectory::ProcessUrl(parentPath, src, true);
      
      // Let subclass finish.
      DoBuildFileItem(pItem, string(parentPath), el);
@@ -352,7 +352,7 @@ class PlexMediaVideo : public PlexMediaNode
     }
     
     // Thumbnail.
-    string thumbnail = CPlexDirectory::ProcessUrl(parentPath, el.Attribute("thumb"));
+    string thumbnail = CPlexDirectory::ProcessUrl(parentPath, el.Attribute("thumb"), false);
     
     // Path to the track itself.
     CURL url2(pItem->m_strPath);
@@ -603,17 +603,21 @@ void CPlexDirectory::StopThread()
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-string CPlexDirectory::ProcessUrl(const string& parent, const string& url)
+string CPlexDirectory::ProcessUrl(const string& parent, const string& url, bool isDirectory)
 {
   CURL theURL(parent);
-  theURL.SetProtocol("http");
-  theURL.SetPort(32400);
-
-  printf("Parent: [%s]\n", parent.c_str());
   
-  if (url.find("://"))
+  // Files use plain HTTP.
+  if (isDirectory == false)
+  {
+    theURL.SetProtocol("http");
+    theURL.SetPort(32400);
+  }
+
+  if (url.find("://") != -1)
   {
     // It's got its own protocol, so leave it alone.
+    printf(" -> Returning %s\n", url.c_str());
     return url;
   }
   else if (url.find("/") == 0)
