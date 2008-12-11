@@ -189,16 +189,14 @@ class PlexMediaDirectory : public PlexMediaNode
     try
     {
       string path = el.Attribute("thumb");
+      pItem->SetThumbnailImage(CPlexDirectory::ProcessUrl(parentPath, path, false));
       
-      CURL url(pItem->m_strPath);
-      url.SetProtocol("http");
-      url.SetFileName(path.substr(1));
-      url.SetPort(32400);
-      
-      CStdString theURL;
-      url.GetURL(theURL);
-      
-      pItem->SetThumbnailImage(theURL);
+      // Fanart.
+      const char* fanart = el.Attribute("art");
+      string strFanart;
+      if (fanart)
+      strFanart = CPlexDirectory::ProcessUrl(parentPath, fanart, false);
+      pItem->m_strFanartUrl = strFanart;
     }
     catch (...)
     {
