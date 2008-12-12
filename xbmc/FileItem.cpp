@@ -317,6 +317,8 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   m_bCanQueue=item.m_bCanQueue;
   m_contenttype = item.m_contenttype;
   m_extrainfo = item.m_extrainfo;
+  m_strFanartUrl = item.m_strFanartUrl;
+  
   return *this;
 }
 
@@ -357,6 +359,8 @@ void CFileItem::Reset()
     delete m_pictureInfoTag;
   m_pictureInfoTag=NULL;
   m_extrainfo.Empty();
+  m_strFanartUrl.Empty();
+  
   SetInvalid();
 }
 
@@ -382,6 +386,7 @@ void CFileItem::Serialize(CArchive& ar)
     ar << m_iLockMode;
     ar << m_strLockCode;
     ar << m_iBadPwdCount;
+    ar << m_strFanartUrl;
 
     ar << m_bCanQueue;
     ar << m_contenttype;
@@ -427,6 +432,7 @@ void CFileItem::Serialize(CArchive& ar)
     ar >> (int&)m_iLockMode;
     ar >> m_strLockCode;
     ar >> m_iBadPwdCount;
+    ar >> m_strFanartUrl;
 
     ar >> m_bCanQueue;
     ar >> m_contenttype;
@@ -2489,7 +2495,6 @@ void CFileItem::CacheFanart() const
   // Check for Plex Media Server fan-art.
   if (m_strFanartUrl.size() > 0)
   {
-    printf("We have fanart for %s => %s\n", m_strPath.c_str(), m_strFanartUrl.c_str());
     CStdString localFanart = GetCachedFanart(m_strFanartUrl);
     if (CFile::Exists(localFanart) == false)
     {
@@ -2837,3 +2842,11 @@ MUSIC_INFO::CMusicInfoTag* CFileItem::GetMusicInfoTag()
   return m_musicInfoTag;
 }
 
+void CFileItem::SetQuickFanart(const CStdString& fanartURL)
+{
+  m_strFanartUrl = fanartURL;
+  
+  // See if it's already cached.
+  if (CFile::Exists(GetCachedFanart()))
+    SetProperty("fanart_image", GetCachedFanart());
+}

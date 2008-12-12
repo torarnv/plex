@@ -107,7 +107,7 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   // Get the fanart.
   const char* fanart = root->Attribute("art");
   string strFanart;
-  if (fanart)
+  if (fanart && strlen(fanart) > 0)
     strFanart = ProcessUrl(strPath, fanart, false);
 
   // Walk the parsed tree.
@@ -124,8 +124,8 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   {
     CFileItemPtr pItem = items[i];
     
-    if (fanart)
-      pItem->m_strFanartUrl = strFanart;
+    if (strFanart.size() > 0)
+      pItem->SetQuickFanart(strFanart);
       
     if (!pItem->IsParentFolder())
       vecCacheItems.Add(pItem);
@@ -194,9 +194,11 @@ class PlexMediaDirectory : public PlexMediaNode
       // Fanart.
       const char* fanart = el.Attribute("art");
       string strFanart;
-      if (fanart)
-      strFanart = CPlexDirectory::ProcessUrl(parentPath, fanart, false);
-      pItem->m_strFanartUrl = strFanart;
+      if (fanart && strlen(fanart) > 0)
+      {
+        strFanart = CPlexDirectory::ProcessUrl(parentPath, fanart, false);
+        pItem->SetQuickFanart(strFanart);
+      }
     }
     catch (...)
     {
@@ -362,6 +364,8 @@ class PlexMediaVideo : public PlexMediaNode
     }
     
     videoInfo.m_strFile = pItem->m_strPath;
+    videoInfo.m_strFileNameAndPath = pItem->m_strPath;
+    
     CFileItemPtr newItem(new CFileItem(videoInfo));
     newItem->m_bIsFolder = false;
     newItem->m_strPath = pItem->m_strPath;

@@ -222,6 +222,9 @@ public:
   const CStdString& GetExtraInfo() const { return m_extrainfo; };
 
   bool IsSamePath(const CFileItem *item) const;
+  
+  void SetQuickFanart(const CStdString& fanartURL);
+  
 private:
   // Gets the .tbn file associated with this item
   CStdString GetTBNFile() const;
@@ -245,11 +248,10 @@ public:
   int m_iHasLock; // 0 - no lock 1 - lock, but unlocked 2 - locked
   int m_iBadPwdCount;
   
-  CStdString m_strFanartUrl;
-  
 private:
   CStdString GetFolderThumb(const CStdString &folderJPG = "folder.jpg") const;
 
+  CStdString m_strFanartUrl;
   bool m_bIsParentFolder;
   bool m_bCanQueue;
   bool m_bLabelPreformated;
