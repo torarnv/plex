@@ -458,9 +458,13 @@ bool CDVDPlayer::OpenInputStream()
       g_stSettings.m_currentVideoSettings.m_SubtitleCached = true;
     }
 
-    // look for any edl files
-    if (g_guiSettings.GetBool("videoplayer.editdecision"))
-      m_Edl.ReadnCacheAny(m_filename);
+    CFileItem fileItem(m_filename, false);
+    if (fileItem.IsInternetStream() == false)
+    {
+      // look for any edl files
+      if (g_guiSettings.GetBool("videoplayer.editdecision"))
+        m_Edl.ReadnCacheAny(m_filename);
+    }
   }
 
   return true;
