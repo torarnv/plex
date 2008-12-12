@@ -189,7 +189,8 @@ class PlexMediaDirectory : public PlexMediaNode
     try
     {
       string path = el.Attribute("thumb");
-      pItem->SetThumbnailImage(CPlexDirectory::ProcessUrl(parentPath, path, false));
+      string strThumb = CPlexDirectory::ProcessUrl(parentPath, path, false);
+      pItem->SetThumbnailImage(strThumb);
       
       // Fanart.
       const char* fanart = el.Attribute("art");
@@ -202,7 +203,7 @@ class PlexMediaDirectory : public PlexMediaNode
     }
     catch (...)
     {
-      
+      printf("ERROR: Exception setting directory thumbnail.\n");
     }
   }
 };
@@ -466,24 +467,23 @@ class PlexMediaPhoto : public PlexMediaNode
   virtual void DoBuildFileItem(CFileItemPtr& pItem, const string& parentPath, TiXmlElement& el)
   {
     pItem->m_bIsFolder = false;
-    pItem->SetLabel(el.Attribute("label"));
+    
+    // FIXME: Shouldn't have to ways to get this.
+    if (el.Attribute("title"))
+      pItem->SetLabel(el.Attribute("title"));
+    else
+      pItem->SetLabel(el.Attribute("label"));
     
     // Thumbnail.
-    CURL url(pItem->m_strPath);
-    url.SetProtocol("http");
-    url.SetPort(32400);
-    string path = el.Attribute("thumb");
-    url.SetFileName(path.substr(1));
-    CStdString thumbPath;
-    url.GetURL(thumbPath);
-
-    pItem->SetThumbnailImage(thumbPath);
+    const char* thumb = el.Attribute("thumb");
+    if (thumb)
+    {
+      string strThumb = CPlexDirectory::ProcessUrl(parentPath, thumb, false);
+      pItem->SetThumbnailImage(strThumb);
+    }
     
     // Path to the photo.
-    CURL url2(pItem->m_strPath);
-    url2.SetProtocol("http");
-    url2.SetPort(32400);
-    url2.GetURL(pItem->m_strPath);
+    pItem->m_strPath = CPlexDirectory::ProcessUrl(parentPath, el.Attribute("key"), false);
   }
 };
 
