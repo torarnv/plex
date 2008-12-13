@@ -466,6 +466,7 @@ CGUISettings::CGUISettings(void)
 	AddInt(0, "screensaver.dimlevel", 362, 20, 0, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
 	AddString(8, "screensaver.slideshowpath", 774, "F:\\Pictures\\", BUTTON_CONTROL_PATH_INPUT, false, 657);
 	AddBool(9, "screensaver.slideshowshuffle", 13319, false);
+	AddBool(0, "screensaver.usedimonpause", 22014, true);
 	
 	AddCategory(4, "energy", 40105);
 	AddInt(6, "energy.displaysleeptime", 17500, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
