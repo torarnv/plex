@@ -210,18 +210,18 @@ class PlexMediaDirectory : public PlexMediaNode
     }
     
     // Check for search directories
-    try
+    const char* search = el.Attribute("search");
+    const char* prompt = el.Attribute("prompt");
+    
+    if (search && strlen(search) > 0 && prompt)
     {
-      string search = el.Attribute("search");
-      if (search == "1")
+      string strSearch = search;
+      if (strSearch == "1")
       {
-        const char* prompt = el.Attribute("prompt");
         pItem->m_bIsSearchDir = true;
         pItem->m_strSearchPrompt = prompt;
       }
     }
-    catch (...)
-    {}
   }
 };
 
