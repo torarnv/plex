@@ -772,6 +772,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(13135), VS_SKIPLOOP_DISABLED);
       pControl->AddLabel(g_localizeStrings.Get(13136), VS_SKIPLOOP_MEDIUM);
       pControl->AddLabel(g_localizeStrings.Get(13137), VS_SKIPLOOP_FULL);
+      pControl->SetValue(pSettingInt->GetData());
     }
     else if (strSetting.Equals("videolibrary.flattentvshows"))
     {
