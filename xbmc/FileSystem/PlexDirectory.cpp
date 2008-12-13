@@ -188,9 +188,12 @@ class PlexMediaDirectory : public PlexMediaNode
     
     try
     {
-      string path = el.Attribute("thumb");
-      string strThumb = CPlexDirectory::ProcessUrl(parentPath, path, false);
-      pItem->SetThumbnailImage(strThumb);
+      const char* thumb = el.Attribute("thumb"); 
+      if (thumb && strlen(thumb) > 0)
+      {
+        string strThumb = CPlexDirectory::ProcessUrl(parentPath, thumb, false);
+        pItem->SetThumbnailImage(strThumb);
+      }
       
       // Fanart.
       const char* fanart = el.Attribute("art");
