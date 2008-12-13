@@ -2,8 +2,8 @@
 |
 |   Platinum - Device Host
 |
-|   Copyright (c) 2004-2008 Sylvain Rebaud
-|   Author: Sylvain Rebaud (sylvain@rebaud.com)
+|   Copyright (c) 2004-2008, Plutinosoft, LLC.
+|   Author: Sylvain Rebaud (sylvain@plutinosoft.com)
 |
  ****************************************************************/
 
@@ -106,24 +106,6 @@ PLT_DeviceHost::Start(PLT_SsdpListenTask* task)
     NPT_CHECK_SEVERE(m_HttpServer->Start());
 
     // read back assigned port in case we passed 0
-<<<<<<< HEAD:xbmc/lib/libUPnP/Platinum/Source/Core/PltDeviceHost.cpp
-    m_URLDescription.SetPort(m_HttpServer->GetPort());
-
-    // set static handlers
-    // description document
-    NPT_String doc;
-    GetDescription(doc);
-    NPT_HttpStaticRequestHandler* handler = new NPT_HttpStaticRequestHandler(doc, "text/xml");
-    m_HttpServer->AddRequestHandler(handler, m_URLDescription.GetPath(), false);
-    m_RequestHandlers.Add(handler);
-
-    // adapter to redirect to host for dynamic
-    PLT_HttpDeviceHostRequestHandler* device_handler = new PLT_HttpDeviceHostRequestHandler(this);
-    m_RequestHandlers.Add(device_handler);
-
-    // service handlers
-    NPT_HttpUrl url;
-=======
     m_Port = m_HttpServer->GetPort();
     m_URLDescription.SetPort(m_Port);
 
@@ -133,7 +115,6 @@ PLT_DeviceHost::Start(PLT_SsdpListenTask* task)
     // set up static handlers first as the order is important
 
     // services static root device scpd documents
->>>>>>> a36329a... changed: upnp server now uses same port for upnp and serving files (helps with firewall):xbmc/lib/libUPnP/Platinum/Source/Core/PltDeviceHost.cpp
     for (NPT_Cardinal i=0; i<m_Services.GetItemCount(); i++) {
         SetupServiceSCPDHandler(m_Services[i]);
     }
@@ -143,37 +124,12 @@ PLT_DeviceHost::Start(PLT_SsdpListenTask* task)
         for (NPT_Cardinal i=0; i<m_EmbeddedDevices[j]->m_Services.GetItemCount(); i++) {
             SetupServiceSCPDHandler(m_EmbeddedDevices[j]->m_Services[i]);
         }
-<<<<<<< HEAD:xbmc/lib/libUPnP/Platinum/Source/Core/PltDeviceHost.cpp
-        url.SetPathPlus(scpd_url);
-        m_Services[i]->GetSCPDXML(doc);
-        NPT_HttpStaticRequestHandler* scpd_handler = new NPT_HttpStaticRequestHandler(doc, "text/xml");
-        m_RequestHandlers.Add(scpd_handler);
-        m_HttpServer->AddRequestHandler(scpd_handler, url.GetPath(), false);
-
-        // dynamic control url
-        NPT_String control_url = m_Services[i]->GetControlURL();
-        if (!control_url.StartsWith("/")) {
-            control_url = GetURLBase().GetPath() + control_url;
-        }
-        url.SetPathPlus(control_url);
-        m_HttpServer->AddRequestHandler(device_handler, url.GetPath(), false);
-
-        // dynamic control url
-        NPT_String event_url = m_Services[i]->GetEventSubURL();
-        if (!event_url.StartsWith("/")) {
-            event_url = GetURLBase().GetPath() + event_url;
-        }
-        url.SetPathPlus(event_url);
-        m_HttpServer->AddRequestHandler(device_handler, url.GetPath(), false);
-    }
-=======
     }
 
     // all other requests including description doc and service control are dynamically handled
     PLT_HttpDeviceHostRequestHandler* device_handler = new PLT_HttpDeviceHostRequestHandler(this);
     m_RequestHandlers.Add(device_handler);
     m_HttpServer->AddRequestHandler(device_handler, "/", true);
->>>>>>> a36329a... changed: upnp server now uses same port for upnp and serving files (helps with firewall):xbmc/lib/libUPnP/Platinum/Source/Core/PltDeviceHost.cpp
 
     // we should not advertise right away, spec says randomly less than 100ms
     NPT_TimeInterval delay(0, NPT_System::GetRandomInteger() % 100000000);
@@ -188,7 +144,11 @@ PLT_DeviceHost::Start(PLT_SsdpListenTask* task)
     repeat.m_Seconds = 7;
 #endif
 
-    PLT_ThreadTask* announce_task = new PLT_SsdpDeviceAnnounceTask(this, repeat, true, m_Broadcast);
+    PLT_ThreadTask* announce_task = new PLT_SsdpDeviceAnnounceTask(
+        this, 
+        repeat, 
+        true, 
+        m_Broadcast);
     m_TaskManager.StartTask(announce_task, &delay);
 
     // register ourselves as a listener for ssdp requests

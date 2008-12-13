@@ -581,7 +581,6 @@
 		E371C41E0E2F2D5400FBF841 /* NptTime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1C190D25F9FC00618676 /* NptTime.cpp */; };
 		E371C41F0E2F2D5400FBF841 /* NptUri.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1C1C0D25F9FC00618676 /* NptUri.cpp */; };
 		E371C4200E2F2D5400FBF841 /* NptUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1C1E0D25F9FC00618676 /* NptUtils.cpp */; };
-		E371C4210E2F2D5400FBF841 /* NptWin32Debug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1C420D25F9FC00618676 /* NptWin32Debug.cpp */; };
 		E371C4220E2F2D5400FBF841 /* NptXbmcFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E173B0D25F9FA00618676 /* NptXbmcFile.cpp */; };
 		E371C4230E2F2D5400FBF841 /* NptXml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1C210D25F9FC00618676 /* NptXml.cpp */; };
 		E371C4240E2F2D5400FBF841 /* NSFCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E161B0D25F9FA00618676 /* NSFCodec.cpp */; };
@@ -892,6 +891,7 @@
 		E3FD287C0E9951B500EE77C3 /* FilePlex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3FD28780E9951B500EE77C3 /* FilePlex.cpp */; };
 		E3FD287D0E9951B500EE77C3 /* PlexDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3FD287A0E9951B500EE77C3 /* PlexDirectory.cpp */; };
 		E3FD41940EF459C100C6172C /* PlayListURL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3FD41930EF459C100C6172C /* PlayListURL.cpp */; };
+		E3FD41A60EF46E4100C6172C /* NptWin32Debug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3FD41A50EF46E4100C6172C /* NptWin32Debug.cpp */; };
 		EF5D577B0EB4833200B16174 /* CocoaUtilsPlus.mm in Sources */ = {isa = PBXBuildFile; fileRef = EF5D577A0EB4833200B16174 /* CocoaUtilsPlus.mm */; };
 /* End PBXBuildFile section */
 
@@ -2527,7 +2527,6 @@
 		E38E1C2F0D25F9FC00618676 /* NptPosixSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptPosixSystem.cpp; sourceTree = "<group>"; };
 		E38E1C300D25F9FC00618676 /* NptPosixThreads.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptPosixThreads.cpp; sourceTree = "<group>"; };
 		E38E1C310D25F9FC00618676 /* NptSelectableMessageQueue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptSelectableMessageQueue.cpp; sourceTree = "<group>"; };
-		E38E1C420D25F9FC00618676 /* NptWin32Debug.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptWin32Debug.cpp; sourceTree = "<group>"; };
 		E38E1C450D25F9FC00618676 /* NptWin32MessageQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptWin32MessageQueue.h; sourceTree = "<group>"; };
 		E38E1C470D25F9FC00618676 /* NptWin32Network.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptWin32Network.h; sourceTree = "<group>"; };
 		E38E1C4B0D25F9FC00618676 /* NptWin32Threads.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptWin32Threads.h; sourceTree = "<group>"; };
@@ -3077,6 +3076,7 @@
 		E3FD287B0E9951B500EE77C3 /* PlexDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlexDirectory.h; sourceTree = "<group>"; };
 		E3FD41920EF459C100C6172C /* PlayListURL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayListURL.h; sourceTree = "<group>"; };
 		E3FD41930EF459C100C6172C /* PlayListURL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PlayListURL.cpp; sourceTree = "<group>"; };
+		E3FD41A50EF46E4100C6172C /* NptWin32Debug.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptWin32Debug.cpp; sourceTree = "<group>"; };
 		E3FFF0020D46FD1D003D79C3 /* libavutil-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libavutil-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libavutil-osx.a"; sourceTree = "<group>"; };
 		E3FFF0040D46FD1D003D79C3 /* libavcodec-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libavcodec-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libavcodec-osx.a"; sourceTree = "<group>"; };
 		E3FFF02E0D470BD8003D79C3 /* libavformat-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libavformat-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libavformat-osx.a"; sourceTree = "<group>"; };
@@ -5910,7 +5910,7 @@
 		E38E1C400D25F9FC00618676 /* Win32 */ = {
 			isa = PBXGroup;
 			children = (
-				E38E1C420D25F9FC00618676 /* NptWin32Debug.cpp */,
+				E3FD41A50EF46E4100C6172C /* NptWin32Debug.cpp */,
 				E38E1C450D25F9FC00618676 /* NptWin32MessageQueue.h */,
 				E38E1C470D25F9FC00618676 /* NptWin32Network.h */,
 				E38E1C4B0D25F9FC00618676 /* NptWin32Threads.h */,
@@ -7163,7 +7163,6 @@
 				E371C41E0E2F2D5400FBF841 /* NptTime.cpp in Sources */,
 				E371C41F0E2F2D5400FBF841 /* NptUri.cpp in Sources */,
 				E371C4200E2F2D5400FBF841 /* NptUtils.cpp in Sources */,
-				E371C4210E2F2D5400FBF841 /* NptWin32Debug.cpp in Sources */,
 				E371C4220E2F2D5400FBF841 /* NptXbmcFile.cpp in Sources */,
 				E371C4230E2F2D5400FBF841 /* NptXml.cpp in Sources */,
 				E371C4240E2F2D5400FBF841 /* NSFCodec.cpp in Sources */,
@@ -7433,6 +7432,7 @@
 				E313121E0EC64B7300629994 /* PlexMediaServerHelper.cpp in Sources */,
 				9421E33A0ED6A99E00A26254 /* CoreAudioRenderer.cpp in Sources */,
 				E3FD41940EF459C100C6172C /* PlayListURL.cpp in Sources */,
+				E3FD41A60EF46E4100C6172C /* NptWin32Debug.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

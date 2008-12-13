@@ -2,8 +2,8 @@
 |
 |   Platinum - Device Host
 |
-|   Copyright (c) 2004-2008 Sylvain Rebaud
-|   Author: Sylvain Rebaud (sylvain@rebaud.com)
+|   Copyright (c) 2004-2008, Plutinosoft, LLC.
+|   Author: Sylvain Rebaud (sylvain@plutinosoft.com)
 |
  ****************************************************************/
 
@@ -43,6 +43,7 @@ public:
                    NPT_UInt16   port = 0);
 
     virtual void SetBroadcast(bool broadcast) { m_Broadcast = broadcast; }
+    virtual NPT_UInt16 GetPort() { return m_Port; };
 
     // NPT_HttpRequestHandler forward for control/event requests
     virtual NPT_Result ProcessHttpRequest(NPT_HttpRequest&              request,

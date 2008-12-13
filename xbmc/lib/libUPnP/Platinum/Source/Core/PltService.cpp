@@ -2,8 +2,8 @@
 |
 |   Platinum - Service
 |
-|   Copyright (c) 2004-2008 Sylvain Rebaud
-|   Author: Sylvain Rebaud (sylvain@rebaud.com)
+|   Copyright (c) 2004-2008, Plutinosoft, LLC.
+|   Author: Sylvain Rebaud (sylvain@plutinosoft.com)
 |
  ****************************************************************/
 
@@ -579,7 +579,7 @@ PLT_Service::AddChanged(PLT_StateVariable* var)
     if (var->IsSendingEvents()) {
         if (!m_StateVarsToPublish.Contains(var)) 
             m_StateVarsToPublish.Add(var);
-    } else {
+    } else if (var->IsSendingEvents(true)) {
         if (!m_StateVarsChanged.Contains(var)) 
             m_StateVarsChanged.Add(var);
         UpdateLastChange(m_StateVarsChanged);
