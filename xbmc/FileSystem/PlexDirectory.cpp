@@ -202,12 +202,26 @@ class PlexMediaDirectory : public PlexMediaNode
       {
         strFanart = CPlexDirectory::ProcessUrl(parentPath, fanart, false);
         pItem->SetQuickFanart(strFanart);
-      }
+      } 
     }
     catch (...)
     {
       printf("ERROR: Exception setting directory thumbnail.\n");
     }
+    
+    // Check for search directories
+    try
+    {
+      string search = el.Attribute("search");
+      if (search == "1")
+      {
+        const char* prompt = el.Attribute("prompt");
+        pItem->m_bIsSearchDir = true;
+        pItem->m_strSearchPrompt = prompt;
+      }
+    }
+    catch (...)
+    {}
   }
 };
 

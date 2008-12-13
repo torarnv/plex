@@ -68,6 +68,7 @@ CFileItem::CFileItem(const CSong& song)
   m_lStartOffset = song.iStartOffset;
   m_lEndOffset = song.iEndOffset;
   m_strThumbnailImage = _P(song.strThumb);
+  
 }
 
 CFileItem::CFileItem(const CStdString &path, const CAlbum& album)
@@ -79,6 +80,7 @@ CFileItem::CFileItem(const CStdString &path, const CAlbum& album)
   SetLabel(album.strAlbum);
   m_strPath = _P(path);
   m_bIsFolder = true;
+  m_bIsSearchDir = false;
   m_strLabel2 = album.strArtist;
   CUtil::AddSlashAtEnd(m_strPath);
   GetMusicInfoTag()->SetAlbum(album);
@@ -102,6 +104,7 @@ CFileItem::CFileItem(const CVideoInfoTag& movie)
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
   m_pictureInfoTag = NULL;
+  m_bIsSearchDir = false;
   Reset();
   SetLabel(movie.m_strTitle);
   if (movie.m_strFileNameAndPath.IsEmpty())
@@ -143,6 +146,7 @@ CFileItem::CFileItem(const CGenre& genre)
   SetLabel(genre.strGenre);
   m_strPath = _P(genre.strGenre);
   m_bIsFolder = true;
+  m_bIsSearchDir = false;
   CUtil::AddSlashAtEnd(m_strPath);
   GetMusicInfoTag()->SetGenre(genre.strGenre);
 }
@@ -152,6 +156,7 @@ CFileItem::CFileItem(const CFileItem& item)
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
   m_pictureInfoTag = NULL;
+  m_bIsSearchDir = false;
   *this = item;
 }
 
@@ -160,6 +165,7 @@ CFileItem::CFileItem(const CGUIListItem& item)
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
   m_pictureInfoTag = NULL;
+  m_bIsSearchDir = false;
   Reset();
   // not particularly pretty, but it gets around the issue of Reset() defaulting
   // parameters in the CGUIListItem base class.
@@ -171,6 +177,7 @@ CFileItem::CFileItem(void)
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
   m_pictureInfoTag = NULL;
+  m_bIsSearchDir = false;
   Reset();
 }
 
@@ -180,6 +187,7 @@ CFileItem::CFileItem(const CStdString& strLabel)
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
   m_pictureInfoTag = NULL;
+  m_bIsSearchDir = false;
   Reset();
   SetLabel(strLabel);
 }
@@ -189,6 +197,7 @@ CFileItem::CFileItem(const CStdString& strPath, bool bIsFolder)
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
   m_pictureInfoTag = NULL;
+  m_bIsSearchDir = false;
   Reset();
   m_strPath = _P(strPath);
   m_bIsFolder = bIsFolder;
@@ -210,6 +219,7 @@ CFileItem::CFileItem(const CMediaSource& share)
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
   m_pictureInfoTag = NULL;
+  m_bIsSearchDir = false;
   Reset();
   m_bIsFolder = true;
   m_bIsShareOrDrive = true;
