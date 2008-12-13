@@ -85,6 +85,14 @@ bool CPictureThumbLoader::LoadItem(CFileItem* pItem)
   // refill in the thumb to get it to update
   pItem->SetCachedPictureThumb();
   pItem->FillInDefaultIcon();
+  
+  if (!pItem->HasProperty("fanart_image"))
+  {
+    pItem->CacheFanart();
+    if (CFile::Exists(pItem->GetCachedFanart()))
+      pItem->SetProperty("fanart_image",pItem->GetCachedFanart());
+  }                          
+
   return true;
 }
 
