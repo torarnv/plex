@@ -50,6 +50,7 @@ CGUIDialogMediaSource::CGUIDialogMediaSource(void)
     : CGUIDialog(WINDOW_DIALOG_MEDIA_SOURCE, "DialogMediaSource.xml")
 {
   m_paths =  new CFileItemList;
+  m_bRunScan = true;
 }
 
 CGUIDialogMediaSource::~CGUIDialogMediaSource()
@@ -175,7 +176,7 @@ bool CGUIDialogMediaSource::ShowAndAddMediaSource(const CStdString &type)
 
     if (type == "video")
     {
-      if (dialog->m_bRunScan)
+//      if (dialog->m_bRunScan)
         CGUIWindowVideoBase::OnScan(share.strPath,dialog->m_info,dialog->m_settings);
 
     }
