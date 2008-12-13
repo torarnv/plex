@@ -28,7 +28,7 @@
 #define APPNAME       "Plex.app"
 #define PROGNAME      "PlexHelper"
 #define PROGVERS      "1.1.1"
-
+ 
 #include <stdio.h>
 #include <getopt.h>
 #include <unistd.h>
@@ -73,6 +73,7 @@ static struct option long_options[] =
     { "help",       no_argument,         0, 'h' },
     { "server",     required_argument,   0, 's' },
     { "universal",  no_argument,         0, 'u' },
+    { "multicode",  no_argument,         0, 'm' },
     { "timeout",    required_argument,   0, 't' },
     { "verbose",    no_argument,         0, 'v' },
     { "externalConfig", no_argument,     0, 'x' },
@@ -80,10 +81,11 @@ static struct option long_options[] =
     { "secureInput", required_argument,  0, 'i' },
     { 0, 0, 0, 0 },
 };
-static const char *options = "hsutvxai";
+static const char *options = "hsutvxaim";
  
-const int REMOTE_SWITCH_COOKIE = 19;
-const int IGNORE_CODE = 39;
+const int REMOTE_SWITCH_COOKIE = 39;
+const int IGNORE_CODE = 19;
+const int FIRST_REMOTE_ID = 150;
 
 static int GetBSDProcessList(kinfo_proc **procList, size_t *procCount);
 bool isProgramRunning(const char* strProgram, int ignorePid=0);
@@ -94,6 +96,8 @@ void parseOptions(int argc, char** argv);
 void handleSignal(int signal);
 
 #define APPLE_REMOTE "JS0:Apple Remote"
+#define SEQUENTIAL_UNIVERSAL_REMOTE "R1"
+#define MULTICODE_UNIVERSAL_REMOTE "MCUR"
 
 #define kRemoteButtonUp            1
 #define kRemoteButtonDown          2
@@ -133,7 +137,10 @@ map<string, string> keyMapUniversal;
 map<string, bool> keyMapUniversalRepeat;
 map<int, ButtonConfig> buttonConfigMap;
 
+int remoteID = FIRST_REMOTE_ID;
+string remoteString = SEQUENTIAL_UNIVERSAL_REMOTE;
 bool isUniversalMode = false;
+bool isMultiCodeMode = false;
 int sequenceTimeout = 500;
 bool verbose = false;
 string serverAddress = "127.0.0.1";
@@ -166,8 +173,18 @@ class ReactorAppleRemote : public Reactor
     char           strButton[16];
     int            button = data & kButtonMask;
 
-    sprintf(strButton, "%d", button);
-  
+    if (isMultiCodeMode)
+    {
+      sprintf(strButton, "%d:%d", remoteID, button);
+    }
+    else
+    {
+      sprintf(strButton, "%d", button);
+    }
+    
+    if (verbose)
+      printf("Received %s button\n", strButton);
+    
     if (button == kRemoteButtonMenu)
 		{
 			// Make sure XBMC is running.
@@ -177,7 +194,7 @@ class ReactorAppleRemote : public Reactor
         return;
 			}
 		}
-    
+
     if (isUniversalMode)
     {      
       if (data & kDownMask)
@@ -191,11 +208,14 @@ class ReactorAppleRemote : public Reactor
         string val = keyMapUniversal[_itsRemotePrefix];
         if (val.length() != 0)
         {
-          bool isSimpleButton = false;
+          bool isSimpleButton;
           if (keyMapUniversalRepeat.count(_itsRemotePrefix) > 0)
           {
             isSimpleButton = true;
             _needToRelease = true;
+          } else {
+            isSimpleButton = false;
+            _needToRelease = false;
           }
             
           // Turn off repeat for complex buttons.
@@ -205,9 +225,9 @@ class ReactorAppleRemote : public Reactor
                     
           // Send the command to XBMC.
           if (verbose)
-            printf(" -> Sending command: %s\n", val.c_str());
-            
-          CPacketBUTTON btn(val.c_str(), "R1", flags);
+            printf(" -> Sending command: %s, remote: %s\n", val.c_str(), remoteString.c_str());
+          
+          CPacketBUTTON btn(val.c_str(), remoteString.c_str(), flags);
           btn.Send(sockfd, *pServer);
           _itsRemotePrefix = "";
         
@@ -228,7 +248,7 @@ class ReactorAppleRemote : public Reactor
         {
           _needToRelease = true;
           if (verbose)
-            printf(" -> Button release.\n");
+            printf(" -> Sending button release.\n");
           
           // Send the button release.  
           CPacketBUTTON btn;
@@ -298,6 +318,7 @@ void usage()
     printf("  -h, --help               Print this help message and exit.\n");
     printf("  -s, --server <addr>      Send events to the specified IP.\n");
     printf("  -u, --universal          Runs in Universal Remote mode.\n");
+    printf("  -m, --multicode          Runs in Multicode Universal remote mode.\n");
     printf("  -t, --timeout <ms>       Timeout length for sequences (default: 500ms).\n");
     printf("  -v, --verbose            Prints lots of debugging information.\n");
     printf("  -a, --appLocation <path> The location of the application.\n");
@@ -380,41 +401,37 @@ void startXBMC()
 
 void QueueCallbackFunction(void *target, IOReturn result, void *refcon, void *sender)
 {
-    HRESULT               ret = 0;
-    AbsoluteTime          zeroTime = {0,0};
-    IOHIDQueueInterface **hqi;
-		IOHIDEventStruct      event;
-		SInt32           		  sumOfValues = 0;
-		string           cookieString;
+  HRESULT               ret = 0;
+  AbsoluteTime          zeroTime = {0,0};
+  IOHIDQueueInterface **hqi;
+  IOHIDEventStruct event;
+  SInt32 sumOfValues = 0;
+  string cookieString;
 
-    while (!ret) 
-		{
-        hqi = (IOHIDQueueInterface **)sender;
-        ret = (*hqi)->getNextEvent(hqi, &event, zeroTime, 0);
+  while (!ret) 
+  {
+    hqi = (IOHIDQueueInterface **)sender;
+    ret = (*hqi)->getNextEvent(hqi, &event, zeroTime, 0);
 
-				if (ret != kIOReturnSuccess)
-            continue;
+    if (ret != kIOReturnSuccess)
+      continue;
 
-				if ((int)event.elementCookie == REMOTE_SWITCH_COOKIE ||
-					  (int)event.elementCookie == IGNORE_CODE)
-				{
-					// Ignore.
-	      } 
-				else 
-				{
-	      	if (((int)event.elementCookie) != 5) 
-					{
-	         	sumOfValues += event.value;
-	
-						char str[32];
-						sprintf(str, "%d_", (int)
-						event.elementCookie);
-						cookieString += str;
-	        }
-				}
-		}
-		
-		handleEventWithCookieString(cookieString, sumOfValues);
+    if ((int)event.elementCookie == REMOTE_SWITCH_COOKIE)
+    {
+      remoteID = (int)event.value;
+
+    } else if (((int)event.elementCookie != IGNORE_CODE) &&
+               ((int)event.elementCookie != 5)) 
+    {
+      sumOfValues += event.value;
+
+      char str[32];
+      sprintf(str, "%d_", (int)
+      event.elementCookie);
+      cookieString += str;
+    }
+  }
+  handleEventWithCookieString(cookieString, sumOfValues);
 }
 
 bool addQueueCallbacks(IOHIDQueueInterface **hqi)
@@ -699,6 +716,7 @@ int main(int argc, char **argv)
 	keyMap["35_31_18_35_31_18_"] = kRemoteButtonPlay_Hold;
 	keyMap["19_"] = kRemoteControl_Switched;
 	
+  // Mappings for Universal Mode (sequential mode)
   keyMapUniversal["5_"] = "Select";
   keyMapUniversal["3_"] = "Left";
   keyMapUniversal["9_"] = "Left";
@@ -732,6 +750,119 @@ int main(int argc, char **argv)
   keyMapUniversal["6_1_4_"] = "Zero";
   keyMapUniversal["6_1_1_"] = "Play";
   keyMapUniversal["6_1_2_"] = "Pause";
+  
+  // Multi Code mode key mappings (these include remote id)
+  keyMapUniversal["150:1_"] = "Up";
+  keyMapUniversal["150:2_"] = "Down";
+  keyMapUniversal["150:3_"] = "Left";
+  keyMapUniversal["150:4_"] = "Right";
+  keyMapUniversal["150:5_"] = "Ok";
+  keyMapUniversal["150:6_"] = "Menu";
+  keyMapUniversal["150:9_"] = "Left";    // For repeat
+  keyMapUniversal["150:10_"] = "Right";  // For repeat
+
+  keyMapUniversalRepeat["150:1_"] = true;
+  keyMapUniversalRepeat["150:2_"] = true;
+  keyMapUniversalRepeat["150:9_"] = true;
+  keyMapUniversalRepeat["150:10_"] = true;  
+    
+        
+  keyMapUniversal["151:1_"] = "One";
+  keyMapUniversal["151:2_"] = "Two";
+  keyMapUniversal["151:3_"] = "Three";
+  keyMapUniversal["151:4_"] = "Four";
+  keyMapUniversal["151:5_"] = "Stop";
+  keyMapUniversal["151:6_"] = "Play";
+  keyMapUniversal["151:9_"] = "Three";  // For repeat
+  keyMapUniversal["151:10_"] = "Four";  // For repeat
+
+  keyMapUniversalRepeat["151:1_"] = true;
+  keyMapUniversalRepeat["151:2_"] = true;
+  keyMapUniversalRepeat["151:9_"] = true;
+  keyMapUniversalRepeat["151:10_"] = true;  
+  
+
+  keyMapUniversal["152:1_"] = "VolumePlus";
+  keyMapUniversal["152:2_"] = "VolumeMinus";
+  keyMapUniversal["152:3_"] = "Five";
+  keyMapUniversal["152:4_"] = "Six";
+  keyMapUniversal["152:5_"] = "Mute";
+  keyMapUniversal["152:6_"] = "Pause";
+  keyMapUniversal["152:9_"] = "Five";  // For repeat
+  keyMapUniversal["152:10_"] = "Six";  // For repeat
+
+  keyMapUniversalRepeat["152:1_"] = true;
+  keyMapUniversalRepeat["152:2_"] = true;
+  keyMapUniversalRepeat["152:9_"] = true;
+  keyMapUniversalRepeat["152:10_"] = true;  
+  
+  keyMapUniversal["153:1_"] = "Info";
+  keyMapUniversal["153:2_"] = "Prev";
+  keyMapUniversal["153:3_"] = "Seven";
+  keyMapUniversal["153:4_"] = "Eight";
+  // Due to remote programming error, no 153:5 available
+  keyMapUniversal["153:6_"] = "Enter";  // (#)
+  keyMapUniversal["153:9_"] = "Seven";  // For repeat
+  keyMapUniversal["153:10_"] = "Eight"; // For repeat
+
+  keyMapUniversalRepeat["153:2_"] = true;
+  keyMapUniversalRepeat["153:9_"] = true;
+  keyMapUniversalRepeat["153:10_"] = true;  
+  
+  
+  keyMapUniversal["154:1_"] = "Rewind";
+  keyMapUniversal["154:2_"] = "Forward";
+  keyMapUniversal["154:3_"] = "Nine";
+  keyMapUniversal["154:4_"] = "Zero";
+  keyMapUniversal["154:5_"] = "Clear";  // (*)
+  keyMapUniversal["154:6_"] = "Sleep";
+  keyMapUniversal["154:9_"] = "Nine";   // For repeat
+  keyMapUniversal["154:10_"] = "Zero";  // For repeat
+  
+  keyMapUniversalRepeat["154:9_"] = true;
+  keyMapUniversalRepeat["154:10_"] = true;  
+  
+  
+  keyMapUniversal["155:1_"] = "Exit";
+  keyMapUniversal["155:2_"] = "Record";
+  keyMapUniversal["155:3_"] = "F1";
+  keyMapUniversal["155:4_"] = "F2";
+  keyMapUniversal["155:5_"] = "F3";
+  keyMapUniversal["155:6_"] = "F4";
+    
+  keyMapUniversal["157:1_"] = "Aspect";
+  keyMapUniversal["157:2_"] = "Queue";
+  keyMapUniversal["157:3_"] = "F13";
+  keyMapUniversal["157:4_"] = "F14";
+  keyMapUniversal["157:5_"] = "Guide";
+  keyMapUniversal["157:6_"] = "Power";
+  
+  keyMapUniversal["158:1_"] = "ChannelPlus";
+  keyMapUniversal["158:2_"] = "ChannelMinus";
+  keyMapUniversal["158:3_"] = "F9";
+  keyMapUniversal["158:4_"] = "F10";
+  keyMapUniversal["158:5_"] = "F11";
+  keyMapUniversal["158:6_"] = "F12";
+ 
+  keyMapUniversalRepeat["158:1_"] = true;
+  keyMapUniversalRepeat["158:2_"] = true;  
+
+  keyMapUniversal["159:1_"] = "LargeUp";
+  keyMapUniversal["159:2_"] = "LargeDown";
+  keyMapUniversal["159:3_"] = "Red";
+  keyMapUniversal["159:4_"] = "Green";
+  keyMapUniversal["159:5_"] = "Yellow";
+  keyMapUniversal["159:6_"] = "Blue";
+  
+  keyMapUniversalRepeat["159:1_"] = true;
+  keyMapUniversalRepeat["159:2_"] = true;
+  
+  keyMapUniversal["160:1_"] = "Replay";
+  keyMapUniversal["160:2_"] = "Skip";
+  keyMapUniversal["160:3_"] = "F5";
+  keyMapUniversal["160:4_"] = "F6";
+  keyMapUniversal["160:5_"] = "F7";
+  keyMapUniversal["160:6_"] = "F8";
   
   // Keeps track of which keys send up events and repeat.
   buttonConfigMap[kRemoteButtonUp] = ButtonConfig(kButtonRepeats | kButtonSendsUpEvents);
@@ -793,11 +924,16 @@ void parseOptions(int argc, char** argv)
       usage();
       exit(0);
       break;
-  	case 's':
-  		serverAddress = optarg;
-  		break;
-  	case 'u':
+    case 's':
+      serverAddress = optarg;
+      break;
+    case 'u':
       isUniversalMode = true;
+      break;
+    case 'm':
+      isMultiCodeMode = true;
+      isUniversalMode = true;
+      remoteString = MULTICODE_UNIVERSAL_REMOTE;
       break;
     case 't':
       sequenceTimeout = atoi(optarg);
@@ -835,7 +971,7 @@ void parseOptions(int argc, char** argv)
   }
   
   if (readExternal == true)
-    readConfig();
+    readConfig(); 
 }
 
 void readConfig()
@@ -873,7 +1009,7 @@ void readConfig()
       
   // Parse the arguments.
   parseOptions(argc, argv);
-    
+   
   delete[] argv;
 }
 
@@ -884,6 +1020,8 @@ void handleSignal(int signal)
   {
     // Reset configuration.
     isUniversalMode = false;
+    isMultiCodeMode = false;
+    remoteString = SEQUENTIAL_UNIVERSAL_REMOTE;
     sequenceTimeout = 500;
     verbose = false;
     
