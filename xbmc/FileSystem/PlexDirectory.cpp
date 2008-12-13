@@ -499,6 +499,11 @@ class PlexMediaPhoto : public PlexMediaNode
       pItem->SetThumbnailImage(strThumb);
     }
     
+    // Summary.
+    const char* summary = el.Attribute("summary");
+    if  (summary)
+      pItem->SetProperty("description", summary);
+    
     // Path to the photo.
     pItem->m_strPath = CPlexDirectory::ProcessUrl(parentPath, el.Attribute("key"), false);
   }
