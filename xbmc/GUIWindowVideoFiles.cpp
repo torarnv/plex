@@ -354,7 +354,7 @@ void CGUIWindowVideoFiles::OnInfo(CFileItem* pItem, const SScraperInfo& info)
   CStdString strFolder = "";
   CStdString strFile = pItem->m_strPath;
   if (pItem->m_bIsFolder && pItem->IsParentFolder()) return ;
-  if (pItem->m_bIsShareOrDrive) // oh no u don't
+  if (pItem->m_bIsShareOrDrive || pItem->IsPlexMediaServer()) // Disable PMS info window for now - enable again once it does something useful
     return ;
   if (pItem->m_bIsFolder)
   {
@@ -583,7 +583,7 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
          (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
       {
         CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-        if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
+        if ((!pScanDlg || (pScanDlg && !pScanDlg->IsScanning())) && !item->IsPlexMediaServer())
           buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
         CVideoDatabase database;
         database.Open();
@@ -618,7 +618,7 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
 
         if (item->m_bIsFolder)
         {
-          if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
+          if ((!pScanDlg || (pScanDlg && !pScanDlg->IsScanning())) && !item->IsPlexMediaServer())
             if (!item->IsPlayList())
               buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
           if (iFound==0)
@@ -656,7 +656,7 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
           m_database.Open();
           if (!item->IsParentFolder())
           {
-            if (!m_database.HasMovieInfo(item->m_strPath) && !m_database.HasEpisodeInfo(item->m_strPath))
+            if (!m_database.HasMovieInfo(item->m_strPath) && !m_database.HasEpisodeInfo(item->m_strPath) && !item->IsPlexMediaServer())
               buttons.Add(CONTEXT_BUTTON_ADD_TO_LIBRARY, 527); // Add to Database
           }
           m_database.Close();
@@ -683,7 +683,7 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
     if (pScanDlg && pScanDlg->IsScanning())
       buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);	// Stop Scanning
   }
-  if (!m_vecItems->IsVirtualDirectoryRoot())
+  if (!m_vecItems->IsVirtualDirectoryRoot() && !m_vecItems->IsPlexMediaServer())
     buttons.Add(CONTEXT_BUTTON_SWITCH_MEDIA, 523);
 
   CGUIWindowVideoBase::GetNonContextButtons(itemNumber, buttons);

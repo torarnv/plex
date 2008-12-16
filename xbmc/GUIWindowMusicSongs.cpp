@@ -459,13 +459,14 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
       else if (!inPlaylists && !m_vecItems->IsInternetStream()           && 
                !item->IsLastFM() && !item->IsShoutCast()                 && 
                !item->m_strPath.Equals("add") && !item->IsParentFolder() &&
+               !item->IsPlexMediaServer() &&
               (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
       {
         buttons.Add(CONTEXT_BUTTON_SCAN, 13352);
       }
     }
   }
-  if (!m_vecItems->IsVirtualDirectoryRoot())
+  if (!m_vecItems->IsVirtualDirectoryRoot() && !m_vecItems->IsPlexMediaServer())
     buttons.Add(CONTEXT_BUTTON_SWITCH_MEDIA, 523);
   CGUIWindowMusicBase::GetNonContextButtons(buttons);
 }
