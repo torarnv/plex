@@ -551,7 +551,8 @@ void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &butt
       }
     }
     buttons.Add(CONTEXT_BUTTON_GOTO_ROOT, 20128);
-    buttons.Add(CONTEXT_BUTTON_SWITCH_MEDIA, 523);
+    if (!item->IsPlexMediaServer())
+      buttons.Add(CONTEXT_BUTTON_SWITCH_MEDIA, 523);
   }
   CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
   buttons.Add(CONTEXT_BUTTON_SETTINGS, 5);                  // Settings

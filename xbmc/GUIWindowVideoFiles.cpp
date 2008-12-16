@@ -683,7 +683,7 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
     if (pScanDlg && pScanDlg->IsScanning())
       buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);	// Stop Scanning
   }
-  if (!m_vecItems->IsVirtualDirectoryRoot())
+  if (!m_vecItems->IsVirtualDirectoryRoot() && !m_vecItems->IsPlexMediaServer())
     buttons.Add(CONTEXT_BUTTON_SWITCH_MEDIA, 523);
 
   CGUIWindowVideoBase::GetNonContextButtons(itemNumber, buttons);
