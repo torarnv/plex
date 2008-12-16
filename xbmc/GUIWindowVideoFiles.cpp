@@ -354,7 +354,7 @@ void CGUIWindowVideoFiles::OnInfo(CFileItem* pItem, const SScraperInfo& info)
   CStdString strFolder = "";
   CStdString strFile = pItem->m_strPath;
   if (pItem->m_bIsFolder && pItem->IsParentFolder()) return ;
-  if (pItem->m_bIsShareOrDrive) // oh no u don't
+  if (pItem->m_bIsShareOrDrive || pItem->IsPlexMediaServer()) // Disable PMS info window for now - enable again once it does something useful
     return ;
   if (pItem->m_bIsFolder)
   {
