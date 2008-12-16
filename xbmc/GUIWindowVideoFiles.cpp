@@ -618,7 +618,7 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
 
         if (item->m_bIsFolder)
         {
-          if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
+          if ((!pScanDlg || (pScanDlg && !pScanDlg->IsScanning())) && !item->IsPlexMediaServer())
             if (!item->IsPlayList())
               buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
           if (iFound==0)
