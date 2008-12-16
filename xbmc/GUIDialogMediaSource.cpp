@@ -24,6 +24,7 @@
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogFileBrowser.h"
 #include "GUIDialogContentSettings.h"
+#include "GUIDialogOK.h"
 #include "GUIWindowVideoFiles.h"
 #include "GUIWindowManager.h"
 #include "Util.h"
@@ -424,6 +425,12 @@ void CGUIDialogMediaSource::OnPath(int item)
   if (item < 0 || item > m_paths->Size()) return;
   CGUIDialogKeyboard::ShowAndGetInput(m_paths->Get(item)->m_strPath, g_localizeStrings.Get(1021), false);
   CUtil::AddSlashAtEnd(m_paths->Get(item)->m_strPath);
+  // If the user tries to add a media server location to a multipath source, explain that this isn't supported & clear the path
+  if ((item > 0) && CUtil::IsPlexMediaServer(m_paths->Get(item)->m_strPath))
+  {
+    CGUIDialogOK::ShowAndGetInput(40200, 40201, 40202, -1);
+    m_paths->Get(item)->m_strPath = "";
+  }
   UpdateButtons();
 }
 
@@ -502,6 +509,18 @@ void CGUIDialogMediaSource::UpdateButtons()
   {
     CONTROL_ENABLE(CONTROL_PATH_REMOVE)
   }
+  // Don't allow multiple sources to be added when using a PMS path
+//  if (m_paths->Size() == 1)
+  //{
+  if (CUtil::IsPlexMediaServer(m_paths->Get(0)->m_strPath))
+  {
+    CONTROL_DISABLE(CONTROL_PATH_ADD)
+  }
+  else
+  {
+    CONTROL_ENABLE(CONTROL_PATH_REMOVE)
+  }
+  //}
   // name
   SET_CONTROL_LABEL(CONTROL_NAME, m_name)
 
@@ -536,7 +555,7 @@ void CGUIDialogMediaSource::UpdateButtons()
   if (m_type.Equals("video"))
   {
     SET_CONTROL_VISIBLE(CONTROL_CONTENT)
-    if (m_paths->Get(0)->m_strPath.IsEmpty() || m_name.IsEmpty())
+    if (m_paths->Get(0)->m_strPath.IsEmpty() || m_name.IsEmpty() || CUtil::IsPlexMediaServer(m_paths->Get(0)->m_strPath))
     {
       CONTROL_DISABLE(CONTROL_CONTENT)
     }

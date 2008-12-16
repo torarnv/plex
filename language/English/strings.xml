@@ -2096,4 +2096,7 @@
   <string id="40105">Energy Saver</string>
   <string id="40106">Remove Workflow</string>
 
+  <string id="40200">Unsupported path</string>
+  <string id="40201">Plex Media Server paths can't be added to multipath</string>
+  <string id="40202">sources.</string>
 </strings>
