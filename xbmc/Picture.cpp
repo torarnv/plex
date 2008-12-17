@@ -116,8 +116,13 @@ bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString
   CFileItem fileItem(strFileName, false);
   if (fileItem.IsPlexMediaServer())
   {
-    // Trust what we get from the media server.
+    // Trust what we get from the media server as long as it's not 0 bytes!
     XFILE::CFile::Cache(strFileName, strThumbFileName, 0);
+    
+    XFILE::CFile file;
+    file.Open(strThumbFileName);
+    if (file.GetLength() == 0)
+      XFILE::CFile::Delete(strThumbFileName);
   }
   else
   {
