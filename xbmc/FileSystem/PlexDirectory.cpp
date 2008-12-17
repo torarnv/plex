@@ -5,6 +5,7 @@
  *      Author: Elan Feingold
  */
 #include <boost/lexical_cast.hpp>
+#include <boost/algorithm/string/case_conv.hpp>
 
 #include "stdafx.h"
 #include "Album.h"
@@ -127,6 +128,11 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     if (strFanart.size() > 0)
       pItem->SetQuickFanart(strFanart);
       
+    // Make sure sort label is lower case.
+    string sortLabel = pItem->GetLabel();
+    boost::to_lower(sortLabel);
+    pItem->SetSortLabel(sortLabel);
+    
     if (!pItem->IsParentFolder())
       vecCacheItems.Add(pItem);
   }
@@ -173,9 +179,9 @@ class PlexMediaNode
      
      if (strPath.find("/Albums") != -1)
        strDirLabel = "%B - %A";
-     else if (strPath.find("/Recently%20Played/By%20Artist") != -1)
+     else if (strPath.find("/Recently%20Played/By%20Artist") != -1 || strPath.find("/Most%20Played/By%20Artist") != -1)
        strDirLabel = "%B";
-     else if (strPath.find("/Decades/") != -1 || strPath.find("/Recently%20Added") != -1 || strPath.find("/Recently%20Played/") != -1 || strPath.find("/Genre/") != -1)
+     else if (strPath.find("/Decades/") != -1 || strPath.find("/Recently%20Added") != -1 || strPath.find("/Most%20Played") != -1 || strPath.find("/Recently%20Played/") != -1 || strPath.find("/Genre/") != -1)
        strDirLabel = "%A - %B";
    }
 };
