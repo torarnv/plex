@@ -3695,10 +3695,16 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
 
       return item->GetVideoInfoTag()->m_strPlot;
     }
+    else
+    {
+      return item->GetProperty("description");
+    }
     break;
   case LISTITEM_PLOT_OUTLINE:
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_strPlotOutline;
+    else
+      return item->GetProperty("description");
     break;
   case LISTITEM_EPISODE:
     if (item->HasVideoInfoTag())
