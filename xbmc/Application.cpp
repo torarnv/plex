@@ -3128,7 +3128,20 @@ bool CApplication::OnKey(CKey& key)
     // current active window isnt the fullscreen window
     // just use corresponding section from keymap.xml
     // to map key->action
-    if (key.FromKeyboard() && (iWin == WINDOW_DIALOG_KEYBOARD || iWin == WINDOW_DIALOG_NUMERIC || iWin == WINDOW_BUDDIES) )
+    // first determine if we should use keyboard input directly
+    bool useKeyboard = key.FromKeyboard() && (iWin == WINDOW_DIALOG_KEYBOARD || iWin == WINDOW_DIALOG_NUMERIC);
+    CGUIWindow *window = m_gWindowManager.GetWindow(iWin);
+    if (window)
+    {
+      CGUIControl *control = window->GetFocusedControl();
+      if (control)
+      {
+        if (/* control->GetControlType() == CGUIControl::GUICONTROL_EDIT ||*/
+            (control->IsContainer() && g_Keyboard.GetShift()))
+          useKeyboard = true;
+      }
+    }
+    if (useKeyboard)
     {
       if (key.GetFromHttpApi())
       {
