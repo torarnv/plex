@@ -815,3 +815,14 @@ void CGUIWindowSlideShow::GetCheckedSize(float width, float height, int &maxWidt
 #endif
 }
 
+CFileItemPtr CGUIWindowSlideShow::GetCurrentListItem(int offset)
+{
+  if (m_slides->Size() == 0 || m_iCurrentSlide < 0)
+    return CFileItemPtr();
+  
+  int item = (m_iCurrentSlide + offset) % m_slides->Size();
+  if (item < 0) 
+    item += m_slides->Size();
+  
+  return m_slides->Get(item);
+}

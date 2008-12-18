@@ -83,6 +83,10 @@ public:
   int NumSlides() const;
   int CurrentSlide() const;
   void Shuffle();
+  
+  virtual bool HasListItems() const { return true; };
+  virtual CFileItemPtr GetCurrentListItem(int offset = 0);
+  
 private:
   void AddItems(const CStdString &strPath, bool bRecursive);
   void RenderPause();
