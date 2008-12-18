@@ -164,6 +164,7 @@ public:
   virtual void SetWidth(float width);
   virtual void SetHeight(float height);
   virtual void SetVisible(bool bVisible);
+  virtual void SetOpacity(unsigned char alpha);
   void SetVisibleCondition(int visible, bool allowHiddenFocus);
   int GetVisibleCondition() const { return m_visibleCondition; };
   void SetEnableCondition(int condition);
@@ -262,6 +263,7 @@ protected:
   float m_posY;
   float m_height;
   float m_width;
+  unsigned char m_opacity;
   CRect m_hitRect;
   CGUIInfoColor m_diffuseColor;
   DWORD m_dwControlID;

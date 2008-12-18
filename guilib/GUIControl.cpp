@@ -53,6 +53,7 @@ CGUIControl::CGUIControl()
   m_parentControl = NULL;
   m_hasCamera = false;
   m_pushedUpdates = false;
+  m_opacity = 255;
 }
 
 CGUIControl::CGUIControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height)
@@ -83,6 +84,7 @@ CGUIControl::CGUIControl(DWORD dwParentID, DWORD dwControlId, float posX, float 
   m_parentControl = NULL;
   m_hasCamera = false;
   m_pushedUpdates = false;
+  m_opacity = 255;
 }
 
 
@@ -136,7 +138,11 @@ void CGUIControl::DoRender(DWORD currentTime)
   if (m_hasCamera)
     g_graphicsContext.SetCameraPosition(m_camera);
   if (IsVisible())
+  {
+    g_graphicsContext.AddTransform(TransformMatrix::CreateFader(m_opacity / 255.0f));
     Render();
+    g_graphicsContext.RemoveTransform();
+  }
   if (m_hasCamera)
     g_graphicsContext.RestoreCameraPosition();
   g_graphicsContext.RemoveTransform();
@@ -457,6 +463,11 @@ void CGUIControl::SetVisible(bool bVisible)
     m_visibleFromSkinCondition = bVisible;
     SetInvalid();
   }*/
+}
+
+void CGUIControl::SetOpacity(unsigned char alpha)
+{
+  m_opacity = alpha;
 }
 
 bool CGUIControl::HitTest(const CPoint &point) const

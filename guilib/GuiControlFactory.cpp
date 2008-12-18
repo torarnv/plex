@@ -639,6 +639,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   int iMovementRange = 2;
   bool bHorizontal = false;
   int iAlpha = 0;
+  int iOpacity = 255;
   bool bWrapAround = true;
   bool bSmoothScrolling = true;
   CGUIImage::CAspectRatio aspect;
@@ -965,6 +966,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   XMLUtils::GetInt(pControlNode, "movement", iMovementRange);
   XMLUtils::GetInt(pControlNode, "defaultbutton", iDefaultSlot);
   XMLUtils::GetInt(pControlNode, "alpha", iAlpha);
+  XMLUtils::GetInt(pControlNode, "opacity", iOpacity);
   XMLUtils::GetBoolean(pControlNode, "wraparound", bWrapAround);
   XMLUtils::GetBoolean(pControlNode, "smoothscrolling", bSmoothScrolling);
   GetAspectRatio(pControlNode, "aspectratio", aspect);
@@ -1485,6 +1487,12 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
     control->SetPulseOnSelect(bPulse);
     if (hasCamera)
       control->SetCamera(camera);
+
+    if (iOpacity < 0x00)
+      iOpacity = 0;
+    if (iOpacity > 0xFF)
+      iOpacity = 0xFF;
+    control->SetOpacity(iOpacity);
   }
   return control;
 }
