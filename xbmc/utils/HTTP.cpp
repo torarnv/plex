@@ -30,19 +30,25 @@
 #include "../utils/Network.h"
 #include "GUISettings.h"
 #include "Application.h"
+#include "RegExp.h"
 
 #ifdef _LINUX
 #include <fcntl.h>
 #include <sys/select.h>
 #endif
 
+#ifdef __APPLE__
+#include "Util.h"
+#include "CocoaUtilsPlus.h"
+#include "CocoaUtils.h"
+#endif
 using namespace std;
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-/* 
+/*
  * HTTP Helper
  * by Bertrand Baudet <bertrand_baudet@yahoo.com>
  * (C) 2001, MPlayer team.
@@ -63,9 +69,9 @@ int base64_encode(const void *enc, int encLen, char *out, int outMax) {
   bits = 0;
   shift = 0;
 
-  while (outLen<outMax) 
+  while (outLen<outMax)
   {
-    if (encLen>0) 
+    if (encLen>0)
     {
       // Shift in byte
       bits <<= 8;
@@ -74,14 +80,14 @@ int base64_encode(const void *enc, int encLen, char *out, int outMax) {
       // Next byte
       encBuf++;
       encLen--;
-    } 
-    else if (shift>0) 
+    }
+    else if (shift>0)
     {
       // Pad last bits to 6 bits - will end next loop
       bits <<= 6 - shift;
       shift = 6;
-    } 
-    else 
+    }
+    else
     {
       // Terminate with Mime style '='
       *out = '=';
@@ -91,7 +97,7 @@ int base64_encode(const void *enc, int encLen, char *out, int outMax) {
     }
 
     // Encode 6 bit segments
-    while (shift>=6) 
+    while (shift>=6)
     {
       shift -= 6;
       *out = b64[ (bits >> shift) & 0x3F ];
@@ -129,11 +135,19 @@ CHTTP::CHTTP()
   m_bProxyEnabled = g_guiSettings.GetBool("network.usehttpproxy");
   if (m_bProxyEnabled)
   {
+#ifdef __APPLE__
+    m_strProxyServer = Cocoa_Proxy_Host("http");
+    m_iProxyPort = atoi(Cocoa_Proxy_Port("http"));
+    m_strProxyUsername = Cocoa_Proxy_Username("http");
+    m_strProxyPassword = Cocoa_Proxy_Password("http");
+#else
     m_strProxyServer = g_guiSettings.GetString("network.httpproxyserver").c_str();
     m_iProxyPort = atoi(g_guiSettings.GetString("network.httpproxyport").c_str());
     m_strProxyUsername = g_guiSettings.GetString("network.httpproxyusername").c_str();
     m_strProxyPassword = g_guiSettings.GetString("network.httpproxypassword").c_str();
+#endif
   }
+
   m_strCookie = "";
 #ifndef _LINUX
   hEvent = WSA_INVALID_EVENT;
@@ -326,7 +340,7 @@ bool CHTTP::IsInternet(bool checkDNS /* = true */)
   if (status != 302 && status != 200)
     return false;
   else
-    return true; 
+    return true;
 
   return false;
 }
@@ -401,6 +415,38 @@ bool CHTTP::Download(const string &strURL, const string &strFileName, LPDWORD pd
   return true;
 }
 
+BOOL resolveAddress(std::string hostName, sockaddr_in *service)
+{
+  if (!service)
+    return false;
+
+  service->sin_addr.s_addr = inet_addr(hostName.c_str());
+  if (service->sin_addr.s_addr == INADDR_NONE)
+  {
+#ifdef _LINUX
+    struct hostent *host = gethostbyname(hostName.c_str());
+    if (host == NULL || host->h_addr == NULL)
+    {
+      CLog::Log(LOGWARNING, "ERROR: Problem accessing the DNS. (addr: %s)", hostName.c_str());
+      return false;
+    }
+    //CLog::Log(LOGDEBUG,"host name = %s resolved: <%s>\n", host->h_name, inet_ntoa(*(struct in_addr*)host->h_addr));
+    service->sin_addr = *(struct in_addr*)host->h_addr;
+#else
+    CStdString strIpAddress = "";
+    CDNSNameCache::Lookup(hostName, strIpAddress);
+    service->sin_addr.s_addr = inet_addr(strIpAddress.c_str());
+    if (service->sin_addr.s_addr == INADDR_NONE || strIpAddress == "")
+    {
+      CLog::Log(LOGWARNING, "ERROR: Problem accessing the DNS. (addr: %s)", hostName.c_str());
+      WSASetLastError(WSAHOST_NOT_FOUND);
+      return false;
+    }
+#endif
+  }
+  return true;
+}
+
 //------------------------------------------------------------------------------------------------------------------
 bool CHTTP::Connect()
 {
@@ -411,41 +457,23 @@ bool CHTTP::Connect()
   memset(&service, 0, sizeof(sockaddr_in));
   service.sin_family = AF_INET;
 
-  if (m_bProxyEnabled)
+  if (m_bProxyEnabled
+#ifdef __APPLE__
+      && !CUtil::HostInExceptionList(m_strHostName, Cocoa_Proxy_ExceptionList())
+#endif
+    )
   {
-    // connect to proxy server
-    service.sin_addr.s_addr = inet_addr(m_strProxyServer.c_str());
+    if (!resolveAddress(m_strProxyServer, &service))
+      return false;
     service.sin_port = htons(m_iProxyPort);
   }
   else
   {
-    // connect to site directly
-    service.sin_addr.s_addr = inet_addr(m_strHostName.c_str());
-    if (service.sin_addr.s_addr == INADDR_NONE)
-    {
-      CStdString strIpAddress = "";
-#ifdef _LINUX
-      struct hostent *host = gethostbyname(m_strHostName.c_str());
-      if (host == NULL || host->h_addr == NULL)
-      {
-        CLog::Log(LOGWARNING, "ERROR: Problem accessing the DNS. (addr: %s)", m_strHostName.c_str());
-        return false;
-      }
-      //CLog::Log(LOGDEBUG,"host name = %s resolved: <%s>\n", host->h_name, inet_ntoa(*(struct in_addr*)host->h_addr));
-      service.sin_addr = *(struct in_addr*)host->h_addr;
-#else
-      CDNSNameCache::Lookup(m_strHostName, strIpAddress);
-      service.sin_addr.s_addr = inet_addr(strIpAddress.c_str());
-      if (service.sin_addr.s_addr == INADDR_NONE || strIpAddress == "")
-      {
-        CLog::Log(LOGWARNING, "ERROR: Problem accessing the DNS. (addr: %s)", m_strHostName.c_str());
-        WSASetLastError(WSAHOST_NOT_FOUND);
-        return false;
-      }
-#endif
-    }
+    if (!resolveAddress(m_strHostName, &service))
+      return false;
     service.sin_port = htons(m_iPort);
   }
+
 #ifdef _XBOX
   m_socket.attach(socket(AF_INET, SOCK_STREAM, IPPROTO_TCP));
 #elif !defined(_LINUX)
@@ -454,7 +482,7 @@ bool CHTTP::Connect()
   m_socket.attach(socket(AF_INET, SOCK_STREAM, IPPROTO_TCP));
 #else
   m_socket.attach(socket(AF_INET, SOCK_STREAM, IPPROTO_TCP));
-  
+
   // set the socket to nonblocking
   int opts = fcntl((SOCKET) m_socket, F_GETFL);
   opts = (opts | O_NONBLOCK);
@@ -488,18 +516,18 @@ bool CHTTP::Connect()
     Close();
     return false;
   }
-  
+
   int retries = 5;
   while (!m_cancelled && retries>0)
   {
     fd_set socks;
     FD_ZERO(&socks);
     FD_SET((SOCKET)m_socket, &socks);
-    
+
     struct timeval timeout;  /* Timeout for select */
     timeout.tv_sec = 0;
     timeout.tv_usec = 500000;
-    
+
     int writesocks = select((SOCKET)m_socket+1, (fd_set *) 0, &socks, (fd_set *) 0, &timeout);
     if (writesocks == -1 && errno != EINTR)
     {
@@ -516,10 +544,10 @@ bool CHTTP::Connect()
       retries--;
     }
   }
-  
+
   if (retries == 0)
     return false;
-  
+
   // Check if the socket connected
   int value = 0;
   socklen_t len = sizeof(value);
@@ -528,19 +556,19 @@ bool CHTTP::Connect()
     CLog::Log(LOGNOTICE, "HTTP: connect getsockopt failed: %s", strerror(errno));
     return false;
   }
-  
+
   if (value != 0)
   {
     CLog::Log(LOGNOTICE, "HTTP: socket connect failed (checked with getsockopt): %s", strerror(value));
     return false;
   }
-  
+
   if (m_cancelled)
   {
     return false;
   }
 #endif
-  
+
   return true;
 }
 
@@ -782,7 +810,7 @@ bool CHTTP::Recv(int iLen)
   if (iLen == -1)
     iLen = BUFSIZE;
 
-  if (!m_RecvBuffer) 
+  if (!m_RecvBuffer)
   {
     m_RecvBuffer = new char[BUFSIZE + 1];
     memset(m_RecvBuffer,0,BUFSIZE + 1);
@@ -830,18 +858,18 @@ bool CHTTP::Recv(int iLen)
 #else
 
     char *buf = &m_RecvBuffer[m_RecvBytes];
-    
+
     while (!m_cancelled)
     {
       n = -1;
-      
+
       fd_set socks;
       FD_ZERO(&socks);
       FD_SET((SOCKET)m_socket, &socks);
       struct timeval timeout;  /* Timeout for select */
       timeout.tv_sec = 5;
       timeout.tv_usec = 0;
-      
+
       int readsocks = select((SOCKET)m_socket+1, &socks, (fd_set *) 0, (fd_set *) 0, &timeout);
       if (readsocks == 0)
       {
@@ -854,7 +882,7 @@ bool CHTTP::Recv(int iLen)
       if (n >= 0 || (n == -1 && errno != EAGAIN && errno != EINPROGRESS))
         break;
     }
-    
+
     if (m_cancelled || n == -1)
       return false;
 #endif
@@ -863,7 +891,7 @@ bool CHTTP::Recv(int iLen)
     {
 #ifndef _LINUX
       shutdown(m_socket, SD_BOTH);
-#else      
+#else
       shutdown(m_socket, SHUT_RDWR);
 #endif
       WSASetLastError(0);
@@ -1103,7 +1131,7 @@ int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
       //Post redirect has to work for scrapers
       //CanHandle = !stricmp(verb, "GET");
       CanHandle = true;
-      break; 
+      break;
     case 303:
       // 303 See Other - perform GET on the new resource
       verb = "GET";
@@ -1164,7 +1192,7 @@ void CHTTP::ParseHeaders()
 {
   string::size_type nStart, nColon, nEnd;
   string::size_type i;
-  
+
   CLog::Log(LOGDEBUG, "CHTTP::ParseHeaders(headers=%s)", m_strHeaders.c_str());
 
   nStart = nColon = nEnd = 0;
@@ -1205,7 +1233,7 @@ void CHTTP::ParseHeaders()
 void CHTTP::ParseHeader(string::size_type start, string::size_type colon, string::size_type end)
 {
   CLog::Log(LOGDEBUG, "CHTTP::ParseHeader(start=%d, colon=%d, end=%d)", start, colon, end);
-  
+
   // If colon or end are 0, bail
   if (colon == 0 || end == 0)
   {
@@ -1266,8 +1294,8 @@ CStdString CHTTP::ConstructAuthorization(const CStdString &auth, const CStdStrin
 {
   //Basic authentication
   CStdString buff = username + ":" + password;
-  char *szEncode = (char*)alloca(buff.GetLength()*2); 
-  
+  char *szEncode = (char*)alloca(buff.GetLength()*2);
+
   int len = base64_encode(buff.c_str(), buff.GetLength(), szEncode, buff.GetLength()*2);
   if( len < 0 )
   {

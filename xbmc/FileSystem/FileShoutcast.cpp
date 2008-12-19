@@ -46,6 +46,7 @@
 #include "RingBuffer.h"
 #include "ShoutcastRipFile.h"
 #include "utils/GUIInfoManager.h"
+#include "CocoaUtils.h"
 
 using namespace std;
 using namespace XFILE;
@@ -210,9 +211,14 @@ bool CFileShoutcast::Open(const CURL& url, bool bBinary)
   strcpy(m_opt.output_directory, "./");
   m_opt.proxyurl[0] = '\0';
 
+#ifdef __APPLE__
+  if (Cocoa_Proxy_Enabled(url.GetProtocol()))
+  {
+	  snprintf( m_opt.proxyurl, MAX_URL_LEN, "%s://%s:%s", url.GetProtocol().c_str(), Cocoa_Proxy_Host(url.GetProtocol()), Cocoa_Proxy_Port(url.GetProtocol()));
+  }
+#else
   // Use a proxy, if the GUI was configured as such
-  bool bProxyEnabled = g_guiSettings.GetBool("network.usehttpproxy");
-  if (bProxyEnabled)
+  if (g_guiSettings.GetBool("network.usehttpproxy"))
   {
     const CStdString &strProxyServer = g_guiSettings.GetString("network.httpproxyserver");
     const CStdString &strProxyPort = g_guiSettings.GetString("network.httpproxyport");
@@ -223,6 +229,7 @@ bool CFileShoutcast::Open(const CURL& url, bool bBinary)
 	  snprintf( m_opt.proxyurl, MAX_URL_LEN, "http://%s:%s", strProxyServer.c_str(), strProxyPort.c_str() );
 #endif
   }
+#endif
 
   CStdString strUrl;
   url.GetURL(strUrl);

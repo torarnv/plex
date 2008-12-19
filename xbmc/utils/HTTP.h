@@ -87,7 +87,6 @@ private:
   std::string m_strUserAgent;
   std::string m_strContentType;
   std::map<CStdString, CStdString> m_mapHeaders;
-
   bool m_bProxyEnabled;
   int m_iProxyPort;
   int m_iPort;

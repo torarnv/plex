@@ -43,6 +43,7 @@
 #include "ActionManager.h"
 #include "Settings.h"
 #include "Profile.h"
+#include "CocoaUtils.h"
 
 XBPython g_pythonParser;
 
@@ -171,7 +172,7 @@ bool XBPython::FileExist(const char* strFile)
 
 void XBPython::RegisterExtensionLib(LibraryLoader *pLib)
 {
-  if (!pLib) 
+  if (!pLib)
     return;
 
   CLog::Log(LOGDEBUG,"%s, adding %s (%p)", __FUNCTION__, pLib->GetName(), (void*)pLib);
@@ -182,7 +183,7 @@ void XBPython::RegisterExtensionLib(LibraryLoader *pLib)
 
 void XBPython::UnregisterExtensionLib(LibraryLoader *pLib)
 {
-  if (!pLib) 
+  if (!pLib)
     return;
 
   CLog::Log(LOGDEBUG,"%s, removing %s (0x%p)", __FUNCTION__, pLib->GetName(), (void *)pLib);
@@ -223,17 +224,23 @@ void XBPython::InitializeInterpreter()
 
   CStdString envstring = "";
   // set HTTP_PROXY and HTTPS_PROXY env variables
+  // TODO: use system proxy
   if (g_guiSettings.GetBool("network.usehttpproxy") &&
       g_guiSettings.GetString("network.httpproxyserver") &&
       g_guiSettings.GetString("network.httpproxyport"))
   {
+    envstring += "import os\n";
+
     CStdString env;
     CStdString proxy = "http://" + g_guiSettings.GetString("network.httpproxyserver")
-                           + ":" + g_guiSettings.GetString("network.httpproxyport");
-    envstring += "import os\n";
-    env.Format("os.environ['HTTP_PROXY']='%s'\n", proxy.c_str()); 
+    + ":" + g_guiSettings.GetString("network.httpproxyport");
+    env.Format("os.environ['HTTP_PROXY']='%s'\n", proxy.c_str());
     envstring += env;
-    env.Format("os.environ['HTTPS_PROXY']='%s'\n", proxy.c_str()); 
+#ifdef __APPLE__
+    env.Format("os.environ['HTTPS_PROXY']='%s'\n", Cocoa_Proxy_Host("https"));
+#else
+    env.Format("os.environ['HTTPS_PROXY']='%s'\n", proxy.c_str());
+#endif
     envstring += env;
   };
   // redirecting default output to debug console
@@ -261,9 +268,9 @@ void XBPython::InitializeInterpreter()
 
 void XBPython::DeInitializeInterpreter()
 {
-  DeinitXBMCModule(); 
-  DeinitPluginModule(); 
-  DeinitGUIModule(); 
+  DeinitXBMCModule();
+  DeinitPluginModule();
+  DeinitGUIModule();
 }
 
 /**
@@ -294,7 +301,7 @@ void XBPython::Initialize()
       }
 
       // first we check if all necessary files are installed
-#ifndef _LINUX      
+#ifndef _LINUX
       if (!FileExist("Q:\\system\\python\\python24.zlib") ||
         !FileExist("Q:\\system\\python\\DLLs\\_socket.pyd") ||
         !FileExist("Q:\\system\\python\\DLLs\\_ssl.pyd") ||
@@ -309,7 +316,7 @@ void XBPython::Initialize()
         LeaveCriticalSection(&m_critSection);
         return;
       }
-#endif        
+#endif
 
 #ifdef _LINUX
       // Required for python to find optimized code (pyo) files
@@ -321,7 +328,7 @@ void XBPython::Initialize()
       //setenv("PYTHONVERBOSE", "1", 1);
       setenv("PYTHONCASEOK", "1", 1);
 #endif
-      
+
 #ifdef __APPLE__
       setenv("PYTHONHOME", _P("Q:\\system\\python"), 1);
 #endif
@@ -448,7 +455,7 @@ int XBPython::evalFile(const char *src) { return evalFile(src, 0, NULL); }
 int XBPython::evalFile(const char *src, const unsigned int argc, const char ** argv)
 {
   CStdString srcStr = _P(src);
-  
+
   // return if file doesn't exist
   if(access(srcStr.c_str(), 0) == -1) return -1;
 
@@ -523,7 +530,7 @@ PyThreadState *XBPython::getMainThreadState()
 int XBPython::ScriptsSize()
 {
   int iSize = 0;
-  
+
   EnterCriticalSection(&m_critSection);
   iSize = vecPyList.size();
   LeaveCriticalSection(&m_critSection);
@@ -534,7 +541,7 @@ int XBPython::ScriptsSize()
 const char* XBPython::getFileName(int scriptId)
 {
   const char* cFileName = NULL;
-  
+
   EnterCriticalSection(&m_critSection);
   PyList::iterator it = vecPyList.begin();
   while (it != vecPyList.end())
@@ -550,7 +557,7 @@ const char* XBPython::getFileName(int scriptId)
 int XBPython::getScriptId(const char* strFile)
 {
   int iId = -1;
-  
+
   EnterCriticalSection(&m_critSection);
   PyList::iterator it = vecPyList.begin();
   while (it != vecPyList.end())
@@ -559,14 +566,14 @@ int XBPython::getScriptId(const char* strFile)
     ++it;
   }
   LeaveCriticalSection(&m_critSection);
-  
+
   return iId;
 }
 
 bool XBPython::isRunning(int scriptId)
 {
   bool bRunning = false;
-  
+
   EnterCriticalSection(&m_critSection);
   PyList::iterator it = vecPyList.begin();
   while (it != vecPyList.end())
@@ -575,14 +582,14 @@ bool XBPython::isRunning(int scriptId)
     ++it;
   }
   LeaveCriticalSection(&m_critSection);
-  
+
   return bRunning;
 }
 
 bool XBPython::isStopping(int scriptId)
 {
   bool bStopping = false;
-  
+
   EnterCriticalSection(&m_critSection);
   PyList::iterator it = vecPyList.begin();
   while (it != vecPyList.end())
@@ -591,7 +598,7 @@ bool XBPython::isStopping(int scriptId)
     ++it;
   }
   LeaveCriticalSection(&m_critSection);
-  
+
   return bStopping;
 }
 

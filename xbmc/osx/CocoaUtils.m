@@ -53,7 +53,7 @@ void Cocoa_Initialize(void* pApplication)
     blankingBrightness[i] = -1.0f;
     mainDisplayScreen = 0;
   }
-    
+
   CocoaPlus_Initialize();
 }
 
@@ -990,38 +990,59 @@ void Cocoa_SetGammaRamp(unsigned short* pRed, unsigned short* pGreen, unsigned s
   CGSetDisplayTransferByTable(displayID, tableSize, redTable, greenTable, blueTable);
 }
 
-bool Cocoa_OSX_Proxy_Enabled()
+bool Cocoa_Proxy_Enabled(const char* protocol)
 {
   NSDictionary* proxyDict = (NSDictionary*)SCDynamicStoreCopyProxies(NULL);
-  if ([proxyDict objectForKey:@"HTTPEnable"] == nil) return false;
-  return ([[proxyDict objectForKey:@"HTTPEnable"] boolValue]);
+  @try
+  {
+    NSString* protocolEnabled = [[[NSString stringWithCString:protocol] uppercaseString] stringByAppendingString:@"Enable"];
+    return ([[proxyDict objectForKey:protocolEnabled] boolValue]);
+  }
+  @finally
+  {
+    [proxyDict release];
+  }
+  return false;
 }
 
-const char* Cocoa_OSX_Proxy_Host()
+const char* Cocoa_Proxy_Host(const char* protocol)
 {
   NSDictionary* proxyDict = (NSDictionary*)SCDynamicStoreCopyProxies(NULL);
-  if ([proxyDict objectForKey:@"HTTPProxy"] != nil)
+  @try
   {
-    NSHost* host = [NSHost hostWithName:(NSString*)[proxyDict objectForKey:@"HTTPProxy"]];
-    return [[host address] UTF8String];
+    NSString* protocolProxy = [[[NSString stringWithCString:protocol] uppercaseString] stringByAppendingString:@"Proxy"];
+    NSHost* host = [NSHost hostWithName:(NSString*)[proxyDict objectForKey:protocolProxy]];
+    if (host)
+      return [[host address] UTF8String];
+  }
+  @finally
+  {
+    [proxyDict release];
   }
   return "";
 }
 
-const char* Cocoa_OSX_Proxy_Port()
+const char* Cocoa_Proxy_Port(const char* protocol)
 {
   NSDictionary* proxyDict = (NSDictionary*)SCDynamicStoreCopyProxies(NULL);
-  if ([proxyDict objectForKey:@"HTTPPort"] != nil)
-    return [[NSString stringWithFormat:@"%i", [[proxyDict objectForKey:@"HTTPPort"] intValue]] UTF8String];
-  return "";  
+  @try
+  {
+    NSString* protocolPort = [[[NSString stringWithCString:protocol] uppercaseString] stringByAppendingString:@"Port"];
+    return [[NSString stringWithFormat:@"%i", [[proxyDict objectForKey:protocolPort] intValue]] UTF8String];
+  }
+  @finally
+  {
+    [proxyDict release];
+  }
+  return "";
 }
 
-const char* Cocoa_OSX_Proxy_Username()
+const char* Cocoa_Proxy_Username(const char* protocol)
 {
   return "";
 }
 
-const char* Cocoa_OSX_Proxy_Password()
+const char* Cocoa_Proxy_Password(const char* protocol)
 {
   return "";
 }
@@ -1131,7 +1152,7 @@ const char* Cocoa_GetIconFromBundle(const char *_bundlePath, const char* _iconNa
 	NSString* bundleIdentifier = [bundle bundleIdentifier];
 
 	if (![[NSFileManager defaultManager] fileExistsAtPath:iconPath]) return NULL;
-  
+
   // Get the path to the target PNG icon
   NSString* pngFile = [[NSString stringWithFormat:@"~/Library/Application Support/Plex/userdata/Thumbnails/%@-%@.png",
                         bundleIdentifier, iconName] stringByExpandingTildeInPath];
@@ -1157,23 +1178,23 @@ void Cocoa_ExecAppleScriptFile(const char* filePath)
 	NSString* userScriptsPath = [@"~/Library/Application Support/Plex/scripts" stringByExpandingTildeInPath];
 	NSString* bundleScriptsPath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"Contents/Resources/Plex/scripts"];
 	NSString* bundleSysScriptsPath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"Contents/Resources/Plex/system/AppleScripts"];
-	
+
 	// Check whether a script exists in the app bundle's AppleScripts folder
 	if ([[NSFileManager defaultManager] fileExistsAtPath:[bundleSysScriptsPath stringByAppendingPathComponent:scriptFile]])
 		scriptFile = [bundleSysScriptsPath stringByAppendingPathComponent:scriptFile];
-	
+
 	// Check whether a script exists in app support
 	else if ([[NSFileManager defaultManager] fileExistsAtPath:[userScriptsPath stringByAppendingPathComponent:scriptFile]]) // Check whether a script exists in the app bundle
 		scriptFile = [userScriptsPath stringByAppendingPathComponent:scriptFile];
-	
+
 	// Check whether a script exists in the app bundle's Scripts folder
-	else if ([[NSFileManager defaultManager] fileExistsAtPath:[bundleScriptsPath stringByAppendingPathComponent:scriptFile]]) 
+	else if ([[NSFileManager defaultManager] fileExistsAtPath:[bundleScriptsPath stringByAppendingPathComponent:scriptFile]])
 		scriptFile = [bundleScriptsPath stringByAppendingPathComponent:scriptFile];
-	
+
 	// If no script could be found, check if we were given a full path
 	else if (![[NSFileManager defaultManager] fileExistsAtPath:scriptFile])
 		return;
-	
+
 	NSAppleScript* appleScript = [[NSAppleScript alloc] initWithContentsOfURL:[NSURL fileURLWithPath:scriptFile] error:nil];
 	[appleScript executeAndReturnError:nil];
 	[appleScript release];

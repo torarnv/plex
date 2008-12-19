@@ -11,6 +11,8 @@
 
 #include <vector>
 #include <string>
+#include <sys/types.h>
+#include "MediaSource.h"
 
 using namespace std;
 
@@ -22,13 +24,24 @@ extern "C"
   // Initialization
   //
   void CocoaPlus_Initialize();
-  
+
   //
   // Fonts
   //
   vector<string> Cocoa_GetSystemFonts();
   string Cocoa_GetSystemFontPathFromDisplayName(const string displayName);
 
+  //
+  // Plex Media Server Services
+  //
+  vector<in_addr_t> Cocoa_AddressesForHost(const string hostname);
+  bool Cocoa_AreHostsEqual(const string host1, const string host2);
+  VECSOURCES Cocoa_GetPlexMediaServersAsSourcesWithMediaType(const string mediaType);
+
+  //
+  // Proxy Settings (continued)
+  //
+  vector<CStdString> Cocoa_Proxy_ExceptionList();
 #ifdef __cplusplus
 }
 #endif

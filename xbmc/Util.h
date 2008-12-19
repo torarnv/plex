@@ -173,6 +173,9 @@ class CUtil
 public:
   CUtil(void);
   virtual ~CUtil(void);
+#ifdef __APPLE__
+  static const BOOL HostInExceptionList(CStdString hostname, std::vector<CStdString> exceptionList);
+#endif
   static const CStdString GetExtension(const CStdString& strFileName);
   static void RemoveExtension(CStdString& strFileName);
   static bool GetVolumeFromFileName(const CStdString& strFileName, CStdString& strFileTitle, CStdString& strVolumeNumber);

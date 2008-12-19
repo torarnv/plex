@@ -143,11 +143,11 @@ extern "C"
   //
   // Mac OS X System Preferences
   //
-  bool Cocoa_OSX_Proxy_Enabled();
-  const char* Cocoa_OSX_Proxy_Host();
-  const char* Cocoa_OSX_Proxy_Port();
-  const char* Cocoa_OSX_Proxy_Username();
-  const char* Cocoa_OSX_Proxy_Password();
+  bool Cocoa_Proxy_Enabled(const char* protocol);
+  const char* Cocoa_Proxy_Host(const char* protocol);
+  const char* Cocoa_Proxy_Port(const char* protocol);
+  const char* Cocoa_Proxy_Username(const char* protocol);
+  const char* Cocoa_Proxy_Password(const char* protocol);
 
   //
   // Display dimming.

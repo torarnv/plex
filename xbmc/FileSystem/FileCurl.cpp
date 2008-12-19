@@ -35,6 +35,7 @@
 
 #include "DllLibCurl.h"
 #include "FileShoutcast.h"
+#include "CocoaUtils.h"
 
 using namespace XFILE;
 using namespace XCURL;
@@ -42,6 +43,7 @@ using namespace XCURL;
 #define XMIN(a,b) ((a)<(b)?(a):(b))
 
 #if defined(__APPLE__)
+#include "CocoaUtilsPlus.h"
 extern "C" int __stdcall dllselect(int ntfs, fd_set *readfds, fd_set *writefds, fd_set *errorfds, const timeval *timeout);
 #define dllselect select
 #else
@@ -556,10 +558,16 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
   else if( url2.GetProtocol().Equals("http")
        ||  url2.GetProtocol().Equals("https"))
   {
+#ifdef __APPLE__
+    if (m_proxy.IsEmpty() && Cocoa_Proxy_Enabled(url2.GetProtocol().c_str()) && !CUtil::HostInExceptionList(CStdString(url2.GetHostName()), Cocoa_Proxy_ExceptionList()))
+    {
+      m_proxy = url2.GetProtocol() + "://" + Cocoa_Proxy_Host(url2.GetProtocol()) + ":" + Cocoa_Proxy_Port(url2.GetProtocol());
+#else
     if (g_guiSettings.GetBool("network.usehttpproxy") && m_proxy.IsEmpty())
     {
       m_proxy = "http://" + g_guiSettings.GetString("network.httpproxyserver");
       m_proxy += ":" + g_guiSettings.GetString("network.httpproxyport");
+#endif
       CLog::Log(LOGDEBUG, "Using proxy %s", m_proxy.c_str());
     }
   }

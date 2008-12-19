@@ -5,9 +5,13 @@
 //  Created by Enrique Osuna on 10/26/2008.
 //  Copyright 2008 __MyCompanyName__. All rights reserved.
 //
-
 #include "CocoaUtilsPlus.h"
+#include "XBMCMain.h"
+#include "MediaSource.h"
 #include <Cocoa/Cocoa.h>
+#include <CoreServices/CoreServices.h>
+#import <SystemConfiguration/SystemConfiguration.h>
+#include <arpa/inet.h>
 
 #define COCOA_KEY_PLAYPAUSE  1051136
 #define COCOA_KEY_PREV_TRACK 1313280
@@ -99,4 +103,60 @@ string Cocoa_GetSystemFontPathFromDisplayName(const string displayName)
       CFRelease(fontFileURL);
   }
   return displayName;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+vector<in_addr_t> Cocoa_AddressesForHost(const string hostname)
+{
+  NSHost *host = [NSHost hostWithName:[NSString stringWithCString:hostname.c_str()]];
+  vector<in_addr_t> ret;
+  for (NSString *address in [host addresses])
+    ret.push_back(inet_addr([address UTF8String]));
+  return ret;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+bool Cocoa_AreHostsEqual(const string host1, const string host2)
+{
+  NSHost *h1 = [NSHost hostWithName:[NSString stringWithCString:host1.c_str()]];
+  NSHost *h2 = [NSHost hostWithName:[NSString stringWithCString:host2.c_str()]];
+  return ([h1 isEqualToHost:h2] || ([h1 isEqualToHost:[NSHost currentHost]] && [h2 isEqualToHost:[NSHost currentHost]]));
+}
+
+///////////////////////////////////////////////////////////////////////////////
+VECSOURCES Cocoa_GetPlexMediaServersAsSourcesWithMediaType(const string mediaType)
+{
+  VECSOURCES ret;
+  @synchronized([[XBMCMain sharedInstance] plexMediaServers])
+  {
+    for (NSNetService *server in [[XBMCMain sharedInstance] plexMediaServers])
+    {
+      // Server has not been resolved
+      if ([[server addresses] count] == 0)
+        continue;
+
+      CMediaSource source;
+      source.strName = [[server name] UTF8String];
+      source.strPath.Format("plex://%s:%d/%s", [[server hostName] UTF8String], [server port], mediaType);
+      ret.push_back(source);
+    }
+  }
+  return ret;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+vector<CStdString> Cocoa_Proxy_ExceptionList()
+{
+  vector<CStdString> ret;
+  NSDictionary* proxyDict = (NSDictionary*)SCDynamicStoreCopyProxies(NULL);
+  @try
+  {
+    for (id exceptionItem in [proxyDict objectForKey:(id)kSCPropNetProxiesExceptionsList])
+      ret.push_back(CStdString([exceptionItem UTF8String]));
+  }
+  @finally
+  {
+    [proxyDict release];
+  }
+  return ret;
 }

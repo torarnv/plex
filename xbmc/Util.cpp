@@ -116,7 +116,10 @@
 #include "GUIDialogKeyboard.h"
 #include "FileSystem/File.h"
 #include "PlayList.h"
+#ifdef __APPLE__
 #include "CocoaUtils.h"
+#include "CocoaUtilsPlus.h"
+#endif
 
 using namespace std;
 
@@ -334,6 +337,73 @@ CUtil::CUtil(void)
 CUtil::~CUtil(void)
 {}
 
+#ifdef __APPLE__
+const BOOL CUtil::HostInExceptionList(CStdString hostname, std::vector<CStdString> exceptionList)
+{
+  if (Cocoa_AreHostsEqual(hostname.c_str(), "localhost"))
+    return true;
+
+  vector<CStdString>::iterator it;
+
+  CStdString regExpString;
+  CStdString exceptionItem;
+  CRegExp ipAndSubnetMaskReg;
+  vector<in_addr_t> hostIpAddresses = Cocoa_AddressesForHost(string(hostname.c_str()));
+
+  ipAndSubnetMaskReg.RegComp("((?:\\d+)(?:\\.\\d+)*)/(\\d+)");
+  for (it = exceptionList.begin(); it != exceptionList.end(); it++)
+  {
+    if (regExpString.size() > 0)
+      regExpString += "|";
+
+    exceptionItem = (*it);
+    if (hostIpAddresses.size() > 0 && ipAndSubnetMaskReg.RegFind(exceptionItem) > -1)
+    {
+      CStdString ipAddressStr = exceptionItem.substr(ipAndSubnetMaskReg.GetSubStart(1),  ipAndSubnetMaskReg.GetSublength(1));
+
+      int pos, dots;
+      for (pos = -1, dots = 0; dots < 3 &&  ((pos = ipAddressStr.Find(".", pos)) > -1); dots++, pos++)
+        ;
+
+      for (; dots < 3; dots++)
+        ipAddressStr.AppendFormat(".0");
+
+      in_addr_t ipAddress = inet_addr(ipAddressStr.c_str());
+      unsigned int shift = atoi(exceptionItem.substr(ipAndSubnetMaskReg.GetSubStart(2),  ipAndSubnetMaskReg.GetSublength(2)).c_str());
+      in_addr_t subnetMask = htonl(0xFFFFFFFF << 32 - shift);
+      vector<in_addr_t>::iterator ip_it;
+      for (ip_it = hostIpAddresses.begin(); ip_it != hostIpAddresses.end(); ip_it++)
+      {
+        in_addr_t ip = *ip_it;
+        if ((ip & subnetMask) == (ipAddress & subnetMask))
+          return true;
+      }
+    }
+
+    int pos = -1;
+    while ((pos = exceptionItem.find("*", pos)) > -1)
+    {
+      exceptionItem.insert(pos, "\\S");
+      pos+=3;
+    }
+
+    pos = -1;
+    while ((pos = exceptionItem.find(".", pos)) > -1)
+    {
+      exceptionItem.insert(pos, "\\");
+      pos+=2;
+    }
+    regExpString += "(" + exceptionItem + ")";
+  }
+
+  regExpString = "^(" + regExpString + ")\\.?$";
+  CRegExp regExp;
+  if (!regExp.RegComp(regExpString.c_str()))
+    return false;
+
+  return regExp.RegFind(hostname.c_str()) > -1;
+}
+#endif
 
 /* returns filename extension including period of filename */
 const CStdString CUtil::GetExtension(const CStdString& strFileName)
@@ -4689,6 +4759,16 @@ int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES,
     {
       bIsSourceName = true;
       return i;
+    }
+
+    if (strPath.substr(0, 7) == "plex://" && share.strPath.substr(0, 7) == "plex://")
+    {
+      CURL url1(strPath);
+      CURL url2(share.strPath);
+      if (Cocoa_AreHostsEqual(url1.GetHostName(), url2.GetHostName()))
+        return i;
+      else
+        continue;
     }
   }
 

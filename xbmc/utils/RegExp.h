@@ -7,7 +7,7 @@
 //  replaced all TCHAR with char
 //  replaced all new/delete's with malloc/free's.
 //
-// This code has been derived from work by Henry Spencer. 
+// This code has been derived from work by Henry Spencer.
 // The main changes are
 // 1. All char variables and functions have been changed to char
 //    counterparts
@@ -16,9 +16,9 @@
 // 3. And of course, added the C++ Wrapper
 //
 // Comments from Russell Moss who posted UNICODE fixes to codeguru, herein adopted:
-// Both CRegExp::regnode and CRegExp::reginsert were leaving 
-// 2 "locations" for a short.  In the case of UNICODE, a 
-// char is a short so leaving room for a short is equivalent 
+// Both CRegExp::regnode and CRegExp::reginsert were leaving
+// 2 "locations" for a short.  In the case of UNICODE, a
+// char is a short so leaving room for a short is equivalent
 // to skipping only one char
 //
 //
@@ -89,7 +89,7 @@ class CRegExp
 public:
   CRegExp();
   ~CRegExp();
-  
+
   CRegExp *RegComp( const char *re );
   int RegFind(const char *str);
   char* GetReplaceString( const char* sReplaceExp );
@@ -97,12 +97,12 @@ public:
   {
     if (!m_re || !m_bMatched)
       return 0;
-    
+
     return (m_iOvector[1] - m_iOvector[0]);
   };
   int GetSubCount() { return m_iMatchCount; }
   int GetSubStart(int iSub) { return m_iOvector[iSub*2]; }
-  int GetSublength(int iSub) { return (m_iOvector[iSub*2+1] - m_iOvector[iSub*2+1]); }
+  int GetSublength(int iSub) { return (m_iOvector[iSub*2+1] - m_iOvector[iSub*2]); }
 
 private:
   void Cleanup() { if (m_re) { PCRE::pcre_free(m_re); m_re = NULL; } }
@@ -189,20 +189,20 @@ private:
 
   char *startp[NSUBEXP];
   char *endp[NSUBEXP];
-  char regstart;    // Internal use only. 
-  char reganch;     // Internal use only. 
-  char *regmust;    // Internal use only. 
-  int regmlen;      // Internal use only. 
-  char *program;    // Unwarranted chumminess with compiler. 
+  char regstart;    // Internal use only.
+  char reganch;     // Internal use only.
+  char *regmust;    // Internal use only.
+  int regmlen;      // Internal use only.
+  char *program;    // Unwarranted chumminess with compiler.
 
-  char *regparse;   // Input-scan pointer. 
-  int regnpar;      // () count. 
-  char *regcode;    // Code-emit pointer; ®dummy = don't. 
-  char regdummy[3]; // NOTHING, 0 next ptr 
-  long regsize;     // Code size. 
+  char *regparse;   // Input-scan pointer.
+  int regnpar;      // () count.
+  char *regcode;    // Code-emit pointer; Ã†dummy = don't.
+  char regdummy[3]; // NOTHING, 0 next ptr
+  long regsize;     // Code size.
 
-  char *reginput;   // String-input pointer. 
-  char *regbol;     // Beginning of input, for ^ check. 
+  char *reginput;   // String-input pointer.
+  char *regbol;     // Beginning of input, for ^ check.
 };
 
 #endif // HAS_PCRE
