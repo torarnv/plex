@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
 <!--$Revision: 13808 $-->
 <strings>
+  <string id="577">Normalize Film Volume</string>
   <string id="737">- Color</string>
   <string id="1036">Favorites</string>
   <string id="13339">Front LED Color</string>
