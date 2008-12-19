@@ -157,6 +157,7 @@ public:
   void CheckHDSpindown();
 #endif
   void CheckShutdown();
+  void ResetDisplaySleep();
   void CheckDisplaySleep();
   void CheckScreenSaver();   // CB: SCREENSAVER PATCH
   void CheckPlayingProgress();
@@ -264,6 +265,7 @@ protected:
   bool m_bScreenSave;
   CStdString m_screenSaverMode;
   DWORD m_dwSaverTick;
+  DWORD m_dwShutdownTick;
 #ifdef __APPLE__
   DWORD m_dwOSXscreensaverTicks;
 #endif
@@ -333,6 +335,7 @@ protected:
   void StartFtpEmergencyRecoveryMode();
   float NavigationIdleTime();
   void CheckForTitleChange();
+  void CheckActive();
 
   void SaveCurrentFileSettings();
 

@@ -401,7 +401,7 @@ CApplication::CApplication(void)
   m_bInactive = false;
   m_bScreenSave = false;
   m_iScreenSaveLock = 0;
-  m_dwSaverTick = timeGetTime();
+  m_dwShutdownTick = m_dwSaverTick = timeGetTime();
 #ifdef __APPLE__
   m_dwOSXscreensaverTicks = timeGetTime();
 #endif
@@ -2821,7 +2821,7 @@ void CApplication::DoRender()
   m_gWindowManager.RenderDialogs();
 
   // Render the mouse pointer
-  if (g_Mouse.IsActive())
+  if (g_Mouse.IsActive() && g_Mouse.IsEnabled())
   {
     m_guiPointer.Render();
   }
@@ -3942,6 +3942,9 @@ bool CApplication::ProcessMouse()
   ResetScreenSaver();
   if (ResetScreenSaverWindow())
     return true;
+
+  if (!g_Mouse.IsEnabled())
+    return false;
 
   // call OnAction with ACTION_MOUSE
   CAction action;
@@ -5083,7 +5086,7 @@ bool CApplication::NeedRenderFullScreen()
     m_gWindowManager.UpdateModelessVisibility();
 
     if (m_gWindowManager.HasDialogOnScreen()) return true;
-    if (g_Mouse.IsActive()) return true;
+    if (g_Mouse.IsActive() && g_Mouse.IsEnabled()) return true;
 
     CGUIWindowFullScreen *pFSWin = (CGUIWindowFullScreen *)m_gWindowManager.GetWindow(WINDOW_FULLSCREEN_VIDEO);
     if (!pFSWin)
@@ -5120,7 +5123,7 @@ void CApplication::DoRenderFullScreen()
     if (m_gWindowManager.HasDialogOnScreen())
       m_gWindowManager.RenderDialogs();
     // Render the mouse pointer, if visible...
-    if (g_Mouse.IsActive())
+    if (g_Mouse.IsActive() && g_Mouse.IsEnabled())
       g_application.m_guiPointer.Render();
   }
 }
@@ -5129,14 +5132,14 @@ void CApplication::ResetScreenSaver()
 {
   if (m_bInactive && !m_bScreenSave && m_iScreenSaveLock == 0)
   {
-    m_dwSaverTick = timeGetTime(); // Start the timer going ...
+    m_dwShutdownTick = m_dwSaverTick = timeGetTime(); // Start the timer going ...
   }
 
 #ifdef __APPLE__
   if (m_bDisplaySleeping)
   {
     m_bInactive = false;
-    m_dwSaverTick = timeGetTime(); // Start the timer going ...
+    m_dwShutdownTick = m_dwSaverTick = timeGetTime(); // Start the timer going ...
     m_bDisplaySleeping = false;
   }
 #endif
@@ -5247,58 +5250,25 @@ bool CApplication::ResetScreenSaverWindow()
     return false;
 }
 
+void CApplication::CheckActive()
+{
+  if ((IsPlayingVideo() && !IsPaused()) || m_gWindowManager.IsWindowActive(WINDOW_SCREENSAVER) || (m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION & !IsPaused()) || m_gWindowManager.IsWindowActive(WINDOW_DIALOG_PROGRESS))
+    m_bInactive = false;
+  else if (!m_bInactive)
+  {
+    // Start the timer going ...
+    m_dwShutdownTick = m_dwSaverTick = timeGetTime();
+    m_bInactive = true;
+  }
+}
+
 void CApplication::CheckScreenSaver()
 {
-  // if the screen saver window is active, then clearly we are already active
-  if (m_gWindowManager.IsWindowActive(WINDOW_SCREENSAVER))
-  {
-    m_bInactive = true;
-    m_bScreenSave = true;
+  if (!m_bInactive || m_bScreenSave || m_gWindowManager.IsWindowActive(WINDOW_SCREENSAVER) || g_guiSettings.GetString("screensaver.mode") == "None" || g_guiSettings.GetInt("screensaver.time") <= 0)
     return;
-  }
 
-  if (!m_bInactive)
-  {
-    if (IsPlayingVideo() && !m_pPlayer->IsPaused()) // are we playing a movie and is it paused?
-    {
-      m_bInactive = false;
-    }
-    else if (IsPlayingAudio()) // are we playing some music?
-    {
-      if (m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION)
-      {
-        m_bInactive = false; // visualisation is on, so we cannot show a screensaver
-      }
-      else
-      {
-        m_bInactive = true; // music playing from GUI, we can display a screensaver
-      }
-    }
-    else
-    {
-      // we can display a screensaver
-      m_bInactive = true;
-    }
-
-    // if we can display a screensaver, then start screensaver timer
-    if (m_bInactive)
-    {
-      m_dwSaverTick = timeGetTime(); // Start the timer going ...
-    }
-  }
-  else
-  {
-    // Check we're not already in screensaver mode
-    if (!m_bScreenSave)
-    {
-      // no, then check the timer if screensaver should pop up
-      if ( (long)(timeGetTime() - m_dwSaverTick) >= (long)(g_guiSettings.GetInt("screensaver.time")*60*1000L) )
-      {
-        //yes, show the screensaver
-        ActivateScreenSaver();
-      }
-    }
-  }
+  if ((timeGetTime() - m_dwSaverTick) >= (g_guiSettings.GetInt("screensaver.time")*60*1000L) )
+    ActivateScreenSaver();
 }
 
 // activate the screensaver.
@@ -5310,7 +5280,7 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
 
   m_bScreenSave = true;
   m_bInactive = true;
-  m_dwSaverTick = timeGetTime();  // Save the current time for the shutdown timeout
+  m_dwShutdownTick = m_dwSaverTick = timeGetTime();  // Save the current time for the shutdown timeout
 
   // Get Screensaver Mode
   m_screenSaverMode = g_guiSettings.GetString("screensaver.mode");
@@ -5404,151 +5374,68 @@ void CApplication::CheckShutdown()
   CGUIDialogMusicScan *pMusicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
   CGUIDialogVideoScan *pVideoScan = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
 
-  // Note: if the the screensaver is switched on, the shutdown timeout is
-  // counted from when the screensaver activates.
-  if (!m_bInactive)
+  if (IsPlayingAudio() && !IsPlayingVideo() && !IsPaused())
   {
-    if (IsPlayingVideo() && !m_pPlayer->IsPaused()) // are we playing a movie?
-    {
-      m_bInactive = false;
-    }
-    else if (IsPlayingAudio()) // are we playing some music?
-    {
-      m_bInactive = false;
-    }
-#ifdef HAS_FTP_SERVER
-    else if (m_pFileZilla && m_pFileZilla->GetNoConnections() != 0) // is FTP active ?
-    {
-      m_bInactive = false;
-    }
-#endif
-    else if (pMusicScan && pMusicScan->IsScanning()) // music scanning?
-    {
-      m_bInactive = false;
-    }
-    else if (pVideoScan && pVideoScan->IsScanning()) // video scanning?
-    {
-      m_bInactive = false;
-    }
-    else    // nothing doing here, so start the timer going
-    {
-      m_bInactive = true;
-    }
-
-    if (m_bInactive)
-    {
-      m_dwSaverTick = timeGetTime();  // Start the timer going ...
-    }
+    m_dwShutdownTick = timeGetTime();
+    return;
   }
-  else
-  {
-    if ( (long)(timeGetTime() - m_dwSaverTick) >= (long)(g_guiSettings.GetInt("energy.shutdowntime")*60*1000L) )
-    {
-      bool bShutDown = false;
-      if (m_pPlayer && m_pPlayer->IsPlaying()) // if we're playing something don't shutdown
-      {
-        m_dwSaverTick = timeGetTime();
-      }
-#ifdef HAS_FTP_SERVER
-      else if (m_pFileZilla && m_pFileZilla->GetNoConnections() != 0) // is FTP active ?
-      {
-        m_dwSaverTick = timeGetTime();
-      }
-#endif
-      else if (m_gWindowManager.IsWindowActive(WINDOW_DIALOG_PROGRESS))
-      {
-        m_dwSaverTick = timeGetTime();  // progress dialog is on screen
-      }
-      else          // not playing
-      {
-        bShutDown = true;
-      }
 
-      if (bShutDown)
-      {
+  if (!m_bInactive || g_guiSettings.GetInt("energy.shutdowntime") <= 0 || (pMusicScan && pMusicScan->IsScanning()) || (pVideoScan && pVideoScan->IsScanning()))
+    return;
+
+#ifdef HAS_FTP_SERVER
+  // Don't shut down if we have active ftp connections, or we are scanning for music or video
+  if (m_pFileZilla && m_pFileZilla->GetNoConnections() != 0) // is FTP active ?
+    return;
+#endif
+
+  if ((timeGetTime() - m_dwShutdownTick) >= g_guiSettings.GetInt("energy.shutdowntime")*60*1000L)
+  {
 #ifdef __APPLE__
-        // For Apple it's a sleep not a shutdown.
-        bShutDown = false;
-        SleepSystem();
+    // For Apple it's a sleep not a shutdown.
+    SleepSystem();
 #else
-        m_applicationMessenger.Shutdown(); // Turn off the box
+     // Turn off the box
+    m_applicationMessenger.Shutdown();
 #endif
-      }
-    }
   }
-
-  return ;
 #endif
 }
 
 void CApplication::SleepSystem() 
 {
   // Set everything to reset when we wake up
-  m_dwSaverTick = timeGetTime();
+  m_dwShutdownTick = m_dwSaverTick = timeGetTime();
   m_bInactive = false;
+  m_bDisplaySleeping = true;
 
 #ifdef __APPLE__
+  CLog::Log(LOGDEBUG, "Sleeping system.");
   Cocoa_SleepSystem();
+#endif
+}
+
+void CApplication::ResetDisplaySleep()
+{
+#ifdef __APPLE__
+  m_dwShutdownTick = m_dwSaverTick = timeGetTime();
+  m_bDisplaySleeping = false;
 #endif
 }
 
 void CApplication::CheckDisplaySleep()
 {
 #ifdef __APPLE__
-  // Note: if the the screensaver is switched on, the display sleep timeout is
-  // counted from when the screensaver activates.
-  //
-  if (!m_bInactive)
-  {
-    if (IsPlayingVideo() && !m_pPlayer->IsPaused())
-    {
-      // We're playing a movie.
-      m_bInactive = false;
-    }
-    else if (IsPlayingAudio())
-    {
-      // We playing some music.
-      m_bInactive = false;
-    }
-	else
-    {
-      // Nothing doing here, so start the timer going.
-      m_bInactive = true;
-    }
+  if (!m_bInactive || m_bDisplaySleeping || (g_guiSettings.GetInt("energy.displaysleeptime") <= 0) ||
+      // If the display timer is set to the same time or longer than the shutdown timer, then there is no need to dim the screen.
+      ((g_guiSettings.GetInt("energy.shutdowntime") > 0) && (g_guiSettings.GetInt("energy.displaysleeptime") >= g_guiSettings.GetInt("energy.shutdowntime"))))
+    return;
 
-    if (m_bInactive)
-    {
-      // Start the timer going ...
-      m_dwSaverTick = timeGetTime();
-    }
-  }
-  else
+  if ((timeGetTime() - m_dwSaverTick) >= (g_guiSettings.GetInt("energy.displaysleeptime")*60*1000L))
   {
-    if ( (long)(timeGetTime() - m_dwSaverTick) >= (long)(g_guiSettings.GetInt("energy.displaysleeptime")*60*1000L) )
-    {
-      bool bDisplaySleep = false;
-      if (m_pPlayer && m_pPlayer->IsPlaying())
-      {
-        // We're playing something, so don't shutdown.
-        m_dwSaverTick = timeGetTime();
-      }
-      else if (m_gWindowManager.IsWindowActive(WINDOW_DIALOG_PROGRESS))
-      {
-        // Progress dialog is on screen.
-        m_dwSaverTick = timeGetTime();
-      }
-      else
-      {
-        // Not playing.
-        bDisplaySleep = true;
-      }
-
-      if (bDisplaySleep && !m_bDisplaySleeping)
-      {
-        Cocoa_DimDisplayNow();
-        m_bDisplaySleeping = true;
-      }
-    }
+    CLog::Log(LOGDEBUG, "Dimming display.");
+    Cocoa_DimDisplayNow();
+    m_bDisplaySleeping = true;
   }
 #endif
 }
@@ -6039,34 +5926,32 @@ void CApplication::Process()
 
 void CApplication::ProcessSlow()
 {
-  // Check if we need to activate the screensaver (if enabled).
-  if (g_guiSettings.GetString("screensaver.mode") != "None")
+  // Check to see if there is any activity going on
+  CheckActive();
+
+  if (m_bInactive)
+  {
+    // Check if we need to activate the screensaver.
     CheckScreenSaver();
 
 #ifdef __APPLE__
-   // If playing video tickle system, or else if in full-screen always tickle.
-   if (((IsPlayingVideo() && !m_pPlayer->IsPaused()) && ((timeGetTime() - m_dwOSXscreensaverTicks) > 5000)) ||
-       g_advancedSettings.m_fullScreen == true)
-   {
-     Cocoa_UpdateSystemActivity();
-     m_dwOSXscreensaverTicks = timeGetTime();
-   }
+    // If playing video tickle system, or else if in full-screen (and we're active) then tickle the system.
+    if (((timeGetTime() - m_dwOSXscreensaverTicks) > 5000) && ((g_advancedSettings.m_fullScreen == true && !m_bInactive) || (IsPlayingVideo() && !IsPaused())))
+    {
+      Cocoa_UpdateSystemActivity();
+      m_dwOSXscreensaverTicks = timeGetTime();
+    }
 
-  // Only activate display sleep if fullscreen mode.
-  if (g_guiSettings.GetInt("energy.displaysleeptime" ) && g_advancedSettings.m_fullScreen)
-  {
-    CheckDisplaySleep();
-  }
+    // Only activate display sleep if fullscreen mode.
+    if (g_advancedSettings.m_fullScreen)
+      CheckDisplaySleep();
 #endif
 
-  // Check if we need to shutdown (if enabled).
+    // Check if we need to shutdown (if enabled).
 #ifdef __APPLE__
-  if (g_guiSettings.GetInt("energy.shutdowntime") && g_advancedSettings.m_fullScreen)
-#else
-  if (g_guiSettings.GetInt("energy.shutdowntime"))
+    if (g_advancedSettings.m_fullScreen)
 #endif
-  {
-    CheckShutdown();
+      CheckShutdown();
   }
 
   // check if we should restart the player

@@ -28,6 +28,11 @@ BOOL gCalledAppMainline = FALSE;
 
 - (void) finishLaunching
 {
+  [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self
+                                                         selector:@selector(workspaceDidWake:)
+                                                             name:NSWorkspaceDidWakeNotification
+                                                           object:nil];
+
   [super finishLaunching];
   gCalledAppMainline = TRUE;
   SDL_main(gArgc, (char** )gArgv);
@@ -42,6 +47,8 @@ BOOL gCalledAppMainline = FALSE;
 /* Invoked from the Quit menu item */
 - (IBAction)quit:(id)sender
 {
+  [[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver:self];
+
   /* Post a SDL_QUIT event */
   SDL_Event event;
   event.type = SDL_QUIT;
@@ -108,6 +115,10 @@ BOOL gCalledAppMainline = FALSE;
   }
 }
 
+- (void)workspaceDidWake:(NSNotification *)aNotification
+{
+  g_application.ResetDisplaySleep();
+}
 @end
 
 #ifdef main
