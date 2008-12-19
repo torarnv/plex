@@ -13,90 +13,102 @@
 
 #pragma mark Device Interface - Public
 
+void CoreAudioPlexSupport::FreeDeviceArray(AudioDeviceArray* deviceArray)
+{
+  if (!deviceArray)
+    return;
+
+  for (int i = 0; i < deviceArray->deviceCount; i++)
+  {
+    free(deviceArray->device[i]->deviceName);
+    free(deviceArray->device[i]);
+  }
+  free(deviceArray->device);
+  free(deviceArray);
+}
+
 AudioDeviceArray* CoreAudioPlexSupport::GetDeviceArray()
 {
 	OSStatus            err = noErr;
-    UInt32              i = 0, totalDeviceCount = 0, i_param_size = 0;
-    AudioDeviceID       devid_def = 0;
-    AudioDeviceID       *p_devices = NULL;
+  UInt32              i = 0, totalDeviceCount = 0, i_param_size = 0;
+  AudioDeviceID       devid_def = 0;
+  AudioDeviceID       *p_devices = NULL;
 
 	/* Get number of devices */
-    err = AudioHardwareGetPropertyInfo( kAudioHardwarePropertyDevices,
-									   &i_param_size, NULL );
-    if( err != noErr )
-    {
+  err = AudioHardwareGetPropertyInfo( kAudioHardwarePropertyDevices,
+                                     &i_param_size, NULL );
+  if( err != noErr )
+  {
 		CLog::Log(LOGERROR, "Could not get number of devices: [%4.4s]", (char *)&err );
-        return NULL;
+    return NULL;
 		//goto error;
-    }
+  }
 
-    totalDeviceCount = i_param_size / sizeof( AudioDeviceID );
+  totalDeviceCount = i_param_size / sizeof( AudioDeviceID );
 
-    if( totalDeviceCount < 1 )
-    {
+  if( totalDeviceCount < 1 )
+  {
 		CLog::Log(LOGERROR, "No audio output devices were found." );
 		return NULL;
-        //goto error;
-    }
+    //goto error;
+  }
 
 	CLog::Log(LOGDEBUG, "System has %ld device(s)", totalDeviceCount );
 
-    /* Allocate DeviceID array */
+  /* Allocate DeviceID array */
 	AudioDeviceArray *newDeviceArray = (AudioDeviceArray*)calloc(1, sizeof(AudioDeviceArray));
 	newDeviceArray->device = (AudioDeviceInfo**)calloc(totalDeviceCount, sizeof(AudioDeviceInfo));
 
-    p_devices = (AudioDeviceID*)calloc(totalDeviceCount, sizeof(AudioDeviceID));
+  p_devices = (AudioDeviceID*)calloc(totalDeviceCount, sizeof(AudioDeviceID));
 
 	if( p_devices == NULL )
-        return NULL;
+    return NULL;
 
-    /* Populate DeviceID array */
-    err = AudioHardwareGetProperty( kAudioHardwarePropertyDevices,
-								   &i_param_size, p_devices );
-    if( err != noErr )
-    {
+  /* Populate DeviceID array */
+  err = AudioHardwareGetProperty( kAudioHardwarePropertyDevices,
+                                 &i_param_size, p_devices );
+  if( err != noErr )
+  {
 		CLog::Log(LOGDEBUG, "could not get the device IDs: [%4.4s]", (char *)&err );
-        goto error;
-    }
+    goto error;
+  }
 
-    /* Find the ID of the default Device */
-    i_param_size = sizeof( AudioDeviceID );
-    err = AudioHardwareGetProperty( kAudioHardwarePropertyDefaultOutputDevice,
-								   &i_param_size, &devid_def );
-    if( err != noErr )
-    {
+  /* Find the ID of the default Device */
+  i_param_size = sizeof( AudioDeviceID );
+  err = AudioHardwareGetProperty( kAudioHardwarePropertyDefaultOutputDevice,
+                                 &i_param_size, &devid_def );
+  if( err != noErr )
+  {
 		CLog::Log(LOGDEBUG, "could not get default audio device: [%4.4s]", (char *)&err );
-        return NULL;
-    }
+    return NULL;
+  }
 	newDeviceArray->defaultDevice = devid_def;
 
 	for( i = 0; i < totalDeviceCount; i++ )
-    {
-        char *psz_name;
-        i_param_size = 0;
+  {
+    char *psz_name;
+    i_param_size = 0;
 
-        /* Retrieve the length of the device name */
-        err = AudioDeviceGetPropertyInfo(
-										 p_devices[i], 0, false,
-										 kAudioDevicePropertyDeviceName,
-										 &i_param_size, NULL);
-        if( err ) goto error;
+    /* Retrieve the length of the device name */
+    err = AudioDeviceGetPropertyInfo(p_devices[i], 0, false,
+                                     kAudioDevicePropertyDeviceName,
+                                     &i_param_size, NULL);
+    if( err ) goto error;
 
-        /* Retrieve the name of the device */
-        psz_name = (char *)malloc( i_param_size );
-        err = AudioDeviceGetProperty(
-									 p_devices[i], 0, false,
-									 kAudioDevicePropertyDeviceName,
-									 &i_param_size, psz_name);
-        if( err ) goto error;
+    /* Retrieve the name of the device */
+    psz_name = (char *)malloc( i_param_size );
+    err = AudioDeviceGetProperty(p_devices[i], 0, false,
+                                 kAudioDevicePropertyDeviceName,
+                                 &i_param_size, psz_name);
+    if( err ) goto error;
 
 		CLog::Log(LOGDEBUG, "DevID: %#lx DevName: %s", p_devices[i], psz_name );
 
-        if( !AudioDeviceHasOutput( p_devices[i]) )
-        {
+    if( !AudioDeviceHasOutput( p_devices[i]) )
+    {
 			CLog::Log(LOGDEBUG, "Skipping input-only device %i", p_devices[i]);
-            continue;
-        }
+      continue;
+    }
 
 		// Add output device IDs to array
 		AudioDeviceInfo *currentDevice = (AudioDeviceInfo*)malloc(sizeof(AudioDeviceInfo));
@@ -104,57 +116,63 @@ AudioDeviceArray* CoreAudioPlexSupport::GetDeviceArray()
 		currentDevice->deviceName = psz_name;
 
 		if( newDeviceArray->defaultDevice == p_devices[i] )
-        {
+    {
 			CLog::Log(LOGDEBUG, "Selecting default device %s (%i)",
-					  currentDevice->deviceName,
-					  currentDevice->deviceID);
+                currentDevice->deviceName,
+                currentDevice->deviceID);
 			newDeviceArray->selectedDevice = currentDevice->deviceID;
 			newDeviceArray->selectedDeviceIndex = i;
-        }
+    }
 
-        if( AudioDeviceSupportsDigital(p_devices[i]))
-        {
+    if( AudioDeviceSupportsDigital(p_devices[i]))
+    {
 			currentDevice->supportsDigital = TRUE;
-        }
+    }
 		else currentDevice->supportsDigital = FALSE;
 
 		newDeviceArray->device[newDeviceArray->deviceCount++] = currentDevice;
 		currentDevice = NULL;
-    }
+  }
 
-    /* If we change the device we want to use, we should renegotiate the audio chain */
-    //var_AddCallback( p_aout, "audio-device", AudioDeviceCallback, NULL );
+  /* If we change the device we want to use, we should renegotiate the audio chain */
+  //var_AddCallback( p_aout, "audio-device", AudioDeviceCallback, NULL );
 #warning fix this to track device changes
-    /* Attach a Listener so that we are notified of a change in the Device setup */
-    //err = AudioHardwareAddPropertyListener( kAudioHardwarePropertyDevices,
+  /* Attach a Listener so that we are notified of a change in the Device setup */
+  //err = AudioHardwareAddPropertyListener( kAudioHardwarePropertyDevices,
 	//									   HardwareListener,
 	//									   (void *)p_aout );
-    //if( err )
-    //    goto error;
+  //if( err )
+  //    goto error;
 
-    free( p_devices );
-    return newDeviceArray;
+  free( p_devices );
+  return newDeviceArray;
 
 error:
-    //var_Destroy( p_aout, "audio-device" );
-    free( p_devices );
+  //var_Destroy( p_aout, "audio-device" );
+  free( p_devices );
+  FreeDeviceArray(newDeviceArray);
 #warning need to free strings
-    return NULL;
+  return NULL;
 }
 
 AudioDeviceID CoreAudioPlexSupport::GetAudioDeviceIDByName(const char *audioDeviceName)
 {
 #warning free array
-	//vector <AudioDeviceInfo*> deviceArray = GetDeviceArray();
-	AudioDeviceArray *deviceArray = GetDeviceArray();
-	for (int i=0; i<deviceArray->deviceCount; i++)
-	{
-		if (strcmp(deviceArray->device[i]->deviceName, audioDeviceName) == 0)
-		{
-			return deviceArray->device[i]->deviceID;
-		}
-	}
-	return deviceArray->defaultDevice;
+  //vector <AudioDeviceInfo*> deviceArray = GetDeviceArray();
+  AudioDeviceArray *deviceArray = GetDeviceArray();
+
+  AudioDeviceID result = deviceArray->defaultDevice;
+  for (int i=0; i<deviceArray->deviceCount; i++)
+  {
+    if (strcmp(deviceArray->device[i]->deviceName, audioDeviceName) == 0)
+    {
+      result = deviceArray->device[i]->deviceID;
+      break;
+    }
+  }
+
+  FreeDeviceArray(deviceArray);
+  return result;
 }
 
 /*****************************************************************************

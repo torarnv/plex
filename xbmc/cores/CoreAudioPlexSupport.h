@@ -50,6 +50,7 @@ class CoreAudioPlexSupport
 		//
 		// Get a list of output devices.
 		//
+    static void FreeDeviceArray(AudioDeviceArray* deviceArray);
 		static AudioDeviceArray* GetDeviceArray();
 		static AudioDeviceID GetAudioDeviceIDByName(const char *audioDeviceName);
 		static int AudioDeviceSupportsDigital(AudioDeviceID i_dev_id);
