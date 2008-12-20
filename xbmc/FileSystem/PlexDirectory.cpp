@@ -228,6 +228,15 @@ class PlexMediaDirectory : public PlexMediaNode
         pItem->m_strSearchPrompt = prompt;
       }
     }
+    
+    // Check for popup menus
+    const char* popup = el.Attribute("popup");
+    if (popup && strlen(popup) > 0)
+    {
+      string strPopup = popup;
+      if (strPopup == "1")
+        pItem->m_bIsPopupMenuItem = true;
+    }
   }
 };
 

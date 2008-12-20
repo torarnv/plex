@@ -74,6 +74,7 @@ protected:
   void SetHistoryForPath(const CStdString& strDirectory);
   virtual void LoadPlayList(const CStdString& strFileName) {}
   virtual bool OnPlayMedia(int iItem);
+  virtual bool OnPlayMedia(CFileItem* pItem);
   void UpdateFileList();
   virtual void OnDeleteItem(int iItem);
   void OnRenameItem(int iItem);
