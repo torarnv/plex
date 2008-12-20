@@ -429,7 +429,7 @@ void Cocoa_GL_SetFullScreen(int screen, int width, int height, bool fs, bool bla
       
       // ...and the original one beneath it and on the same screen.
       [[lastView window] setFrameOrigin:[pScreen frame].origin];
-      [[lastView window] setLevel:NSNormalWindowLevel];
+      [[lastView window] orderWindow:NSWindowBelow relativeTo:[mainWindow windowNumber]];
           
       NSView* blankView = [[NSView alloc] init];
       [mainWindow setContentView:blankView];

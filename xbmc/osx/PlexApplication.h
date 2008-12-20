@@ -13,9 +13,10 @@
 
 @interface PlexApplication : NSApplication
 - (void)terminate:(id)sender;
-- (IBAction) quit:(id)sender;
+- (IBAction)quit:(id)sender;
 - (IBAction)fullScreenToggle:(id)sender;
+- (IBAction)floatOnTopToggle:(id)sender;
 - (IBAction)moveToPreviousScreen:(id)sender;
 - (IBAction)moveToNextScreen:(id)sender;
-- (void) finishLaunching;
+- (void)finishLaunching;
 @end

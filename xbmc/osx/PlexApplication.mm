@@ -69,32 +69,47 @@ BOOL gCalledAppMainline = FALSE;
 
 - (IBAction)fullScreenToggle:(id)sender
 {
- // Post an toggle full-screen event to the application thread.
- SDL_Event event;
- memset(&event, 0, sizeof(event));
- event.type = PLEX_MESSAGE;
- event.user.code = TMSG_TOGGLEFULLSCREEN;
- SDL_PushEvent(&event);
+  // Post an toggle full-screen event to the application thread.
+  SDL_Event event;
+  memset(&event, 0, sizeof(event));
+  event.type = PLEX_MESSAGE;
+  event.user.code = TMSG_TOGGLEFULLSCREEN;
+  SDL_PushEvent(&event);
+}
+
+- (IBAction)floatOnTopToggle:(id)sender
+{
+  NSWindow* window = [[[NSOpenGLContext currentContext] view] window];
+  if ([window level] == NSFloatingWindowLevel)
+  {
+    [window setLevel:NSNormalWindowLevel];
+    [sender setState:NSOffState];
+  }
+  else
+  {
+    [window setLevel:NSFloatingWindowLevel];
+    [sender setState:NSOnState];
+  }
 }
 
 - (IBAction)moveToPreviousScreen:(id)sender
 {
- // Post an toggle full-screen event to the application thread.
- SDL_Event event;
- memset(&event, 0, sizeof(event));
- event.type = PLEX_MESSAGE;
- event.user.code = TMSG_MOVE_TO_PREV_SCREEN;
- SDL_PushEvent(&event);
+  // Post an toggle full-screen event to the application thread.
+  SDL_Event event;
+  memset(&event, 0, sizeof(event));
+  event.type = PLEX_MESSAGE;
+  event.user.code = TMSG_MOVE_TO_PREV_SCREEN;
+  SDL_PushEvent(&event);
 }
 
 - (IBAction)moveToNextScreen:(id)sender
 {
- // Post an toggle full-screen event to the application thread.
- SDL_Event event;
- memset(&event, 0, sizeof(event));
- event.type = PLEX_MESSAGE;
- event.user.code = TMSG_MOVE_TO_NEXT_SCREEN;
- SDL_PushEvent(&event);
+  // Post an toggle full-screen event to the application thread.
+  SDL_Event event;
+  memset(&event, 0, sizeof(event));
+  event.type = PLEX_MESSAGE;
+  event.user.code = TMSG_MOVE_TO_NEXT_SCREEN;
+  SDL_PushEvent(&event);
 }
 
 - (void)sendEvent:(NSEvent *)anEvent 
