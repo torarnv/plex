@@ -269,6 +269,10 @@ CSettings::CSettings(void)
   g_advancedSettings.m_playlistRetries = 100;
   g_advancedSettings.m_playlistTimeout = 20; // 20 seconds timeout
   g_advancedSettings.m_GLRectangleHack = false;
+  
+#ifdef __APPLE__
+  g_advancedSettings.m_changeDefaultAudioDevice = true;
+#endif
 }
 
 CSettings::~CSettings(void)
@@ -1275,6 +1279,10 @@ void CSettings::LoadAdvancedSettings()
   GetInteger(pRootElement, "playlisttimeout", g_advancedSettings.m_playlistTimeout, 20, 0, 5000);
 
   XMLUtils::GetBoolean(pRootElement,"rootovershoot",g_advancedSettings.m_bUseEvilB);
+  
+#ifdef __APPLE__
+  XMLUtils::GetBoolean(pRootElement, "changedefaultaudiodevice", g_advancedSettings.m_changeDefaultAudioDevice);
+#endif
 
   //Tuxbox
   pElement = pRootElement->FirstChildElement("tuxbox");

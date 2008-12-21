@@ -243,6 +243,10 @@ public:
     int m_playlistRetries;
     int m_playlistTimeout;
     bool m_GLRectangleHack;
+    
+#if __APPLE__
+    bool m_changeDefaultAudioDevice;
+#endif
   };
 
   struct stSettings

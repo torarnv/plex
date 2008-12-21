@@ -1230,6 +1230,13 @@ void CGUIWindowSettingsCategory::UpdateSettings()
 				g_guiSettings.SetInt("audiooutput.digitalaudiomode", DIGITAL_COREAUDIO);
 			}
 		}
+ 		
+ 		// Set the default output device.
+ 		if (g_advancedSettings.m_changeDefaultAudioDevice)
+ 		{
+ 		  PlexAudioDevicePtr device = PlexAudioDevices::FindByName(g_guiSettings.GetString("audiooutput.audiodevice"));
+ 		  device->setDefault();
+ 		}
 	}
 #endif
     else if (strSetting.Equals("videooutput.hd480p") || strSetting.Equals("videooutput.hd720p") || strSetting.Equals("videooutput.hd1080i"))
