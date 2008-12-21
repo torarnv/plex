@@ -42,10 +42,9 @@ bool XBAudioConfig::HasDigitalOutput()
 #ifndef __APPLE__
 	return (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL);
 #else
-	AudioDeviceID deviceID =
-	CoreAudioPlexSupport::GetAudioDeviceIDByName(g_guiSettings.GetString("audiooutput.audiodevice"));
-
-	return CoreAudioPlexSupport::AudioDeviceSupportsDigital(deviceID);
+	// See if the device supports digital mode.
+	PlexAudioDevicePtr device = PlexAudioDevices::FindByName(g_guiSettings.GetString("audiooutput.audiodevice"));
+	return device->supportsDigital();
 #endif
 }
 

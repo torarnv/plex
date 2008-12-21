@@ -7,220 +7,238 @@
  *
  */
 
+#include <boost/foreach.hpp>
+
 #include "CoreAudioPlexSupport.h"
 #include "stdafx.h"
+#include "Settings.h"
 #include "log.h"
 
-#pragma mark Device Interface - Public
-
-void CoreAudioPlexSupport::FreeDeviceArray(AudioDeviceArray* deviceArray)
-{
-  if (!deviceArray)
-    return;
-
-  for (int i = 0; i < deviceArray->deviceCount; i++)
-  {
-    free(deviceArray->device[i]->deviceName);
-    free(deviceArray->device[i]);
+#define SAFELY(expr)     \
+  if (err == noErr)      \
+  {                      \
+    err = (expr);        \
+    if (err != noErr)    \
+    CLog::Log(LOGERROR, "PlexAudioDevice: Error %4.4s doing %s", (char* )&err, #expr); \
   }
-  free(deviceArray->device);
-  free(deviceArray);
+
+///////////////////////////////////////////////////////////////////////////////
+PlexAudioDevice::PlexAudioDevice(AudioDeviceID deviceID)
+  : m_deviceID(deviceID)
+  , m_isValid(false)
+  , m_supportsDigital(false)
+{
+  UInt32   paramSize = 0;
+  OSStatus err = noErr;
+
+  // Retrieve the length of the device name.
+  SAFELY(AudioDeviceGetPropertyInfo(deviceID, 0, false, kAudioDevicePropertyDeviceName, &paramSize, NULL));
+  if (err == noErr)
+  {
+    // Retrieve the name of the device.
+    char* pStrName = new char[paramSize];
+    SAFELY(AudioDeviceGetProperty(deviceID, 0, false, kAudioDevicePropertyDeviceName, &paramSize, pStrName));
+    if (err == noErr)
+    {
+      CLog::Log(LOGDEBUG, "DevID: %p DevName: %s", deviceID, pStrName);
+      m_deviceName = pStrName;
+      
+      // See if the device is writable (can output).
+      m_hasOutput = computeHasOutput();
+      
+      // If the device does have output, see if it supports digital.
+      if (m_hasOutput)
+        m_supportsDigital = computeDeviceSupportsDigital();
+      else
+        CLog::Log(LOGDEBUG, "Skipping input-only device %s", m_deviceName.c_str());
+      
+      m_isValid = true;
+    }
+    
+    delete[] pStrName;
+  }
 }
 
-AudioDeviceArray* CoreAudioPlexSupport::GetDeviceArray()
+///////////////////////////////////////////////////////////////////////////////
+bool PlexAudioDevice::computeHasOutput()
 {
-	OSStatus            err = noErr;
-  UInt32              i = 0, totalDeviceCount = 0, i_param_size = 0;
-  AudioDeviceID       devid_def = 0;
-  AudioDeviceID       *p_devices = NULL;
+  UInt32  dataSize = 0;
+  Boolean isWritable = false;
 
-	/* Get number of devices */
-  err = AudioHardwareGetPropertyInfo( kAudioHardwarePropertyDevices,
-                                     &i_param_size, NULL );
-  if( err != noErr )
-  {
-		CLog::Log(LOGERROR, "Could not get number of devices: [%4.4s]", (char *)&err );
-    return NULL;
-		//goto error;
-  }
-
-  totalDeviceCount = i_param_size / sizeof( AudioDeviceID );
-
-  if( totalDeviceCount < 1 )
-  {
-		CLog::Log(LOGERROR, "No audio output devices were found." );
-		return NULL;
-    //goto error;
-  }
-
-	CLog::Log(LOGDEBUG, "System has %ld device(s)", totalDeviceCount );
-
-  /* Allocate DeviceID array */
-	AudioDeviceArray *newDeviceArray = (AudioDeviceArray*)calloc(1, sizeof(AudioDeviceArray));
-	newDeviceArray->device = (AudioDeviceInfo**)calloc(totalDeviceCount, sizeof(AudioDeviceInfo));
-
-  p_devices = (AudioDeviceID*)calloc(totalDeviceCount, sizeof(AudioDeviceID));
-
-	if( p_devices == NULL )
-    return NULL;
-
-  /* Populate DeviceID array */
-  err = AudioHardwareGetProperty( kAudioHardwarePropertyDevices,
-                                 &i_param_size, p_devices );
-  if( err != noErr )
-  {
-		CLog::Log(LOGDEBUG, "could not get the device IDs: [%4.4s]", (char *)&err );
-    goto error;
-  }
-
-  /* Find the ID of the default Device */
-  i_param_size = sizeof( AudioDeviceID );
-  err = AudioHardwareGetProperty( kAudioHardwarePropertyDefaultOutputDevice,
-                                 &i_param_size, &devid_def );
-  if( err != noErr )
-  {
-		CLog::Log(LOGDEBUG, "could not get default audio device: [%4.4s]", (char *)&err );
-    return NULL;
-  }
-	newDeviceArray->defaultDevice = devid_def;
-
-	for( i = 0; i < totalDeviceCount; i++ )
-  {
-    char *psz_name;
-    i_param_size = 0;
-
-    /* Retrieve the length of the device name */
-    err = AudioDeviceGetPropertyInfo(p_devices[i], 0, false,
-                                     kAudioDevicePropertyDeviceName,
-                                     &i_param_size, NULL);
-    if( err ) goto error;
-
-    /* Retrieve the name of the device */
-    psz_name = (char *)malloc( i_param_size );
-    err = AudioDeviceGetProperty(p_devices[i], 0, false,
-                                 kAudioDevicePropertyDeviceName,
-                                 &i_param_size, psz_name);
-    if( err ) goto error;
-
-		CLog::Log(LOGDEBUG, "DevID: %#lx DevName: %s", p_devices[i], psz_name );
-
-    if( !AudioDeviceHasOutput( p_devices[i]) )
-    {
-			CLog::Log(LOGDEBUG, "Skipping input-only device %i", p_devices[i]);
-      continue;
-    }
-
-		// Add output device IDs to array
-		AudioDeviceInfo *currentDevice = (AudioDeviceInfo*)malloc(sizeof(AudioDeviceInfo));
-		currentDevice->deviceID = p_devices[i];
-		currentDevice->deviceName = psz_name;
-
-		if( newDeviceArray->defaultDevice == p_devices[i] )
-    {
-			CLog::Log(LOGDEBUG, "Selecting default device %s (%i)",
-                currentDevice->deviceName,
-                currentDevice->deviceID);
-			newDeviceArray->selectedDevice = currentDevice->deviceID;
-			newDeviceArray->selectedDeviceIndex = i;
-    }
-
-    if( AudioDeviceSupportsDigital(p_devices[i]))
-    {
-			currentDevice->supportsDigital = TRUE;
-    }
-		else currentDevice->supportsDigital = FALSE;
-
-		newDeviceArray->device[newDeviceArray->deviceCount++] = currentDevice;
-		currentDevice = NULL;
-  }
-
-  /* If we change the device we want to use, we should renegotiate the audio chain */
-  //var_AddCallback( p_aout, "audio-device", AudioDeviceCallback, NULL );
-#warning fix this to track device changes
-  /* Attach a Listener so that we are notified of a change in the Device setup */
-  //err = AudioHardwareAddPropertyListener( kAudioHardwarePropertyDevices,
-	//									   HardwareListener,
-	//									   (void *)p_aout );
-  //if( err )
-  //    goto error;
-
-  free( p_devices );
-  return newDeviceArray;
-
-error:
-  //var_Destroy( p_aout, "audio-device" );
-  free( p_devices );
-  FreeDeviceArray(newDeviceArray);
-#warning need to free strings
-  return NULL;
+  AudioDeviceGetPropertyInfo(m_deviceID, 0, FALSE, kAudioDevicePropertyStreams, &dataSize, &isWritable);
+  if (dataSize == 0)
+    return false;
+  
+  return true;
 }
 
-AudioDeviceID CoreAudioPlexSupport::GetAudioDeviceIDByName(const char *audioDeviceName)
+///////////////////////////////////////////////////////////////////////////////
+bool PlexAudioDevice::computeDeviceSupportsDigital()
 {
-#warning free array
-  //vector <AudioDeviceInfo*> deviceArray = GetDeviceArray();
-  AudioDeviceArray *deviceArray = GetDeviceArray();
-
-  AudioDeviceID result = deviceArray->defaultDevice;
-  for (int i=0; i<deviceArray->deviceCount; i++)
+  bool ret = false;
+  
+  OSStatus err = noErr;
+  UInt32   paramSize = 0;
+    
+  // Retrieve all the output streams.
+  SAFELY(AudioDeviceGetPropertyInfo(m_deviceID, 0, FALSE, kAudioDevicePropertyStreams, &paramSize, NULL));
+  if (err == noErr)
   {
-    if (strcmp(deviceArray->device[i]->deviceName, audioDeviceName) == 0)
+    int numStreams = paramSize / sizeof(AudioStreamID);
+    AudioStreamID* pStreams = (AudioStreamID *)malloc(paramSize);
+
+    SAFELY(AudioDeviceGetProperty(m_deviceID, 0, FALSE, kAudioDevicePropertyStreams, &paramSize, pStreams));
+    if (err == noErr)
     {
-      result = deviceArray->device[i]->deviceID;
-      break;
+      for (int i=0; i<numStreams && ret == false; i++)
+      {
+        if (computeStreamSupportsDigital(pStreams[i]))
+            ret = true;
+      }
     }
+
+    free(pStreams);
+  }
+  
+  return ret;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+bool PlexAudioDevice::computeStreamSupportsDigital(AudioStreamID streamID)
+{
+  bool ret = false;
+
+  OSStatus err = noErr;
+  UInt32   paramSize = 0;
+  
+  // Retrieve all the stream formats supported by each output stream.
+  SAFELY(AudioStreamGetPropertyInfo(streamID, 0, kAudioStreamPropertyPhysicalFormats, &paramSize, NULL));
+  if (err == noErr)
+  {
+    int numFormats = paramSize / sizeof(AudioStreamBasicDescription);
+    AudioStreamBasicDescription* pFormatList = (AudioStreamBasicDescription *)malloc(paramSize);
+
+    SAFELY(AudioStreamGetProperty(streamID, 0, kAudioStreamPropertyPhysicalFormats, &paramSize, pFormatList));
+    if (err == noErr)
+    {
+      for(int i=0; i<numFormats && ret == false; i++)
+      {
+        CLog::Log(LOGDEBUG, STREAM_FORMAT_MSG(" * Supported format: ", pFormatList[i]));
+        if (pFormatList[i].mFormatID == 'IAC3' || pFormatList[i].mFormatID == kAudioFormat60958AC3)
+          ret = true;
+      }
+    }
+    
+    free(pFormatList);
   }
 
-  FreeDeviceArray(deviceArray);
-  return result;
+  return ret;
 }
 
-/*****************************************************************************
- * AudioStreamSupportsDigital: Check i_stream_id for digital stream support.
- *****************************************************************************/
-int CoreAudioPlexSupport::AudioDeviceSupportsDigital(AudioDeviceID i_dev_id)
+///////////////////////////////////////////////////////////////////////////////
+void PlexAudioDevice::setDefault()
 {
-    OSStatus                    err = noErr;
-    UInt32                      i_param_size = 0;
-    AudioStreamID               *p_streams = NULL;
-    int                         i = 0, i_streams = 0;
-    bool                  b_return = false;
-
-    /* Retrieve all the output streams */
-    err = AudioDeviceGetPropertyInfo( i_dev_id, 0, FALSE,
-									 kAudioDevicePropertyStreams,
-									 &i_param_size, NULL );
-    if( err != noErr )
-    {
-		CLog::Log(LOGDEBUG, "could not get number of streams: [%4.4s]", (char *)&err );
-        return false;
-    }
-
-    i_streams = i_param_size / sizeof( AudioStreamID );
-    p_streams = (AudioStreamID *)malloc( i_param_size );
-    if( p_streams == NULL )
-        return false;
-
-    err = AudioDeviceGetProperty( i_dev_id, 0, FALSE,
-								 kAudioDevicePropertyStreams,
-								 &i_param_size, p_streams );
-
-    if( err != noErr )
-    {
-		CLog::Log(LOGDEBUG, "could not get number of streams: [%4.4s]", (char *)&err );
-        return false;
-    }
-
-    for( i = 0; i < i_streams; i++ )
-    {
-        if( AudioStreamSupportsDigital( p_streams[i] ) )
-            b_return = true;
-    }
-
-    free( p_streams );
-    return b_return;
+  OSStatus err = noErr;
+  SAFELY(AudioHardwareSetProperty(kAudioHardwarePropertyDefaultOutputDevice, sizeof (UInt32), &m_deviceID));
 }
 
+///////////////////////////////////////////////////////////////////////////////
+bool PlexAudioDevice::isAlive()
+{
+  OSStatus err = noErr;
+  UInt32   alive = 1;
+  UInt32   paramSize = 0;
+  
+  paramSize = sizeof(alive);
+  SAFELY(AudioDeviceGetProperty(m_deviceID, 0, FALSE, kAudioDevicePropertyDeviceIsAlive, &paramSize, &alive));
+
+  return (alive != 0);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+PlexAudioDevicesPtr PlexAudioDevices::FindAll()
+{
+	OSStatus          err = noErr;
+	UInt32            paramSize = 0;
+	PlexAudioDevices* audioDevices = new PlexAudioDevices();
+	
+	// Get number of devices.
+  SAFELY(AudioHardwareGetPropertyInfo(kAudioHardwarePropertyDevices, &paramSize, NULL));
+  if (err == noErr)
+  {
+    int totalDeviceCount = paramSize / sizeof(AudioDeviceID);
+    if (totalDeviceCount > 0)
+    {
+      CLog::Log(LOGDEBUG, "System has %ld device(s)", totalDeviceCount);
+
+      // Allocate the device ID array and retreive them.
+      AudioDeviceID* pDevices = (AudioDeviceID* )malloc(paramSize);
+      SAFELY(AudioHardwareGetProperty( kAudioHardwarePropertyDevices, &paramSize, pDevices));
+      if (err == noErr)
+      {
+        AudioDeviceID defaultDeviceID = 0;
+
+        // Find the ID of the default Device.
+        paramSize = sizeof(AudioDeviceID);
+        SAFELY(AudioHardwareGetProperty(kAudioHardwarePropertyDefaultOutputDevice, &paramSize, &defaultDeviceID));
+        if (err == noErr)
+        {
+          for (int i=0; i<totalDeviceCount; i++)
+          {
+            PlexAudioDevicePtr audioDevice = PlexAudioDevicePtr(new PlexAudioDevice(pDevices[i]));
+            
+            // Add valid devices that support output.
+            if (audioDevice->isValid() && audioDevice->hasOutput())
+            {
+              audioDevices->m_audioDevices.push_back(audioDevice);
+  
+              // Set the default device.
+              if (defaultDeviceID == pDevices[i])
+                audioDevices->m_defaultDevice = audioDevice;
+               
+              // Set the selected device.
+              if (g_guiSettings.GetString("audiooutput.audiodevice") == audioDevice->getName())
+                audioDevices->m_selectedDevice = audioDevice;
+            }
+          }
+           
+          // If we haven't selected any devices, select the default one.
+          if (!audioDevices->m_selectedDevice)
+            audioDevices->m_selectedDevice = audioDevices->m_defaultDevice;
+          
+          // Check if the selected device is alive and usable.
+          if (audioDevices->m_selectedDevice->isAlive() == false)
+          {
+            CLog::Log(LOGWARNING, "Selected audio device [%s] is not alive, switching to default device", audioDevices->m_selectedDevice->getName().c_str());
+            audioDevices->m_selectedDevice = audioDevices->m_defaultDevice;
+          }
+        }
+      }
+      
+      free(pDevices);
+    }
+  }
+  
+  // FIXME? Attach a Listener so that we are notified of a change in the Device setup.
+  // AudioHardwareAddPropertyListener( kAudioHardwarePropertyDevices, HardwareListener, (void *)p_aout);
+
+  return PlexAudioDevicesPtr(audioDevices);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+PlexAudioDevicePtr PlexAudioDevices::FindByName(const string& audioDeviceName)
+{
+  PlexAudioDevicesPtr allDevices = FindAll();
+  
+  // Find the matching device.
+  BOOST_FOREACH(PlexAudioDevicePtr device, allDevices->getDevices())
+    if (device->getName() == audioDeviceName)
+      return device;
+  
+  return PlexAudioDevicePtr();
+}
+
+#if 0
 
 /**
  * Return high precision date
@@ -363,73 +381,4 @@ mtime_t CoreAudioPlexSupport::mdate()
 
     return res;
 }
-
-#pragma mark Private
-
-/*****************************************************************************
- * AudioStreamSupportsDigital: Check i_stream_id for digital stream support.
- *****************************************************************************/
-int CoreAudioPlexSupport::AudioStreamSupportsDigital(AudioStreamID i_stream_id )
-
-{
-    OSStatus                    err = noErr;
-    UInt32                      i_param_size = 0;
-    AudioStreamBasicDescription *p_format_list = NULL;
-    int                         i = 0, i_formats = 0;
-    bool                  b_return = false;
-
-    /* Retrieve all the stream formats supported by each output stream */
-    err = AudioStreamGetPropertyInfo( i_stream_id, 0,
-									 kAudioStreamPropertyPhysicalFormats,
-									 &i_param_size, NULL );
-    if( err != noErr )
-    {
-		CLog::Log(LOGDEBUG, "could not get number of streamformats: [%4.4s]", (char *)&err );
-        return false;
-    }
-
-    i_formats = i_param_size / sizeof( AudioStreamBasicDescription );
-    p_format_list = (AudioStreamBasicDescription *)malloc( i_param_size );
-    if( p_format_list == NULL )
-        return false;
-
-    err = AudioStreamGetProperty( i_stream_id, 0,
-								 kAudioStreamPropertyPhysicalFormats,
-								 &i_param_size, p_format_list );
-    if( err != noErr )
-    {
-		CLog::Log(LOGDEBUG, "could not get the list of streamformats: [%4.4s]", (char *)&err );
-        free( p_format_list);
-        p_format_list = NULL;
-        return false;
-    }
-
-    for( i = 0; i < i_formats; i++ )
-    {
-		CLog::Log(LOGDEBUG, STREAM_FORMAT_MSG( "supported format: ", p_format_list[i] ) );
-
-        if( p_format_list[i].mFormatID == 'IAC3' ||
-		   p_format_list[i].mFormatID == kAudioFormat60958AC3 )
-        {
-            b_return = true;
-        }
-    }
-
-    free( p_format_list );
-    return b_return;
-}
-
-/*****************************************************************************
- * AudioDeviceHasOutput: Checks if the Device actually provides any outputs at all
- *****************************************************************************/
-int CoreAudioPlexSupport::AudioDeviceHasOutput( AudioDeviceID i_dev_id )
-{
-    UInt32            dataSize;
-    Boolean            isWritable;
-
-    AudioDeviceGetPropertyInfo( i_dev_id, 0, FALSE, kAudioDevicePropertyStreams, &dataSize, &isWritable);
-    if (dataSize == 0) return FALSE;
-
-    return TRUE;
-}
-
+#endif

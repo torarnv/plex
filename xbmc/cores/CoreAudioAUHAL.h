@@ -73,9 +73,9 @@ class CoreAudioAUHAL
 									   AudioDevicePropertyID inPropertyID,
 									   void * inClientData );
 		
-		static AudioDeviceInfo* GetDeviceArray(); // could make this public interface to current device
+		static PlexAudioDevicesPtr GetDeviceArray(); // could make this public interface to current device
 		
-		AudioDeviceArray* deviceArray;
+		PlexAudioDevicesPtr deviceArray;
 		struct CoreAudioDeviceParameters* deviceParameters;
 		
 		bool m_bIsMusic;

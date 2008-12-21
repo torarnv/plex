@@ -38,7 +38,6 @@
 
 #include "stdafx.h"
 #include "CoreAudioAUHAL.h"
-//#include "AudioContext.h"
 #include "Settings.h"
 #include "AudioDecoder.h"
 
@@ -57,25 +56,24 @@
 
 struct CoreAudioDeviceParameters
 {
-    /* AUHAL specific */
+  /* AUHAL specific */
 	AudioDeviceID				device_id;
-    Component                   au_component;   /* The Audiocomponent we use */
-    AudioUnit                   au_unit;        /* The AudioUnit we use */
+	Component                   au_component;   /* The Audiocomponent we use */
+	AudioUnit                   au_unit;        /* The AudioUnit we use */
 	PaUtilRingBuffer*			outputBuffer;
 	void*						outputBufferData;
-    float						hardwareFrameLatency;
+	float						hardwareFrameLatency;
 	bool						b_digital;      /* Are we running in digital mode? */
 
-
-    /* CoreAudio SPDIF mode specific */
-	AudioDeviceIOProcID			sInputIOProcID;
-    pid_t                       i_hog_pid;      /* The keep the pid of our hog status */
-    AudioStreamID               i_stream_id;    /* The StreamID that has a cac3 streamformat */
-    int                         i_stream_index; /* The index of i_stream_id in an AudioBufferList */
-    AudioStreamBasicDescription stream_format;  /* The format we changed the stream to */
-    AudioStreamBasicDescription sfmt_revert;    /* The original format of the stream */
-    bool                  b_revert;       /* Wether we need to revert the stream format */
-    bool                  b_changed_mixing;/* Wether we need to set the mixing mode back */
+	/* CoreAudio SPDIF mode specific */
+  AudioDeviceIOProcID			sInputIOProcID;
+  pid_t                       i_hog_pid;      /* The keep the pid of our hog status */
+  AudioStreamID               i_stream_id;    /* The StreamID that has a cac3 streamformat */
+  int                         i_stream_index; /* The index of i_stream_id in an AudioBufferList */
+  AudioStreamBasicDescription stream_format;  /* The format we changed the stream to */
+  AudioStreamBasicDescription sfmt_revert;    /* The original format of the stream */
+  bool                  b_revert;       /* Wether we need to revert the stream format */
+  bool                  b_changed_mixing;/* Wether we need to set the mixing mode back */
 };
 
 /*****************************************************************************
@@ -84,115 +82,72 @@ struct CoreAudioDeviceParameters
 CoreAudioAUHAL::CoreAudioAUHAL(const CStdString& strName, int channels, unsigned int sampleRate, int bitsPerSample, bool isDigital, bool useCoreAudio, bool isMusic, int packetSize)
   : m_bIsInitialized(false)
 {
-    OSStatus                err = noErr;
-    UInt32                  i_param_size = 0;
-	int                     b_alive = false;
+  OSStatus                err = noErr;
+  UInt32                  i_param_size = 0;
 
 	CLog::Log(LOGNOTICE, "Asked to create device:   [%s]", strName.c_str());
-    CLog::Log(LOGNOTICE, "Device should be digital: [%d]\n", isDigital);
-    CLog::Log(LOGNOTICE, "CoreAudio S/PDIF mode:    [%d]\n", useCoreAudio);
+	CLog::Log(LOGNOTICE, "Device should be digital: [%d]\n", isDigital);
+	CLog::Log(LOGNOTICE, "CoreAudio S/PDIF mode:    [%d]\n", useCoreAudio);
 	CLog::Log(LOGNOTICE, "Music mode:               [%d]\n", isMusic);
-    CLog::Log(LOGNOTICE, "Channels:                 [%d]\n", channels);
-    CLog::Log(LOGNOTICE, "Sample Rate:              [%d]\n", sampleRate);
-    CLog::Log(LOGNOTICE, "BitsPerSample:            [%d]\n", bitsPerSample);
-    CLog::Log(LOGNOTICE, "PacketSize:               [%d]\n", packetSize);
+	CLog::Log(LOGNOTICE, "Channels:                 [%d]\n", channels);
+	CLog::Log(LOGNOTICE, "Sample Rate:              [%d]\n", sampleRate);
+	CLog::Log(LOGNOTICE, "BitsPerSample:            [%d]\n", bitsPerSample);
+	CLog::Log(LOGNOTICE, "PacketSize:               [%d]\n", packetSize);
 
-    /* Allocate structure */
-    deviceParameters = (CoreAudioDeviceParameters*)calloc(sizeof(CoreAudioDeviceParameters), 1);
-    if (!deviceParameters) return;
+	/* Allocate structure */
+	deviceParameters = (CoreAudioDeviceParameters*)calloc(sizeof(CoreAudioDeviceParameters), 1);
+	if (!deviceParameters) return;
 
 	deviceParameters->b_digital = isDigital;
-    deviceParameters->i_hog_pid = -1;
-    deviceParameters->i_stream_index = -1;
+	deviceParameters->i_hog_pid = -1;
+	deviceParameters->i_stream_index = -1;
 	
 	m_bIsMusic = isMusic;
 
-    /* Build a list of devices */
-    if (deviceArray); // free device array
-	deviceArray = CoreAudioPlexSupport::GetDeviceArray();
-	if (!deviceArray) return;
+	// Build a list of devices.
+	deviceArray = PlexAudioDevices::FindAll();
 
-	// Pick the default device if one's not pre-selected
-	deviceArray->selectedDevice = -1;
-	for (int i=0; i < deviceArray->deviceCount; i++)
+	i_param_size = sizeof(deviceParameters->i_hog_pid);
+	err = AudioDeviceGetProperty( deviceArray->getSelectedDevice()->getDeviceID(), 0, FALSE, kAudioDevicePropertyHogMode, &i_param_size, &deviceParameters->i_hog_pid );
+	if( err != noErr )
 	{
-		if (g_guiSettings.GetString("audiooutput.audiodevice").Equals(deviceArray->device[i]->deviceName))
-		{
-			deviceArray->selectedDevice = deviceArray->device[i]->deviceID;
-			deviceArray->selectedDeviceIndex = i;
-		}
-	}
-	if (deviceArray->selectedDevice == -1)
-	{
-		deviceArray->selectedDevice = deviceArray->defaultDevice;
+	  /* This is not a fatal error. Some drivers simply don't support this property */
+	  CLog::Log(LOGINFO, "could not check whether device is hogged: %4.4s", (char *)&err );
+	  deviceParameters->i_hog_pid = -1;
 	}
 
-    /* Check if the desired device is alive and usable */
-    i_param_size = sizeof( b_alive );
-    err = AudioDeviceGetProperty(deviceArray->selectedDevice, 0, FALSE,
-								 kAudioDevicePropertyDeviceIsAlive,
-								 &i_param_size, &b_alive );
-
-    if( err != noErr )
-    {
-        /* Be tolerant, only give a warning here */
-		CLog::Log(LOGINFO, "could not check whether device [0x%x] is alive: %4.4s",
-				  (unsigned int)deviceArray->selectedDevice,
-				  (char *)&err );
-        b_alive = false;
-    }
-
-    if( b_alive == false )
-    {
-		CLog::Log(LOGWARNING, "selected audio device is not alive, switching to default device");
-        deviceArray->selectedDevice = deviceArray->defaultDevice;
-    }
-
-    i_param_size = sizeof(deviceParameters->i_hog_pid);
-    err = AudioDeviceGetProperty( deviceArray->selectedDevice, 0, FALSE,
-								 kAudioDevicePropertyHogMode,
-								 &i_param_size, &deviceParameters->i_hog_pid );
-
-    if( err != noErr )
-    {
-        /* This is not a fatal error. Some drivers simply don't support this property */
-		CLog::Log(LOGINFO, "could not check whether device is hogged: %4.4s",
-                 (char *)&err );
-        deviceParameters->i_hog_pid = -1;
-    }
-
-    if( deviceParameters->i_hog_pid != -1 && deviceParameters->i_hog_pid != getpid() )
-    {
+	if( deviceParameters->i_hog_pid != -1 && deviceParameters->i_hog_pid != getpid() )
+	{
 		CLog::Log(LOGERROR, "Selected audio device is exclusively in use by another program.");
 		return;
-    }
+	}
 
-	deviceParameters->device_id = deviceArray->selectedDevice;
+	deviceParameters->device_id = deviceArray->getSelectedDevice()->getDeviceID();
 
-    /* Check for Digital mode or Analog output mode */
+	/* Check for Digital mode or Analog output mode */
 	if (isDigital && useCoreAudio)
-    {
-        if (OpenSPDIF(deviceParameters, strName, channels, sampleRate, bitsPerSample, isDigital, useCoreAudio, packetSize))
-        {
-          m_bIsInitialized = true;
-          return;
-        }
-    }
-    else
-    {
-        if (OpenPCM(deviceParameters, strName, channels, sampleRate, bitsPerSample, isDigital, useCoreAudio, packetSize))
-        {
-          m_bIsInitialized = true;
-          return;
-        }
-    }
+	{
+	  if (OpenSPDIF(deviceParameters, strName, channels, sampleRate, bitsPerSample, isDigital, useCoreAudio, packetSize))
+	  {
+	    m_bIsInitialized = true;
+	    return;
+	  }
+	}
+	else
+	{
+	  if (OpenPCM(deviceParameters, strName, channels, sampleRate, bitsPerSample, isDigital, useCoreAudio, packetSize))
+	  {
+	    m_bIsInitialized = true;
+	    return;
+	  }
+	}
 
 error:
-    /* If we reach this, this aout has failed */
-    //var_Destroy( p_aout, "audio-device" );
-    free(deviceParameters);
-    //return VLC_EGENERIC;
-		return;
+  /* If we reach this, this aout has failed */
+  //var_Destroy( p_aout, "audio-device" );
+  free(deviceParameters);
+  //return VLC_EGENERIC;
+  return;
 }
 
 HRESULT CoreAudioAUHAL::Deinitialize()
@@ -337,12 +292,9 @@ int CoreAudioAUHAL::WriteStream(uint8_t *sampleBuffer, uint32_t samplesToWrite)
 int CoreAudioAUHAL::OpenPCM(struct CoreAudioDeviceParameters *deviceParameters, const CStdString& strName, int channels, float sampleRate, int bitsPerSample, bool isDigital, bool useCoreAudio, int packetSize)
 {
     OSStatus                    err = noErr;
-    UInt32                      i_param_size = 0, i = 0;
-    int                         i_original;
+    UInt32                      i_param_size = 0;
     ComponentDescription        desc;
     AudioStreamBasicDescription DeviceFormat;
-    AudioChannelLayout          *layout;
-    AudioChannelLayout          new_layout;
     AURenderCallbackStruct      input;
 
     /* Lets go find our Component */
@@ -366,12 +318,14 @@ int CoreAudioAUHAL::OpenPCM(struct CoreAudioDeviceParameters *deviceParameters, 
         return false;
     }
 
+    AudioDeviceID selectedDeviceID = deviceArray->getSelectedDevice()->getDeviceID();
+    
     /* Set the device we will use for this output unit */
     err = AudioUnitSetProperty(deviceParameters->au_unit,
 							   kAudioOutputUnitProperty_CurrentDevice,
 							   kAudioUnitScope_Input,
 							   0,
-							   &deviceArray->selectedDevice,
+							   &selectedDeviceID,
 							   sizeof(AudioDeviceID));
 
     if( err != noErr )
@@ -865,8 +819,6 @@ OSStatus CoreAudioAUHAL::RenderCallbackSPDIF(AudioDeviceID inDevice,
                                     const AudioTimeStamp * inOutputTime,
                                     void * threadGlobals )
 {
-    mtime_t         current_date;
-
     CoreAudioDeviceParameters *deviceParameters = (CoreAudioDeviceParameters *)threadGlobals;
 
     /* Check for the difference between the Device clock and mdate */

@@ -428,6 +428,20 @@ CGUISettings::CGUISettings(void)
   AddBool(8, "lcd.enableonpaused", 20312, true);
 #endif
 
+  // Audio.
+  AddCategory(4, "audiooutput", 772);
+#ifdef __APPLE__
+  AddString(2, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
+  AddInt(2, "audiooutput.digitalaudiomode", 574,  DIGITAL_COREAUDIO, DIGITAL_PCM, 1, DIGITAL_COREAUDIO, SPIN_CONTROL_TEXT);
+#elif defined(_LINUX)
+
+  AddString(4, "audiooutput.audiodevice", 545, "default", BUTTON_CONTROL_INPUT);
+  AddString(5 "audiooutput.passthroughdevice", 546, "iec958", BUTTON_CONTROL_INPUT);
+#endif
+  AddBool(6, "audiooutput.ac3passthrough", 364, true);
+  AddBool(7, "audiooutput.dtspassthrough", 254, true);
+  AddBool(8, "audiooutput.normalisevolume", 577, false);
+  
   // Controllers.
   AddCategory(4, "appleremote", 13600);
 #ifdef __APPLE__
@@ -497,19 +511,6 @@ CGUISettings::CGUISettings(void)
   AddInt(12, "cachedvd.lan", 14035, 2048, 256, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB);
   AddSeparator(13, "cache.sep4");
   AddInt(14, "cacheunknown.internet", 14060, 4096, 256, 512, 32768, SPIN_CONTROL_INT_PLUS, MASK_KB);
-
-  AddCategory(4, "audiooutput", 772);
-#ifdef __APPLE__
-  AddString(2, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
-  AddInt(2, "audiooutput.digitalaudiomode", 574,  DIGITAL_COREAUDIO, DIGITAL_PCM, 1, DIGITAL_COREAUDIO, SPIN_CONTROL_TEXT);
-#elif defined(_LINUX)
-
-  AddString(4, "audiooutput.audiodevice", 545, "default", BUTTON_CONTROL_INPUT);
-  AddString(5 "audiooutput.passthroughdevice", 546, "iec958", BUTTON_CONTROL_INPUT);
-#endif
-	AddBool(6, "audiooutput.ac3passthrough", 364, true);
-	AddBool(7, "audiooutput.dtspassthrough", 254, true);
-	AddBool(8, "audiooutput.normalisevolume", 577, false);
 
 #ifndef __APPLE__
   AddCategory(4, "videooutput", 21373);

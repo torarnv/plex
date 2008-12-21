@@ -19,6 +19,8 @@
  *
  */
 
+#include <boost/foreach.hpp>
+
 #include "stdafx.h"
 #include "GUIWindowSettingsCategory.h"
 #include "Application.h"
@@ -4030,12 +4032,12 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting)
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->Clear();
 
-    AudioDeviceArray* deviceList = CoreAudioPlexSupport::GetDeviceArray();
-
-	for (int i=0; i < deviceList->deviceCount; i++)
-	{
-		pControl->AddLabel(deviceList->device[i]->deviceName, i);
-		if (g_guiSettings.GetString("audiooutput.audiodevice").Equals(deviceList->device[i]->deviceName))
+  int i = 0;
+  PlexAudioDevicesPtr deviceList = PlexAudioDevices::FindAll();
+  BOOST_FOREACH(PlexAudioDevicePtr device, deviceList->getDevices())
+  {
+		pControl->AddLabel(device->getName(), i++);
+		if (g_guiSettings.GetString("audiooutput.audiodevice") == device->getName())
 			pControl->SetValue(i);
 	}
 #endif
