@@ -12,6 +12,8 @@
 #define BACKGROUND_MUSIC_APP_SUPPORT_SUBDIR       @"/Plex/Background Music"
 #define BACKGROUND_MUSIC_THEME_DOWNLOAD_URL       @"http://tvthemes.plexapp.com"
 #define BACKGROUND_MUSIC_THEME_REQ_LIMIT          3600
+#define BACKGROUND_MUSIC_FADE_DELAY               0.5
+
 @implementation BackgroundMusicPlayer
 
 static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
@@ -33,8 +35,11 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
   isThemeMusicEnabled = NO;
   isThemeDownloadingEnabled = NO;
   isPlaying = NO;
+  isPaused = YES;
   volumeFadeLevel = 100;
+  volumeCrossFadeLevel = 100;
   targetVolumeFade = 100;
+  targetVolumeCrossFade = 100;
   fadeIncrement = 5;
   
   // Set the default volume to 50% (overridden in settings)
@@ -43,35 +48,33 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
   
   // Get Application Support directory
   NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
-  if ([paths count] == 1) {
+  if ([paths count] == 1) 
+  {
     // Get paths for background music
     NSString* backgroundMusicPath = [[paths objectAtIndex:0] stringByAppendingPathComponent:BACKGROUND_MUSIC_APP_SUPPORT_SUBDIR];
-    mainMusicPath = [backgroundMusicPath stringByAppendingPathComponent:@"Main"];
-    themeMusicPath = [backgroundMusicPath stringByAppendingPathComponent:@"Themes"];
+    mainMusicPath = [[backgroundMusicPath stringByAppendingPathComponent:@"Main"] retain];
+    themeMusicPath = [[backgroundMusicPath stringByAppendingPathComponent:@"Themes"] retain];
   }
   
   // Load available music into the array
   NSArray* validExtensions = [NSArray arrayWithObjects:@".mp3", @".m4a", @".m4p", nil];  // File types supported by QuickTime
   NSArray* directoryContents = [NSArray arrayWithArray:[[[NSFileManager defaultManager] enumeratorAtPath:mainMusicPath] allObjects]];
-  NSMutableArray* validFiles = [[NSMutableArray alloc] init];
   
   // Check each file's extension to ensure it's a supported format
+  // Create the main music names array containing valid files
+  mainMusicNames = [[NSMutableArray alloc] initWithCapacity:[directoryContents count]];
   for (NSString* fileName in directoryContents)
   {
     NSString* ext = [[fileName substringFromIndex:[[fileName stringByDeletingPathExtension] length]] lowercaseString];
     if ([validExtensions containsObject:ext])
-      [validFiles addObject:fileName];
+      [mainMusicNames addObject:fileName];
   }
-  
-  // Create the main music names array containing valid files
-  mainMusicNames = [NSArray arrayWithArray:validFiles];
-  [validFiles release];
   
   // Create a dictionary to store theme music requests
   themeMusicRequests = [[NSMutableDictionary alloc] init];
   
   // Register for notification when tracks finish playing
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(trackDidEnd:) name:QTMovieDidEndNotification object:mainMusic];
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(trackDidEnd:) name:QTMovieDidEndNotification object:mainMusic];  
   
   // Load a random file
   [self loadNextTrack];
@@ -81,11 +84,25 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
 
 - (void)dealloc
 {
-  [themeMusicRequests release];
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
+  [mainMusic release], mainMusic = nil;
+  [themeMusic release], themeMusic = nil;
+  [fadeTimer invalidate];
+  [fadeTimer release], fadeTimer = nil;
+  [crossFadeTimer invalidate];
+  [crossFadeTimer release], crossFadeTimer = nil;
+  [themeMusicRequests release], themeMusicRequests = nil;
+  [mainMusicNames release], mainMusicNames = nil;
+  [mainMusicPath release], mainMusicPath = nil;
+  [themeMusicPath release], themeMusicPath = nil;
   [super dealloc];
 }
 
-- (BOOL)enabled { return isEnabled; }
+- (BOOL)enabled 
+{
+  return isEnabled; 
+}
+
 - (void)setEnabled:(BOOL)enabled
 {
   if (isEnabled != enabled)
@@ -97,18 +114,8 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
     }
     else
     {
-      if (mainMusic != nil)
-      {
-        [mainMusic release];
-        mainMusic = nil;
-      }
-      
-      if (themeMusic != nil)
-      {
-        [themeMusic release];
-        themeMusic = nil;
-      }
-      [self stopThemeTimer];
+      [mainMusic release], mainMusic = nil;
+      [themeMusic release], themeMusic = nil;
     }
   }
 }
@@ -144,20 +151,34 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
   }
 }
 
-- (BOOL)isPlaying { return isPlaying; }
+- (void)pause
+{
+  [self fadeAudioTo:[NSNumber numberWithInt:0]];
+}
+
+- (void)play
+{
+  [self fadeAudioTo:[NSNumber numberWithInt:100]];
+}
+
+- (BOOL)isPlaying 
+{ 
+  return isPlaying; 
+}
 
 - (void)startMusic
 {
   if (!isPlaying) {
-    if (isEnabled)
+    if (isEnabled && !isPaused)
     {
       if (currentId == nil)
+      {
         [mainMusic play];
+      }
       else
       {
         [themeMusic gotoBeginning]; // Make sure theme music always starts at the beginning when returning from video playback
         [themeMusic play];
-        [self startThemeTimer];
       }
     }
     isPlaying = YES;
@@ -169,11 +190,8 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
   if (isPlaying) {
     if (isEnabled)
     {
-      [self stopThemeTimer];
-      if (mainMusic != nil)
-        [mainMusic stop];
-      if (themeMusic != nil)
-        [themeMusic stop];
+      [mainMusic stop];
+      [themeMusic stop];
     }
     isPlaying = NO;
   }
@@ -183,7 +201,7 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
 {
   if ([mainMusicNames count] > 0) {
     // Load a random track from the mainMusicNames array
-    if (mainMusic != nil) [mainMusic release];
+    [mainMusic release];
     int index = (random() % [mainMusicNames count]);
     
     NSError *qtError = nil;
@@ -191,6 +209,8 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
     
     // If an error occurs (unsupported file) start from the beginning again
     if (qtError != nil) {
+      // Maybe we should remove the unsupported file from the mainMusicNames array?
+      // TODO: Potential endless loop
       [self loadNextTrack];
       return;
     }
@@ -199,15 +219,31 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
     [self updateMusicVolume];
     
     //Start playing if required
-    if (isEnabled && isPlaying && (currentId == nil)) [mainMusic play];
+    if (isEnabled && isPlaying && (currentId == nil) && !isPaused) 
+      [mainMusic play];
   }
 }
 
 - (void)trackDidEnd:(NSNotification *)aNotification
 {
   // When a track ends, load the next one
-  if ([aNotification object] == mainMusic)
+  if ([aNotification object] && [aNotification object] == mainMusic)
     [self loadNextTrack];
+}
+
+- (void)checkThemeCrossFade:(NSTimer *)timer
+{
+  if (!themeMusic)
+  {
+    [timer invalidate];
+    return;
+  }
+  double duration = [themeMusic duration].timeValue - (0.6 * [themeMusic duration].timeScale);
+  if ([themeMusic currentTime].timeValue > duration)
+  {
+    [timer invalidate];
+    [self setThemeMusicId:nil];
+  }
 }
 
 - (void)setThemeMusicId:(NSString*)newId;
@@ -218,15 +254,13 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
     // If the theme is nil, restart the background music
     if (newId == nil)
     {
-      if ((currentId != nil) && (isPlaying))
+      if ((currentId != nil) && (isPlaying) && !isPaused)
       {
-        [self fadeToTheme:NO];
+        [self crossFadeToTheme:NO];
         [mainMusic play];
       }
       currentId = nil;
-      [self stopThemeTimer];
     }
-
     else
     {
       // If given a new theme, see if there's a file available
@@ -238,10 +272,11 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
           currentId = newId;
           themeMusic = [[QTMovie alloc] initWithFile:localFile error:nil];  
           [self updateMusicVolume];
-          if (isPlaying) {
+          if (isPlaying && !isPaused) 
+          {
+            [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(checkThemeCrossFade:) userInfo:nil repeats:YES];
             [themeMusic play];
-            [self fadeToTheme:YES];
-            [self startThemeTimer];
+            [self crossFadeToTheme:YES];
           }
           return;
         }
@@ -253,8 +288,8 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
 - (void)updateMusicVolume
 {
   // Update the volume of mainMusic & themeMusic using the background music volume setting in relation to the global system volume
-  if (mainMusic != nil) [mainMusic setVolume:(float)(volume * (globalVolumeAsPercent / 100.0f) * (volumeFadeLevel / 100.0f))];
-  if (themeMusic != nil) [themeMusic setVolume:(float)(volume * (globalVolumeAsPercent / 100.0f) * ((100 - volumeFadeLevel) / 100.0f))];
+  [mainMusic setVolume:(float)(volume * (globalVolumeAsPercent / 100.0f) * (volumeCrossFadeLevel / 100.0f) * (volumeFadeLevel / 100.0f))];
+  [themeMusic setVolume:(float)(volume * (globalVolumeAsPercent / 100.0f) * ((100 - volumeCrossFadeLevel) / 100.0f) * (volumeFadeLevel / 100.0f))];
 }
 
 - (float)volume
@@ -274,64 +309,151 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
   [self updateMusicVolume]; 
 }
 
-- (void)fadeToTheme:(BOOL)toTheme
+- (void)fadeAudioTo:(NSNumber *)theTargetVolume
 {
-  if (toTheme) targetVolumeFade = 0;
-  else targetVolumeFade = 100;
-  [self adjustVolumeFadeLevel];
+  float targetVolume = [theTargetVolume floatValue];
+  if (targetVolume < 0)
+    targetVolume = 0;
+  else if (targetVolume > 100)
+    targetVolume = 100;
+  if (targetVolumeFade != targetVolume)
+  {
+    targetVolumeFade = targetVolume;
+    NSTimeInterval duration = 0.6;
+    NSTimeInterval interval = duration / (fabsf(targetVolumeFade - volumeFadeLevel) / (float)(fadeIncrement <= 0 ? 5 : fadeIncrement));
+    if (interval == 0)
+    {
+      volumeFadeLevel = targetVolumeFade;
+      [self updateMusicVolume];
+    }
+    else
+    {
+      [fadeTimer invalidate];
+      [fadeTimer release], fadeTimer = nil;
+      if (volumeFadeLevel == targetVolumeFade)
+        return;
+      fadeTimer = [[NSTimer scheduledTimerWithTimeInterval:interval target:self selector:@selector(adjustVolumeFadeLevel) userInfo:nil repeats:YES] retain];
+    }
+  }
+}
+
+- (void)crossFadeToTheme:(BOOL)toTheme
+{
+  if (toTheme) 
+    targetVolumeCrossFade = 0;
+  else 
+    targetVolumeCrossFade = 100;
+
+  NSTimeInterval duration = 0.6; //(toTheme ? 0.6 : ([themeMusic duration].timeValue - [themeMusic currentTime].timeValue) / [themeMusic currentTime].timeScale);
+  NSTimeInterval interval = duration / (fabsf(targetVolumeCrossFade - volumeCrossFadeLevel) / (float)(fadeIncrement <= 0 ? 1 : fadeIncrement));
+  if (interval == 0)
+  {
+    volumeCrossFadeLevel = targetVolumeCrossFade;
+    [self updateMusicVolume];
+  }
+  else
+  {
+    [crossFadeTimer invalidate];
+    [crossFadeTimer release], crossFadeTimer = nil;
+    if (volumeCrossFadeLevel == targetVolumeCrossFade)
+      return;
+    crossFadeTimer = [[NSTimer scheduledTimerWithTimeInterval:interval target:self selector:@selector(adjustVolumeCrossFadeLevel) userInfo:nil repeats:YES] retain];
+  }
 }
 
 - (void)adjustVolumeFadeLevel
 {
-  // Fade between main & theme music
-  if (volumeFadeLevel < targetVolumeFade) volumeFadeLevel += fadeIncrement;
-  else if (volumeFadeLevel > targetVolumeFade) volumeFadeLevel -= fadeIncrement;
+  if (volumeFadeLevel < targetVolumeFade)
+    volumeFadeLevel += fadeIncrement;
+  else if (volumeFadeLevel > targetVolumeFade) 
+    volumeFadeLevel -= fadeIncrement;
   
-  // If the target's not reached yet, reschedule the timer
-  if (volumeFadeLevel != targetVolumeFade)
-    [NSTimer scheduledTimerWithTimeInterval:0.01 target:self selector:@selector(adjustVolumeFadeLevel) userInfo:nil repeats:NO];
+  if (volumeFadeLevel < 0)
+    volumeFadeLevel = 0;
+  else if (volumeFadeLevel > 100)
+    volumeFadeLevel = 100;
+  
+  // If the target's reached then kill the timer
+  if (volumeFadeLevel == targetVolumeFade)
+  {
+    [fadeTimer invalidate];
+    [fadeTimer release], fadeTimer = nil;
+  }
   
   // Stop the silenced track (release if theme music)
-  if ((volumeFadeLevel == 0) && isPlaying)
-    if (mainMusic != nil) [mainMusic stop];
-  if ((volumeFadeLevel == 100) && isPlaying)
-    if (themeMusic != nil)
-    {
-      [themeMusic stop];
-      [themeMusic release];
-      themeMusic = nil;
-    }
+  if (volumeFadeLevel <= 0)
+  {
+    [mainMusic stop];
+    [themeMusic stop];
+    isPaused = true;
+  }
+  else
+  {
+    [mainMusic play];
+    [themeMusic play];
+    isPaused = false;
+  }
   
   // Update the volume
   [self updateMusicVolume];
 }
 
-- (void)startThemeTimer
+- (void)adjustVolumeCrossFadeLevel
 {
-  if (themeMusic != nil)
+  if (volumeCrossFadeLevel < targetVolumeCrossFade)
+    volumeCrossFadeLevel += fadeIncrement;
+  else if (volumeCrossFadeLevel > targetVolumeCrossFade) 
+    volumeCrossFadeLevel -= fadeIncrement;
+  
+  if (volumeCrossFadeLevel < 0)
+    volumeCrossFadeLevel = 0;
+  else if (volumeCrossFadeLevel > 100)
+    volumeCrossFadeLevel = 100;
+  
+  // If the target's reached then kill the timer
+  if (volumeCrossFadeLevel == targetVolumeCrossFade)
   {
-    [self stopThemeTimer];
-    double duration = ([themeMusic duration].timeValue / [themeMusic duration].timeScale);
-    themeFadeTimer = [NSTimer scheduledTimerWithTimeInterval:(duration - 0.5) target:self selector:@selector(themeTimerDidEnd) userInfo:nil repeats:NO];
-    [themeFadeTimer retain];
+    [crossFadeTimer invalidate];
+    [crossFadeTimer release], crossFadeTimer = nil;
   }
-}
-
-- (void)stopThemeTimer
-{
-  if (themeFadeTimer != nil)
+  
+  // Stop the silenced track (release if theme music)
+  if (volumeCrossFadeLevel <= 0)
   {
-    [themeFadeTimer invalidate];
-    [themeFadeTimer release];
-    themeFadeTimer = nil;
+    [mainMusic stop];
+    isPaused = true;
   }
+  else if (volumeCrossFadeLevel >= 100)
+  {
+    [themeMusic stop];
+    [themeMusic release], themeMusic = nil;
+    isPaused = false;
+  }
+  
+  // Update the volume
+  [self updateMusicVolume];
 }
 
-- (void)themeTimerDidEnd
+- (void)foundFocus
 {
-  [self setThemeMusicId:nil];
-  [self stopThemeTimer];
+  // Cancel previous pause or play calls
+  [NSObject cancelPreviousPerformRequestsWithTarget:self];
+  
+  isPaused = NO;
+  
+  // Fade the audio in after we wait .5 seconds
+  [self performSelector:@selector(play) withObject:nil afterDelay:0.5];  // wait 2 seconds before we try to pause
 }
 
-
+- (void)lostFocus
+{
+  // Cancel previous pause or play calls
+  [NSObject cancelPreviousPerformRequestsWithTarget:self];
+  
+  // Play the audio at 50% while we don't have the focus
+  [self performSelector:@selector(fadeAudioTo:) withObject:[NSNumber numberWithInt:15] afterDelay:0.1];
+  
+  // Play the audio at 50% for 2 seconds before we completely fade it out
+  [self performSelector:@selector(pause) withObject:nil afterDelay:5.0];  
+}
 @end

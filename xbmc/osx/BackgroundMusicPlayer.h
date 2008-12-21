@@ -14,23 +14,26 @@
   BOOL isThemeMusicEnabled;
   BOOL isThemeDownloadingEnabled;
   BOOL isPlaying;
+  BOOL isPaused;
   
   float volume;
   int volumeFadeLevel;
+  int volumeCrossFadeLevel;
   int targetVolumeFade;
+  int targetVolumeCrossFade;
   int fadeIncrement;
   int globalVolumeAsPercent;
   
-  
   NSString *mainMusicPath;
   NSString *themeMusicPath;
-  NSArray *mainMusicNames;
+  NSMutableArray *mainMusicNames;
   NSMutableDictionary *themeMusicRequests;
   
   NSString *currentId;
   
   QTMovie *mainMusic, *themeMusic;
-  NSTimer* themeFadeTimer;
+  NSTimer* fadeTimer;
+  NSTimer* crossFadeTimer;
 }
 
 + (BackgroundMusicPlayer *)sharedInstance;
@@ -43,6 +46,8 @@
 
 - (void)checkForThemeWithId:(NSString*)tvShowId;
 
+- (void)pause;
+- (void)play;
 - (BOOL)isPlaying;
 
 - (void)startMusic;
@@ -54,11 +59,9 @@
 - (float)volume;
 - (void)setVolume:(float)newVolume;
 - (void)setGlobalVolumeAsPercent:(int)newGlobalVolumeAsPercent;
-- (void)fadeToTheme:(BOOL)toTheme;
-- (void)adjustVolumeFadeLevel;
+- (void)crossFadeToTheme:(BOOL)toTheme;
+- (void)fadeAudioTo:(NSNumber *)theTargetVolume;
 
-- (void)startThemeTimer;
-- (void)stopThemeTimer;
-- (void)themeTimerDidEnd;
-
+- (void)foundFocus;
+- (void)lostFocus;
 @end

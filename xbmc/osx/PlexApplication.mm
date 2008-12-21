@@ -15,6 +15,7 @@
 #import <unistd.h>
 #import "PlexApplication.h"
 #import "KeyboardLayouts.h"
+#import "BackgroundMusicPlayer.h"
 
 extern CApplication g_application;
 
@@ -32,7 +33,15 @@ BOOL gCalledAppMainline = FALSE;
                                                          selector:@selector(workspaceDidWake:)
                                                              name:NSWorkspaceDidWakeNotification
                                                            object:nil];
-
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(applicationWillResignActive:)
+                                              name:NSApplicationWillResignActiveNotification
+                                             object:nil];
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(applicationWillBecomeActive:)
+                                               name:NSApplicationWillBecomeActiveNotification
+                                             object:nil];
+  
   [super finishLaunching];
   gCalledAppMainline = TRUE;
   SDL_main(gArgc, (char** )gArgv);
@@ -41,6 +50,9 @@ BOOL gCalledAppMainline = FALSE;
 /* Invoked by the dock menu */
 - (void)terminate:(id)sender
 {
+  [[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver:self];
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
+  
   [self quit:sender];
 }
 
@@ -119,6 +131,17 @@ BOOL gCalledAppMainline = FALSE;
 {
   g_application.ResetDisplaySleep();
 }
+
+- (void)applicationWillResignActive:(NSNotification *)aNotification
+{
+  [[BackgroundMusicPlayer sharedInstance] performSelectorOnMainThread:@selector(lostFocus) withObject:nil waitUntilDone:YES];
+}
+
+- (void)applicationWillBecomeActive:(NSNotification *)aNotification
+{
+  [[BackgroundMusicPlayer sharedInstance] performSelectorOnMainThread:@selector(foundFocus) withObject:nil waitUntilDone:YES];
+}
+
 @end
 
 #ifdef main
