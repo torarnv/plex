@@ -245,8 +245,10 @@ public:
     bool m_GLRectangleHack;
     
 #if __APPLE__
-    bool m_changeDefaultAudioDevice;
+    bool m_bChangeDefaultAudioDevice;
 #endif
+    int m_secondsToVisualizer;
+    bool m_bVisualizerOnPlay;
   };
 
   struct stSettings

@@ -1102,6 +1102,10 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
     // TODO: Add music-specific code for single playback of an item here (See OnClick in MediaWindow, and OnPlayMedia below)
     OnClick(iItem);
   }
+  
+  // Either way, turn on visualizer so we can control things.
+  if (g_advancedSettings.m_bVisualizerOnPlay)
+    g_application.getApplicationMessenger().ActivateScreenSaver();
 }
 
 void CGUIWindowMusicBase::LoadPlayList(const CStdString& strPlayList)

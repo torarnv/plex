@@ -271,8 +271,11 @@ CSettings::CSettings(void)
   g_advancedSettings.m_GLRectangleHack = false;
   
 #ifdef __APPLE__
-  g_advancedSettings.m_changeDefaultAudioDevice = true;
+  g_advancedSettings.m_bChangeDefaultAudioDevice = true;
 #endif
+  
+  g_advancedSettings.m_secondsToVisualizer = 10;
+  g_advancedSettings.m_bVisualizerOnPlay = true;
 }
 
 CSettings::~CSettings(void)
@@ -1281,8 +1284,11 @@ void CSettings::LoadAdvancedSettings()
   XMLUtils::GetBoolean(pRootElement,"rootovershoot",g_advancedSettings.m_bUseEvilB);
   
 #ifdef __APPLE__
-  XMLUtils::GetBoolean(pRootElement, "changedefaultaudiodevice", g_advancedSettings.m_changeDefaultAudioDevice);
+  XMLUtils::GetBoolean(pRootElement, "changedefaultaudiodevice", g_advancedSettings.m_bChangeDefaultAudioDevice);
 #endif
+  
+  GetInteger(pRootElement, "secondstovisualizer", g_advancedSettings.m_secondsToVisualizer, 10, 0, 6000);
+  XMLUtils::GetBoolean(pRootElement, "visualizeronplay", g_advancedSettings.m_bVisualizerOnPlay);
 
   //Tuxbox
   pElement = pRootElement->FirstChildElement("tuxbox");

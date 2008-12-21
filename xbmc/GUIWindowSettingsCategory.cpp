@@ -1232,7 +1232,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
 		}
  		
  		// Set the default output device.
- 		if (g_advancedSettings.m_changeDefaultAudioDevice)
+ 		if (g_advancedSettings.m_bChangeDefaultAudioDevice)
  		{
  		  PlexAudioDevicePtr device = PlexAudioDevices::FindByName(g_guiSettings.GetString("audiooutput.audiodevice"));
  		  device->setDefault();

@@ -5267,7 +5267,12 @@ void CApplication::CheckScreenSaver()
   if (!m_bInactive || m_bScreenSave || m_gWindowManager.IsWindowActive(WINDOW_SCREENSAVER) || g_guiSettings.GetString("screensaver.mode") == "None" || g_guiSettings.GetInt("screensaver.time") <= 0)
     return;
 
-  if ((timeGetTime() - m_dwSaverTick) >= (g_guiSettings.GetInt("screensaver.time")*60*1000L) )
+  // How long to screensaver? The setting, unless we're playing music, in which case much quicker.
+  long timeToScreenSaver = g_guiSettings.GetInt("screensaver.time")*60*1000L;
+  if (IsPlayingAudio())
+    timeToScreenSaver = MIN(g_advancedSettings.m_secondsToVisualizer*1000L, timeToScreenSaver);
+  
+  if (timeGetTime() - m_dwSaverTick >= timeToScreenSaver)
     ActivateScreenSaver();
 }
 
