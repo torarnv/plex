@@ -41,6 +41,7 @@
 
 #ifdef __APPLE__
 #include "CocoaUtils.h"
+#include "CoreAudioPlexSupport.h"
 #include "PlexMediaServerHelper.h"
 #endif
 
@@ -431,6 +432,12 @@ CGUISettings::CGUISettings(void)
   // Audio.
   AddCategory(4, "audiooutput", 772);
 #ifdef __APPLE__
+  // Figure out the real default device name.
+  string defaultDevice = "Default";
+  PlexAudioDevicePtr device = PlexAudioDevices::FindDefault();
+  if (device)
+    defaultDevice = device->getName();
+  
   AddString(2, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
   AddInt(2, "audiooutput.digitalaudiomode", 574,  DIGITAL_COREAUDIO, DIGITAL_PCM, 1, DIGITAL_COREAUDIO, SPIN_CONTROL_TEXT);
 #elif defined(_LINUX)

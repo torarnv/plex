@@ -197,7 +197,7 @@ PlexAudioDevicesPtr PlexAudioDevices::FindAll()
                 audioDevices->m_defaultDevice = audioDevice;
                
               // Set the selected device.
-              if (g_guiSettings.GetString("audiooutput.audiodevice") == audioDevice->getName())
+              if (g_guiSettings.GetSetting("audiooutput.audiodevice") && g_guiSettings.GetString("audiooutput.audiodevice") == audioDevice->getName())
                 audioDevices->m_selectedDevice = audioDevice;
             }
           }
@@ -236,6 +236,23 @@ PlexAudioDevicePtr PlexAudioDevices::FindByName(const string& audioDeviceName)
       return device;
   
   return PlexAudioDevicePtr();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+PlexAudioDevicePtr PlexAudioDevices::FindDefault()
+{
+  PlexAudioDevice* ret = 0;
+  AudioDeviceID    defaultDeviceID = 0;
+  UInt32           paramSize = 0;
+  OSStatus         err = noErr;
+
+  // Find the ID of the default Device.
+  paramSize = sizeof(AudioDeviceID);
+  SAFELY(AudioHardwareGetProperty(kAudioHardwarePropertyDefaultOutputDevice, &paramSize, &defaultDeviceID));
+  if (err == noErr)
+    ret = new PlexAudioDevice(defaultDeviceID);
+
+  return PlexAudioDevicePtr(ret);
 }
 
 #if 0

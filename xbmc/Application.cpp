@@ -235,6 +235,7 @@
 #ifdef __APPLE__
 #include "CocoaUtils.h"
 #include "PlexRemoteHelper.h"
+#include "CoreAudioPlexSupport.h"
 #include "PlexMediaServerHelper.h"
 #include "QTPlayer.h"
 #include "GUIDialogUtils.h"
@@ -1170,6 +1171,11 @@ HRESULT CApplication::Create(HWND hWnd)
   // Note that the screensaver should turn off.
   Cocoa_UpdateSystemActivity();
   Cocoa_TurnOffScreenSaver();
+
+  // Set the correct audio device.
+  PlexAudioDevicePtr device = PlexAudioDevices::FindByName(g_guiSettings.GetString("audiooutput.audiodevice"));
+  if (device)
+    device->setDefault();
   
   // Start background music playing
   Cocoa_UpdateGlobalVolume(g_application.GetVolume());

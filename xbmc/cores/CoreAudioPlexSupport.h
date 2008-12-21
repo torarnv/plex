@@ -80,6 +80,9 @@ class PlexAudioDevices
    /// Look up ID by name.
    static PlexAudioDevicePtr FindByName(const string& audioDeviceName);
    
+   /// Get the default device.
+   static PlexAudioDevicePtr FindDefault();
+   
  protected:
    
   PlexAudioDevices() {}
