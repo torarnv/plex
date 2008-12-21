@@ -185,6 +185,14 @@ bool CFileCurl::CReadState::Seek(__int64 pos)
   if(pos == m_filePos)
     return true;
 
+  // Optimization for seeking at end of file.
+  if (pos == m_fileSize)
+  {
+    m_filePos = pos;
+    m_buffer.Clear();
+    return true;
+  }
+  
   if(m_buffer.SkipBytes((int)(pos - m_filePos)))
   {
     m_filePos = pos;
@@ -284,7 +292,7 @@ CFileCurl::CFileCurl()
   m_ftpauth = "";
   m_ftpport = "";
   m_ftppasvip = false;
-  m_bufferSize = 32768;
+  m_bufferSize = 128*1024;
   m_binary = true;
   m_state = new CReadState();
 }
@@ -338,7 +346,7 @@ void CFileCurl::SetCommonOptions(CReadState* state)
   
   // Allow us to follow two redirects
   g_curlInterface.easy_setopt(h, CURLOPT_FOLLOWLOCATION, TRUE);
-  g_curlInterface.easy_setopt(h, CURLOPT_MAXREDIRS, 5);
+  g_curlInterface.easy_setopt(h, CURLOPT_MAXREDIRS, 8);
 
   // When using multiple threads you should set the CURLOPT_NOSIGNAL option to
   // TRUE for all handles. Everything will work fine except that timeouts are not
@@ -392,7 +400,7 @@ void CFileCurl::SetCommonOptions(CReadState* state)
   if (m_userAgent.length() > 0)
     g_curlInterface.easy_setopt(h, CURLOPT_USERAGENT, m_userAgent.c_str());
   else /* set some default agent as shoutcast doesn't return proper stuff otherwise */
-    g_curlInterface.easy_setopt(h, CURLOPT_USERAGENT, "XBMC/pre-2.1 (compatible; MSIE 6.0; Windows NT 5.1; WinampMPEG/5.09)");
+    g_curlInterface.easy_setopt(h, CURLOPT_USERAGENT, "Plex Firefox/2.0.0.11");
   
   if (m_useOldHttpVersion)
     g_curlInterface.easy_setopt(h, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
@@ -408,6 +416,10 @@ void CFileCurl::SetCommonOptions(CReadState* state)
   if(m_timeout == 0)
     m_timeout = g_advancedSettings.m_curlclienttimeout;
 
+  // disable signal generation and timeouts in curl - this causes crashes in multithreaded apps
+  g_curlInterface.easy_setopt(h, CURLOPT_NOSIGNAL, 1);
+  g_curlInterface.easy_setopt(h, CURLOPT_DNS_CACHE_TIMEOUT, 0);
+  
   // set our timeouts, we abort connection after m_timeout, and reads after no data for m_timeout seconds
   g_curlInterface.easy_setopt(h, CURLOPT_CONNECTTIMEOUT, m_timeout);
   g_curlInterface.easy_setopt(h, CURLOPT_LOW_SPEED_LIMIT, 1);
@@ -621,6 +633,8 @@ bool CFileCurl::Open(const CURL& url, bool bBinary)
   }
 
   m_seekable = false;
+  
+  // FIXME: Should be "if(m_state->m_httpheader.GetValue("Accept-Ranges").Equals("bytes", false))"
   if(m_state->m_fileSize > 0)
     m_seekable = true;
 
@@ -894,6 +908,14 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
         CURLMsg* msg;
         while((msg = g_curlInterface.multi_info_read(m_multiHandle, &msgs)))
         {
+          long nRet=200;
+          g_curlInterface.easy_getinfo(msg->easy_handle, CURLINFO_RESPONSE_CODE, &nRet);
+          if (nRet == 416) 
+          {
+            //m_seekable = false;
+            return false;
+          }
+          
           if (msg->msg == CURLMSG_DONE)
             return (msg->data.result == CURLE_OK);
         }
