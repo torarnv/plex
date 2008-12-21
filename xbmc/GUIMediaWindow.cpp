@@ -45,6 +45,7 @@
 #include "GUIWindowManager.h"
 #include "GUIDialogOK.h"
 #include "PlayList.h"
+#include "PlexDirectory.h"
 
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
 #include "SkinInfo.h"
@@ -59,6 +60,7 @@
 #define CONTROL_LABELFILES        12
 
 using namespace std;
+using namespace DIRECTORY;
 
 CGUIMediaWindow::CGUIMediaWindow(DWORD id, const char *xmlFile)
     : CGUIWindow(id, xmlFile)
@@ -194,7 +196,6 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
         }
         else
           viewMode = m_viewControl.GetNextViewMode();
-
         if (m_guiState.get())
           m_guiState->SaveViewAsControl(viewMode);
 
@@ -699,6 +700,33 @@ bool CGUIMediaWindow::OnClick(int iItem)
       else return true;
     }
     
+    // Show a context menu for PMS popup directories
+    if (pItem->m_bIsPopupMenuItem)
+    {
+      CFileItemList* fileItems = new CFileItemList();
+      vector<CStdString> items;
+      CPlexDirectory plexDir;
+      plexDir.GetDirectory(directory.m_strPath, *fileItems);
+      for ( int i = 0; i < fileItems->Size(); i++ )
+      {
+        CFileItemPtr item = fileItems->Get(i);
+        items.push_back(item->GetLabel());
+      }
+      int choice = CGUIDialogContextMenu::ShowAndGetChoice(items, GetContextPosition());
+      if (choice > 0)
+      {
+        CFileItemPtr selectedItem = fileItems->Get(choice-1);
+        if (selectedItem->m_bIsFolder)
+          Update(selectedItem->m_strPath);
+        else
+        { selectedItem->SetLabel(pItem->GetLabel() + ": " + selectedItem->GetLabel());
+          OnPlayMedia(selectedItem.get());
+        }
+      }
+      delete fileItems;
+      return true;
+    }
+    
     if (!Update(directory.m_strPath))
       ShowShareErrorMessage(&directory);
 
@@ -987,23 +1015,28 @@ void CGUIMediaWindow::SetHistoryForPath(const CStdString& strDirectory)
 // This function is called by OnClick()
 bool CGUIMediaWindow::OnPlayMedia(int iItem)
 {
+  return OnPlayMedia(m_vecItems->Get(iItem).get());
+}
+
+bool CGUIMediaWindow::OnPlayMedia(CFileItem* pItem)
+{
   // Reset Playlistplayer, playback started now does
   // not use the playlistplayer.
   g_playlistPlayer.Reset();
   g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
-  CFileItemPtr pItem=m_vecItems->Get(iItem);
-
+  
   bool bResult = false;
   if (pItem->IsInternetStream() || pItem->IsPlayList())
     bResult = g_application.PlayMedia(*pItem, m_guiState->GetPlaylist());
   else
     bResult = g_application.PlayFile(*pItem);
-
+  
   if (pItem->m_lStartOffset == STARTOFFSET_RESUME)
     pItem->m_lStartOffset = 0;
-
+  
   return bResult;
 }
+
 
 // \brief Synchonize the fileitems with the playlistplayer
 // It recreated the playlist of the playlistplayer based

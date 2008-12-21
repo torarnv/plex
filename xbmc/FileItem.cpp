@@ -370,6 +370,7 @@ void CFileItem::Reset()
   m_pictureInfoTag=NULL;
   m_extrainfo.Empty();
   m_strFanartUrl.Empty();
+  m_bIsPopupMenuItem = false;
   
   SetInvalid();
 }

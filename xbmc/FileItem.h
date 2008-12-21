@@ -247,6 +247,7 @@ public:
   CStdString m_strLockCode;
   int m_iHasLock; // 0 - no lock 1 - lock, but unlocked 2 - locked
   int m_iBadPwdCount;
+  bool m_bIsPopupMenuItem;
   bool m_bIsSearchDir;            // whether to show keyboard & append input as query
   CStdString m_strSearchPrompt;   // text to show as keyboard header
   
