@@ -5946,24 +5946,24 @@ void CApplication::ProcessSlow()
     CheckScreenSaver();
 
 #ifdef __APPLE__
-    // If playing video tickle system, or else if in full-screen (and we're active) then tickle the system.
-    if (((timeGetTime() - m_dwOSXscreensaverTicks) > 5000) && ((g_advancedSettings.m_fullScreen == true && !m_bInactive) || (IsPlayingVideo() && !IsPaused())))
-    {
-      Cocoa_UpdateSystemActivity();
-      m_dwOSXscreensaverTicks = timeGetTime();
-    }
-
     // Only activate display sleep if fullscreen mode.
     if (g_advancedSettings.m_fullScreen)
       CheckDisplaySleep();
-#endif
 
     // Check if we need to shutdown (if enabled).
-#ifdef __APPLE__
     if (g_advancedSettings.m_fullScreen)
 #endif
       CheckShutdown();
   }
+
+#ifdef __APPLE__
+  // If not inactive tickle system, or else if in full-screen always tickle.
+  if (((timeGetTime() - m_dwOSXscreensaverTicks) > 5000) && (/*g_advancedSettings.m_fullScreen == true ||*/  !m_bInactive))
+  {
+    Cocoa_UpdateSystemActivity();
+    m_dwOSXscreensaverTicks = timeGetTime();
+  }
+#endif
 
   // check if we should restart the player
   CheckDelayedPlayerRestart();
