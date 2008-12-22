@@ -35,7 +35,7 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
   isThemeMusicEnabled = NO;
   isThemeDownloadingEnabled = NO;
   isPlaying = NO;
-  isPaused = YES;
+  isFocused = NO;
   volumeFadeLevel = 100;
   volumeCrossFadeLevel = 100;
   targetVolumeFade = 100;
@@ -169,7 +169,7 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
 - (void)startMusic
 {
   if (!isPlaying) {
-    if (isEnabled && !isPaused)
+    if (isEnabled && isFocused)
     {
       if (currentId == nil)
       {
@@ -219,7 +219,7 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
     [self updateMusicVolume];
     
     //Start playing if required
-    if (isEnabled && isPlaying && (currentId == nil) && !isPaused) 
+    if (isEnabled && isPlaying && (currentId == nil) && isFocused)
       [mainMusic play];
   }
 }
@@ -254,7 +254,7 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
     // If the theme is nil, restart the background music
     if (newId == nil)
     {
-      if ((currentId != nil) && (isPlaying) && !isPaused)
+      if ((currentId != nil) && (isPlaying) && isFocused)
       {
         [self crossFadeToTheme:NO];
         [mainMusic play];
@@ -272,7 +272,7 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
           currentId = newId;
           themeMusic = [[QTMovie alloc] initWithFile:localFile error:nil];  
           [self updateMusicVolume];
-          if (isPlaying && !isPaused) 
+          if (isPlaying && isFocused)
           {
             [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(checkThemeCrossFade:) userInfo:nil repeats:YES];
             [themeMusic play];
@@ -311,12 +311,16 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
 
 - (void)fadeAudioTo:(NSNumber *)theTargetVolume
 {
+  if (!isPlaying || !isEnabled)
+    return;
+
   float targetVolume = [theTargetVolume floatValue];
   if (targetVolume < 0)
     targetVolume = 0;
   else if (targetVolume > 100)
     targetVolume = 100;
-  if (targetVolumeFade != targetVolume)
+
+  if ((targetVolume != targetVolumeFade) && isFocused || (!isFocused && targetVolume < volumeFadeLevel))
   {
     targetVolumeFade = targetVolume;
     NSTimeInterval duration = 0.6;
@@ -324,7 +328,6 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
     if (interval == 0)
     {
       volumeFadeLevel = targetVolumeFade;
-      [self updateMusicVolume];
     }
     else
     {
@@ -335,6 +338,9 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
       fadeTimer = [[NSTimer scheduledTimerWithTimeInterval:interval target:self selector:@selector(adjustVolumeFadeLevel) userInfo:nil repeats:YES] retain];
     }
   }
+  [self updateMusicVolume];
+  if (volumeFadeLevel > 0 || targetVolumeFade > 0)
+    [mainMusic play];
 }
 
 - (void)crossFadeToTheme:(BOOL)toTheme
@@ -385,13 +391,6 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
   {
     [mainMusic stop];
     [themeMusic stop];
-    isPaused = true;
-  }
-  else
-  {
-    [mainMusic play];
-    [themeMusic play];
-    isPaused = false;
   }
   
   // Update the volume
@@ -421,13 +420,11 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
   if (volumeCrossFadeLevel <= 0)
   {
     [mainMusic stop];
-    isPaused = true;
   }
   else if (volumeCrossFadeLevel >= 100)
   {
     [themeMusic stop];
     [themeMusic release], themeMusic = nil;
-    isPaused = false;
   }
   
   // Update the volume
@@ -436,24 +433,32 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
 
 - (void)foundFocus
 {
-  // Cancel previous pause or play calls
-  [NSObject cancelPreviousPerformRequestsWithTarget:self];
+  isFocused = YES;
   
-  isPaused = NO;
-  
-  // Fade the audio in after we wait .5 seconds
-  [self performSelector:@selector(play) withObject:nil afterDelay:0.5];  // wait 2 seconds before we try to pause
+  if (isPlaying && isEnabled)
+  {
+    // Cancel previous pause or play calls
+    [NSObject cancelPreviousPerformRequestsWithTarget:self];
+
+    // Fade the audio in after we wait .5 seconds
+    [self performSelector:@selector(play) withObject:nil afterDelay:0.5];  // wait 2 seconds before we try to pause
+  }
 }
 
 - (void)lostFocus
 {
-  // Cancel previous pause or play calls
-  [NSObject cancelPreviousPerformRequestsWithTarget:self];
+  isFocused = NO;
   
-  // Play the audio at 50% while we don't have the focus
-  [self performSelector:@selector(fadeAudioTo:) withObject:[NSNumber numberWithInt:15] afterDelay:0.1];
-  
-  // Play the audio at 50% for 2 seconds before we completely fade it out
-  [self performSelector:@selector(pause) withObject:nil afterDelay:5.0];  
+  if (isPlaying && isEnabled)
+  {
+    // Cancel previous pause or play calls
+    [NSObject cancelPreviousPerformRequestsWithTarget:self];
+
+    // Play the audio at 50% while we don't have the focus
+    [self performSelector:@selector(fadeAudioTo:) withObject:[NSNumber numberWithInt:15] afterDelay:0.1];
+
+    // Play the audio at 50% for 2 seconds before we completely fade it out
+    [self performSelector:@selector(pause) withObject:nil afterDelay:5.0];
+  }
 }
 @end

@@ -14,7 +14,7 @@
   BOOL isThemeMusicEnabled;
   BOOL isThemeDownloadingEnabled;
   BOOL isPlaying;
-  BOOL isPaused;
+  BOOL isFocused;
   
   float volume;
   int volumeFadeLevel;
