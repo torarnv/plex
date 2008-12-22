@@ -12,7 +12,7 @@
 #define BACKGROUND_MUSIC_APP_SUPPORT_SUBDIR       @"/Plex/Background Music"
 #define BACKGROUND_MUSIC_THEME_DOWNLOAD_URL       @"http://tvthemes.plexapp.com"
 #define BACKGROUND_MUSIC_THEME_REQ_LIMIT          3600
-#define BACKGROUND_MUSIC_FADE_DELAY               0.5
+#define BACKGROUND_MUSIC_FADE_DURATION            0.6
 
 @implementation BackgroundMusicPlayer
 
@@ -74,10 +74,7 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
   themeMusicRequests = [[NSMutableDictionary alloc] init];
   
   // Register for notification when tracks finish playing
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(trackDidEnd:) name:QTMovieDidEndNotification object:mainMusic];  
-  
-  // Load a random file
-  [self loadNextTrack];
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(trackDidEnd:) name:QTMovieDidEndNotification object:nil];  
   
   return _o_sharedMainInstance;
 }
@@ -110,7 +107,7 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
     isEnabled = enabled;
     if (enabled)
     {
-      [self loadNextTrack];
+      [self play];
     }
     else
     {
@@ -158,7 +155,20 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
 
 - (void)play
 {
+  static bool alreadyPlaying = false;
+
+  // Prevent recursive calls to play
+  if (alreadyPlaying)
+    return;
+
+  if (!mainMusic)
+  {
+    alreadyPlaying = true;
+    // Load a random track, if one is not already loaded
+    [self loadNextTrack];
+  }
   [self fadeAudioTo:[NSNumber numberWithInt:100]];
+  alreadyPlaying = false;
 }
 
 - (BOOL)isPlaying 
@@ -168,38 +178,31 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
 
 - (void)startMusic
 {
-  if (!isPlaying) {
+  if (!isPlaying)
+  {
+    isPlaying = YES;
     if (isEnabled && isFocused)
     {
-      if (currentId == nil)
-      {
-        [mainMusic play];
-      }
-      else
-      {
+      if (currentId)
         [themeMusic gotoBeginning]; // Make sure theme music always starts at the beginning when returning from video playback
-        [themeMusic play];
-      }
+      [self play];
     }
-    isPlaying = YES;
   }
 }
 
 - (void)stopMusic
 {
-  if (isPlaying) {
-    if (isEnabled)
-    {
-      [mainMusic stop];
-      [themeMusic stop];
-    }
+  if (isPlaying)
+  {
+    [self pause];
     isPlaying = NO;
   }
 }
 
 - (void)loadNextTrack
 {
-  if ([mainMusicNames count] > 0) {
+  while ([mainMusicNames count] > 0)
+  {
     // Load a random track from the mainMusicNames array
     [mainMusic release];
     int index = (random() % [mainMusicNames count]);
@@ -208,20 +211,17 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
     mainMusic = [[QTMovie alloc] initWithFile:[mainMusicPath stringByAppendingPathComponent:[mainMusicNames objectAtIndex:index]] error:&qtError];
     
     // If an error occurs (unsupported file) start from the beginning again
-    if (qtError != nil) {
-      // Maybe we should remove the unsupported file from the mainMusicNames array?
-      // TODO: Potential endless loop
-      [self loadNextTrack];
-      return;
+    if (qtError)
+    {
+      // Remove the unsupported file from the mainMusicNames array
+      [mainMusicNames removeObjectAtIndex:index];
     }
-    
-    // Set the volume level
-    [self updateMusicVolume];
-    
-    //Start playing if required
-    if (isEnabled && isPlaying && (currentId == nil) && isFocused)
-      [mainMusic play];
+    else
+    {
+      break;
+    }
   }
+  [self play];
 }
 
 - (void)trackDidEnd:(NSNotification *)aNotification
@@ -238,7 +238,7 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
     [timer invalidate];
     return;
   }
-  double duration = [themeMusic duration].timeValue - (0.6 * [themeMusic duration].timeScale);
+  double duration = [themeMusic duration].timeValue - (BACKGROUND_MUSIC_FADE_DURATION * [themeMusic duration].timeScale);
   if ([themeMusic currentTime].timeValue > duration)
   {
     [timer invalidate];
@@ -254,12 +254,8 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
     // If the theme is nil, restart the background music
     if (newId == nil)
     {
-      if ((currentId != nil) && (isPlaying) && isFocused)
-      {
+      if (currentId != nil && isPlaying && isFocused)
         [self crossFadeToTheme:NO];
-        [mainMusic play];
-      }
-      currentId = nil;
     }
     else
     {
@@ -270,15 +266,14 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
         if ([[NSFileManager defaultManager] fileExistsAtPath:localFile])
         {
           currentId = newId;
+          [themeMusic release];
           themeMusic = [[QTMovie alloc] initWithFile:localFile error:nil];  
-          [self updateMusicVolume];
+
           if (isPlaying && isFocused)
           {
             [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(checkThemeCrossFade:) userInfo:nil repeats:YES];
-            [themeMusic play];
             [self crossFadeToTheme:YES];
           }
-          return;
         }
       }
     }
@@ -323,7 +318,7 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
   if ((targetVolume != targetVolumeFade) && isFocused || (!isFocused && targetVolume < volumeFadeLevel))
   {
     targetVolumeFade = targetVolume;
-    NSTimeInterval duration = 0.6;
+    NSTimeInterval duration = BACKGROUND_MUSIC_FADE_DURATION;
     NSTimeInterval interval = duration / (fabsf(targetVolumeFade - volumeFadeLevel) / (float)(fadeIncrement <= 0 ? 5 : fadeIncrement));
     if (interval == 0)
     {
@@ -333,38 +328,53 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
     {
       [fadeTimer invalidate];
       [fadeTimer release], fadeTimer = nil;
-      if (volumeFadeLevel == targetVolumeFade)
-        return;
-      fadeTimer = [[NSTimer scheduledTimerWithTimeInterval:interval target:self selector:@selector(adjustVolumeFadeLevel) userInfo:nil repeats:YES] retain];
+      fadeTimer = [[NSTimer alloc] initWithFireDate:[NSDate dateWithTimeIntervalSinceNow:interval] interval:interval target:self selector:@selector(adjustVolumeFadeLevel) userInfo:nil repeats:YES];
+      [[NSRunLoop mainRunLoop] addTimer:fadeTimer forMode:NSDefaultRunLoopMode];
     }
   }
+  // Set the volume level
   [self updateMusicVolume];
-  if (volumeFadeLevel > 0 || targetVolumeFade > 0)
+
+  // Play the main track if the theme music is not playing and the volume is turned on, or we're in the middle of a cross fade 
+  if ((!currentId && (volumeFadeLevel > 0 || targetVolumeFade > 0)) || (currentId && targetVolumeCrossFade != volumeCrossFadeLevel))
     [mainMusic play];
+
+  // Play the theme track if it is available
+  if (currentId)
+    [themeMusic play];
 }
 
 - (void)crossFadeToTheme:(BOOL)toTheme
 {
+  if (!isPlaying || !isEnabled)
+    return;
+
   if (toTheme) 
     targetVolumeCrossFade = 0;
   else 
     targetVolumeCrossFade = 100;
 
-  NSTimeInterval duration = 0.6; //(toTheme ? 0.6 : ([themeMusic duration].timeValue - [themeMusic currentTime].timeValue) / [themeMusic currentTime].timeScale);
-  NSTimeInterval interval = duration / (fabsf(targetVolumeCrossFade - volumeCrossFadeLevel) / (float)(fadeIncrement <= 0 ? 1 : fadeIncrement));
-  if (interval == 0)
+  if ((targetVolumeCrossFade != volumeCrossFadeLevel) && isFocused || (!isFocused && targetVolumeCrossFade < volumeCrossFadeLevel))
   {
-    volumeCrossFadeLevel = targetVolumeCrossFade;
-    [self updateMusicVolume];
+    NSTimeInterval duration = BACKGROUND_MUSIC_FADE_DURATION;
+    NSTimeInterval interval = duration / (fabsf(targetVolumeCrossFade - volumeCrossFadeLevel) / (float)(fadeIncrement <= 0 ? 1 : fadeIncrement));
+    if (interval == 0)
+    {
+      volumeCrossFadeLevel = targetVolumeCrossFade;
+    }
+    else
+    {
+      [crossFadeTimer invalidate];
+      [crossFadeTimer release], crossFadeTimer = nil;
+      crossFadeTimer = [[NSTimer alloc] initWithFireDate:[NSDate dateWithTimeIntervalSinceNow:interval] interval:interval target:self selector:@selector(adjustVolumeCrossFadeLevel) userInfo:nil repeats:YES];
+      [[NSRunLoop mainRunLoop] addTimer:crossFadeTimer forMode:NSDefaultRunLoopMode];
+    }
   }
-  else
-  {
-    [crossFadeTimer invalidate];
-    [crossFadeTimer release], crossFadeTimer = nil;
-    if (volumeCrossFadeLevel == targetVolumeCrossFade)
-      return;
-    crossFadeTimer = [[NSTimer scheduledTimerWithTimeInterval:interval target:self selector:@selector(adjustVolumeCrossFadeLevel) userInfo:nil repeats:YES] retain];
-  }
+  // Set the volume level
+  [self updateMusicVolume];
+  // Make sure we are playing both tracks as we want to cross fade them
+  [mainMusic play];
+  [themeMusic play];
 }
 
 - (void)adjustVolumeFadeLevel
