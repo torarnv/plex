@@ -238,7 +238,9 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
     [timer invalidate];
     return;
   }
-  double duration = [themeMusic duration].timeValue - (BACKGROUND_MUSIC_FADE_DURATION * [themeMusic duration].timeScale);
+  
+  // Pad when the background music should fade out by a little bit, it makes the transition sound a bit smoother
+  double duration = [themeMusic duration].timeValue - ((BACKGROUND_MUSIC_FADE_DURATION + 0.1) * [themeMusic duration].timeScale);
   if ([themeMusic currentTime].timeValue > duration)
   {
     [timer invalidate];
@@ -256,6 +258,7 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
     {
       if (currentId != nil && isPlaying && isFocused)
         [self crossFadeToTheme:NO];
+      currentId = nil;
     }
     else
     {
