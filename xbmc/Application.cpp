@@ -5435,10 +5435,10 @@ void CApplication::SleepSystem()
 
 void CApplication::ResetDisplaySleep()
 {
-#ifdef __APPLE__
-  m_dwShutdownTick = m_dwSaverTick = timeGetTime();
-  m_bDisplaySleeping = false;
-#endif
+  // TODO: Clean up m_idleTimer use
+  m_idleTimer.StartZero();
+  ResetScreenSaver();
+  ResetScreenSaverWindow();
 }
 
 void CApplication::CheckDisplaySleep()
@@ -5965,7 +5965,7 @@ void CApplication::ProcessSlow()
 
 #ifdef __APPLE__
   // If not inactive tickle system, or else if in full-screen always tickle.
-  if (((timeGetTime() - m_dwOSXscreensaverTicks) > 5000) && (/*g_advancedSettings.m_fullScreen == true ||*/  !m_bInactive))
+  if (((timeGetTime() - m_dwOSXscreensaverTicks) > 5000) && (g_advancedSettings.m_fullScreen || !m_bInactive))
   {
     Cocoa_UpdateSystemActivity();
     m_dwOSXscreensaverTicks = timeGetTime();
