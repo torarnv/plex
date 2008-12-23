@@ -345,6 +345,14 @@ class PlexMediaGenre : public PlexMediaNode
   virtual void DoBuildFileItem(CFileItemPtr& pItem, const string& parentPath, TiXmlElement& el)
   {
     pItem->SetLabel(el.Attribute("genre"));
+    
+    // Thumbnail.
+    const char* thumb = el.Attribute("thumb");
+    if (thumb && strlen(thumb) > 0)
+    {
+      string strThumb = CPlexDirectory::ProcessUrl(parentPath, thumb, false);
+      pItem->SetThumbnailImage(strThumb);
+    }
   }
 };
 
@@ -508,7 +516,7 @@ class PlexMediaPhoto : public PlexMediaNode
     
     // Thumbnail.
     const char* thumb = el.Attribute("thumb");
-    if (thumb)
+    if (thumb && strlen(thumb) > 0)
     {
       string strThumb = CPlexDirectory::ProcessUrl(parentPath, thumb, false);
       pItem->SetThumbnailImage(strThumb);
