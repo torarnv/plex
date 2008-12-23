@@ -163,6 +163,7 @@ public:
   void CheckPlayingProgress();
   void CheckAudioScrobblerStatus();
   void ActivateScreenSaver(bool forceType = false);
+  void ActivateVisualizer();
 #ifdef __APPLE__
   void CheckForUpdates();
 #endif

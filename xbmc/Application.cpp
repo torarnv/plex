@@ -5282,6 +5282,13 @@ void CApplication::CheckScreenSaver()
     ActivateScreenSaver();
 }
 
+void CApplication::ActivateVisualizer()
+{
+  m_screenSaverMode = "Visualisation";
+  m_gWindowManager.ActivateWindow(WINDOW_VISUALISATION);
+  return;
+}
+
 // activate the screensaver.
 // if forceType is true, we ignore the various conditions that can alter
 // the type of screensaver displayed

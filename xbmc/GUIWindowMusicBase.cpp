@@ -1105,7 +1105,7 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
   
   // Either way, turn on visualizer so we can control things.
   if (g_advancedSettings.m_bVisualizerOnPlay)
-    g_application.getApplicationMessenger().ActivateScreenSaver();
+    g_application.getApplicationMessenger().ActivateVisualizer();
 }
 
 void CGUIWindowMusicBase::LoadPlayList(const CStdString& strPlayList)

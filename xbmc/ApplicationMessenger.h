@@ -54,7 +54,7 @@ class CFileItem;
 #define TMSG_TOGGLEFULLSCREEN     320
 #define TMSG_MOVE_TO_PREV_SCREEN  321
 #define TMSG_MOVE_TO_NEXT_SCREEN  322
-#define TMSG_ACTIVATE_SCREENSAVER 323
+#define TMSG_ACTIVATE_VISUALIZER  323
 
 #define TMSG_HTTPAPI              400
 
@@ -111,7 +111,7 @@ public:
   void SwitchToFullscreen(); //
   void ToggleFullscreen();
   void SleepSystem();
-  void ActivateScreenSaver();
+  void ActivateVisualizer();
 
   CStdString GetResponse();
   int SetResponse(CStdString response);

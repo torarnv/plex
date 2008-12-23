@@ -398,8 +398,8 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       g_graphicsContext.Unlock();
       break;
       
-    case TMSG_ACTIVATE_SCREENSAVER:
-      g_application.ActivateScreenSaver();
+    case TMSG_ACTIVATE_VISUALIZER:
+      g_application.ActivateVisualizer();
       break;
       
     case TMSG_MOVE_TO_PREV_SCREEN:
@@ -718,9 +718,9 @@ void CApplicationMessenger::SleepSystem()
 	SendMessage(tMsg);
 }
 
-void CApplicationMessenger::ActivateScreenSaver()
+void CApplicationMessenger::ActivateVisualizer()
 {
-  ThreadMessage tMsg = {TMSG_ACTIVATE_SCREENSAVER};
+  ThreadMessage tMsg = {TMSG_ACTIVATE_VISUALIZER};
   SendMessage(tMsg);
 }
 

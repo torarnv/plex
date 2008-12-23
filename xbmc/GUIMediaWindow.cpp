@@ -807,8 +807,8 @@ bool CGUIMediaWindow::OnClick(int iItem)
         g_playlistPlayer.Play(songToPlay);
 
         // Turn on visualizer so we can control things.
-        if (m_guiState->GetPlaylist() == PLAYLIST_MUSIC && g_advancedSettings.m_bVisualizerOnPlay)
-          g_application.getApplicationMessenger().ActivateScreenSaver();
+        if (m_guiState->GetPlaylist() == PLAYLIST_MUSIC && g_advancedSettings.m_bVisualizerOnPlay) 
+          g_application.getApplicationMessenger().ActivateVisualizer();
       }
       return true;
     }
