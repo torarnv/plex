@@ -36,69 +36,8 @@
 #include "DVDCodecs/Overlay/DVDOverlaySSA.h"
 #include <sstream>
 #include <iomanip>
-#include <numeric>
 
 using namespace std;
-
-class CPulldownCorrection
-{
-public:
-  CPulldownCorrection()
-  {
-    m_duration = 0.0;
-    m_accum    = 0;
-    m_total    = 0;
-    m_next     = m_pattern.end();
-    if(1)
-    {
-      int d[] = {2, 2, 3, 2, 3};
-      init(25.0, d, d+5);
-    }
-  }
-
-  void init(double fps, int *begin, int *end)
-  {
-    std::copy(begin, end, std::back_inserter(m_pattern));
-    m_duration = DVD_TIME_BASE / fps;
-    m_accum    = 0;
-    m_total    = std::accumulate(m_pattern.begin(), m_pattern.end(), 0);
-    m_next     = m_pattern.begin();
-  }
-
-  double pts()
-  {
-    double input  = m_duration * std::distance(m_pattern.begin(), m_next);
-    double output = m_duration * m_accum / m_total;
-    return output - input;
-  }
-
-  double dur()
-  {
-    return m_duration * m_pattern.size() * *m_next / m_total;
-  }
-
-  void next()
-  {
-    m_accum += *m_next;
-    if(++m_next == m_pattern.end())
-    {
-      m_next  = m_pattern.begin();
-      m_accum = 0;
-    }
-  }
-
-  bool enabled()
-  {
-    return m_pattern.size() > 0;
-  }
-private:
-  double                     m_duration;
-  int                        m_total;
-  int                        m_accum;
-  std::vector<int>           m_pattern;
-  std::vector<int>::iterator m_next;
-};
-
 
 CDVDPlayerVideo::CDVDPlayerVideo(CDVDClock* pClock, CDVDOverlayContainer* pOverlayContainer) 
 : CThread()
@@ -263,7 +202,6 @@ void CDVDPlayerVideo::Process()
 
   DVDVideoPicture picture;
   CDVDVideoPPFFmpeg mDeinterlace(CDVDVideoPPFFmpeg::ED_DEINT_FFMPEG);
-  CPulldownCorrection pulldown;
 
   memset(&picture, 0, sizeof(DVDVideoPicture));
   
@@ -494,22 +432,11 @@ void CDVDPlayerVideo::Process()
 
             /* if frame has a pts (usually originiating from demux packet), use that */
             if(picture.pts != DVD_NOPTS_VALUE)
-            {
-              if(pulldown.enabled())
-                picture.pts += pulldown.pts();
-
               pts = picture.pts;
-            }
 
             int iResult;
             do 
             {
-              if(pulldown.enabled())
-              {
-                picture.iDuration = pulldown.dur();
-                pulldown.next();
-              }
-
               try 
               {
                 iResult = OutputPicture(&picture, pts);
@@ -874,7 +801,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
 #ifdef HAS_VIDEO_PLAYBACK
 
   float maxfps = g_renderManager.GetMaximumFPS();
-  if( m_speed != DVD_PLAYSPEED_NORMAL && m_fFrameRate * abs(m_speed) / DVD_PLAYSPEED_NORMAL >  maxfps)
+  if( m_fFrameRate * abs(m_speed) / DVD_PLAYSPEED_NORMAL >  maxfps )
   {
     // calculate frame dropping pattern to render at this speed
     // we do that by deciding if this or next frame is closest
@@ -889,8 +816,8 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
       return result | EOS_DROPPED;
 #endif
 
-    while(!m_bStop && m_dropbase < m_droptime)             m_dropbase += frametime;
-    while(!m_bStop && m_dropbase - frametime > m_droptime) m_dropbase -= frametime;
+    while(m_dropbase < m_droptime)             m_dropbase += frametime;
+    while(m_dropbase - frametime > m_droptime) m_dropbase -= frametime;
   } 
   else
   {
@@ -929,7 +856,14 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   // tell the renderer that we've finished with the image (so it can do any
   // post processing before FlipPage() is called.)
   g_renderManager.ReleaseImage(index);
-  g_renderManager.FlipPage(CThread::m_bStop, (iCurrentClock + iSleepTime) / DVD_TIME_BASE, -1, mDisplayField);
+
+  // present this image after the given delay, but correct for copy time
+  double delay = iCurrentClock + iSleepTime - m_pClock->GetAbsoluteClock();
+
+  if(delay<0)
+    g_renderManager.FlipPage( 0, -1, mDisplayField);
+  else
+    g_renderManager.FlipPage( (DWORD)(delay * 1000 / DVD_TIME_BASE), -1, mDisplayField);
 
 #else
   // no video renderer, let's mark it as dropped

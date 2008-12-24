@@ -43,13 +43,10 @@
 #include "LinuxRenderer.h"
 #endif
 
-/* to use the same as player */
-#include "../dvdplayer/DVDClock.h"
-
 CXBoxRenderManager g_renderManager;
 
 
-#define MAXPRESENTDELAY 0.500
+#define MAXPRESENTDELAY 500
 
 /* at any point we want an exclusive lock on rendermanager */
 /* we must make sure we don't have a graphiccontext lock */
@@ -65,34 +62,6 @@ void VBlankCallback(D3DVBLANKDATA *pData)
 }
 #endif
 
-template<class T>
-class CRetakeLock
-{
-public:
-  CRetakeLock(CSharedSection &section, bool immidiate = true, CCriticalSection &owned = g_graphicsContext)
-    : m_owned(owned)
-  {
-    m_count = ExitCriticalSection(m_owned);
-    m_lock  = new T(section);
-    if(immidiate)
-    {
-      RestoreCriticalSection(m_owned, m_count);
-      m_count = 0;
-    }
-  }
-  ~CRetakeLock()
-  {
-    delete m_lock;
-    RestoreCriticalSection(m_owned, m_count);
-  }
-  void Leave() { m_lock->Leave(); }
-  void Enter() { m_lock->Enter(); }
-
-private:
-  T*                m_lock;
-  CCriticalSection &m_owned;
-  DWORD             m_count;
-};
 
 CXBoxRenderManager::CXBoxRenderManager()
 {
@@ -100,6 +69,7 @@ CXBoxRenderManager::CXBoxRenderManager()
   m_bPauseDrawing = false;
   m_bIsStarted = false;
 
+  m_presentdelay = 5; //Just a guess to what delay we have
   m_presentfield = FS_NONE;
   m_presenttime = 0;
   m_rendermethod = 0;
@@ -107,35 +77,25 @@ CXBoxRenderManager::CXBoxRenderManager()
 
 CXBoxRenderManager::~CXBoxRenderManager()
 {
+#ifndef _LINUX
+  DWORD locks = ExitCriticalSection(g_graphicsContext);
+  CExclusiveLock lock(m_sharedSection);
+  RestoreCriticalSection(g_graphicsContext, locks);
+#endif
+
   if (m_pRenderer)
     delete m_pRenderer;
   m_pRenderer = NULL;
 }
 
-/* These is based on QueryPerformanceCounter */
-double CXBoxRenderManager::GetPresentTime()
-{
-  return CDVDClock::GetAbsoluteClock() / DVD_TIME_BASE;
-}
-
-void CXBoxRenderManager::WaitPresentTime(double presenttime)
-{
-  double now = GetPresentTime();
-  while(now + 0.001 < presenttime)
-  {
-    Sleep((int)((presenttime - now) * 1000.0));
-    now = GetPresentTime();
-  }
-}
 bool CXBoxRenderManager::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags)
 {
-  /* all frames before this should be rendered */
-  WaitPresentTime(m_presenttime);
-
-  CRetakeLock<CExclusiveLock> lock(m_sharedSection, false);
+  DWORD locks = ExitCriticalSection(g_graphicsContext);
+  CExclusiveLock lock(m_sharedSection);      
 
   if(!m_pRenderer) 
   {
+    RestoreCriticalSection(g_graphicsContext, locks);
     CLog::Log(LOGERROR, "%s called without a valid Renderer object", __FUNCTION__);
     return false;
   }
@@ -153,12 +113,15 @@ bool CXBoxRenderManager::Configure(unsigned int width, unsigned int height, unsi
     m_bIsStarted = true;
   }
   
+  RestoreCriticalSection(g_graphicsContext, locks);
   return result;
 }
 
 void CXBoxRenderManager::Update(bool bPauseDrawing)
 {
-  CRetakeLock<CExclusiveLock> lock(m_sharedSection);
+  DWORD locks = ExitCriticalSection(g_graphicsContext);
+  CExclusiveLock lock(m_sharedSection);
+  RestoreCriticalSection(g_graphicsContext, locks);
 
   m_bPauseDrawing = bPauseDrawing;
   if (m_pRenderer)
@@ -169,17 +132,23 @@ void CXBoxRenderManager::Update(bool bPauseDrawing)
 
 void CXBoxRenderManager::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 {
-  CSharedLock lock(m_sharedSection);
+  DWORD locks = ExitCriticalSection(g_graphicsContext);
+  CSharedLock lock(m_sharedSection); 
+  RestoreCriticalSection(g_graphicsContext, locks);
 
 #ifdef HAS_SDL_OPENGL  
   if (m_pRenderer)
     m_pRenderer->RenderUpdate(clear, flags | RENDER_FLAG_LAST, alpha);
+
+  m_eventPresented.Set();
 #endif
 }
 
 unsigned int CXBoxRenderManager::PreInit()
 {
-  CRetakeLock<CExclusiveLock> lock(m_sharedSection);
+  DWORD locks = ExitCriticalSection(g_graphicsContext);
+  CExclusiveLock lock(m_sharedSection);
+  RestoreCriticalSection(g_graphicsContext, locks);
 
 #ifndef HAS_SDL
   if(!g_eventVBlank)
@@ -190,8 +159,12 @@ unsigned int CXBoxRenderManager::PreInit()
   }
 #endif
 
+  /* no pedning present */
+  m_eventPresented.Set();
+
   m_bIsStarted = false;
   m_bPauseDrawing = false;
+  m_presentdelay = 5;
   if (!m_pRenderer)
   { 
 #ifndef HAS_SDL
@@ -229,7 +202,14 @@ unsigned int CXBoxRenderManager::PreInit()
 
 void CXBoxRenderManager::UnInit()
 {
-  CRetakeLock<CExclusiveLock> lock(m_sharedSection);
+  DWORD locks = ExitCriticalSection(g_graphicsContext);
+
+  m_bStop = true;
+  m_eventFrame.Set();
+  StopThread();
+
+  CExclusiveLock lock(m_sharedSection);
+  RestoreCriticalSection(g_graphicsContext, locks);
 
   m_bIsStarted = false;
   if (m_pRenderer)
@@ -255,36 +235,69 @@ void CXBoxRenderManager::CreateThumbnail(LPDIRECT3DSURFACE8 surface, unsigned in
 void CXBoxRenderManager::CreateThumbnail(SDL_Surface * surface, unsigned int width, unsigned int height)
 #endif
 {
-  CSharedLock lock(m_sharedSection);
+  DWORD locks = ExitCriticalSection(g_graphicsContext);
+  CExclusiveLock lock(m_sharedSection);
+  RestoreCriticalSection(g_graphicsContext, locks);
+
   if (m_pRenderer)
     m_pRenderer->CreateThumbnail(surface, width, height);
 }
 
-void CXBoxRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0LL*/, int source /*= -1*/, EFIELDSYNC sync /*= FS_NONE*/)
+
+void CXBoxRenderManager::FlipPage(DWORD delay /* = 0LL*/, int source /*= -1*/, EFIELDSYNC sync /*= FS_NONE*/)
 {
-  if(timestamp - GetPresentTime() > MAXPRESENTDELAY)
-    timestamp =  GetPresentTime() + MAXPRESENTDELAY;
+  DWORD timestamp = 0;
 
-  /* make sure any queued frame was presented */
-  if(g_graphicsContext.IsFullScreenVideo())
-    while(!g_application.WaitFrame(100) && !bStop) {}
-  else
-    WaitPresentTime(timestamp);
+  if(delay > MAXPRESENTDELAY) delay = MAXPRESENTDELAY;
+  if(delay > 0)
+    timestamp = GetTickCount() + delay;
 
-  if(bStop)
-    return;
+  CSharedLock lock(m_sharedSection);
+  if(!m_pRenderer) return;
 
-  { CRetakeLock<CExclusiveLock> lock(m_sharedSection);
-    if(!m_pRenderer) return;
+  /* make sure any previous frame was presented */
+  if(g_graphicsContext.IsFullScreenVideo() && (!m_eventPresented.WaitMSec(MAXPRESENTDELAY*2)) )
+    CLog::Log(LOGERROR, " - Timeout waiting for previous frame to be presented");
 
-    m_presenttime  = timestamp;
-    m_presentfield = sync;
+  m_presenttime = timestamp;
+  m_presentfield = sync;
 
+#ifdef HAS_SDL_OPENGL
+  if( 0 ) /*disable async renderer*/
+#else
+  //CSingleLock lock2(g_graphicsContext);
+  if( g_graphicsContext.IsFullScreenVideo() && !g_application.IsPaused() )
+#endif
+  {
+    //lock2.Leave();
+
+    g_graphicsContext.AcquireCurrentContext();
     m_pRenderer->FlipPage(source);
+    g_graphicsContext.ReleaseCurrentContext();
+    if( CThread::ThreadHandle() == NULL ) CThread::Create();
+    m_eventFrame.Set();
   }
+  else
+  {
+    //g_graphicsContext.ReleaseCurrentContext();
+    //lock2.Leave();
 
-  g_application.NewFrame();
-  g_application.WaitFrame(1); // we give the application thread 1ms to present
+    /* if we are not in fullscreen, we don't control when we render */
+    /* so we must await the time and flip then */
+#ifdef HAS_SDL_OPENGL
+    // In OpenGL, we shouldn't be waiting for CThread::m_bStop since rendering is
+    // happening from the main thread.
+    // unsigned int nTicks = GetTickCount();
+    while (timestamp > GetTickCount())
+      ::Sleep(1);
+    m_pRenderer->FlipPage(source);
+    g_application.NewFrame();
+#else
+    while( timestamp > GetTickCount() && !CThread::m_bStop) Sleep(1);
+#endif
+    //m_pRenderer->FlipPage(source);
+    //m_eventPresented.Set();
+  }
 }
 
 float CXBoxRenderManager::GetMaximumFPS()
@@ -311,42 +324,42 @@ float CXBoxRenderManager::GetMaximumFPS()
 
 bool CXBoxRenderManager::SupportsBrightness()
 {
-  CSharedLock lock(m_sharedSection);
   if (m_pRenderer)
+  {
     return m_pRenderer->SupportsBrightness();
+  }
   return false;
 }
 
 bool CXBoxRenderManager::SupportsContrast()
 {
-  CSharedLock lock(m_sharedSection);
   if (m_pRenderer)
+  {
     return m_pRenderer->SupportsContrast();
+  }
   return false;
 }
 
 bool CXBoxRenderManager::SupportsGamma()
 {
-  CSharedLock lock(m_sharedSection);
   if (m_pRenderer)
+  {
     return m_pRenderer->SupportsGamma();
+  }
   return false;
 }
 
 void CXBoxRenderManager::Present()
 {
-  CSharedLock lock(m_sharedSection);
-
-  /* wait for this present to be valid */
-  if(g_graphicsContext.IsFullScreenVideo())
-    WaitPresentTime(m_presenttime);
-
+#ifdef HAS_SDL_OPENGL
   if (!m_pRenderer)
   {
     CLog::Log(LOGERROR, "%s called without valid Renderer object", __FUNCTION__);
     return;
   }
   
+#endif
+
   EINTERLACEMETHOD mInt = g_stSettings.m_currentVideoSettings.m_InterlaceMethod;
 
   /* check for forced fields */
@@ -378,6 +391,17 @@ void CXBoxRenderManager::Present()
       m_presentfield = FS_EVEN;
   }
 
+  /* if we have a field, we will have a presentation delay */
+  if( m_presentfield == FS_NONE )
+    m_presentdelay = 20;
+  else
+    m_presentdelay = 40;
+
+  if( m_presenttime >= m_presentdelay )
+    m_presenttime -=  m_presentdelay;
+  else
+    m_presenttime = 0;
+
   if( mInt == VS_INTERLACEMETHOD_RENDER_BOB || mInt == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED)
     PresentBob();
   else if( mInt == VS_INTERLACEMETHOD_RENDER_WEAVE || mInt == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED)
@@ -386,6 +410,10 @@ void CXBoxRenderManager::Present()
     PresentBlend();
   else
     PresentSingle();
+
+#ifdef HAS_SDL_OPENGL
+  m_eventPresented.Set();
+#endif
 }
 
 /* simple present method */
@@ -394,6 +422,12 @@ void CXBoxRenderManager::PresentSingle()
   CSingleLock lock(g_graphicsContext);
 
   m_pRenderer->RenderUpdate(true, 0, 255);
+
+  unsigned int nTicks = GetTickCount();
+  if (m_presenttime > nTicks) 
+    ::Sleep(m_presenttime - nTicks);
+
+  //while( m_presenttime > GetTickCount() && !CThread::m_bStop ) Sleep(1);
 
 #ifndef HAS_SDL
   D3DDevice::Present( NULL, NULL, NULL, NULL );
@@ -414,6 +448,8 @@ void CXBoxRenderManager::PresentBob()
 #ifndef HAS_SDL
   if( m_presenttime )
   {
+    /* wait for timestamp */
+    while( m_presenttime > GetTickCount() && !CThread::m_bStop ) Sleep(1);
     D3DDevice::Present( NULL, NULL, NULL, NULL );
   }
   else
@@ -430,13 +466,18 @@ void CXBoxRenderManager::PresentBob()
 
   return; // hack for now untill bob rendering is corrected.
 
-#endif
+  m_pRenderer->FlipPage(0);
+  
+  unsigned int nTicks = GetTickCount();
+  if (m_presenttime > nTicks) 
+    ::Sleep(m_presenttime - nTicks);
 
   /* render second field */
   if( m_presentfield == FS_EVEN )
     m_pRenderer->RenderUpdate(true, RENDER_FLAG_ODD | RENDER_FLAG_NOLOCK, 255);
   else
     m_pRenderer->RenderUpdate(true, RENDER_FLAG_EVEN | RENDER_FLAG_NOLOCK, 255);
+#endif
 #ifndef HAS_SDL
   D3DDevice::Present( NULL, NULL, NULL, NULL );
 #endif
@@ -457,6 +498,10 @@ void CXBoxRenderManager::PresentBlend()
     m_pRenderer->RenderUpdate(false, RENDER_FLAG_EVEN, 128);
   }
 
+
+  /* wait for timestamp */
+  while( m_presenttime > GetTickCount() && !CThread::m_bStop ) Sleep(1);
+
 #ifndef HAS_SDL
   D3DDevice::Present( NULL, NULL, NULL, NULL );
 #endif
@@ -469,6 +514,9 @@ void CXBoxRenderManager::PresentWeave()
   CSingleLock lock(g_graphicsContext);
 
   m_pRenderer->RenderUpdate(true, RENDER_FLAG_BOTH, 255);
+
+  /* wait for timestamp */
+  while( m_presenttime > GetTickCount() && !CThread::m_bStop ) Sleep(1);
 
 #ifndef HAS_SDL
   //If we have interlaced video, we have to sync to only render on even fields
@@ -489,3 +537,47 @@ void CXBoxRenderManager::PresentWeave()
   D3DDevice::Present( NULL, NULL, NULL, NULL );
 #endif
 }
+
+void CXBoxRenderManager::Process()
+{
+  CLog::Log(LOGINFO, "Starting async renderer thread");
+  float actualdelay = (float)m_presentdelay;
+
+  SetPriority(THREAD_PRIORITY_TIME_CRITICAL);
+  SetName("AsyncRenderer");
+  while( !m_bStop )
+  {
+    //Wait for new frame or an stop event
+    g_graphicsContext.ReleaseCurrentContext();
+    m_eventFrame.Wait();
+    if( m_bStop )
+    { 
+      return;
+    }
+
+    DWORD dwTimeStamp = GetTickCount();
+    try
+    {
+      CSharedLock lock(m_sharedSection);
+      CSingleLock lock2(g_graphicsContext);
+
+      if( m_pRenderer && g_graphicsContext.IsFullScreenVideo() && !g_application.IsPaused() )
+      {
+	// If we need to render acquire the context.
+	// Here, we are sharing the main thread's rendering context
+	g_graphicsContext.AcquireCurrentContext();
+        Present();
+	g_graphicsContext.ReleaseCurrentContext();
+      }
+    }
+    catch(...)
+    {
+      CLog::Log(LOGERROR, "CLinuxRendererGL::Process() - Exception thrown in flippage");
+    }
+    m_eventPresented.Set();
+    const int TC = 100; /* time (frame) constant for convergence */
+    actualdelay = ( actualdelay * (TC-1) + (GetTickCount() - dwTimeStamp) ) / TC;
+  }
+  //g_graphicsContext.ReleaseCurrentContext();
+}
+
