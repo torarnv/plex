@@ -306,7 +306,7 @@ void PAPlayer::FreeStream(int stream)
 		CLog::Log(LOGINFO, "[CoreAudio] INFO: Destroying stream 0x%08lx.", stream);
 		m_pStream[stream]->Deinitialize();
 	}
-	m_pStream[stream] = NULL;
+	m_pStream[stream] = 0;
 	
 	if (m_packet[stream][0].packet)
 		free(m_packet[stream][0].packet);
@@ -319,28 +319,27 @@ void PAPlayer::FreeStream(int stream)
 
 bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersample, CStdString codec)
 {
-    m_SampleRateOutput = samplerate;
-    m_BitsPerSampleOutput = 32;
-	
-    // See if we actually need to create a new one or can cache an existing one.
+  m_SampleRateOutput = samplerate;
+  m_BitsPerSampleOutput = 32;
+
+  bool useExistingStream = false;
+  
+  // See if we actually need to create a new one or can cache an existing one.
 	if (m_pStream[num] != 0)
 	{
 		AudioStreamBasicDescription* currentStream = m_pStream[num]->GetStreamDescription();
-		
-		if (currentStream->mChannelsPerFrame == channels && 
-			currentStream->mSampleRate == samplerate &&
-			currentStream->mBitsPerChannel * currentStream->mChannelsPerFrame  == bitspersample)
+		if (currentStream->mChannelsPerFrame == channels && currentStream->mSampleRate == samplerate)
 		{
 			CLog::Log(LOGDEBUG, "[CoreAudio] INFO: Using existing stream.");
-			//Pa_AbortStream(m_pStream[num]);
+			useExistingStream = true;
 		}
 		else
 		{
-			// Close the stream if it already exists.
 			FreeStream(num);
 		}
 	}
-	else
+	
+	if (useExistingStream == false)
 	{
 		// Create a new stream.
 		CLog::Log(LOGINFO, "[CoreAudio] INFO: Creating stream %d.", num);
@@ -354,17 +353,15 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
 											PACKET_SIZE);
 		
 		// Allocate packets.
-        m_packet[num][0].packet = (BYTE*)malloc(PACKET_SIZE * PACKET_COUNT);
-        for (int i = 1; i < PACKET_COUNT ; i++)
-            m_packet[num][i].packet = m_packet[num][i - 1].packet + PACKET_SIZE;
+		m_packet[num][0].packet = (BYTE*)malloc(PACKET_SIZE * PACKET_COUNT);
+		for (int i = 1; i < PACKET_COUNT ; i++)
+		  m_packet[num][i].packet = m_packet[num][i - 1].packet + PACKET_SIZE;
 		
 		m_BytesPerSecond = (m_BitsPerSampleOutput / 8)*m_SampleRateOutput*channels;
 	}
 
-	
     // Set initial volume.
     SetStreamVolume(num, g_stSettings.m_nVolumeLevel);
-	
 	
     // fire off our init to our callback
     if (m_pCallback)
@@ -502,7 +499,8 @@ bool PAPlayer::ProcessPAP()
 		
 		// check whether we should queue the next file up
 		if ((GetTotalTime64() > 0) && GetTotalTime64() - GetTime() < TIME_TO_CACHE_NEXT_FILE + m_crossFading * 1000L && !m_cachingNextFile)
-		{ // request the next file from our application
+		{ 
+		  // request the next file from our application
 			m_callback.OnQueueNextItem();
 			m_cachingNextFile = true;
 		}
@@ -905,7 +903,7 @@ bool PAPlayer::HandleFFwdRewd()
 
 void PAPlayer::SetStreamVolume(int stream, long nVolume)
 {
-	CLog::Log(LOGDEBUG,"PAPlayer::SetStreamVolume - stream %d, volume: %lu", stream, nVolume);
+	//CLog::Log(LOGDEBUG,"PAPlayer::SetStreamVolume - stream %d, volume: %lu", stream, nVolume);
 	m_amp[stream].SetVolume(nVolume);
 }
 
