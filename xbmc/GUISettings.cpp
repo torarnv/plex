@@ -438,7 +438,7 @@ CGUISettings::CGUISettings(void)
   if (device)
     defaultDevice = device->getName();
   
-  AddString(2, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
+  AddString(2, "audiooutput.audiodevice", 545, defaultDevice.c_str(), SPIN_CONTROL_TEXT);
   AddInt(2, "audiooutput.digitalaudiomode", 574,  DIGITAL_COREAUDIO, DIGITAL_PCM, 1, DIGITAL_COREAUDIO, SPIN_CONTROL_TEXT);
 #elif defined(_LINUX)
 

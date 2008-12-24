@@ -1172,8 +1172,16 @@ HRESULT CApplication::Create(HWND hWnd)
   Cocoa_UpdateSystemActivity();
   Cocoa_TurnOffScreenSaver();
 
-  // Set the correct audio device.
+  // Make sure audio device is set to something real.
   PlexAudioDevicePtr device = PlexAudioDevices::FindByName(g_guiSettings.GetString("audiooutput.audiodevice"));
+  if (!device)
+  {
+    device = PlexAudioDevices::FindDefault();
+    if (device)
+      g_guiSettings.SetString("audiooutput.audiodevice", device->getName().c_str());
+  }
+  
+  // Set the correct audio device.
   if (device)
     device->setDefault();
   
