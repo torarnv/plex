@@ -185,14 +185,6 @@ bool CFileCurl::CReadState::Seek(__int64 pos)
   if(pos == m_filePos)
     return true;
 
-  // Optimization for seeking at end of file.
-  if (pos == m_fileSize)
-  {
-    m_filePos = pos;
-    m_buffer.Clear();
-    return true;
-  }
-  
   if(m_buffer.SkipBytes((int)(pos - m_filePos)))
   {
     m_filePos = pos;
