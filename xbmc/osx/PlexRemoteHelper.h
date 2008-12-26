@@ -26,7 +26,10 @@ class PlexRemoteHelper : public PlexHelperApp
 
  protected:
 
-  PlexRemoteHelper() {}
+  PlexRemoteHelper()
+    : m_sequenceDelay(-1)
+    , m_secureInput(-1)
+  {}
    
   bool IsRemoteBuddyInstalled();
    
