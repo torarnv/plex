@@ -1490,11 +1490,11 @@
 
   <string id="16200">Operation was aborted</string>
   <string id="16201">Copy failed</string>
-  <string id="16202">Failed to copy atleast one file</string>
+  <string id="16202">Failed to copy at least one file</string>
   <string id="16203">Move failed</string>
-  <string id="16204">Failed to move atleast one file</string>  
+  <string id="16204">Failed to move at least one file</string>  
   <string id="16205">Delete failed</string>
-  <string id="16206">Failed to delete atleast one file</string>
+  <string id="16206">Failed to delete at least one file</string>
 
   <string id="16300">Video Scaling Method</string>
   <string id="16301">Nearest Neighbour</string>
