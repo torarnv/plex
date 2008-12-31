@@ -869,7 +869,7 @@
   <string id="12019">Oui</string>
   <string id="12020">Demander</string>
   <string id="12021">Commencer depuis le début</string>
-  <string id="12022">Reprendre depuis la dernière position</string>
+  <string id="12022">Reprendre depuis %s</string>
   <string id="12023">Validation des trainers existants...</string>
   <string id="12024">Générer automatiquement des vignettes pour les vidéos</string>
 
