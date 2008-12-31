@@ -57,10 +57,10 @@
   <string id="119">New Folder</string>
   <string id="120">Confirm file copy</string>
   <string id="121">Confirm file move</string>
-  <string id="122">Confirm file delete</string>
+  <string id="122">Confirm file delete?  This action will delete your file and is irreversible.</string>
   <string id="123">Copy these files?</string>
   <string id="124">Move these files?</string>
-  <string id="125">Delete these files?</string>
+  <string id="125">Delete these files? This action will delete your file and is irreversible.</string>
   <string id="126">Status</string>
   <string id="127">Objects</string>
   <string id="128">General</string>
