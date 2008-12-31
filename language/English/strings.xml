@@ -1466,7 +1466,7 @@
   <string id="16024">Canceling...</string>
   <string id="16025">Enter the Artist Name</string>
   <string id="16026">Playlist playback aborted</string>
-  <string id="16027">Too many consecutive failed items</string>
+  <string id="16027">the original file may have moved, been deleted or is currently unavailable.</string>
   <string id="16028">Enter value</string>
 
   <string id="16030">Party Mode aborted.</string>
