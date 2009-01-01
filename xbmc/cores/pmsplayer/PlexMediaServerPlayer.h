@@ -21,7 +21,11 @@
  *
  */
 
+#include <boost/interprocess/sync/scoped_lock.hpp>
+#include <boost/interprocess/sync/named_mutex.hpp>
+
 #include "IPlayer.h"
+#include "HTTP.h"
 #include "utils/Thread.h"
 #include "../dlgcache.h"
  
@@ -107,5 +111,6 @@ private:
   int          m_cropLeft;
   int          m_cropRight;
   
-  CDlgCache   *m_pDlgCache;
+  CDlgCache* m_pDlgCache;
+  CHTTP      m_http;
 };

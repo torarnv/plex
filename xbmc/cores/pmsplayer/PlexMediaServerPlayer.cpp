@@ -62,17 +62,22 @@ CPlexMediaServerPlayer::~CPlexMediaServerPlayer()
 
 bool CPlexMediaServerPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 {
-  printf("Opening [%s]\n", file.m_strPath.c_str());
-  
   if (m_pDlgCache)
     m_pDlgCache->Close();
-
   m_pDlgCache = new CDlgCache(0, g_localizeStrings.Get(10214), file.GetLabel());
-  
-  CStdString strActualPath = file.m_strPath;
+
+  // Construct the real URL.
+  CURL url(file.m_strPath);
+  url.SetProtocol("http");
+  url.SetPort(32400);
+
+  printf("Opening [%s] => [%s]\n", file.m_strPath.c_str(), url.GetURL().c_str());
+  int status = m_http.Open(url.GetURL(), "GET", 0);
+  printf("Got status %d\n", status);
+  if (status != 200)
+    return false;
   
   //m_dll.FlashSetCrop(m_handle, m_cropTop, m_cropBottom, m_cropLeft, m_cropRight);
-  //m_dll.FlashSetCallback(m_handle, this);
   //m_dll.FlashOpen(m_handle, params.size(), (char **)argn, (char **)argv))
   
   if (file.HasVideoInfoTag())
@@ -135,6 +140,14 @@ void CPlexMediaServerPlayer::Process()
 
   while (!m_bStop)
   {
+    if (m_pDlgCache && m_pDlgCache->IsCanceled())
+    {
+      m_bStop = true;
+      m_pDlgCache->Close();
+      m_pDlgCache = 0;
+      break;
+    }
+    
     if (m_playing)
     {      
       if (!m_paused)
@@ -142,7 +155,9 @@ void CPlexMediaServerPlayer::Process()
       m_lastTime = timeGetTime();      
     }
     else
+    {
       Sleep(100);
+    }
 
     //m_dll.FlashUpdate(m_handle);
   }
