@@ -20,7 +20,10 @@
  *
  */
 
+#include <string>
 #include "StdString.h"
+
+using namespace std;
 
 class CURL
 {
@@ -51,6 +54,7 @@ public:
 
   const char GetDirectorySeparator() const;
 
+  string GetURL() const;
   void GetURL(CStdString& strURL) const;
   void GetURLPath(CStdString& strPath) const;
   void GetURLWithoutUserDetails(CStdString& strURL) const;

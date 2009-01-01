@@ -125,6 +125,7 @@ CURL::CURL(const CStdString& strURL)
     || m_strProtocol.Equals("tuxbox")
     || m_strProtocol.Equals("daap")
     || m_strProtocol.Equals("plugin")
+    || m_strProtocol.Equals("plex")
     || m_strProtocol.Equals("hdhomerun")
     || m_strProtocol.Equals("rtsp")
     || m_strProtocol.Equals("zip"))
@@ -423,6 +424,13 @@ const char CURL::GetDirectorySeparator() const
   else
 #endif
     return '/';
+}
+
+string CURL::GetURL() const
+{
+  CStdString strURL;
+  GetURL(strURL);
+  return strURL;
 }
 
 void CURL::GetURL(CStdString& strURL) const
