@@ -25,6 +25,7 @@
 #include "dvdplayer/DVDPlayer.h"
 #include "paplayer/paplayer.h"
 #include "paplayer/DVDPlayerCodec.h"
+#include "pmsplayer/PlexMediaServerPlayer.h"
 #include "GUIDialogContextMenu.h"
 #include "XBAudioConfig.h"
 #include "FileSystem/FileCurl.h"
@@ -67,8 +68,9 @@ IPlayer* CPlayerCoreFactory::CreatePlayer(const EPLAYERCORES eCore, IPlayerCallb
   {
     case EPC_MPLAYER:
     case EPC_DVDPLAYER: return new CDVDPlayer(callback);
-    case EPC_PAPLAYER: return new PAPlayer(callback); // added by dataratt
-    case EPC_QTPLAYER: return new QTPlayer(callback);
+    case EPC_PAPLAYER:  return new PAPlayer(callback); // added by dataratt
+    case EPC_QTPLAYER:  return new QTPlayer(callback);
+    case EPC_PMSPLAYER: return new CPlexMediaServerPlayer(callback);
 
     default:
        return NULL; 
@@ -83,6 +85,7 @@ EPLAYERCORES CPlayerCoreFactory::GetPlayerCore(const CStdString& strCore)
   if (strCoreLower == "dvdplayer" || strCoreLower == "mplayer") return EPC_DVDPLAYER;
   if (strCoreLower == "paplayer" ) return EPC_PAPLAYER;
   if (strCoreLower == "qtplayer" ) return EPC_QTPLAYER;
+  if (strCoreLower == "pmsplayer") return EPC_PMSPLAYER;
   return EPC_NONE;
 }
 
@@ -91,8 +94,9 @@ CStdString CPlayerCoreFactory::GetPlayerName(const EPLAYERCORES eCore)
   switch( eCore )
   {
     case EPC_DVDPLAYER: return "DVDPlayer";
-    case EPC_PAPLAYER: return "PAPlayer";
-    case EPC_QTPLAYER: return "QTPlayer";
+    case EPC_PAPLAYER:  return "PAPlayer";
+    case EPC_QTPLAYER:  return "QTPlayer";
+    case EPC_PMSPLAYER: return "PMSPlayer";
     default: return "";
   }
 }
@@ -102,6 +106,7 @@ void CPlayerCoreFactory::GetPlayers( VECPLAYERCORES &vecCores )
   vecCores.push_back(EPC_DVDPLAYER);
   vecCores.push_back(EPC_PAPLAYER);
   vecCores.push_back(EPC_QTPLAYER);
+  vecCores.push_back(EPC_PMSPLAYER);
 }
 
 void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecCores)
@@ -110,6 +115,10 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
 
   CLog::Log(LOGDEBUG,"CPlayerCoreFactor::GetPlayers(%s)",item.m_strPath.c_str());
 
+  // Plex media server streams.
+  if (url.GetProtocol().Equals("plex", false))
+      vecCores.push_back(EPC_PMSPLAYER);
+  
   // Play audio files with iTunes DRM using QuickTime
   if (url.GetFileType().Equals("m4p") || url.GetFileType().Equals("m4b"))
   {

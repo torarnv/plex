@@ -81,6 +81,7 @@ CLinuxRendererGL::CLinuxRendererGL()
 
   m_rgbBuffer = NULL;
   m_rgbBufferSize = 0;
+  m_bRGBImageSet = false;
 }
 
 CLinuxRendererGL::~CLinuxRendererGL()
@@ -108,6 +109,13 @@ CLinuxRendererGL::~CLinuxRendererGL()
   {
     free(m_pOSDABuffer);
     m_pOSDABuffer = NULL;
+  }
+  
+  if (m_pYUVShader)
+  {
+    m_pYUVShader->Free();
+    delete m_pYUVShader;
+    m_pYUVShader = NULL;
   }
   
   for (int i=0; i<3; i++)
@@ -558,6 +566,39 @@ bool CLinuxRendererGL::ValidateRenderTarget()
   return false;  
 }
 
+void CLinuxRendererGL::SetRGB32Image(const char *image, int nHeight, int nWidth, int nPitch)
+{
+  CSingleLock lock(g_graphicsContext);
+  if (m_rgbBuffer == NULL)
+  {
+    m_rgbBufferSize = nWidth*nHeight*4;
+    m_rgbBuffer = new BYTE[m_rgbBufferSize];
+    memset(m_rgbBuffer, 0, m_rgbBufferSize);
+  }
+  
+  if (nHeight * nWidth * 4 > m_rgbBufferSize)
+  {
+    CLog::Log(LOGERROR,"%s, incorrect image size", __FUNCTION__);
+    return;
+  }
+
+  if (nPitch == nWidth * 4)
+    memcpy(m_rgbBuffer, image, nHeight * nPitch);
+  else
+    for (int i=0; i<nHeight; i++)
+      memcpy(m_rgbBuffer + (i * nWidth * 4), image + (i * nPitch),  nWidth * 4);
+  
+  m_bRGBImageSet = true;
+  m_renderMethod = RENDER_SW;
+  
+  if (m_pYUVShader)
+  {
+    delete m_pYUVShader;
+    m_pYUVShader = NULL;
+  }
+}
+
+
 bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags)
 {
   m_fps = fps;
@@ -585,6 +626,7 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
 
   m_rgbBufferSize = width*height*4;
   m_rgbBuffer = new BYTE[m_rgbBufferSize];
+  memset(m_rgbBuffer, 0, m_rgbBufferSize);
   m_bConfigured = true;
   m_bImageReady = false;
 
@@ -653,13 +695,12 @@ void CLinuxRendererGL::InitializeSoftwareUpscaling()
     }
   }
   
-  // FIXME: I'm not sure why we can't allocate less memory for the UV planes.
-  m_imScaled.plane[0] = new BYTE[m_upscalingWidth * m_upscalingHeight];
-  m_imScaled.plane[1] = new BYTE[(m_upscalingWidth /* /2 */) * (m_upscalingHeight/2)];
-  m_imScaled.plane[2] = new BYTE[(m_upscalingWidth /* /2 */) * (m_upscalingHeight/2)];
-  m_imScaled.stride[0] = m_upscalingWidth;
-  m_imScaled.stride[1] = m_upscalingWidth/2;
-  m_imScaled.stride[2] = m_upscalingWidth/2;
+  m_imScaled.stride[0] = ALIGN((m_upscalingWidth)   , 16);
+  m_imScaled.stride[1] = ALIGN((m_upscalingWidth>>1), 16);
+  m_imScaled.stride[2] = ALIGN((m_upscalingWidth>>1), 16);
+  m_imScaled.plane[0] = new BYTE[m_imScaled.stride[0] * ALIGN((m_upscalingHeight)   , 16)];
+  m_imScaled.plane[1] = new BYTE[m_imScaled.stride[1] * ALIGN((m_upscalingHeight>>1), 16)];
+  m_imScaled.plane[2] = new BYTE[m_imScaled.stride[2] * ALIGN((m_upscalingHeight>>1), 16)];
   m_imScaled.width = m_upscalingWidth;
   m_imScaled.height = m_upscalingHeight;
   m_imScaled.flags = 0;
@@ -757,7 +798,7 @@ void CLinuxRendererGL::LoadTextures(int source)
   YV12Image* im = &m_image[source];
   YUVFIELDS& fields = m_YUVTexture[source];
 
-  if (!(im->flags&IMAGE_FLAG_READY))
+  if (!m_bRGBImageSet && !(im->flags&IMAGE_FLAG_READY))
   {
     SetEvent(m_eventTexturesDone[source]);
     return;
@@ -772,7 +813,7 @@ void CLinuxRendererGL::LoadTextures(int source)
     im->flags = IMAGE_FLAG_READY;
   }
   
-  if (IsSoftwareUpscaling())
+  if (IsSoftwareUpscaling() && !m_bRGBImageSet)
   {
     // Perform the scaling.
     uint8_t* src[] =       { im->plane[0],  im->plane[1],  im->plane[2] };
@@ -799,19 +840,9 @@ void CLinuxRendererGL::LoadTextures(int source)
     im->flags = IMAGE_FLAG_READY;
   }
   
-  // if we don't have a shader, fallback to SW YUV2RGB for now
-  if (m_renderMethod & RENDER_SW)
+  if (m_bRGBImageSet)
   {
-    struct SwsContext *context = m_dllSwScale.sws_getContext(im->width, im->height, PIX_FMT_YUV420P,
-                                                             im->width, im->height, PIX_FMT_RGB32,
-                                                             SWS_FAST_BILINEAR, NULL, NULL, NULL);
-    uint8_t *src[] = { im->plane[0], im->plane[1], im->plane[2] };
-    int     srcStride[] = { im->stride[0], im->stride[1], im->stride[2] };
-    uint8_t *dst[] = { m_rgbBuffer, 0, 0 };
-    int     dstStride[] = { m_iSourceWidth*4, 0, 0 };
-    m_dllSwScale.sws_scale(context, src, srcStride, 0, im->height, dst, dstStride);
-    m_dllSwScale.sws_freeContext(context);
-    SetEvent(m_eventTexturesDone[source]);
+    m_renderMethod = RENDER_SW;
   }
 
   static int imaging = -1;
@@ -1019,13 +1050,13 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
     return;
 
   // this needs to be checked after texture validation
-  if (!m_bImageReady) return;
+  if (!m_bRGBImageSet && !m_bImageReady) return;
 
   int index = m_iYV12RenderBuffer;
 
-  if (!m_YUVTexture[index][FIELD_FULL][0]) return ;
+  if (!m_bRGBImageSet && !m_YUVTexture[index][FIELD_FULL][0]) return ;
 
-  if (m_image[index].flags==0)
+  if (!m_bRGBImageSet && m_image[index].flags==0)
     return;
 
   ManageDisplay();
@@ -1033,7 +1064,7 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 
   g_graphicsContext.BeginPaint();
 
-  if( WaitForSingleObject(m_eventTexturesDone[index], 500) == WAIT_TIMEOUT )
+  if( !m_bRGBImageSet && WaitForSingleObject(m_eventTexturesDone[index], 500) == WAIT_TIMEOUT )
   {
     CLog::Log(LOGWARNING, "%s - Timeout waiting for texture %d", __FUNCTION__, index);
 
@@ -1150,6 +1181,7 @@ unsigned int CLinuxRendererGL::DrawSlice(unsigned char *src[], int stride[], int
 unsigned int CLinuxRendererGL::PreInit()
 {
   CSingleLock lock(g_graphicsContext);
+  m_bRGBImageSet = false;
   m_bConfigured = false;
   m_bValidated = false;
   UnInit();
@@ -1243,7 +1275,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
 void CLinuxRendererGL::LoadShaders(int renderMethod)
 {
   bool err = false;
-  if (glCreateProgram)
+  if (!m_bRGBImageSet && glCreateProgram)
   {
     if (m_pYUVShader)
     {
@@ -1285,7 +1317,7 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
       CLog::Log(LOGERROR, "GL: Error enabling YUV2RGB GLSL shader");
     }
   }
-  else if (glewIsSupported("GL_ARB_fragment_program"))
+  else if (!m_bRGBImageSet && glewIsSupported("GL_ARB_fragment_program"))
   {
     CLog::Log(LOGNOTICE, "GL: ARB shaders support detected");
     m_renderMethod = RENDER_ARB ;
@@ -1315,8 +1347,10 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
   }
   else
   {
-    m_renderMethod = RENDER_SW ;
-    CLog::Log(LOGNOTICE, "GL: Shaders support not present, falling back to SW mode");
+    m_renderMethod = RENDER_SW;
+    
+    if ( !m_bRGBImageSet )
+      CLog::Log(LOGNOTICE, "GL: Shaders support not present, falling back to SW mode");
   }
   if (err==true)
   {

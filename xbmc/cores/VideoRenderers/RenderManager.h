@@ -81,6 +81,16 @@ public:
       return m_pRenderer->DrawSlice(src, stride, w, h, x, y);
     return 0;
   }
+  
+  inline void SetRGB32Image(const char *image, int nHeight, int nWidth, int nPitch)
+  {
+    if (!image)
+      return;
+    
+    CSharedLock lock(m_sharedSection);
+    if (m_pRenderer)
+      m_pRenderer->SetRGB32Image(image, nHeight, nWidth, nPitch);    
+  }
 
 #ifdef _LINUX
   // should be called from the GUI thread after playback has finished

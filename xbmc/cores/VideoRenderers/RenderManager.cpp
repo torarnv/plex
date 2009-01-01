@@ -380,7 +380,8 @@ void CXBoxRenderManager::Present()
           || mResolution == HDTV_1080i )
       mInt = VS_INTERLACEMETHOD_RENDER_BLEND;
     else
-      mInt = VS_INTERLACEMETHOD_RENDER_BOB;
+      //mInt = VS_INTERLACEMETHOD_RENDER_BOB;
+      mInt = VS_INTERLACEMETHOD_DEINTERLACE;
   }
   else if( mInt == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED || mInt == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED )
   {

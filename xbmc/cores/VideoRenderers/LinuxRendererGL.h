@@ -145,6 +145,8 @@ public:
   virtual bool SupportsContrast();
   virtual bool SupportsGamma();
   virtual bool SupportsMultiPassRendering();
+  
+  virtual void SetRGB32Image(const char *image, int nHeight, int nWidth, int nPitch);
 
 protected:
   virtual void Render(DWORD flags, int renderBuffer);
@@ -267,6 +269,8 @@ protected:
   BYTE	     *m_rgbBuffer;  // if software scale is used, this will hold the result image
   int	      m_rgbBufferSize;
 
+  bool        m_bRGBImageSet;
+  
   static void TextureCallback(DWORD dwContext);
 
   HANDLE m_eventTexturesDone[NUM_BUFFERS];

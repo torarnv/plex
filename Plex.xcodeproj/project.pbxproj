@@ -874,6 +874,7 @@
 		E3AC01F80E39E16B00DD298E /* libSDL_image-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E3AC01F60E39E16B00DD298E /* libSDL_image-osx.a */; };
 		E3AC01F90E39E16B00DD298E /* libSDL_mixer-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E3AC01F70E39E16B00DD298E /* libSDL_mixer-osx.a */; };
 		E3ADDD140EAA68DC003921C8 /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3ADDD130EAA68DC003921C8 /* QTKit.framework */; };
+		E3AF20810F0C4DF600C5259C /* PlexMediaServerPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3AF20800F0C4DF600C5259C /* PlexMediaServerPlayer.cpp */; };
 		E3B221530E57892500939882 /* ArabicShaping.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3B221520E57892500939882 /* ArabicShaping.cpp */; };
 		E3B2218C0E58F42100939882 /* DVDFileInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3B2218A0E58F42100939882 /* DVDFileInfo.cpp */; };
 		E3B963B70E3863CB0022F663 /* AMFObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3B963870E3860820022F663 /* AMFObject.cpp */; };
@@ -3026,6 +3027,10 @@
 		E3AC01F60E39E16B00DD298E /* libSDL_image-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libSDL_image-osx.a"; path = "xbmc/lib/libSDL-OSX/libSDL_image-osx.a"; sourceTree = "<group>"; };
 		E3AC01F70E39E16B00DD298E /* libSDL_mixer-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libSDL_mixer-osx.a"; path = "xbmc/lib/libSDL-OSX/libSDL_mixer-osx.a"; sourceTree = "<group>"; };
 		E3ADDD130EAA68DC003921C8 /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = System/Library/Frameworks/QTKit.framework; sourceTree = SDKROOT; };
+		E3AF20720F0C4C4B00C5259C /* DllFlashLib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllFlashLib.h; sourceTree = "<group>"; };
+		E3AF20730F0C4C4B00C5259C /* FlashLib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlashLib.h; sourceTree = "<group>"; };
+		E3AF20740F0C4C4B00C5259C /* FlashPlayerListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlashPlayerListener.h; sourceTree = "<group>"; };
+		E3AF20800F0C4DF600C5259C /* PlexMediaServerPlayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PlexMediaServerPlayer.cpp; sourceTree = "<group>"; };
 		E3B221520E57892500939882 /* ArabicShaping.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ArabicShaping.cpp; sourceTree = "<group>"; };
 		E3B2218A0E58F42100939882 /* DVDFileInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDFileInfo.cpp; sourceTree = "<group>"; };
 		E3B2218B0E58F42100939882 /* DVDFileInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDFileInfo.h; sourceTree = "<group>"; };
@@ -4185,6 +4190,7 @@
 		E38E149A0D25F9F900618676 /* cores */ = {
 			isa = PBXGroup;
 			children = (
+				E3AF20710F0C4C4B00C5259C /* pmsplayer */,
 				943BC2830ED3F1A700B7CB45 /* CoreAudio */,
 				1AD9A0EC0EA0D6F400503917 /* qtplayer */,
 				E3A478090D29029A00F3C3A6 /* dlgcache.cpp */,
@@ -6443,6 +6449,17 @@
 			path = xbox;
 			sourceTree = "<group>";
 		};
+		E3AF20710F0C4C4B00C5259C /* pmsplayer */ = {
+			isa = PBXGroup;
+			children = (
+				E3AF20800F0C4DF600C5259C /* PlexMediaServerPlayer.cpp */,
+				E3AF20720F0C4C4B00C5259C /* DllFlashLib.h */,
+				E3AF20730F0C4C4B00C5259C /* FlashLib.h */,
+				E3AF20740F0C4C4B00C5259C /* FlashPlayerListener.h */,
+			);
+			path = pmsplayer;
+			sourceTree = "<group>";
+		};
 		E3B963860E3860820022F663 /* libRTMP */ = {
 			isa = PBXGroup;
 			children = (
@@ -7437,6 +7454,7 @@
 				9421E33A0ED6A99E00A26254 /* CoreAudioRenderer.cpp in Sources */,
 				E3FD41940EF459C100C6172C /* PlayListURL.cpp in Sources */,
 				E3FD41A60EF46E4100C6172C /* NptWin32Debug.cpp in Sources */,
+				E3AF20810F0C4DF600C5259C /* PlexMediaServerPlayer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
