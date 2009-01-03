@@ -3106,18 +3106,11 @@ bool CUtil::ThumbCached(const CStdString& strFileName)
 
 void CUtil::PlayDVD()
 {
-  if (g_guiSettings.GetBool("videoplayer.useexternaldvdplayer") && !g_guiSettings.GetString("videoplayer.externaldvdplayer").IsEmpty())
-  {
-    RunXBE(g_guiSettings.GetString("videoplayer.externaldvdplayer").c_str());
-  }
-  else
-  {
-    CIoSupport::Dismount("Cdrom0");
-    CIoSupport::RemapDriveLetter('D', "Cdrom0");
-    CFileItem item("dvd://1", false);
-    item.SetLabel(CDetectDVDMedia::GetDVDLabel());
-    g_application.PlayFile(item);
-  }
+  CIoSupport::Dismount("Cdrom0");
+  CIoSupport::RemapDriveLetter('D', "Cdrom0");
+  CFileItem item("dvd://1", false);
+  item.SetLabel(CDetectDVDMedia::GetDVDLabel());
+  g_application.PlayFile(item);
 }
 
 CStdString CUtil::GetNextFilename(const char* fn_template, int max)
