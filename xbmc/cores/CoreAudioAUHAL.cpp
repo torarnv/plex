@@ -93,6 +93,7 @@ CoreAudioAUHAL::CoreAudioAUHAL(const CStdString& strName, const char *strCodec, 
 		// Enable AC3 passthrough for digital devices
 		int mpeg_remapping = 0;
 		if (strCodec == "AAC" || strCodec == "DTS") mpeg_remapping = 1; // DTS uses MPEG channel mapping
+<<<<<<< HEAD:xbmc/cores/CoreAudioAUHAL.cpp
 		if (ac3encoder_init(&m_ac3encoder, channels, sampleRate, bitsPerSample, mpeg_remapping) == -1)
 		{
 			m_bIsInitialized = false;
@@ -104,6 +105,11 @@ CoreAudioAUHAL::CoreAudioAUHAL(const CStdString& strName, const char *strCodec, 
 			ac3_framebuffer = (unsigned char *)calloc(packetSize, 1);
 		}
 		
+=======
+		ac3encoder_init(&m_ac3encoder, channels, sampleRate, bitsPerSample, mpeg_remapping);
+		m_bEncodeAC3 = true;
+		ac3_framebuffer = (unsigned char *)calloc(packetSize, 1);
+>>>>>>> Pull AC3 encoder into Core Audio HAL:xbmc/cores/CoreAudioAUHAL.cpp
 	}
 	else
 	{
@@ -314,9 +320,6 @@ float CoreAudioAUHAL::GetHardwareLatency()
 	float latency = CA_BUFFER_FACTOR + ((float)deviceParameters->hardwareFrameLatency / deviceParameters->stream_format.mSampleRate);
 	if (deviceParameters->b_digital)
 		latency += 0.032;
-	if (m_bEncodeAC3)
-		latency += 0.064;
-	//latency += 0.225;
 	return latency;
 }
 
@@ -377,12 +380,9 @@ int CoreAudioAUHAL::WriteStream(uint8_t *sampleBuffer, uint32_t samplesToWrite)
 
 void CoreAudioAUHAL::Flush()
 {
-	CSingleLock lock(m_cs); // acquire lock
-	
-	PaUtil_FlushRingBuffer( deviceParameters->outputBuffer );
 	if (m_bEncodeAC3)
 	{
-		ac3encoder_flush(&m_ac3encoder);
+//		ac3encoder_flush(&m_ac3encoder);
 	}
 }
 
