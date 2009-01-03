@@ -21,13 +21,22 @@
  *
  */
 
-#include <boost/interprocess/sync/scoped_lock.hpp>
-#include <boost/interprocess/sync/named_mutex.hpp>
+#include <string>
+#include <vector>
 
 #include "IPlayer.h"
 #include "HTTP.h"
 #include "utils/Thread.h"
 #include "../dlgcache.h"
+
+#include <boost/interprocess/sync/scoped_lock.hpp>
+#include <boost/interprocess/sync/named_mutex.hpp>
+#include <boost/interprocess/sync/named_condition.hpp>
+#include <boost/interprocess/file_mapping.hpp>
+#include <boost/interprocess/mapped_region.hpp>
+
+using namespace std;
+namespace ipc = boost::interprocess;
  
 class CPlexMediaServerPlayer : public IPlayer, public CThread
 {
@@ -86,6 +95,7 @@ public:
   
 private:
 
+  void OnFrameMap(const string& args);
   void OnPlaybackEnded();
   void OnPlaybackStarted();
   void OnNewFrame(); 
@@ -106,11 +116,11 @@ private:
   int          m_totalTime;
   int          m_width;
   int          m_height;
-  int          m_cropTop;
-  int          m_cropBottom;
-  int          m_cropLeft;
-  int          m_cropRight;
   
   CDlgCache* m_pDlgCache;
   CHTTP      m_http;
+  
+  ipc::named_mutex     m_frameMutex;
+  ipc::named_condition m_frameCond;
+  ipc::mapped_region*  m_mappedRegion;
 };

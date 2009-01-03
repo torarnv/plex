@@ -18,6 +18,11 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+
+#include <boost/lexical_cast.hpp>
+#include <boost/algorithm/string.hpp>
+#include <boost/thread/xtime.hpp>
+#include <boost/date_time/posix_time/posix_time_types.hpp>
  
 #include "stdafx.h"
 #include "PlexMediaServerPlayer.h"
@@ -37,9 +42,13 @@
 #include <set>
 
 CPlexMediaServerPlayer::CPlexMediaServerPlayer(IPlayerCallback& callback)
-    : IPlayer(callback),
-      CThread()
-{
+    : IPlayer(callback)
+    , CThread()
+    , m_http(true)
+    , m_mappedRegion(0)
+    , m_frameMutex(ipc::open_or_create, "plex_frame_mutex")
+    , m_frameCond(ipc::open_or_create, "plex_frame_cond")
+{ 
   m_paused = false;
   m_playing = false;
   m_clock = 0;
@@ -47,10 +56,6 @@ CPlexMediaServerPlayer::CPlexMediaServerPlayer(IPlayerCallback& callback)
   m_speed = 1;
   m_height = 0;
   m_width = 0;
-  m_cropTop = 0;
-  m_cropBottom = 0;
-  m_cropLeft = 0;
-  m_cropRight = 0;
   m_totalTime = 0;
   m_pDlgCache = NULL;
 }
@@ -58,6 +63,12 @@ CPlexMediaServerPlayer::CPlexMediaServerPlayer(IPlayerCallback& callback)
 CPlexMediaServerPlayer::~CPlexMediaServerPlayer()
 {
   CloseFile();
+  
+  if (m_mappedRegion)
+  {
+    delete m_mappedRegion;
+    m_mappedRegion = 0;
+  }
 }
 
 bool CPlexMediaServerPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
@@ -77,8 +88,8 @@ bool CPlexMediaServerPlayer::OpenFile(const CFileItem& file, const CPlayerOption
   if (status != 200)
     return false;
   
-  //m_dll.FlashSetCrop(m_handle, m_cropTop, m_cropBottom, m_cropLeft, m_cropRight);
-  //m_dll.FlashOpen(m_handle, params.size(), (char **)argn, (char **)argv))
+  // Send a hello.
+  m_http.WriteLine("HELLO");
   
   if (file.HasVideoInfoTag())
   {
@@ -159,8 +170,23 @@ void CPlexMediaServerPlayer::Process()
       Sleep(100);
     }
 
-    //m_dll.FlashUpdate(m_handle);
+    // See if we have data from the Media Server.
+    string line;
+    if (m_http.ReadLine(line, 0))
+    {
+      if (line.find_first_of("MAP") == 0)
+        OnFrameMap(line.substr(4));
+      if (line.find_first_of("TITLE") == 0 && m_pDlgCache)
+        m_pDlgCache->SetMessage(line.substr(6));
+      else if (line.find_first_of("FRAME") == 0)
+        OnNewFrame();
+      else if (line.find_first_of("PAUSED") == 0)
+        OnPaused();
+      else if (line.find_first_of("END") == 0)
+        OnPlaybackEnded();      
+    }
   }
+
   m_playing = false;
   if (m_bStop)
     m_callback.OnPlayBackEnded();
@@ -210,7 +236,7 @@ void CPlexMediaServerPlayer::Seek(bool bPlus, bool bLargeStep)
 
 void CPlexMediaServerPlayer::GetAudioInfo(CStdString& strAudioInfo)
 {
-  strAudioInfo = "CPlexMediaServerPlayer";
+  strAudioInfo = "Plex Media Server";
 }
 
 void CPlexMediaServerPlayer::GetVideoInfo(CStdString& strVideoInfo)
@@ -220,7 +246,7 @@ void CPlexMediaServerPlayer::GetVideoInfo(CStdString& strVideoInfo)
 
 void CPlexMediaServerPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
 {
-  strGeneralInfo = "CPlexMediaServerPlayer";
+  strGeneralInfo = "Plex Media Server";
 }
 
 void CPlexMediaServerPlayer::SetVolume(long nVolume) 
@@ -283,11 +309,12 @@ void CPlexMediaServerPlayer::Render()
   if (!m_playing)
     return;
   
-  //m_dll.FlashLockImage(m_handle);
-  //int nHeight = m_dll.FlashGetHeight(m_handle)  - m_cropTop - m_cropBottom;
-  //int nWidth = m_dll.FlashGetWidth(m_handle)  - m_cropLeft - m_cropRight;
-  //g_renderManager.SetRGB32Image((const char*) m_dll.FlashGetImage(m_handle), nHeight, nWidth, nWidth*4);
-  //m_dll.FlashUnlockImage(m_handle);
+  // Grab the new frame out of shared memory.
+  {
+    ipc::scoped_lock<ipc::named_mutex> lock(m_frameMutex);
+    g_renderManager.SetRGB32Image((const char*)m_mappedRegion->get_address(), m_height, m_width, m_width*4);
+  }
+  
   g_application.NewFrame();
 }
 
@@ -311,13 +338,7 @@ void CPlexMediaServerPlayer::OnPlaybackStarted()
   try
   {
     g_renderManager.PreInit();
-    //m_dll.FlashLockImage(m_handle);
-    //int nHeight = m_dll.FlashGetHeight(m_handle) - m_cropTop - m_cropBottom;
-    //int nWidth = m_dll.FlashGetWidth(m_handle) - m_cropLeft - m_cropRight;
-    //g_renderManager.Configure(nWidth, nHeight, nWidth, nHeight, 30.0f, CONF_FLAGS_FULLSCREEN);
-    //g_renderManager.SetRGB32Image((const char*) m_dll.FlashGetImage(m_handle), nHeight, nWidth, nWidth*4);
-    //m_dll.FlashSetDestPitch(m_handle, nWidth * 4);
-    //m_dll.FlashUnlockImage(m_handle);
+    g_renderManager.Configure(m_width, m_height, m_width, m_height, 30.0f, CONF_FLAGS_FULLSCREEN);
   }
   catch(...)
   {
@@ -328,6 +349,34 @@ void CPlexMediaServerPlayer::OnPlaybackStarted()
     m_pDlgCache->Close();
   m_pDlgCache = NULL;
   
+}
+
+void CPlexMediaServerPlayer::OnFrameMap(const string& args)
+{
+  // Parse arguments.
+  vector<string> argList;
+  boost::split(argList, args, is_any_of(" "));
+  
+  string file = argList[0];
+  m_width = boost::lexical_cast<int>(argList[1]);
+  m_height = boost::lexical_cast<int>(argList[2]);
+  
+  try
+  {
+    // Create a file mapping.
+    ipc::file_mapping fileMapping(file.c_str(), ipc::read_write);
+
+    // Map the whole file in this process.
+    m_mappedRegion = new ipc::mapped_region(fileMapping, ipc::read_write);
+    printf("Mapped region is %d bytes.\n", m_mappedRegion->get_size());
+    
+    // Note that playback has started.
+    OnPlaybackStarted();
+   }
+   catch(ipc::interprocess_exception &ex)
+   {
+      std::cout << ex.what() << std::endl;
+   }
 }
 
 void CPlexMediaServerPlayer::OnNewFrame() 
