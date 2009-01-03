@@ -32,12 +32,15 @@
 
 #include "AutoPtrHandle.h"
 
+#include <boost/circular_buffer.hpp>
 #include <map>
+
+using namespace boost;
 
 class CHTTP
 {
 public:
-  CHTTP();
+  CHTTP(bool keepOpen=false);
   CHTTP(const std::string& strProxyServer, int iProxyPort);
   virtual ~CHTTP();
 
@@ -60,12 +63,17 @@ public:
 
   void Reset();
 
+  /// Additions for Plex.
+  bool ReadLine(std::string& line, int timeout);
+  void WriteLine(const std::string& line);
+  
 protected:
   bool Send(char* pBuffer, int iLen);
   bool Connect();
-  bool Recv(int iLen);
+  bool Recv(int iLen, int timeout = 5000);
   bool ReadData(std::string& strData);
   void ParseHeaders();
+  int  QuickRecv(int timeout);
 
 private:
   void ParseHeader(std::string::size_type start, std::string::size_type colon, std::string::size_type end);
@@ -95,6 +103,9 @@ private:
   int m_RecvBytes;
   
   bool m_cancelled;
+  
+  bool m_keepOpen;
+  circular_buffer<char> m_ringBuffer;
 };
 
 #endif // !defined(AFX_HTTP_H__A368CB6F_3D08_4966_9F9F_961A59CB4EC7__INCLUDED_)

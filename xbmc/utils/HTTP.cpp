@@ -114,6 +114,8 @@ CHTTP::CHTTP(const string& strProxyServer, int iProxyPort)
     : m_socket(INVALID_SOCKET)
     , m_strProxyServer(strProxyServer)
     , m_iProxyPort(iProxyPort)
+    , m_ringBuffer(4096)
+    , m_keepOpen(false)
 {
   m_strCookie = "";
 #ifndef _LINUX
@@ -127,9 +129,10 @@ CHTTP::CHTTP(const string& strProxyServer, int iProxyPort)
   m_cancelled = false;
 }
 
-
-CHTTP::CHTTP()
+CHTTP::CHTTP(bool keepOpen)
     : m_socket(INVALID_SOCKET)
+    , m_ringBuffer(4096)
+    , m_keepOpen(keepOpen)
 {
   m_strProxyServer = "";
   m_bProxyEnabled = g_guiSettings.GetBool("network.usehttpproxy");
@@ -792,7 +795,7 @@ bool CHTTP::Send(char* pBuffer, int iLen)
 }
 
 //*********************************************************************************************
-bool CHTTP::Recv(int iLen)
+bool CHTTP::Recv(int iLen, int theTimeout)
 {
 #ifndef _LINUX
   WSABUF buf;
@@ -867,8 +870,8 @@ bool CHTTP::Recv(int iLen)
       FD_ZERO(&socks);
       FD_SET((SOCKET)m_socket, &socks);
       struct timeval timeout;  /* Timeout for select */
-      timeout.tv_sec = 5;
-      timeout.tv_usec = 0;
+      timeout.tv_sec = theTimeout / 1000;
+      timeout.tv_usec = theTimeout % 1000;
 
       int readsocks = select((SOCKET)m_socket+1, &socks, (fd_set *) 0, (fd_set *) 0, &timeout);
       if (readsocks == 0)
@@ -887,7 +890,7 @@ bool CHTTP::Recv(int iLen)
       return false;
 #endif
 
-    if (n == 0)
+    if (n == 0 && m_keepOpen == false)
     {
 #ifndef _LINUX
       shutdown(m_socket, SD_BOTH);
@@ -969,7 +972,7 @@ int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
           "Accept: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, application/msword, */*\r\n"
           "Accept-Language: en-us\r\n");
   }
-  strcat(szHTTPHEADER, "Host:");
+  strcat(szHTTPHEADER, "Host: ");
   strcat(szHTTPHEADER, m_strHostName.c_str());
   strcat(szHTTPHEADER, "\r\n");
   strcat(szHTTPHEADER, "User-Agent: ");
@@ -1288,6 +1291,67 @@ void CHTTP::Cancel()
 #else
   m_cancelled = true;
 #endif
+}
+
+//------------------------------------------------------------------------------------------------------------------
+int CHTTP::QuickRecv(int timeout)
+{
+  // Residual bytes? Return them.
+  if (m_RecvBytes > 0)
+    return m_RecvBytes;
+  
+  // Otherwise, try to recv data (it's a non blocking socket).
+  int numBytes = recv(m_socket, m_RecvBuffer, BUFSIZE, 0);
+  if (numBytes > 0)
+    m_RecvBytes = numBytes;
+  
+  return numBytes;
+}
+
+//------------------------------------------------------------------------------------------------------------------
+bool CHTTP::ReadLine(std::string& line, int timeout)
+{
+  // See if we have a line to pass back already.
+  string str = string(m_ringBuffer.linearize(), m_ringBuffer.size());
+  int newline = str.find_first_of('\n');
+  if (newline != -1)
+  {
+    m_ringBuffer.erase(m_ringBuffer.begin(), m_ringBuffer.begin() + newline + 1);
+    line = str.substr(0, newline);
+    return true;
+  }
+  
+  // Try to read some bytes.
+  int numBytes = QuickRecv(timeout);
+  if (numBytes > 0)
+  {
+    // Add the string to the ring buffer.
+    for (int i=0; i<m_RecvBytes; i++)
+      m_ringBuffer.push_back(m_RecvBuffer[i]);
+
+    m_RecvBytes = 0;
+    
+    // See if we have a line to pass back now.
+    string str = string(m_ringBuffer.linearize(), m_ringBuffer.size());
+    newline = str.find_first_of('\n');
+    if (newline != -1)
+    {
+      m_ringBuffer.erase(m_ringBuffer.begin(), m_ringBuffer.begin() + newline + 1);
+      line = str.substr(0, newline);
+      return true;
+    }
+  }
+  
+  return false;
+}
+
+//------------------------------------------------------------------------------------------------------------------
+void CHTTP::WriteLine(const std::string& line)
+{
+  std::string strLine = line;
+  strLine += "\r\n";
+  
+  Send((char* )strLine.c_str(), strLine.size());
 }
 
 CStdString CHTTP::ConstructAuthorization(const CStdString &auth, const CStdString &username, const CStdString &password)

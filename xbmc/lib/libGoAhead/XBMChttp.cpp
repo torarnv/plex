@@ -10,6 +10,7 @@
 /********************************* Includes ***********************************/
 
 #include "stdafx.h"
+#include "utils/MusicInfoScraper.h"
 #include "Application.h"
 #include "WebServer.h"
 #include "XBMChttp.h"
@@ -27,7 +28,6 @@
 #include "utils/GUIInfoManager.h"
 #include "Picture.h"
 #include "musicInfoTagLoaderFactory.h"
-#include "utils/MusicInfoScraper.h"
 #include "MusicDatabase.h"
 #include "GUIWindowSlideShow.h"
 #include "GUIMediaWindow.h"
