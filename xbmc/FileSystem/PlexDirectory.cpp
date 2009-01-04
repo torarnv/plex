@@ -394,13 +394,9 @@ class PlexMediaVideo : public PlexMediaNode
     videoInfo.m_strTitle = el.Attribute("title");
     videoInfo.m_strPlot = videoInfo.m_strPlotOutline = el.Attribute("summary");
     
-    try
-    {
-      string year = el.Attribute("year");
-      if (year.size() > 0)
+    const char* year = el.Attribute("year");
+    if (year)
         videoInfo.m_iYear = boost::lexical_cast<int>(year);
-    }
-    catch (...) {}
       
     string duration = el.Attribute("duration");
     if (duration.size() > 0)
@@ -424,7 +420,7 @@ class PlexMediaVideo : public PlexMediaNode
     
     // Path to the track itself.
     CURL url2(pItem->m_strPath);
-    if (url2.GetProtocol() == "plex")
+    if (url2.GetProtocol() == "plex" && url2.GetFileName().Find("video/:/") == -1)
     {
       url2.SetProtocol("http");
       url2.SetPort(32400);
