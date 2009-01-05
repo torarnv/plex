@@ -48,6 +48,7 @@ CPlexMediaServerPlayer::CPlexMediaServerPlayer(IPlayerCallback& callback)
     , m_mappedRegion(0)
     , m_frameMutex(ipc::open_or_create, "plex_frame_mutex")
     , m_frameCond(ipc::open_or_create, "plex_frame_cond")
+    , m_frameCount(0)
 { 
   m_paused = false;
   m_playing = false;
@@ -84,7 +85,6 @@ bool CPlexMediaServerPlayer::OpenFile(const CFileItem& file, const CPlayerOption
 
   printf("Opening [%s] => [%s]\n", file.m_strPath.c_str(), url.GetURL().c_str());
   int status = m_http.Open(url.GetURL(), "GET", 0);
-  printf("Got status %d\n", status);
   if (status != 200)
     return false;
   
@@ -172,18 +172,18 @@ void CPlexMediaServerPlayer::Process()
 
     // See if we have data from the Media Server.
     string line;
-    if (m_http.ReadLine(line, 0))
+    if (m_http.ReadLine(line, 100))
     {
       if (line.find_first_of("MAP") == 0)
         OnFrameMap(line.substr(4));
-      if (line.find_first_of("TITLE") == 0 && m_pDlgCache)
+      else if (line.find_first_of("TITLE") == 0 && m_pDlgCache)
         m_pDlgCache->SetMessage(line.substr(6));
+      else if (line.find_first_of("END") == 0)
+        OnPlaybackEnded();      
       else if (line.find_first_of("FRAME") == 0)
         OnNewFrame();
       else if (line.find_first_of("PAUSED") == 0)
         OnPaused();
-      else if (line.find_first_of("END") == 0)
-        OnPlaybackEnded();      
     }
   }
 
@@ -304,6 +304,18 @@ void CPlexMediaServerPlayer::ToFFRW(int iSpeed)
   m_speed = iSpeed;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+double CPlexMediaServerPlayer::getTime()
+{
+  struct timeval time;
+  gettimeofday(&time, 0);
+  
+  double secs = time.tv_sec;
+  secs += (float)time.tv_usec / 1000000.0;
+  return secs;
+}
+
+///////////////////////////////////////////////////////////////////////////////
 void CPlexMediaServerPlayer::Render()
 {
   if (!m_playing)
@@ -312,12 +324,15 @@ void CPlexMediaServerPlayer::Render()
   // Grab the new frame out of shared memory.
   {
     ipc::scoped_lock<ipc::named_mutex> lock(m_frameMutex);
+    
+    //printf("Frame %08d @ %f\n", ++m_frameCount, getTime());
     g_renderManager.SetRGB32Image((const char*)m_mappedRegion->get_address(), m_height, m_width, m_width*4);
   }
   
   g_application.NewFrame();
 }
 
+///////////////////////////////////////////////////////////////////////////////
 void CPlexMediaServerPlayer::OnPlaybackEnded()
 {
   if (m_pDlgCache)

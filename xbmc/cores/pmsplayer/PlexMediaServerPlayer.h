@@ -104,6 +104,8 @@ private:
   void OnProgress(int nPct); 
   
   virtual void Process();
+  
+  double getTime();
 
   bool m_paused;
   bool m_playing;
@@ -119,6 +121,8 @@ private:
   
   CDlgCache* m_pDlgCache;
   CHTTP      m_http;
+  
+  int m_frameCount;
   
   ipc::named_mutex     m_frameMutex;
   ipc::named_condition m_frameCond;

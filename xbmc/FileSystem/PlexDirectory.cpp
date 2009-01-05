@@ -415,6 +415,23 @@ class PlexMediaVideo : public PlexMediaNode
       videoInfo.m_strRuntime = std;
     }
     
+#if 0
+    // NOT YET, messes up display in file mode.
+    
+    // TV show information.
+    const char* season = el.Attribute("season");
+    if (season)
+      videoInfo.m_iSeason = boost::lexical_cast<int>(season);
+
+    const char* episode = el.Attribute("episode");
+    if (episode)
+      videoInfo.m_iEpisode = boost::lexical_cast<int>(episode);
+      
+    const char* show = el.Attribute("show");
+    if (show)
+      videoInfo.m_strShowTitle = show;
+#endif
+    
     // Thumbnail.
     string thumbnail = CPlexDirectory::ProcessUrl(parentPath, el.Attribute("thumb"), false);
     
