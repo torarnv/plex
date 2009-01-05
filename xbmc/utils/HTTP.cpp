@@ -1296,14 +1296,26 @@ void CHTTP::Cancel()
 //------------------------------------------------------------------------------------------------------------------
 int CHTTP::QuickRecv(int timeout)
 {
+  int numBytes = 0;
+  
   // Residual bytes? Return them.
   if (m_RecvBytes > 0)
     return m_RecvBytes;
   
-  // Otherwise, try to recv data (it's a non blocking socket).
-  int numBytes = recv(m_socket, m_RecvBuffer, BUFSIZE, 0);
-  if (numBytes > 0)
-    m_RecvBytes = numBytes;
+  fd_set socks;
+  FD_ZERO(&socks);
+  FD_SET((SOCKET)m_socket, &socks);
+
+  struct timeval tv;
+  tv.tv_sec = timeout / 1000;
+  tv.tv_usec = timeout % 1000;
+
+  if (select((SOCKET)m_socket+1, &socks, (fd_set* )0, (fd_set* )0, &tv) == 1)
+  {
+    numBytes = recv(m_socket, m_RecvBuffer, BUFSIZE, 0);
+    if (numBytes > 0)
+      m_RecvBytes = numBytes;
+  }
   
   return numBytes;
 }
@@ -1312,13 +1324,16 @@ int CHTTP::QuickRecv(int timeout)
 bool CHTTP::ReadLine(std::string& line, int timeout)
 {
   // See if we have a line to pass back already.
-  string str = string(m_ringBuffer.linearize(), m_ringBuffer.size());
-  int newline = str.find_first_of('\n');
-  if (newline != -1)
+  if (m_ringBuffer.size() > 0)
   {
-    m_ringBuffer.erase(m_ringBuffer.begin(), m_ringBuffer.begin() + newline + 1);
-    line = str.substr(0, newline);
-    return true;
+    string str = string(m_ringBuffer.linearize(), m_ringBuffer.size());
+    int newline = str.find_first_of('\n');
+    if (newline != -1)
+    {
+      m_ringBuffer.erase(m_ringBuffer.begin(), m_ringBuffer.begin() + newline + 1);
+      line = str.substr(0, newline);
+      return true;
+    }
   }
   
   // Try to read some bytes.
@@ -1333,7 +1348,7 @@ bool CHTTP::ReadLine(std::string& line, int timeout)
     
     // See if we have a line to pass back now.
     string str = string(m_ringBuffer.linearize(), m_ringBuffer.size());
-    newline = str.find_first_of('\n');
+    int newline = str.find_first_of('\n');
     if (newline != -1)
     {
       m_ringBuffer.erase(m_ringBuffer.begin(), m_ringBuffer.begin() + newline + 1);
