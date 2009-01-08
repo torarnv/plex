@@ -472,9 +472,15 @@ class PlexMediaTrack : public PlexMediaNode
     song.strTitle = (el.Attribute("track"));
     song.strArtist = el.Attribute("artist");
     song.strAlbum = el.Attribute("album");
-    song.iDuration = boost::lexical_cast<int>(el.Attribute("totalTime"))/1000;
-    song.iTrack = boost::lexical_cast<int>(el.Attribute("index"));
     song.strFileName = pItem->m_strPath;
+
+    const char* totalTime = el.Attribute("totalTime");
+    if (totalTime && strlen(totalTime) > 0)
+      song.iDuration = boost::lexical_cast<int>(totalTime)/1000;
+    
+    const char* trackNumber = el.Attribute("index");
+    if (trackNumber && strlen(trackNumber) > 0)
+      song.iTrack = boost::lexical_cast<int>(trackNumber);
         
     // Thumbnail.
     CURL url(pItem->m_strPath);
