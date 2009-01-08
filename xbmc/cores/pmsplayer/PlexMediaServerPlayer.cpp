@@ -127,11 +127,9 @@ bool CPlexMediaServerPlayer::CloseFile()
   StopThread();
   if (locks > 0)
     RestoreCriticalSection(g_graphicsContext, locks);
-  
-  //if (m_handle)
-  //  m_dll.FlashClose(m_handle);
-  //m_handle = NULL;
-    
+ 
+  m_http.WriteLine("STOP");
+
   if (m_pDlgCache)
     m_pDlgCache->Close();
   m_pDlgCache = NULL;
@@ -194,10 +192,10 @@ void CPlexMediaServerPlayer::Process()
 
 void CPlexMediaServerPlayer::Pause()
 {
-  //if (m_paused)
-  //  m_dll.FlashPlay(m_handle);
-  //else
-  //  m_dll.FlashPause(m_handle);
+  if (m_paused)
+    m_http.WriteLine("PLAY");
+  else
+    m_http.WriteLine("PAUSE");
   
   m_paused = !m_paused;
 }
@@ -323,9 +321,9 @@ void CPlexMediaServerPlayer::Render()
   
   // Grab the new frame out of shared memory.
   {
-    ipc::scoped_lock<ipc::named_mutex> lock(m_frameMutex);
-    
     //printf("Frame %08d @ %f\n", ++m_frameCount, getTime());
+
+    ipc::scoped_lock<ipc::named_mutex> lock(m_frameMutex);
     g_renderManager.SetRGB32Image((const char*)m_mappedRegion->get_address(), m_height, m_width, m_width*4);
   }
   
@@ -343,6 +341,7 @@ void CPlexMediaServerPlayer::OnPlaybackEnded()
   g_application.getApplicationMessenger().SendMessage(tMsg, false);
 }
 
+///////////////////////////////////////////////////////////////////////////////
 void CPlexMediaServerPlayer::OnPlaybackStarted()
 {
   CSingleLock lock(g_graphicsContext);
@@ -354,11 +353,17 @@ void CPlexMediaServerPlayer::OnPlaybackStarted()
   {
     g_renderManager.PreInit();
     g_renderManager.Configure(m_width, m_height, m_width, m_height, 30.0f, CONF_FLAGS_FULLSCREEN);
+    
+    ipc::scoped_lock<ipc::named_mutex> lock(m_frameMutex);
+    memset(m_mappedRegion->get_address(), 0, m_height*m_width*4);
+    g_renderManager.SetRGB32Image((const char*)m_mappedRegion->get_address(), m_height, m_width, m_width*4);
   }
   catch(...)
   {
     CLog::Log(LOGERROR,"%s - Exception thrown on open", __FUNCTION__);
   }  
+  
+  g_application.NewFrame();
   
   if (m_pDlgCache)
     m_pDlgCache->Close();

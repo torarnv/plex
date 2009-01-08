@@ -1275,6 +1275,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
 void CLinuxRendererGL::LoadShaders(int renderMethod)
 {
   bool err = false;
+  
   if (!m_bRGBImageSet && glCreateProgram)
   {
     if (m_pYUVShader)
@@ -2193,6 +2194,11 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
 {
   // Remember if we're software upscaling.
   m_isSoftwareUpscaling = IsSoftwareUpscaling();
+  
+  if (m_renderMethod & RENDER_SW)
+    printf("SOFTWARE\n");
+  else
+    printf("XXXXXXXX NOT SOFTWARE\n");
   
   /* since we also want the field textures, pitch must be texture aligned */
   unsigned p;

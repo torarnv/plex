@@ -1364,7 +1364,7 @@ bool CHTTP::ReadLine(std::string& line, int timeout)
 void CHTTP::WriteLine(const std::string& line)
 {
   std::string strLine = line;
-  strLine += "\r\n";
+  strLine += "\n";
   
   Send((char* )strLine.c_str(), strLine.size());
 }
