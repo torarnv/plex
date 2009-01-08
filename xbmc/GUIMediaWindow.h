@@ -48,6 +48,7 @@ public:
   virtual CFileItemPtr GetCurrentListItem(int offset = 0);
 
 protected:
+  virtual void LoadAdditionalTags(TiXmlElement *root);
   CGUIControl *GetFirstFocusableControl(int id);
   void SetupShares();
   virtual void GoParentFolder();

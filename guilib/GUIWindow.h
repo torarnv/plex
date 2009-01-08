@@ -55,6 +55,7 @@ class CFileItem; typedef boost::shared_ptr<CFileItem> CFileItemPtr;
 // forward
 class TiXmlNode;
 class TiXmlElement;
+class TiXmlDocument;
 
 class COrigin
 {
@@ -162,6 +163,9 @@ public:
 #endif
 
 protected:
+  bool Load(TiXmlDocument &xmlDoc);                 ///< Loads from the given XML document
+  virtual void LoadAdditionalTags(TiXmlElement *root) {}; ///< Load additional information from the XML document
+
   virtual void SetDefaults();
   virtual void OnWindowUnload() {}
   virtual void OnWindowLoaded();
