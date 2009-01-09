@@ -190,6 +190,30 @@ class PlexMediaNode
      // Let subclass finish.
      DoBuildFileItem(pItem, string(parentPath), el);
      
+     try
+     {
+       // Thumb.
+       const char* thumb = el.Attribute("thumb"); 
+       if (thumb && strlen(thumb) > 0)
+       {
+         string strThumb = CPlexDirectory::ProcessUrl(parentPath, thumb, false);
+         pItem->SetThumbnailImage(strThumb);
+       }
+       
+       // Fanart.
+       const char* fanart = el.Attribute("art");
+       string strFanart;
+       if (fanart && strlen(fanart) > 0)
+       {
+         strFanart = CPlexDirectory::ProcessUrl(parentPath, fanart, false);
+         pItem->SetQuickFanart(strFanart);
+       } 
+     }
+     catch (...)
+     {
+       printf("ERROR: Exception setting directory thumbnail.\n");
+     }
+     
      // Make sure we have the trailing slash.
      if (pItem->m_bIsFolder == true && pItem->m_strPath[pItem->m_strPath.size()-1] != '/')
        pItem->m_strPath += "/";
@@ -218,29 +242,6 @@ class PlexMediaDirectory : public PlexMediaNode
   virtual void DoBuildFileItem(CFileItemPtr& pItem, const string& parentPath, TiXmlElement& el)
   {
     pItem->SetLabel(el.Attribute("name"));
-    
-    try
-    {
-      const char* thumb = el.Attribute("thumb"); 
-      if (thumb && strlen(thumb) > 0)
-      {
-        string strThumb = CPlexDirectory::ProcessUrl(parentPath, thumb, false);
-        pItem->SetThumbnailImage(strThumb);
-      }
-      
-      // Fanart.
-      const char* fanart = el.Attribute("art");
-      string strFanart;
-      if (fanart && strlen(fanart) > 0)
-      {
-        strFanart = CPlexDirectory::ProcessUrl(parentPath, fanart, false);
-        pItem->SetQuickFanart(strFanart);
-      } 
-    }
-    catch (...)
-    {
-      printf("ERROR: Exception setting directory thumbnail.\n");
-    }
     
     // Check for search directories
     const char* search = el.Attribute("search");
@@ -277,25 +278,6 @@ class PlexMediaArtist : public PlexMediaNode
   virtual void DoBuildFileItem(CFileItemPtr& pItem, const string& parentPath, TiXmlElement& el)
   {
     pItem->SetLabel(el.Attribute("artist"));
-    
-    try
-    {
-      string path = el.Attribute("thumb");
-      
-      CURL url(pItem->m_strPath);
-      url.SetProtocol("http");
-      url.SetFileName(path.substr(1));
-      url.SetPort(32400);
-      
-      CStdString theURL;
-      url.GetURL(theURL);
-      
-      pItem->SetThumbnailImage(theURL);
-    }
-    catch (...)
-    {
-      
-    }
   }
 };
 
@@ -311,19 +293,7 @@ class PlexMediaAlbum : public PlexMediaNode
     album.strArtist = el.Attribute("artist");
     album.strGenre = el.Attribute("genre");
     album.iYear = boost::lexical_cast<int>(el.Attribute("year"));
-    
-    // Construct the thumbnail request.
-    CURL url(pItem->m_strPath);
-    url.SetProtocol("http");
-    
-    string path = el.Attribute("thumb");
-    url.SetFileName(path.substr(1));
-    url.SetPort(32400);
-    
-    CStdString theURL;
-    url.GetURL(theURL);
-    album.thumbURL = theURL;
-    
+        
     CFileItemPtr newItem(new CFileItem(pItem->m_strPath, album));
     pItem = newItem;
   }
@@ -341,19 +311,7 @@ class PlexMediaPodcast : public PlexMediaNode
     
     if (strlen(el.Attribute("year")) > 0)
       album.iYear = boost::lexical_cast<int>(el.Attribute("year"));
-    
-    // Construct the thumbnail request.
-    CURL url(pItem->m_strPath);
-    url.SetProtocol("http");
-    url.SetPort(32400);
-    
-    string path = el.Attribute("thumb");
-    url.SetFileName(path.substr(1));
-    
-    CStdString theURL;
-    url.GetURL(theURL);
-    album.thumbURL = theURL;
-    
+        
     CFileItemPtr newItem(new CFileItem(pItem->m_strPath, album));
     pItem = newItem;
   }
@@ -372,14 +330,6 @@ class PlexMediaGenre : public PlexMediaNode
   virtual void DoBuildFileItem(CFileItemPtr& pItem, const string& parentPath, TiXmlElement& el)
   {
     pItem->SetLabel(el.Attribute("genre"));
-    
-    // Thumbnail.
-    const char* thumb = el.Attribute("thumb");
-    if (thumb && strlen(thumb) > 0)
-    {
-      string strThumb = CPlexDirectory::ProcessUrl(parentPath, thumb, false);
-      pItem->SetThumbnailImage(strThumb);
-    }
   }
 };
 
@@ -431,10 +381,7 @@ class PlexMediaVideo : public PlexMediaNode
     if (show)
       videoInfo.m_strShowTitle = show;
 #endif
-    
-    // Thumbnail.
-    string thumbnail = CPlexDirectory::ProcessUrl(parentPath, el.Attribute("thumb"), false);
-    
+        
     // Path to the track itself.
     CURL url2(pItem->m_strPath);
     if (url2.GetProtocol() == "plex" && url2.GetFileName().Find("video/:/") == -1)
@@ -450,7 +397,6 @@ class PlexMediaVideo : public PlexMediaNode
     CFileItemPtr newItem(new CFileItem(videoInfo));
     newItem->m_bIsFolder = false;
     newItem->m_strPath = pItem->m_strPath;
-    newItem->SetThumbnailImage(thumbnail);
     pItem = newItem;
   }
   
@@ -481,15 +427,6 @@ class PlexMediaTrack : public PlexMediaNode
     const char* trackNumber = el.Attribute("index");
     if (trackNumber && strlen(trackNumber) > 0)
       song.iTrack = boost::lexical_cast<int>(trackNumber);
-        
-    // Thumbnail.
-    CURL url(pItem->m_strPath);
-    url.SetProtocol("http");
-    url.SetPort(32400);
-    string path = el.Attribute("thumb");
-    url.SetFileName(path.substr(1));
-    CStdString theURL;
-    url.GetURL(song.strThumb);
     
     // Replace the item.
     CFileItemPtr newItem(new CFileItem(song));
@@ -559,14 +496,6 @@ class PlexMediaPhoto : public PlexMediaNode
       pItem->SetLabel(el.Attribute("title"));
     else
       pItem->SetLabel(el.Attribute("label"));
-    
-    // Thumbnail.
-    const char* thumb = el.Attribute("thumb");
-    if (thumb && strlen(thumb) > 0)
-    {
-      string strThumb = CPlexDirectory::ProcessUrl(parentPath, thumb, false);
-      pItem->SetThumbnailImage(strThumb);
-    }
     
     // Summary.
     const char* summary = el.Attribute("summary");
