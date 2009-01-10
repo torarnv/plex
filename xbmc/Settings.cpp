@@ -216,6 +216,8 @@ CSettings::CSettings(void)
   g_advancedSettings.m_tvshowStackRegExps.push_back("[Ss]([0-9]+)[\\.-]?[Ee]([0-9]+)([^\\\\/]*)$");
   // foo.103*
   g_advancedSettings.m_tvshowStackRegExps.push_back("[\\._ -]([0-9]+)([0-9][0-9])([\\._ -][^\\\\/]*)$");
+	// foo/103*
+	g_advancedSettings.m_tvshowStackRegExps.push_back("([0-9]+)([0-9][0-9])[^\\\\/]*");
 
   g_advancedSettings.m_tvshowMultiPartStackRegExp = "^[-EeXx]+([0-9]+)";
 
