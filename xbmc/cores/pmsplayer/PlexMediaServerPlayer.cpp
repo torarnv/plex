@@ -223,13 +223,9 @@ bool CPlexMediaServerPlayer::CanSeek()
 void CPlexMediaServerPlayer::Seek(bool bPlus, bool bLargeStep)
 {
   if (bLargeStep)
-  {
-    //m_dll.FlashBigStep(m_handle, !bPlus);
-  }
-  else 
-  {
-    //m_dll.FlashSmallStep(m_handle, !bPlus);
-  }
+    m_http.WriteLine(string("BIGSTEP") + (bPlus ? "+" : "-"));
+  else
+    m_http.WriteLine(string("SMALLSTEP") + (bPlus ? "+" : "-"));
 }
 
 void CPlexMediaServerPlayer::GetAudioInfo(CStdString& strAudioInfo)
@@ -352,7 +348,7 @@ void CPlexMediaServerPlayer::OnPlaybackStarted()
   try
   {
     g_renderManager.PreInit();
-    g_renderManager.Configure(m_width, m_height, m_width, m_height, 30.0f, CONF_FLAGS_FULLSCREEN);
+    g_renderManager.Configure(m_width, m_height, m_width, m_height, 30.0f, CONF_FLAGS_FULLSCREEN | CONF_FLAGS_RGB);
     
     ipc::scoped_lock<ipc::named_mutex> lock(m_frameMutex);
     memset(m_mappedRegion->get_address(), 0, m_height*m_width*4);

@@ -1276,6 +1276,12 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
 {
   bool err = false;
   
+  if (m_iFlags & CONF_FLAGS_RGB)
+  {
+    m_renderMethod = RENDER_SW;
+    return;
+  }
+  
   if (!m_bRGBImageSet && glCreateProgram)
   {
     if (m_pYUVShader)
