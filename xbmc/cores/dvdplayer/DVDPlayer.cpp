@@ -1839,7 +1839,7 @@ void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)
     seek = (__int64)(GetTotalTimeInMsec()*(GetPercentage()+percent)/100);
   }
 
-  m_messenger.Put(new CDVDMsgPlayerSeek((int)seek, true, true, false));
+  m_messenger.Put(new CDVDMsgPlayerSeek((int)seek, !bPlus, true, false));
   SyncronizeDemuxer(100);
   m_tmLastSeek = time(NULL);
 }
