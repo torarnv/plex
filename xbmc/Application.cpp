@@ -5765,7 +5765,8 @@ bool CApplication::OnMessage(CGUIMessage& message)
       CScrobbler::GetInstance()->SetSubmitSong(false);
 
       // stop lastfm
-      CLastFmManager::GetInstance()->StopRadio();
+      if (CLastFmManager::GetInstance()->IsRadioEnabled())
+        CLastFmManager::GetInstance()->StopRadio();
 
       if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
       {
