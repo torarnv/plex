@@ -889,6 +889,7 @@
 		E3F471BD0EAC4BBE004BB122 /* NptPosixFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3F471BC0EAC4BBE004BB122 /* NptPosixFile.cpp */; };
 		E3F471BF0EAC4BF9004BB122 /* NptStdcEnvironment.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3F471BE0EAC4BF9004BB122 /* NptStdcEnvironment.cpp */; };
 		E3F766080F346CC300667633 /* md5.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3F766070F346CC300667633 /* md5.cpp */; };
+		E3F766230F3471D300667633 /* DVDInputStreamStack.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3F766220F3471D300667633 /* DVDInputStreamStack.cpp */; };
 		E3FD287C0E9951B500EE77C3 /* FilePlex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3FD28780E9951B500EE77C3 /* FilePlex.cpp */; };
 		E3FD287D0E9951B500EE77C3 /* PlexDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3FD287A0E9951B500EE77C3 /* PlexDirectory.cpp */; };
 		E3FD41940EF459C100C6172C /* PlayListURL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3FD41930EF459C100C6172C /* PlayListURL.cpp */; };
@@ -3075,6 +3076,7 @@
 		E3F471BC0EAC4BBE004BB122 /* NptPosixFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptPosixFile.cpp; sourceTree = "<group>"; };
 		E3F471BE0EAC4BF9004BB122 /* NptStdcEnvironment.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NptStdcEnvironment.cpp; path = StdC/NptStdcEnvironment.cpp; sourceTree = "<group>"; };
 		E3F766070F346CC300667633 /* md5.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = md5.cpp; sourceTree = "<group>"; };
+		E3F766220F3471D300667633 /* DVDInputStreamStack.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDInputStreamStack.cpp; sourceTree = "<group>"; };
 		E3FD28780E9951B500EE77C3 /* FilePlex.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FilePlex.cpp; sourceTree = "<group>"; };
 		E3FD28790E9951B500EE77C3 /* FilePlex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FilePlex.h; sourceTree = "<group>"; };
 		E3FD287A0E9951B500EE77C3 /* PlexDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PlexDirectory.cpp; sourceTree = "<group>"; };
@@ -4513,6 +4515,7 @@
 		E38E15570D25F9FA00618676 /* DVDInputStreams */ = {
 			isa = PBXGroup;
 			children = (
+				E3F766220F3471D300667633 /* DVDInputStreamStack.cpp */,
 				E3B963BA0E3863F80022F663 /* DVDInputStreamRTMP.cpp */,
 				E3B963BB0E3863F80022F663 /* DVDInputStreamRTMP.h */,
 				E33979940D62FD47004ECDDA /* DVDInputStreamTV.cpp */,
@@ -7455,6 +7458,7 @@
 				E3FD41A60EF46E4100C6172C /* NptWin32Debug.cpp in Sources */,
 				E3AF20810F0C4DF600C5259C /* PlexMediaServerPlayer.cpp in Sources */,
 				E3F766080F346CC300667633 /* md5.cpp in Sources */,
+				E3F766230F3471D300667633 /* DVDInputStreamStack.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
