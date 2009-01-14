@@ -216,6 +216,7 @@ bool CDVDPlayerAudio::OpenDecoder(CDVDStreamInfo &hints, BYTE* buffer /* = NULL*
 
   /* store our stream hints */
   m_streaminfo = hints;
+  m_streaminfo.forcelibdts = hints.forcelibdts;
 
   CLog::Log(LOGNOTICE, "Finding audio codec for: %i", m_streaminfo.codec);
   m_pAudioCodec = CDVDFactoryCodec::CreateAudioCodec( m_streaminfo );

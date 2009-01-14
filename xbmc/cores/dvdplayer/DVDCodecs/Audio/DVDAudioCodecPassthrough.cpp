@@ -100,7 +100,7 @@ bool CDVDAudioCodecPassthrough::SyncDTSHeader(BYTE* pData, int iDataSize, int* i
 
       if( iSampleRate != OUT_SAMPLERATE )
       {
-        CLog::Log(LOGERROR, "CDVDAudioCodecPassthrough::SyncDTSHeader - unsupported samplerate %d, skipping", iSampleRate);
+        CLog::Log(LOGERROR, "CDVDAudioCodecPassthrough::SyncDTSHeader - unsupported samplerate %li, skipping", iSampleRate);
         return false;
       }
 
