@@ -844,14 +844,19 @@ void Cocoa_StartBackgroundMusic()
   [[BackgroundMusicPlayer sharedInstance] startMusic];
 }
 
-void Cocoa_StopBackgroundMusic() 
+void Cocoa_StopBackgroundMusic(bool withFade) 
 {
-  [[BackgroundMusicPlayer sharedInstance] stopMusic];
+  [[BackgroundMusicPlayer sharedInstance] stopMusic:withFade];
 }
 
 void Cocoa_SetBackgroundMusicEnabled(bool enabled)
 {
   [[BackgroundMusicPlayer sharedInstance] setEnabled:enabled];
+}
+
+bool Cocoa_IsBackgroundMusicEnabled()
+{
+  return [[BackgroundMusicPlayer sharedInstance] enabled];
 }
 
 void Cocoa_SetBackgroundMusicThemesEnabled(bool enabled)

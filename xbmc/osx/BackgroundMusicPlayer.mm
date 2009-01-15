@@ -35,12 +35,14 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
   isThemeMusicEnabled = NO;
   isThemeDownloadingEnabled = NO;
   isPlaying = NO;
-  isFocused = NO;
+  isFocused = YES;
   volumeFadeLevel = 100;
   volumeCrossFadeLevel = 100;
   targetVolumeFade = 100;
   targetVolumeCrossFade = 100;
   fadeIncrement = 5;
+  currentId = nil;
+  fadeTimer = nil;
   
   // Set the default volume to 50% (overridden in settings)
   volume = 0.5f;
@@ -100,8 +102,19 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
   return isEnabled; 
 }
 
+- (void)setEnabledWithObject:(NSNumber* )enabledObj
+{
+  [self setEnabled:(BOOL)[enabledObj boolValue]];
+}
+
 - (void)setEnabled:(BOOL)enabled
 {
+  if (![NSThread isMainThread])
+  {
+    [self performSelectorOnMainThread:@selector(setEnabledWithObject:) withObject:[NSNumber numberWithBool:enabled] waitUntilDone:NO];
+    return;
+  }
+  
   if (isEnabled != enabled)
   {
     isEnabled = enabled;
@@ -111,8 +124,16 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
     }
     else
     {
+      NSString* id = currentId;
+      [self setThemeMusicId:nil];
+      currentId = id;
+      
+      [NSObject cancelPreviousPerformRequestsWithTarget:self];
+      [fadeTimer invalidate];
+      [fadeTimer release], fadeTimer = nil;
       [mainMusic release], mainMusic = nil;
       [themeMusic release], themeMusic = nil;
+      isPlaying = NO;
     }
   }
 }
@@ -154,7 +175,7 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
 }
 
 - (void)play
-{
+{ 
   static bool alreadyPlaying = false;
 
   // Prevent recursive calls to play
@@ -163,10 +184,11 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
 
   if (!mainMusic)
   {
-    alreadyPlaying = true;
     // Load a random track, if one is not already loaded
+    alreadyPlaying = true;
     [self loadNextTrack];
   }
+
   [self fadeAudioTo:[NSNumber numberWithInt:100]];
   alreadyPlaying = false;
 }
@@ -178,23 +200,46 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
 
 - (void)startMusic
 {
+  if (![NSThread isMainThread])
+  {
+    [self performSelectorOnMainThread:@selector(startMusic) withObject:nil waitUntilDone:NO];
+    return;
+  }
+
   if (!isPlaying)
   {
     isPlaying = YES;
     if (isEnabled && isFocused)
     {
       if (currentId)
-        [themeMusic gotoBeginning]; // Make sure theme music always starts at the beginning when returning from video playback
+      {
+        if (themeMusic == nil)
+        {
+          NSString* id = currentId;
+          currentId = nil;
+          [self setThemeMusicId:id];
+        }
+      }
+      
       [self play];
     }
   }
 }
 
-- (void)stopMusic
+- (void)stopMusic:(BOOL)withFade
 {
   if (isPlaying)
   {
-    [self pause];
+    if (withFade)
+    {
+      [self pause];
+    }
+    else
+    {
+      [mainMusic stop];
+      [themeMusic stop];
+    }
+    
     isPlaying = NO;
   }
 }
@@ -270,7 +315,7 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
         {
           currentId = newId;
           [themeMusic release];
-          themeMusic = [[QTMovie alloc] initWithFile:localFile error:nil];  
+          themeMusic = [[QTMovie alloc] initWithFile:localFile error:nil];
 
           if (isPlaying && isFocused)
           {
@@ -335,6 +380,7 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
       [[NSRunLoop mainRunLoop] addTimer:fadeTimer forMode:NSDefaultRunLoopMode];
     }
   }
+
   // Set the volume level
   [self updateMusicVolume];
 
@@ -373,8 +419,10 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
       [[NSRunLoop mainRunLoop] addTimer:crossFadeTimer forMode:NSDefaultRunLoopMode];
     }
   }
+  
   // Set the volume level
   [self updateMusicVolume];
+  
   // Make sure we are playing both tracks as we want to cross fade them
   [mainMusic play];
   [themeMusic play];

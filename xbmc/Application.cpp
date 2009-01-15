@@ -413,7 +413,8 @@ CApplication::CApplication(void)
   m_nextPlaylistItem = -1;
   m_playCountUpdated = false;
   m_bPlaybackStarting = false;
-
+  m_bBackgroundMusicEnabled = false;
+  
   //true while we in IsPaused mode! Workaround for OnPaused, which must be add. after v2.0
   m_bIsPaused = false;
 
@@ -1186,8 +1187,9 @@ HRESULT CApplication::Create(HWND hWnd)
     device->setDefault();
   
   // Start background music playing
+  m_bBackgroundMusicEnabled = g_guiSettings.GetBool("backgroundmusic.bgmusicenabled");
   Cocoa_UpdateGlobalVolume(g_application.GetVolume());
-  Cocoa_SetBackgroundMusicEnabled(g_guiSettings.GetBool("backgroundmusic.bgmusicenabled"));
+  Cocoa_SetBackgroundMusicEnabled(m_bBackgroundMusicEnabled);
   Cocoa_SetBackgroundMusicThemesEnabled(g_guiSettings.GetBool("backgroundmusic.thememusicenabled"));
   Cocoa_SetBackgroundMusicThemeDownloadsEnabled(g_guiSettings.GetBool("backgroundmusic.themedownloadsenabled"));
   Cocoa_SetBackgroundMusicVolume((float)(g_guiSettings.GetInt("backgroundmusic.bgmusicvolume")/100.0f));
@@ -4815,7 +4817,18 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
   bool bResult;
   if (m_pPlayer)
+  {
+#ifdef __APPLE__
+    // Suspend the updater
+    Cocoa_SetUpdateSuspended(true);
+
+    // Stop the background music (if enabled)
+    m_bBackgroundMusicEnabled = Cocoa_IsBackgroundMusicEnabled();
+    Cocoa_SetBackgroundMusicEnabled(false);
+#endif
+    
     bResult = m_pPlayer->OpenFile(item, options);
+  }
   else
   {
     CLog::Log(LOGERROR, "Error creating player for item %s (File doesn't exist?)", item.m_strPath.c_str());
@@ -4880,25 +4893,16 @@ void CApplication::OnPlayBackEnded()
 
   CLog::Log(LOGDEBUG, "Playback has finished");
   
-  // Restart the updater
-  Cocoa_SetUpdateSuspended(false);
-
   CGUIMessage msg(GUI_MSG_PLAYBACK_ENDED, 0, 0);
 
   if(m_bPlaybackStarting)
     m_vPlaybackStarting.push(msg);
   else
     m_gWindowManager.SendThreadMessage(msg);
-  
-  // Start the background music (if enabled)
-  Cocoa_StartBackgroundMusic();
 }
 
 void CApplication::OnPlayBackStarted()
 {
-  // Suspend the updater
-  Cocoa_SetUpdateSuspended(true);
-  
   // Reset to the claimed video FPS.
   g_infoManager.ResetFPS(m_pPlayer->GetActualFPS());
   
@@ -4914,9 +4918,6 @@ void CApplication::OnPlayBackStarted()
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackStarted;1");
 #endif
   
-  // Stop the background music (if enabled)
-  Cocoa_StopBackgroundMusic();
-
   CLog::Log(LOGDEBUG, "Playback has started");
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_STARTED, 0, 0);
@@ -4969,9 +4970,6 @@ void CApplication::OnPlayBackStopped()
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackStopped;1");
 #endif
 
-  // Restart the updater
-  Cocoa_SetUpdateSuspended(false);
-  
   CLog::Log(LOGDEBUG, "Playback was stopped\n");
 
   CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0 );
@@ -4979,9 +4977,6 @@ void CApplication::OnPlayBackStopped()
     m_vPlaybackStarting.push(msg);
   else
     m_gWindowManager.SendThreadMessage(msg);
-  
-  // Start the background music (if enabled)
-  Cocoa_StartBackgroundMusic();
 }
 
 bool CApplication::IsPlaying() const
@@ -5717,6 +5712,15 @@ bool CApplication::OnMessage(CGUIMessage& message)
   case GUI_MSG_PLAYBACK_ENDED:
   case GUI_MSG_PLAYLISTPLAYER_STOPPED:
     {
+#ifdef __APPLE__
+      // Restart the updater
+      Cocoa_SetUpdateSuspended(false);
+      
+      // Start the background music (if enabled)
+      Cocoa_SetBackgroundMusicEnabled(m_bBackgroundMusicEnabled);
+      Cocoa_StartBackgroundMusic();
+#endif
+
       // first check if we still have items in the stack to play
       if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
       {

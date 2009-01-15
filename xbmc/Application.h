@@ -293,6 +293,8 @@ protected:
   int m_nextPlaylistItem;
 
   bool m_bPresentFrame;
+  
+  bool m_bBackgroundMusicEnabled;
 
   char* m_logPath;
 

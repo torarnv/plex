@@ -121,8 +121,9 @@ extern "C"
   // Background music control functions
   //
   void Cocoa_StartBackgroundMusic();
-  void Cocoa_StopBackgroundMusic();
+  void Cocoa_StopBackgroundMusic(bool withFade);
   void Cocoa_SetBackgroundMusicEnabled(bool enabled);
+  bool Cocoa_IsBackgroundMusicEnabled();
   void Cocoa_SetBackgroundMusicThemesEnabled(bool enabled);
   void Cocoa_SetBackgroundMusicThemeDownloadsEnabled(bool enabled);
   void Cocoa_CheckForThemeWithId(const char* tvShowId);

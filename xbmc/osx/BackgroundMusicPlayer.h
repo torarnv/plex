@@ -51,7 +51,7 @@
 - (BOOL)isPlaying;
 
 - (void)startMusic;
-- (void)stopMusic;
+- (void)stopMusic:(BOOL) withFade;
 - (void)loadNextTrack;
 - (void)setThemeMusicId:(NSString*)newId;
 
