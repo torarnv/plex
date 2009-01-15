@@ -65,3 +65,15 @@ void CGUIDialogOK::ShowAndGetInput(int heading, int line0, int line1, int line2)
   return ;
 }
 
+void CGUIDialogOK::ShowAndGetInput(const CStdString& heading, const CStdString& line0, const CStdString& line1, const CStdString& line2)
+{
+  CGUIDialogOK *dialog = (CGUIDialogOK *)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+  if (!dialog) return;
+  dialog->SetHeading( heading );
+  dialog->SetLine( 0, line0 );
+  dialog->SetLine( 1, line1 );
+  dialog->SetLine( 2, line2 );
+  dialog->DoModal();
+  return ;
+}
+

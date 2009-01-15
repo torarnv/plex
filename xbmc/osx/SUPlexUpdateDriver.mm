@@ -58,7 +58,7 @@ static BOOL AuthorizationExecuteWithPrivilegesAndWait(AuthorizationRef authoriza
   CGUIDialogUtils::CloseProgressDialog();
   if (CGUIDialogUtils::ShowYesNoDialog(CGUIDialogUtils::Localize(40000),
                                        CGUIDialogUtils::Localize(40003),
-                                       [[NSString stringWithFormat:[NSString stringWithCString:(CGUIDialogUtils::Localize(40004).c_str())],
+                                       [[NSString stringWithFormat:[NSString stringWithUTF8String:(CGUIDialogUtils::Localize(40004).c_str())],
                                                                     [updateItem displayVersionString], [host displayVersion]] UTF8String],
                                        CGUIDialogUtils::Localize(40005)))
   {
@@ -74,7 +74,7 @@ static BOOL AuthorizationExecuteWithPrivilegesAndWait(AuthorizationRef authoriza
   // No update found, let the user know they're up to date
   CGUIDialogUtils::CloseProgressDialog();
   CGUIDialogUtils::ShowOKDialog(CGUIDialogUtils::Localize(40000),
-                                [[NSString stringWithFormat:[NSString stringWithCString:(CGUIDialogUtils::Localize(40006).c_str())], [host displayVersion]] UTF8String], "", "");
+                                [[NSString stringWithFormat:[NSString stringWithUTF8String:(CGUIDialogUtils::Localize(40006).c_str())], [host displayVersion]] UTF8String], "", "");
   [super didNotFindUpdate];
 }
 
@@ -118,9 +118,9 @@ static BOOL AuthorizationExecuteWithPrivilegesAndWait(AuthorizationRef authoriza
   if (totalData > 0) {
     int iPercentage = (int)(((float)processedData/(float)totalData)*100.0f);
     CGUIDialogUtils::SetProgressDialogPercentage(iPercentage);    
-    CGUIDialogUtils::SetProgressDialogLine(2, [[NSString stringWithFormat:[NSString stringWithCString:(CGUIDialogUtils::Localize(40008).c_str())], [self _humanReadableSizeFromDouble:(double)processedData], [self _humanReadableSizeFromDouble:(double)totalData], iPercentage] UTF8String]);
+    CGUIDialogUtils::SetProgressDialogLine(2, [[NSString stringWithFormat:[NSString stringWithUTF8String:(CGUIDialogUtils::Localize(40008).c_str())], [self _humanReadableSizeFromDouble:(double)processedData], [self _humanReadableSizeFromDouble:(double)totalData], iPercentage] UTF8String]);
   } else {
-    CGUIDialogUtils::SetProgressDialogLine(2, [[NSString stringWithFormat:[NSString stringWithCString:(CGUIDialogUtils::Localize(40009).c_str())], [self _humanReadableSizeFromDouble:(double)processedData]] UTF8String]);
+    CGUIDialogUtils::SetProgressDialogLine(2, [[NSString stringWithFormat:[NSString stringWithUTF8String:(CGUIDialogUtils::Localize(40009).c_str())], [self _humanReadableSizeFromDouble:(double)processedData]] UTF8String]);
   }
   Cocoa_UpdateProgressDialog();
 }

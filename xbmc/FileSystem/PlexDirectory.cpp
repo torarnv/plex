@@ -20,6 +20,8 @@
 #include "GUIDialogProgress.h"
 #include "URL.h"
 #include "FileItem.h"
+#include "GUIViewState.h"
+#include "GUIDialogOK.h"
 
 using namespace std;
 using namespace XFILE;
@@ -135,6 +137,31 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     
     if (!pItem->IsParentFolder())
       vecCacheItems.Add(pItem);
+  }
+  
+  // Check for dialog message attributes
+  CStdString strHeader = "";
+  CStdString strMessage = "";
+  const char* header = root->Attribute("header");
+  if (header && strlen(header) > 0)
+  {
+    strHeader = header;
+    const char* message = root->Attribute("message");
+    if (message && strlen(message) > 0) strMessage = message;
+    CGUIDialogOK::ShowAndGetInput(strHeader, strMessage, "", "");
+    
+    // If the container has no child items, return to the previous directory
+    if (items.Size() == 0)
+      return false;
+  }
+    
+  
+  // Set the view mode
+  const char* viewmode = root->Attribute("viewmode");
+  if (viewmode && strlen(viewmode) > 0)
+  {
+    CGUIViewState* viewState = CGUIViewState::GetViewState(0, items);
+    viewState->SaveViewAsControl(atoi(viewmode));
   }
   
   //g_directoryCache.SetDirectory(strRoot, vecCacheItems);
