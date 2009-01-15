@@ -322,6 +322,8 @@ protected:
       chapter_count = 0;
       canrecord     = false;
       recording     = false;
+      demux_video   = "";
+      demux_audio   = "";
     }
     
     double timestamp;         // last time of update
@@ -335,6 +337,9 @@ protected:
 
     bool canrecord;           // can input stream record
     bool recording;           // are we currently recording
+
+    std::string demux_video;
+    std::string demux_audio;
   } m_State;
   CCriticalSection m_StateSection;
 
