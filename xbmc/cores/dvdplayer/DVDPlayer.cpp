@@ -239,6 +239,9 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer)
 CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
     : IPlayer(callback),
       CThread(),
+      m_CurrentAudio(STREAM_AUDIO),
+      m_CurrentVideo(STREAM_VIDEO),
+      m_CurrentSubtitle(STREAM_SUBTITLE),
       m_dvdPlayerVideo(&m_clock, &m_overlayContainer),
       m_dvdPlayerAudio(&m_clock),
       m_dvdPlayerSubtitle(&m_overlayContainer),
@@ -573,7 +576,7 @@ bool CDVDPlayer::ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream)
   return false;
 }
 
-bool CDVDPlayer::IsValidStream(CCurrentStream& stream, StreamType type)
+bool CDVDPlayer::IsValidStream(CCurrentStream& stream)
 {
   if(stream.id<0)
     return true; // we consider non selected as valid
@@ -586,7 +589,7 @@ bool CDVDPlayer::IsValidStream(CCurrentStream& stream, StreamType type)
     CDemuxStream* st = m_pSubtitleDemuxer->GetStream(stream.id);
     if(st == NULL || st->disabled)
       return false;
-    if(st->type != type)
+    if(st->type != stream.type)
       return false;
     return true;
   }
@@ -595,14 +598,14 @@ bool CDVDPlayer::IsValidStream(CCurrentStream& stream, StreamType type)
     CDemuxStream* st = m_pDemuxer->GetStream(stream.id);
     if(st == NULL || st->disabled)
       return false;
-    if(st->type != type)
+    if(st->type != stream.type)
       return false;
 
     if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
     {
-      if(type == STREAM_AUDIO    && st->iPhysicalId != m_dvd.iSelectedAudioStream)
+      if(stream.type == STREAM_AUDIO    && st->iPhysicalId != m_dvd.iSelectedAudioStream)
         return false;
-      if(type == STREAM_SUBTITLE && st->iPhysicalId != m_dvd.iSelectedSPUStream)
+      if(stream.type == STREAM_SUBTITLE && st->iPhysicalId != m_dvd.iSelectedSPUStream)
         return false;
     }
 
@@ -612,7 +615,7 @@ bool CDVDPlayer::IsValidStream(CCurrentStream& stream, StreamType type)
   return false;
 }
 
-bool CDVDPlayer::IsBetterStream(CCurrentStream& current, StreamType type, CDemuxStream* stream)
+bool CDVDPlayer::IsBetterStream(CCurrentStream& current, CDemuxStream* stream)
 {
   if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
   {
@@ -625,15 +628,15 @@ bool CDVDPlayer::IsBetterStream(CCurrentStream& current, StreamType type, CDemux
 
     source_type = STREAM_SOURCE_MASK(stream->source);
     if(source_type  != STREAM_SOURCE_DEMUX
-    || stream->type != type
+    || stream->type != current.type
     || stream->iId  == current.id)
       return false;
 
-    if(type == STREAM_AUDIO    && stream->iPhysicalId == m_dvd.iSelectedAudioStream)
+    if(current.type == STREAM_AUDIO    && stream->iPhysicalId == m_dvd.iSelectedAudioStream)
       return true;
-    if(type == STREAM_SUBTITLE && stream->iPhysicalId == m_dvd.iSelectedSPUStream)
+    if(current.type == STREAM_SUBTITLE && stream->iPhysicalId == m_dvd.iSelectedSPUStream)
       return true;
-    if(type == STREAM_VIDEO    && current.id < 0)
+    if(current.type == STREAM_VIDEO    && current.id < 0)
       return true;
   }
   else
@@ -645,10 +648,10 @@ bool CDVDPlayer::IsBetterStream(CCurrentStream& current, StreamType type, CDemux
     if(stream->disabled)
       return false;
 
-    if(stream->type != type)
+    if(stream->type != current.type)
       return false;
 
-    if(type == STREAM_SUBTITLE)
+    if(current.type == STREAM_SUBTITLE)
       return false;
 
     if(current.id < 0)
@@ -944,14 +947,14 @@ void CDVDPlayer::Process()
       }
 
       // check so that none of our streams has become invalid
-      if (!IsValidStream(m_CurrentAudio,    STREAM_AUDIO))    CloseAudioStream(false);
-      if (!IsValidStream(m_CurrentVideo,    STREAM_VIDEO))    CloseVideoStream(false);
-      if (!IsValidStream(m_CurrentSubtitle, STREAM_SUBTITLE)) CloseSubtitleStream(false);
+      if (!IsValidStream(m_CurrentAudio))    CloseAudioStream(false);
+      if (!IsValidStream(m_CurrentVideo))    CloseVideoStream(false);
+      if (!IsValidStream(m_CurrentSubtitle)) CloseSubtitleStream(false);
 
       // check if there is any better stream to use (normally for dvd's)
-      if (IsBetterStream(m_CurrentAudio,    STREAM_AUDIO,    pStream)) OpenAudioStream(pStream->iId, pStream->source);
-      if (IsBetterStream(m_CurrentVideo,    STREAM_VIDEO,    pStream)) OpenVideoStream(pStream->iId, pStream->source);
-      if (IsBetterStream(m_CurrentSubtitle, STREAM_SUBTITLE, pStream)) OpenSubtitleStream(pStream->iId, pStream->source);
+      if (IsBetterStream(m_CurrentAudio,    pStream)) OpenAudioStream(pStream->iId, pStream->source);
+      if (IsBetterStream(m_CurrentVideo,    pStream)) OpenVideoStream(pStream->iId, pStream->source);
+      if (IsBetterStream(m_CurrentSubtitle, pStream)) OpenSubtitleStream(pStream->iId, pStream->source);
     }
     catch (...)
     {
