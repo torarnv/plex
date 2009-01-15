@@ -58,7 +58,6 @@ public:
   DWORD AddPackets(const DVDAudioFrame &audioframe);
   void DoWork();
   double GetDelay(); // returns the time it takes to play a packet if we add one at this time
-	void Drain();
   void Flush();
   void Drain();
 
