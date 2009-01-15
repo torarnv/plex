@@ -26,7 +26,6 @@ CoreAudioRenderer::CoreAudioRenderer(IAudioCallback* pCallback, int iChannels, u
 	m_bPause = false;
 	m_bCanPause = false;
 	m_bIsAllocated = false;
-	ac3_framebuffer = NULL;
 	m_bIsMusic = bIsMusic;
 	
 	m_dwPacketSize = (int)((float)iChannels*(uiBitsPerSample/8)* uiSamplesPerSec * CA_BUFFER_FACTOR / 5); // Pass 20% of the buffer at a time
@@ -36,23 +35,6 @@ CoreAudioRenderer::CoreAudioRenderer(IAudioCallback* pCallback, int iChannels, u
 	  m_dwPacketSize /= 5; 
 	}
 	m_dwNumPackets = 16;
-	
-	if (g_audioConfig.UseDigitalOutput() &&
-		iChannels > 2 &&
-		!bPassthrough)
-	{
-		// Enable AC3 passthrough for digital devices
-		int mpeg_remapping = 0;
-		if (strAudioCodec == "AAC" || strAudioCodec == "DTS") mpeg_remapping = 1; // DTS uses MPEG channel mapping
-		ac3encoder_init(&m_ac3encoder, iChannels, uiSamplesPerSec, uiBitsPerSample, mpeg_remapping);
-		m_bEncodeAC3 = true;
-		m_bPassthrough = true;
-		ac3_framebuffer = (unsigned char *)calloc(m_dwPacketSize, 1);
-	}
-	else
-	{
-		m_bEncodeAC3 = false;
-	}
 	
 	// set the stream parameters
 	m_uiChannels = iChannels;
@@ -69,31 +51,14 @@ CoreAudioRenderer::CoreAudioRenderer(IAudioCallback* pCallback, int iChannels, u
 	
 	CLog::Log(LOGINFO, "Asked to open device: [%s]\n", device.c_str());
 	
-	if (g_audioConfig.UseDigitalOutput() &&
-		iChannels > 2 &&
-		!m_bPassthrough)
-	{
-		// Use AC3 encoder
-		audioUnit = new CoreAudioAUHAL(device,
-									   SPDIF_CHANNELS,
-									   SPDIF_SAMPLERATE,
-									   SPDIF_SAMPLESIZE,
-									   true,
-									   g_audioConfig.HasDigitalOutput(),
-									   false,
-									   SPDIF_SAMPLE_BYTES*512);
-	}
-	else
-	{
-		audioUnit = new CoreAudioAUHAL(device,
-									   m_uiChannels,
-									   m_uiSamplesPerSec,
-									   m_uiBitsPerSample,
-									   m_bPassthrough,
-									   g_audioConfig.HasDigitalOutput(),
-									   false,
-									   m_dwPacketSize);
-	}
+	audioUnit = new CoreAudioAUHAL(device,
+								   strAudioCodec,
+								   m_uiChannels,
+								   m_uiSamplesPerSec,
+								   m_uiBitsPerSample,
+								   m_bPassthrough,
+								   false,
+								   m_dwPacketSize);
 	
 	m_bCanPause = false;
 	m_bIsAllocated = true;
@@ -107,17 +72,6 @@ CoreAudioRenderer::~CoreAudioRenderer()
 	CLog::Log(LOGDEBUG,"CoreAudioAUHAL() dtor");
 	
 	Deinitialize();
-	
-	if (m_bEncodeAC3)
-	{
-		ac3encoder_free(&m_ac3encoder);
-	}
-	if (ac3_framebuffer != NULL)
-	{
-		free(ac3_framebuffer);
-		ac3_framebuffer = NULL;
-	}
-#warning free device array
 	
 	m_bIsAllocated = false;
 	
@@ -142,14 +96,9 @@ HRESULT CoreAudioRenderer::Deinitialize()
 //***********************************************************************************************
 void CoreAudioRenderer::Flush()
 {
-	//CLog::Log(LOGDEBUG, "Flushing %i bytes from buffer", PaUtil_GetRingBufferReadAvailable(deviceParameters->outputBuffer));
 #warning disabled
 	//rb_clear(deviceParameters->outputBuffer);
-	
-	if (m_bEncodeAC3)
-	{
-		ac3encoder_flush(&m_ac3encoder);
-	}
+	audioUnit->Flush();
 }
 
 //***********************************************************************************************
@@ -178,7 +127,6 @@ HRESULT CoreAudioRenderer::Resume()
 //***********************************************************************************************
 HRESULT CoreAudioRenderer::Stop()
 {
-#warning Stop stream
 	return S_OK;
 }
 
@@ -240,20 +188,11 @@ DWORD CoreAudioRenderer::AddPackets(unsigned char *data, DWORD len)
 	
 	if (len == 0) return len;
 	
-	int samplesPassedIn, inputByteFactor, outputByteFactor;
+	int samplesPassedIn, byteFactor;
 	uint8_t *pcmPtr = data;
 	
-	if (m_bEncodeAC3) // use the raw PCM channel count to get the number of samples to play
-	{
-		inputByteFactor = ac3encoder_channelcount(&m_ac3encoder) * m_uiBitsPerSample/8;
-		outputByteFactor = SPDIF_SAMPLE_BYTES;
-	}
-	else // the PCM input and stream output should match
-	{
-		inputByteFactor = m_uiChannels * m_uiBitsPerSample/8;
-		outputByteFactor = inputByteFactor;
-	}
-	samplesPassedIn = len / inputByteFactor;
+	byteFactor = m_uiChannels * m_uiBitsPerSample/8;
+	samplesPassedIn = len / byteFactor;
 	
 	// Find out how much space we have available and clip to the amount we got passed in.
  	DWORD samplesToWrite = GetSpace();
@@ -263,54 +202,19 @@ DWORD CoreAudioRenderer::AddPackets(unsigned char *data, DWORD len)
 	{
 		samplesToWrite = samplesPassedIn;
 	}
+	if (!m_bPassthrough)
+		m_amp.DeAmplifyInt16((int16_t *)pcmPtr, samplesToWrite * m_uiChannels, g_guiSettings.GetBool("audiooutput.normalisevolume"), true);
+
+	audioUnit->WriteStream(pcmPtr, samplesToWrite);
 	
-	if (m_bEncodeAC3)
-	{
-		int ac3_frame_count = 0;
-		
-		m_amp.DeAmplifyInt16((int16_t *)pcmPtr, samplesToWrite * m_uiChannels, g_guiSettings.GetBool("audiooutput.normalisevolume"), false);
-		
-		if ((ac3_frame_count = ac3encoder_write_samples(&m_ac3encoder, pcmPtr, samplesToWrite)) == 0)
-		{
-			CLog::Log(LOGERROR, "AC3 output buffer underrun");
-			return 0;
-		}
-		else
-		{
-			int buffer_sample_readcount = -1;
-			if ((buffer_sample_readcount = ac3encoder_get_encoded_samples(&m_ac3encoder, ac3_framebuffer, samplesToWrite)) != samplesToWrite)
-			{
-				CLog::Log(LOGERROR, "AC3 output buffer underrun");
-			}
-			else
-			{
-				audioUnit->WriteStream(ac3_framebuffer, samplesToWrite);
-			}
-		}
-	}
-	else
-	{
-		// Handle volume de-amplification.
-		if (!m_bPassthrough)
-			m_amp.DeAmplifyInt16((int16_t *)pcmPtr, samplesToWrite * m_uiChannels, g_guiSettings.GetBool("audiooutput.normalisevolume"), true);
-		
-		// Write data to the stream.
-		audioUnit->WriteStream(pcmPtr, samplesToWrite);
-	}
-	return samplesToWrite * inputByteFactor;
+	return samplesToWrite * byteFactor;
 	
 }
 
 //***********************************************************************************************
 FLOAT CoreAudioRenderer::GetDelay()
 {
-	FLOAT delay = audioUnit->GetHardwareLatency();
-	
-	
-	if (m_bEncodeAC3)
-		delay += 0.032;
-	
-	return delay;
+	return audioUnit->GetHardwareLatency();
 }
 
 //***********************************************************************************************

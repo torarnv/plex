@@ -54,11 +54,18 @@ bool XBAudioConfig::HasDigitalOutput()
 bool XBAudioConfig::UseDigitalOutput()
 {
 #ifdef __APPLE__
-	return (HasDigitalOutput() || g_guiSettings.GetInt("audiooutput.digitalaudiomode") == DIGITAL_PCM);
+	return (HasDigitalOutput() || ForcedDigital());
 #else
 	return HasDigitalOutput();
 #endif
 }
+
+#ifdef __APPLE__
+bool XBAudioConfig::ForcedDigital()
+{
+	return g_guiSettings.GetInt("audiooutput.digitalaudiomode") == DIGITAL_PCM; 
+}
+#endif
 
 void XBAudioConfig::SetAC3Enabled(bool bEnable)
 {

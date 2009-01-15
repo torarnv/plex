@@ -3408,11 +3408,13 @@
 				9409C1ED0E01D696001626C3 /* ringbuffer.h */,
 			);
 			name = AC3Encoder;
+			path = dvdplayer;
 			sourceTree = "<group>";
 		};
 		943BC2830ED3F1A700B7CB45 /* CoreAudio */ = {
 			isa = PBXGroup;
 			children = (
+				9409C1E50E01D680001626C3 /* AC3Encoder */,
 				94B185280EB48264008C38FA /* CoreAudioAUHAL.cpp */,
 				94B185290EB48264008C38FA /* CoreAudioAUHAL.h */,
 				94B1852A0EB48264008C38FA /* CoreAudioPlexSupport.cpp */,
@@ -4308,7 +4310,6 @@
 			children = (
 				E3B2218A0E58F42100939882 /* DVDFileInfo.cpp */,
 				E3B2218B0E58F42100939882 /* DVDFileInfo.h */,
-				9409C1E50E01D680001626C3 /* AC3Encoder */,
 				E38E14F90D25F9F900618676 /* ALSADirectSound.cpp */,
 				E38E14FA0D25F9F900618676 /* ALSADirectSound.h */,
 				943BC2860ED3F1E500B7CB45 /* CoreAudioRenderer.h */,
@@ -6553,6 +6554,9 @@
 /* Begin PBXProject section */
 		08FB7793FE84155DC02AAC07 /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = NO;
+			};
 			buildConfigurationList = 1DEB924B08733DCA0010E9CD /* Build configuration list for PBXProject "Plex" */;
 			compatibilityVersion = "Xcode 3.1";
 			hasScannedForEncodings = 1;

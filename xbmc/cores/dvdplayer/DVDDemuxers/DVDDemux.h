@@ -76,6 +76,8 @@ public:
     ExtraSize = 0;
     language[0] = 0;
     disabled = false;
+	forcelibdts = false;
+
   }
 
   virtual ~CDemuxStream() {}
@@ -95,6 +97,7 @@ public:
   CodecID codec;
   StreamType type;
   int source;
+  bool forcelibdts;
 
   int iDuration; // in mseconds
   void* pPrivate; // private pointer for the demuxer

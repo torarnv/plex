@@ -79,15 +79,32 @@ struct CoreAudioDeviceParameters
 /*****************************************************************************
  * Open: open macosx audio output
  *****************************************************************************/
-CoreAudioAUHAL::CoreAudioAUHAL(const CStdString& strName, int channels, unsigned int sampleRate, int bitsPerSample, bool isDigital, bool useCoreAudio, bool isMusic, int packetSize)
+CoreAudioAUHAL::CoreAudioAUHAL(const CStdString& strName, const char *strCodec, int channels, unsigned int sampleRate, int bitsPerSample, bool passthrough, bool isMusic, int packetSize)
   : m_bIsInitialized(false)
 {
   OSStatus                err = noErr;
   UInt32                  i_param_size = 0;
+	
+	if (g_audioConfig.UseDigitalOutput() &&
+		channels > 2 &&
+		!passthrough)
+	{
+		// Enable AC3 passthrough for digital devices
+		int mpeg_remapping = 0;
+		if (strCodec == "AAC" || strCodec == "DTS") mpeg_remapping = 1; // DTS uses MPEG channel mapping
+		ac3encoder_init(&m_ac3encoder, channels, sampleRate, bitsPerSample, mpeg_remapping);
+		m_bEncodeAC3 = true;
+		ac3_framebuffer = (unsigned char *)calloc(packetSize, 1);
+	}
+	else
+	{
+		m_bEncodeAC3 = false;
+		ac3_framebuffer = NULL;
+	}
 
 	CLog::Log(LOGNOTICE, "Asked to create device:   [%s]", strName.c_str());
-	CLog::Log(LOGNOTICE, "Device should be digital: [%d]\n", isDigital);
-	CLog::Log(LOGNOTICE, "CoreAudio S/PDIF mode:    [%d]\n", useCoreAudio);
+	CLog::Log(LOGNOTICE, "Device should be digital: [%d]\n", passthrough);
+	CLog::Log(LOGNOTICE, "CoreAudio S/PDIF mode:    [%d]\n", g_audioConfig.UseDigitalOutput());
 	CLog::Log(LOGNOTICE, "Music mode:               [%d]\n", isMusic);
 	CLog::Log(LOGNOTICE, "Channels:                 [%d]\n", channels);
 	CLog::Log(LOGNOTICE, "Sample Rate:              [%d]\n", sampleRate);
@@ -98,7 +115,7 @@ CoreAudioAUHAL::CoreAudioAUHAL(const CStdString& strName, int channels, unsigned
 	deviceParameters = (CoreAudioDeviceParameters*)calloc(sizeof(CoreAudioDeviceParameters), 1);
 	if (!deviceParameters) return;
 
-	deviceParameters->b_digital = isDigital;
+	deviceParameters->b_digital = (passthrough || m_bEncodeAC3) && g_audioConfig.HasDigitalOutput();
 	deviceParameters->i_hog_pid = -1;
 	deviceParameters->i_stream_index = -1;
 	
@@ -125,17 +142,25 @@ CoreAudioAUHAL::CoreAudioAUHAL(const CStdString& strName, int channels, unsigned
 	deviceParameters->device_id = deviceArray->getSelectedDevice()->getDeviceID();
 
 	/* Check for Digital mode or Analog output mode */
-	if (isDigital && useCoreAudio)
+	if (deviceParameters->b_digital)
 	{
-	  if (OpenSPDIF(deviceParameters, strName, channels, sampleRate, bitsPerSample, isDigital, useCoreAudio, packetSize))
+	  if (OpenSPDIF(deviceParameters, strName, channels, sampleRate, bitsPerSample, packetSize))
 	  {
 	    m_bIsInitialized = true;
 	    return;
 	  }
 	}
+	else if (g_audioConfig.ForcedDigital() && (m_bEncodeAC3 || passthrough))
+	{
+		if (OpenPCM(deviceParameters, strName, SPDIF_CHANNELS, SPDIF_SAMPLERATE, SPDIF_SAMPLESIZE, packetSize))
+		{
+			m_bIsInitialized = true;
+			return;
+		}
+	}
 	else
 	{
-	  if (OpenPCM(deviceParameters, strName, channels, sampleRate, bitsPerSample, isDigital, useCoreAudio, packetSize))
+	  if (OpenPCM(deviceParameters, strName, channels, sampleRate, bitsPerSample, packetSize))
 	  {
 	    m_bIsInitialized = true;
 	    return;
@@ -158,7 +183,6 @@ HRESULT CoreAudioAUHAL::Deinitialize()
   
 	CLog::Log(LOGDEBUG,"CoreAudioAUHAL::Deinitialize");
 	
-#warning free structs
 	OSStatus            err = noErr;
     UInt32              i_param_size = 0;
 	
@@ -169,6 +193,16 @@ HRESULT CoreAudioAUHAL::Deinitialize()
         verify_noerr( CloseComponent( deviceParameters->au_unit ) );
 		deviceParameters->au_unit = NULL;
     }
+	
+	if (m_bEncodeAC3)
+	{
+		ac3encoder_free(&m_ac3encoder);
+	}
+	if (ac3_framebuffer != NULL)
+	{
+		free(ac3_framebuffer);
+		ac3_framebuffer = NULL;
+	}
 	
     if( deviceParameters->b_digital )
     {
@@ -267,7 +301,10 @@ DWORD CoreAudioAUHAL::GetSpace()
 
 float CoreAudioAUHAL::GetHardwareLatency()
 {
-	return CA_BUFFER_FACTOR + (deviceParameters->hardwareFrameLatency / deviceParameters->stream_format.mSampleRate);
+	float latency =  CA_BUFFER_FACTOR + (deviceParameters->hardwareFrameLatency / deviceParameters->stream_format.mSampleRate);
+	if (m_bEncodeAC3)
+		latency += 0.032;
+	return latency;
 }
 
 AudioStreamBasicDescription* CoreAudioAUHAL::GetStreamDescription()
@@ -277,11 +314,60 @@ AudioStreamBasicDescription* CoreAudioAUHAL::GetStreamDescription()
 
 int CoreAudioAUHAL::WriteStream(uint8_t *sampleBuffer, uint32_t samplesToWrite)
 {
+	
 	if (sampleBuffer == NULL || samplesToWrite == 0)
 	{
 		return 0;
 	}
-	return PaUtil_WriteRingBuffer(deviceParameters->outputBuffer, sampleBuffer, samplesToWrite);
+	
+	int inputByteFactor, outputByteFactor;
+	
+	if (m_bEncodeAC3) // use the raw PCM channel count to get the number of samples to play
+	{
+		inputByteFactor = ac3encoder_channelcount(&m_ac3encoder) * m_uiBitsPerSample/8;
+		outputByteFactor = SPDIF_SAMPLE_BYTES;
+	}
+	else // the PCM input and stream output should match
+	{
+		inputByteFactor = outputByteFactor = deviceParameters->stream_format.mBytesPerFrame;
+	}
+	
+	
+	if (m_bEncodeAC3)
+	{
+		int ac3_frame_count = 0;
+		
+		if ((ac3_frame_count = ac3encoder_write_samples(&m_ac3encoder, sampleBuffer, samplesToWrite)) == 0)
+		{
+			CLog::Log(LOGERROR, "AC3 output buffer underrun");
+			return 0;
+		}
+		else
+		{
+			int buffer_sample_readcount = -1;
+			if ((buffer_sample_readcount = ac3encoder_get_encoded_samples(&m_ac3encoder, ac3_framebuffer, samplesToWrite)) != samplesToWrite)
+			{
+				CLog::Log(LOGERROR, "AC3 output buffer underrun");
+			}
+			else
+			{
+				return PaUtil_WriteRingBuffer(deviceParameters->outputBuffer, ac3_framebuffer, samplesToWrite);
+			}
+		}
+	}
+	else
+	{
+		return PaUtil_WriteRingBuffer(deviceParameters->outputBuffer, sampleBuffer, samplesToWrite);
+	}
+	return 0;
+}
+
+void CoreAudioAUHAL::Flush()
+{
+	if (m_bEncodeAC3)
+	{
+		ac3encoder_flush(&m_ac3encoder);
+	}
 }
 
 #pragma mark Analog (PCM)
@@ -289,7 +375,7 @@ int CoreAudioAUHAL::WriteStream(uint8_t *sampleBuffer, uint32_t samplesToWrite)
 /*****************************************************************************
  * Open: open and setup a HAL AudioUnit to do analog (multichannel) audio output
  *****************************************************************************/
-int CoreAudioAUHAL::OpenPCM(struct CoreAudioDeviceParameters *deviceParameters, const CStdString& strName, int channels, float sampleRate, int bitsPerSample, bool isDigital, bool useCoreAudio, int packetSize)
+int CoreAudioAUHAL::OpenPCM(struct CoreAudioDeviceParameters *deviceParameters, const CStdString& strName, int channels, float sampleRate, int bitsPerSample, int packetSize)
 {
     OSStatus                    err = noErr;
     UInt32                      i_param_size = 0;
@@ -350,7 +436,6 @@ int CoreAudioAUHAL::OpenPCM(struct CoreAudioDeviceParameters *deviceParameters, 
     /* Set up the format to be used */
     DeviceFormat.mSampleRate = sampleRate;
     DeviceFormat.mFormatID = kAudioFormatLinearPCM;
-#warning fix for movies
     DeviceFormat.mFormatFlags = (bitsPerSample == 32 ? kLinearPCMFormatFlagIsFloat : kLinearPCMFormatFlagIsSignedInteger);
     DeviceFormat.mBitsPerChannel = bitsPerSample;
     DeviceFormat.mChannelsPerFrame = channels;
@@ -492,7 +577,7 @@ OSStatus CoreAudioAUHAL::RenderCallbackAnalog(struct CoreAudioDeviceParameters *
 /*****************************************************************************
  * Setup a encoded digital stream (SPDIF)
  *****************************************************************************/
-int CoreAudioAUHAL::OpenSPDIF(struct CoreAudioDeviceParameters *deviceParameters, const CStdString& strName, int channels, float sampleRate, int bitsPerSample, bool isDigital, bool useCoreAudio, int packetSize)
+int CoreAudioAUHAL::OpenSPDIF(struct CoreAudioDeviceParameters *deviceParameters, const CStdString& strName, int channels, float sampleRate, int bitsPerSample, int packetSize)
 
 {
 	OSStatus                err = noErr;
@@ -502,7 +587,7 @@ int CoreAudioAUHAL::OpenSPDIF(struct CoreAudioDeviceParameters *deviceParameters
     int                     i = 0, i_streams = 0;
 
     /* Start doing the SPDIF setup proces */
-    deviceParameters->b_digital = true;
+    //deviceParameters->b_digital = true;
 	deviceParameters->b_changed_mixing = false;
 
     /* Hog the device */
@@ -725,9 +810,9 @@ int CoreAudioAUHAL::OpenSPDIF(struct CoreAudioDeviceParameters *deviceParameters
 #warning free
 	deviceParameters->outputBuffer = (PaUtilRingBuffer *)malloc(sizeof(PaUtilRingBuffer));
 #warning inelegant
-	deviceParameters->outputBufferData = malloc(framecount * 4);
+	deviceParameters->outputBufferData = malloc(framecount * SPDIF_SAMPLE_BYTES);
 
-	PaUtil_InitializeRingBuffer(deviceParameters->outputBuffer, 4, framecount, deviceParameters->outputBufferData);
+	PaUtil_InitializeRingBuffer(deviceParameters->outputBuffer, SPDIF_SAMPLE_BYTES, framecount, deviceParameters->outputBufferData);
 	/* Add IOProc callback */
 	err = AudioDeviceCreateIOProcID(deviceParameters->device_id,
 									(AudioDeviceIOProc)RenderCallbackSPDIF,
@@ -820,16 +905,6 @@ OSStatus CoreAudioAUHAL::RenderCallbackSPDIF(AudioDeviceID inDevice,
                                     void * threadGlobals )
 {
     CoreAudioDeviceParameters *deviceParameters = (CoreAudioDeviceParameters *)threadGlobals;
-
-    /* Check for the difference between the Device clock and mdate */
-    //p_sys->clock_diff = - (mtime_t)
-	//AudioConvertHostTimeToNanos( inNow->mHostTime ) / 1000;
-    //p_sys->clock_diff += mdate();
-
-    //current_date = p_sys->clock_diff +
-	//AudioConvertHostTimeToNanos( inOutputTime->mHostTime ) / 1000;
-	//- ((mtime_t) 1000000 / p_aout->output.output.i_rate * 31 ); // 31 = Latency in Frames. retrieve somewhere
-
 
 #define BUFFER outOutputData->mBuffers[deviceParameters->i_stream_index]
 	int framesToWrite = BUFFER.mDataByteSize / deviceParameters->outputBuffer->elementSizeBytes;

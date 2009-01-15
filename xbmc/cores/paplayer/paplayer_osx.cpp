@@ -344,11 +344,11 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
 		// Create a new stream.
 		CLog::Log(LOGINFO, "[CoreAudio] INFO: Creating stream %d.", num);
 		m_pStream[num] = new CoreAudioAUHAL(g_guiSettings.GetString("audiooutput.audiodevice"),
+											codec,
 											channels,
 											m_SampleRateOutput,
 											m_BitsPerSampleOutput,
 											false,
-											g_audioConfig.UseDigitalOutput(),
 											true,
 											PACKET_SIZE);
 		

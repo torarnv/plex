@@ -32,6 +32,10 @@ public:
 
   bool HasDigitalOutput();
   bool UseDigitalOutput();
+#ifdef __APPLE__
+  bool ForcedDigital();
+#endif
+
 
   bool GetAC3Enabled();
   void SetAC3Enabled(bool bEnable);

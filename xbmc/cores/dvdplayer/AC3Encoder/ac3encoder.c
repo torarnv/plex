@@ -88,8 +88,8 @@ void ac3encoder_init(struct AC3Encoder *encoder, int iChannels, unsigned int uiS
 			encoder->m_aftenContext.acmod = 6; // Quadraphonic, ie 2/2
 			break;
 		case 5:
-			encoder->m_aftenContext.acmod = 6; // Quadraphonic with LFE - I don't know if this even exists
-			encoder->m_aftenContext.lfe = 1;
+			encoder->m_aftenContext.acmod = 6; // 3F2R without LFE
+			encoder->m_aftenContext.lfe = 0;
 			break;
 		case 6:
 			encoder->m_aftenContext.acmod = 7;
@@ -112,7 +112,7 @@ void ac3encoder_init(struct AC3Encoder *encoder, int iChannels, unsigned int uiS
 		fprintf(stderr, "Error initialising AC3 encoder\n");
 		aften_encode_close(&encoder->m_aftenContext);
 	}
-	else fprintf(stdout, "AC3 encoder initialised with configuration: %d Hz %s %s",
+	else fprintf(stdout, "AC3 encoder initialised with configuration: %dHz %s %s",
 				 encoder->m_aftenContext.samplerate,
 				 acmod_str[encoder->m_aftenContext.acmod],
 				 (encoder->m_aftenContext.lfe == 1) ? "+ LFE\n" : "\n");

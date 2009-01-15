@@ -11,10 +11,6 @@
 #include "../mplayer/IDirectSoundRenderer.h"
 #include "../../utils/PCMAmplifier.h"
 
-
-extern "C" {
-#include "ac3encoder.h"
-};
 #include "CoreAudioAUHAL.h"
 
 class CoreAudioRenderer : public IDirectSoundRenderer
@@ -66,9 +62,5 @@ class CoreAudioRenderer : public IDirectSoundRenderer
 		unsigned int m_uiChannels;
 		
 		bool m_bPassthrough;
-		
-		bool m_bEncodeAC3;
-		AC3Encoder m_ac3encoder;
-		unsigned char* ac3_framebuffer;
 	};
 

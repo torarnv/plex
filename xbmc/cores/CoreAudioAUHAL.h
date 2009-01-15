@@ -36,30 +36,44 @@
 #include "XBAudioConfig.h"
 #include "utils/CriticalSection.h"
 
+extern "C" {
+#include "ac3encoder.h"
+};
+
 #define CA_BUFFER_FACTOR 0.05
 
 class CoreAudioAUHAL
 	{
 	public:
-		CoreAudioAUHAL(const CStdString& strName, int channels, unsigned int sampleRate, int bitsPerSample, bool isDigital, bool useCoreAudio, bool isMusic, int packetSize);
+		CoreAudioAUHAL(const CStdString& strName, 
+									   const char *strCodec, 
+									   int channels, 
+									   unsigned int sampleRate, 
+									   int bitsPerSample, 
+									   bool passthrough, 
+									   bool isMusic, 
+									   int packetSize);
+		
 		virtual HRESULT Deinitialize();
 		virtual DWORD GetSpace();
 		virtual float GetHardwareLatency();
 		virtual AudioStreamBasicDescription* GetStreamDescription();
 		virtual int WriteStream(uint8_t *sampleBuffer, uint32_t samplesToWrite);
+		virtual void Flush();
+
 
 		// Addpackets - make ringbuffer private
 
 		
 	private:
-		virtual int OpenPCM(struct CoreAudioDeviceParameters *deviceParameters, const CStdString& strName, int channels, float sampleRate, int bitsPerSample, bool isDigital, bool useCoreAudio, int packetSize);
+		virtual int OpenPCM(struct CoreAudioDeviceParameters *deviceParameters, const CStdString& strName, int channels, float sampleRate, int bitsPerSample, int packetSize);
 		static OSStatus RenderCallbackAnalog(struct CoreAudioDeviceParameters *deviceParameters,
 											 int *ioActionFlags,
 											 const AudioTimeStamp *inTimeStamp,
 											 unsigned int inBusNummer,
 											 unsigned int inNumberFrames,
 											 AudioBufferList *ioData );
-		virtual int OpenSPDIF(struct CoreAudioDeviceParameters *deviceParameters, const CStdString& strName, int channels, float sampleRate, int bitsPerSample, bool isDigital, bool useCoreAudio, int packetSize);
+		virtual int OpenSPDIF(struct CoreAudioDeviceParameters *deviceParameters, const CStdString& strName, int channels, float sampleRate, int bitsPerSample, int packetSize);
 		virtual int AudioStreamChangeFormat(CoreAudioDeviceParameters *deviceParameters, AudioStreamID i_stream_id, AudioStreamBasicDescription change_format);
 		static OSStatus RenderCallbackSPDIF(AudioDeviceID inDevice,
 											const AudioTimeStamp * inNow,
@@ -81,6 +95,14 @@ class CoreAudioAUHAL
 		bool m_bIsMusic;
 		bool m_bIsInitialized;
 		CCriticalSection    m_cs;
+		
+		int m_uiChannels;
+		int m_uiBitsPerSample;
+		int m_uiSamplesPerSec;
+		
+		bool m_bEncodeAC3;
+		AC3Encoder m_ac3encoder;
+		unsigned char* ac3_framebuffer;
 	};
 		
 #endif

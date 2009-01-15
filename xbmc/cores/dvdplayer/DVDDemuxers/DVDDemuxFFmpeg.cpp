@@ -39,6 +39,9 @@
 #include "FileSystem/File.h"
 #include "Util.h"
 #include "FileItem.h"
+#include <string>
+
+using namespace std;
 
 void CDemuxStreamAudioFFmpeg::GetStreamInfo(std::string& strInfo)
 {
@@ -975,6 +978,23 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
     //FFMPEG has an error doesn't set type properly for DTS
     if( m_streams[iId]->codec == CODEC_ID_AC3 && (pStream->id >= 136 && pStream->id <= 143) )
       m_streams[iId]->codec = CODEC_ID_DTS;
+	  
+	// workaround for DTS-in-WAV
+	if (m_streams[iId]->codec == CODEC_ID_PCM_S16LE)
+	{
+		string filename = m_pFormatContext->filename;
+		int lastDot = filename.find_last_of('.');
+		if (lastDot != -1)
+		{
+			string ext = filename.substr(lastDot+1);
+			if (ext == "dts" || ext == "DTS")
+			{
+				m_streams[iId]->codec = CODEC_ID_DTS;
+				m_streams[iId]->forcelibdts = true;				
+				CLog::Log(LOGDEBUG, "Decoding PCM WAV as DTS based on filename");
+			}
+		}
+	}
 
     if( m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD) )
     {

@@ -69,7 +69,7 @@ public:
   int samplerate;
   int bitrate;
   int blockalign;
-
+  bool forcelibdts;
   // SUBTITLE
   int identifier;
 

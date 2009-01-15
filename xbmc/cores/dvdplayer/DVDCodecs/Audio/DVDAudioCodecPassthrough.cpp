@@ -85,6 +85,7 @@ CDVDAudioCodecPassthrough::~CDVDAudioCodecPassthrough(void)
 
 
 bool CDVDAudioCodecPassthrough::SyncDTSHeader(BYTE* pData, int iDataSize, int* iOffset, int* iFrameSize)
+
 {
   int i = 0, iLen = 0;
   int iFlags, iSampleRate, iBitRate, iFramelength;
