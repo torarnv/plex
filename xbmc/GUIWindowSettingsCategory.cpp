@@ -4042,9 +4042,11 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting)
   PlexAudioDevicesPtr deviceList = PlexAudioDevices::FindAll();
   BOOST_FOREACH(PlexAudioDevicePtr device, deviceList->getDevices())
   {
-		pControl->AddLabel(device->getName(), i++);
+		pControl->AddLabel(device->getName(), i);
 		if (g_guiSettings.GetString("audiooutput.audiodevice") == device->getName())
 			pControl->SetValue(i);
+		
+		i++;
 	}
 #endif
 }
