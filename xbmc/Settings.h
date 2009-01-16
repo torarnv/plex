@@ -244,9 +244,6 @@ public:
     int m_playlistTimeout;
     bool m_GLRectangleHack;
     
-#if __APPLE__
-    bool m_bChangeDefaultAudioDevice;
-#endif
     int m_secondsToVisualizer;
     bool m_bVisualizerOnPlay;
   };

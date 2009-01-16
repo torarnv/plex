@@ -270,10 +270,6 @@ CSettings::CSettings(void)
   g_advancedSettings.m_playlistTimeout = 20; // 20 seconds timeout
   g_advancedSettings.m_GLRectangleHack = false;
   
-#ifdef __APPLE__
-  g_advancedSettings.m_bChangeDefaultAudioDevice = true;
-#endif
-  
   g_advancedSettings.m_secondsToVisualizer = 10;
   g_advancedSettings.m_bVisualizerOnPlay = true;
 }
@@ -1282,10 +1278,6 @@ void CSettings::LoadAdvancedSettings()
   GetInteger(pRootElement, "playlisttimeout", g_advancedSettings.m_playlistTimeout, 20, 0, 5000);
 
   XMLUtils::GetBoolean(pRootElement,"rootovershoot",g_advancedSettings.m_bUseEvilB);
-  
-#ifdef __APPLE__
-  XMLUtils::GetBoolean(pRootElement, "changedefaultaudiodevice", g_advancedSettings.m_bChangeDefaultAudioDevice);
-#endif
   
   GetInteger(pRootElement, "secondstovisualizer", g_advancedSettings.m_secondsToVisualizer, 10, 0, 6000);
   XMLUtils::GetBoolean(pRootElement, "visualizeronplay", g_advancedSettings.m_bVisualizerOnPlay);

@@ -1214,9 +1214,10 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     }
 #ifdef __APPLE__
 	else if (strSetting.Equals("audiooutput.digitalaudiomode"))
-    { 	  // only enabled if device does not support CoreAudio digital out
-		CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-		if (pControl) pControl->SetEnabled(!g_audioConfig.HasDigitalOutput());
+    { 	  
+      // only enabled if device does not support CoreAudio digital out
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(!g_audioConfig.HasDigitalOutput());
     }
 	else if (strSetting.Equals("audiooutput.audiodevice"))
 	{
@@ -1232,7 +1233,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
 		}
  		
  		// Set the default output device.
- 		if (g_advancedSettings.m_bChangeDefaultAudioDevice)
+ 		if (g_guiSettings.GetBool("audiooutput.systemoutputfollows"))
  		{
  		  PlexAudioDevicePtr device = PlexAudioDevices::FindByName(g_guiSettings.GetString("audiooutput.audiodevice"));
  		  if (device)
