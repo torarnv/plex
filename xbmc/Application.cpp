@@ -4041,6 +4041,15 @@ bool CApplication::ProcessEventServer(float frameTime)
   if (!es || !es->Running())
     return false;
 
+  // process any queued up actions
+  if (es->ExecuteNextAction())
+  {
+    // reset idle timers
+    m_idleTimer.StartZero();
+    ResetScreenSaver();
+    ResetScreenSaverWindow();
+  }
+  
   std::string joystickName;
   bool isAxis = false;
   float fAmount = 0.0;
