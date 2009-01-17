@@ -57,6 +57,46 @@ struct AudioPacket
   int   stream;
 };
 
+class PAPlayerClock
+{
+public:
+  PAPlayerClock() { ResetClock(); }
+  __int64 GetTimeMS()
+  {
+    return Update();
+  }
+  void SetSpeed(int iSpeed)
+  {
+    Update();
+    m_Speed = iSpeed;
+  }
+
+  void SetClock(__int64 time)
+  {
+    m_timeAtLastUpdate = timeGetTime();
+    m_time = time;
+  }
+
+  void ResetClock()
+  {
+    m_timeAtLastUpdate = timeGetTime();
+    m_time = 0;
+    m_Speed = 1;
+  }
+
+private:
+  __int64 Update()
+  {
+    m_time += (timeGetTime() - m_timeAtLastUpdate) * m_Speed;
+    m_timeAtLastUpdate = timeGetTime();
+    return m_time;
+  }
+
+  __int64 m_time;
+  __int64 m_timeAtLastUpdate;
+  int     m_Speed;
+};
+
 class PAPlayer : public IPlayer, public CThread
 {
 public:
@@ -140,7 +180,6 @@ private:
 
   __int64 m_SeekTime;
   int     m_IsFFwdRewding;
-  __int64 m_timeOffset;
   bool    m_forceFadeToNext;
 
   int m_currentDecoder;
@@ -181,7 +220,16 @@ private:
   snd_pcm_t*  		m_pStream[2];
   snd_pcm_uframes_t	m_periods[2];
   CPCMAmplifier 	m_amp[2];
+  int               m_channelCount[2];
+  int               m_sampleRate[2];
+  int               m_bitsPerSample[2];
+#elif defined(_LINUX)
+  IDirectSoundRenderer* m_pAudioDecoder[2];
+  float             m_latency[2];
+  unsigned char*    m_pcmBuffer[2];
+  int               m_bufferPos[2];
 #endif
+  PAPlayerClock     m_clock;
 
   AudioPacket      m_packet[2][PACKET_COUNT];
 
