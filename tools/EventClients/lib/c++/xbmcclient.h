@@ -66,23 +66,7 @@
 #define LOGNONE    7
 
 #define ACTION_EXECBUILTIN 0x01
-
-static void Clean()
-{
-#ifdef _WIN32
-  WSACleanup();
-#endif
-}
-
-static bool Initialize()
-{
-#ifdef _WIN32
-  WSADATA wsaData;
-  if (WSAStartup(MAKEWORD(1, 1), &wsaData))
-    return false;
-#endif
-  return true;
-}
+#define ACTION_BUTTON      0x02
 
 class CAddress
 {
@@ -143,6 +127,23 @@ public:
   {
     static time_t id = time(NULL);
     return id;
+  }
+
+  static void Clean()
+  {
+  #ifdef _WIN32
+    WSACleanup();
+  #endif
+  }
+
+  static bool Initialize()
+  {
+  #ifdef _WIN32
+    WSADATA wsaData;
+    if (WSAStartup(MAKEWORD(1, 1), &wsaData))
+      return false;
+  #endif
+    return true;
   }
 };
 
@@ -765,7 +766,16 @@ public:
     button.Send(m_Socket, m_Addr, m_UID);
   }
 
-  void SendBUTTON(unsigned short ButtonCode, unsigned Flags, unsigned short Amount = 0)
+  void SendButton(unsigned short ButtonCode, const char *DeviceMap, unsigned short Flags, unsigned short Amount = 0)
+  {
+    if (m_Socket < 0)
+      return;
+
+    CPacketBUTTON button(ButtonCode, DeviceMap, Flags, Amount);
+    button.Send(m_Socket, m_Addr, m_UID);
+  }
+
+  void SendButton(unsigned short ButtonCode, unsigned Flags, unsigned short Amount = 0)
   {
     if (m_Socket < 0)
       return;

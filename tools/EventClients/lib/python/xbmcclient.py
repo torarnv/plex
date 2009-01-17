@@ -55,6 +55,9 @@ BT_UP         = 0x04
 BT_USE_AMOUNT = 0x08
 BT_QUEUE      = 0x10
 BT_NO_REPEAT  = 0x20
+BT_VKEY       = 0x40
+BT_AXIS       = 0x80
+BT_AXISSINGLE = 0x100
 
 MS_ABSOLUTE = 0x01
 
@@ -68,6 +71,7 @@ LOGFATAL   = 0x06
 LOGNONE    = 0x07
 
 ACTION_EXECBUILTIN = 0x01
+ACTION_BUTTON      = 0x02
 
 ######################################################################
 # Helper Functions
@@ -288,7 +292,7 @@ class PacketBUTTON (Packet):
     A button packet send a key press or release event to XBMC
     """
     def __init__(self, code=0, repeat=1, down=1, queue=0,
-                 map_name="", button_name="", amount=None):
+                 map_name="", button_name="", amount=0, axis=0):
         """
         Keyword arguments:
         code -- raw button code (default: 0)
@@ -330,11 +334,12 @@ class PacketBUTTON (Packet):
         else:
             self.flags |= BT_USE_NAME
             self.code = 0
-        if amount:
+        if (amount != None):
             self.flags |= BT_USE_AMOUNT
             self.amount = int(amount)
         else:
             self.amount = 0
+
         if down:
             self.flags |= BT_DOWN
         else:
@@ -343,6 +348,11 @@ class PacketBUTTON (Packet):
             self.flags |= BT_NO_REPEAT
         if queue:
             self.flags |= BT_QUEUE
+        if axis == 1:
+            self.flags |= BT_AXISSINGLE
+        elif axis == 2:
+            self.flags |= BT_AXIS
+
         self.set_payload ( format_uint16(self.code) )
         self.append_payload( format_uint16(self.flags) )
         self.append_payload( format_uint16(self.amount) )
@@ -434,7 +444,8 @@ class PacketACTION (Packet):
 class XBMCClient:
     """An XBMC event client"""
 
-    def __init__(self, name ="", icon_file=None, broadcast=False, uid=UNIQUE_IDENTIFICATION):
+    def __init__(self, name ="", icon_file=None, broadcast=False, uid=UNIQUE_IDENTIFICATION, 
+                 ip="127.0.0.1"):
         """
         Keyword arguments:
         name -- Name of the client
@@ -444,7 +455,7 @@ class XBMCClient:
         self.name = str(name)
         self.icon_file = icon_file
         self.icon_type = self._get_icon_type(icon_file)
-        self.ip = "127.0.0.1"
+        self.ip = ip
         self.port = 9777
         self.sock = socket(AF_INET,SOCK_DGRAM)
         if broadcast:
@@ -519,7 +530,7 @@ class XBMCClient:
         return
 
 
-    def send_button(self, map="", button=""):
+    def send_button(self, map="", button="", amount=0):
         """Send a button event to XBMC
         Keyword arguments:
         map -- a combination of map_name and button_name refers to a
@@ -537,10 +548,37 @@ class XBMCClient:
                   section in Keymap.xml then, valid buttons include 
                   "printscreen", "minus", "x", etc.
         """
-        packet = PacketBUTTON(map_name=str(map), button_name=str(button))
+        packet = PacketBUTTON(map_name=str(map), button_name=str(button), amount=amount)
         packet.send(self.sock, self.addr, self.uid)
         return
 
+    def send_button_state(self, map="", button="", amount=0, down=0, axis=0):
+        """Send a button event to XBMC
+        Keyword arguments:
+        map -- a combination of map_name and button_name refers to a
+               mapping in the user's Keymap.xml or Lircmap.xml.
+               map_name can be one of the following:
+                   "KB" => standard keyboard map ( <keyboard> section )
+                   "XG" => xbox gamepad map ( <gamepad> section )
+                   "R1" => xbox remote map ( <remote> section )
+                   "R2" => xbox universal remote map ( <universalremote>
+                           section )
+                   "LI:devicename" => LIRC remote map where 'devicename' is the
+                                      actual device's name
+        button -- a button name defined in the map specified in map, above.
+                  For example, if map is "KB" refering to the <keyboard>
+                  section in Keymap.xml then, valid buttons include 
+                  "printscreen", "minus", "x", etc.
+        """
+        if axis:
+          if amount == 0:
+            down = 0
+          else:
+            down = 1
+
+        packet = PacketBUTTON(map_name=str(map), button_name=str(button), amount=amount, down=down, queue=1, axis=axis)
+        packet.send(self.sock, self.addr, self.uid)
+        return
 
     def send_mouse_position(self, x=0, y=0):
         """Send a mouse event to XBMC

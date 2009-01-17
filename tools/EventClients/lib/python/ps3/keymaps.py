@@ -80,25 +80,39 @@ SX_DRIGHT   = 32
 SX_SELECT   = 1
 SX_START    = 8
 
+SX_LSTICK_X  = 0
+SX_LSTICK_Y  = 1
+SX_RSTICK_X  = 2
+SX_RSTICK_Y  = 3
+
+# (map, key, amount index, axis)
 keymap_sixaxis = {
-    SX_X        : 'return',
-    SX_CIRCLE   : 'escape',
-    SX_SQUARE   : 'tab',
-    SX_TRIANGLE : 'q',
-    
-    SX_DUP      : 'up',
-    SX_DDOWN    : 'down',
-    SX_DLEFT    : 'left',
-    SX_DRIGHT   : 'right',
+    SX_X        : ('XG', 'A', 0, 0),
+    SX_CIRCLE   : ('XG', 'B', 0, 0),
+    SX_SQUARE   : ('XG', 'X', 0, 0),
+    SX_TRIANGLE : ('XG', 'Y', 0, 0),
 
-    SX_START    : 'm',
-    SX_SELECT   : 'escape',
+    SX_DUP      : ('XG', 'dpadup', 0, 0),
+    SX_DDOWN    : ('XG', 'dpaddown', 0, 0),
+    SX_DLEFT    : ('XG', 'dpadleft', 0, 0),
+    SX_DRIGHT   : ('XG', 'dpadright', 0, 0),
 
-    SX_R1       : 'menu',
-    SX_R2       : 'f',
-    SX_L2       : 'r',
-    SX_L1       : 'menu',
-    
-    SX_L3       : 'printscreen',
-    SX_R3       : 's',
+    SX_START    : ('XG', 'start', 0, 0),
+    SX_SELECT   : ('XG', 'back', 0, 0),
+
+    SX_R1       : ('XG', 'white', 0, 0),
+    SX_R2       : ('XG', 'rightanalogtrigger', 6, 1),
+    SX_L2       : ('XG', 'leftanalogtrigger', 5, 1),
+    SX_L1       : ('XG', 'black', 0, 0),
+
+    SX_L3       : ('XG', 'leftthumbbutton', 0, 0),
+    SX_R3       : ('XG', 'rightthumbbutton', 0, 0),
+}
+
+# (data index, left map, left action, right map, right action)
+axismap_sixaxis = {
+    SX_LSTICK_X : ('XG', 'leftthumbstickleft' , 'leftthumbstickright'),
+    SX_LSTICK_Y : ('XG', 'leftthumbstickup'   , 'leftthumbstickdown'),
+    SX_RSTICK_X : ('XG', 'rightthumbstickleft', 'rightthumbstickright'),
+    SX_RSTICK_Y : ('XG', 'rightthumbstickup'  , 'rightthumbstickdown'),
 }
