@@ -111,7 +111,7 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
   CLog::Log(LOGDEBUG,"CPlayerCoreFactor::GetPlayers(%s)",item.m_strPath.c_str());
 
   // Play audio files with iTunes DRM using QuickTime
-  if (url.GetFileType().Equals("m4p"))
+  if (url.GetFileType().Equals("m4p") || url.GetFileType().Equals("m4b"))
   {
     vecCores.push_back(EPC_QTPLAYER);
     CLog::Log(LOGDEBUG,"CPlayerCoreFactor::GetPlayers(%s) - matched M4P file",item.m_strPath.c_str());
