@@ -1363,6 +1363,9 @@ bool CHTTP::ReadLine(std::string& line, int timeout)
 //------------------------------------------------------------------------------------------------------------------
 void CHTTP::WriteLine(const std::string& line)
 {
+  if (m_socket.isValid() == false)
+    return;
+  
   std::string strLine = line;
   strLine += "\n";
   

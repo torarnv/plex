@@ -86,7 +86,10 @@ bool CPlexMediaServerPlayer::OpenFile(const CFileItem& file, const CPlayerOption
   printf("Opening [%s] => [%s]\n", file.m_strPath.c_str(), url.GetURL().c_str());
   int status = m_http.Open(url.GetURL(), "GET", 0);
   if (status != 200)
+  {
+    printf("ERROR: this didn't work [%d]\n", status);
     return false;
+  }
   
   // Send a hello.
   m_http.WriteLine("HELLO");
@@ -172,15 +175,17 @@ void CPlexMediaServerPlayer::Process()
     string line;
     if (m_http.ReadLine(line, 100))
     {
-      if (line.find_first_of("MAP") == 0)
+      if (line == "PLAYING")
+        OnResumed();
+      else if (line.find("MAP") == 0)
         OnFrameMap(line.substr(4));
-      else if (line.find_first_of("TITLE") == 0 && m_pDlgCache)
+      else if (line.find("TITLE") == 0 && m_pDlgCache)
         m_pDlgCache->SetMessage(line.substr(6));
-      else if (line.find_first_of("END") == 0)
+      else if (line.find("END") == 0)
         OnPlaybackEnded();      
-      else if (line.find_first_of("FRAME") == 0)
+      else if (line.find("FRAME") == 0)
         OnNewFrame();
-      else if (line.find_first_of("PAUSED") == 0)
+      else if (line.find("PAUSED") == 0)
         OnPaused();
     }
   }
@@ -197,7 +202,7 @@ void CPlexMediaServerPlayer::Pause()
   else
     m_http.WriteLine("PAUSE");
   
-  m_paused = !m_paused;
+  //m_paused = !m_paused;
 }
 
 bool CPlexMediaServerPlayer::IsPaused() const
