@@ -59,6 +59,7 @@ CPlexMediaServerPlayer::CPlexMediaServerPlayer(IPlayerCallback& callback)
   m_width = 0;
   m_totalTime = 0;
   m_pDlgCache = NULL;
+  m_pct = 0;
 }
 
 CPlexMediaServerPlayer::~CPlexMediaServerPlayer()
@@ -187,6 +188,8 @@ void CPlexMediaServerPlayer::Process()
         OnNewFrame();
       else if (line.find("PAUSED") == 0)
         OnPaused();
+      else if (line.find("PROGRESS") == 0)
+        OnProgress(boost::lexical_cast<int>(line.substr(9)));
     }
   }
 
@@ -263,7 +266,7 @@ void CPlexMediaServerPlayer::SeekPercentage(float iPercent)
 
 float CPlexMediaServerPlayer::GetPercentage()
 {
-  return m_pct ; 
+  return m_pct; 
 }
 
 // This is how much audio is delayed to video, we count the opposite in the dvdplayer.
