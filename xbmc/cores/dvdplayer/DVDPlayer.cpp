@@ -326,10 +326,10 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
     // settings that should be set before opening the file
     SetAVDelay(g_stSettings.m_currentVideoSettings.m_AudioDelay);
 
-    m_filename = file.m_strPath;
-    m_content  = file.GetContentType();
-    m_item     = file;
     m_PlayerOptions = options;
+    m_item     = file;
+    m_content  = file.GetContentType();
+    m_filename = file.m_strPath;
 
     ResetEvent(m_hReadyEvent);
     Create();
