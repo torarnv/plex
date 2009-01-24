@@ -831,7 +831,6 @@ int CoreAudioAUHAL::OpenSPDIF(struct CoreAudioDeviceParameters *deviceParameters
 
 #warning free
 	deviceParameters->outputBuffer = (PaUtilRingBuffer *)malloc(sizeof(PaUtilRingBuffer));
-#warning inelegant
 	deviceParameters->outputBufferData = malloc(framecount * SPDIF_SAMPLE_BYTES);
 
 	PaUtil_InitializeRingBuffer(deviceParameters->outputBuffer, SPDIF_SAMPLE_BYTES, framecount, deviceParameters->outputBufferData);
