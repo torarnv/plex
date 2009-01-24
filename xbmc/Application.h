@@ -241,10 +241,21 @@ public:
 
   int GlobalIdleTime();
   void NewFrame();
-  void SetQuiet(bool bQuiet);
-  void EnablePlatformDirectories(bool enable=true) 
-  { 
-    m_bPlatformDirectories = enable; 
+  bool WaitFrame(DWORD timeout);
+
+  void EnablePlatformDirectories(bool enable=true)
+  {
+    m_bPlatformDirectories = enable;
+  }
+
+  void SetStandAlone(bool value)
+  {
+    m_bStandalone = value;
+  }
+
+  bool IsStandAlone()
+  {
+    return m_bStandalone;
   }
 
 protected:
@@ -293,8 +304,7 @@ protected:
   int m_nextPlaylistItem;
 
   bool m_bPresentFrame;
-  
-  bool m_bBackgroundMusicEnabled;
+  bool m_bStandalone;
 
   char* m_logPath;
 
