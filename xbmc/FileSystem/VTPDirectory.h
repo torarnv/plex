@@ -20,21 +20,26 @@
  *
  */
 
+#include "IDirectory.h"
 
-#include "IFileDirectory.h"
+class CVTPSession;
 
-namespace DIRECTORY 
+namespace DIRECTORY {
+
+class CVTPDirectory
+  : public IDirectory
 {
-  class CSmartPlaylistDirectory : public IFileDirectory
-  {
-  public:
-    CSmartPlaylistDirectory();
-    ~CSmartPlaylistDirectory();
-    virtual bool GetDirectory(const CStdString& strPath, CFileItemList& items);
-    virtual bool IsAllowed(const CStdString &strFile) const { return true; };
-    virtual bool ContainsFiles(const CStdString& strPath);
-    virtual bool Remove(const char *strPath);
+public:
+  CVTPDirectory();
+  virtual ~CVTPDirectory();
 
-    static CStdString GetPlaylistByName(const CStdString& name, const CStdString& playlistType);
-  };
+  virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
+  virtual bool IsAllowed(const CStdString &strFile) const { return true; };
+
+private:
+  bool GetChannels  (const CStdString& base, CFileItemList &items);
+
+  CVTPSession* m_session;
+};
+
 }
