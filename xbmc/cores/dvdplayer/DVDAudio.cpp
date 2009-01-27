@@ -224,7 +224,10 @@ DWORD CDVDAudio::AddPackets(const DVDAudioFrame &audioframe)
 
     m_iBufferSize = 0;
   }
+<<<<<<< HEAD:xbmc/cores/dvdplayer/DVDAudio.cpp
 
+=======
+>>>>>>> fixed: dvdplayer would sometimes abort due to division by zero during FF/RW, if audio output was closed before being inited:xbmc/cores/dvdplayer/DVDAudio.cpp
   copied = AddPacketsRenderer(data, len, lock);
   data += copied;
   len -= copied;
