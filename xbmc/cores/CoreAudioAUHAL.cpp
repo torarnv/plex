@@ -92,9 +92,17 @@ CoreAudioAUHAL::CoreAudioAUHAL(const CStdString& strName, const char *strCodec, 
 		// Enable AC3 passthrough for digital devices
 		int mpeg_remapping = 0;
 		if (strCodec == "AAC" || strCodec == "DTS") mpeg_remapping = 1; // DTS uses MPEG channel mapping
-		ac3encoder_init(&m_ac3encoder, channels, sampleRate, bitsPerSample, mpeg_remapping);
-		m_bEncodeAC3 = true;
-		ac3_framebuffer = (unsigned char *)calloc(packetSize, 1);
+		if (ac3encoder_init(&m_ac3encoder, channels, sampleRate, bitsPerSample, mpeg_remapping) == -1)
+		{
+			m_bIsInitialized = false;
+			return;
+		}
+		else
+		{
+			m_bEncodeAC3 = true;
+			ac3_framebuffer = (unsigned char *)calloc(packetSize, 1);
+		}
+		
 	}
 	else
 	{
@@ -171,6 +179,7 @@ error:
   /* If we reach this, this aout has failed */
   //var_Destroy( p_aout, "audio-device" );
   free(deviceParameters);
+	m_bIsInitialized = false;
   //return VLC_EGENERIC;
   return;
 }
@@ -301,7 +310,9 @@ DWORD CoreAudioAUHAL::GetSpace()
 
 float CoreAudioAUHAL::GetHardwareLatency()
 {
-	float latency =  CA_BUFFER_FACTOR + (deviceParameters->hardwareFrameLatency / deviceParameters->stream_format.mSampleRate);
+	float latency = CA_BUFFER_FACTOR + (deviceParameters->hardwareFrameLatency / deviceParameters->stream_format.mSampleRate);
+	if (deviceParameters->b_digital)
+		latency += 0.032;
 	if (m_bEncodeAC3)
 		latency += 0.032;
 	return latency;
@@ -751,7 +762,7 @@ int CoreAudioAUHAL::OpenSPDIF(struct CoreAudioDeviceParameters *deviceParameters
         free( p_format_list );
     }
     free( p_streams );
-
+	
 	CLog::Log(LOGINFO, STREAM_FORMAT_MSG("original stream format: ", deviceParameters->sfmt_revert ) );
 
     if( !AudioStreamChangeFormat(deviceParameters, deviceParameters->i_stream_id, deviceParameters->stream_format))

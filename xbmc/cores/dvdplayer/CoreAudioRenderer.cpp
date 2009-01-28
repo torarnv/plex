@@ -61,7 +61,7 @@ CoreAudioRenderer::CoreAudioRenderer(IAudioCallback* pCallback, int iChannels, u
 								   m_dwPacketSize);
 	
 	m_bCanPause = false;
-	m_bIsAllocated = true;
+	m_bIsAllocated = audioUnit->IsInitialized();
 	
 	
 }

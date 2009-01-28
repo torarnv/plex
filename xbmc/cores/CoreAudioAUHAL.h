@@ -53,7 +53,7 @@ class CoreAudioAUHAL
 									   bool passthrough, 
 									   bool isMusic, 
 									   int packetSize);
-		
+		bool IsInitialized() { return m_bIsInitialized; }
 		virtual HRESULT Deinitialize();
 		virtual DWORD GetSpace();
 		virtual float GetHardwareLatency();
