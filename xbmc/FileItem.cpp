@@ -68,7 +68,7 @@ CFileItem::CFileItem(const CSong& song)
   m_lStartOffset = song.iStartOffset;
   m_lEndOffset = song.iEndOffset;
   m_strThumbnailImage = _P(song.strThumb);
-  
+  m_bIsPopupMenuItem = false;
 }
 
 CFileItem::CFileItem(const CStdString &path, const CAlbum& album)
@@ -97,6 +97,8 @@ CFileItem::CFileItem(const CStdString &path, const CAlbum& album)
   SetProperty("label", album.strLabel);
   if (album.iRating > 0)
     SetProperty("rating", album.iRating);
+  
+  m_bIsPopupMenuItem = false;
 }
 
 CFileItem::CFileItem(const CVideoInfoTag& movie)
@@ -328,6 +330,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   m_contenttype = item.m_contenttype;
   m_extrainfo = item.m_extrainfo;
   m_strFanartUrl = item.m_strFanartUrl;
+  m_bIsPopupMenuItem = item.m_bIsPopupMenuItem;
   
   return *this;
 }
