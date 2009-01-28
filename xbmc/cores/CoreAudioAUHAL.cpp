@@ -62,7 +62,7 @@ struct CoreAudioDeviceParameters
 	AudioUnit                   au_unit;        /* The AudioUnit we use */
 	PaUtilRingBuffer*			outputBuffer;
 	void*						outputBufferData;
-	float						hardwareFrameLatency;
+	int						hardwareFrameLatency;
 	bool						b_digital;      /* Are we running in digital mode? */
 
 	/* CoreAudio SPDIF mode specific */
@@ -310,11 +310,12 @@ DWORD CoreAudioAUHAL::GetSpace()
 
 float CoreAudioAUHAL::GetHardwareLatency()
 {
-	float latency = CA_BUFFER_FACTOR + (deviceParameters->hardwareFrameLatency / deviceParameters->stream_format.mSampleRate);
+	float latency = CA_BUFFER_FACTOR + ((float)deviceParameters->hardwareFrameLatency / deviceParameters->stream_format.mSampleRate);
 	if (deviceParameters->b_digital)
 		latency += 0.032;
 	if (m_bEncodeAC3)
-		latency += 0.032;
+		latency += 0.064;
+	//latency += 0.225;
 	return latency;
 }
 
@@ -375,6 +376,9 @@ int CoreAudioAUHAL::WriteStream(uint8_t *sampleBuffer, uint32_t samplesToWrite)
 
 void CoreAudioAUHAL::Flush()
 {
+	CSingleLock lock(m_cs); // acquire lock
+	
+	PaUtil_FlushRingBuffer( deviceParameters->outputBuffer );
 	if (m_bEncodeAC3)
 	{
 		ac3encoder_flush(&m_ac3encoder);
@@ -492,7 +496,7 @@ int CoreAudioAUHAL::OpenPCM(struct CoreAudioDeviceParameters *deviceParameters, 
 	// Get AU hardware buffer size
 
 	uint32_t audioDeviceLatency, audioDeviceBufferFrameSize, audioDeviceSafetyOffset;
-	deviceParameters->hardwareFrameLatency = 0.0;
+	deviceParameters->hardwareFrameLatency = 0;
 	
 	i_param_size = sizeof(uint32_t);
 
@@ -523,8 +527,8 @@ int CoreAudioAUHAL::OpenPCM(struct CoreAudioDeviceParameters *deviceParameters, 
 	
 	deviceParameters->hardwareFrameLatency += audioDeviceSafetyOffset;
 
-	CLog::Log(LOGINFO, "Hardware latency: %.0f frames (%.2f msec @ %.0fHz)", deviceParameters->hardwareFrameLatency,
-			  deviceParameters->hardwareFrameLatency / deviceParameters->stream_format.mSampleRate * 1000,
+	CLog::Log(LOGINFO, "Hardware latency: %i frames (%.2f msec @ %.0fHz)", deviceParameters->hardwareFrameLatency,
+			  (float)deviceParameters->hardwareFrameLatency / deviceParameters->stream_format.mSampleRate * 1000,
 			  deviceParameters->stream_format.mSampleRate);
 
 	// initialise the CoreAudio sink buffer
@@ -771,7 +775,7 @@ int CoreAudioAUHAL::OpenSPDIF(struct CoreAudioDeviceParameters *deviceParameters
 	// Get device hardware buffer size
 
 	uint32_t audioDeviceLatency, audioStreamLatency, audioDeviceBufferFrameSize, audioDeviceSafetyOffset;
-	deviceParameters->hardwareFrameLatency = 0.0;
+	deviceParameters->hardwareFrameLatency = 0;
 	i_param_size = sizeof(uint32_t);
 
 	err = AudioDeviceGetProperty(deviceParameters->device_id,
@@ -807,8 +811,8 @@ int CoreAudioAUHAL::OpenSPDIF(struct CoreAudioDeviceParameters *deviceParameters
 	if (err == noErr) deviceParameters->hardwareFrameLatency += audioStreamLatency;
 
 
-	CLog::Log(LOGINFO, "Hardware latency: %.0f frames (%.2f msec @ %.0fHz)", deviceParameters->hardwareFrameLatency,
-			  deviceParameters->hardwareFrameLatency / deviceParameters->stream_format.mSampleRate * 1000,
+	CLog::Log(LOGINFO, "Hardware latency: %i frames (%.2f msec @ %.0fHz)", deviceParameters->hardwareFrameLatency,
+			  (float)deviceParameters->hardwareFrameLatency / deviceParameters->stream_format.mSampleRate * 1000,
 			  deviceParameters->stream_format.mSampleRate);
 
   	// initialise the CoreAudio sink buffer
