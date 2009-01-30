@@ -29,6 +29,9 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
     [self dealloc];
   else
     _o_sharedMainInstance = [super init];
+ 
+  // Initialize random number generator.
+  srandom(time(0));
   
   // Default values
   isEnabled = NO;
