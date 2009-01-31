@@ -14,8 +14,10 @@
 #include <stdio.h>
 #if defined(_XBOX)
 #include <xtl.h>
-#elif !defined(__APPLE__)
+#else
+#ifndef __APPLE__
 #include <windows.h>
+#endif
 #endif
 
 #include "NptConfig.h"
@@ -43,8 +45,10 @@ NPT_SET_LOCAL_LOGGER("neptune,debug.win32")
 static void
 NPT_Print(const char* message)
 {
+#if !defined(_WIN32_WCE)
+    OutputDebugString(message);
+#endif
     NPT_LOG_FINER_1("%s", message);
-    //printf("%s", message);
 }
 #elif defined(NPT_DEBUG)
 /*----------------------------------------------------------------------
