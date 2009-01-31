@@ -1183,7 +1183,7 @@ HRESULT CApplication::Create(HWND hWnd)
   }
   
   // Set the correct audio device.
-  if (device)
+  if (device && g_guiSettings.GetBool("audiooutput.systemoutputfollows"))
     device->setDefault();
   
   // Start background music playing
