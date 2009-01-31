@@ -1,5 +1,3 @@
-// -*- c-basic-offset: 8; indent-tabs-mode: t -*-
-// vim:ts=8:sw=8:noet:ai:
 /*
  * Copyright (C) 2006 Evgeniy Stepanov <eugeni.stepanov@gmail.com>
  *
@@ -20,22 +18,21 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef LIBASS_FONTCONFIG_H
-#define LIBASS_FONTCONFIG_H
+#ifndef LIBASS_MPUTILS_H
+#define LIBASS_MPUTILS_H
 
-#include <stdint.h>
-#include "ass_types.h"
-#include <ft2build.h>
-#include FT_FREETYPE_H
+#include "mp_msg.h"
+#include "help_mp.h"
+//#include "libvo/font_load.h" // for blur()
+//#include "subreader.h" // for guess_buffer_cp
+//#include "libvo/sub.h" // for utf8_get_char
+//#include "libavutil/common.h"
 
-#ifdef HAVE_FONTCONFIG
-#include <fontconfig/fontconfig.h>
+#define FFMIN(a,b) ((a) > (b) ? (b) : (a))
+#define FFMAX(a,b) ((a) > (b) ? (a) : (b))
+
+#ifdef _WIN32
+#define mp_msg my_mp_msg
 #endif
 
-typedef struct fc_instance_s fc_instance_t;
-
-fc_instance_t* fontconfig_init(ass_library_t* library, FT_Library ftlibrary, const char* family, const char* path, int fc);
-char* fontconfig_select(fc_instance_t* priv, const char* family, unsigned bold, unsigned italic, int* index, uint32_t code);
-void fontconfig_done(fc_instance_t* priv);
-
-#endif /* LIBASS_FONTCONFIG_H */
+#endif /* LIBASS_MPUTILS_H */
