@@ -305,6 +305,7 @@ protected:
 
   bool m_bPresentFrame;
   bool m_bStandalone;
+  bool m_bBackgroundMusicEnabled;
 
   char* m_logPath;
 

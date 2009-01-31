@@ -35,7 +35,6 @@ CoreAudioRenderer::CoreAudioRenderer(IAudioCallback* pCallback, int iChannels, u
 	  // Use small buffer for low samplerates.
 	  //m_dwPacketSize /= 5; 
 	}
-	m_dwNumPackets = 16;
 	
 	// set the stream parameters
 	m_uiChannels = iChannels;

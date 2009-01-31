@@ -134,6 +134,8 @@ CoreAudioAUHAL::CoreAudioAUHAL(const CStdString& strName, const char *strCodec, 
 	deviceParameters->i_hog_pid = -1;
 	deviceParameters->i_stream_index = -1;
 	
+	m_dwPacketSize = packetSize;
+	
 	m_bIsMusic = isMusic;
 
 	// Build a list of devices.
@@ -161,6 +163,7 @@ CoreAudioAUHAL::CoreAudioAUHAL(const CStdString& strName, const char *strCodec, 
 	{
 	  if (OpenSPDIF(deviceParameters, strName, channels, sampleRate, bitsPerSample, packetSize))
 	  {
+		m_dwPacketSize = AC3_SPDIF_FRAME_SIZE;
 	    m_bIsInitialized = true;
 	    return;
 	  }
