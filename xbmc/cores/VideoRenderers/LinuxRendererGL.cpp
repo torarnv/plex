@@ -701,6 +701,11 @@ void CLinuxRendererGL::InitializeSoftwareUpscaling()
   m_imScaled.plane[0] = new BYTE[m_imScaled.stride[0] * ALIGN((m_upscalingHeight)   , 16)];
   m_imScaled.plane[1] = new BYTE[m_imScaled.stride[1] * ALIGN((m_upscalingHeight>>1), 16)];
   m_imScaled.plane[2] = new BYTE[m_imScaled.stride[2] * ALIGN((m_upscalingHeight>>1), 16)];
+  
+  for (int i=0; i<3; i++)
+    if (((long)m_imScaled.plane[i]) % 16 != 0)
+      printf("WARNING: %p not aligned to 16 byte boundary.\n");
+  
   m_imScaled.width = m_upscalingWidth;
   m_imScaled.height = m_upscalingHeight;
   m_imScaled.flags = 0;
