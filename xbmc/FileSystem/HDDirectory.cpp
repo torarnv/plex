@@ -182,6 +182,9 @@ void CHDDirectory::HandleSearchResult(void* thisPtr, void* itemListPtr, const ch
 
   CFileItemPtr pItem(me->BuildResolvedFileItem(strPath, wfd));
 
+  if (wfd.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN)
+    pItem->SetProperty("file:hidden", true);
+  
   // If it's allowed, add it to the list.
   if (pItem && me->IsAllowed(pItem.get(), wfd))
     pItemList->Add(pItem);
