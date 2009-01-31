@@ -133,11 +133,10 @@ void CScrobbler::SetPassword(const CStdString& strPass)
 {
   if (strPass.IsEmpty())
     return;
-  MD5_CTX md5state;
   unsigned char md5pword[16];
-  MD5Init(&md5state);
-  MD5Update(&md5state, (unsigned char *)strPass.c_str(), (int)strPass.size());
-  MD5Final(md5pword, &md5state);
+  XBMC::MD5 md5state;
+  md5state.append(strPass);
+  md5state.getDigest(md5pword);
   char tmp[33];
   strncpy(tmp, "\0", sizeof(tmp));
   for (int j = 0;j < 16;j++) 
@@ -414,11 +413,10 @@ void CScrobbler::SetInterval(int in)
 void CScrobbler::GenSessionKey() 
 {
   CStdString clear = m_strPassword + m_strChallenge;
-  MD5_CTX md5state;
   unsigned char md5pword[16];
-  MD5Init(&md5state);
-  MD5Update(&md5state, (unsigned char *)clear.c_str(), (int)clear.length());
-  MD5Final(md5pword, &md5state);
+  XBMC::MD5 md5state;
+  md5state.append(clear);
+  md5state.getDigest(md5pword);
   char key[33];
   strncpy(key, "\0", sizeof(key));
   for (int j = 0;j < 16;j++) 

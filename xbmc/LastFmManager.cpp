@@ -639,11 +639,11 @@ void CLastFmManager::StopRadio(bool bKillSession /*= true*/)
 
 void CLastFmManager::CreateMD5Hash(const CStdString& bufferToHash, CStdString& hash)
 {
-  MD5_CTX md5state;
   unsigned char md5pword[16];
-  MD5Init(&md5state);
-  MD5Update(&md5state, (unsigned char *)bufferToHash.c_str(), (int)bufferToHash.size());
-  MD5Final(md5pword, &md5state);
+  
+  XBMC::MD5 md5state;
+  md5state.append(bufferToHash);
+  md5state.getDigest(md5pword);
   char tmp[33];
   strncpy(tmp, "\0", sizeof(tmp));
   for (int j = 0;j < 16;j++) 

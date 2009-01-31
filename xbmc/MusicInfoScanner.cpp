@@ -717,20 +717,19 @@ int CMusicInfoScanner::GetPathHash(const CFileItemList &items, CStdString &hash)
   if (0 == items.Size()) return 0;
   unsigned char md5hash[16];
   char md5HexString[33];
-  MD5_CTX md5state;
-  MD5Init(&md5state);
+  XBMC::MD5 md5state;
   int count = 0;
   for (int i = 0; i < items.Size(); ++i)
   {
     const CFileItemPtr pItem = items[i];
-    MD5Update(&md5state, (unsigned char *)pItem->m_strPath.c_str(), (int)pItem->m_strPath.size());
-    MD5Update(&md5state, (unsigned char *)&pItem->m_dwSize, sizeof(pItem->m_dwSize));
+    md5state.append(pItem->m_strPath);
+    md5state.append((unsigned char *)&pItem->m_dwSize, sizeof(pItem->m_dwSize));
     FILETIME time = pItem->m_dateTime;
-    MD5Update(&md5state, (unsigned char *)&time, sizeof(FILETIME));
+    md5state.append((unsigned char *)&time, sizeof(FILETIME));
     if (pItem->IsAudio() && !pItem->IsPlayList() && !pItem->IsNFO())
       count++;
   }
-  MD5Final(md5hash, &md5state);
+  md5state.getDigest(md5hash);
   XKGeneral::BytesToHexStr(md5hash, 16, md5HexString);
   hash = md5HexString;
   return count;

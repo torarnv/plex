@@ -500,7 +500,6 @@
 		E371C3CD0E2F2D5400FBF841 /* log.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E5B0D25F9FD00618676 /* log.cpp */; };
 		E371C3CE0E2F2D5400FBF841 /* log.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D160D25F9FC00618676 /* log.cpp */; settings = {COMPILER_FLAGS = "-DSILENT"; }; };
 		E371C3CF0E2F2D5400FBF841 /* match.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D1A0D25F9FC00618676 /* match.cpp */; settings = {COMPILER_FLAGS = "-DSILENT"; }; };
-		E371C3D00E2F2D5400FBF841 /* md5.c in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E5F0D25F9FD00618676 /* md5.c */; };
 		E371C3D10E2F2D5400FBF841 /* MediaCrawler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1ABD0D25F9FB00618676 /* MediaCrawler.cpp */; };
 		E371C3D20E2F2D5400FBF841 /* MediaManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D8B0D25F9FD00618676 /* MediaManager.cpp */; };
 		E371C3D30E2F2D5400FBF841 /* MediaSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 880DBE4B0DC223FF00E26B71 /* MediaSource.cpp */; };
@@ -889,6 +888,7 @@
 		E3F471BB0EAC481F004BB122 /* utf8tolatin1.c in Sources */ = {isa = PBXBuildFile; fileRef = E3F471B90EAC481F004BB122 /* utf8tolatin1.c */; };
 		E3F471BD0EAC4BBE004BB122 /* NptPosixFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3F471BC0EAC4BBE004BB122 /* NptPosixFile.cpp */; };
 		E3F471BF0EAC4BF9004BB122 /* NptStdcEnvironment.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3F471BE0EAC4BF9004BB122 /* NptStdcEnvironment.cpp */; };
+		E3F766080F346CC300667633 /* md5.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3F766070F346CC300667633 /* md5.cpp */; };
 		E3FD287C0E9951B500EE77C3 /* FilePlex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3FD28780E9951B500EE77C3 /* FilePlex.cpp */; };
 		E3FD287D0E9951B500EE77C3 /* PlexDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3FD287A0E9951B500EE77C3 /* PlexDirectory.cpp */; };
 		E3FD41940EF459C100C6172C /* PlayListURL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3FD41930EF459C100C6172C /* PlayListURL.cpp */; };
@@ -2867,7 +2867,6 @@
 		E38E1E5A0D25F9FD00618676 /* LED.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LED.h; sourceTree = "<group>"; };
 		E38E1E5B0D25F9FD00618676 /* log.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = log.cpp; sourceTree = "<group>"; };
 		E38E1E5C0D25F9FD00618676 /* log.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = log.h; sourceTree = "<group>"; };
-		E38E1E5F0D25F9FD00618676 /* md5.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = md5.c; sourceTree = "<group>"; };
 		E38E1E600D25F9FD00618676 /* md5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = md5.h; sourceTree = "<group>"; };
 		E38E1E620D25F9FD00618676 /* MediaMonitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaMonitor.h; sourceTree = "<group>"; };
 		E38E1E640D25F9FD00618676 /* MemoryUnitManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MemoryUnitManager.h; sourceTree = "<group>"; };
@@ -3075,6 +3074,7 @@
 		E3F471B90EAC481F004BB122 /* utf8tolatin1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = utf8tolatin1.c; sourceTree = "<group>"; };
 		E3F471BC0EAC4BBE004BB122 /* NptPosixFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptPosixFile.cpp; sourceTree = "<group>"; };
 		E3F471BE0EAC4BF9004BB122 /* NptStdcEnvironment.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NptStdcEnvironment.cpp; path = StdC/NptStdcEnvironment.cpp; sourceTree = "<group>"; };
+		E3F766070F346CC300667633 /* md5.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = md5.cpp; sourceTree = "<group>"; };
 		E3FD28780E9951B500EE77C3 /* FilePlex.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FilePlex.cpp; sourceTree = "<group>"; };
 		E3FD28790E9951B500EE77C3 /* FilePlex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FilePlex.h; sourceTree = "<group>"; };
 		E3FD287A0E9951B500EE77C3 /* PlexDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PlexDirectory.cpp; sourceTree = "<group>"; };
@@ -6290,6 +6290,7 @@
 		E38E1E220D25F9FD00618676 /* utils */ = {
 			isa = PBXGroup;
 			children = (
+				E3F766070F346CC300667633 /* md5.cpp */,
 				E3C1A6A80E74E85C00CE0104 /* AsyncFileCopy.h */,
 				E3C1A6A90E74E85C00CE0104 /* AsyncFileCopy.cpp */,
 				E3B221520E57892500939882 /* ArabicShaping.cpp */,
@@ -6355,7 +6356,6 @@
 				E38E1E5A0D25F9FD00618676 /* LED.h */,
 				E38E1E5B0D25F9FD00618676 /* log.cpp */,
 				E38E1E5C0D25F9FD00618676 /* log.h */,
-				E38E1E5F0D25F9FD00618676 /* md5.c */,
 				E38E1E600D25F9FD00618676 /* md5.h */,
 				E38E1E620D25F9FD00618676 /* MediaMonitor.h */,
 				E38E1E640D25F9FD00618676 /* MemoryUnitManager.h */,
@@ -7103,7 +7103,6 @@
 				E371C3CD0E2F2D5400FBF841 /* log.cpp in Sources */,
 				E371C3CE0E2F2D5400FBF841 /* log.cpp in Sources */,
 				E371C3CF0E2F2D5400FBF841 /* match.cpp in Sources */,
-				E371C3D00E2F2D5400FBF841 /* md5.c in Sources */,
 				E371C3D10E2F2D5400FBF841 /* MediaCrawler.cpp in Sources */,
 				E371C3D20E2F2D5400FBF841 /* MediaManager.cpp in Sources */,
 				E371C3D30E2F2D5400FBF841 /* MediaSource.cpp in Sources */,
@@ -7455,6 +7454,7 @@
 				E3FD41940EF459C100C6172C /* PlayListURL.cpp in Sources */,
 				E3FD41A60EF46E4100C6172C /* NptWin32Debug.cpp in Sources */,
 				E3AF20810F0C4DF600C5259C /* PlexMediaServerPlayer.cpp in Sources */,
+				E3F766080F346CC300667633 /* md5.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
