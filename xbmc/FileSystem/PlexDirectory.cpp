@@ -48,10 +48,6 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   if (CUtil::HasSlashAtEnd(strRoot) && strRoot != "plex://")
     strRoot.Delete(strRoot.size() - 1);
   
-  // See if it's cached.
-  if (g_directoryCache.GetDirectory(strRoot, items))
-    return true;
-
   strRoot.Replace(" ", "%20");
 
   // Start the download thread running.
@@ -121,7 +117,6 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   Parse(m_url, root, items, strFileLabel, strDirLabel, strSecondDirLabel);
   items.AddSortMethod(SORT_METHOD_NONE, 552, LABEL_MASKS(strFileLabel, "%D", strDirLabel, strSecondDirLabel));
 
-  CFileItemList vecCacheItems;
   g_directoryCache.ClearDirectory(strRoot);
   for( int i = 0; i <items.Size(); i++ )
   {
@@ -134,9 +129,6 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     string sortLabel = pItem->GetLabel();
     boost::to_lower(sortLabel);
     pItem->SetSortLabel(sortLabel);
-    
-    if (!pItem->IsParentFolder())
-      vecCacheItems.Add(pItem);
   }
   
   // Check for dialog message attributes
@@ -154,9 +146,8 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     if (items.Size() == 0)
       return false;
   }
-    
   
-  // Set the view mode
+  // Set the view mode.
   const char* viewmode = root->Attribute("viewmode");
   if (viewmode && strlen(viewmode) > 0)
   {
@@ -164,7 +155,6 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     viewState->SaveViewAsControl(atoi(viewmode));
   }
   
-  //g_directoryCache.SetDirectory(strRoot, vecCacheItems);
   if (dlgProgress) dlgProgress->Close();
   
   return true;
