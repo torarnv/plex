@@ -189,7 +189,7 @@ public:
 
   // Sets the video thumb (cached first, else caches user thumb)
   void SetVideoThumb();
-  void CacheFanart() const;
+  CStdString CacheFanart(bool probe=false) const;
 
   // Sets the cached thumb for the item if it exists
   void SetCachedVideoThumb();
@@ -208,6 +208,9 @@ public:
   void SetUserVideoThumb();
   void SetUserProgramThumb();
   void SetUserMusicThumb(bool alwaysCheckRemote = false);
+
+  // finds a matching local trailer file
+  CStdString FindTrailer() const;
 
   virtual bool LoadMusicTag();
 

@@ -39,6 +39,7 @@
 #include "FileItem.h"
 
 using namespace XFILE;
+using namespace std;
 
 CTuxBoxUtil g_tuxbox;
 CTuxBoxService g_tuxboxService;
@@ -227,7 +228,43 @@ bool CTuxBoxUtil::ParseBouquets(TiXmlElement *root, CFileItemList &items, CURL &
   }
   return true;
 }
+bool CTuxBoxUtil::ParseBouquetsEnigma2(TiXmlElement *root, CFileItemList &items, CURL &url, CStdString& strFilter, CStdString& strChild)
+{
+  CStdString strItemName, strItemPath;
+  TiXmlElement *pRootElement = root;
+  TiXmlNode *pNode = NULL;
+  TiXmlNode *pIt = NULL;
+  items.m_idepth = 1;
 
+  if (!pRootElement)
+  {
+    CLog::Log(LOGWARNING, "%s - No %s found", __FUNCTION__, strChild.c_str());
+    return false;
+  }
+  if (strFilter.IsEmpty())
+  {
+    pNode = pRootElement->FirstChildElement("e2bouquet");
+    if (!pNode)
+    {
+      CLog::Log(LOGWARNING, "%s - No %s found", __FUNCTION__,strChild.c_str());
+      return false;
+    }
+    while(pNode)
+    {
+      CFileItemPtr pItem(new CFileItem);
+      pIt = pNode->FirstChildElement("e2servicereference");
+      strItemPath = pIt->FirstChild()->Value();
+      pIt = pNode->FirstChildElement("e2servicename");
+      strItemName = pIt->FirstChild()->Value();
+      pItem->m_bIsFolder = true;
+      pItem->SetLabel(strItemName);
+      pItem->m_strPath = "tuxbox://"+url.GetHostName()+":80/"+strItemName+"/";
+      items.Add(pItem);
+      pNode = pNode->NextSiblingElement("e2bouquet");
+    }
+  }
+  return true;
+}
 bool CTuxBoxUtil::ParseChannels(TiXmlElement *root, CFileItemList &items, CURL &url, CStdString strFilter, CStdString strChild)
 {
   //
@@ -297,7 +334,7 @@ bool CTuxBoxUtil::ParseChannels(TiXmlElement *root, CFileItemList &items, CURL &
                     pbItem->SetLabel(strItemName);
                     pbItem->m_strPath = "tuxbox://"+url.GetUserName()+":"+url.GetPassWord()+"@"+url.GetHostName()+strPort+"/cgi-bin/zapTo?path="+strItemPath+".ts";  
                     pbItem->SetContentType("video/x-ms-asf");
-                    //pbItem->SetThumbnailImage(GetPicon(strItemName)); //Set Picon Image
+                    pbItem->SetThumbnailImage(GetPicon(strItemName)); //Set Picon Image
 
                     //DEBUG Log
                     CLog::Log(LOGDEBUG, "%s - Name:    %s", __FUNCTION__,strItemName.c_str());
@@ -316,6 +353,60 @@ bool CTuxBoxUtil::ParseChannels(TiXmlElement *root, CFileItemList &items, CURL &
     return true;
   }
   return false;
+}
+bool CTuxBoxUtil::ParseChannelsEnigma2(TiXmlElement *root, CFileItemList &items, CURL &url, CStdString& strFilter, CStdString& strChild)
+{
+  CStdString strItemName, strItemPath, strPort;
+  TiXmlElement *pRootElement = root;
+  TiXmlNode *pNode = NULL;
+  TiXmlNode *pIt = NULL;
+  TiXmlNode *pIta = NULL;
+  TiXmlNode *pItb = NULL;
+  items.m_idepth = 2;
+
+  if (!pRootElement)
+  {
+    CLog::Log(LOGWARNING, "%s - No %ss found", __FUNCTION__,strChild.c_str());
+    return false;
+  }
+  if(!strFilter.IsEmpty())
+  {
+    pNode = pRootElement->FirstChild(strChild.c_str());
+    if (!pNode)
+    {
+      CLog::Log(LOGWARNING, "%s - No %s found", __FUNCTION__,strChild.c_str());
+      return false;
+    }
+    while(pNode)
+    {
+      pIt = pNode->FirstChildElement("e2servicereference");
+      pIt = pNode->FirstChildElement("e2servicename");
+      CStdString bqtName = pIt->FirstChild()->Value();
+      pIt = pNode->FirstChildElement("e2servicelist");
+      pIta = pIt->FirstChildElement("e2service");
+      while(pIta)
+      {
+        pItb = pIta->FirstChildElement("e2servicereference");
+        strItemPath = pItb->FirstChild()->Value();
+        pItb = pIta->FirstChildElement("e2servicename");
+        strItemName = pItb->FirstChild()->Value();
+        if(bqtName == url.GetShareName())
+        {
+          CFileItemPtr pbItem(new CFileItem);
+          pbItem->m_bIsFolder = false;
+          pbItem->SetLabel(strItemName);
+          pbItem->m_strPath = "http://"+url.GetHostName()+":8001/"+strItemPath;
+          pbItem->SetContentType("video/mpeg2");
+          items.Add(pbItem);
+          CLog::Log(LOGDEBUG, "%s - Name:    %s", __FUNCTION__,strItemName.c_str());
+          CLog::Log(LOGDEBUG, "%s - Adress:  %s", __FUNCTION__,pbItem->m_strPath.c_str());
+        }
+        pIta = pIta->NextSiblingElement("e2service");
+      }
+      pNode = pNode->NextSiblingElement("e2bouquet");
+    }
+  }
+  return true;
 }
 bool CTuxBoxUtil::ZapToUrl(CURL url, CStdString strOptions, int ipoint) 
 {
@@ -374,7 +465,7 @@ bool CTuxBoxUtil::ZapToUrl(CURL url, CStdString strOptions, int ipoint)
 
     //Request StreamInfo
     GetHttpXML(urlx,"streaminfo");
-    
+
     //Extract StreamInformations
     int iRetry=0;
     //PMT must be a valid value to be sure that the ZAP is OK and we can stream!
@@ -383,6 +474,7 @@ bool CTuxBoxUtil::ZapToUrl(CURL url, CStdString strOptions, int ipoint)
       CLog::Log(LOGDEBUG, "%s - Requesting STREAMINFO! TryCount: %i!", __FUNCTION__,iRetry);
       GetHttpXML(urlx,"streaminfo");
       iRetry=iRetry+1;
+      Sleep(200);
     }
     
     // PMT Not Valid? Try Time 10 reached, checking for advancedSettings m_iTuxBoxZapWaitTime
@@ -467,7 +559,7 @@ bool CTuxBoxUtil::GetZapUrl(const CStdString& strPath, CFileItem &items )
         if(strAudioChannelPid.Left(2).Equals("0x"))
           strAudioChannelPid.Replace("0x","");
 
-        strVideoStream.Format("0,%s,%s,%s,,,%s",sStrmInfo.pmt.Left(4).c_str(), sStrmInfo.vpid.Left(4).c_str(), strAudioChannelPid.Left(4).c_str(),sStrmInfo.pcrpid.Left(4).c_str());
+        strVideoStream.Format("0,%s,%s,%s",sStrmInfo.pmt.Left(4).c_str(), sStrmInfo.vpid.Left(4).c_str(), strAudioChannelPid.Left(4).c_str());
       }
       else
       {
@@ -479,12 +571,11 @@ bool CTuxBoxUtil::GetZapUrl(const CStdString& strPath, CFileItem &items )
           sCurSrvData.audio_channel_2_pid.Replace("0x","");
 
         if(g_application.m_eForcedNextPlayer == EPC_DVDPLAYER || g_advancedSettings.m_bTuxBoxSendAllAPids)
-          strVideoStream.Format("0,%s,%s,%s,%s,%s,%s",sStrmInfo.pmt.Left(4).c_str(), sStrmInfo.vpid.Left(4).c_str(), sStrmInfo.apid.Left(4).c_str(), sCurSrvData.audio_channel_1_pid.Left(4).c_str(), sCurSrvData.audio_channel_2_pid.Left(4).c_str(), sStrmInfo.pcrpid.Left(4).c_str());
+          strVideoStream.Format("0,%s,%s,%s,%s,%s",sStrmInfo.pmt.Left(4).c_str(), sStrmInfo.vpid.Left(4).c_str(), sStrmInfo.apid.Left(4).c_str(), sCurSrvData.audio_channel_1_pid.Left(4).c_str(), sCurSrvData.audio_channel_2_pid.Left(4).c_str());
         else 
-          strVideoStream.Format("0,%s,%s,%s,,,%s",sStrmInfo.pmt.Left(4).c_str(), sStrmInfo.vpid.Left(4).c_str(), sStrmInfo.apid.Left(4).c_str(), sStrmInfo.pcrpid.Left(4).c_str());
+          strVideoStream.Format("0,%s,%s,%s",sStrmInfo.pmt.Left(4).c_str(), sStrmInfo.vpid.Left(4).c_str(), sStrmInfo.apid.Left(4).c_str());
       }
       
-      //strStreamURL.Format("http://%s:%i/%s",url.GetHostName().c_str(),TS_STREAM_PORT,strVideoStream.c_str());
       strStreamURL.Format("http://%s:%s@%s:%i/%s",url.GetUserName().c_str(),url.GetPassWord().c_str(), url.GetHostName().c_str(),TS_STREAM_PORT,strVideoStream.c_str());
       strLabel.Format("%s: %s %s-%s",items.GetLabel().c_str(), sCurSrvData.current_event_date.c_str(),sCurSrvData.current_event_start.c_str(), sCurSrvData.current_event_start.c_str());
       strLabel2.Format("%s", sCurSrvData.current_event_description.c_str());
@@ -1069,7 +1160,7 @@ bool CTuxBoxUtil::BoxInfo(TiXmlElement *pRootElement)
 {
   TiXmlNode *pNode = NULL;
   TiXmlNode *pIt = NULL;
-  
+
   if(pRootElement)
   {
     CLog::Log(LOGDEBUG, "%s - BoxInfo", __FUNCTION__);
@@ -1158,7 +1249,7 @@ bool CTuxBoxUtil::ServiceEPG(TiXmlElement *pRootElement)
 {
   TiXmlNode *pNode = NULL;
   TiXmlNode *pIt = NULL;
-  
+
   if(pRootElement)
   {
     CLog::Log(LOGDEBUG, "%s - Service EPG", __FUNCTION__);
@@ -1318,7 +1409,7 @@ bool CTuxBoxUtil::GetVideoSubChannels(CStdString& strVideoSubChannelName, CStdSt
   {
     pMenu->Initialize();
     // load Video Sub Channels to context menu
-    std::vector<int> btn;
+    vector<int> btn;
     for (unsigned int i=0; vVideoSubChannel.name.size() > i; ++i)
       btn.push_back(pMenu->AddButton(vVideoSubChannel.name[i]));
     
@@ -1360,11 +1451,11 @@ CStdString CTuxBoxUtil::GetPicon(CStdString strServiceName)
   {
     CStdString piconXML, piconPath, defaultPng;
     CStdString strName, strPng;
-    piconPath = "Q:\\userdata\\pictureicon\\Picon\\";
-    defaultPng = piconPath+"default.png";
-    piconXML = "Q:\\userdata\\pictureicon\\picon.xml";
+    piconPath = _P("q:\\userdata\\PictureIcon\\Picon\\");
+    defaultPng = piconPath+"tuxbox.png";
+    piconXML = _P("q:\\userdata\\PictureIcon\\picon.xml");
     TiXmlDocument piconDoc;
-    
+
     if (!CFile::Exists(piconXML))
     { 
       return defaultPng;

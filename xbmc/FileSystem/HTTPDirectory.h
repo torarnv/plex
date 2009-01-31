@@ -1,5 +1,6 @@
+#pragma once
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2009 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,24 +20,17 @@
  *
  */
 
-#ifndef CRSSDIRECTORY_H_
-#define CRSSDIRECTORY_H_
-
-#include "stdafx.h"
 #include "IDirectory.h"
-
-#include "RssFeed.h"
 
 namespace DIRECTORY
 {
-  class CRSSDirectory : public IDirectory
+  class CHTTPDirectory : public IDirectory
   {
-  public:
-    CRSSDirectory();
-    virtual ~CRSSDirectory();
-    virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
-    virtual DIR_CACHE_TYPE GetCacheType(const CStdString& strPath) const { return DIR_CACHE_ALWAYS; };
+    public:
+      CHTTPDirectory(void);
+      virtual ~CHTTPDirectory(void);
+      virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
+      virtual DIR_CACHE_TYPE GetCacheType(const CStdString& strPath) const { return DIR_CACHE_ALWAYS; };
+    private:      
   };
 }
-
-#endif /*CRSSDIRECTORY_H_*/

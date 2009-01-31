@@ -27,7 +27,6 @@
 #include "HDDirectory.h"
 #include "Util.h"
 #include "xbox/IoSupport.h"
-#include "DirectoryCache.h"
 #include "iso9660.h"
 #include "URL.h"
 #include "GUISettings.h"
@@ -66,9 +65,6 @@ bool CHDDirectory::GetNormalFolder(const CStdString& strPath1, CFileItemList &it
 #ifndef _LINUX
   g_charsetConverter.utf8ToStringCharset(strPath);
 #endif
-
-  CFileItemList vecCacheItems;
-  g_directoryCache.ClearDirectory(strPath1);
 
   CStdString strRoot = strPath;
   CURL url(strPath);
@@ -111,9 +107,6 @@ bool CHDDirectory::GetNormalFolder(const CStdString& strPath1, CFileItemList &it
       CFileItemPtr pItem(BuildResolvedFileItem(strRoot, wfd));
       if (pItem)
       {
-        // Always add to the cache.
-        vecCacheItems.Add(pItem);
-
         // If it's allowed, add it to the list.
         if (IsAllowed(pItem.get(), wfd))
           items.Add(pItem);
@@ -127,8 +120,6 @@ bool CHDDirectory::GetNormalFolder(const CStdString& strPath1, CFileItemList &it
   FindClose((HANDLE)hFind); //should be closed
 #endif
 
-  if (m_cacheDirectory)
-    g_directoryCache.SetDirectory(strPath1, vecCacheItems);
   return true;
 }
 

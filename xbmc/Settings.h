@@ -221,7 +221,7 @@ public:
     bool m_bVideoLibraryHideRecentlyAddedItems;
     bool m_bVideoLibraryHideEmptySeries;
     bool m_bVideoLibraryCleanOnUpdate;
-
+    bool m_sambastatfiles;
     bool m_bUseEvilB;
     std::vector<CStdString> m_vecTokens; // cleaning strings tied to language
     //TuxBox

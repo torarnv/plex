@@ -2504,7 +2504,7 @@ void CFileItem::SetUserVideoThumb()
 ///
 /// If a cached fanart image already exists, then we're fine.  Otherwise, we look for a local fanart.jpg
 /// and cache that image as our fanart.
-void CFileItem::CacheFanart() const
+CStdString CFileItem::CacheFanart(bool probe) const
 {
   // Check for Plex Media Server fan-art.
   if (m_strFanartUrl.size() > 0)
@@ -2520,50 +2520,81 @@ void CFileItem::CacheFanart() const
   if (IsVideoDb())
   {
     if (!HasVideoInfoTag())
-      return; // nothing can be done
+      return ""; // nothing can be done
     CFileItem dbItem(m_bIsFolder ? GetVideoInfoTag()->m_strPath : GetVideoInfoTag()->m_strFileNameAndPath, m_bIsFolder);
     return dbItem.CacheFanart();
   }
-  CStdString cachedFanart(GetCachedFanart());
-  // First check for an already cached fanart image
-  if (CFile::Exists(cachedFanart))
-    return;
-  // We don't have a cached image, so let's see if the user has a local image they want to use
 
-  if (IsInternetStream() || CUtil::IsFTP(m_strPath) || CUtil::IsUPnP(m_strPath) || IsTuxBox()) // no local fanart available for these
-    return;
-  
-  CStdString localFanart;
-  if (m_bIsFolder)
+  CStdString cachedFanart(GetCachedFanart());
+  if (!probe)
   {
-    localFanart = GetFolderThumb("fanart.png");
-    if (!CFile::Exists(localFanart))
+    // first check for an already cached fanart image
+    if (CFile::Exists(cachedFanart))
+      return "";
+  }
+
+  CStdString strFile2;
+  CStdString strFile = m_strPath;
+  if (IsStack())
+  {
+    CStdString strPath;
+    CUtil::GetParentPath(m_strPath,strPath);
+    CStackDirectory dir;
+    CStdString strPath2;
+    strPath2 = dir.GetStackedTitlePath(strFile);
+    CUtil::AddFileToFolder(strPath,CUtil::GetFileName(strPath2),strFile);
+    CFileItem item(dir.GetFirstStackedFile(m_strPath),false);
+    CStdString strTBNFile = item.GetTBNFile();
+    CUtil::ReplaceExtension(strTBNFile, "-fanart",strTBNFile);
+    CUtil::AddFileToFolder(strPath,CUtil::GetFileName(strTBNFile),strFile2);
+  }
+  if (CUtil::IsInRAR(strFile) || CUtil::IsInZIP(strFile))
+  {
+    CStdString strPath, strParent;
+    CUtil::GetDirectory(strFile,strPath);
+    CUtil::GetParentPath(strPath,strParent);
+    CUtil::AddFileToFolder(strParent,CUtil::GetFileName(m_strPath),strFile);
+  }
+  
+  // no local fanart available for these
+  if (IsInternetStream() || CUtil::IsUPnP(strFile) || /* IsTV() || */ IsPluginFolder())
+    return "";
+
+  // we don't have a cached image, so let's see if the user has a local image ..
+  bool bFoundFanart = false;
+  CStdString localFanart;
+  CStdString strDir;
+  CUtil::GetDirectory(strFile, strDir);
+  CFileItemList items;
+  CDirectory::GetDirectory(strDir, items, g_stSettings.m_pictureExtensions, true, false, false, false);
+  CUtil::RemoveExtension(strFile);
+  strFile += "-fanart";
+  CStdString strFile3 = CUtil::AddFileToFolder(strDir, "fanart");
+
+  for (int i = 0; i < items.Size(); i++)
+  {
+    CStdString strCandidate = items[i]->m_strPath;
+    CUtil::RemoveExtension(strCandidate);
+    if (strCandidate == strFile || strCandidate == strFile2 || strCandidate == strFile3)
     {
-      localFanart = GetFolderThumb("fanart.jpg");
-      if (!CFile::Exists(localFanart))
-        return;
+      bFoundFanart = true;
+      localFanart = items[i]->m_strPath;
+      break;
     }
   }
-  else
-  {    
-    if (CUtil::IsStack(m_strPath))
-      localFanart = CStackDirectory::GetStackedTitlePath(m_strPath);
-    else
-      localFanart = m_strPath;
-     
-    CUtil::RemoveExtension(localFanart);
-    if (CFile::Exists(localFanart+"-fanart.jpg"))
-      localFanart = localFanart+"-fanart.jpg";
-    else
-    {
-      if (CFile::Exists(localFanart+"-fanart.png"))
-        localFanart = localFanart+"-fanart.png";
-      else
-        return;
-    }
+  
+  // no local fanart found
+  if(!bFoundFanart)
+    return "";
+
+  if (!probe)
+  {
+    CPicture pic;
+    pic.CacheImage(localFanart, cachedFanart);
   }
-  CPicture pic;
-  pic.CacheImage(localFanart, cachedFanart);
+
+  return localFanart;
+
 }
 
 CStdString CFileItem::GetCachedFanart() const
@@ -2863,4 +2894,55 @@ void CFileItem::SetQuickFanart(const CStdString& fanartURL)
   // See if it's already cached.
   if (CFile::Exists(GetCachedFanart()))
     SetProperty("fanart_image", GetCachedFanart());
+}
+
+CStdString CFileItem::FindTrailer() const
+{
+  CStdString strFile2, strTrailer;
+  CStdString strFile = m_strPath;
+  if (IsStack())
+  {
+    CStdString strPath;
+    CUtil::GetParentPath(m_strPath,strPath);
+    CStackDirectory dir;
+    CStdString strPath2;
+    strPath2 = dir.GetStackedTitlePath(strFile);
+    CUtil::AddFileToFolder(strPath,CUtil::GetFileName(strPath2),strFile);
+    CFileItem item(dir.GetFirstStackedFile(m_strPath),false);
+    CStdString strTBNFile = item.GetTBNFile();
+    CUtil::ReplaceExtension(strTBNFile, "-trailer",strTBNFile);
+    CUtil::AddFileToFolder(strPath,CUtil::GetFileName(strTBNFile),strFile2);
+  }
+  if (CUtil::IsInRAR(strFile) || CUtil::IsInZIP(strFile))
+  {
+    CStdString strPath, strParent;
+    CUtil::GetDirectory(strFile,strPath);
+    CUtil::GetParentPath(strPath,strParent);
+    CUtil::AddFileToFolder(strParent,CUtil::GetFileName(m_strPath),strFile);
+  }
+
+  // no local trailer available for these
+  if (IsInternetStream() || CUtil::IsUPnP(strFile) || /* IsTV() || */ IsPluginFolder())
+    return strTrailer;
+  
+  CStdString strDir;
+  CUtil::GetDirectory(strFile, strDir);
+  CFileItemList items;
+  CDirectory::GetDirectory(strDir, items, g_stSettings.m_videoExtensions, true, false, false, false);
+  CUtil::RemoveExtension(strFile);
+  strFile += "-trailer";
+  CStdString strFile3 = CUtil::AddFileToFolder(strDir, "movie-trailer");
+
+  for (int i = 0; i < items.Size(); i++)
+  {
+    CStdString strCandidate = items[i]->m_strPath;
+    CUtil::RemoveExtension(strCandidate);
+    if (strCandidate == strFile || strCandidate == strFile2 || strCandidate == strFile3)
+    {
+      strTrailer = items[i]->m_strPath;
+      break;
+    }
+  }
+  
+  return strTrailer;
 }
