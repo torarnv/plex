@@ -40,7 +40,7 @@ extern "C" {
 #include "ac3encoder.h"
 };
 
-#define CA_BUFFER_FACTOR 0.05
+#define CA_BUFFER_FACTOR 0.64
 
 class CoreAudioAUHAL
 	{

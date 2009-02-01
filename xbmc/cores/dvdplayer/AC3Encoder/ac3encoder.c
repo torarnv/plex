@@ -57,7 +57,7 @@ static inline int swabdata(char* dst, char* src, int size)
 // initialises the aften context and the I/O buffers
 int ac3encoder_init(struct AC3Encoder *encoder, int iChannels, unsigned int uiSamplesPerSec, int uiBitsPerSample, int remap)
 {
-	rb_init(&encoder->m_inputBuffer, 3072 * 6); // store up to 3072 six-channel samples
+	rb_init(&encoder->m_inputBuffer, 3072 * 12); // store up to 3072 six-channel samples
 	rb_init(&encoder->m_outputBuffer, AC3_SPDIF_FRAME_SIZE * 2); // store up to 2 AC3 frames
 
 	aften_set_defaults(&encoder->m_aftenContext);
