@@ -25,7 +25,7 @@ class CPlexDirectory : public IDirectory,
   virtual ~CPlexDirectory();
   
   virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
-  
+  virtual DIR_CACHE_TYPE GetCacheType(const CStdString &strPath) const { return DIR_CACHE_ONCE; };
   static string ProcessUrl(const string& parent, const string& url, bool isDirectory);
   
  protected:

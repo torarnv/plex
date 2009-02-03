@@ -117,7 +117,6 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   Parse(m_url, root, items, strFileLabel, strDirLabel, strSecondDirLabel);
   items.AddSortMethod(SORT_METHOD_NONE, 552, LABEL_MASKS(strFileLabel, "%D", strDirLabel, strSecondDirLabel));
 
-  g_directoryCache.ClearDirectory(strRoot);
   for( int i = 0; i <items.Size(); i++ )
   {
     CFileItemPtr pItem = items[i];
