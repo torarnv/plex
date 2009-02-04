@@ -5194,7 +5194,7 @@ bool CApplication::ResetScreenSaverWindow()
     m_iScreenSaveLock = 0;
 
     float fFadeLevel = 1.0f;
-    if (m_screenSaverMode == "Visualisation")
+    if (m_screenSaverMode == "Visualisation" || m_screenSaverMode == "Slideshow" || m_screenSaverMode == "Fanart Slideshow")
     {
       // we can just continue as usual from vis mode
       return false;

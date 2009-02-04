@@ -245,9 +245,10 @@ bool CGUIWindowSlideShow::InSlideShow() const
   return m_bSlideShow;
 }
 
-void CGUIWindowSlideShow::StartSlideShow()
+void CGUIWindowSlideShow::StartSlideShow(bool screensaver)
 {
   m_bSlideShow = true;
+  m_bScreensaver = screensaver;
 }
 
 void CGUIWindowSlideShow::Render()
@@ -436,6 +437,12 @@ void CGUIWindowSlideShow::Render()
 
 bool CGUIWindowSlideShow::OnAction(const CAction &action)
 {
+  if (m_bScreensaver)
+  {
+    m_gWindowManager.PreviousWindow();
+    return true;
+  }
+    
   switch (action.wID)
   {
   case ACTION_SHOW_CODEC:

@@ -69,7 +69,7 @@ public:
   const CFileItemList &GetSlideShowContents();
   const CFileItemPtr GetCurrentSlide();
   void RunSlideShow(const CStdString& strPath, bool bRecursive = false);
-  void StartSlideShow();
+  void StartSlideShow(bool screensaver=false);
   bool InSlideShow() const;
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
@@ -102,6 +102,7 @@ private:
   int m_iZoomFactor;
 
   bool m_bSlideShow;
+  bool m_bScreensaver;
   bool m_bPause;
   bool m_bErrorMessage;
 
