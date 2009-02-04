@@ -93,7 +93,6 @@ CoreAudioAUHAL::CoreAudioAUHAL(const CStdString& strName, const char *strCodec, 
 		// Enable AC3 passthrough for digital devices
 		int mpeg_remapping = 0;
 		if (strCodec == "AAC" || strCodec == "DTS") mpeg_remapping = 1; // DTS uses MPEG channel mapping
-<<<<<<< HEAD:xbmc/cores/CoreAudioAUHAL.cpp
 		if (ac3encoder_init(&m_ac3encoder, channels, sampleRate, bitsPerSample, mpeg_remapping) == -1)
 		{
 			m_bIsInitialized = false;
@@ -105,11 +104,6 @@ CoreAudioAUHAL::CoreAudioAUHAL(const CStdString& strName, const char *strCodec, 
 			ac3_framebuffer = (unsigned char *)calloc(packetSize, 1);
 		}
 		
-=======
-		ac3encoder_init(&m_ac3encoder, channels, sampleRate, bitsPerSample, mpeg_remapping);
-		m_bEncodeAC3 = true;
-		ac3_framebuffer = (unsigned char *)calloc(packetSize, 1);
->>>>>>> Pull AC3 encoder into Core Audio HAL:xbmc/cores/CoreAudioAUHAL.cpp
 	}
 	else
 	{
@@ -383,8 +377,11 @@ int CoreAudioAUHAL::WriteStream(uint8_t *sampleBuffer, uint32_t samplesToWrite)
 
 void CoreAudioAUHAL::Flush()
 {
+<<<<<<< HEAD:xbmc/cores/CoreAudioAUHAL.cpp
 	if (m_bEncodeAC3)
 	{
+=======
+>>>>>>> Don't flush buffers on seek now that we're not reinitialising the Audio Unit:xbmc/cores/CoreAudioAUHAL.cpp
 	//CSingleLock lock(m_cs); // acquire lock
 	
 	//PaUtil_FlushRingBuffer( deviceParameters->outputBuffer );
