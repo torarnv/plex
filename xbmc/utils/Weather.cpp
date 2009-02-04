@@ -150,7 +150,7 @@ void CWeather::GetString(const TiXmlElement* pRootElement, const CStdString& str
 {
   strcpy(szValue, "");
   const TiXmlNode *pChild = pRootElement->FirstChild(strTagName.c_str());
-  if (pChild)
+  if (pChild && pChild->FirstChild())
   {
     CStdString strValue = pChild->FirstChild()->Value();
     if (strValue.size() )
@@ -303,7 +303,7 @@ bool CWeather::LoadWeather(const CStdString &weatherXML)
     CLog::Log(LOGERROR, "WEATHER: Unable to get data - invalid XML");
     return false;
   }
-
+  
   TiXmlElement *pRootElement = xmlDoc.RootElement();
   if (!pRootElement)
   {
