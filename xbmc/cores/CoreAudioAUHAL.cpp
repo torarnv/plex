@@ -385,7 +385,12 @@ void CoreAudioAUHAL::Flush()
 {
 	if (m_bEncodeAC3)
 	{
-//		ac3encoder_flush(&m_ac3encoder);
+	//CSingleLock lock(m_cs); // acquire lock
+	
+	//PaUtil_FlushRingBuffer( deviceParameters->outputBuffer );
+	if (m_bEncodeAC3)
+	{
+	//	ac3encoder_flush(&m_ac3encoder);
 	}
 }
 

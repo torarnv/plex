@@ -119,7 +119,7 @@ int ac3encoder_init(struct AC3Encoder *encoder, int iChannels, unsigned int uiSa
 				 (encoder->m_aftenContext.lfe == 1) ? "+ LFE\n" : "\n");
 
 	// pre-fill AC3 buffer with silent frame so we can output immediately
-	ac3encoder_flush(encoder);
+	ac3encoder_reset(encoder);
 	return 0;
 }
 
@@ -225,7 +225,7 @@ int ac3encoder_channelcount(struct AC3Encoder *encoder)
 	return encoder->m_aftenContext.channels;
 }
 
-void ac3encoder_flush(struct AC3Encoder *encoder)
+void ac3encoder_reset(struct AC3Encoder *encoder)
 {
 	uint8_t *sampleSink = NULL;
 	// clear encoder buffers
