@@ -157,6 +157,13 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     viewState->SaveViewAsControl(atoi(viewmode));
   }
   
+  // Set the content label.
+  const char* content = root->Attribute("content");
+  if (content && strlen(content) > 0)
+  {
+    items.SetContent(content);
+  }
+  
   if (dlgProgress) dlgProgress->Close();
   
   return true;
@@ -248,6 +255,11 @@ class PlexMediaDirectory : public PlexMediaNode
         pItem->m_strSearchPrompt = prompt;
       }
     }
+    
+    // Summary.
+    const char* summary = el.Attribute("summary");
+    if  (summary)
+      pItem->SetProperty("description", summary);
     
     // Check for popup menus
     const char* popup = el.Attribute("popup");
