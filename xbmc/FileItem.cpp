@@ -1223,6 +1223,8 @@ void CFileItemList::Clear()
   m_sortDetails.clear();
   m_replaceListing = false;
   m_content.Empty();
+  m_firstTitle.Empty();
+  m_secondTitle.Empty();
 }
 
 void CFileItemList::ClearItems()
@@ -1332,6 +1334,9 @@ void CFileItemList::Assign(const CFileItemList& itemlist, bool append)
   m_replaceListing = itemlist.m_replaceListing;
   m_content = itemlist.m_content;
   m_mapProperties = itemlist.m_mapProperties;
+  
+  m_firstTitle = itemlist.m_firstTitle;
+  m_secondTitle = itemlist.m_secondTitle;
 }
 
 CFileItemPtr CFileItemList::Get(int iItem)
@@ -1573,6 +1578,8 @@ void CFileItemList::Serialize(CArchive& ar)
     }
 
     ar << m_content;
+    ar << m_firstTitle;
+    ar << m_secondTitle;
 
     for (; i < (int)m_items.size(); ++i)
     {
@@ -1631,6 +1638,8 @@ void CFileItemList::Serialize(CArchive& ar)
     }
 
     ar >> m_content;
+    ar >> m_firstTitle;
+    ar >> m_secondTitle;
 
     for (int i = 0; i < iSize; ++i)
     {

@@ -380,9 +380,15 @@ public:
   const std::vector<SORT_METHOD_DETAILS> &GetSortDetails() const { return m_sortDetails; };
   bool GetReplaceListing() const { return m_replaceListing; };
   void SetReplaceListing(bool replace);
-  void SetContent(const CStdString &content) { m_content = content; };
-  const CStdString &GetContent() const { return m_content; };
+  void SetContent(const CStdString &content) { m_content = content; }
+  const CStdString &GetContent() const { return m_content; }
 
+  void SetFirstTitle(const CStdString& title) { m_firstTitle = title; }
+  const CStdString& GetFirstTitle() const { return m_firstTitle; }
+  
+  void SetSecondTitle(const CStdString& title) { m_secondTitle = title; }
+  const CStdString& GetSecondTitle() const { return m_secondTitle; }
+  
   void ClearSortState();
 private:
   void Sort(FILEITEMLISTCOMPARISONFUNC func);
@@ -397,6 +403,9 @@ private:
   CACHE_TYPE m_cacheToDisc;
   bool m_replaceListing;
   CStdString m_content;
+  
+  CStdString m_firstTitle;
+  CStdString m_secondTitle;
 
   std::vector<SORT_METHOD_DETAILS> m_sortDetails;
 

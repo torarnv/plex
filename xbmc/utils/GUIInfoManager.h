@@ -278,6 +278,10 @@ class CDateTime;
 #define CONTAINER_SHOWPLOT          379
 #define CONTAINER_TOTALTIME         380
 
+// Plex Media Server.
+#define CONTAINER_FIRST_TITLE       5000
+#define CONTAINER_SECOND_TITLE      5001
+
 #define MUSICPM_ENABLED             381
 #define MUSICPM_SONGSPLAYED         382
 #define MUSICPM_MATCHINGSONGS       383

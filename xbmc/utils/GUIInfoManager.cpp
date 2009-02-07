@@ -622,6 +622,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (info.Equals("onnext")) ret = CONTAINER_ON_NEXT;
     else if (info.Equals("onprevious")) ret = CONTAINER_ON_PREVIOUS;
     else if (info.Equals("totaltime")) ret = CONTAINER_TOTALTIME;
+    else if (info.Equals("firsttitle")) ret = CONTAINER_FIRST_TITLE;
+    else if (info.Equals("secondtitle")) ret = CONTAINER_SECOND_TITLE;
     else if (info.Equals("scrolling"))
       return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_SCROLLING : CONTAINER_SCROLLING, id, 0));
     else if (info.Equals("hasnext"))
@@ -1221,6 +1223,21 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
       CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
       if (window)
         return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("showplot");
+    }
+    break;
+  case CONTAINER_FIRST_TITLE:
+    {
+      CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+      if (window)
+        return ((CGUIMediaWindow *)window)->CurrentDirectory().GetFirstTitle();
+    }
+    break;
+  case CONTAINER_SECOND_TITLE:
+    {
+      CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+      const CFileItemList& items = ((CGUIMediaWindow *)window)->CurrentDirectory();
+      if (window)
+        return ((CGUIMediaWindow *)window)->CurrentDirectory().GetSecondTitle();
     }
     break;
   case CONTAINER_TOTALTIME:
