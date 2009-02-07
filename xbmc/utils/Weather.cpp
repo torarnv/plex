@@ -167,11 +167,8 @@ void CWeather::GetString(const TiXmlElement* pRootElement, const CStdString& str
 
 void CWeather::GetInteger(const TiXmlElement* pRootElement, const CStdString& strTagName, int& iValue)
 {
-  const TiXmlNode *pChild = pRootElement->FirstChild(strTagName.c_str());
-  if (pChild)
-  {
-    iValue = atoi( pChild->FirstChild()->Value() );
-  }
+  if (!XMLUtils::GetInt(pRootElement, strTagName.c_str(), iValue))
+    iValue = 0;
 }
 
 void CWeather::LocalizeOverviewToken(char *szToken, bool bAppendSpace)
@@ -342,10 +339,10 @@ bool CWeather::LoadWeather(const CStdString &weatherXML)
     GetString(pElement, "icon", iTmpStr, ""); //string cause i've seen it return N/A
     if (strcmp(iTmpStr, "N/A") == 0)
     {
-      sprintf(m_szCurrentIcon, "%s128x128\\na.png", WEATHER_BASE_PATH);
+      sprintf(m_szCurrentIcon, "%s128x128/na.png", WEATHER_BASE_PATH);
     }
     else
-      sprintf(m_szCurrentIcon, "%s128x128\\%s.png", WEATHER_BASE_PATH, iTmpStr);
+      sprintf(m_szCurrentIcon, "%s128x128/%s.png", WEATHER_BASE_PATH, iTmpStr);
 
     GetString(pElement, "t", m_szCurrentConditions, "");   //current condition
     LocalizeOverview(m_szCurrentConditions);
@@ -437,9 +434,9 @@ bool CWeather::LoadWeather(const CStdString &weatherXML)
         {
           GetString(pDayTimeElement, "icon", iTmpStr, ""); //string cause i've seen it return N/A
           if (strcmp(iTmpStr, "N/A") == 0)
-            sprintf(m_dfForcast[i].m_szIcon, "%s128x128\\na.png", WEATHER_BASE_PATH);
+            sprintf(m_dfForcast[i].m_szIcon, "%s128x128/na.png", WEATHER_BASE_PATH);
           else
-            sprintf(m_dfForcast[i].m_szIcon, "%s128x128\\%s.png", WEATHER_BASE_PATH, iTmpStr);
+            sprintf(m_dfForcast[i].m_szIcon, "%s128x128/%s.png", WEATHER_BASE_PATH, iTmpStr);
 
           GetString(pDayTimeElement, "t", m_dfForcast[i].m_szOverview, "");
           LocalizeOverview(m_dfForcast[i].m_szOverview);
@@ -599,8 +596,11 @@ bool CWeather::GetSearchResults(const CStdString &strSearch, CStdString &strResu
   CStdString strItemTmp;
   while (pElement)
   {
-    strItemTmp.Format("%s - %s", pElement->Attribute("id"), pElement->FirstChild()->Value());
-    pDlgSelect->Add(strItemTmp);
+    if (!pElement->NoChildren())
+    {
+      strItemTmp.Format("%s - %s", pElement->Attribute("id"), pElement->FirstChild()->Value());
+      pDlgSelect->Add(strItemTmp);
+    }
     pElement = pElement->NextSiblingElement("loc");
   }
 
@@ -637,7 +637,7 @@ const char *CWeather::BusyInfo(DWORD dwInfo)
 {
   if (dwInfo == WEATHER_IMAGE_CURRENT_ICON)
   {
-    sprintf(m_szNAIcon,"%s128x128\\na.png", WEATHER_BASE_PATH);
+    sprintf(m_szNAIcon,"%s128x128/na.png", WEATHER_BASE_PATH);
     return m_szNAIcon;
   }
   return CInfoLoader::BusyInfo(dwInfo);
