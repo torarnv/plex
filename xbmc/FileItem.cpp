@@ -2560,13 +2560,15 @@ CStdString CFileItem::CacheFanart(bool probe) const
   if (IsInternetStream() || CUtil::IsUPnP(strFile) || /* IsTV() || */ IsPluginFolder())
     return "";
 
-  // we don't have a cached image, so let's see if the user has a local image ..
   bool bFoundFanart = false;
   CStdString localFanart;
+  
+#ifdef USE_SLOW_ASS_DIRECTORY_SCAN
+  // we don't have a cached image, so let's see if the user has a local image ..
   CStdString strDir;
   CUtil::GetDirectory(strFile, strDir);
   CFileItemList items;
-  CDirectory::GetDirectory(strDir, items, g_stSettings.m_pictureExtensions, true, false, false, false);
+  CDirectory::GetDirectory(strDir, items, g_stSettings.m_pictureExtensions, true, false, true, false);
   CUtil::RemoveExtension(strFile);
   strFile += "-fanart";
   CStdString strFile3 = CUtil::AddFileToFolder(strDir, "fanart");
@@ -2582,6 +2584,7 @@ CStdString CFileItem::CacheFanart(bool probe) const
       break;
     }
   }
+#endif
   
   // no local fanart found
   if(!bFoundFanart)
