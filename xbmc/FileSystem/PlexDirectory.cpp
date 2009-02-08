@@ -117,8 +117,17 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   Parse(m_url, root, items, strFileLabel, strDirLabel, strSecondDirLabel);
   items.AddSortMethod(SORT_METHOD_NONE, 552, LABEL_MASKS(strFileLabel, "%D", strDirLabel, strSecondDirLabel));
   
-  //items.SetFirstTitle("First Title");
-  //items.SetSecondTitle("Second Title");
+  // Set the window titles
+  const char* title1 = root->Attribute("title1");
+  const char* title2 = root->Attribute("title2");
+  if (title1 && strlen(title1) > 0)
+  {
+    items.SetFirstTitle(title1);
+  }
+  if (title2 && strlen(title2) > 0)
+  {
+    items.SetSecondTitle(title2);
+  }
 
   for( int i = 0; i <items.Size(); i++ )
   {
