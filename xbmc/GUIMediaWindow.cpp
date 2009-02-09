@@ -550,10 +550,6 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
 
   m_history.SetSelectedItem(strSelectedItem, strOldDirectory);
 
-  ClearFileItems();
-  m_vecItems->ClearProperties();
-  m_vecItems->SetThumbnailImage("");
-
   if (!GetDirectory(strDirectory, *m_vecItems))
   {
     CLog::Log(LOGERROR,"CGUIMediaWindow::GetDirectory(%s) failed", strDirectory.c_str());
@@ -569,9 +565,17 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
     CStdString strParentPath = m_history.GetParentPath();
     m_history.RemoveParentPath();
     Update(strParentPath);
+    
+    ClearFileItems();
+    m_vecItems->ClearProperties();
+    m_vecItems->SetThumbnailImage("");
+    
     return false;
   }
 
+  m_vecItems->ClearProperties();
+  m_vecItems->SetThumbnailImage("");
+  
   // if we're getting the root source listing
   // make sure the path history is clean
   if (strDirectory.IsEmpty())
