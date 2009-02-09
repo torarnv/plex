@@ -1812,9 +1812,9 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   {
     JumpToSection(WINDOW_SETTINGS_SYSTEM, "cache");
   }
-  else if (strSetting.Equals("weather.jumptolocale"))
+  else if (strSetting.Equals("weather.jumptoregion"))
   {
-    JumpToSection(WINDOW_SETTINGS_APPEARANCE, "locale");
+    JumpToSection(WINDOW_SETTINGS_APPEARANCE, "region");
   }
   else if (strSetting.Equals("lastfm.enable") || strSetting.Equals("lastfm.username") || strSetting.Equals("lastfm.password"))
   {

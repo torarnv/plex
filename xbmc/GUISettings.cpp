@@ -253,7 +253,7 @@ CGUISettings::CGUISettings(void)
   AddString(2, "weather.areacode2", 14020, "UKXX0085 - London, United Kingdom", BUTTON_CONTROL_STANDARD);
   AddString(3, "weather.areacode3", 14021, "NZXX0049 - Wellington, New Zealand", BUTTON_CONTROL_STANDARD);
   AddSeparator(4, "weather.sep1");
-  AddString(5, "weather.jumptolocale", 20026, "", BUTTON_CONTROL_STANDARD);
+  AddString(5, "weather.jumptoregion", 20026, "", BUTTON_CONTROL_STANDARD);
 
   // My Music Settings
   AddGroup(3, 2);
