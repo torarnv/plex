@@ -484,10 +484,8 @@ void CGUIMediaWindow::FormatAndSort(CFileItemList &items)
   */
 bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
-  // cleanup items
-  if (items.Size())
-    items.Clear();
-
+  CFileItemList newItems;
+  
   CStdString strParentPath=m_history.GetParentPath();
 
   CLog::Log(LOGDEBUG,"CGUIMediaWindow::GetDirectory (%s)", strDirectory.c_str());
@@ -499,30 +497,35 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
     pItem->m_strPath = strParentPath;
     pItem->m_bIsFolder = true;
     pItem->m_bIsShareOrDrive = false;
-    items.Add(pItem);
+    newItems.Add(pItem);
   }
 
   // see if we can load a previously cached folder
   CFileItemList cachedItems(strDirectory);
   if (!strDirectory.IsEmpty() && cachedItems.Load())
   {
-    items.Assign(cachedItems, true); // true to keep any previous items (".." item)
+    newItems.Assign(cachedItems, true); // true to keep any previous items (".." item)
   }
   else
   {
     DWORD time = timeGetTime();
 
-    if (!m_rootDir.GetDirectory(strDirectory, items))
+    if (!m_rootDir.GetDirectory(strDirectory, newItems))
+    {
+      items.Assign(newItems, false);
       return false;
+    }
 
     // took over a second, and not normally cached, so cache it
     if (time + 1000 < timeGetTime() && items.CacheToDiscIfSlow())
-      items.Save();
+      newItems.Save();
 
     // if these items should replace the current listing, then pop it off the top
-    if (items.GetReplaceListing())
+    if (newItems.GetReplaceListing())
       m_history.RemoveParentPath();
   }
+  
+  items.Assign(newItems, false);
   return true;
 }
 
