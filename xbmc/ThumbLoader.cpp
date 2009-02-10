@@ -151,6 +151,33 @@ bool CProgramThumbLoader::LoadItem(CFileItem *pItem)
   if (pItem->m_bIsShareOrDrive) return true;
   if (!pItem->HasThumbnail())
     pItem->SetUserProgramThumb();
+  else
+  {
+    // look for remote thumbs
+    CStdString thumb(pItem->GetThumbnailImage());
+    if (!CURL::IsFileOnly(thumb) && !CUtil::IsHD(thumb))
+    {
+      CStdString cachedThumb(pItem->GetCachedProgramThumb());
+      if(CFile::Exists(cachedThumb))
+        pItem->SetThumbnailImage(cachedThumb);
+      else
+      {
+        CPicture pic;
+        if(pic.DoCreateThumbnail(thumb, cachedThumb))
+          pItem->SetThumbnailImage(cachedThumb);
+        else
+          pItem->SetThumbnailImage("");
+      }
+    }  
+  }
+  
+  if (!pItem->HasProperty("fanart_image"))
+  {
+    pItem->CacheFanart();
+    if (CFile::Exists(pItem->GetCachedFanart()))
+      pItem->SetProperty("fanart_image",pItem->GetCachedFanart());
+  }
+  
   return true;
 }
 
