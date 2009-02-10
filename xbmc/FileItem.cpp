@@ -331,6 +331,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   m_extrainfo = item.m_extrainfo;
   m_strFanartUrl = item.m_strFanartUrl;
   m_bIsPopupMenuItem = item.m_bIsPopupMenuItem;
+  m_bIsSearchDir = item.m_bIsSearchDir;
   
   return *this;
 }
