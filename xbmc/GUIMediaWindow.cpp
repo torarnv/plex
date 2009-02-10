@@ -552,6 +552,10 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
 
   if (!GetDirectory(strDirectory, *m_vecItems))
   {
+    ClearFileItems();
+    m_vecItems->ClearProperties();
+    m_vecItems->SetThumbnailImage("");
+    
     CLog::Log(LOGERROR,"CGUIMediaWindow::GetDirectory(%s) failed", strDirectory.c_str());
     // if the directory is the same as the old directory, then we'll return
     // false.  Else, we assume we can get the previous directory
@@ -565,11 +569,7 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
     CStdString strParentPath = m_history.GetParentPath();
     m_history.RemoveParentPath();
     Update(strParentPath);
-    
-    ClearFileItems();
-    m_vecItems->ClearProperties();
-    m_vecItems->SetThumbnailImage("");
-    
+        
     return false;
   }
 
