@@ -52,13 +52,13 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
 
   // Start the download thread running.
   m_url = strRoot;
-  //CThread::Create(false, 0);
-  Process();
+  CThread::Create(false, 0);
+  //Process();
 
   // Now display progress, look for cancel.
   CGUIDialogProgress* dlgProgress = 0;
   
-#if 0
+//#if 0
   int time = GetTickCount();
   
   while (m_downloadEvent.WaitMSec(100) == false)
@@ -89,7 +89,7 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
       dlgProgress->Progress();
     }
   }
-#endif
+//#endif
   
   // Parse returned xml.
   TiXmlDocument doc;
@@ -142,22 +142,6 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     pItem->SetSortLabel(sortLabel);
   }
   
-  // Check for dialog message attributes
-  CStdString strHeader = "";
-  CStdString strMessage = "";
-  const char* header = root->Attribute("header");
-  if (header && strlen(header) > 0)
-  {
-    strHeader = header;
-    const char* message = root->Attribute("message");
-    if (message && strlen(message) > 0) strMessage = message;
-    CGUIDialogOK::ShowAndGetInput(strHeader, strMessage, "", "");
-    
-    // If the container has no child items, return to the previous directory
-    if (items.Size() == 0)
-      return false;
-  }
-  
   // Set the view mode.
   const char* viewmode = root->Attribute("viewmode");
   if (viewmode && strlen(viewmode) > 0)
@@ -174,6 +158,22 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   }
   
   if (dlgProgress) dlgProgress->Close();
+  
+  // Check for dialog message attributes
+  CStdString strHeader = "";
+  CStdString strMessage = "";
+  const char* header = root->Attribute("header");
+  if (header && strlen(header) > 0)
+  {
+    strHeader = header;
+    const char* message = root->Attribute("message");
+    if (message && strlen(message) > 0) strMessage = message;
+    CGUIDialogOK::ShowAndGetInput(strHeader, strMessage, "", "");
+    
+    // If the container has no child items, return to the previous directory
+    if (items.Size() == 0)
+      return false;
+  }
   
   return true;
 }
@@ -251,6 +251,23 @@ class PlexMediaDirectory : public PlexMediaNode
   {
     pItem->SetLabel(el.Attribute("name"));
     
+    CVideoInfoTag tag;
+    tag.m_strTitle = pItem->GetLabel();
+    
+    // Summary.
+    const char* summary = el.Attribute("summary");
+    if (summary)
+    {
+      pItem->SetProperty("description", summary);
+      tag.m_strPlot = tag.m_strPlotOutline = summary;
+    }
+    
+    CFileItemPtr newItem(new CFileItem(tag));
+    newItem->m_bIsFolder = true;
+    newItem->m_strPath = pItem->m_strPath;
+    newItem->SetProperty("description", pItem->GetProperty("description"));
+    pItem = newItem;
+    
     // Check for search directories
     const char* search = el.Attribute("search");
     const char* prompt = el.Attribute("prompt");
@@ -264,11 +281,6 @@ class PlexMediaDirectory : public PlexMediaNode
         pItem->m_strSearchPrompt = prompt;
       }
     }
-    
-    // Summary.
-    const char* summary = el.Attribute("summary");
-    if  (summary)
-      pItem->SetProperty("description", summary);
     
     // Check for popup menus
     const char* popup = el.Attribute("popup");
