@@ -37,6 +37,7 @@ extern "C"
   vector<in_addr_t> Cocoa_AddressesForHost(const string hostname);
   bool Cocoa_AreHostsEqual(const string host1, const string host2);
   VECSOURCES Cocoa_GetPlexMediaServersAsSourcesWithMediaType(const string mediaType);
+  bool Cocoa_IsLocalPlexMediaServerRunning();
 
   //
   // Proxy Settings (continued)

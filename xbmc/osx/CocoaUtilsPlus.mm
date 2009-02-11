@@ -144,6 +144,29 @@ VECSOURCES Cocoa_GetPlexMediaServersAsSourcesWithMediaType(const string mediaTyp
   return ret;
 }
 
+bool Cocoa_IsLocalPlexMediaServerRunning()
+{
+  NSString* localAddr = [[NSHost currentHost] address];
+  NSData* address = nil;
+  for (NSNetService* service in [[XBMCMain sharedInstance] plexMediaServers])
+  {
+    struct sockaddr_in *socketAddress = nil;
+    int i = 0;
+    for( ; i < [[service addresses] count]; i++ )
+    {
+      address = [[service addresses] objectAtIndex: i];
+      socketAddress = (struct sockaddr_in *) [address bytes];
+      if ([[NSString stringWithFormat: @"%s", inet_ntoa(socketAddress->sin_addr)] isEqualToString:localAddr])
+      {
+        NSLog(@"Local PMS is running!");
+        return true;
+      }
+    }
+  }
+  NSLog(@"Local PMS is NOT found!");
+  return false;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 vector<CStdString> Cocoa_Proxy_ExceptionList()
 {
