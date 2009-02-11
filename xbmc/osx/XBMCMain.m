@@ -37,7 +37,7 @@ static XBMCMain *_o_sharedMainInstance = nil;
   [o_plexMediaServerBrowser setDelegate:self];
 
   // Let the system stablize a bit before we start searching for media servers
-  [self performSelector:@selector(searchForPlexMediaServers) withObject:nil afterDelay:2.0];
+  [self performSelector:@selector(searchForPlexMediaServers) withObject:nil afterDelay:0.1];
 
   // Start listening in exclusive mode.
   //[o_remote startListening: self];
