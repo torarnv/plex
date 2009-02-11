@@ -52,19 +52,17 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
 
   // Start the download thread running.
   m_url = strRoot;
-  //CThread::Create(false, 0);
-  Process();
+  CThread::Create(false, 0);
 
   // Now display progress, look for cancel.
   CGUIDialogProgress* dlgProgress = 0;
   
-#if 0
   int time = GetTickCount();
   
   while (m_downloadEvent.WaitMSec(100) == false)
   {
     // If enough time has passed, display the dialog.
-    if (GetTickCount() - time > 3000)
+    if (GetTickCount() - time > 2000)
     {
       dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
       if (dlgProgress)
@@ -89,7 +87,9 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
       dlgProgress->Progress();
     }
   }
-#endif
+  
+  // Wait for the thread to exit.
+  WaitForThreadExit(INFINITE);
   
   // Parse returned xml.
   TiXmlDocument doc;
@@ -120,16 +120,14 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   // Set the window titles
   const char* title1 = root->Attribute("title1");
   const char* title2 = root->Attribute("title2");
-  if (title1 && strlen(title1) > 0)
-  {
-    items.SetFirstTitle(title1);
-  }
-  if (title2 && strlen(title2) > 0)
-  {
-    items.SetSecondTitle(title2);
-  }
 
-  for( int i = 0; i <items.Size(); i++ )
+  if (title1 && strlen(title1) > 0)
+    items.SetFirstTitle(title1);
+  if (title2 && strlen(title2) > 0)
+    items.SetSecondTitle(title2);
+
+  // Set fanart on items.
+  for (int i=0; i<items.Size(); i++)
   {
     CFileItemPtr pItem = items[i];
     
@@ -140,6 +138,13 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     string sortLabel = pItem->GetLabel();
     boost::to_lower(sortLabel);
     pItem->SetSortLabel(sortLabel);
+  }
+  
+  // Set fanart on directory.
+  if (strFanart.size() > 0)
+  {
+    printf("Setting fanart of %s to %s\n", items.m_strPath.c_str(), strFanart.c_str());
+    items.SetQuickFanart(strFanart);
   }
   
   // Check for dialog message attributes
@@ -588,6 +593,7 @@ void CPlexDirectory::Process()
     CLog::Log(LOGERROR, "%s - Unable to get Plex Media Server directory", __FUNCTION__);
     m_bSuccess = false;
     m_downloadEvent.Set();
+    return;
   }
 
   // Restore protocol.
@@ -599,6 +605,7 @@ void CPlexDirectory::Process()
     CLog::Log(LOGERROR, "%s - Invalid content type %s", __FUNCTION__, content.c_str());
     m_bSuccess = false;
     m_downloadEvent.Set();
+    return;
   }
   
   int size_read = 0;  
