@@ -27,6 +27,7 @@ class CPlexDirectory : public IDirectory,
   virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
   virtual DIR_CACHE_TYPE GetCacheType(const CStdString &strPath) const { return DIR_CACHE_ONCE; };
   static string ProcessUrl(const string& parent, const string& url, bool isDirectory);
+  virtual void SetTimeout(int timeout) { m_timeout = timeout; }
   
  protected:
    
@@ -42,6 +43,7 @@ class CPlexDirectory : public IDirectory,
   CStdString m_url;
   CStdString m_data;
   bool       m_bSuccess;
+  int        m_timeout;
 };
 
 }

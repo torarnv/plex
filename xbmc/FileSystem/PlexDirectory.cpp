@@ -34,6 +34,7 @@ CPlexDirectory::CPlexDirectory()
   : m_bStop(false)
   , m_bSuccess(true)
 {
+  m_timeout = 300;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -594,6 +595,8 @@ void CPlexDirectory::Process()
   url.SetPort(32400);  
 
   CFileCurl http;
+  http.SetTimeout(m_timeout);
+  
   //http.SetContentEncoding("deflate");
   if (http.Open(url, false) == false) 
   {
@@ -685,3 +688,4 @@ string CPlexDirectory::ProcessUrl(const string& parent, const string& url, bool 
   theURL.GetURL(newURL);
   return newURL;
 }
+
