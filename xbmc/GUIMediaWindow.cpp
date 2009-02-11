@@ -524,8 +524,9 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
     if (newItems.GetReplaceListing())
       m_history.RemoveParentPath();
   }
-  
+
   items.Assign(newItems, false);
+  
   return true;
 }
 
@@ -550,7 +551,9 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
 
   m_history.SetSelectedItem(strSelectedItem, strOldDirectory);
 
-  if (!GetDirectory(strDirectory, *m_vecItems))
+  // Get the new directory.
+  CFileItemList newItems;
+  if (!GetDirectory(strDirectory, newItems))
   {
     ClearFileItems();
     m_vecItems->ClearProperties();
@@ -573,8 +576,9 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
     return false;
   }
 
+  // Assign the new file items.
   m_vecItems->ClearProperties();
-  m_vecItems->SetThumbnailImage("");
+  m_vecItems->Assign(newItems);
   
   // if we're getting the root source listing
   // make sure the path history is clean
