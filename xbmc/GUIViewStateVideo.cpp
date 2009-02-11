@@ -112,6 +112,8 @@ VECSOURCES& CGUIViewStateWindowVideoFiles::GetSources()
         CMediaSource share;
         share.strName = item->GetLabel();
         share.strPath = item->m_strPath;
+        share.m_strFanartUrl = item->GetQuickFanart();
+        
         pmsSources.push_back(share);
         if (CUtil::GetMatchingSource(share.strName, g_settings.m_videoSources, bIsSourceName) < 0)
         {

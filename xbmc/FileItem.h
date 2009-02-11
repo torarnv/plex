@@ -227,6 +227,7 @@ public:
   bool IsSamePath(const CFileItem *item) const;
   
   void SetQuickFanart(const CStdString& fanartURL);
+  const CStdString& GetQuickFanart() const { return m_strFanartUrl; }
   
 private:
   // Gets the .tbn file associated with this item

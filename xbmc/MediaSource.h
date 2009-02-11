@@ -92,6 +92,7 @@ public:
   int m_iBadPwdCount; ///< Number of wrong passwords user has entered since share was last unlocked
 
   CStdString m_strThumbnailImage; ///< Path to a thumbnail image for the share, or blank for default
+  CStdString m_strFanartUrl;
 
   std::vector<CStdString> vecPaths;
   bool m_ignore; /// <Do not store in xml
