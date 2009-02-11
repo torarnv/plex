@@ -29,6 +29,8 @@
 #include "Settings.h"
 #include "FileItem.h"
 #include "Util.h"
+#include "CocoaUtilsPlus.h"
+#include "PlexDirectory.h"
 
 using namespace DIRECTORY;
 using namespace VIDEODATABASEDIRECTORY;
@@ -91,6 +93,68 @@ void CGUIViewStateWindowVideoFiles::SaveViewState()
 VECSOURCES& CGUIViewStateWindowVideoFiles::GetSources()
 {
   bool bIsSourceName = true;
+  bool bPerformRemove = true;
+  
+  // Auto-add local PMS sources
+  if (Cocoa_IsLocalPlexMediaServerRunning())
+  {
+    VECSOURCES pmsSources;
+    CFileItemList* fileItems = new CFileItemList();
+    CPlexDirectory plexDir;
+    plexDir.SetTimeout(2);
+
+    if (plexDir.GetDirectory("plex://localhost/video", *fileItems))
+    {
+      // Make sure all items in the PlexDirectory are added as sources
+      for ( int i = 0; i < fileItems->Size(); i++ )
+      {
+        CFileItemPtr item = fileItems->Get(i);
+        CMediaSource share;
+        share.strName = item->GetLabel();
+        share.strPath = item->m_strPath;
+        pmsSources.push_back(share);
+        if (CUtil::GetMatchingSource(share.strName, g_settings.m_videoSources, bIsSourceName) < 0)
+        {
+          printf("%s not found in source list - adding %s\n", share.strName.c_str(), share.strPath.c_str());
+          g_settings.m_videoSources.push_back(share);
+        }
+      }
+      delete fileItems;
+      
+      // Remove any local root PMS sources that don't exist in the PlexDirectory
+      for ( int i = g_settings.m_videoSources.size() - 1; i >= 0; i--)
+      {
+        CMediaSource share = g_settings.m_videoSources.at(i);
+        if ((share.strPath.find("plex://localhost/") != string::npos) && (share.strPath.find("/", 23) == share.strPath.length()-1))
+        {
+          if (CUtil::GetMatchingSource(g_settings.m_videoSources.at(i).strName, pmsSources, bIsSourceName) < 0)
+          {
+            printf("%s not found in PMS directory list - removing\n", g_settings.m_videoSources.at(i).strPath.c_str());
+            g_settings.m_videoSources.erase(g_settings.m_videoSources.begin()+i);
+          }
+        }
+      }
+      
+      // Everything ran successfully - don't remove PMS sources
+      bPerformRemove = false;
+    }
+  }
+  
+  
+  // If there was a problem connecting to the local PMS, remove local root sources
+  if (bPerformRemove)
+  {
+    for ( int i = g_settings.m_videoSources.size() - 1; i >= 0; i--)
+    {
+      CMediaSource share = g_settings.m_videoSources.at(i);
+      if ((share.strPath.find("plex://localhost/") != string::npos) && (share.strPath.find("/", 23) == share.strPath.length()-1))
+      {
+        printf("PMS unavailable - removing %s\n", g_settings.m_videoSources.at(i).strPath.c_str());
+        g_settings.m_videoSources.erase(g_settings.m_videoSources.begin()+i);
+      }
+    }
+  }
+  
   // plugins share
   if (CPluginDirectory::HasPlugins("video"))
   {

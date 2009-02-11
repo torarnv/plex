@@ -34,6 +34,7 @@ CPlexDirectory::CPlexDirectory()
   : m_bStop(false)
   , m_bSuccess(true)
 {
+  m_timeout = 300;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -142,27 +143,8 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   
   // Set fanart on directory.
   if (strFanart.size() > 0)
-  {
-    printf("Setting fanart of %s to %s\n", items.m_strPath.c_str(), strFanart.c_str());
     items.SetQuickFanart(strFanart);
-  }
-  
-  // Check for dialog message attributes
-  CStdString strHeader = "";
-  CStdString strMessage = "";
-  const char* header = root->Attribute("header");
-  if (header && strlen(header) > 0)
-  {
-    strHeader = header;
-    const char* message = root->Attribute("message");
-    if (message && strlen(message) > 0) strMessage = message;
-    CGUIDialogOK::ShowAndGetInput(strHeader, strMessage, "", "");
     
-    // If the container has no child items, return to the previous directory
-    if (items.Size() == 0)
-      return false;
-  }
-  
   // Set the view mode.
   const char* viewmode = root->Attribute("viewmode");
   if (viewmode && strlen(viewmode) > 0)
@@ -179,6 +161,22 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   }
   
   if (dlgProgress) dlgProgress->Close();
+  
+  // Check for dialog message attributes
+  CStdString strHeader = "";
+  CStdString strMessage = "";
+  const char* header = root->Attribute("header");
+  if (header && strlen(header) > 0)
+  {
+    strHeader = header;
+    const char* message = root->Attribute("message");
+    if (message && strlen(message) > 0) strMessage = message;
+    CGUIDialogOK::ShowAndGetInput(strHeader, strMessage, "", "");
+    
+    // If the container has no child items, return to the previous directory
+    if (items.Size() == 0)
+      return false;
+  }
   
   return true;
 }
@@ -256,6 +254,23 @@ class PlexMediaDirectory : public PlexMediaNode
   {
     pItem->SetLabel(el.Attribute("name"));
     
+    CVideoInfoTag tag;
+    tag.m_strTitle = pItem->GetLabel();
+    
+    // Summary.
+    const char* summary = el.Attribute("summary");
+    if (summary)
+    {
+      pItem->SetProperty("description", summary);
+      tag.m_strPlot = tag.m_strPlotOutline = summary;
+    }
+    
+    CFileItemPtr newItem(new CFileItem(tag));
+    newItem->m_bIsFolder = true;
+    newItem->m_strPath = pItem->m_strPath;
+    newItem->SetProperty("description", pItem->GetProperty("description"));
+    pItem = newItem;
+    
     // Check for search directories
     const char* search = el.Attribute("search");
     const char* prompt = el.Attribute("prompt");
@@ -269,11 +284,6 @@ class PlexMediaDirectory : public PlexMediaNode
         pItem->m_strSearchPrompt = prompt;
       }
     }
-    
-    // Summary.
-    const char* summary = el.Attribute("summary");
-    if  (summary)
-      pItem->SetProperty("description", summary);
     
     // Check for popup menus
     const char* popup = el.Attribute("popup");
@@ -587,6 +597,8 @@ void CPlexDirectory::Process()
   url.SetPort(32400);  
 
   CFileCurl http;
+  http.SetTimeout(m_timeout);
+  
   //http.SetContentEncoding("deflate");
   if (http.Open(url, false) == false) 
   {
@@ -680,3 +692,4 @@ string CPlexDirectory::ProcessUrl(const string& parent, const string& url, bool 
   theURL.GetURL(newURL);
   return newURL;
 }
+

@@ -14,9 +14,13 @@
 {
   AppleRemote*        o_remote;
   void*               pApplication;
+  NSNetServiceBrowser *o_plexMediaServerBrowser;
+  NSMutableArray      *o_plexMediaServers;
 }
 
 + (XBMCMain *)sharedInstance;
+- (void)searchForPlexMediaServers;
+- (NSArray*)plexMediaServers;
 - (void)setApplication:(void*) application;
 
 @end
