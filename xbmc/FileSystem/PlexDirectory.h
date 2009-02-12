@@ -8,12 +8,14 @@
  */
 #include <string>
 
+#include "FileCurl.h"
 #include "IDirectory.h"
 #include "Thread.h"
 
 class CURL;
 class TiXmlElement;
 using namespace std;
+using namespace XFILE;
 
 namespace DIRECTORY
 {
@@ -44,6 +46,7 @@ class CPlexDirectory : public IDirectory,
   CStdString m_data;
   bool       m_bSuccess;
   int        m_timeout;
+  CFileCurl  m_http;
 };
 
 }

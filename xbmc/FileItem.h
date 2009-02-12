@@ -254,6 +254,7 @@ public:
   bool m_bIsPopupMenuItem;
   bool m_bIsSearchDir;            // whether to show keyboard & append input as query
   CStdString m_strSearchPrompt;   // text to show as keyboard header
+  bool m_wasListingCancelled;
   
 private:
   CStdString GetFolderThumb(const CStdString &folderJPG = "folder.jpg") const;

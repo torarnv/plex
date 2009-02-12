@@ -69,6 +69,7 @@ CGUIMediaWindow::CGUIMediaWindow(DWORD id, const char *xmlFile)
   m_vecItems->m_strPath = "?";
   m_iLastControl = -1;
   m_iSelectedItem = -1;
+  m_wasDirectoryListingCancelled = false;
 
   m_guiState.reset(CGUIViewState::GetViewState(GetID(), *m_vecItems));
 }
@@ -515,7 +516,7 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
       items.Assign(newItems, false);
       return false;
     }
-
+    
     // took over a second, and not normally cached, so cache it
     if (time + 1000 < timeGetTime() && items.CacheToDiscIfSlow())
       newItems.Save();
@@ -559,7 +560,11 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
     m_vecItems->ClearProperties();
     m_vecItems->SetThumbnailImage("");
     
-    CLog::Log(LOGERROR,"CGUIMediaWindow::GetDirectory(%s) failed", strDirectory.c_str());
+    if (m_vecItems->m_wasListingCancelled == false)
+      CLog::Log(LOGERROR,"CGUIMediaWindow::GetDirectory(%s) failed", strDirectory.c_str());
+    else
+      CLog::Log(LOGINFO,"CGUIMediaWindow::GetDirectory(%s) was canceled", strDirectory.c_str());
+    
     // if the directory is the same as the old directory, then we'll return
     // false.  Else, we assume we can get the previous directory
     if (strDirectory.Equals(strOldDirectory))
@@ -572,6 +577,9 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
     CStdString strParentPath = m_history.GetParentPath();
     m_history.RemoveParentPath();
     Update(strParentPath);
+    
+    // Note whether the listing was canceled or not.
+    m_vecItems->m_wasListingCancelled = newItems.m_wasListingCancelled;
         
     return false;
   }
@@ -738,7 +746,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
       return true;
     }
     
-    if (!Update(directory.m_strPath))
+    if (!Update(directory.m_strPath) && m_vecItems->m_wasListingCancelled == false)
       ShowShareErrorMessage(&directory);
 
     return true;

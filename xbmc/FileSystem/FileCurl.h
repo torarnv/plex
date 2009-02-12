@@ -52,6 +52,7 @@ namespace XFILE
       virtual unsigned int Read(void* lpBuf, __int64 uiBufSize)  { return m_state->Read(lpBuf, uiBufSize); }
       virtual CStdString GetContent()                            { return m_state->m_httpheader.GetContentType(); }
             
+      void Cancel();
       void SetUserAgent(CStdString sUserAgent)                   { m_userAgent = sUserAgent; }
       void SetProxy(CStdString &proxy)                           { m_proxy = proxy; }
       void SetCustomRequest(CStdString &request)                 { m_customrequest = request; }
@@ -64,7 +65,7 @@ namespace XFILE
 
       void ClearRequestHeaders();
       void SetBufferSize(unsigned int size);
-
+      
       const CHttpHeader& GetHttpHeader() { return m_state->m_httpheader; }
 
       /* static function that will get content type of a file */      
@@ -86,6 +87,7 @@ namespace XFILE
           unsigned int    m_overflowSize;     // size of the overflow buffer
           int             m_stillRunning; /* Is background url fetch still in progress */
 
+          bool            m_cancelled;
           __int64         m_fileSize;
           __int64	        m_filePos;
 

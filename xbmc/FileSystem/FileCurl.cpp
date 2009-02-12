@@ -170,6 +170,7 @@ CFileCurl::CReadState::CReadState()
 	m_filePos = 0;
 	m_fileSize = 0;
   m_bufferSize = 0;
+  m_cancelled = false;
 }
 
 CFileCurl::CReadState::~CReadState()
@@ -577,6 +578,11 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
   }
 }
 
+void CFileCurl::Cancel()
+{
+  m_state->m_cancelled = true;
+}
+  
 bool CFileCurl::Open(const CURL& url, bool bBinary)
 {
   CURL url2(url);
@@ -872,6 +878,9 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
   // doesnt exceed required size already
   while ((unsigned int)m_buffer.GetMaxReadSize() < want && m_buffer.GetMaxWriteSize() > 0 )
   {
+    if (m_cancelled)
+      return false;
+    
     /* if there is data in overflow buffer, try to use that first */
     if(m_overflowSize)
     {
@@ -942,7 +951,8 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
 
         if( maxfd >= 0  )
         {
-          struct timeval t = { timeout / 1000, (timeout % 1000) * 1000 };          
+          //struct timeval t = { timeout / 1000, (timeout % 1000) * 1000 };
+          struct timeval t = { 0, 100 * 1000 };
           
           // wait until data is avialable or a timeout occours
           if( SOCKET_ERROR == dllselect(maxfd + 1, &fdread, &fdwrite, &fdexcep, &t) )

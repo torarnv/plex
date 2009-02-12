@@ -52,6 +52,7 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   strRoot.Replace(" ", "%20");
 
   // Start the download thread running.
+  printf("PlexDirectory::GetDirectory(%s)\n", strRoot.c_str());
   m_url = strRoot;
   CThread::Create(false, 0);
 
@@ -63,14 +64,14 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   while (m_downloadEvent.WaitMSec(100) == false)
   {
     // If enough time has passed, display the dialog.
-    if (GetTickCount() - time > 2000)
+    if (GetTickCount() - time > 1000)
     {
       dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
       if (dlgProgress)
       {
         dlgProgress->ShowProgressBar(false);
-        dlgProgress->SetHeading(260);
-        dlgProgress->SetLine(0, 14003);
+        dlgProgress->SetHeading(40203);
+        dlgProgress->SetLine(0, 40204);
         dlgProgress->SetLine(1, "");
         dlgProgress->SetLine(2, "");
         dlgProgress->StartModal();
@@ -79,18 +80,25 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
 
     if (dlgProgress)
     {
+      dlgProgress->Progress();
       if (dlgProgress->IsCanceled())
       {
-        printf("Cancelling.....\n");
+        items.m_wasListingCancelled = true;
+        m_http.Cancel();
         StopThread();
       }
-      
-      dlgProgress->Progress();
     }
   }
   
+  if (dlgProgress) 
+    dlgProgress->Close();
+  
   // Wait for the thread to exit.
   WaitForThreadExit(INFINITE);
+  
+  // See if we suceeded.
+  if (m_bSuccess == false)
+    return false;
   
   // Parse returned xml.
   TiXmlDocument doc;
@@ -100,7 +108,7 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   if(root == 0)
   {
     CLog::Log(LOGERROR, "%s - Unable to parse xml\n%s", __FUNCTION__, m_data.c_str());
-    if (dlgProgress) dlgProgress->Close();
+    
     return false;
   }
   
@@ -159,8 +167,6 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   {
     items.SetContent(content);
   }
-  
-  if (dlgProgress) dlgProgress->Close();
   
   // Check for dialog message attributes
   CStdString strHeader = "";
@@ -596,11 +602,8 @@ void CPlexDirectory::Process()
   url.SetProtocol("http");
   url.SetPort(32400);  
 
-  CFileCurl http;
-  http.SetTimeout(m_timeout);
-  
-  //http.SetContentEncoding("deflate");
-  if (http.Open(url, false) == false) 
+  m_http.SetTimeout(m_timeout);
+  if (m_http.Open(url, false) == false) 
   {
     CLog::Log(LOGERROR, "%s - Unable to get Plex Media Server directory", __FUNCTION__);
     m_bSuccess = false;
@@ -611,35 +614,37 @@ void CPlexDirectory::Process()
   // Restore protocol.
   url.SetProtocol(protocol);
 
-  CStdString content = http.GetContent();
+  CStdString content = m_http.GetContent();
   if (content.Equals("text/xml;charset=utf-8") == false && content.Equals("application/xml") == false)
   {
     CLog::Log(LOGERROR, "%s - Invalid content type %s", __FUNCTION__, content.c_str());
     m_bSuccess = false;
     m_downloadEvent.Set();
-    return;
   }
-  
-  int size_read = 0;  
-  int size_total = (int)http.GetLength();
-  int data_size = 0;
-
-  m_data.reserve(size_total);
-  printf("Content-Length was %d bytes\n", http.GetLength());
-  
-  // Read response from server into string buffer.
-  char buffer[4096];
-  while (m_bStop == false && (size_read = http.Read(buffer, sizeof(buffer)-1)) > 0)
+  else
   {
-    buffer[size_read] = 0;
-    m_data += buffer;
-    data_size += size_read;
+    int size_read = 0;  
+    int size_total = (int)m_http.GetLength();
+    int data_size = 0;
+  
+    m_data.reserve(size_total);
+    printf("Content-Length was %d bytes\n", size_total);
+    
+    // Read response from server into string buffer.
+    char buffer[4096];
+    while (m_bStop == false && (size_read = m_http.Read(buffer, sizeof(buffer)-1)) > 0)
+    {
+      buffer[size_read] = 0;
+      m_data += buffer;
+      data_size += size_read;
+    }
+    
+    // If we didn't get it all, we failed.
+    if (m_data.size() != size_total)
+      m_bSuccess = false;
   }
-  
-  // If we didn't get it all, we failed.
-  if (m_data.size() != size_total)
-    m_bSuccess = false;
-  
+
+  m_http.Close();
   m_downloadEvent.Set();
 }
 

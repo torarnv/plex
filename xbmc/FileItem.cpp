@@ -1138,6 +1138,7 @@ CFileItemList::CFileItemList()
   m_sortMethod=SORT_METHOD_NONE;
   m_sortOrder=SORT_ORDER_NONE;
   m_replaceListing = false;
+  m_wasListingCancelled = false;
 }
 
 CFileItemList::CFileItemList(const CStdString& strPath)
@@ -1149,6 +1150,7 @@ CFileItemList::CFileItemList(const CStdString& strPath)
   m_sortMethod=SORT_METHOD_NONE;
   m_sortOrder=SORT_ORDER_NONE;
   m_replaceListing = false;
+  m_wasListingCancelled = false;
 }
 
 CFileItemList::~CFileItemList()
@@ -1226,6 +1228,7 @@ void CFileItemList::Clear()
   m_content.Empty();
   m_firstTitle.Empty();
   m_secondTitle.Empty();
+  m_wasListingCancelled = false;
 }
 
 void CFileItemList::ClearItems()
@@ -1338,6 +1341,7 @@ void CFileItemList::Assign(const CFileItemList& itemlist, bool append)
   
   m_firstTitle = itemlist.m_firstTitle;
   m_secondTitle = itemlist.m_secondTitle;
+  m_wasListingCancelled = itemlist.m_wasListingCancelled;
 }
 
 CFileItemPtr CFileItemList::Get(int iItem)

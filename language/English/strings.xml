@@ -2100,4 +2100,7 @@
   <string id="40200">Unsupported path</string>
   <string id="40201">Plex Media Server paths can't be added to multipath</string>
   <string id="40202">sources.</string>
+  <string id="40203">Plex Media Server</string>
+  <string id="40204">Waiting for response...</string>
 </strings>
+

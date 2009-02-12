@@ -93,6 +93,7 @@ public:
   void SetCacheDirectory(bool cacheDirectory);
   void SetUseFileDirectories(bool useFileDirectories);
   void SetExtFileInfo(bool extFileInfo);
+  
 protected:
   CStdString m_strFileMask;  ///< Holds the file mask specified by SetMask()
   bool m_allowPrompting;    ///< If true, the directory handlers may prompt the user

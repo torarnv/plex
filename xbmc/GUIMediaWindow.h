@@ -94,4 +94,6 @@ protected:
   // save control state on window exit
   int m_iLastControl;
   int m_iSelectedItem;
+  
+  bool m_wasDirectoryListingCancelled;
 };
