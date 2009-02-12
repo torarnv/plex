@@ -67,6 +67,9 @@ CStdString CGUIViewStateWindowPrograms::GetExtensions()
 
 VECSOURCES& CGUIViewStateWindowPrograms::GetSources()
 {
+  // PMS sources
+  CUtil::AutodetectPlexSources("plex://localhost/applications/", g_settings.m_programSources);
+  
   bool bIsSourceName = true;
   // plugins share
   if (CPluginDirectory::HasPlugins("programs"))

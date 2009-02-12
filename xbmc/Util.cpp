@@ -119,6 +119,7 @@
 #ifdef __APPLE__
 #include "CocoaUtils.h"
 #include "CocoaUtilsPlus.h"
+#include "PlexDirectory.h"
 #endif
 
 using namespace std;
@@ -403,6 +404,80 @@ const BOOL CUtil::HostInExceptionList(CStdString hostname, std::vector<CStdStrin
 
   return regExp.RegFind(hostname.c_str()) > -1;
 }
+
+void CUtil::AutodetectPlexSources(CStdString strPlexPath, VECSOURCES& dstSources)
+{
+  // TODO: Remove debug printf code
+  
+  bool bIsSourceName = true;
+  bool bPerformRemove = true;
+  
+  // Auto-add local PMS sources
+  if (Cocoa_IsLocalPlexMediaServerRunning())
+  {
+    VECSOURCES pmsSources;
+    CFileItemList* fileItems = new CFileItemList();
+    CPlexDirectory plexDir;
+    plexDir.SetTimeout(2);
+    printf("Set up directory\n");
+    
+    CUtil::AddSlashAtEnd(strPlexPath);
+    printf("Added slash\n");
+    if (plexDir.GetDirectory(strPlexPath, *fileItems))
+    {
+      printf("Got directory\n"); 
+      if (fileItems->Size() == 0) return;
+      
+      // Make sure all items in the PlexDirectory are added as sources
+      for ( int i = 0; i < fileItems->Size(); i++ )
+      {
+        CFileItemPtr item = fileItems->Get(i);
+        CMediaSource share;
+        share.strName = item->GetLabel();
+        share.strPath = item->m_strPath;
+        pmsSources.push_back(share);
+        if (CUtil::GetMatchingSource(share.strName, dstSources, bIsSourceName) < 0)
+        {
+          printf("%s not found in source list - adding %s\n", share.strName.c_str(), share.strPath.c_str());
+          dstSources.push_back(share);
+        }
+      }
+      delete fileItems;
+      
+      // Remove any local PMS sources that don't exist in the PlexDirectory
+      for ( int i = dstSources.size() - 1; i >= 0; i--)
+      {
+        CMediaSource share = dstSources.at(i);
+        if ((share.strPath.find(strPlexPath) != string::npos) && (share.strPath.find("/", strPlexPath.length()) == share.strPath.length()-1))
+        {
+          if (CUtil::GetMatchingSource(dstSources.at(i).strName, pmsSources, bIsSourceName) < 0)
+          {
+            printf("%s not found in PMS directory list - removing\n", dstSources.at(i).strPath.c_str());
+            dstSources.erase(dstSources.begin()+i);
+          }
+        }
+      }
+      
+      // Everything ran successfully - don't remove PMS sources
+      bPerformRemove = false;
+    }
+  }
+  
+  // If there was a problem connecting to the local PMS, remove local root sources
+  if (bPerformRemove)
+  {
+    for ( int i = dstSources.size() - 1; i >= 0; i--)
+    {
+      CMediaSource share = dstSources.at(i);
+      if ((share.strPath.find(strPlexPath) != string::npos) && (share.strPath.find("/", strPlexPath.length()) == share.strPath.length()-1))
+      {
+        printf("PMS unavailable - removing %s\n", dstSources.at(i).strPath.c_str());
+        dstSources.erase(dstSources.begin()+i);
+      }
+    }
+  }
+}
+
 #endif
 
 /* returns filename extension including period of filename */
