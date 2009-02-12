@@ -544,7 +544,7 @@ VECSOURCES& CGUIViewStateWindowMusicNav::GetSources()
     share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
     m_sources.push_back(share);
   }
-
+  
   // plugins share
   if (CPluginDirectory::HasPlugins("music"))
   {
@@ -594,6 +594,9 @@ void CGUIViewStateWindowMusicSongs::SaveViewState()
 
 VECSOURCES& CGUIViewStateWindowMusicSongs::GetSources()
 {
+  // PMS sources
+  CUtil::AutodetectPlexSources("plex://localhost/music/", g_settings.m_musicSources);
+  
   bool bIsSourceName = true;
   // plugins share
   if (CPluginDirectory::HasPlugins("music"))
