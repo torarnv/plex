@@ -435,6 +435,8 @@ void CUtil::AutodetectPlexSources(CStdString strPlexPath, VECSOURCES& dstSources
         CMediaSource share;
         share.strName = item->GetLabel();
         share.strPath = item->m_strPath;
+        share.m_strFanartUrl = item->GetQuickFanart();
+        
         pmsSources.push_back(share);
         if (CUtil::GetMatchingSource(share.strName, dstSources, bIsSourceName) < 0)
         {
