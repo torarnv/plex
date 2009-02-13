@@ -90,6 +90,10 @@ CoreAudioAUHAL::CoreAudioAUHAL(const CStdString& strName, const char *strCodec, 
   OSStatus                err = noErr;
   UInt32                  i_param_size = 0;
 	
+	/* Allocate structure */
+	deviceParameters = (CoreAudioDeviceParameters*)calloc(sizeof(CoreAudioDeviceParameters), 1);
+	if (!deviceParameters) return;
+	
 	if (g_audioConfig.UseDigitalOutput() &&
 		channels > 2 &&
 		!passthrough)
@@ -121,10 +125,6 @@ CoreAudioAUHAL::CoreAudioAUHAL(const CStdString& strName, const char *strCodec, 
 	CLog::Log(LOGNOTICE, "Sample Rate:              [%d]\n", sampleRate);
 	CLog::Log(LOGNOTICE, "BitsPerSample:            [%d]\n", bitsPerSample);
 	CLog::Log(LOGNOTICE, "PacketSize:               [%d]\n", packetSize);
-
-	/* Allocate structure */
-	deviceParameters = (CoreAudioDeviceParameters*)calloc(sizeof(CoreAudioDeviceParameters), 1);
-	if (!deviceParameters) return;
 
 	deviceParameters->b_digital = (passthrough || deviceParameters->m_bEncodeAC3) && g_audioConfig.HasDigitalOutput();
 	deviceParameters->i_hog_pid = -1;
@@ -898,8 +898,12 @@ OSStatus CoreAudioAUHAL::RenderCallbackSPDIF(AudioDeviceID inDevice,
 	else
 	{
 		// write a frame
+		if (deviceParameters->m_bEncodeAC3)
+		{
+			//if (deviceParameters->m_bEncodeAC3) ac3encoderEncodePCM(&deviceParameters->m_ac3encoder, (uint8_t *)BUFFER.mData, framesToWrite);
+
+		}
 		PaUtil_ReadRingBuffer(deviceParameters->outputBuffer, BUFFER.mData, framesToWrite);
-		if (deviceParameters->m_bEncodeAC3) ac3encoderEncodePCM(&deviceParameters->m_ac3encoder, (uint8_t *)BUFFER.mData, framesToWrite);
 	}
 #undef BUFFER
     return( noErr );
