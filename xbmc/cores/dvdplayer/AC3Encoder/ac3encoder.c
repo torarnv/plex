@@ -54,19 +54,15 @@ static inline int swabdata(char* dst, char* src, int size)
 }
 
 // call before using the encoder
-// initialises the aften context and the I/O buffers
+// initialises the aften context
 int ac3encoder_init(struct AC3Encoder *encoder, int iChannels, unsigned int uiSamplesPerSec, int uiBitsPerSample, int remap)
 {
-	rb_init(&encoder->m_inputBuffer, 3072 * 12); // store up to 3072 six-channel samples
-	rb_init(&encoder->m_outputBuffer, AC3_SPDIF_FRAME_SIZE * 2); // store up to 2 AC3 frames
-
 	aften_set_defaults(&encoder->m_aftenContext);
 
 	encoder->m_aftenContext.channels = iChannels;
 	encoder->m_aftenContext.samplerate = uiSamplesPerSec;
 	encoder->m_iSampleSize = uiBitsPerSample;
 	encoder->remap = remap;
-
 
 	encoder->m_aftenContext.params.bitrate = AC3_BITRATE; // set AC3 output bitrate to maximum
 
@@ -88,7 +84,7 @@ int ac3encoder_init(struct AC3Encoder *encoder, int iChannels, unsigned int uiSa
 			encoder->m_aftenContext.acmod = 6; // Quadraphonic, ie 2/2
 			break;
 		case 5:
-			encoder->m_aftenContext.acmod = 6; // 3F2R without LFE
+			encoder->m_aftenContext.acmod = 7; // 3F2R without LFE
 			encoder->m_aftenContext.lfe = 0;
 			break;
 		case 6:
