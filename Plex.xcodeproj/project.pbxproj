@@ -681,7 +681,6 @@
 		E371C4850E2F2D5400FBF841 /* resource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D350D25F9FC00618676 /* resource.cpp */; settings = {COMPILER_FLAGS = "-DSILENT"; }; };
 		E371C4860E2F2D5400FBF841 /* rijndael.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D370D25F9FC00618676 /* rijndael.cpp */; settings = {COMPILER_FLAGS = "-DSILENT"; }; };
 		E371C4870E2F2D5400FBF841 /* ringbuf.c in Sources */ = {isa = PBXBuildFile; fileRef = 810C9F850D67BDE20095F5DD /* ringbuf.c */; };
-		E371C4880E2F2D5400FBF841 /* ringbuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 9409C1EC0E01D696001626C3 /* ringbuffer.c */; };
 		E371C4890E2F2D5400FBF841 /* rs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D390D25F9FC00618676 /* rs.cpp */; settings = {COMPILER_FLAGS = "-DSILENT"; }; };
 		E371C48A0E2F2D5400FBF841 /* RssReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E750D25F9FD00618676 /* RssReader.cpp */; };
 		E371C48B0E2F2D5400FBF841 /* RTVDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E174B0D25F9FA00618676 /* RTVDirectory.cpp */; };
@@ -1091,8 +1090,6 @@
 		9409C1E90E01D696001626C3 /* ac3encoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ac3encoder.h; path = AC3Encoder/ac3encoder.h; sourceTree = "<group>"; };
 		9409C1EA0E01D696001626C3 /* aften-types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "aften-types.h"; path = "../../lib/libaften/aften-types.h"; sourceTree = "<group>"; };
 		9409C1EB0E01D696001626C3 /* aften.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = aften.h; path = ../../lib/libaften/aften.h; sourceTree = "<group>"; };
-		9409C1EC0E01D696001626C3 /* ringbuffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ringbuffer.c; path = AC3Encoder/ringbuffer.c; sourceTree = "<group>"; };
-		9409C1ED0E01D696001626C3 /* ringbuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ringbuffer.h; path = AC3Encoder/ringbuffer.h; sourceTree = "<group>"; };
 		943BC2860ED3F1E500B7CB45 /* CoreAudioRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreAudioRenderer.h; sourceTree = "<group>"; };
 		943BC2870ED3F1E500B7CB45 /* CoreAudioRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CoreAudioRenderer.cpp; sourceTree = "<group>"; };
 		94B185280EB48264008C38FA /* CoreAudioAUHAL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CoreAudioAUHAL.cpp; sourceTree = "<group>"; };
@@ -3411,8 +3408,6 @@
 				9409C1E90E01D696001626C3 /* ac3encoder.h */,
 				9409C1EA0E01D696001626C3 /* aften-types.h */,
 				9409C1EB0E01D696001626C3 /* aften.h */,
-				9409C1EC0E01D696001626C3 /* ringbuffer.c */,
-				9409C1ED0E01D696001626C3 /* ringbuffer.h */,
 			);
 			name = AC3Encoder;
 			path = dvdplayer;
@@ -7287,7 +7282,6 @@
 				E371C4850E2F2D5400FBF841 /* resource.cpp in Sources */,
 				E371C4860E2F2D5400FBF841 /* rijndael.cpp in Sources */,
 				E371C4870E2F2D5400FBF841 /* ringbuf.c in Sources */,
-				E371C4880E2F2D5400FBF841 /* ringbuffer.c in Sources */,
 				E371C4890E2F2D5400FBF841 /* rs.cpp in Sources */,
 				E371C48A0E2F2D5400FBF841 /* RssReader.cpp in Sources */,
 				E371C48B0E2F2D5400FBF841 /* RTVDirectory.cpp in Sources */,

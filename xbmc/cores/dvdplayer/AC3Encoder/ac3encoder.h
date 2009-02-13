@@ -50,7 +50,7 @@ struct AC3Encoder
 
 int ac3encoderInit(struct AC3Encoder *encoder, uint32_t iChannels, uint32_t uiSamplesPerSec, uint32_t uiBitsPerSample, uint32_t remap);
 int ac3encoderEncodePCM(struct AC3Encoder *encoder, uint8_t *pcm_samples, uint32_t sampleCount);
-int ac3encoderFinalise(structAC3Encodder *encoder);
+int ac3encoderFinalise(struct AC3Encodder *encoder);
 
 //int ac3encoder_write_samples(struct AC3Encoder *encoder, uint8_t *samples, int samples_in);
 //int ac3coder_get_PCM_samplecount(struct AC3Encoder *encoder);
