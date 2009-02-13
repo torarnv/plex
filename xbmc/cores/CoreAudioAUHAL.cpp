@@ -40,6 +40,7 @@
 #include "CoreAudioAUHAL.h"
 #include "Settings.h"
 #include "AudioDecoder.h"
+#include "ac3encoder.h"
 
 bool CoreAudioAUHAL::s_lastPlayWasSpdif = false;
 
@@ -93,7 +94,7 @@ CoreAudioAUHAL::CoreAudioAUHAL(const CStdString& strName, const char *strCodec, 
 		// Enable AC3 passthrough for digital devices
 		int mpeg_remapping = 0;
 		if (strCodec == "AAC" || strCodec == "DTS") mpeg_remapping = 1; // DTS uses MPEG channel mapping
-		if (ac3encoder_init(&m_ac3encoder, channels, sampleRate, bitsPerSample, mpeg_remapping) == -1)
+		if (ac3encoderInit(&m_ac3encoder, channels, sampleRate, bitsPerSample, mpeg_remapping) == -1)
 		{
 			m_bIsInitialized = false;
 			return;
@@ -209,7 +210,7 @@ HRESULT CoreAudioAUHAL::Deinitialize()
 	
 	if (m_bEncodeAC3)
 	{
-		ac3encoder_free(&m_ac3encoder);
+		ac3encoderFinalise(&m_ac3encoder);
 	}
 	if (ac3_framebuffer != NULL)
 	{
@@ -337,7 +338,7 @@ int CoreAudioAUHAL::WriteStream(uint8_t *sampleBuffer, uint32_t samplesToWrite)
 	
 	if (m_bEncodeAC3) // use the raw PCM channel count to get the number of samples to play
 	{
-		inputByteFactor = ac3encoder_channelcount(&m_ac3encoder) * m_uiBitsPerSample/8;
+		inputByteFactor = 6 * m_uiBitsPerSample/8;
 		outputByteFactor = SPDIF_SAMPLE_BYTES;
 	}
 	else // the PCM input and stream output should match
@@ -350,15 +351,15 @@ int CoreAudioAUHAL::WriteStream(uint8_t *sampleBuffer, uint32_t samplesToWrite)
 	{
 		int ac3_frame_count = 0;
 		
-		if ((ac3_frame_count = ac3encoder_write_samples(&m_ac3encoder, sampleBuffer, samplesToWrite)) == 0)
+		//if ((ac3_frame_count = ac3encoder_write_samples(&m_ac3encoder, sampleBuffer, samplesToWrite)) == 0)
 		{
 			CLog::Log(LOGERROR, "AC3 output buffer underrun");
-			return 0;
+			//return 0;
 		}
-		else
+		//else
 		{
 			int buffer_sample_readcount = -1;
-			if ((buffer_sample_readcount = ac3encoder_get_encoded_samples(&m_ac3encoder, ac3_framebuffer, samplesToWrite)) != samplesToWrite)
+			if ((buffer_sample_readcount = ac3encoderEncodePCM(&m_ac3encoder, ac3_framebuffer, samplesToWrite)) != samplesToWrite)
 			{
 				CLog::Log(LOGERROR, "AC3 output buffer underrun");
 			}
