@@ -793,9 +793,9 @@ int CoreAudioAUHAL::OpenSPDIF(struct CoreAudioDeviceParameters *deviceParameters
 
 #warning free
 	deviceParameters->outputBuffer = (PaUtilRingBuffer *)malloc(sizeof(PaUtilRingBuffer));
-	deviceParameters->outputBufferData = malloc(framecount * SPDIF_SAMPLE_BYTES);
+	deviceParameters->outputBufferData = calloc(1, framecount * channels * bitsPerSample/8); // use uncompressed size if encoding ac3
 
-	PaUtil_InitializeRingBuffer(deviceParameters->outputBuffer, SPDIF_SAMPLE_BYTES, framecount, deviceParameters->outputBufferData);
+	PaUtil_InitializeRingBuffer(deviceParameters->outputBuffer, channels * bitsPerSample/8, framecount, deviceParameters->outputBufferData);
 	/* Add IOProc callback */
 	err = AudioDeviceCreateIOProcID(deviceParameters->device_id,
 									(AudioDeviceIOProc)RenderCallbackSPDIF,
