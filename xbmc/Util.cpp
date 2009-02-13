@@ -455,6 +455,14 @@ void CUtil::AutodetectPlexSources(CStdString strPlexPath, VECSOURCES& dstSources
         }
         
         share.m_strThumbnailImage = cachedThumb;
+
+        // Fanart.
+        if (!item->HasProperty("fanart_image"))
+        {
+          item->CacheFanart();
+          if (CFile::Exists(item->GetCachedFanart()))
+            item->SetProperty("fanart_image", item->GetCachedFanart());
+        }      
         
         pmsSources.push_back(share);
         if (CUtil::GetMatchingSource(share.strName, dstSources, bIsSourceName) < 0)
