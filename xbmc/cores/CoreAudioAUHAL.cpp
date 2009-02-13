@@ -210,11 +210,6 @@ HRESULT CoreAudioAUHAL::Deinitialize()
 	{
 		ac3encoderFinalise(&m_ac3encoder);
 	}
-	if (ac3_framebuffer != NULL)
-	{
-		free(ac3_framebuffer);
-		ac3_framebuffer = NULL;
-	}
 	
     if( deviceParameters->b_digital )
     {
@@ -316,6 +311,9 @@ float CoreAudioAUHAL::GetHardwareLatency()
 	float latency = CA_BUFFER_FACTOR + ((float)deviceParameters->hardwareFrameLatency / deviceParameters->stream_format.mSampleRate);
 	if (deviceParameters->b_digital)
 		latency += 0.032;
+	//if (m_bEncodeAC3)
+	//	latency += 0.064;
+	//latency += 0.225;
 	return latency;
 }
 
@@ -326,61 +324,15 @@ AudioStreamBasicDescription* CoreAudioAUHAL::GetStreamDescription()
 
 int CoreAudioAUHAL::WriteStream(uint8_t *sampleBuffer, uint32_t samplesToWrite)
 {
-	
 	if (sampleBuffer == NULL || samplesToWrite == 0)
 	{
 		return 0;
 	}
-	
-	int inputByteFactor, outputByteFactor;
-	
-	if (m_bEncodeAC3) // use the raw PCM channel count to get the number of samples to play
-	{
-		inputByteFactor = 6 * m_uiBitsPerSample/8;
-		outputByteFactor = SPDIF_SAMPLE_BYTES;
-	}
-	else // the PCM input and stream output should match
-	{
-		inputByteFactor = outputByteFactor = deviceParameters->stream_format.mBytesPerFrame;
-	}
-	
-	
-	if (m_bEncodeAC3)
-	{
-		int ac3_frame_count = 0;
-		
-		//if ((ac3_frame_count = ac3encoder_write_samples(&m_ac3encoder, sampleBuffer, samplesToWrite)) == 0)
-		{
-			CLog::Log(LOGERROR, "AC3 output buffer underrun");
-			//return 0;
-		}
-		//else
-		{
-			int buffer_sample_readcount = -1;
-			if ((buffer_sample_readcount = ac3encoderEncodePCM(&m_ac3encoder, ac3_framebuffer, samplesToWrite)) != samplesToWrite)
-			{
-				CLog::Log(LOGERROR, "AC3 output buffer underrun");
-			}
-			else
-			{
-				return PaUtil_WriteRingBuffer(deviceParameters->outputBuffer, ac3_framebuffer, samplesToWrite);
-			}
-		}
-	}
-	else
-	{
-		return PaUtil_WriteRingBuffer(deviceParameters->outputBuffer, sampleBuffer, samplesToWrite);
-	}
-	return 0;
+	return PaUtil_WriteRingBuffer(deviceParameters->outputBuffer, sampleBuffer, samplesToWrite);
 }
 
 void CoreAudioAUHAL::Flush()
 {
-<<<<<<< HEAD:xbmc/cores/CoreAudioAUHAL.cpp
-	if (m_bEncodeAC3)
-	{
-=======
->>>>>>> Don't flush buffers on seek now that we're not reinitialising the Audio Unit:xbmc/cores/CoreAudioAUHAL.cpp
 	//CSingleLock lock(m_cs); // acquire lock
 	
 	//PaUtil_FlushRingBuffer( deviceParameters->outputBuffer );
@@ -933,8 +885,9 @@ OSStatus CoreAudioAUHAL::RenderCallbackSPDIF(AudioDeviceID inDevice,
 
 #define BUFFER outOutputData->mBuffers[deviceParameters->i_stream_index]
 	int framesToWrite = BUFFER.mDataByteSize / deviceParameters->outputBuffer->elementSizeBytes;
+	fprintf(stderr, "Frames requested: %i\n", framesToWrite);
 
-	if (framesToWrite > PaUtil_GetRingBufferReadAvailable(deviceParameters->outputBuffer))
+	if (1)//(framesToWrite > PaUtil_GetRingBufferReadAvailable(deviceParameters->outputBuffer))
 	{
 		// we can't write a frame, send null frame
         memset(BUFFER.mData, 0, BUFFER.mDataByteSize);
