@@ -437,6 +437,25 @@ void CUtil::AutodetectPlexSources(CStdString strPlexPath, VECSOURCES& dstSources
         share.strPath = item->m_strPath;
         share.m_strFanartUrl = item->GetQuickFanart();
         
+        // Download thumbnail if needed.
+        CStdString cachedThumb(item->GetCachedProgramThumb());
+        CStdString thumb(item->GetThumbnailImage());
+        
+        if (CFile::Exists(cachedThumb))
+        {
+          item->SetThumbnailImage(cachedThumb);
+        }
+        else
+        {
+          CPicture pic;
+          if(pic.DoCreateThumbnail(thumb, cachedThumb))
+            item->SetThumbnailImage(cachedThumb);
+          else
+            item->SetThumbnailImage("");
+        }
+        
+        share.m_strThumbnailImage = cachedThumb;
+        
         pmsSources.push_back(share);
         if (CUtil::GetMatchingSource(share.strName, dstSources, bIsSourceName) < 0)
         {
