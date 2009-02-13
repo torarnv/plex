@@ -64,7 +64,7 @@ struct CoreAudioDeviceParameters
 	AudioUnit                   au_unit;        /* The AudioUnit we use */
 	PaUtilRingBuffer*			outputBuffer;
 	void*						outputBufferData;
-	int						hardwareFrameLatency;
+	int							hardwareFrameLatency;
 	bool						b_digital;      /* Are we running in digital mode? */
 
 	/* CoreAudio SPDIF mode specific */
@@ -102,14 +102,12 @@ CoreAudioAUHAL::CoreAudioAUHAL(const CStdString& strName, const char *strCodec, 
 		else
 		{
 			m_bEncodeAC3 = true;
-			ac3_framebuffer = (unsigned char *)calloc(packetSize, 1);
 		}
 		
 	}
 	else
 	{
 		m_bEncodeAC3 = false;
-		ac3_framebuffer = NULL;
 	}
 
 	CLog::Log(LOGNOTICE, "Asked to create device:   [%s]", strName.c_str());
