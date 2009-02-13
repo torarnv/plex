@@ -76,8 +76,11 @@ struct CoreAudioDeviceParameters
   AudioStreamBasicDescription sfmt_revert;    /* The original format of the stream */
   bool                  b_revert;       /* Wether we need to revert the stream format */
   bool                  b_changed_mixing;/* Wether we need to set the mixing mode back */
+	
+  // AC3 Encoder 	
   bool					m_bEncodeAC3;
   AC3Encoder			m_ac3encoder;
+	uint8_t				rawSampleBuffer[AC3_SAMPLES_PER_FRAME * SPDIF_SAMPLESIZE/8 * 6]; // 6 channels = 12 bytes/sample
 
 };
 
@@ -888,7 +891,7 @@ OSStatus CoreAudioAUHAL::RenderCallbackSPDIF(AudioDeviceID inDevice,
 
 #define BUFFER outOutputData->mBuffers[deviceParameters->i_stream_index]
 	int framesToWrite = BUFFER.mDataByteSize / deviceParameters->outputBuffer->elementSizeBytes;
-	//fprintf(stderr, "Frames requested: %i\n", framesToWrite);
+	fprintf(stderr, "Frames requested: %i (elementsize:%i)\n", framesToWrite, deviceParameters->outputBuffer->elementSizeBytes);
 
 	if (framesToWrite > PaUtil_GetRingBufferReadAvailable(deviceParameters->outputBuffer))
 	{
@@ -900,7 +903,8 @@ OSStatus CoreAudioAUHAL::RenderCallbackSPDIF(AudioDeviceID inDevice,
 		// write a frame
 		if (deviceParameters->m_bEncodeAC3)
 		{
-			//if (deviceParameters->m_bEncodeAC3) ac3encoderEncodePCM(&deviceParameters->m_ac3encoder, (uint8_t *)BUFFER.mData, framesToWrite);
+			PaUtil_ReadRingBuffer(deviceParameters->outputBuffer, deviceParameters->rawSampleBuffer, framesToWrite);
+			if (deviceParameters->m_bEncodeAC3) ac3encoderEncodePCM(&deviceParameters->m_ac3encoder, (uint8_t *)&deviceParameters->rawSampleBuffer, (uint8_t *)BUFFER.mData, framesToWrite);
 
 		}
 		PaUtil_ReadRingBuffer(deviceParameters->outputBuffer, BUFFER.mData, framesToWrite);

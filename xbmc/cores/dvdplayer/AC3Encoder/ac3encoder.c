@@ -124,7 +124,7 @@ int ac3encoderInit(struct AC3Encoder *encoder, uint32_t iChannels, uint32_t uiSa
 }
 
 // returns number of available AC3 frames
-int ac3encoderEncodePCM(struct AC3Encoder *encoder, uint8_t *pcmSamples, uint32_t sampleCount)
+int ac3encoderEncodePCM(struct AC3Encoder *encoder, uint8_t *pcmSamples, uint8_t *frameOutput, uint32_t sampleCount)
 {
 	// sanity
 	if (sampleCount > AC3_SAMPLES_PER_FRAME)
@@ -191,9 +191,8 @@ int ac3encoderEncodePCM(struct AC3Encoder *encoder, uint8_t *pcmSamples, uint32_
 		}
 	} while (!encoder->got_fs_once);
 	
-	// return to caller in-place
-	memset(pcmSamples, 0, AC3_SPDIF_FRAME_SIZE);
-	memcpy(pcmSamples, &AC3framebuffer, encoder->iAC3FrameSize+8);
+	// return to caller
+	memcpy(frameOutput, &AC3framebuffer, encoder->iAC3FrameSize+8);
 
 	// tidy up
 	free(pcmBuffer);
@@ -204,7 +203,8 @@ void ac3encoderReset(struct AC3Encoder *encoder)
 {
 	// write one silent frame
 	uint8_t *silent_PCM_init = (uint8_t *)calloc(1, encoder->m_aftenContext.channels * encoder->m_iSampleSize / 8 * AC3_SAMPLES_PER_FRAME); // 1536 silent samples
-	if (ac3encoderEncodePCM(encoder, silent_PCM_init, AC3_SAMPLES_PER_FRAME) < AC3_SAMPLES_PER_FRAME)
+	uint8_t encoder_output[AC3_SPDIF_FRAME_SIZE];
+	if (ac3encoderEncodePCM(encoder, silent_PCM_init, (uint8_t *)&encoder_output, AC3_SAMPLES_PER_FRAME) < AC3_SAMPLES_PER_FRAME)
 	{
 		fprintf(stderr, "Error pre-buffering AC3 encoder\n");
 		aften_encode_close(&encoder->m_aftenContext);

@@ -49,6 +49,6 @@ struct AC3Encoder
 };
 
 int ac3encoderInit(struct AC3Encoder *encoder, uint32_t iChannels, uint32_t uiSamplesPerSec, uint32_t uiBitsPerSample, uint32_t remap);
-int ac3encoderEncodePCM(struct AC3Encoder *encoder, uint8_t *pcmSamples, uint32_t sampleCount);
+int ac3encoderEncodePCM(struct AC3Encoder *encoder, uint8_t *pcmSamples, uint8_t *frameOutput, uint32_t sampleCount);
 void ac3encoderReset(struct AC3Encoder *encoder);
 void ac3encoderFinalise(struct AC3Encoder *encoder);
