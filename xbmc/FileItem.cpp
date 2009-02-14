@@ -2538,11 +2538,12 @@ CStdString CFileItem::CacheFanart(bool probe) const
   // Check for Plex Media Server fan-art.
   if (m_strFanartUrl.size() > 0)
   {
-    CStdString localFanart = GetCachedFanart(m_strFanartUrl);
+    CStdString localFanart = GetCachedProgramFanart(m_strFanartUrl);
     if (CFile::Exists(localFanart) == false)
     {
       CPicture pic;
       pic.CacheImage(m_strFanartUrl, localFanart);
+      return localFanart;
     }
   }
   
@@ -2642,6 +2643,25 @@ CStdString CFileItem::GetCachedFanart() const
     return CFileItem::GetCachedFanart(m_bIsFolder ? GetVideoInfoTag()->m_strPath : GetVideoInfoTag()->m_strFileNameAndPath);
   }
   return CFileItem::GetCachedFanart(m_strPath);
+}
+
+CStdString CFileItem::GetCachedProgramFanart() const
+{
+  if (m_strFanartUrl.size() > 0)
+    return CFileItem::GetCachedProgramFanart(m_strFanartUrl);
+
+  return CFileItem::GetCachedProgramFanart(m_strPath);
+}
+
+CStdString CFileItem::GetCachedProgramFanart(const CStdString &path)
+{
+  // get the locally cached thumb
+  Crc32 crc;
+  crc.ComputeFromLowerCase(path);
+
+  CStdString thumb;
+  thumb.Format("%s\\%08x.tbn", g_settings.GetProgramFanartFolder().c_str(),(unsigned __int32)crc);
+  return _P(thumb);
 }
 
 CStdString CFileItem::GetCachedFanart(const CStdString &path)
@@ -2924,8 +2944,9 @@ void CFileItem::SetQuickFanart(const CStdString& fanartURL)
   m_strFanartUrl = fanartURL;
   
   // See if it's already cached.
-  if (CFile::Exists(GetCachedFanart()))
-    SetProperty("fanart_image", GetCachedFanart());
+  CacheFanart(fanartURL);
+  if (CFile::Exists(GetCachedProgramFanart()))
+    SetProperty("fanart_image", GetCachedProgramFanart());
 }
 
 CStdString CFileItem::FindTrailer() const

@@ -379,6 +379,7 @@ public:
   CStdString GetSkinFolder(const CStdString& skinName) const;
   CStdString GetScriptsFolder() const;
   CStdString GetVideoFanartFolder() const;
+  CStdString GetProgramFanartFolder() const;
 
   CStdString GetSettingsFile() const;
 

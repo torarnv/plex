@@ -144,7 +144,8 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
         strIcon = "defaultHardDisk.png";
     }
     
-    pItem->SetQuickFanart(share.m_strFanartUrl);
+    if (share.m_strFanartUrl.size() > 0)
+      pItem->SetQuickFanart(share.m_strFanartUrl);
 
     pItem->SetIconImage(strIcon);
     if (share.m_iHasLock == 2 && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)

@@ -134,8 +134,10 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
     {
       CLog::Log(LOGWARNING, "FILE::cache: the file %s has a length of 0 bytes", strFileName.c_str());
       file.Close();
-      // no need to return false here.  Technically, we should create the new file and leave it at that
-//      return false;
+      
+      // Never save 0 byte files from the Plex Media Server.
+      if (strFileName.Find(":32400") != -1)
+        return false;
     }
 
     CFile newFile;
