@@ -82,7 +82,7 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
     for (int i = 0; i < items.Size(); ++i)
     {
       CFileItemPtr item = items[i];
-      if (item->IsPlexMediaServer() == false)
+      if (item->IsPlexMediaServer() == false && items.IsPlexMediaServer() == false)
       {
         if ((!item->m_bIsFolder && !pDirectory->IsAllowed(item->m_strPath)) ||
             (item->GetPropertyBOOL("file:hidden") && !g_guiSettings.GetBool("filelists.showhidden")))
