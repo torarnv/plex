@@ -964,9 +964,9 @@ void CDVDPlayer::Process()
       }
 
       // check so that none of our streams has become invalid
-      if (!IsValidStream(m_CurrentAudio,    STREAM_AUDIO))    CloseAudioStream(true);
-      if (!IsValidStream(m_CurrentVideo,    STREAM_VIDEO))    CloseVideoStream(true);
-      if (!IsValidStream(m_CurrentSubtitle, STREAM_SUBTITLE)) CloseSubtitleStream(true);
+      if (!IsValidStream(m_CurrentAudio))    CloseAudioStream(true);
+      if (!IsValidStream(m_CurrentVideo))    CloseVideoStream(true);
+      if (!IsValidStream(m_CurrentSubtitle)) CloseSubtitleStream(true);
 
 	  // check if there is any better stream to use (normally for dvd's)
       if (IsBetterStream(m_CurrentAudio,    pStream)) OpenAudioStream(pStream->iId, pStream->source);
