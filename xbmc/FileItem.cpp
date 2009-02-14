@@ -124,6 +124,19 @@ CFileItem::CFileItem(const CVideoInfoTag& movie)
   FillInDefaultIcon();
   SetVideoThumb();
   SetInvalid();
+  
+  if (!HasThumbnail())
+  {
+    // Try auto-generated thumbnail.
+    CStdString cachedThumb(GetCachedVideoThumb());
+    CStdString strPath, strFileName;
+    CUtil::Split(cachedThumb, strPath, strFileName);
+           
+    // Create unique thumb for auto generated thumbs.
+    cachedThumb = strPath + "auto-" + strFileName;
+    if (CFile::Exists(cachedThumb))
+      SetThumbnailImage(cachedThumb);
+  }
 }
 
 CFileItem::CFileItem(const CArtist& artist)
@@ -2493,7 +2506,9 @@ CStdString CFileItem::GetFolderThumb(const CStdString &folderJPG /* = "folder.jp
 
 void CFileItem::SetVideoThumb()
 {
-  if (HasThumbnail()) return;
+  if (HasThumbnail())
+    return;
+  
   SetCachedVideoThumb();
   if (!HasThumbnail())
     SetUserVideoThumb();
