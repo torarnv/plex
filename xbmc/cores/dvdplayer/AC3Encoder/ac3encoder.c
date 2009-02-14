@@ -134,8 +134,9 @@ int ac3encoderEncodePCM(struct AC3Encoder *encoder, uint8_t *pcmSamples, uint8_t
 	}
 	
 	// allocate and copy to mutable input buffer
-	uint8_t *pcmBuffer = calloc(1, AC3_SPDIF_FRAME_SIZE);
 	uint32_t pcmBufferSize = sampleCount * encoder->m_aftenContext.channels * encoder->m_iSampleSize / 8;
+	uint8_t *pcmBuffer = calloc(1, pcmBufferSize);
+
 	
 	memcpy(pcmBuffer, pcmSamples, pcmBufferSize); // any difference between sampleCount and AC3_SAMPLES_PER_FRAME encoded as silence
 	

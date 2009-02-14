@@ -120,18 +120,18 @@ CoreAudioAUHAL::CoreAudioAUHAL(const CStdString& strName, const char *strCodec, 
 		deviceParameters->m_bEncodeAC3 = false;
 	}
 
+	deviceParameters->b_digital = (passthrough || deviceParameters->m_bEncodeAC3) && g_audioConfig.HasDigitalOutput();
+	deviceParameters->i_hog_pid = -1;
+	deviceParameters->i_stream_index = -1;
+	
 	CLog::Log(LOGNOTICE, "Asked to create device:   [%s]", strName.c_str());
-	CLog::Log(LOGNOTICE, "Device should be digital: [%d]\n", passthrough);
+	CLog::Log(LOGNOTICE, "Device should be digital: [%d]\n", deviceParameters->b_digital);
 	CLog::Log(LOGNOTICE, "CoreAudio S/PDIF mode:    [%d]\n", g_audioConfig.UseDigitalOutput());
 	CLog::Log(LOGNOTICE, "Music mode:               [%d]\n", isMusic);
 	CLog::Log(LOGNOTICE, "Channels:                 [%d]\n", channels);
 	CLog::Log(LOGNOTICE, "Sample Rate:              [%d]\n", sampleRate);
 	CLog::Log(LOGNOTICE, "BitsPerSample:            [%d]\n", bitsPerSample);
 	CLog::Log(LOGNOTICE, "PacketSize:               [%d]\n", packetSize);
-
-	deviceParameters->b_digital = (passthrough || deviceParameters->m_bEncodeAC3) && g_audioConfig.HasDigitalOutput();
-	deviceParameters->i_hog_pid = -1;
-	deviceParameters->i_stream_index = -1;
 	
 	m_dwPacketSize = packetSize;
 	
@@ -890,8 +890,12 @@ OSStatus CoreAudioAUHAL::RenderCallbackSPDIF(AudioDeviceID inDevice,
     CoreAudioDeviceParameters *deviceParameters = (CoreAudioDeviceParameters *)threadGlobals;
 
 #define BUFFER outOutputData->mBuffers[deviceParameters->i_stream_index]
-	int framesToWrite = BUFFER.mDataByteSize / deviceParameters->outputBuffer->elementSizeBytes;
-	fprintf(stderr, "Frames requested: %i (elementsize:%i)\n", framesToWrite, deviceParameters->outputBuffer->elementSizeBytes);
+	int framesToWrite = BUFFER.mDataByteSize / (deviceParameters->stream_format.mChannelsPerFrame * deviceParameters->stream_format.mBitsPerChannel/8);
+	fprintf(stderr, "Frames requested: %i (%i bit, %i channels in, %i channels out)\n", 
+			framesToWrite, 
+			deviceParameters->stream_format.mBitsPerChannel,
+			deviceParameters->m_ac3encoder.m_aftenContext.channels,
+			deviceParameters->stream_format.mChannelsPerFrame);
 
 	if (framesToWrite > PaUtil_GetRingBufferReadAvailable(deviceParameters->outputBuffer))
 	{
@@ -904,10 +908,10 @@ OSStatus CoreAudioAUHAL::RenderCallbackSPDIF(AudioDeviceID inDevice,
 		if (deviceParameters->m_bEncodeAC3)
 		{
 			PaUtil_ReadRingBuffer(deviceParameters->outputBuffer, deviceParameters->rawSampleBuffer, framesToWrite);
-			if (deviceParameters->m_bEncodeAC3) ac3encoderEncodePCM(&deviceParameters->m_ac3encoder, (uint8_t *)&deviceParameters->rawSampleBuffer, (uint8_t *)BUFFER.mData, framesToWrite);
+			if (deviceParameters->m_bEncodeAC3) fprintf(stderr, "Got %i frames from encoder\n", ac3encoderEncodePCM(&deviceParameters->m_ac3encoder, (uint8_t *)&deviceParameters->rawSampleBuffer, (uint8_t *)BUFFER.mData, framesToWrite));
 
 		}
-		PaUtil_ReadRingBuffer(deviceParameters->outputBuffer, BUFFER.mData, framesToWrite);
+		else PaUtil_ReadRingBuffer(deviceParameters->outputBuffer, BUFFER.mData, framesToWrite);
 	}
 #undef BUFFER
     return( noErr );
