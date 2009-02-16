@@ -402,6 +402,14 @@ bool CFile::OpenForWrite(const CStdString& strFileName, bool bBinary, bool bOver
   return false;
 }
 
+bool CFile::IsDir(const CStdString& strFileName)
+{
+  struct __stat64 stat;
+  
+  Stat(strFileName, &stat);
+  return S_ISDIR(stat.st_mode);
+}
+
 bool CFile::Exists(const CStdString& strFileName)
 {
   try

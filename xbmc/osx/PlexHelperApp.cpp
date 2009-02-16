@@ -9,10 +9,10 @@
 #include <fstream>
 #include <string>
 
-using namespace std;
-
 #include "PlexHelperApp.h"
 
+#include "stdafx.h"
+#include "FileSystem/File.h"
 #include "CocoaUtils.h"
 #include "PlatformDefs.h"
 #include "log.h"
@@ -24,6 +24,9 @@ using namespace std;
 #define RESOURCES_DIR "/Library/Application Support/Plex"
 
 static int GetBSDProcessList(kinfo_proc **procList, size_t *procCount);
+
+using namespace std;
+using namespace XFILE;
 
 /////////////////////////////////////////////////////////////////////////////
 PlexHelperApp::PlexHelperApp()
@@ -78,8 +81,18 @@ bool PlexHelperApp::EnsureLatestHelperInstalled()
     DeleteFile(m_helperInstalledFile.c_str());
 
     // Copy helper and ensure executable.
-    CopyFile(m_helperFile.c_str(), m_helperInstalledFile.c_str(), FALSE);
-    chmod(m_helperInstalledFile.c_str(), S_IRWXU | S_IRGRP | S_IROTH);
+    if (CFile::IsDir(m_helperFile))
+    {
+      // Use rsync to copy, it's efficient and easy.
+      string rsync = "/usr/bin/rsync -a \"" + m_helperFile + "/\" \"" + m_helperInstalledFile + "\"";
+      system(rsync.c_str());
+    }
+    else
+    {
+      // Simply copy the file.
+      CopyFile(m_helperFile.c_str(), m_helperInstalledFile.c_str(), FALSE);
+      chmod(m_helperInstalledFile.c_str(), S_IRWXU | S_IRGRP | S_IROTH);
+    }
 
     // Write version file.
     WriteFile(m_helperInstalledVersionFile.c_str(), appVersion);
@@ -94,9 +107,16 @@ void PlexHelperApp::Start()
 {
   if (GetProcessPid(GetHelperBinaryName()) == -1)
   {
-    string cmd = "\"" + m_helperInstalledFile + "\" -x &";
-    CLog::Log(LOGNOTICE, "Asking %s to start [%s]", GetHelperBinaryName().c_str(), cmd.c_str());
-    system(cmd.c_str());
+    // Check for .app.
+    string command = "\"" + m_helperInstalledFile + "\"";
+    if (m_helperInstalledFile.substr(m_helperInstalledFile.size()-4) == ".app")
+      command = "/usr/bin/open " + command;
+    else
+      command = command + " -x &";
+    
+    printf("Command: %s\n", command.c_str());
+    CLog::Log(LOGNOTICE, "Asking %s to start [%s]", GetHelperBinaryName().c_str(), command.c_str());
+    system(command.c_str());
   }
 }
 

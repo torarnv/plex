@@ -463,10 +463,6 @@ void CUtil::AutodetectPlexSources(CStdString strPlexPath, VECSOURCES& dstSources
           if (CFile::Exists(item->GetCachedProgramFanart()))
             item->SetProperty("fanart_image", item->GetCachedProgramFanart());
         }
-        else
-        {
-          printf("Item had fanart_image: %s\n", item->GetProperty("fanart_image").c_str());
-        }
         
         pmsSources.push_back(share);
         if (CUtil::GetMatchingSource(share.strName, dstSources, bIsSourceName) < 0)

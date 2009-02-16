@@ -88,6 +88,7 @@ public:
   void   Attach(IFile *pFile, unsigned int flags = 0);
 
   static bool Exists(const CStdString& strFileName);
+  static bool IsDir(const CStdString& strFileName);
   static int  Stat(const CStdString& strFileName, struct __stat64* buffer);
   static bool Delete(const CStdString& strFileName);
   static bool Rename(const CStdString& strFileName, const CStdString& strNewFileName);
