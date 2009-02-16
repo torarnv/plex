@@ -2826,9 +2826,9 @@ void CSettings::CreateProfileFolders()
   CreateDirectory(GetLastFMThumbFolder().c_str(), NULL);
   CreateDirectory(GetVideoThumbFolder().c_str(), NULL);
   CreateDirectory(GetVideoFanartFolder().c_str(), NULL);
-  CreateDirectory(GetProgramFanartFolder().c_str(), NULL);
   CreateDirectory(GetBookmarksThumbFolder().c_str(), NULL);
   CreateDirectory(GetProgramsThumbFolder().c_str(), NULL);
+  CreateDirectory(GetProgramFanartFolder().c_str(), NULL);
   CreateDirectory(GetPicturesThumbFolder().c_str(), NULL);
   CLog::Log(LOGINFO, "  thumbnails folder:%s", GetThumbnailsFolder().c_str());
   for (unsigned int hex=0; hex < 16; hex++)
