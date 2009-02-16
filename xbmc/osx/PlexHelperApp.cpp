@@ -110,11 +110,10 @@ void PlexHelperApp::Start()
     // Check for .app.
     string command = "\"" + m_helperInstalledFile + "\"";
     if (m_helperInstalledFile.substr(m_helperInstalledFile.size()-4) == ".app")
-      command = "/usr/bin/open " + command;
+      command = "/usr/bin/open -g " + command;
     else
       command = command + " -x &";
     
-    printf("Command: %s\n", command.c_str());
     CLog::Log(LOGNOTICE, "Asking %s to start [%s]", GetHelperBinaryName().c_str(), command.c_str());
     system(command.c_str());
   }
@@ -314,8 +313,17 @@ extern "C" int GetProcessPid(const char* processName)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-int PlexHelperApp::GetProcessPid(const string& strProgram)
+int PlexHelperApp::GetProcessPid(const string& program)
 {
+  // Check for the .app.
+  string strProgram = program;
+  if (program.substr(program.size() - 4) == ".app")
+    strProgram = program.substr(0, program.size()-4);
+
+  // Process names are at most sixteen characters long.
+  if (strProgram.size() > 16)
+    strProgram = strProgram.substr(0, 16);
+    
   kinfo_proc* mylist;
   size_t mycount = 0;
   int ret = -1;
