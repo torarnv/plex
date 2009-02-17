@@ -1912,7 +1912,12 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
   {
     // no parameters, so we assume it's just requested for a media window.  It therefore
     // can only happen if the list has focus.
+    //
     CGUIWindow *pWindow = GetWindowWithCondition(dwContextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+    
+    if (m_gWindowManager.GetActiveWindow() == WINDOW_SLIDESHOW)
+      pWindow = m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
+    
     if (pWindow)
     {
       map<int,int>::const_iterator it = m_containerMoves.find(pWindow->GetViewContainerID());

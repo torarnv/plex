@@ -197,6 +197,7 @@ void CGUIWindowSlideShow::ShowNext()
   if (m_iNextSlide >= m_slides->Size())
     m_iNextSlide = 0;
 
+  g_infoManager.SetContainerMoving(GetViewContainerID(), 1);
   m_bLoadNextPic = true;
 }
 
@@ -208,6 +209,8 @@ void CGUIWindowSlideShow::ShowPrevious()
   m_iNextSlide = m_iCurrentSlide - 1;
   if (m_iNextSlide < 0)
     m_iNextSlide = m_slides->Size() - 1;
+  
+  g_infoManager.SetContainerMoving(GetViewContainerID(), -1);
   m_bLoadNextPic = true;
 }
 
