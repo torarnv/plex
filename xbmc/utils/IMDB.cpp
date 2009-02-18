@@ -694,7 +694,7 @@ void CIMDB::ConvertToUTF8(CStdStringA& xml_)
       g_charsetConverter.stringCharsetToUtf8(server_enc, buf, xml_);
   }
   // Second
-  else if (xml_.Find("encoding=\"utf-8\"") < 0)
+  else if (!XMLUtils::HasUTF8Declaration(xml_))
   {
     g_charsetConverter.unknownToUTF8(xml_);
   }

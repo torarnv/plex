@@ -20,6 +20,7 @@
  */
 
 #include "stdafx.h"
+#include "XMLUtils.h"
 #include "ScraperUrl.h"
 #include "Settings.h"
 #include "HTMLUtil.h"
@@ -136,7 +137,7 @@ bool CScraperUrl::ParseString(CStdString strUrl)
     return false;
 
   // ok, now parse the xml file
-  if (strUrl.Find("encoding=\"utf-8\"") < 0)
+  if (!XMLUtils::HasUTF8Declaration(strUrl))
     g_charsetConverter.unknownToUTF8(strUrl);
 
   TiXmlDocument doc;
@@ -287,7 +288,7 @@ bool CScraperUrl::ParseEpisodeGuide(CStdString strUrls)
     return false;
 
   // ok, now parse the xml file
-  if (strUrls.Find("encoding=\"utf-8\"") < 0)
+  if (!XMLUtils::HasUTF8Declaration(strUrls))
     g_charsetConverter.unknownToUTF8(strUrls);
 
   TiXmlDocument doc;
