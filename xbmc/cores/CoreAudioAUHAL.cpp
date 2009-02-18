@@ -41,6 +41,7 @@
 #include "Settings.h"
 #include "AudioDecoder.h"
 
+bool CoreAudioAUHAL::s_lastPlayWasSpdif = false;
 
 /**
  * High precision date or time interval
@@ -398,6 +399,9 @@ int CoreAudioAUHAL::OpenPCM(struct CoreAudioDeviceParameters *deviceParameters, 
     AudioStreamBasicDescription DeviceFormat;
     AURenderCallbackStruct      input;
 
+    // We're non-digital.
+    s_lastPlayWasSpdif = false;
+    
     /* Lets go find our Component */
     desc.componentType = kAudioUnitType_Output;
     desc.componentSubType = kAudioUnitSubType_HALOutput;
@@ -601,6 +605,9 @@ int CoreAudioAUHAL::OpenSPDIF(struct CoreAudioDeviceParameters *deviceParameters
     AudioStreamID           *p_streams = NULL;
     int                     i = 0, i_streams = 0;
 
+    // We're digital.
+    s_lastPlayWasSpdif = true;
+    
     /* Start doing the SPDIF setup proces */
     //deviceParameters->b_digital = true;
 	deviceParameters->b_changed_mixing = false;

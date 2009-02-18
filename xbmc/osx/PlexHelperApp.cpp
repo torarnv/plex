@@ -103,9 +103,37 @@ bool PlexHelperApp::EnsureLatestHelperInstalled()
 }
 
 /////////////////////////////////////////////////////////////////////////////
+void PlexHelperApp::Restart()
+{
+  if (GetMode() == MODE_ENABLED) 
+  {
+    Stop();
+
+    // Wait for the child to exit.
+    int status = 0;
+    pid_t pid = GetProcessPid(GetHelperBinaryName());
+    
+    if (pid != -1)
+    {
+      // Make *sure* the process has exited.
+      pid_t  wpid = waitpid(pid, &status, WUNTRACED);
+      while (GetProcessPid(GetHelperBinaryName()) != -1)
+        usleep(10);
+    }
+    
+    Start();
+  }
+  else
+  {
+    CLog::Log(LOGINFO, "Asked to restart but not running");
+  }
+}
+
+/////////////////////////////////////////////////////////////////////////////
 void PlexHelperApp::Start()
 {
-  if (GetProcessPid(GetHelperBinaryName()) == -1)
+  int pid = GetProcessPid(GetHelperBinaryName());
+  if (pid == -1)
   {
     // Check for .app.
     string command = "\"" + m_helperInstalledFile + "\"";

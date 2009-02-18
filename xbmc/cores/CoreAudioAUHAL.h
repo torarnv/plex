@@ -64,6 +64,7 @@ class CoreAudioAUHAL
 
 		// Addpackets - make ringbuffer private
 
+		static bool LastOpenWasSpdif() { bool ret = s_lastPlayWasSpdif; s_lastPlayWasSpdif = false; return ret; }
 		
 	private:
 		virtual int OpenPCM(struct CoreAudioDeviceParameters *deviceParameters, const CStdString& strName, int channels, float sampleRate, int bitsPerSample, int packetSize);
@@ -103,6 +104,8 @@ class CoreAudioAUHAL
 		bool m_bEncodeAC3;
 		AC3Encoder m_ac3encoder;
 		unsigned char* ac3_framebuffer;
+		
+		static bool s_lastPlayWasSpdif;
 	};
 		
 #endif

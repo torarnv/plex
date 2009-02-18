@@ -239,6 +239,7 @@
 #include "PlexMediaServerHelper.h"
 #include "QTPlayer.h"
 #include "GUIDialogUtils.h"
+#include "CoreAudioAUHAL.h"
 #endif
 #ifdef HAS_HAL
 #include "linux/LinuxFileSystem.h"
@@ -5730,6 +5731,12 @@ bool CApplication::OnMessage(CGUIMessage& message)
       // Start the background music (if enabled)
       Cocoa_SetBackgroundMusicEnabled(m_bBackgroundMusicEnabled);
       Cocoa_StartBackgroundMusic();
+      
+      // Restart the Plex Media Server if we just played a 5.1 surround file. This sucks, but no way around it
+      // for now, as it seems to screw up a WebKit process, and even reloading the WebKit plug-in doesn't help.
+      //
+      if (CoreAudioAUHAL::LastOpenWasSpdif())
+        PlexMediaServerHelper::Get().Restart();
 #endif
 
       // first check if we still have items in the stack to play

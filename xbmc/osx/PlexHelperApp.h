@@ -19,6 +19,7 @@ class PlexHelperApp
   void Configure();
   void Install();
   void Uninstall();
+  void Restart();
 
   bool IsAlwaysOn() const { return m_alwaysOn; }
   bool ErrorStarting()    { return m_errorStarting; }
