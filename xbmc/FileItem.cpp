@@ -1151,6 +1151,7 @@ CFileItemList::CFileItemList()
   m_sortMethod=SORT_METHOD_NONE;
   m_sortOrder=SORT_ORDER_NONE;
   m_replaceListing = false;
+  m_saveInHistory = true;
   m_wasListingCancelled = false;
 }
 
@@ -1163,6 +1164,7 @@ CFileItemList::CFileItemList(const CStdString& strPath)
   m_sortMethod=SORT_METHOD_NONE;
   m_sortOrder=SORT_ORDER_NONE;
   m_replaceListing = false;
+  m_saveInHistory = true;
   m_wasListingCancelled = false;
 }
 
@@ -1238,6 +1240,7 @@ void CFileItemList::Clear()
   m_cacheToDisc=CACHE_IF_SLOW;
   m_sortDetails.clear();
   m_replaceListing = false;
+  m_saveInHistory = true;
   m_content.Empty();
   m_firstTitle.Empty();
   m_secondTitle.Empty();
@@ -1349,6 +1352,7 @@ void CFileItemList::Assign(const CFileItemList& itemlist, bool append)
   m_strPath = itemlist.m_strPath;
   m_sortDetails = itemlist.m_sortDetails;
   m_replaceListing = itemlist.m_replaceListing;
+  m_saveInHistory = itemlist.m_saveInHistory;
   m_content = itemlist.m_content;
   m_mapProperties = itemlist.m_mapProperties;
   

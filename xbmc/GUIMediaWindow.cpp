@@ -650,7 +650,9 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
   if (!bSelectedFound)
     m_viewControl.SetSelectedItem(0);
 
-  m_history.AddPath(m_vecItems->m_strPath);
+  // Save into history if appropriate.
+  if (m_vecItems->GetSaveInHistory())
+    m_history.AddPath(m_vecItems->m_strPath);
 
   //m_history.DumpPathHistory();
 

@@ -184,6 +184,16 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
       return false;
   }
   
+  // See if this directory replaces the parent.
+  const char* replace = root->Attribute("replaceParent");
+  if (replace && strcmp(replace, "1") == 0)
+    items.SetReplaceListing(true);
+  
+  // See if we're saving this into the history or not.
+  const char* noHistory = root->Attribute("noHistory");
+    if (noHistory && strcmp(noHistory, "1") == 0)
+      items.SetSaveInHistory(false);
+  
   return true;
 }
 

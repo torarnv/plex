@@ -385,6 +385,8 @@ public:
   const std::vector<SORT_METHOD_DETAILS> &GetSortDetails() const { return m_sortDetails; };
   bool GetReplaceListing() const { return m_replaceListing; };
   void SetReplaceListing(bool replace);
+  bool GetSaveInHistory() const { return m_saveInHistory; }
+  void SetSaveInHistory(bool save) { m_saveInHistory = save; }
   void SetContent(const CStdString &content) { m_content = content; }
   const CStdString &GetContent() const { return m_content; }
 
@@ -407,6 +409,7 @@ private:
   SORT_ORDER m_sortOrder;
   CACHE_TYPE m_cacheToDisc;
   bool m_replaceListing;
+  bool m_saveInHistory;
   CStdString m_content;
   
   CStdString m_firstTitle;
