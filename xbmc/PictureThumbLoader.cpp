@@ -58,8 +58,10 @@ bool CPictureThumbLoader::LoadItem(CFileItem* pItem)
       else
       {
         // see if we have additional info to download this thumb with
-        if (pItem->HasVideoInfoTag())
+        if (pItem->HasVideoInfoTag() && pItem->IsPlexMediaServer() == false)
+        {
           return DownloadVideoThumb(pItem, cachedThumb);
+        }
         else
         {
           CPicture pic;

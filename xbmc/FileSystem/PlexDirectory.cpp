@@ -539,7 +539,7 @@ class PlexMediaPhoto : public PlexMediaNode
   {
     pItem->m_bIsFolder = false;
     
-    // FIXME: Shouldn't have to ways to get this.
+    // FIXME: Shouldn't have two ways to get this.
     if (el.Attribute("title"))
       pItem->SetLabel(el.Attribute("title"));
     else
