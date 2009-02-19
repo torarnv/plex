@@ -207,7 +207,11 @@ class PlexMediaNode
      CFileItemPtr pItem(new CFileItem());
      pItem->m_bIsFolder = true;
      
-     string src = el.Attribute("key");
+     const char* key = el.Attribute("key");
+     if (key == 0)
+       return CFileItemPtr();
+       
+     string src = key;
      CStdString parentPath;
      url.GetURL(parentPath);
      
@@ -593,7 +597,9 @@ void CPlexDirectory::Parse(const CURL& url, TiXmlElement* root, CFileItemList &i
   for (TiXmlElement* element = root->FirstChildElement(); element; element=element->NextSiblingElement())
   {
     mediaNode = PlexMediaNode::Create(element->Value());
-    items.Add(mediaNode->BuildFileItem(url, *element));
+    CFileItemPtr item = mediaNode->BuildFileItem(url, *element);
+    if (item)
+      items.Add(item);
   }
   
   if (mediaNode != 0)
