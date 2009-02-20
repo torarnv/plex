@@ -3747,6 +3747,7 @@ const BUILT_IN commands[] = {
   { "RestartApp",                 false,  "Restart XBMC" },
   { "Credits",                    false,  "Run XBMCs Credits" },
   { "Reset",                      false,  "Reset the xbox (warm reboot)" },
+  { "UpdateSources",              false,  "Updates sources" },
   { "Mastermode",                 false,  "Control master mode" },
   { "ActivateWindow",             true,   "Activate the specified window" },
   { "ReplaceWindow",              true,   "Replaces the current window with the new one" },
@@ -4015,6 +4016,11 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
 	else if (execute.Equals("runapplescript"))
 	{
 		Cocoa_ExecAppleScript(strParameterCaseIntact.c_str());
+	}
+	else if (execute.Equals("updatesources"))
+	{
+	  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
+    m_gWindowManager.SendThreadMessage(msg);
 	}
 #if defined(_LINUX) || defined(_WIN32PC)
   else if (execute.Equals("system.exec"))

@@ -284,6 +284,9 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       { // State of the sources changed, so update our view
         if (m_vecItems->IsVirtualDirectoryRoot() && IsActive())
         {
+          // Some shares dynamically (dis)appear, so we need to refresh them.
+          SetupShares();
+          
           int iItem = m_viewControl.GetSelectedItem();
           Update(m_vecItems->m_strPath);
           m_viewControl.SetSelectedItem(iItem);
