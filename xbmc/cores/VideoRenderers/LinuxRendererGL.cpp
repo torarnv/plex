@@ -598,7 +598,6 @@ void CLinuxRendererGL::SetRGB32Image(const char *image, int nHeight, int nWidth,
   }
 }
 
-
 bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags)
 {
   m_fps = fps;
@@ -2205,11 +2204,6 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
 {
   // Remember if we're software upscaling.
   m_isSoftwareUpscaling = IsSoftwareUpscaling();
-  
-  if (m_renderMethod & RENDER_SW)
-    printf("SOFTWARE\n");
-  else
-    printf("XXXXXXXX NOT SOFTWARE\n");
   
   /* since we also want the field textures, pitch must be texture aligned */
   unsigned p;

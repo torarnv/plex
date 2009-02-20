@@ -75,6 +75,9 @@ CPlexMediaServerPlayer::~CPlexMediaServerPlayer()
 
 bool CPlexMediaServerPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 {
+  // Initialize the renderer, so it doesn't try to render too soon.
+  g_renderManager.PreInit();
+  
   if (m_pDlgCache)
     m_pDlgCache->Close();
   m_pDlgCache = new CDlgCache(0, g_localizeStrings.Get(10214), file.GetLabel());
@@ -122,6 +125,7 @@ bool CPlexMediaServerPlayer::OpenFile(const CFileItem& file, const CPlayerOption
     SeekTime((__int64)(options.starttime * 1000));
 
   m_playing = true;
+  
   return true;
 }
 
@@ -204,8 +208,6 @@ void CPlexMediaServerPlayer::Pause()
     m_http.WriteLine("PLAY");
   else
     m_http.WriteLine("PAUSE");
-  
-  //m_paused = !m_paused;
 }
 
 bool CPlexMediaServerPlayer::IsPaused() const
@@ -355,7 +357,6 @@ void CPlexMediaServerPlayer::OnPlaybackStarted()
   
   try
   {
-    g_renderManager.PreInit();
     g_renderManager.Configure(m_width, m_height, m_width, m_height, 30.0f, CONF_FLAGS_FULLSCREEN | CONF_FLAGS_RGB);
     
     ipc::scoped_lock<ipc::named_mutex> lock(m_frameMutex);
