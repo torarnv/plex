@@ -3002,6 +3002,7 @@ int CDVDPlayer::GetCacheSize()
       strFile.Find("http://www.totaleclips.com") == 0 ||
       strFile.Find("http://blip.tv") == 0             ||
       strFile.Find("http://vid.cnn.com") == 0         ||
+      (strFile.Find(":32400") != -1 && strFile.Find("/video/youtube") != -1) ||
       
       // Check for BBC iPlayer streams
       (strFile.Find(".edgefcs.net:1935/ondemand?_fcs_vhost=") > 0 &&
