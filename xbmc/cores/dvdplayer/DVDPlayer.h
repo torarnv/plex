@@ -254,8 +254,8 @@ protected:
 
   void SyncronizePlayers(DWORD sources, double pts = DVD_NOPTS_VALUE);
   void SyncronizeDemuxer(DWORD timeout);
-  void CheckContinuity(DemuxPacket* pPacket, unsigned int source);
-  bool CheckSceneSkip(CCurrentStream& current, unsigned int source);
+  void CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket);
+  bool CheckSceneSkip(CCurrentStream& current);
   bool CheckPlayerInit(CCurrentStream& current, unsigned int source);
   void SendPlayerMessage(CDVDMsg* pMsg, unsigned int target);
 
