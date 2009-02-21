@@ -3013,6 +3013,11 @@ int CDVDPlayer::GetCacheSize()
        
     return 256;
   
+  if (strFile.Find("http://download.cnettv.com.edgesuite.net") != -1)
+    return 400;
+  else if (strFile.Find("http://content.cnettv.com") != -1)
+    return 512;
+  
   // First, figure out the source of the file.
   bool bFileOnHD = false;
   bool bFileOnISO = false;
