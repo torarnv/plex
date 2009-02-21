@@ -557,6 +557,7 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
 
   // Get the new directory.
   CFileItemList newItems;
+  
   if (!GetDirectory(strDirectory, newItems))
   {
     ClearFileItems();
@@ -588,6 +589,7 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
   }
 
   // Assign the new file items.
+  ClearFileItems();
   m_vecItems->ClearProperties();
   m_vecItems->Assign(newItems);
   
@@ -609,18 +611,18 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
     m_vecItems->Add(pItem);
   }
   m_iLastControl = GetFocusedControlID();
-
+  
   //  Ask the derived class if it wants to load additional info
   //  for the fileitems like media info or additional
   //  filtering on the items, setting thumbs.
   OnPrepareFileItems(*m_vecItems);
-
+  
   m_vecItems->FillInDefaultIcons();
-
+  
   m_guiState.reset(CGUIViewState::GetViewState(GetID(), *m_vecItems));
-
+  
   FormatAndSort(*m_vecItems);
-
+  
   // Ask the devived class if it wants to do custom list operations,
   // eg. changing the label
   OnFinalizeFileItems(*m_vecItems);
