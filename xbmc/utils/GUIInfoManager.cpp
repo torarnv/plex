@@ -3600,6 +3600,8 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
       return CorrectAllItemsSortHack(item->GetMusicInfoTag()->GetTitle());
     if (item->HasVideoInfoTag())
       return CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strTitle);
+
+    return item->GetLabel();
     break;
   case LISTITEM_TRACKNUMBER:
     {
