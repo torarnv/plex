@@ -21,12 +21,13 @@ class PlexHelperApp
   void Uninstall();
   void Restart();
 
+  bool IsRunning() const;
   bool IsAlwaysOn() const { return m_alwaysOn; }
   bool ErrorStarting()    { return m_errorStarting; }
   int  GetMode() const    { return m_mode; }
 
   /// Fill-ins for subclasses.
-  virtual string GetHelperBinaryName() = 0;
+  virtual string GetHelperBinaryName() const = 0;
   virtual string GetPlistName() = 0;
   
   virtual bool   DoConfigure(int& mode, bool& alwaysRunning, bool& errorStarting) = 0;

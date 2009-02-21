@@ -29,7 +29,7 @@ class PlexMediaServerHelper : public PlexHelperApp
   virtual bool   DoConfigure(int& mode, bool& alwaysRunning, bool& errorStarting);
   virtual string GetConfigString();
   
-  virtual string GetHelperBinaryName() { return "Plex Media Server.app"; }
+  virtual string GetHelperBinaryName() const { return "Plex Media Server.app"; }
   virtual string GetPlistName() { return "com.plexapp.mediaserver.plist"; }
   
  private:

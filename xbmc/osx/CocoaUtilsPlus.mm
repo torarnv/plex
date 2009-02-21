@@ -12,6 +12,7 @@
 #include <CoreServices/CoreServices.h>
 #import <SystemConfiguration/SystemConfiguration.h>
 #include <arpa/inet.h>
+#include "PlexMediaServerHelper.h"
 
 #define COCOA_KEY_PLAYPAUSE  1051136
 #define COCOA_KEY_PREV_TRACK 1313280
@@ -146,6 +147,14 @@ VECSOURCES Cocoa_GetPlexMediaServersAsSourcesWithMediaType(const string mediaTyp
 
 bool Cocoa_IsLocalPlexMediaServerRunning()
 {
+#if 1
+  
+  bool isRunning = PlexMediaServerHelper::Get().IsRunning(); 
+  printf("Cocoa_IsLocalPlexMediaServerRunning() => %d\n", isRunning);
+  
+  return isRunning;
+  
+#else
   NSArray* localAddresses = [[NSHost currentHost] addresses];
   
   NSLog(@"Local hostname: %@", [[NSHost currentHost] name]);
@@ -171,6 +180,7 @@ bool Cocoa_IsLocalPlexMediaServerRunning()
   }
   NSLog(@"Local PMS is NOT found!");
   return false;
+#endif
 }
 
 ///////////////////////////////////////////////////////////////////////////////

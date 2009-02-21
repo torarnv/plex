@@ -36,7 +36,7 @@ class PlexRemoteHelper : public PlexHelperApp
   virtual bool   DoConfigure(int& mode, bool& alwaysRunning, bool& errorStarting);
   virtual string GetConfigString();
   
-  virtual string GetHelperBinaryName() { return "PlexHelper"; }
+  virtual string GetHelperBinaryName() const { return "PlexHelper"; }
   virtual string GetPlistName() { return "com.plexapp.helper.plist"; }
   
  private:

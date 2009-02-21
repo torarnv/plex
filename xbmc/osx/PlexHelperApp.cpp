@@ -335,6 +335,16 @@ void PlexHelperApp::WriteFile(const string& fileName, const std::string& data)
 }
 
 /////////////////////////////////////////////////////////////////////////////
+bool PlexHelperApp::IsRunning() const
+{
+  int pid = GetProcessPid(GetHelperBinaryName());
+  if (pid == -1)
+    return false;
+  
+  return true;
+}
+
+/////////////////////////////////////////////////////////////////////////////
 extern "C" int GetProcessPid(const char* processName)
 {
   return PlexHelperApp::GetProcessPid(processName);
