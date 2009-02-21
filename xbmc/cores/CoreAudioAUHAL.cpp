@@ -97,9 +97,10 @@ CoreAudioAUHAL::CoreAudioAUHAL(const CStdString& strName, const char *strCodec, 
 	deviceParameters = (CoreAudioDeviceParameters*)calloc(sizeof(CoreAudioDeviceParameters), 1);
 	if (!deviceParameters) return;
 	
-	if (g_audioConfig.UseDigitalOutput() &&
+	if (g_audioConfig.HasDigitalOutput() && // disable encoder for legacy SPDIF devices for now
 		channels > 2 &&
-		!passthrough)
+		!passthrough &&
+		(sampleRate == SPDIF_SAMPLERATE44 || sampleRate == SPDIF_SAMPLERATE48))
 	{
 		// Enable AC3 passthrough for digital devices
 		int mpeg_remapping = 0;
@@ -169,7 +170,7 @@ CoreAudioAUHAL::CoreAudioAUHAL(const CStdString& strName, const char *strCodec, 
 	}
 	else if (g_audioConfig.ForcedDigital() && (deviceParameters->m_bEncodeAC3 || passthrough))
 	{
-		if (OpenPCM(deviceParameters, strName, SPDIF_CHANNELS, SPDIF_SAMPLERATE, SPDIF_SAMPLESIZE, packetSize))
+		if (OpenPCM(deviceParameters, strName, SPDIF_CHANNELS, sampleRate, SPDIF_SAMPLESIZE, packetSize))
 		{
 			m_bIsInitialized = true;
 			return;

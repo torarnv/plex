@@ -32,7 +32,8 @@
 //These values are forced to allow spdif out
 #define OUT_SAMPLESIZE 16
 #define OUT_CHANNELS 2
-#define OUT_SAMPLERATE 48000
+#define DTS_441KHZ 44100
+#define DTS_480KHZ 48000
 
 #define OUT_SAMPLESTOBYTES(a) ((a) * OUT_CHANNELS * (OUT_SAMPLESIZE>>3))
 
@@ -98,7 +99,7 @@ bool CDVDAudioCodecPassthrough::SyncDTSHeader(BYTE* pData, int iDataSize, int* i
     if (iLen > 0)
     {
 
-      if( iSampleRate != OUT_SAMPLERATE )
+      if( iSampleRate != DTS_441KHZ && iSampleRate != DTS_480KHZ)
       {
         CLog::Log(LOGERROR, "CDVDAudioCodecPassthrough::SyncDTSHeader - unsupported samplerate %li, skipping", iSampleRate);
         return false;
@@ -149,11 +150,12 @@ int CDVDAudioCodecPassthrough::PaddDTSData( BYTE* pData, int iDataSize, BYTE* pO
   pOut[7] = (iDataSize2 >> 5) & 0xFF;
 
   int iOutputSize = OUT_SAMPLESTOBYTES(m_iSamplesPerFrame);
+	if (iOutputSize == iDataSize2) iOutputSize += 8;
 
   if ( iDataSize2 > iOutputSize - 8 ) 
   {          
     //Crap frame with more data than we can handle, can be worked around i think
-    CLog::Log(LOGERROR, "CDVDAudioCodecPassthrough::PaddDTSData - larger frame than will fit, skipping");
+    CLog::Log(LOGERROR, "CDVDAudioCodecPassthrough::PaddDTSData - larger frame than will fit (%i bytes), skipping", iDataSize);
     return 0;
   }
 
@@ -182,7 +184,7 @@ bool CDVDAudioCodecPassthrough::SyncAC3Header(BYTE* pData, int iDataSize, int* i
     iLen = m_dllA52.a52_syncinfo(pData, &iFlags, &iSampleRate, &iBitRate);
     if (iLen > 0)
     {
-      if( iSampleRate != OUT_SAMPLERATE )
+      if( iSampleRate != DTS_441KHZ && iSampleRate != DTS_480KHZ )
       {
         CLog::Log(LOGERROR, "CDVDAudioCodecPassthrough::SyncAC3Header - unsupported samplerate %d, skipping", iSampleRate);
         return false;
@@ -412,7 +414,7 @@ int CDVDAudioCodecPassthrough::GetChannels()
 
 int CDVDAudioCodecPassthrough::GetSampleRate()
 {
-  return OUT_SAMPLERATE;
+  return m_iSampleRate;
 }
 
 int CDVDAudioCodecPassthrough::GetBitsPerSample()
