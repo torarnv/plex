@@ -19,7 +19,7 @@
   {                      \
     err = (expr);        \
     if (err != noErr)    \
-    CLog::Log(LOGERROR, "PlexAudioDevice: Error %4.4s doing %s", (char* )&err, #expr); \
+      printf("PlexAudioDevice: Error %4.4s doing %s\n", (char* )&err, #expr); \
   }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -37,10 +37,12 @@ PlexAudioDevice::PlexAudioDevice(AudioDeviceID deviceID)
   {
     // Retrieve the name of the device.
     char* pStrName = new char[paramSize];
+    pStrName[0] = '\0';
+    
     SAFELY(AudioDeviceGetProperty(deviceID, 0, false, kAudioDevicePropertyDeviceName, &paramSize, pStrName));
     if (err == noErr)
     {
-      CLog::Log(LOGDEBUG, "DevID: %p DevName: %s", deviceID, pStrName);
+      printf("DevID: %p DevName: %s\n", deviceID, pStrName);
       m_deviceName = pStrName;
       
       // See if the device is writable (can output).
@@ -50,7 +52,7 @@ PlexAudioDevice::PlexAudioDevice(AudioDeviceID deviceID)
       if (m_hasOutput)
         m_supportsDigital = computeDeviceSupportsDigital();
       else
-        CLog::Log(LOGDEBUG, "Skipping input-only device %s", m_deviceName.c_str());
+        printf("Skipping input-only device %s\n", m_deviceName.c_str());
       
       m_isValid = true;
     }
