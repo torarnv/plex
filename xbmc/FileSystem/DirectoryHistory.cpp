@@ -150,10 +150,10 @@ void CDirectoryHistory::DumpPathHistory()
 {
   // debug log
   CStdString strTemp;
-  CLog::Log(LOGDEBUG,"Current m_vecPathHistory:");
+  printf("Current m_vecPathHistory:\n");
   for (int i = 0; i < (int)m_vecPathHistory.size(); ++i)
   {
     strTemp.Format("%02i.[%s]", i, m_vecPathHistory[i]);
-    CLog::Log(LOGDEBUG, "  %s", strTemp.c_str());
+    printf(" * %s\n", strTemp.c_str());
   }
 }

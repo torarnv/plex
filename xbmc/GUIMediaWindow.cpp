@@ -560,11 +560,20 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
   
   if (!GetDirectory(strDirectory, newItems))
   {
+    if (newItems.m_wasListingCancelled == true)
+    {
+      // Fast path.
+      if (strDirectory.Equals(strOldDirectory) == false)
+        m_history.RemoveParentPath();
+      
+      return true;
+    }
+
     ClearFileItems();
     m_vecItems->ClearProperties();
     m_vecItems->SetThumbnailImage("");
     
-    if (m_vecItems->m_wasListingCancelled == false)
+    if (newItems.m_wasListingCancelled == false)
       CLog::Log(LOGERROR,"CGUIMediaWindow::GetDirectory(%s) failed", strDirectory.c_str());
     else
       CLog::Log(LOGINFO,"CGUIMediaWindow::GetDirectory(%s) was canceled", strDirectory.c_str());
