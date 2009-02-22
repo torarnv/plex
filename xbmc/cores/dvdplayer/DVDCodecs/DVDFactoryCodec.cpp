@@ -147,7 +147,7 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec( CDVDStreamInfo &hint )
   CDVDAudioCodec* pCodec = NULL;
   CDVDCodecOptions options;
 
-  /*if (!hint.forcelibdts)*/ pCodec = OpenCodec( new CDVDAudioCodecPassthrough(), hint, options );
+  if (!hint.forcelibdts) pCodec = OpenCodec( new CDVDAudioCodecPassthrough(), hint, options );
   if( pCodec ) return pCodec;
 
   switch (hint.codec)
