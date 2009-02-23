@@ -162,6 +162,7 @@ CFileItem::CFileItem(const CGenre& genre)
   m_strPath = _P(genre.strGenre);
   m_bIsFolder = true;
   m_bIsSearchDir = false;
+  m_strSearchPrompt = "";
   CUtil::AddSlashAtEnd(m_strPath);
   GetMusicInfoTag()->SetGenre(genre.strGenre);
 }
@@ -345,6 +346,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   m_strFanartUrl = item.m_strFanartUrl;
   m_bIsPopupMenuItem = item.m_bIsPopupMenuItem;
   m_bIsSearchDir = item.m_bIsSearchDir;
+  m_strSearchPrompt = item.m_strSearchPrompt;
   
   return *this;
 }
@@ -388,6 +390,8 @@ void CFileItem::Reset()
   m_extrainfo.Empty();
   m_strFanartUrl.Empty();
   m_bIsPopupMenuItem = false;
+  m_bIsSearchDir = false;
+  m_strSearchPrompt = "";
   
   SetInvalid();
 }
