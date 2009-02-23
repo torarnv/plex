@@ -221,6 +221,11 @@ class PlexMediaNode
      // Let subclass finish.
      DoBuildFileItem(pItem, string(parentPath), el);
      
+     // Date.
+     const char* date = el.Attribute("date"); 
+     if (date && strlen(date) > 0)
+       pItem->SetProperty("date", date);
+     
      try
      {
        // Thumb.
@@ -482,10 +487,12 @@ class PlexMediaTrack : public PlexMediaNode
     pItem = newItem;
     
     // Path to the track.
-    CURL url2(pItem->m_strPath);
-    url2.SetProtocol("http");
-    url2.SetPort(32400);
-    url2.GetURL(pItem->m_strPath);
+    pItem->m_strPath = CPlexDirectory::ProcessUrl(parentPath, el.Attribute("key"), false);
+
+    // Summary.
+    const char* summary = el.Attribute("summary");
+    if  (summary)
+      pItem->SetProperty("description", summary);
   }
   
   virtual void ComputeLabels(const string& strPath, string& strFileLabel, string& strDirLabel, string& strSecondDirLabel)
