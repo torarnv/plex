@@ -3627,6 +3627,9 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
       return item->GetVideoInfoTag()->m_strAlbum;
     break;
   case LISTITEM_YEAR:
+    if (item->GetProperty("subtitle").size() > 0)
+      return item->GetProperty("subtitle");
+    
     if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetYearString().size() > 0)
     {
       return item->GetMusicInfoTag()->GetYearString();
@@ -3638,8 +3641,6 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
         strResult.Format("%i",item->GetVideoInfoTag()->m_iYear);
       return strResult;
     }
-    
-    return item->GetProperty("date");
     break;
   case LISTITEM_PREMIERED:
     if (item->HasVideoInfoTag())

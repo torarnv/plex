@@ -222,9 +222,9 @@ class PlexMediaNode
      DoBuildFileItem(pItem, string(parentPath), el);
      
      // Date.
-     const char* date = el.Attribute("date"); 
+     const char* date = el.Attribute("subtitle"); 
      if (date && strlen(date) > 0)
-       pItem->SetProperty("date", date);
+       pItem->SetProperty("subtitle", date);
      
      try
      {
