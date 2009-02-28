@@ -28,6 +28,7 @@
 		1AD99C750E9FB54200503917 /* QuickTimeWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1AD99C740E9FB54200503917 /* QuickTimeWrapper.cpp */; };
 		1AF6A79C0E994BFB00D96BD7 /* ModelNames.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1AF6A79B0E994BFB00D96BD7 /* ModelNames.plist */; };
 		9421E33A0ED6A99E00A26254 /* CoreAudioRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 943BC2870ED3F1E500B7CB45 /* CoreAudioRenderer.cpp */; };
+		949384630F591AE6004DFC17 /* FileEyeTVSocket.mm in Sources */ = {isa = PBXBuildFile; fileRef = 949384620F591AE6004DFC17 /* FileEyeTVSocket.mm */; };
 		94B1852B0EB48264008C38FA /* CoreAudioAUHAL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 94B185280EB48264008C38FA /* CoreAudioAUHAL.cpp */; };
 		94B1852C0EB48264008C38FA /* CoreAudioPlexSupport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 94B1852A0EB48264008C38FA /* CoreAudioPlexSupport.cpp */; };
 		94B185540EB48568008C38FA /* pa_ringbuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 94B185520EB48568008C38FA /* pa_ringbuffer.c */; };
@@ -1093,6 +1094,8 @@
 		9409C1EB0E01D696001626C3 /* aften.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = aften.h; path = ../../lib/libaften/aften.h; sourceTree = "<group>"; };
 		943BC2860ED3F1E500B7CB45 /* CoreAudioRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreAudioRenderer.h; sourceTree = "<group>"; };
 		943BC2870ED3F1E500B7CB45 /* CoreAudioRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CoreAudioRenderer.cpp; sourceTree = "<group>"; };
+		949384610F591AE6004DFC17 /* FileEyeTVSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileEyeTVSocket.h; sourceTree = "<group>"; };
+		949384620F591AE6004DFC17 /* FileEyeTVSocket.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FileEyeTVSocket.mm; sourceTree = "<group>"; };
 		94B185280EB48264008C38FA /* CoreAudioAUHAL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CoreAudioAUHAL.cpp; sourceTree = "<group>"; };
 		94B185290EB48264008C38FA /* CoreAudioAUHAL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreAudioAUHAL.h; sourceTree = "<group>"; };
 		94B1852A0EB48264008C38FA /* CoreAudioPlexSupport.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CoreAudioPlexSupport.cpp; sourceTree = "<group>"; };
@@ -4797,6 +4800,8 @@
 		E38E16940D25F9FA00618676 /* FileSystem */ = {
 			isa = PBXGroup;
 			children = (
+				949384610F591AE6004DFC17 /* FileEyeTVSocket.h */,
+				949384620F591AE6004DFC17 /* FileEyeTVSocket.mm */,
 				E3FD28780E9951B500EE77C3 /* FilePlex.cpp */,
 				E3FD28790E9951B500EE77C3 /* FilePlex.h */,
 				E3FD287A0E9951B500EE77C3 /* PlexDirectory.cpp */,
@@ -7457,6 +7462,7 @@
 				E3AF20810F0C4DF600C5259C /* PlexMediaServerPlayer.cpp in Sources */,
 				E3F766080F346CC300667633 /* md5.cpp in Sources */,
 				E3F766230F3471D300667633 /* DVDInputStreamStack.cpp in Sources */,
+				949384630F591AE6004DFC17 /* FileEyeTVSocket.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
