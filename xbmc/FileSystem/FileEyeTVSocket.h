@@ -34,7 +34,7 @@ namespace XFILE
 			virtual void Close();
 		protected:
 		private:
-
-			
+			int eyetvSock;
+			bool initialised; 
 		};
 }
