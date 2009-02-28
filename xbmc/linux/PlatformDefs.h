@@ -138,7 +138,7 @@ typedef unsigned char   BYTE;
 typedef char        CHAR;
 typedef unsigned char UCHAR;
 typedef wchar_t     WCHAR;
-typedef signed char BOOL;
+typedef signed char	BOOL;
 typedef BYTE        BOOLEAN;
 typedef short       SHORT;
 typedef unsigned short  USHORT;

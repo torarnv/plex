@@ -11,11 +11,8 @@
 
 
 #include "FileEyeTVSocket.h"
-
-#import "log.h"
-
 #import <Cocoa/Cocoa.h>
-
+#import "log.h"
 #import <sys/un.h>
 
 
