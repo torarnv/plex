@@ -224,7 +224,6 @@ DWORD CDVDAudio::AddPackets(const DVDAudioFrame &audioframe)
 
     m_iBufferSize = 0;
   }
-
   copied = AddPacketsRenderer(data, len, lock);
   data += copied;
   len -= copied;

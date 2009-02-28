@@ -20,14 +20,17 @@
 
  */
 #pragma once
-#include "ringbuffer.h"
 #include "aften-types.h"
 #include "stdint.h"
+
+#define ENCODER_OK 0
+#define ENCODER_ERROR -1
 
 //These values are forced to allow spdif out
 #define SPDIF_SAMPLESIZE 16
 #define SPDIF_CHANNELS 2
-#define SPDIF_SAMPLERATE 48000
+#define SPDIF_SAMPLERATE44 44100
+#define SPDIF_SAMPLERATE48 48000
 #define SPDIF_SAMPLE_BYTES SPDIF_CHANNELS * SPDIF_SAMPLESIZE / 8
 #define AC3_SAMPLES_PER_FRAME 1536
 #define AC3_SPDIF_FRAME_SIZE AC3_SAMPLES_PER_FRAME * SPDIF_SAMPLE_BYTES
@@ -35,8 +38,6 @@
 
 struct AC3Encoder
 {
-	struct OutRingBuffer *m_inputBuffer;
-	struct OutRingBuffer *m_outputBuffer;
 	AftenContext m_aftenContext;
 	int m_iSampleSize;
 
@@ -48,11 +49,7 @@ struct AC3Encoder
 	int remap;
 };
 
-int ac3encoder_init(struct AC3Encoder *encoder, int iChannels, unsigned int uiSamplesPerSec, int uiBitsPerSample, int remap);
-int ac3encoder_write_samples(struct AC3Encoder *encoder, uint8_t *samples, int samples_in);
-int ac3coder_get_PCM_samplecount(struct AC3Encoder *encoder);
-int ac3encoder_get_AC3_samplecount(struct AC3Encoder *encoder);
-int ac3encoder_get_encoded_samples(struct AC3Encoder *encoder, uint8_t *encoded_samples, int samples_out);
-int ac3encoder_channelcount(struct AC3Encoder *encoder);
-void ac3encoder_flush(struct AC3Encoder *encoder);
-void ac3encoder_free(struct AC3Encoder *encoder);
+int ac3encoderInit(struct AC3Encoder *encoder, uint32_t iChannels, uint32_t uiSamplesPerSec, uint32_t uiBitsPerSample, uint32_t remap);
+int ac3encoderEncodePCM(struct AC3Encoder *encoder, uint8_t *pcmSamples, uint8_t *frameOutput, uint32_t sampleCount);
+void ac3encoderReset(struct AC3Encoder *encoder);
+void ac3encoderFinalise(struct AC3Encoder *encoder);

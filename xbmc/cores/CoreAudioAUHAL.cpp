@@ -40,6 +40,7 @@
 #include "CoreAudioAUHAL.h"
 #include "Settings.h"
 #include "AudioDecoder.h"
+#include "ac3encoder.h"
 
 bool CoreAudioAUHAL::s_lastPlayWasSpdif = false;
 
@@ -63,7 +64,7 @@ struct CoreAudioDeviceParameters
 	AudioUnit                   au_unit;        /* The AudioUnit we use */
 	PaUtilRingBuffer*			outputBuffer;
 	void*						outputBufferData;
-	int						hardwareFrameLatency;
+	int							hardwareFrameLatency;
 	bool						b_digital;      /* Are we running in digital mode? */
 
 	/* CoreAudio SPDIF mode specific */
@@ -75,6 +76,12 @@ struct CoreAudioDeviceParameters
   AudioStreamBasicDescription sfmt_revert;    /* The original format of the stream */
   bool                  b_revert;       /* Wether we need to revert the stream format */
   bool                  b_changed_mixing;/* Wether we need to set the mixing mode back */
+	
+  // AC3 Encoder 	
+  bool					m_bEncodeAC3;
+  AC3Encoder			m_ac3encoder;
+	uint8_t				rawSampleBuffer[AC3_SAMPLES_PER_FRAME * SPDIF_SAMPLESIZE/8 * 6]; // 6 channels = 12 bytes/sample
+
 };
 
 /*****************************************************************************
@@ -86,47 +93,48 @@ CoreAudioAUHAL::CoreAudioAUHAL(const CStdString& strName, const char *strCodec, 
   OSStatus                err = noErr;
   UInt32                  i_param_size = 0;
 	
-	if (g_audioConfig.UseDigitalOutput() &&
+	/* Allocate structure */
+	deviceParameters = (CoreAudioDeviceParameters*)calloc(sizeof(CoreAudioDeviceParameters), 1);
+	if (!deviceParameters) return;
+	
+	if (g_audioConfig.HasDigitalOutput() && // disable encoder for legacy SPDIF devices for now
 		channels > 2 &&
-		!passthrough)
+		!passthrough &&
+		(sampleRate == SPDIF_SAMPLERATE44 || sampleRate == SPDIF_SAMPLERATE48))
 	{
 		// Enable AC3 passthrough for digital devices
 		int mpeg_remapping = 0;
 		if (strCodec == "AAC" || strCodec == "DTS") mpeg_remapping = 1; // DTS uses MPEG channel mapping
-		if (ac3encoder_init(&m_ac3encoder, channels, sampleRate, bitsPerSample, mpeg_remapping) == -1)
+		if (ac3encoderInit(&deviceParameters->m_ac3encoder, channels, sampleRate, bitsPerSample, mpeg_remapping) == -1)
 		{
 			m_bIsInitialized = false;
 			return;
 		}
 		else
 		{
-			m_bEncodeAC3 = true;
-			ac3_framebuffer = (unsigned char *)calloc(packetSize, 1);
+			deviceParameters->m_bEncodeAC3 = true;
 		}
 		
 	}
 	else
 	{
-		m_bEncodeAC3 = false;
-		ac3_framebuffer = NULL;
+		deviceParameters->m_bEncodeAC3 = false;
 	}
 
+	deviceParameters->b_digital = (passthrough || deviceParameters->m_bEncodeAC3) && g_audioConfig.HasDigitalOutput();
+	deviceParameters->i_hog_pid = -1;
+	deviceParameters->i_stream_index = -1;
+	
 	CLog::Log(LOGNOTICE, "Asked to create device:   [%s]", strName.c_str());
-	CLog::Log(LOGNOTICE, "Device should be digital: [%d]\n", passthrough);
+	CLog::Log(LOGNOTICE, "Device should be digital: [%d]\n", deviceParameters->b_digital);
 	CLog::Log(LOGNOTICE, "CoreAudio S/PDIF mode:    [%d]\n", g_audioConfig.UseDigitalOutput());
 	CLog::Log(LOGNOTICE, "Music mode:               [%d]\n", isMusic);
 	CLog::Log(LOGNOTICE, "Channels:                 [%d]\n", channels);
 	CLog::Log(LOGNOTICE, "Sample Rate:              [%d]\n", sampleRate);
 	CLog::Log(LOGNOTICE, "BitsPerSample:            [%d]\n", bitsPerSample);
 	CLog::Log(LOGNOTICE, "PacketSize:               [%d]\n", packetSize);
-
-	/* Allocate structure */
-	deviceParameters = (CoreAudioDeviceParameters*)calloc(sizeof(CoreAudioDeviceParameters), 1);
-	if (!deviceParameters) return;
-
-	deviceParameters->b_digital = (passthrough || m_bEncodeAC3) && g_audioConfig.HasDigitalOutput();
-	deviceParameters->i_hog_pid = -1;
-	deviceParameters->i_stream_index = -1;
+	
+	m_dwPacketSize = packetSize;
 	
 	m_bIsMusic = isMusic;
 
@@ -155,13 +163,14 @@ CoreAudioAUHAL::CoreAudioAUHAL(const CStdString& strName, const char *strCodec, 
 	{
 	  if (OpenSPDIF(deviceParameters, strName, channels, sampleRate, bitsPerSample, packetSize))
 	  {
+		m_dwPacketSize = AC3_SPDIF_FRAME_SIZE;
 	    m_bIsInitialized = true;
 	    return;
 	  }
 	}
-	else if (g_audioConfig.ForcedDigital() && (m_bEncodeAC3 || passthrough))
+	else if (g_audioConfig.ForcedDigital() && (deviceParameters->m_bEncodeAC3 || passthrough))
 	{
-		if (OpenPCM(deviceParameters, strName, SPDIF_CHANNELS, SPDIF_SAMPLERATE, SPDIF_SAMPLESIZE, packetSize))
+		if (OpenPCM(deviceParameters, strName, SPDIF_CHANNELS, sampleRate, SPDIF_SAMPLESIZE, packetSize))
 		{
 			m_bIsInitialized = true;
 			return;
@@ -204,14 +213,9 @@ HRESULT CoreAudioAUHAL::Deinitialize()
 		deviceParameters->au_unit = NULL;
     }
 	
-	if (m_bEncodeAC3)
+	if (deviceParameters->m_bEncodeAC3)
 	{
-		ac3encoder_free(&m_ac3encoder);
-	}
-	if (ac3_framebuffer != NULL)
-	{
-		free(ac3_framebuffer);
-		ac3_framebuffer = NULL;
+		ac3encoderFinalise(&deviceParameters->m_ac3encoder);
 	}
 	
     if( deviceParameters->b_digital )
@@ -314,8 +318,8 @@ float CoreAudioAUHAL::GetHardwareLatency()
 	float latency = CA_BUFFER_FACTOR + ((float)deviceParameters->hardwareFrameLatency / deviceParameters->stream_format.mSampleRate);
 	if (deviceParameters->b_digital)
 		latency += 0.032;
-	if (m_bEncodeAC3)
-		latency += 0.064;
+	//if (m_bEncodeAC3)
+	//	latency += 0.064;
 	//latency += 0.225;
 	return latency;
 }
@@ -327,62 +331,21 @@ AudioStreamBasicDescription* CoreAudioAUHAL::GetStreamDescription()
 
 int CoreAudioAUHAL::WriteStream(uint8_t *sampleBuffer, uint32_t samplesToWrite)
 {
-	
 	if (sampleBuffer == NULL || samplesToWrite == 0)
 	{
 		return 0;
 	}
-	
-	int inputByteFactor, outputByteFactor;
-	
-	if (m_bEncodeAC3) // use the raw PCM channel count to get the number of samples to play
-	{
-		inputByteFactor = ac3encoder_channelcount(&m_ac3encoder) * m_uiBitsPerSample/8;
-		outputByteFactor = SPDIF_SAMPLE_BYTES;
-	}
-	else // the PCM input and stream output should match
-	{
-		inputByteFactor = outputByteFactor = deviceParameters->stream_format.mBytesPerFrame;
-	}
-	
-	
-	if (m_bEncodeAC3)
-	{
-		int ac3_frame_count = 0;
-		
-		if ((ac3_frame_count = ac3encoder_write_samples(&m_ac3encoder, sampleBuffer, samplesToWrite)) == 0)
-		{
-			CLog::Log(LOGERROR, "AC3 output buffer underrun");
-			return 0;
-		}
-		else
-		{
-			int buffer_sample_readcount = -1;
-			if ((buffer_sample_readcount = ac3encoder_get_encoded_samples(&m_ac3encoder, ac3_framebuffer, samplesToWrite)) != samplesToWrite)
-			{
-				CLog::Log(LOGERROR, "AC3 output buffer underrun");
-			}
-			else
-			{
-				return PaUtil_WriteRingBuffer(deviceParameters->outputBuffer, ac3_framebuffer, samplesToWrite);
-			}
-		}
-	}
-	else
-	{
-		return PaUtil_WriteRingBuffer(deviceParameters->outputBuffer, sampleBuffer, samplesToWrite);
-	}
-	return 0;
+	return PaUtil_WriteRingBuffer(deviceParameters->outputBuffer, sampleBuffer, samplesToWrite);
 }
 
 void CoreAudioAUHAL::Flush()
 {
-	CSingleLock lock(m_cs); // acquire lock
+	//CSingleLock lock(m_cs); // acquire lock
 	
-	PaUtil_FlushRingBuffer( deviceParameters->outputBuffer );
-	if (m_bEncodeAC3)
+	//PaUtil_FlushRingBuffer( deviceParameters->outputBuffer );
+	if (deviceParameters->m_bEncodeAC3)
 	{
-		ac3encoder_flush(&m_ac3encoder);
+	//	ac3encoder_flush(&m_ac3encoder);
 	}
 }
 
@@ -831,10 +794,9 @@ int CoreAudioAUHAL::OpenSPDIF(struct CoreAudioDeviceParameters *deviceParameters
 
 #warning free
 	deviceParameters->outputBuffer = (PaUtilRingBuffer *)malloc(sizeof(PaUtilRingBuffer));
-#warning inelegant
-	deviceParameters->outputBufferData = malloc(framecount * SPDIF_SAMPLE_BYTES);
+	deviceParameters->outputBufferData = calloc(1, framecount * channels * bitsPerSample/8); // use uncompressed size if encoding ac3
 
-	PaUtil_InitializeRingBuffer(deviceParameters->outputBuffer, SPDIF_SAMPLE_BYTES, framecount, deviceParameters->outputBufferData);
+	PaUtil_InitializeRingBuffer(deviceParameters->outputBuffer, channels * bitsPerSample/8, framecount, deviceParameters->outputBufferData);
 	/* Add IOProc callback */
 	err = AudioDeviceCreateIOProcID(deviceParameters->device_id,
 									(AudioDeviceIOProc)RenderCallbackSPDIF,
@@ -929,7 +891,12 @@ OSStatus CoreAudioAUHAL::RenderCallbackSPDIF(AudioDeviceID inDevice,
     CoreAudioDeviceParameters *deviceParameters = (CoreAudioDeviceParameters *)threadGlobals;
 
 #define BUFFER outOutputData->mBuffers[deviceParameters->i_stream_index]
-	int framesToWrite = BUFFER.mDataByteSize / deviceParameters->outputBuffer->elementSizeBytes;
+	int framesToWrite = BUFFER.mDataByteSize / (deviceParameters->stream_format.mChannelsPerFrame * deviceParameters->stream_format.mBitsPerChannel/8);
+	//fprintf(stderr, "Frames requested: %i (%i bit, %i channels in, %i channels out)\n", 
+	//		framesToWrite, 
+	//		deviceParameters->stream_format.mBitsPerChannel,
+	//		deviceParameters->m_ac3encoder.m_aftenContext.channels,
+	//		deviceParameters->stream_format.mChannelsPerFrame);
 
 	if (framesToWrite > PaUtil_GetRingBufferReadAvailable(deviceParameters->outputBuffer))
 	{
@@ -939,7 +906,13 @@ OSStatus CoreAudioAUHAL::RenderCallbackSPDIF(AudioDeviceID inDevice,
 	else
 	{
 		// write a frame
-		PaUtil_ReadRingBuffer(deviceParameters->outputBuffer, BUFFER.mData, framesToWrite);
+		if (deviceParameters->m_bEncodeAC3)
+		{
+			PaUtil_ReadRingBuffer(deviceParameters->outputBuffer, deviceParameters->rawSampleBuffer, framesToWrite);
+			/*fprintf(stderr, "Got %i frames from encoder\n", */ac3encoderEncodePCM(&deviceParameters->m_ac3encoder, (uint8_t *)&deviceParameters->rawSampleBuffer, (uint8_t *)BUFFER.mData, framesToWrite)/*)*/;
+
+		}
+		else PaUtil_ReadRingBuffer(deviceParameters->outputBuffer, BUFFER.mData, framesToWrite);
 	}
 #undef BUFFER
     return( noErr );

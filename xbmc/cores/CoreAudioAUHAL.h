@@ -60,6 +60,7 @@ class CoreAudioAUHAL
 		virtual AudioStreamBasicDescription* GetStreamDescription();
 		virtual int WriteStream(uint8_t *sampleBuffer, uint32_t samplesToWrite);
 		virtual void Flush();
+		int PacketSize() { return m_dwPacketSize; }
 
 
 		// Addpackets - make ringbuffer private
@@ -101,10 +102,10 @@ class CoreAudioAUHAL
 		int m_uiBitsPerSample;
 		int m_uiSamplesPerSec;
 		
+		int m_dwPacketSize;
+		
 		bool m_bEncodeAC3;
 		AC3Encoder m_ac3encoder;
-		unsigned char* ac3_framebuffer;
-		
 		static bool s_lastPlayWasSpdif;
 	};
 		

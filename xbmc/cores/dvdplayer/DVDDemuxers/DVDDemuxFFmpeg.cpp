@@ -999,8 +999,11 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
 			if (ext == "dts" || ext == "DTS")
 			{
 				m_streams[iId]->codec = CODEC_ID_DTS;
-				m_streams[iId]->forcelibdts = true;				
-				CLog::Log(LOGDEBUG, "Decoding PCM WAV as DTS based on filename");
+				if (!m_streams[iId]->forcelibdts)
+				{
+					//CLog::Log(LOGDEBUG, "Decoding PCM WAV as DTS based on filename");
+					m_streams[iId]->forcelibdts = true;				
+				}
 			}
 		}
 	}

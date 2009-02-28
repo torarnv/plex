@@ -125,7 +125,7 @@ bool PlexAudioDevice::computeStreamSupportsDigital(AudioStreamID streamID)
     {
       for(int i=0; i<numFormats && ret == false; i++)
       {
-        CLog::Log(LOGDEBUG, STREAM_FORMAT_MSG(" * Supported format: ", pFormatList[i]));
+        //CLog::Log(LOGDEBUG, STREAM_FORMAT_MSG(" * Supported format: ", pFormatList[i]));
         if (pFormatList[i].mFormatID == 'IAC3' || pFormatList[i].mFormatID == kAudioFormat60958AC3)
           ret = true;
       }
