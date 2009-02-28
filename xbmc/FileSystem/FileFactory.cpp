@@ -59,6 +59,7 @@
 #include "FileTuxBox.h"
 #include "HDHomeRun.h"
 #include "CMythFile.h"
+#include "FileEyeTVSocket.h" 
 #include "Application.h"
 #include "URL.h"
 
@@ -131,6 +132,11 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 #endif
     else if (strProtocol == "myth") return new CCMythFile();
     else if (strProtocol == "cmyth") return new CCMythFile();
+    else if (strProtocol == "eyetv")
+	{
+		return new CFileEyeTVSocket();
+		
+	}
   }
 
   return NULL;

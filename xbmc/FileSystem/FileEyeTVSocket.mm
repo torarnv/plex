@@ -68,6 +68,21 @@ bool CFileEyeTVSocket::Open(const CURL& url, bool bBinary)
         return false;
     }
 	
+	// increase buffer size
+	int oldSockBufLen, oldSockBufLenSize, newSockBufLen;
+	if (getsockopt(publicSock, SOL_SOCKET, SO_RCVBUF, &oldSockBufLen, (socklen_t *)&oldSockBufLenSize) != 0)
+	{
+		perror(strerror(errno));
+		return false;
+	}
+	newSockBufLen = 1024768;
+	if (setsockopt(publicSock, SOL_SOCKET, SO_RCVBUF, &newSockBufLen, sizeof(int32_t)) != 0)
+	{
+		perror(strerror(errno));
+		return false; 
+	}	
+	
+	
     if( bind(publicSock, (struct sockaddr *)&publicAddr, sizeof(struct sockaddr_un)) == -1 )
     {
 		CLog::Log(LOGERROR, "bind local socket failed (errno=%d)", errno);
@@ -130,7 +145,7 @@ unsigned int CFileEyeTVSocket::Read(void *lpBuf, __int64 uiBufSize)
 		
 		if (len < uiBufSize)
 		{
-			CLog::Log(LOGERROR, "short read from EyeTV server socket (%i KB of %i KB requested)", len / 1024, uiBufSize / 1024);
+			CLog::Log(LOGERROR, "short read from EyeTV server socket (%i KB of %li KB requested)", len / 1024, uiBufSize / 1024);
 		}
     	
 		return len;
