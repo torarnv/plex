@@ -315,6 +315,8 @@ bool CGUIWindowPrograms::OnPlayMedia(int iItem)
     return MEDIA_DETECT::CAutorun::PlayDisc();
 
   if (pItem->m_bIsFolder) return false;
+  
+  return CGUIMediaWindow::OnPlayMedia(m_vecItems->Get(iItem).get());
 
   return false;
 }
