@@ -259,6 +259,10 @@ public:
   CStdString m_strSearchPrompt;   // text to show as keyboard header
   bool m_wasListingCancelled;
   
+  bool m_displayMessage;
+  CStdString m_displayMessageTitle;
+  CStdString m_displayMessageContents;
+  
 private:
   CStdString GetFolderThumb(const CStdString &folderJPG = "folder.jpg") const;
 

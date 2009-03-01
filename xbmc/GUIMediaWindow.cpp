@@ -530,7 +530,7 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
   }
 
   items.Assign(newItems, false);
-  
+
   return true;
 }
 
@@ -669,7 +669,17 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
     m_history.AddPath(m_vecItems->m_strPath);
 
   //m_history.DumpPathHistory();
-
+  
+  // PLEX - check for message to display.
+  if (newItems.m_displayMessage)
+  {
+    CGUIDialogOK::ShowAndGetInput(newItems.m_displayMessageTitle, newItems.m_displayMessageContents, "", "");
+  
+    // If the container has no child items, return to the previous directory
+    if (newItems.Size() == 0)
+      return false;
+  }
+  
   return true;
 }
 

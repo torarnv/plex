@@ -1157,6 +1157,9 @@ CFileItemList::CFileItemList()
   m_replaceListing = false;
   m_saveInHistory = true;
   m_wasListingCancelled = false;
+  m_displayMessage = false;
+  m_displayMessageTitle = "";
+  m_displayMessageContents = "";
 }
 
 CFileItemList::CFileItemList(const CStdString& strPath)
@@ -1170,6 +1173,9 @@ CFileItemList::CFileItemList(const CStdString& strPath)
   m_replaceListing = false;
   m_saveInHistory = true;
   m_wasListingCancelled = false;
+  m_displayMessage = false;
+  m_displayMessageTitle = "";
+  m_displayMessageContents = "";
 }
 
 CFileItemList::~CFileItemList()
@@ -1249,6 +1255,9 @@ void CFileItemList::Clear()
   m_firstTitle.Empty();
   m_secondTitle.Empty();
   m_wasListingCancelled = false;
+  m_displayMessage = false;
+  m_displayMessageTitle = "";
+  m_displayMessageContents = "";
 }
 
 void CFileItemList::ClearItems()
@@ -1363,6 +1372,9 @@ void CFileItemList::Assign(const CFileItemList& itemlist, bool append)
   m_firstTitle = itemlist.m_firstTitle;
   m_secondTitle = itemlist.m_secondTitle;
   m_wasListingCancelled = itemlist.m_wasListingCancelled;
+  m_displayMessage = itemlist.m_displayMessage;
+  m_displayMessageTitle = itemlist.m_displayMessageTitle;
+  m_displayMessageContents = itemlist.m_displayMessageContents;
 }
 
 CFileItemPtr CFileItemList::Get(int iItem)

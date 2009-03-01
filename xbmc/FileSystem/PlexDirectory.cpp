@@ -169,19 +169,17 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   }
   
   // Check for dialog message attributes
-  CStdString strHeader = "";
   CStdString strMessage = "";
   const char* header = root->Attribute("header");
   if (header && strlen(header) > 0)
   {
-    strHeader = header;
     const char* message = root->Attribute("message");
-    if (message && strlen(message) > 0) strMessage = message;
-    CGUIDialogOK::ShowAndGetInput(strHeader, strMessage, "", "");
+    if (message && strlen(message) > 0) 
+      strMessage = message;
     
-    // If the container has no child items, return to the previous directory
-    if (items.Size() == 0)
-      return false;
+    items.m_displayMessage = true; 
+    items.m_displayMessageTitle = header; 
+    items.m_displayMessageContents = root->Attribute("message"); 
   }
   
   // See if this directory replaces the parent.
