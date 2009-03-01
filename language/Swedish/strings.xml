@@ -1,16 +1,10 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Language file translated with Team XBMC Translator-->
-<!--Translator: blittan-->
-<!--Email: blittan@xbmc.org-->
-<!--Date of translation: 10/22/2008-->
-<!--$Revision$-->
-<!--Based on english strings version 15826-->
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
   <string id="2">Musik</string>
   <string id="3">Filmer</string>
-  <string id="4">TV Guide</string>
+  <string id="4">TV-Guide</string>
   <string id="5">Inställningar</string>
   <string id="7">Filhanterare</string>
   <string id="8">Väder</string>
@@ -274,7 +268,7 @@
   <string id="361">Starta bildspel</string>
   <string id="362">Skärmsläckarnivå</string>
   <string id="363">Sort: Filer</string>
-  <string id="364">- Dolby Digital (AC3) kapabel förstärkare</string>
+  <string id="364">- Dolby Digital (AC3)-kapabel förstärkare</string>
   <string id="365">Sort: Namn</string>
   <string id="366">Sort: År</string>
   <string id="367">Sort: Betyg</string>
@@ -466,6 +460,11 @@
   <string id="570">Datum tillagt</string>
   <string id="571">Standard</string>
   <string id="572">Studio</string>
+  <string id="574">Digitalutgångsstöd</string>
+  <string id="575">Autoigenkänning</string>
+  <string id="576">Digital forcering</string>
+  <string id="577">Normalisera filmljud</string>
+  <string id="578">Länka systemljudsutgången</string>
   <string id="580">Sorteringsriktning</string>
   <string id="581">Sorteringsmetod</string>
   <string id="582">Visningsläge</string>
@@ -849,8 +848,8 @@
   <string id="12373">Inställningar &amp; Filhanterare</string>
   <string id="12376">Använd som standard för alla Filmer</string>
   <string id="12377">Detta kommer att ta bort alla tidigare sparade värden</string>
-  <string id="12378">Visa varje bild för</string>
-  <string id="12379">Använd Pan och Zoom effekter</string>
+  <string id="12378">Visa varje bild i</string>
+  <string id="12379">Använd Panorering och Zoom-effekter</string>
   <string id="12380">Spela NTSC filmer i PAL</string>
   <string id="12381">Spela PAL filmer i NTSC</string>
   <string id="12382">Spela NTSC filmer i PAL60</string>
@@ -889,7 +888,7 @@
   <string id="13109">Prova upplösning</string>
   <string id="13110">Spara upplösning?</string>
   <string id="13111">Vill du behålla denna upplösning?</string>
-  <string id="13112">Högkvalitets mjukvaruuppskalning</string>
+  <string id="13112">Högkv. mjukvaruuppskalning</string>
   <string id="13113">Inaktiverad</string>
   <string id="13114">Aktiverad för SD innehåll</string>
   <string id="13115">Alltid aktiverad</string>
@@ -897,9 +896,14 @@
   <string id="13117">Bicubic</string>
   <string id="13118">Lanczos</string>
   <string id="13119">Sinc</string>
+  <string id="13120">Aktiverad</string>
   <string id="13130">Skärmrensning</string>
   <string id="13131">Inaktivera</string>
   <string id="13132">Rensa skärmar</string>
+  <string id="13134">H.264 hastighetsökning</string>
+  <string id="13135">Inaktiverad</string>
+  <string id="13136">Medium</string>
+  <string id="13137">Hög</string>
   <string id="13140">Aktiva anslutningar detekterade!</string>
   <string id="13141">Om du fortsätter kommer du kanske inte att kunna kontrollera</string>
   <string id="13142">XBMC längre. Är du säker att du vill stoppa händelseservern?</string>
@@ -1081,15 +1085,21 @@
   <string id="13417">Grundläggande Shaders (ARB)</string>
   <string id="13418">Avancerad Shaders (GLSL)</string>
   <string id="13419">Mjukvara</string>
-  <string id="13600">Apple fjärrkontroll</string>
+  <string id="13600">Fjärrkontroll</string>
   <string id="13601">Läge</string>
   <string id="13602">Körs alltid</string>
   <string id="13603">Sekvensfördröjningstid</string>
   <string id="13610">Inaktiverad</string>
   <string id="13611">Standard</string>
   <string id="13612">Universiell fjärrkontroll</string>
+  <string id="13613">Harmony fjärrkontroll</string>
   <string id="13620">Apple fjärrkontrollsfel</string>
   <string id="13621">Apple fjärrkontroll kunde inte aktiveras.</string>
+  <string id="13630">Mediaserver</string>
+  <string id="13631">Läge</string>  
+  <string id="13632">- Alltid igång</string>
+  <string id="13633">Avaktiverad</string>
+  <string id="13634">Aktiverad</string>
   <string id="14000">Stapling: På</string>
   <string id="14001">Stapling: Av</string>
   <string id="14003">Laddar ner spellista...</string>
@@ -1185,7 +1195,7 @@
   <string id="15202">Last.FM användarnamn</string>
   <string id="15203">Last.FM lösenord</string>
   <string id="15204">Inget svar: avvaktar...</string>
-  <string id="15205">Var vänlig uppdatera XBMC</string>
+  <string id="15205">Var vänlig uppdatera Plex</string>
   <string id="15206">Felaktig autentisering: Kontrollera användarnamn och lösenord</string>
   <string id="15207">Uppkopplad</string>
   <string id="15208">Inte uppkopplad</string>
@@ -1197,6 +1207,7 @@
   <string id="15214">Använd utjämnad A/V synkronisering</string>
   <string id="15215">Göm filnamn i miniatyrläget</string>
   <string id="15216">Spela i partyläge</string>
+  <string id="15230">Bakgrund</string>
   <string id="15250">Skicka radio till Last.FM</string>
   <string id="15251">Ansluter till Last.FM...</string>
   <string id="15252">Väljer station...</string>
@@ -1312,7 +1323,11 @@
   <string id="16307">Bicubic (mjukvara)</string>
   <string id="16308">Lanczos (mjukvara)</string>
   <string id="16309">Sinc (mjukvara)</string>
-  <string id="17500">Visa insommningstimeout</string>
+  <string id="17501">Skärmens ljusstyrka</string>
+  <string id="18101">Volym för bakgrundsmusik</string>
+  <string id="18102">Aktivera Tema-musik</string>
+  <string id="18103">- Ladda ned Tema-musik automatiskt</string>
+  <string id="18104">Aktivera bakgrundsmusik</string>
   <string id="20000">Inspelningsmapp</string>
   <string id="20001">Använd extern DVD spelare</string>
   <string id="20002">Extern DVD spelare</string>
@@ -1488,8 +1503,8 @@
   <string id="20189">Aktivera automatisk rullning för handling &amp; recension</string>
   <string id="20190">Egen</string>
   <string id="20191">Aktivera debug-loggning</string>
-  <string id="20192">Hämta albuminformation under tilläggning till bibliotek</string>
-  <string id="20193">Hämta artistinformation under tilläggning till bibliotek</string>
+  <string id="20192">Hämta albuminfo medan albumet läggs till</string>
+  <string id="20193">Hämta artistinfo medan artisten läggs till</string>
   <string id="20194">Standard skrapa</string>
   <string id="20195">Byt skrapa</string>
   <string id="20196">Exportera musikbibliotek</string>
@@ -1534,7 +1549,7 @@
   <string id="20339">Regissör</string>
   <string id="20340">Vill du ta bort alla objekt i</string>
   <string id="20341">denna sökväg från biblioteket?</string>
-  <string id="20342">Filmer</string>
+  <string id="20342">Biofilmer</string>
   <string id="20343">TV-serier</string>
   <string id="20344">Denna mapp innehåller</string>
   <string id="20345">Kör automatisk skanning</string>
@@ -1615,6 +1630,7 @@
   <string id="20422">Alltid</string>
   <string id="20423">Har trailer</string>
   <string id="20424">Falskt</string>
+  <string id="20425">Fanart bildspel</string>
   <string id="21330">Visa dolda filer och mappar</string>
   <string id="21331">TuxBox klient</string>
   <string id="21332">VARNING: Vald TuxBox enhet är i inspelningsläge!</string>
@@ -1792,4 +1808,47 @@
   <string id="29800">Biblioteksläge</string>
   <string id="29801">QWERTY tangentbord</string>
   <string id="29999">Aktivera fladderfilter lagningsinställning till spel</string>
+  
+  <string id="40000">Plex-uppdatering</string>
+  <string id="40001">Ny version tillgänglig</string>
+  <string id="40002">Installera med uppdateringsverktyget</string>
+  <string id="40003">En ny version av Plex är tillgänglig.</string>
+  <string id="40004">Version: %@  (du har %@)</string>
+  <string id="40005">Vill du ladda ned och installera nu?</string>
+  <string id="40006">Du har den senaste versionen av Plex (%@)</string>
+  <string id="40007">Laddar ned uppdatering av Plex</string>
+  <string id="40008">%@ av %@</string>
+  <string id="40009">%@ nedladdat</string>
+  <string id="40010">Packar upp uppdatering av Plex</string>
+  <string id="40011">Installerar uppdatering av Plex</string>
+  <string id="40012">Uppdateringen misslyckades</string>
+  <string id="40013">Ett fel har inträffat.</string>
+  <string id="40014">Titta i konsollen for mer information.</string>
+  <string id="40015">Söker efter uppdateringar</string>
+  <string id="40016">Sök efter uppdateringar nu...</string>
+  <string id="40017">Sök automatiskt efter uppdateringar</string>
+  <string id="40018">Uppdatera</string>
+  <string id="40019">- Om uppdateringar är tillgängliga</string>
+  <string id="40020">Visa ett meddelande</string>
+  <string id="40021">Fråga före installation</string>
+  <string id="40022">Sök efter uppdateringar automatisk?</string>
+  <string id="40023">Vill du att Plex ska meddela dig när uppdateringar</string>
+  <string id="40024">är tillgängliga?</string>
+  <string id="40025">- Sök efter uppdateringar</string>
+  <string id="40026">Varje timme</string>
+  <string id="40027">Varje dag</string>
+  <string id="40028">Varje vecka</string>
+  <string id="40100">Program</string>
+  <string id="40101">Lägg till program</string>
+  <string id="40102">Ta bort program</string>
+  <string id="40103">Browse for Application</string>
+  <string id="40103">Sök program</string>
+  <string id="40104">RSS</string>
+  <string id="40105">Strömsparare</string>
+  <string id="40106">Ta bort arbetsflöde</string>
+  <string id="40200">Otillåten sökväg</string>
+  <string id="40201">Plex Mediaserver-sökvägar kan inte läggas till där</string>
+  <string id="40202">flera källor kombinerats till en källa (multipath).</string>
+  <string id="40203">Plex Mediaserver</string>
+  <string id="40204">Väntar på respons...</string>
 </strings>
