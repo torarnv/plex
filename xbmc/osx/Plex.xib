@@ -169,7 +169,7 @@
 								<object class="NSMenuItem" id="399787241">
 									<reference key="NSMenu" ref="466310130"/>
 									<string key="NSTitle">Move to Previous Screen</string>
-									<string type="base64-UTF8" key="NSKeyEquiv">75yDA</string>
+									<string type="base64-UTF8" key="NSKeyEquiv">75yCA</string>
 									<int key="NSKeyEquivModMask">1179648</int>
 									<int key="NSMnemonicLoc">2147483647</int>
 									<reference key="NSOnImage" ref="756751024"/>
@@ -178,7 +178,7 @@
 								<object class="NSMenuItem" id="959138940">
 									<reference key="NSMenu" ref="466310130"/>
 									<string key="NSTitle">Move to Next Screen</string>
-									<string type="base64-UTF8" key="NSKeyEquiv">75yCA</string>
+									<string type="base64-UTF8" key="NSKeyEquiv">75yDA</string>
 									<int key="NSKeyEquivModMask">1179648</int>
 									<int key="NSMnemonicLoc">2147483647</int>
 									<reference key="NSOnImage" ref="756751024"/>
@@ -717,14 +717,6 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
-						<string key="label">moveToNextScreen:</string>
-						<reference key="source" ref="1050"/>
-						<reference key="destination" ref="959138940"/>
-					</object>
-					<int key="connectionID">485</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
 						<string key="label">checkForUpdatesWithUI:</string>
 						<reference key="source" ref="821496234"/>
 						<reference key="destination" ref="135488734"/>
@@ -738,6 +730,22 @@
 						<reference key="destination" ref="1016922804"/>
 					</object>
 					<int key="connectionID">496</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">moveToNextScreen:</string>
+						<reference key="source" ref="1050"/>
+						<reference key="destination" ref="959138940"/>
+					</object>
+					<int key="connectionID">497</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">moveToPreviousScreen:</string>
+						<reference key="source" ref="1050"/>
+						<reference key="destination" ref="399787241"/>
+					</object>
+					<int key="connectionID">498</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -1095,13 +1103,13 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>{{525, 802}, {197, 73}}</string>
-					<string>{{355, 472}, {193, 20}}</string>
+					<string>{{212, 992}, {193, 20}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>{74, 862}</string>
 					<string>{{11, 977}, {478, 20}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{415, 389}, {262, 83}}</string>
+					<string>{{272, 909}, {262, 83}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>{{475, 832}, {234, 43}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -1158,7 +1166,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">496</int>
+			<int key="maxID">498</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
