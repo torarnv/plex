@@ -3019,6 +3019,8 @@ int CDVDPlayer::GetCacheSize()
     return 1024;
   else if (strFile.Find("http://video.pitchfork.tv") != -1)
     return 256;
+  else if (strFile.Find("http://www.plexapp.com/screencasts") != -1)
+    return 900;
   
   // First, figure out the source of the file.
   bool bFileOnHD = false;
