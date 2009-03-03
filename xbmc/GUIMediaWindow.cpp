@@ -558,8 +558,11 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
   // Get the new directory.
   CFileItemList newItems;
   
-  if (!GetDirectory(strDirectory, newItems))
+  if (!GetDirectory(strDirectory, newItems) || (newItems.m_displayMessage && newItems.Size() == 0))
   {
+    if (newItems.m_displayMessage)
+      CGUIDialogOK::ShowAndGetInput(newItems.m_displayMessageTitle, newItems.m_displayMessageContents, "", "");
+    
     if (newItems.m_wasListingCancelled == true)
     {
       // Fast path.
