@@ -210,7 +210,7 @@ public:
   virtual CStdString GetPlayerState();
   virtual bool SetPlayerState(CStdString state);
 
-  virtual bool IsCaching() const { return m_caching; } 
+  virtual bool IsCaching() const { return m_caching; }
   virtual int GetCacheLevel() const ; 
 
   static int GetCacheSize();
@@ -257,6 +257,7 @@ protected:
   void CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket);
   bool CheckSceneSkip(CCurrentStream& current);
   bool CheckPlayerInit(CCurrentStream& current, unsigned int source);
+  bool CheckStartCaching(CCurrentStream& current);
   void SendPlayerMessage(CDVDMsg* pMsg, unsigned int target);
 
   bool ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream);
