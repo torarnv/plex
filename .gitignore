@@ -5,3 +5,12 @@ Plex.xcodeproj/*.pbxuser
 .settings/
 tools/EventClients/Clients/XBMCHelper/XBMCHelper
 Edit/
+xbmc/cores/dvdplayer/Codecs/ffmpeg/doc/*
+xbmc/cores/dvdplayer/Codecs/ffmpeg/config.err
+xbmc/cores/dvdplayer/Codecs/ffmpeg/config.mak
+xbmc/cores/dvdplayer/Codecs/ffmpeg/ffmpeg
+xbmc/cores/dvdplayer/Codecs/ffmpeg/ffmpeg_g
+xbmc/cores/dvdplayer/Codecs/ffmpeg/ffplay
+xbmc/cores/dvdplayer/Codecs/ffmpeg/ffplay_g
+xbmc/cores/dvdplayer/Codecs/ffmpeg/ffserver
+xbmc/cores/dvdplayer/Codecs/ffmpeg/ffserver_g
