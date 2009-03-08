@@ -391,6 +391,13 @@ void CPlexMediaServerPlayer::OnFrameMap(const string& args)
     // Create a file mapping.
     ipc::file_mapping fileMapping(file.c_str(), ipc::read_write);
 
+    // Whack the region if it already exists.
+    if (m_mappedRegion)
+    {
+      delete m_mappedRegion;
+      m_mappedRegion = 0;
+    }
+    
     // Map the whole file in this process.
     m_mappedRegion = new ipc::mapped_region(fileMapping, ipc::read_write);
     printf("Mapped region is %d bytes.\n", m_mappedRegion->get_size());
