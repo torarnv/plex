@@ -23,6 +23,7 @@
 #include <stdlib.h>
 
 #include "swscale.h"
+#include "swscale_internal.h"
 
 #define YUV2RGB_INIT \
     "wr %%g0, 0x10, %%gsr \n\t" \
@@ -84,7 +85,7 @@ static int vis_420P_ARGB32(SwsContext *c, uint8_t* src[], int srcStride[], int s
   int y, out1, out2, out3, out4, out5, out6;
 
   for(y=0;y < srcSliceH;++y) {
-      asm volatile (
+      __asm__ volatile (
           YUV2RGB_INIT
           "wr %%g0, 0xd2, %%asi        \n\t" /* ASI_FL16_P */
           "1:                          \n\t"
@@ -135,7 +136,7 @@ static int vis_422P_ARGB32(SwsContext *c, uint8_t* src[], int srcStride[], int s
   int y, out1, out2, out3, out4, out5, out6;
 
   for(y=0;y < srcSliceH;++y) {
-      asm volatile (
+      __asm__ volatile (
           YUV2RGB_INIT
           "wr %%g0, 0xd2, %%asi        \n\t" /* ASI_FL16_P */
           "1:                          \n\t"
@@ -181,7 +182,7 @@ static int vis_422P_ARGB32(SwsContext *c, uint8_t* src[], int srcStride[], int s
   return srcSliceH;
 }
 
-SwsFunc yuv2rgb_init_vis(SwsContext *c) {
+SwsFunc sws_yuv2rgb_init_vis(SwsContext *c) {
     c->sparc_coeffs[5]=c->yCoeff;
     c->sparc_coeffs[6]=c->vgCoeff;
     c->sparc_coeffs[7]=c->vrCoeff;
