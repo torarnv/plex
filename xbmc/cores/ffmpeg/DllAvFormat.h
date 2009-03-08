@@ -12,13 +12,10 @@ extern "C" {
 #ifndef __GNUC__
 #pragma warning(disable:4244)
 #endif
-#ifdef __APPLE__
-#include "libffmpeg-OSX/avformat.h"
-#else
 #include "avformat.h"
-#endif
 }
 
+typedef int64_t offset_t;
 
 class DllAvFormatInterface
 {
@@ -105,15 +102,7 @@ public:
 
 class DllAvFormat : public DllDynamic, DllAvFormatInterface
 {
-#ifdef __APPLE__
-  DECLARE_DLL_WRAPPER(DllAvFormat, Q:\\system\\players\\dvdplayer\\avformat-51-osx.so)
-#elif !defined(_LINUX)
-  DECLARE_DLL_WRAPPER(DllAvFormat, Q:\\system\\players\\dvdplayer\\avformat-52.dll)
-#elif defined(__x86_64__)
-  DECLARE_DLL_WRAPPER(DllAvFormat, Q:\\system\\players\\dvdplayer\\avformat-51-x86_64-linux.so)
-#else
-  DECLARE_DLL_WRAPPER(DllAvFormat, Q:\\system\\players\\dvdplayer\\avformat-51-i486-linux.so)
-#endif
+  DECLARE_DLL_WRAPPER(DllAvFormat, DLL_PATH_LIBAVFORMAT)
 
   LOAD_SYMBOLS()
 

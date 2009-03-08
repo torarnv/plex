@@ -18,15 +18,9 @@ extern "C" {
 #pragma warning(disable:4244)
 #endif
 
-#ifdef __APPLE__
-#include "libffmpeg-OSX/avutil.h"
-#include "libffmpeg-OSX/swscale.h"
-#include "libffmpeg-OSX/rgb2rgb.h"
-#else
 #include "avutil.h"
 #include "swscale.h"
 #include "rgb2rgb.h"
-#endif
 }
 
 class DllSwScaleInterface
@@ -53,7 +47,7 @@ public:
   virtual ~DllSwScale() {}
   virtual struct SwsContext *sws_getContext(int srcW, int srcH, int srcFormat, int dstW, int dstH, int dstFormat, int flags,
                                SwsFilter *srcFilter, SwsFilter *dstFilter, double *param) 
-    { return ::sws_getContext(srcW, srcH, srcFormat, dstW, dstH, dstFormat, flags, srcFilter, dstFilter, param); }
+    { return ::sws_getContext(srcW, srcH, (enum PixelFormat)srcFormat, dstW, dstH, (enum PixelFormat)dstFormat, flags, srcFilter, dstFilter, param); }
 
   virtual int sws_scale(struct SwsContext *context, uint8_t* src[], int srcStride[], int srcSliceY,
                 int srcSliceH, uint8_t* dst[], int dstStride[])  
@@ -73,16 +67,7 @@ public:
 
 class DllSwScale : public DllDynamic, public DllSwScaleInterface
 {
-#ifdef __APPLE__
-  DECLARE_DLL_WRAPPER(DllSwScale, Q:\\system\\players\\dvdplayer\\swscale-51-osx.so)
-#elif !defined(_LINUX)
-  DECLARE_DLL_WRAPPER(DllSwScale, Q:\\system\\players\\dvdplayer\\swscale-0.5.0.dll)
-#elif defined(__x86_64__)
-  DECLARE_DLL_WRAPPER(DllSwScale, Q:\\system\\players\\dvdplayer\\swscale-51-x86_64-linux.so)
-#else
-  DECLARE_DLL_WRAPPER(DllSwScale, Q:\\system\\players\\dvdplayer\\swscale-51-i486-linux.so)
-#endif
-
+  DECLARE_DLL_WRAPPER(DllSwScale, DLL_PATH_LIBSWSCALE)
   DEFINE_METHOD10(struct SwsContext *, sws_getContext, ( int p1, int p2, int p3, int p4, int p5, int p6, int p7, 
 							 SwsFilter * p8, SwsFilter * p9, double * p10))
   DEFINE_METHOD7(int, sws_scale, (struct SwsContext *p1, uint8_t** p2, int *p3, int p4, int p5, uint8_t **p6, int *p7))
