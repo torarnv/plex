@@ -297,7 +297,7 @@ static int mpegps_read_pes_header(AVFormatContext *s,
     /* find matching stream */
     if (!((startcode >= 0x1c0 && startcode <= 0x1df) ||
           (startcode >= 0x1e0 && startcode <= 0x1ef) ||
-          (startcode == 0x1bd) || (startcode == 0x1fd)))
+          (startcode == 0x1bd) || (startcode == 0x1fa) || (startcode == 0x1fd)))
         goto redo;
     if (ppos) {
         *ppos = url_ftell(s->pb) - 4;
@@ -463,6 +463,9 @@ static int mpegps_read_packet(AVFormatContext *s,
             type = CODEC_TYPE_AUDIO;
         } else if(es_type == STREAM_TYPE_AUDIO_AAC){
             codec_id = CODEC_ID_AAC;
+            type = CODEC_TYPE_AUDIO;
+        } else if(es_type == STREAM_TYPE_AUDIO_AAC_LATM){
+            codec_id = CODEC_ID_AAC_LATM;
             type = CODEC_TYPE_AUDIO;
         } else if(es_type == STREAM_TYPE_VIDEO_MPEG4){
             codec_id = CODEC_ID_MPEG4;

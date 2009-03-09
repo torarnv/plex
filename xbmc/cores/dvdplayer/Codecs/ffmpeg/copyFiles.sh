@@ -1,5 +1,5 @@
 #!/bin/sh
-OSXBMC_HOME=~/Code/C++/Eclipse/XBMC-Fork/xbmc/lib/libffmpeg-OSX
+OSXBMC_HOME=../../../../lib/libffmpeg-OSX/
 
 #cp `find . -name avcodec.h -or -name avformat.h -or -name avio.h -or -name avutil.h -or -name common.h -or -name integer.h -or -name intfloat_readwrite.h -or -name log.h -or -name mathematics.h -or -name mem.h -or -name postprocess.h -or -name rational.h -or -name rgb2rgb.h -or -name rtp.h -or -name rtsp.h -or -name rtspcodes.h -or -name swscale.h` ~/Code/C++/Eclipse/XBMC-Fork/xbmc/lib/libffmpeg-OSX
 #cp ${OSXBMC_HOME}/avcodec.h ${OSXBMC_HOME}/libavcodec
