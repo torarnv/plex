@@ -2965,8 +2965,6 @@ void CApplication::Render()
     unsigned int currentTime = timeGetTime();
     int nDelayTime = 0;
     bool lowfps = m_bScreenSave && (m_screenSaverMode == "Black");
-    unsigned int singleFrameTime = 10; // default limit 100 fps
-
     m_bPresentFrame = false;
     if (g_graphicsContext.IsFullScreenVideo() && !IsPaused())
     {

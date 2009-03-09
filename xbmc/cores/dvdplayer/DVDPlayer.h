@@ -278,7 +278,6 @@ protected:
   bool        m_caching;  // player is filling up the demux queue
   bool        m_seeking;  // player is currently trying to fullfill a seek request
   CFileItem   m_item;
-DVDPlayer.h
 
   CCurrentStream m_CurrentAudio;
   CCurrentStream m_CurrentVideo;

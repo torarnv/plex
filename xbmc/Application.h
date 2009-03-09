@@ -225,6 +225,7 @@ public:
   bool m_bSpinDown;
   bool m_bNetworkSpinDown;
   DWORD m_dwSpinDownTime;
+	bool m_bStandalone;
 
   inline bool IsInScreenSaver() { return m_bScreenSave; };
   int m_iScreenSaveLock; // spiff: are we checking for a lock? if so, ignore the screensaver state, if -1 we have failed to input locks
