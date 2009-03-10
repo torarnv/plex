@@ -243,16 +243,9 @@ public:
   int GlobalIdleTime();
   void NewFrame();
   void SetQuiet(bool bQuiet);
-  bool WaitFrame(DWORD timeout);
-
-  void EnablePlatformDirectories(bool enable=true)
-  {
-    m_bPlatformDirectories = enable;
-  }
-
-  void SetStandAlone(bool value)
-  {
-    m_bStandalone = value;
+  void EnablePlatformDirectories(bool enable=true) 
+  { 
+    m_bPlatformDirectories = enable; 
   }
 
 protected:

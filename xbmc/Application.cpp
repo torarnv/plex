@@ -2769,14 +2769,17 @@ void CApplication::RenderNoPresent()
       g_renderManager.Present();
     else
       g_renderManager.RenderUpdate(true, 0, 255);
+
+    ResetScreenSaver();
+    g_infoManager.ResetCache();
 #else
     //g_graphicsContext.ReleaseCurrentContext();
     g_graphicsContext.Unlock(); // unlock to allow the async renderer to render
     Sleep(25);
     g_graphicsContext.Lock();
-#endif
     ResetScreenSaver();
     g_infoManager.ResetCache();
+#endif
     return;
   }
 
@@ -2902,25 +2905,12 @@ void CApplication::DoRender()
   g_infoManager.ResetCache();
 }
 
-bool CApplication::WaitFrame(DWORD timeout)
-{
-  bool done = false;
-#ifdef HAS_SDL
-  // Wait for all other frames to be presented
-  SDL_mutexP(m_frameMutex);
-  if(m_frameCount > 0)
-    SDL_CondWaitTimeout(m_frameCond, m_frameMutex, timeout);
-  done = m_frameCount == 0;
-  SDL_mutexV(m_frameMutex);
-#endif
-  return done;
-}
-
 void CApplication::NewFrame()
 {
 #ifdef HAS_SDL
-  // We just posted another frame. Keep track and notify.
   SDL_mutexP(m_frameMutex);
+
+  // We just posted another frame. Keep track and notify.
   m_frameCount++;
   SDL_CondSignal(m_frameCond);
 
@@ -2964,11 +2954,11 @@ void CApplication::Render()
     static unsigned int lastFrameTime = 0;
     unsigned int currentTime = timeGetTime();
     int nDelayTime = 0;
-    bool lowfps = m_bScreenSave && (m_screenSaverMode == "Black");
+    
+#ifdef HAS_SDL
     m_bPresentFrame = false;
     if (g_graphicsContext.IsFullScreenVideo() && !IsPaused())
     {
-#ifdef HAS_SDL
       SDL_mutexP(m_frameMutex);
 
       // If we have frames or if we get notified of one, consume it.
@@ -2978,9 +2968,6 @@ void CApplication::Render()
         m_bPresentFrame = true;
       }
       SDL_mutexV(m_frameMutex);
-#else
-      m_bPresentFrame = true;
-#endif
     }
     else
     {
@@ -3003,6 +2990,13 @@ void CApplication::Render()
         Sleep(nDelayTime);
       }
     }
+#else
+    if (lastFrameTime + singleFrameTime > currentTime)
+      nDelayTime = lastFrameTime + singleFrameTime - currentTime;
+
+    m_bPresentFrame = true;
+    Sleep(nDelayTime);
+#endif
 
     lastFrameTime = timeGetTime();
   }
@@ -3017,14 +3011,6 @@ void CApplication::Render()
   g_graphicsContext.Flip();
 #endif
   g_graphicsContext.Unlock();
-
-#ifdef HAS_SDL
-  SDL_mutexP(m_frameMutex);
-  if(m_frameCount > 0)
-    m_frameCount--;
-  SDL_mutexV(m_frameMutex);
-  SDL_CondSignal(m_frameCond);
-#endif
 }
 #endif
 
