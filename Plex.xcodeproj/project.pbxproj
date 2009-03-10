@@ -31,6 +31,12 @@
 		94B1852B0EB48264008C38FA /* CoreAudioAUHAL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 94B185280EB48264008C38FA /* CoreAudioAUHAL.cpp */; };
 		94B1852C0EB48264008C38FA /* CoreAudioPlexSupport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 94B1852A0EB48264008C38FA /* CoreAudioPlexSupport.cpp */; };
 		94B185540EB48568008C38FA /* pa_ringbuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 94B185520EB48568008C38FA /* pa_ringbuffer.c */; };
+		94DEBCE20F647401003FF0E9 /* libavcodec-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 94DEBCDD0F647401003FF0E9 /* libavcodec-osx.a */; };
+		94DEBCE30F647401003FF0E9 /* libavformat-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 94DEBCDE0F647401003FF0E9 /* libavformat-osx.a */; };
+		94DEBCE40F647401003FF0E9 /* libavutil-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 94DEBCDF0F647401003FF0E9 /* libavutil-osx.a */; };
+		94DEBCE50F647401003FF0E9 /* libpostproc-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 94DEBCE00F647401003FF0E9 /* libpostproc-osx.a */; };
+		94DEBCE60F647401003FF0E9 /* libswscale-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 94DEBCE10F647401003FF0E9 /* libswscale-osx.a */; };
+		94DEBE2B0F64B949003FF0E9 /* libfaad.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 94DEBE2A0F64B949003FF0E9 /* libfaad.a */; };
 		E31312180EC647FB00629994 /* PlexRemoteHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E31312160EC647FB00629994 /* PlexRemoteHelper.cpp */; };
 		E31312190EC647FB00629994 /* PlexHelperApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E31312170EC647FB00629994 /* PlexHelperApp.cpp */; };
 		E313121E0EC64B7300629994 /* PlexMediaServerHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E313121C0EC64B7300629994 /* PlexMediaServerHelper.cpp */; };
@@ -825,9 +831,6 @@
 		E371C5170E2F2DF500FBF841 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E33466A50D2E5103005A65EC /* IOKit.framework */; };
 		E371C5180E2F2DF500FBF841 /* libaften_pcm.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E3B578950E0E3CDB002B3B3E /* libaften_pcm.a */; };
 		E371C5190E2F2DF500FBF841 /* libaften_static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E3B578960E0E3CDB002B3B3E /* libaften_static.a */; };
-		E371C51A0E2F2DF500FBF841 /* libavcodec-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E3FFF0040D46FD1D003D79C3 /* libavcodec-osx.a */; };
-		E371C51B0E2F2DF500FBF841 /* libavformat-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E3FFF02E0D470BD8003D79C3 /* libavformat-osx.a */; };
-		E371C51C0E2F2DF500FBF841 /* libavutil-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E3FFF0020D46FD1D003D79C3 /* libavutil-osx.a */; };
 		E371C51D0E2F2DF500FBF841 /* libbz2.1.0.4.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B1A921F30DF6D14F0024CC4F /* libbz2.1.0.4.dylib */; };
 		E371C51E0E2F2DF500FBF841 /* libcdio-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 88ECB6670DE01550003396A7 /* libcdio-osx.a */; };
 		E371C51F0E2F2DF500FBF841 /* libfontconfig.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 88ECB6E60DE07BA6003396A7 /* libfontconfig.a */; };
@@ -842,13 +845,11 @@
 		E371C5280E2F2DF500FBF841 /* libogg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 88ECB6E90DE07BEE003396A7 /* libogg.a */; };
 		E371C5290E2F2DF500FBF841 /* libpcre.0.0.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3BBB7A10D7EA8B200CAAFD3 /* libpcre.0.0.1.dylib */; };
 		E371C52A0E2F2DF500FBF841 /* libportaudio-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E38F12E70D2A178F0035C331 /* libportaudio-osx.a */; };
-		E371C52B0E2F2DF500FBF841 /* libpostproc-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E34486740D4DD18B0020377B /* libpostproc-osx.a */; };
 		E371C52C0E2F2DF500FBF841 /* librtv-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E256C0D263A1C00618676 /* librtv-osx.a */; };
 		E371C5300E2F2DF500FBF841 /* libShout-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E30B3E8E0D5D59290030A311 /* libShout-osx.a */; };
 		E371C5310E2F2DF500FBF841 /* libsmbclient.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3D547950D723EFD00F36320 /* libsmbclient.dylib */; };
 		E371C5320E2F2DF500FBF841 /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E33979920D62FC46004ECDDA /* libsqlite3.0.dylib */; };
 		E371C5330E2F2DF500FBF841 /* libstdc++.6.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E25410D2636F300618676 /* libstdc++.6.dylib */; };
-		E371C5340E2F2DF500FBF841 /* libswscale-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E34486730D4DD18B0020377B /* libswscale-osx.a */; };
 		E371C5350E2F2DF500FBF841 /* libvorbis.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3EB8F050D5D5C0300FFF489 /* libvorbis.dylib */; };
 		E371C5360E2F2DF500FBF841 /* libXBMS-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E38CB6B90DF7E5B2002B36E1 /* libXBMS-osx.a */; };
 		E371C5370E2F2DF500FBF841 /* libxdaap-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E25680D2639F100618676 /* libxdaap-osx.a */; };
@@ -1099,6 +1100,12 @@
 		94B185510EB48568008C38FA /* pa_memorybarrier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pa_memorybarrier.h; path = AC3Encoder/pa_memorybarrier.h; sourceTree = "<group>"; };
 		94B185520EB48568008C38FA /* pa_ringbuffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pa_ringbuffer.c; path = AC3Encoder/pa_ringbuffer.c; sourceTree = "<group>"; };
 		94B185530EB48568008C38FA /* pa_ringbuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pa_ringbuffer.h; path = AC3Encoder/pa_ringbuffer.h; sourceTree = "<group>"; };
+		94DEBCDD0F647401003FF0E9 /* libavcodec-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libavcodec-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libavcodec-osx.a"; sourceTree = "<group>"; };
+		94DEBCDE0F647401003FF0E9 /* libavformat-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libavformat-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libavformat-osx.a"; sourceTree = "<group>"; };
+		94DEBCDF0F647401003FF0E9 /* libavutil-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libavutil-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libavutil-osx.a"; sourceTree = "<group>"; };
+		94DEBCE00F647401003FF0E9 /* libpostproc-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libpostproc-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libpostproc-osx.a"; sourceTree = "<group>"; };
+		94DEBCE10F647401003FF0E9 /* libswscale-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libswscale-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libswscale-osx.a"; sourceTree = "<group>"; };
+		94DEBE2A0F64B949003FF0E9 /* libfaad.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfaad.a; path = xbmc/lib/libfaad2/libfaad.a; sourceTree = "<group>"; };
 		B1A921F30DF6D14F0024CC4F /* libbz2.1.0.4.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libbz2.1.0.4.dylib; path = /opt/local/lib/libbz2.1.0.4.dylib; sourceTree = "<absolute>"; };
 		E30B3E8E0D5D59290030A311 /* libShout-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libShout-osx.a"; path = "xbmc/lib/libshout/libShout-osx.a"; sourceTree = "<group>"; };
 		E31312160EC647FB00629994 /* PlexRemoteHelper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PlexRemoteHelper.cpp; sourceTree = "<group>"; };
@@ -1126,8 +1133,6 @@
 		E33979920D62FC46004ECDDA /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = /usr/lib/libsqlite3.0.dylib; sourceTree = "<absolute>"; };
 		E33979940D62FD47004ECDDA /* DVDInputStreamTV.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDInputStreamTV.cpp; sourceTree = "<group>"; };
 		E33979950D62FD47004ECDDA /* DVDInputStreamTV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDInputStreamTV.h; sourceTree = "<group>"; };
-		E34486730D4DD18B0020377B /* libswscale-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libswscale-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libswscale-osx.a"; sourceTree = "<group>"; };
-		E34486740D4DD18B0020377B /* libpostproc-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libpostproc-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libpostproc-osx.a"; sourceTree = "<group>"; };
 		E354EF030D99EDC900B55311 /* controlradiobutton.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = controlradiobutton.cpp; sourceTree = "<group>"; };
 		E35EF2540D380C3D00DB5CD5 /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
 		E35EF3230D380E1E00DB5CD5 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
@@ -3081,9 +3086,6 @@
 		E3FD41920EF459C100C6172C /* PlayListURL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayListURL.h; sourceTree = "<group>"; };
 		E3FD41930EF459C100C6172C /* PlayListURL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PlayListURL.cpp; sourceTree = "<group>"; };
 		E3FD41A50EF46E4100C6172C /* NptWin32Debug.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptWin32Debug.cpp; sourceTree = "<group>"; };
-		E3FFF0020D46FD1D003D79C3 /* libavutil-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libavutil-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libavutil-osx.a"; sourceTree = "<group>"; };
-		E3FFF0040D46FD1D003D79C3 /* libavcodec-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libavcodec-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libavcodec-osx.a"; sourceTree = "<group>"; };
-		E3FFF02E0D470BD8003D79C3 /* libavformat-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libavformat-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libavformat-osx.a"; sourceTree = "<group>"; };
 		EF5D57790EB4833200B16174 /* CocoaUtilsPlus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CocoaUtilsPlus.h; sourceTree = "<group>"; };
 		EF5D577A0EB4833200B16174 /* CocoaUtilsPlus.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CocoaUtilsPlus.mm; sourceTree = "<group>"; };
 		EFF082090E106C00004114E6 /* SmartCrashReportsAPI.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; name = SmartCrashReportsAPI.o; path = xbmc/lib/libSmartCrashReports/SmartCrashReportsAPI.o; sourceTree = "<group>"; };
@@ -3127,9 +3129,6 @@
 				E371C5170E2F2DF500FBF841 /* IOKit.framework in Frameworks */,
 				E371C5180E2F2DF500FBF841 /* libaften_pcm.a in Frameworks */,
 				E371C5190E2F2DF500FBF841 /* libaften_static.a in Frameworks */,
-				E371C51A0E2F2DF500FBF841 /* libavcodec-osx.a in Frameworks */,
-				E371C51B0E2F2DF500FBF841 /* libavformat-osx.a in Frameworks */,
-				E371C51C0E2F2DF500FBF841 /* libavutil-osx.a in Frameworks */,
 				E371C51D0E2F2DF500FBF841 /* libbz2.1.0.4.dylib in Frameworks */,
 				E371C51E0E2F2DF500FBF841 /* libcdio-osx.a in Frameworks */,
 				E371C51F0E2F2DF500FBF841 /* libfontconfig.a in Frameworks */,
@@ -3144,13 +3143,11 @@
 				E371C5280E2F2DF500FBF841 /* libogg.a in Frameworks */,
 				E371C5290E2F2DF500FBF841 /* libpcre.0.0.1.dylib in Frameworks */,
 				E371C52A0E2F2DF500FBF841 /* libportaudio-osx.a in Frameworks */,
-				E371C52B0E2F2DF500FBF841 /* libpostproc-osx.a in Frameworks */,
 				E371C52C0E2F2DF500FBF841 /* librtv-osx.a in Frameworks */,
 				E371C5300E2F2DF500FBF841 /* libShout-osx.a in Frameworks */,
 				E371C5310E2F2DF500FBF841 /* libsmbclient.dylib in Frameworks */,
 				E371C5320E2F2DF500FBF841 /* libsqlite3.0.dylib in Frameworks */,
 				E371C5330E2F2DF500FBF841 /* libstdc++.6.dylib in Frameworks */,
-				E371C5340E2F2DF500FBF841 /* libswscale-osx.a in Frameworks */,
 				E371C5350E2F2DF500FBF841 /* libvorbis.dylib in Frameworks */,
 				E371C5360E2F2DF500FBF841 /* libXBMS-osx.a in Frameworks */,
 				E371C5370E2F2DF500FBF841 /* libxdaap-osx.a in Frameworks */,
@@ -3167,6 +3164,12 @@
 				E3ADDD140EAA68DC003921C8 /* QTKit.framework in Frameworks */,
 				1AA456B70E7EA3DD004CC8D2 /* Security.framework in Frameworks */,
 				1A53C11A0EAC0020009A10F3 /* SystemConfiguration.framework in Frameworks */,
+				94DEBCE20F647401003FF0E9 /* libavcodec-osx.a in Frameworks */,
+				94DEBCE30F647401003FF0E9 /* libavformat-osx.a in Frameworks */,
+				94DEBCE40F647401003FF0E9 /* libavutil-osx.a in Frameworks */,
+				94DEBCE50F647401003FF0E9 /* libpostproc-osx.a in Frameworks */,
+				94DEBCE60F647401003FF0E9 /* libswscale-osx.a in Frameworks */,
+				94DEBE2B0F64B949003FF0E9 /* libfaad.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3233,6 +3236,11 @@
 		08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				94DEBCDD0F647401003FF0E9 /* libavcodec-osx.a */,
+				94DEBCDE0F647401003FF0E9 /* libavformat-osx.a */,
+				94DEBCDF0F647401003FF0E9 /* libavutil-osx.a */,
+				94DEBCE00F647401003FF0E9 /* libpostproc-osx.a */,
+				94DEBCE10F647401003FF0E9 /* libswscale-osx.a */,
 				1A53C1190EAC0020009A10F3 /* SystemConfiguration.framework */,
 				1AA456B60E7EA3DD004CC8D2 /* Security.framework */,
 				E336F09B0E62D1FD00270758 /* libmms-osx.a */,
@@ -3258,11 +3266,6 @@
 				E3EB8F030D5D5C0300FFF489 /* libmad.0.2.1.dylib */,
 				E3EB8F050D5D5C0300FFF489 /* libvorbis.dylib */,
 				E30B3E8E0D5D59290030A311 /* libShout-osx.a */,
-				E34486730D4DD18B0020377B /* libswscale-osx.a */,
-				E34486740D4DD18B0020377B /* libpostproc-osx.a */,
-				E3FFF02E0D470BD8003D79C3 /* libavformat-osx.a */,
-				E3FFF0020D46FD1D003D79C3 /* libavutil-osx.a */,
-				E3FFF0040D46FD1D003D79C3 /* libavcodec-osx.a */,
 				E35EF3230D380E1E00DB5CD5 /* Carbon.framework */,
 				E35EF2540D380C3D00DB5CD5 /* QuickTime.framework */,
 				E33466A50D2E5103005A65EC /* IOKit.framework */,
@@ -3279,6 +3282,7 @@
 				E38E24260D26317D00618676 /* libiconv.dylib */,
 				E38E24270D26317D00618676 /* liblzo.dylib */,
 				E38E24290D26317D00618676 /* libz.dylib */,
+				94DEBE2A0F64B949003FF0E9 /* libfaad.a */,
 				E38E238B0D2626E600618676 /* AudioToolbox.framework */,
 				E38E238C0D2626E600618676 /* AudioUnit.framework */,
 				E38E238D0D2626E600618676 /* Cocoa.framework */,
@@ -7736,6 +7740,7 @@
 					"\"$(SRCROOT)/xbmc/lib/libSDL-OSX\"",
 					"\"$(SRCROOT)/../../../../../../opt/local/lib\"",
 					"\"$(SRCROOT)/xbmc/lib/libmms\"",
+					"\"$(SRCROOT)/../xbmc-sources-fork/dvdplayer/libfaad2/libfaad/.libs\"",
 				);
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-header-pad_max_install_names";
@@ -7830,6 +7835,7 @@
 					"\"$(SRCROOT)/xbmc/lib/libSDL-OSX\"",
 					"\"$(SRCROOT)/../../../../../../opt/local/lib\"",
 					"\"$(SRCROOT)/xbmc/lib/libmms\"",
+					"\"$(SRCROOT)/../xbmc-sources-fork/dvdplayer/libfaad2/libfaad/.libs\"",
 				);
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
