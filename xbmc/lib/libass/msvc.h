@@ -13,6 +13,7 @@
 
 #define __VISUALC__
 #define HAVE_FONTCONFIG
+#define USE_FREETYPE2_STATIC
 
 #define S_IFREG  0100000
 #define S_ISREG(m)      (((m) & S_IFMT) == S_IFREG)
