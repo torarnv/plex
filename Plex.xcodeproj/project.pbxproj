@@ -7705,6 +7705,7 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/xbmc/lib/libfaad2\"",
 					"\"$(SRCROOT)/guilib/freetype2\"",
 					"\"$(SRCROOT)/xbmc/lib/filezilla\"",
 					"\"$(SRCROOT)/xbmc/lib/libcdio\"",
@@ -7800,6 +7801,7 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/xbmc/lib/libfaad2\"",
 					"\"$(SRCROOT)/guilib/freetype2\"",
 					"\"$(SRCROOT)/xbmc/lib/filezilla\"",
 					"\"$(SRCROOT)/xbmc/lib/libcdio\"",
