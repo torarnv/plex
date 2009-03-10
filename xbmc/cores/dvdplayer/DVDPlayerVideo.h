@@ -86,7 +86,8 @@ public:
 
   float GetFrameRate()                              { return m_fFrameRate; }
   
-  bool IsStalled()                                  { return m_stalled;  }
+  bool IsStalled()                                  { return m_stalled
+                                                          && m_messageQueue.GetDataSize() == 0; }
   int GetNrOfDroppedFrames()                        { return m_iDroppedFrames; }
 
   bool InitializedOutputDevice();

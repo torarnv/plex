@@ -229,7 +229,7 @@ DWORD CDVDAudio::AddPackets(const DVDAudioFrame &audioframe)
   len -= copied;
 
   // if we have more data left, save it for the next call to this funtion
-  if (len > 0)
+  if (len > 0 && !m_bStop)
   {
     if(len > m_dwPacketSize)
       CLog::Log(LOGERROR, "%s - More bytes left than can be stored in buffer", __FUNCTION__);
@@ -242,7 +242,7 @@ DWORD CDVDAudio::AddPackets(const DVDAudioFrame &audioframe)
   return total - len;
 }
 
-void CDVDAudio::Drain()
+void CDVDAudio::Finish()
 {
   CSingleLock lock (m_critSection);
   if (!m_pAudioDecoder) 
@@ -261,14 +261,14 @@ void CDVDAudio::Drain()
     CLog::Log(LOGERROR, "CDVDAudio::Drain - failed to play the final %d bytes", m_iBufferSize);
 
   m_iBufferSize = 0;
-
-  m_pAudioDecoder->WaitCompletion();
 }
 
-void CDVDAudio::DoWork()
+void CDVDAudio::Drain()
 {
+  Finish();
   CSingleLock lock (m_critSection);
-  if (m_pAudioDecoder) m_pAudioDecoder->DoWork();
+  if (m_pAudioDecoder) 
+    m_pAudioDecoder->WaitCompletion();
 }
 
 void CDVDAudio::SetVolume(int iVolume)

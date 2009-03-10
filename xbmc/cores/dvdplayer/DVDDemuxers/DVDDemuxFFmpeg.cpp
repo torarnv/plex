@@ -330,19 +330,21 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
     {
       // let ffmpeg decide which demuxer we have to open
       AVProbeData pd;
-      BYTE probe_buffer[2048];
+      BYTE probe_buffer[FFMPEG_FILE_BUFFER_SIZE + AVPROBE_PADDING_SIZE];
 
       // init probe data
       pd.buf = probe_buffer;
       pd.filename = strFile.c_str();
 
       // read data using avformat's buffers
-      pd.buf_size = m_dllAvFormat.get_buffer(m_ioContext, pd.buf, sizeof(probe_buffer));            
+      pd.buf_size = m_dllAvFormat.get_buffer(m_ioContext, pd.buf, context->max_packet_size);
       if (pd.buf_size == 0)
       {
         CLog::Log(LOGERROR, "%s - error reading from input stream, %s", __FUNCTION__, strFile.c_str());
         return false;
       }
+      memset(pd.buf+context->max_packet_size, 0, AVPROBE_PADDING_SIZE);
+
       // restore position again
       m_dllAvFormat.url_fseek(m_ioContext , 0, SEEK_SET);
 
@@ -352,12 +354,16 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
         CLog::Log(LOGERROR, "%s - error probing input format, %s", __FUNCTION__, strFile.c_str());
         return false;
       }
+      else if(iformat->name)
+        CLog::Log(LOGERROR, "%s - probing detected format [%s]", __FUNCTION__, iformat->name);
+      else
+        CLog::Log(LOGERROR, "%s - probing detected unnamed format", __FUNCTION__);
     }
 
     // open the demuxer
     if (m_dllAvFormat.av_open_input_stream(&m_pFormatContext, m_ioContext, strFile.c_str(), iformat, NULL) < 0)
     {
-      CLog::Log(LOGERROR, "Error, could not open file %s", strFile.c_str());
+      CLog::Log(LOGERROR, "%s - Error, could not open file %s", __FUNCTION__, strFile.c_str());
       Dispose();
       return false;
     }
@@ -665,6 +671,10 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
             pkt.pts = AV_NOPTS_VALUE;
         }
 
+        //we need to get duration slightly different for matroska embedded text subtitels
+        if(m_bMatroska && stream->codec->codec_id == CODEC_ID_TEXT && pkt.convergence_duration != 0)
+            pkt.duration = pkt.convergence_duration;
+
         // copy contents into our own packet
         pPacket->iSize = pkt.size;
 
@@ -714,15 +724,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
   Unlock();
 
   if (bReturnEmpty && !pPacket)
-  {
-      pPacket = CDVDDemuxUtils::AllocateDemuxPacket(0);
-      if(pPacket)
-      {
-        pPacket->dts = DVD_NOPTS_VALUE;
-        pPacket->pts = DVD_NOPTS_VALUE;
-        pPacket->iStreamId = -1;
-      }
-  }
+    pPacket = CDVDDemuxUtils::AllocateDemuxPacket(0);
 
   if (!pPacket) return NULL;
 
@@ -921,10 +923,10 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
         }
         st->iWidth = pStream->codec->width;
         st->iHeight = pStream->codec->height;
-        if (pStream->codec->sample_aspect_ratio.num == 0)
+        if (pStream->sample_aspect_ratio.num == 0)
           st->fAspect = 0.0;
         else 
-          st->fAspect = av_q2d(pStream->codec->sample_aspect_ratio) * pStream->codec->width / pStream->codec->height;
+          st->fAspect = av_q2d(pStream->sample_aspect_ratio) * pStream->codec->width / pStream->codec->height;
 
         break;
       }
