@@ -68,6 +68,7 @@ bool GUIFontManager::FindSystemFontPath(const CStdString& strFilename, CStdStrin
 
   fontExtensions.push_back(".ttf");
   fontExtensions.push_back(".dfont");
+  fontExtensions.push_back(".otf");
 
   string foundPath;
   string foundFullPath;
@@ -407,9 +408,9 @@ void GUIFontManager::LoadFonts(const TiXmlNode* fontNode)
           CStdString strFontFileName = pNode->FirstChild()->Value();
           CStdString extension = CUtil::GetExtension(strFontFileName);
 #ifdef __APPLE__
-          if (extension.Equals(".ttf") || extension.Equals(".dfont") || extension.length() == 0)
+          if (extension.Equals(".ttf") || extension.Equals(".dfont") || extension.Equals(".otf") || extension.length() == 0)
 #else
-          if (extension.Equals(".ttf") || extension.Equals(".dfont"))
+          if (extension.Equals(".ttf") || extension.Equals(".dfont") || extension.Equals(".otf"))
 #endif
           {
             int iSize = 20;
