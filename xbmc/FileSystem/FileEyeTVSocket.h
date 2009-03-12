@@ -10,6 +10,7 @@
 #pragma once
 
 #include "IFile.h"
+#include "pa_ringbuffer.h"
 
 extern "C"
 {
@@ -35,6 +36,8 @@ namespace XFILE
 		protected:
 		private:
 			int eyetvSock;
+			PaUtilRingBuffer* streamBuffer;
+			void* streamBufferData;
 			bool initialised; 
 		};
 }
