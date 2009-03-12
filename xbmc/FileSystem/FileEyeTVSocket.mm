@@ -41,12 +41,6 @@ bool CFileEyeTVSocket::Open(const CURL& url, bool bBinary)
 	
 	initialised = false;
 	
-    
-    
-    //int val = var_CreateGetInteger( p_access, "eyetv-channel" );
-	
-    //msg_Dbg( p_access, "coming up" );
-	
     //selectChannel( p_this, val );
 	
     /* socket */
@@ -99,8 +93,20 @@ bool CFileEyeTVSocket::Open(const CURL& url, bool bBinary)
     }
     else
     {
+		
         socklen_t peerSockLen = sizeof(struct sockaddr_un);
         int peerSock;
+		
+		// initialise the receiver buffer
+		uint32_t streamBufferSize = 1;
+		while(streamBufferSize <= 1024768 * 8) // ensure power of 2, buffer 8MB
+		{
+			streamBufferSize <<= 1;
+		}
+		streamBuffer = (PaUtilRingBuffer *)malloc(sizeof(PaUtilRingBuffer));
+		streamBufferData = malloc(streamBufferSize);
+		
+		PaUtil_InitializeRingBuffer(streamBuffer, 1, streamBufferSize, streamBufferData);
 		
         /* tell the EyeTV plugin to open start sending */
         CFNotificationCenterPostNotification( CFNotificationCenterGetDistributedCenter (),
@@ -128,6 +134,11 @@ bool CFileEyeTVSocket::Open(const CURL& url, bool bBinary)
         close(publicSock);
         unlink(publicAddr.sun_path);
     }
+	
+	if (initialised)
+	{
+		//try to buffer 1mb initially
+	}
 	
 	return initialised;
 }

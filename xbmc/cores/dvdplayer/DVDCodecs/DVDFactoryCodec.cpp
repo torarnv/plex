@@ -32,7 +32,7 @@
 #include "Audio/DVDAudioCodecLiba52.h"
 #include "Audio/DVDAudioCodecLibDts.h"
 #include "Audio/DVDAudioCodecLibMad.h"
-#include "Audio/DVDAudioCodecLibFaad.h"
+//#include "Audio/DVDAudioCodecLibFaad.h"
 #include "Audio/DVDAudioCodecPcm.h"
 #include "Audio/DVDAudioCodecLPcm.h"
 #include "Audio/DVDAudioCodecPassthrough.h"

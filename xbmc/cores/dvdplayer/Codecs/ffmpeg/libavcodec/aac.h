@@ -30,6 +30,7 @@
 #ifndef AVCODEC_AAC_H
 #define AVCODEC_AAC_H
 
+#include "libavutil/internal.h"
 #include "avcodec.h"
 #include "dsputil.h"
 #include "mpeg4audio.h"
@@ -259,6 +260,7 @@ typedef struct {
                                                    *   first index as the first 4 raw data block types
                                                    */
     ChannelElement * che[4][MAX_ELEM_ID];
+    ChannelElement * tag_che_map[4][MAX_ELEM_ID]; 	int tags_mapped; 
     /** @} */
 
     /**

@@ -1738,9 +1738,6 @@ void CDVDPlayer::HandleMessages()
           if(result)
           {
             FlushBuffers(false);
-            CloseVideoStream(false);
-            CloseAudioStream(false);
-            CloseSubtitleStream(false);
             SAFE_DELETE(m_pDemuxer);
           }
         }
@@ -1767,6 +1764,7 @@ void CDVDPlayer::SetCaching(bool enabled)
 
   if(enabled)
   {
+    CLog::Log(LOGDEBUG, "CDVDPlayer::SetCaching - started caching");
     m_clock.SetSpeed(DVD_PLAYSPEED_PAUSE);
     m_dvdPlayerAudio.SetSpeed(DVD_PLAYSPEED_PAUSE);
     m_dvdPlayerVideo.SetSpeed(DVD_PLAYSPEED_PAUSE);
@@ -1774,6 +1772,7 @@ void CDVDPlayer::SetCaching(bool enabled)
   }
   else
   {
+    CLog::Log(LOGDEBUG, "CDVDPlayer::SetCaching - stopped caching");
     m_clock.SetSpeed(m_playSpeed);
     m_dvdPlayerAudio.SetSpeed(m_playSpeed);
     m_dvdPlayerVideo.SetSpeed(m_playSpeed);

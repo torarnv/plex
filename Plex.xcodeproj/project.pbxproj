@@ -198,7 +198,6 @@
 		E371C2960E2F2D5400FBF841 /* DVDAudioCodecFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15070D25F9F900618676 /* DVDAudioCodecFFmpeg.cpp */; };
 		E371C2970E2F2D5400FBF841 /* DVDAudioCodecLiba52.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15090D25F9F900618676 /* DVDAudioCodecLiba52.cpp */; };
 		E371C2980E2F2D5400FBF841 /* DVDAudioCodecLibDts.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E150B0D25F9F900618676 /* DVDAudioCodecLibDts.cpp */; };
-		E371C2990E2F2D5400FBF841 /* DVDAudioCodecLibFaad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E150D0D25F9F900618676 /* DVDAudioCodecLibFaad.cpp */; };
 		E371C29A0E2F2D5400FBF841 /* DVDAudioCodecLibMad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E150F0D25F9F900618676 /* DVDAudioCodecLibMad.cpp */; };
 		E371C29B0E2F2D5400FBF841 /* DVDAudioCodecLPcm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15110D25F9F900618676 /* DVDAudioCodecLPcm.cpp */; };
 		E371C29C0E2F2D5400FBF841 /* DVDAudioCodecPassthrough.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15130D25F9F900618676 /* DVDAudioCodecPassthrough.cpp */; };
@@ -1487,8 +1486,6 @@
 		E38E150A0D25F9F900618676 /* DVDAudioCodecLiba52.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDAudioCodecLiba52.h; sourceTree = "<group>"; };
 		E38E150B0D25F9F900618676 /* DVDAudioCodecLibDts.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDAudioCodecLibDts.cpp; sourceTree = "<group>"; };
 		E38E150C0D25F9F900618676 /* DVDAudioCodecLibDts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDAudioCodecLibDts.h; sourceTree = "<group>"; };
-		E38E150D0D25F9F900618676 /* DVDAudioCodecLibFaad.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDAudioCodecLibFaad.cpp; sourceTree = "<group>"; };
-		E38E150E0D25F9F900618676 /* DVDAudioCodecLibFaad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDAudioCodecLibFaad.h; sourceTree = "<group>"; };
 		E38E150F0D25F9F900618676 /* DVDAudioCodecLibMad.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDAudioCodecLibMad.cpp; sourceTree = "<group>"; };
 		E38E15100D25F9F900618676 /* DVDAudioCodecLibMad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDAudioCodecLibMad.h; sourceTree = "<group>"; };
 		E38E15110D25F9F900618676 /* DVDAudioCodecLPcm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDAudioCodecLPcm.cpp; sourceTree = "<group>"; };
@@ -4391,8 +4388,6 @@
 				E38E150A0D25F9F900618676 /* DVDAudioCodecLiba52.h */,
 				E38E150B0D25F9F900618676 /* DVDAudioCodecLibDts.cpp */,
 				E38E150C0D25F9F900618676 /* DVDAudioCodecLibDts.h */,
-				E38E150D0D25F9F900618676 /* DVDAudioCodecLibFaad.cpp */,
-				E38E150E0D25F9F900618676 /* DVDAudioCodecLibFaad.h */,
 				E38E150F0D25F9F900618676 /* DVDAudioCodecLibMad.cpp */,
 				E38E15100D25F9F900618676 /* DVDAudioCodecLibMad.h */,
 				E38E15110D25F9F900618676 /* DVDAudioCodecLPcm.cpp */,
@@ -6801,7 +6796,6 @@
 				E371C2960E2F2D5400FBF841 /* DVDAudioCodecFFmpeg.cpp in Sources */,
 				E371C2970E2F2D5400FBF841 /* DVDAudioCodecLiba52.cpp in Sources */,
 				E371C2980E2F2D5400FBF841 /* DVDAudioCodecLibDts.cpp in Sources */,
-				E371C2990E2F2D5400FBF841 /* DVDAudioCodecLibFaad.cpp in Sources */,
 				E371C29A0E2F2D5400FBF841 /* DVDAudioCodecLibMad.cpp in Sources */,
 				E371C29B0E2F2D5400FBF841 /* DVDAudioCodecLPcm.cpp in Sources */,
 				E371C29C0E2F2D5400FBF841 /* DVDAudioCodecPassthrough.cpp in Sources */,

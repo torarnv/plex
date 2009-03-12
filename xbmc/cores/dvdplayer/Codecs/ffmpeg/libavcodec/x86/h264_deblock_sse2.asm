@@ -1,5 +1,5 @@
 ;*****************************************************************************
-;* deblock-a.asm: h264 encoder library
+;* MMX/SSE2-optimized H.264 deblocking code
 ;*****************************************************************************
 ;* Copyright (C) 2005-2008 x264 project
 ;*
@@ -745,3 +745,4 @@ DEBLOCK_LUMA_INTRA sse2, v
 INIT_MMX
 DEBLOCK_LUMA_INTRA mmxext, v8
 %endif
+
