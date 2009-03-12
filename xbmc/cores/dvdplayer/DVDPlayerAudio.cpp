@@ -271,7 +271,7 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
       if (dts != DVD_NOPTS_VALUE)
         m_audioClock = dts;
 
-      int len = m_pAudioCodec->Decode(m_decode.data, m_decode.size);
+		int len = m_pAudioCodec->Decode(m_decode.data, m_decode.size);
       m_audioStats.AddSampleBytes(m_decode.size);
       if (len < 0)
       {
