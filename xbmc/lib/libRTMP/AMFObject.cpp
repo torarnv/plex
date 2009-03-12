@@ -19,11 +19,12 @@
  *
  */
 
+#include "stdafx.h"
 #ifdef _LINUX
   #include <arpa/inet.h>
+  #include "linux/PlatformInclude.h"
 #endif
 
-#include "linux/PlatformInclude.h"
 #include "AMFObject.h"
 #include "utils/log.h"
 #include "rtmp.h"
@@ -76,7 +77,7 @@ double RTMP_LIB::AMFObjectProperty::GetNumber() const
 
 bool RTMP_LIB::AMFObjectProperty::GetBoolean() const
 {
-  return (bool)m_dNumVal;
+  return m_dNumVal != 0;
 }
 
 const std::string &RTMP_LIB::AMFObjectProperty::GetString() const
