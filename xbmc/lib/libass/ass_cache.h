@@ -27,12 +27,10 @@
 #include "ass_font.h"
 #include "ass_bitmap.h"
 
-typedef struct hashmap_s ass_font_cache_t;
-
-ass_font_cache_t* ass_font_cache_init(void);
-ass_font_t* ass_font_cache_find(ass_font_cache_t* cache, ass_font_desc_t* desc);
-void* ass_font_cache_add(ass_font_cache_t* cache, ass_font_t* font);
-void ass_font_cache_done(ass_font_cache_t* cache);
+void ass_font_cache_init(void);
+ass_font_t* ass_font_cache_find(ass_font_desc_t* desc);
+void* ass_font_cache_add(ass_font_t* font);
+void ass_font_cache_done(void);
 
 
 // describes a bitmap; bitmaps with equivalents structs are considered identical
@@ -44,6 +42,7 @@ typedef struct bitmap_hash_key_s {
 	unsigned outline; // border width, 16.16 fixed point value
 	int bold, italic;
 	char be; // blur edges
+	double blur; // gaussian blur
 
 	unsigned scale_x, scale_y; // 16.16
 	int frx, fry, frz; // signed 16.16
@@ -60,12 +59,32 @@ typedef struct bitmap_hash_val_s {
 	bitmap_t* bm_s;
 } bitmap_hash_val_t;
 
-typedef struct hashmap_s ass_bitmap_cache_t;
+void ass_bitmap_cache_init(void);
+void* cache_add_bitmap(bitmap_hash_key_t* key, bitmap_hash_val_t* val);
+bitmap_hash_val_t* cache_find_bitmap(bitmap_hash_key_t* key);
+void ass_bitmap_cache_reset(void);
+void ass_bitmap_cache_done(void);
 
-ass_bitmap_cache_t* ass_bitmap_cache_init(void);
-void* cache_add_bitmap(ass_bitmap_cache_t* cache, bitmap_hash_key_t* key, bitmap_hash_val_t* val);
-bitmap_hash_val_t* cache_find_bitmap(ass_bitmap_cache_t* cache, bitmap_hash_key_t* key);
-void ass_bitmap_cache_done(ass_bitmap_cache_t* cache);
+
+// Cache for composited bitmaps
+typedef struct composite_hash_key_s {
+	int aw, ah, bw, bh;
+	int ax, ay, bx, by;
+	bitmap_hash_key_t a;
+	bitmap_hash_key_t b;
+} composite_hash_key_t;
+
+typedef struct composite_hash_val_s {
+	unsigned char* a;
+	unsigned char* b;
+} composite_hash_val_t;
+
+void ass_composite_cache_init(void);
+void* cache_add_composite(composite_hash_key_t* key, composite_hash_val_t* val);
+composite_hash_val_t* cache_find_composite(composite_hash_key_t* key);
+void ass_composite_cache_reset(void);
+void ass_composite_cache_done(void);
+
 
 // describes an outline glyph
 typedef struct glyph_hash_key_s {
@@ -85,12 +104,11 @@ typedef struct glyph_hash_val_s {
 	FT_Vector advance; // 26.6, advance distance to the next bitmap in line
 } glyph_hash_val_t;
 
-typedef struct hashmap_s ass_glyph_cache_t;
-
-ass_glyph_cache_t* ass_glyph_cache_init(void);
-void* cache_add_glyph(ass_glyph_cache_t* cache, glyph_hash_key_t* key, glyph_hash_val_t* val);
-glyph_hash_val_t* cache_find_glyph(ass_glyph_cache_t* cache, glyph_hash_key_t* key);
-void ass_glyph_cache_done(ass_glyph_cache_t* cache);
+void ass_glyph_cache_init(void);
+void* cache_add_glyph(glyph_hash_key_t* key, glyph_hash_val_t* val);
+glyph_hash_val_t* cache_find_glyph(glyph_hash_key_t* key);
+void ass_glyph_cache_reset(void);
+void ass_glyph_cache_done(void);
 
 typedef struct hashmap_s hashmap_t; 
 typedef void (*hashmap_item_dtor_t)(void* key, size_t key_size, void* value, size_t value_size);

@@ -12,9 +12,7 @@
 #include "IFile.h"
 #include "pa_ringbuffer.h"
 
-extern "C"
-{
-}
+#import "CoreFoundation/CFSocket.h"
 
 namespace XFILE
 {
@@ -34,8 +32,13 @@ namespace XFILE
 
 			virtual void Close();
 		protected:
+			static void EyeTVSocketCallback(CFSocketRef             s, 
+												CFSocketCallBackType    type, 
+												CFDataRef               address, 
+												const void *            data, 
+												void *                  info);
 		private:
-			int eyetvSock;
+			CFSocketRef eyetvSockRef;
 			PaUtilRingBuffer* streamBuffer;
 			void* streamBufferData;
 			bool initialised; 
