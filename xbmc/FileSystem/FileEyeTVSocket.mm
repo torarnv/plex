@@ -9,9 +9,9 @@
  *
  */
 
+#import <Cocoa/Cocoa.h>
 
 #include "FileEyeTVSocket.h"
-#import <Cocoa/Cocoa.h>
 #import "log.h"
 #import <sys/un.h>
 
@@ -27,9 +27,51 @@ CFileEyeTVSocket::CFileEyeTVSocket()
 CFileEyeTVSocket::~CFileEyeTVSocket()
 {
 	Close();
-	
-	initialised = false;
 }
+	
+	
+void CFileEyeTVSocket::EyeTVSocketCallback(CFSocketRef s, 
+								CFSocketCallBackType    type, 
+								CFDataRef               address, 
+								const void *            data, 
+								void *                  info)
+{
+#pragma unused(address)
+
+    assert(s != NULL);
+	
+	CFileEyeTVSocket *socketObject = (CFileEyeTVSocket *)info;
+	assert(socketObject != NULL);
+    
+    switch (type) {
+        case kCFSocketDataCallBack:
+		
+			CFDataRef       newData;
+			newData = (CFDataRef) data;
+			assert(newData != NULL);
+			assert(CFGetTypeID(newData) == CFDataGetTypeID());
+			
+			if ( CFDataGetLength(newData) == 0 )
+			{
+				// A zero length data indicates the end of the data stream; the client is dead 
+				// so we just go and remove our record of it.
+				CLog::Log(LOGDEBUG, "EOF from EyeTV socket");
+				
+				socketObject->Close();
+			}
+			else 
+			{
+				// Append the new data to whatever data we have already buffered 
+				PaUtil_WriteRingBuffer(socketObject->streamBuffer, CFDataGetBytePtr(newData), CFDataGetLength(newData));
+			}
+
+            break;
+        default:
+            assert(false);
+            break;
+	}
+}
+
 	
 
 //*********************************************************************************************
@@ -37,7 +79,7 @@ bool CFileEyeTVSocket::Open(const CURL& url, bool bBinary)
 {
 	
     struct sockaddr_un publicAddr, peerAddr;
-    int publicSock;
+    int publicSock, eyetvSock;
 	
 	initialised = false;
 	
@@ -74,8 +116,7 @@ bool CFileEyeTVSocket::Open(const CURL& url, bool bBinary)
 	{
 		perror(strerror(errno));
 		return false; 
-	}	
-	
+	}
 	
     if( bind(publicSock, (struct sockaddr *)&publicAddr, sizeof(struct sockaddr_un)) == -1 )
     {
@@ -99,7 +140,7 @@ bool CFileEyeTVSocket::Open(const CURL& url, bool bBinary)
 		
 		// initialise the receiver buffer
 		uint32_t streamBufferSize = 1;
-		while(streamBufferSize <= 1024768 * 8) // ensure power of 2, buffer 8MB
+		while(streamBufferSize <= 1024768 * 10) // ensure power of 2, buffer 10MB
 		{
 			streamBufferSize <<= 1;
 		}
@@ -137,7 +178,21 @@ bool CFileEyeTVSocket::Open(const CURL& url, bool bBinary)
 	
 	if (initialised)
 	{
-		//try to buffer 1mb initially
+		// Attach to CFSocket
+		CFSocketContext context;
+        
+        memset(&context, 0, sizeof(context));
+        context.info = this;
+		
+		
+		eyetvSockRef = CFSocketCreateWithNative(kCFAllocatorDefault,
+												eyetvSock, 
+												kCFSocketDataCallBack,
+												EyeTVSocketCallback, 
+												&context);
+		
+		// Link to runloop
+		
 	}
 	
 	return initialised;
@@ -152,8 +207,9 @@ unsigned int CFileEyeTVSocket::Read(void *lpBuf, __int64 uiBufSize)
 		uint64_t len;
 		
 		/* Read data */
-		len = read(eyetvSock, lpBuf, uiBufSize);
-		
+		//len = read(eyetvSock, lpBuf, uiBufSize);
+		len = PaUtil_ReadRingBuffer(streamBuffer, lpBuf, uiBufSize);
+
 		if (len < uiBufSize)
 		{
 			CLog::Log(LOGERROR, "short read from EyeTV server socket (%i KB of %li KB requested)", len / 1024, uiBufSize / 1024);
@@ -178,9 +234,12 @@ void CFileEyeTVSocket::Close()
 	
 	CLog::Log(LOGINFO, "EyeTV server notified of shutdown" );
 	
-	close(eyetvSock);
+	CFSocketInvalidate(eyetvSockRef);
 	
 	CLog::Log(LOGINFO, "EyeTV socket closed and freed" );
+
+	initialised = false;
+
 }
 	
 }
