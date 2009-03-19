@@ -84,7 +84,7 @@ bool PlexHelperApp::EnsureLatestHelperInstalled()
     if (CFile::IsDir(m_helperFile))
     {
       // Use rsync to copy, it's efficient and easy.
-      string rsync = "/usr/bin/rsync -a \"" + m_helperFile + "/\" \"" + m_helperInstalledFile + "\"";
+      string rsync = "/usr/bin/rsync --delete -a \"" + m_helperFile + "/\" \"" + m_helperInstalledFile + "\"";
       system(rsync.c_str());
     }
     else

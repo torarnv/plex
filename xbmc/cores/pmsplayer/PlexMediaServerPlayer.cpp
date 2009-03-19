@@ -28,6 +28,8 @@
 #include "PlexMediaServerPlayer.h"
 #include "FileItem.h"
 #include "GUIFontManager.h"
+#include "GUIWindowManager.h"
+#include "GUIDialogOK.h"
 #include "GUITextLayout.h"
 #include "Application.h"
 #include "Settings.h"
@@ -187,7 +189,7 @@ void CPlexMediaServerPlayer::Process()
       else if (line.find("TITLE") == 0 && m_pDlgCache)
         m_pDlgCache->SetMessage(line.substr(6));
       else if (line.find("END") == 0)
-        OnPlaybackEnded();      
+        OnPlaybackEnded(line.substr(3));      
       else if (line.find("FRAME") == 0)
         OnNewFrame();
       else if (line.find("PAUSED") == 0)
@@ -337,8 +339,20 @@ void CPlexMediaServerPlayer::Render()
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void CPlexMediaServerPlayer::OnPlaybackEnded()
+void CPlexMediaServerPlayer::OnPlaybackEnded(const string& args)
 {
+  if (args.size() > 0)
+  {
+    CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+    pDialog->SetHeading(257);
+    pDialog->SetLine(0, args.substr(1) + ".");
+    pDialog->SetLine(1, "");
+    pDialog->SetLine(2, "");
+
+    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, m_gWindowManager.GetActiveWindow()};
+    g_application.getApplicationMessenger().SendMessage(tMsg, false);
+  }
+  
   if (m_pDlgCache)
     m_pDlgCache->Close();
   m_pDlgCache = NULL; 

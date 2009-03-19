@@ -96,7 +96,7 @@ public:
 private:
 
   void OnFrameMap(const string& args);
-  void OnPlaybackEnded();
+  void OnPlaybackEnded(const string& args);
   void OnPlaybackStarted();
   void OnNewFrame(); 
   void OnPaused();
