@@ -81,7 +81,8 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
     return new AC3Codec();
 #endif
   else if (strFileType.Equals("m4a") || strFileType.Equals("aac"))
-    return new AACCodec();
+	  return new DVDPlayerCodec();
+//    return new AACCodec();
   else if (strFileType.Equals("wv"))
     return new WAVPackCodec();
   else if (ModuleCodec::IsSupportedFormat(strFileType))
@@ -123,16 +124,12 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
     return new MP3Codec();
   else if( strContent.Equals("audio/aac") 
     || strContent.Equals("audio/aacp") )
-  {
-    if (urlFile.GetProtocol() == "shout" )
     {
       DVDPlayerCodec *pCodec = new DVDPlayerCodec;
       pCodec->SetContentType(strContent);
       return pCodec; 
     }
-    
-    return new AACCodec();
-  }
+
   else if( strContent.Equals("audio/x-ms-wma") )
     return new DVDPlayerCodec();
 
