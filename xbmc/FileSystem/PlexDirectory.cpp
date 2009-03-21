@@ -399,9 +399,10 @@ class PlexMediaVideo : public PlexMediaNode
     if (year)
         videoInfo.m_iYear = boost::lexical_cast<int>(year);
       
-    string duration = el.Attribute("duration");
-    if (duration.size() > 0)
+    const char* pDuration = el.Attribute("duration");
+    if (pDuration && strlen(pDuration) > 0)
     {
+      string duration = pDuration;
       int seconds = boost::lexical_cast<int>(duration)/1000;
       int hours = seconds/3600;
       int minutes = (seconds / 60) % 60;
@@ -602,9 +603,12 @@ void CPlexDirectory::Parse(const CURL& url, TiXmlElement* root, CFileItemList &i
   for (TiXmlElement* element = root->FirstChildElement(); element; element=element->NextSiblingElement())
   {
     mediaNode = PlexMediaNode::Create(element->Value());
-    CFileItemPtr item = mediaNode->BuildFileItem(url, *element);
-    if (item)
-      items.Add(item);
+    if (mediaNode != 0)
+    {
+      CFileItemPtr item = mediaNode->BuildFileItem(url, *element);
+      if (item)
+        items.Add(item);
+    }
   }
   
   if (mediaNode != 0)
