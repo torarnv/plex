@@ -206,6 +206,7 @@ public:
   static bool IsRemote(const CStdString& strFile);
   static bool IsOnDVD(const CStdString& strFile);
   static bool IsPlexMediaServer(const CStdString& strFile);
+  static bool IsWebKit(const CStdString& strFile);
   static bool IsOnLAN(const CStdString& strFile);
   static bool IsDVD(const CStdString& strFile);
   static bool IsVirtualPath(const CStdString& strFile);

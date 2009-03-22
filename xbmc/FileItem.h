@@ -112,6 +112,8 @@ public:
   bool IsSmb() const;
   bool IsDAAP() const;
   bool IsPlexMediaServer() const;
+  bool IsPlexMediaServerMusic() const;
+  bool IsWebKit() const;
   bool IsStack() const;
   bool IsMultiPath() const;
   bool IsMusicDb() const;

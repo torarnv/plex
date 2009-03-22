@@ -2084,6 +2084,11 @@ bool CUtil::IsPlexMediaServer(const CStdString& strFile)
   return false;
 }
 
+bool CUtil::IsWebKit(const CStdString& strFile)
+{
+  return strFile.Find("/:/webkit") != -1;
+}
+
 bool CUtil::IsCDDA(const CStdString& strFile)
 {
   return strFile.Left(5).Equals("cdda:");

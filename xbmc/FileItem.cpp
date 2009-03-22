@@ -802,6 +802,30 @@ bool CFileItem::IsPlexMediaServer() const
   return CUtil::IsPlexMediaServer(m_strPath);
 }
 
+bool CFileItem::IsPlexMediaServerMusic() const
+{
+  if (IsPlexMediaServer() == false)
+    return false;
+  
+  // Look for plex://xxx/music.
+  CStdString str = m_strPath;
+  int firstSlash = str.Find('/');
+  firstSlash = str.Find('/', firstSlash + 2);
+  if (firstSlash > 0)
+  {
+    str = str.substr(firstSlash);
+    if (str.Find("/music/") == 0)
+      return true;
+  }
+
+  return false;
+}
+
+bool CFileItem::IsWebKit() const
+{
+  return CUtil::IsWebKit(m_strPath);
+}
+
 bool CFileItem::IsTuxBox() const
 {
   return CUtil::IsTuxBox(m_strPath);
