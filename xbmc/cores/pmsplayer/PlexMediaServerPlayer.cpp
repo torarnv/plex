@@ -232,6 +232,30 @@ bool CPlexMediaServerPlayer::CanSeek()
   return true;
 }
 
+bool CPlexMediaServerPlayer::OnAction(const CAction &action)
+{
+  switch (action.wID)
+  {
+    case ACTION_NEXT_ITEM:
+    case ACTION_PAGE_UP:
+    {
+      m_http.WriteLine("CHAPTER+");
+      return true;
+    }
+    break;
+  
+    case ACTION_PREV_ITEM:
+    case ACTION_PAGE_DOWN:
+    {
+      m_http.WriteLine("CHAPTER-");
+      return true;
+    }
+    break;
+  }
+  
+  return false;
+}
+
 void CPlexMediaServerPlayer::Seek(bool bPlus, bool bLargeStep)
 {
   if (bLargeStep)
