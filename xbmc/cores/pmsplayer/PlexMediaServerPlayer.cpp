@@ -90,7 +90,7 @@ bool CPlexMediaServerPlayer::OpenFile(const CFileItem& file, const CPlayerOption
   url.SetPort(32400);
 
   printf("Opening [%s] => [%s]\n", file.m_strPath.c_str(), url.GetURL().c_str());
-  int status = m_http.Open(url.GetURL(), "GET", 0);
+  int status = m_http.Open(url.GetURL(), "GET", 0, true);
   if (status != 200)
   {
     printf("ERROR: this didn't work [%d]\n", status);

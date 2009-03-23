@@ -941,7 +941,7 @@ void CHTTP::SetContentType(const string& strContentType)
 
 //------------------------------------------------------------------------------------------------------------------
 
-int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
+int CHTTP::Open(const string& strURL, const char* verb, const char* pData, bool keepAlive)
 {
   string strFile = "";
   m_strHostName = "";
@@ -968,9 +968,14 @@ int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
   }
   else
   {
-    strcpy(szHTTPHEADER, "Connection: close\r\n"
+    strcpy(szHTTPHEADER, 
           "Accept: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, application/msword, */*\r\n"
           "Accept-Language: en-us\r\n");
+    
+    if (keepAlive)
+      strcat(szHTTPHEADER, "Connection: Keep-Alive\r\n");
+    else
+      strcat(szHTTPHEADER, "Connection: close\r\n");
   }
   strcat(szHTTPHEADER, "Host: ");
   strcat(szHTTPHEADER, m_strHostName.c_str());
