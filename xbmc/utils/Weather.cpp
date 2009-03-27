@@ -229,6 +229,7 @@ int CWeather::ConvertSpeed(int curSpeed)
   case CLangInfo::SPEED_UNIT_MPH:
     curSpeed=(int)(curSpeed / (8.0 / 5.0));
     break;
+#if 0
   case CLangInfo::SPEED_UNIT_MPMIN:
     curSpeed=(int)(curSpeed * (1000.0 / 3600.0) + 0.5*60);
     break;
@@ -253,6 +254,7 @@ int CWeather::ConvertSpeed(int curSpeed)
   case CLangInfo::SPEED_UNIT_FPF:
     curSpeed=(int)(curSpeed * 1670.25f);
     break;
+#endif
   case CLangInfo::SPEED_UNIT_BEAUFORT:
     {
       float knot=(float)curSpeed * 0.5399568f; // to kts first

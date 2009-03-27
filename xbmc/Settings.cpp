@@ -55,8 +55,10 @@
 #include "FileSystem/SMBDirectory.h"
 #ifdef __APPLE__
 #include "CocoaUtils.h"
+#include "CocoaUtilsPlus.h"
 #endif
 
+#include <map>
 
 using namespace std;
 using namespace XFILE;
@@ -71,6 +73,44 @@ extern CStdString g_LoadErrorStr;
 
 CSettings::CSettings(void)
 {
+  // Map from the ISO languages to the deprecated XBMC ones.
+  m_languageMap["ca"] = "Catalan";
+  m_languageMap["zh-Hans"] = "Chinese (Simple)";
+  m_languageMap["zh-Hant"] = "Chinese (Traditional)";
+  m_languageMap["hr"] = "Croatian";
+  m_languageMap["cs"] = "Czech";
+  m_languageMap["da"] = "Danish";
+  m_languageMap["nl"] = "Dutch";
+  m_languageMap["en"] = "English";
+  m_languageMap["en-US"] = "English (US)";
+  m_languageMap["eo"] = "Esperanto";
+  m_languageMap["fi"] = "Finnish";
+  m_languageMap["fr"] = "French";
+  m_languageMap["de"] = "German";
+  m_languageMap["de-AT"] = "German (Austria)";
+  m_languageMap["el"] = "Greek";
+  m_languageMap["he"] = "Hebrew";
+  m_languageMap["hu"] = "Hungarian";
+  m_languageMap["is"] = "Icelandic";
+  m_languageMap["id"] = "Indonesian";
+  m_languageMap["it"] = "Italian";
+  m_languageMap["ja"] = "Japanese";
+  m_languageMap["ko"] = "Korean";
+  m_languageMap["mt"] = "Maltese";
+  m_languageMap["no"] = "Norwegian";
+  m_languageMap["pl"] = "Polish";
+  m_languageMap["pt"] = "Portuguese";
+  m_languageMap["pt-BR"] = "Portuguese (Brazil)";
+  m_languageMap["ro"] = "Romanian";
+  m_languageMap["ru"] = "Russian";
+  m_languageMap["sr"] = "Serbian";
+  m_languageMap["sk"] = "Slovak";
+  m_languageMap["sl"] = "Slovenian";
+  m_languageMap["es"] = "Spanish";
+  m_languageMap["sv"] = "Swedish";
+  m_languageMap["tr"] = "Turkish";
+  m_languageMap["uk"] = "Ukrainian";
+  
   for (int i = HDTV_1080i; i <= PAL60_16x9; i++)
   {
     ZeroMemory(&m_ResInfo[i], sizeof(RESOLUTION));
@@ -1731,7 +1771,7 @@ bool CSettings::LoadProfile(int index)
     g_charsetConverter.reset();
 
     // Load the langinfo to have user charset <-> utf-8 conversion
-    CStdString strLanguage = g_guiSettings.GetString("region.language");
+    CStdString strLanguage = g_settings.GetLocale();
     strLanguage[0] = toupper(strLanguage[0]);
 
     CStdString strLangInfoPath;
@@ -2843,4 +2883,35 @@ void CSettings::CreateProfileFolders()
     CUtil::AddFileToFolder(GetVideoThumbFolder(), strHex, strThumbLoc);
     CreateDirectory(strThumbLoc.c_str(),NULL);
   }
+}
+
+string CSettings::GetLocale()
+{
+  string ret = "English";
+  
+#ifdef __APPLE__
+  
+  // Get the system locale.
+  string systemLocale = Cocoa_GetLanguage();
+  
+  if (m_languageMap.find(systemLocale) != m_languageMap.end())
+  {
+    // Great match.
+    ret = m_languageMap[systemLocale];
+  }
+  else
+  {
+    // See if we can just get the language.
+    int dash = systemLocale.find("-");
+    if (dash != -1)
+    {
+      systemLocale = systemLocale.substr(0, dash);
+      if (m_languageMap.find(systemLocale) != m_languageMap.end())
+        ret = m_languageMap[systemLocale];
+    }
+  }
+  
+#endif
+  
+  return ret;
 }

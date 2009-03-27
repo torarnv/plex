@@ -38,9 +38,11 @@
 #include "LinuxTimezone.h"
 #endif
 #include "utils/Network.h"
+#include "LangInfo.h"
 
 #ifdef __APPLE__
 #include "CocoaUtils.h"
+#include "CocoaUtilsPlus.h"
 #include "CoreAudioPlexSupport.h"
 #include "PlexMediaServerHelper.h"
 #endif
@@ -715,13 +717,13 @@ CGUISettings::CGUISettings(void)
   // appearance settings
   AddGroup(7, 480);
 	
-	
- AddCategory(7,"lookandfeel", 14037);
+  AddCategory(7,"lookandfeel", 14037);
   AddBool(0,"lookandfeel.soundsduringplayback",21370,false);
   AddString(1, "lookandfeel.skin",166,"MediaStream", SPIN_CONTROL_TEXT);
   AddString(2, "lookandfeel.skintheme",15111,"SKINDEFAULT", SPIN_CONTROL_TEXT);
   AddString(3, "lookandfeel.skincolors",14078, "SKINDEFAULT", SPIN_CONTROL_TEXT);
   AddString(4, "lookandfeel.font",13303,"Default", SPIN_CONTROL_TEXT);
+  AddBool(0, "lookandfeel.lastLoadRequiredUnicode", 0, false);
   AddInt(0, "lookandfeel.skinzoom",20109, 0, -20, 2, 20, SPIN_CONTROL_INT, MASK_PERCENT);
   AddInt(6, "lookandfeel.startupwindow",512,1, WINDOW_HOME, 1, WINDOW_PYTHON_END, SPIN_CONTROL_TEXT);
   AddSeparator(7, "lookandfeel.sep1");
@@ -729,11 +731,25 @@ CGUISettings::CGUISettings(void)
   AddSeparator(10, "lookandfeel.sep2");
 
 	AddCategory(7,"region", 20026);
-	AddString(1, "region.country", 20026, "USA", SPIN_CONTROL_TEXT);
-	AddString(2, "region.language",248,"english", SPIN_CONTROL_TEXT);
+	
+	// Temperature units; figure out the appropriate default. Of course, US is the odd one out.
+	string countryCode = Cocoa_GetCountryCode();
+	int defaultTempUnit = CLangInfo::TEMP_UNIT_CELSIUS;
+	if (countryCode == "US")
+	  defaultTempUnit = CLangInfo::TEMP_UNIT_FAHRENHEIT;
+	
+	AddInt(2, "region.temperatureunits", 398, defaultTempUnit, CLangInfo::TEMP_UNIT_FAHRENHEIT, 1, CLangInfo::TEMP_UNIT_CELSIUS, SPIN_CONTROL_TEXT);
+	
+	// Speed units; figure out the appropriate default.
+	int defaultSpeedUnit = CLangInfo::SPEED_UNIT_KMH;
+	if (countryCode == "US")
+	  defaultSpeedUnit = CLangInfo::SPEED_UNIT_MPH;
+
+	AddInt(2, "region.speedunits", 399, defaultSpeedUnit, CLangInfo::SPEED_UNIT_KMH, 1, CLangInfo::SPEED_UNIT_BEAUFORT, SPIN_CONTROL_TEXT);
+	
 	AddString(3, "region.charset",735,"DEFAULT", SPIN_CONTROL_TEXT); // charset is set by the language file
 	
-//  AddCategory(7, "filelists", 14018);
+	//  AddCategory(7, "filelists", 14018);
   AddBool(1, "filelists.hideparentdiritems", 13306, true);
   AddBool(2, "filelists.hideextensions", 497, false);
   AddBool(3, "filelists.ignorethewhensorting", 13399, true);

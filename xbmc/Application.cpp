@@ -1237,7 +1237,8 @@ HRESULT CApplication::Create(HWND hWnd)
   g_charsetConverter.reset();
 
   // Load the langinfo to have user charset <-> utf-8 conversion
-  CStdString strLanguage = g_guiSettings.GetString("region.language");
+  CStdString strLanguage = g_settings.GetLocale();
+  
   strLanguage[0] = toupper(strLanguage[0]);
 
   CStdString strLangInfoPath;
@@ -2481,11 +2482,25 @@ void CApplication::LoadSkin(const CStdString& strSkin)
     {
       CLog::Log(LOGINFO, "    new font is '%s'", strFontSet.c_str());
       g_guiSettings.SetString("lookandfeel.font", strFontSet);
+      g_guiSettings.SetBool("lookandfeel.lastLoadRequiredUnicode", true);
       g_settings.Save();
     }
     else
-      CLog::Log(LOGERROR, "    no ttf font found, but needed for the language %s.", g_guiSettings.GetString("region.language").c_str());
+      CLog::Log(LOGERROR, "    no ttf font found, but needed for the language %s.", g_settings.GetLocale().c_str());
   }
+  
+  if (g_langInfo.ForceUnicodeFont())
+  {
+    // Remember that we forced Unicode.
+    g_guiSettings.SetBool("lookandfeel.lastLoadRequiredUnicode", true);
+  }
+  else if (g_langInfo.ForceUnicodeFont() == false && g_guiSettings.GetBool("lookandfeel.lastLoadRequiredUnicode") == true)
+  {
+    // Reset to default.
+    g_guiSettings.SetString("lookandfeel.font", "Default");
+    g_guiSettings.SetBool("lookandfeel.lastLoadRequiredUnicode", false);
+  }
+  
   g_colorManager.Load(g_guiSettings.GetString("lookandfeel.skincolors"));
 
   g_fontManager.LoadFonts(g_guiSettings.GetString("lookandfeel.font"));
@@ -2493,7 +2508,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   // load in the skin strings
   CStdString skinPath, skinEnglishPath;
   CUtil::AddFileToFolder(strSkinPath, "language", skinPath);
-  CUtil::AddFileToFolder(skinPath, g_guiSettings.GetString("region.language"), skinPath);
+  CUtil::AddFileToFolder(skinPath, g_settings.GetLocale(), skinPath);
   CUtil::AddFileToFolder(skinPath, "strings.xml", skinPath);
 
   CUtil::AddFileToFolder(strSkinPath, "language", skinEnglishPath);

@@ -26,6 +26,7 @@
 #include "Application.h"
 #include "KeyboardLayoutConfiguration.h"
 #include "FileSystem/HDDirectory.h"
+#include "LangInfo.h"
 #include "Util.h"
 #include "GUILabelControl.h"
 #include "GUICheckMarkControl.h"
@@ -204,44 +205,6 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
     }
   case GUI_MSG_LOAD_SKIN:
     {
-      // Do we need to reload the language file
-      if (!m_strNewLanguage.IsEmpty())
-      {
-        g_guiSettings.SetString("region.language", m_strNewLanguage);
-        g_settings.Save();
-
-        CStdString strLangInfoPath;
-        strLangInfoPath.Format("Q:\\language\\%s\\langinfo.xml", m_strNewLanguage.c_str());
-        g_langInfo.Load(_P(strLangInfoPath));
-
-        if (g_langInfo.ForceUnicodeFont() && !g_fontManager.IsFontSetUnicode())
-        {
-          CLog::Log(LOGINFO, "Language needs a ttf font, loading first ttf font available");
-          CStdString strFontSet;
-          if (g_fontManager.GetFirstFontSetUnicode(strFontSet))
-          {
-            m_strNewSkinFontSet=strFontSet;
-          }
-          else
-            CLog::Log(LOGERROR, "No ttf font found but needed: %s", strFontSet.c_str());
-        }
-
-        g_charsetConverter.reset();
-
-        CStdString strKeyboardLayoutConfigurationPath;
-        strKeyboardLayoutConfigurationPath.Format("Q:\\language\\%s\\keyboardmap.xml", m_strNewLanguage.c_str());
-        strKeyboardLayoutConfigurationPath = _P(strKeyboardLayoutConfigurationPath);
-        CLog::Log(LOGINFO, "load keyboard layout configuration info file: %s", strKeyboardLayoutConfigurationPath.c_str());
-        g_keyboardLayoutConfiguration.Load(strKeyboardLayoutConfigurationPath);
-
-        CStdString strLanguagePath;
-        strLanguagePath.Format("Q:\\language\\%s\\strings.xml", m_strNewLanguage.c_str());
-        g_localizeStrings.Load(_P(strLanguagePath));
-
-        // also tell our weather to reload, as this must be localized
-        g_weatherManager.ResetTimer();
-      }
-
       // Do we need to reload the skin font set
       if (!m_strNewSkinFontSet.IsEmpty())
       {
@@ -665,9 +628,23 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       FillInSoundSkins(pSetting);
     }
-    else if (strSetting.Equals("region.language"))
+    else if (strSetting.Equals("region.temperatureunits"))
     {
-      FillInLanguages(pSetting);
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->AddLabel(g_localizeStrings.Get(20027), CLangInfo::TEMP_UNIT_FAHRENHEIT);
+      pControl->AddLabel(g_localizeStrings.Get(20029), CLangInfo::TEMP_UNIT_CELSIUS);
+      pControl->SetValue(pSettingInt->GetData());
+    }
+    else if (strSetting.Equals("region.speedunits"))
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->AddLabel(g_localizeStrings.Get(20200), CLangInfo::SPEED_UNIT_KMH);
+      pControl->AddLabel(g_localizeStrings.Get(20202), CLangInfo::SPEED_UNIT_MPS);
+      pControl->AddLabel(g_localizeStrings.Get(20206), CLangInfo::SPEED_UNIT_MPH);
+      pControl->AddLabel(g_localizeStrings.Get(20208), CLangInfo::SPEED_UNIT_BEAUFORT);
+      pControl->SetValue(pSettingInt->GetData());
     }
 #ifdef _LINUX
     else if (strSetting.Equals("locale.timezonecountry"))
@@ -900,10 +877,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(GetSetting(strSetting)->GetID());
       if (pSettingString->GetData().IsEmpty())
         pControl->SetLabel2(g_localizeStrings.Get(20009));
-    }
-    else if (strSetting.Equals("region.country"))
-    {
-      FillInRegions(pSetting);
     }
     else if (strSetting.Equals("musicfiles.viewmode"))
     {
@@ -1419,6 +1392,10 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     { // TODO: Determine whether we are using a TTF font or not.
       //   CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       //   if (pControl) pControl->SetEnabled(g_guiSettings.GetString("lookandfeel.font").Right(4) == ".ttf");
+    }
+    else if (strSetting.Equals("region.temperatureunits") || strSetting.Equals("region.speedunits"))
+    {
+      g_weatherManager.ResetTimer();
     }
     else if (strSetting.Equals("screensaver.dimlevel"))
     {
@@ -2200,22 +2177,6 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       ILED::CLEDControl(iData);
 #endif
   }
-  else if (strSetting.Equals("region.language"))
-  { // new language chosen...
-    CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
-    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-    CStdString strLanguage = pControl->GetCurrentLabel();
-    if (strLanguage != ".svn" && strLanguage != pSettingString->GetData())
-    {
-      m_strNewLanguage = strLanguage;
-      g_application.DelayLoadSkin();
-    }
-    else
-    { // Do not reload the language we are already using
-      m_strNewLanguage.Empty();
-      g_application.CancelDelayLoadSkin();
-    }
-  }
   else if (strSetting.Equals("lookandfeel.skintheme"))
   { //a new Theme was chosen
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
@@ -2361,14 +2322,6 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     g_guiSettings.m_replayGain.iPreAmp = g_guiSettings.GetInt("musicplayer.replaygainpreamp");
     g_guiSettings.m_replayGain.iNoGainPreAmp = g_guiSettings.GetInt("musicplayer.replaygainnogainpreamp");
     g_guiSettings.m_replayGain.bAvoidClipping = g_guiSettings.GetBool("musicplayer.replaygainavoidclipping");
-  }
-  else if (strSetting.Equals("region.country"))
-  {
-    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-
-    const CStdString& strRegion=pControl->GetCurrentLabel();
-    g_langInfo.SetCurrentRegion(strRegion);
-    g_guiSettings.SetString("region.country", strRegion);
   }
   else if (strSetting.Equals("locale.timeserver") || strSetting.Equals("locale.timeserveraddress"))
   {
@@ -3493,6 +3446,7 @@ void CGUIWindowSettingsCategory::FillInVSyncs(CSetting *pSetting)
 
 void CGUIWindowSettingsCategory::FillInLanguages(CSetting *pSetting)
 {
+#if 0
   CSettingString *pSettingString = (CSettingString*)pSetting;
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->Clear();
@@ -3529,6 +3483,7 @@ void CGUIWindowSettingsCategory::FillInLanguages(CSetting *pSetting)
   }
 
   pControl->SetValue(iCurrentLang);
+#endif
 }
 
 void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
@@ -3677,6 +3632,7 @@ bool CGUIWindowSettingsCategory::SetFTPServerUserPass()
 
 void CGUIWindowSettingsCategory::FillInRegions(CSetting *pSetting)
 {
+#if 0
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->SetType(SPIN_CONTROL_TYPE_TEXT);
   pControl->Clear();
@@ -3700,6 +3656,7 @@ void CGUIWindowSettingsCategory::FillInRegions(CSetting *pSetting)
   }
 
   pControl->SetValue(iCurrentRegion);
+#endif
 }
 
 CBaseSettingControl *CGUIWindowSettingsCategory::GetSetting(const CStdString &strSetting)

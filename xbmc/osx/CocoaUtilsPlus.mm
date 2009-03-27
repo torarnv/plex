@@ -9,10 +9,13 @@
 #include "XBMCMain.h"
 #include "MediaSource.h"
 #include <Cocoa/Cocoa.h>
+#include <CoreFoundation/CFString.h>
 #include <CoreServices/CoreServices.h>
 #import <SystemConfiguration/SystemConfiguration.h>
 #include <arpa/inet.h>
 #include "PlexMediaServerHelper.h"
+
+#include <boost/algorithm/string.hpp>
 
 #define COCOA_KEY_PLAYPAUSE  1051136
 #define COCOA_KEY_PREV_TRACK 1313280
@@ -197,5 +200,126 @@ vector<CStdString> Cocoa_Proxy_ExceptionList()
   {
     [proxyDict release];
   }
+  return ret;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+string Cocoa_GetLanguage()
+{
+  NSArray* languages = [NSLocale preferredLanguages];
+  NSString* language = [languages objectAtIndex:0];
+  
+  return [language UTF8String];
+}
+
+///////////////////////////////////////////////////////////////////////////////
+static string Cocoa_GetFormatString(int dateFormat, int timeFormat)
+{
+  id pool = [[NSAutoreleasePool alloc] init];
+  
+  NSDateFormatter *dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
+  [dateFormatter setLocale:[NSLocale currentLocale]];
+  [dateFormatter setDateStyle:dateFormat];
+  [dateFormatter setTimeStyle:timeFormat];
+  
+  string ret = [[dateFormatter dateFormat] UTF8String];
+  [pool release];
+
+  return ret;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+string Cocoa_GetLongDateFormat()
+{
+  return Cocoa_GetFormatString(kCFDateFormatterLongStyle, kCFDateFormatterNoStyle);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+string Cocoa_GetShortDateFormat()
+{
+  return Cocoa_GetFormatString(kCFDateFormatterShortStyle, kCFDateFormatterNoStyle);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+string Cocoa_GetTimeFormat()
+{
+  string ret = Cocoa_GetFormatString(kCFDateFormatterNoStyle, kCFDateFormatterShortStyle);
+  
+  boost::replace_all(ret, "a", "xx");
+  boost::replace_all(ret, " z", "");
+  
+  return ret;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+string Cocoa_GetMeridianSymbol(int i)
+{
+  string ret;
+  
+  id pool = [[NSAutoreleasePool alloc] init];
+  NSDateFormatter *dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
+  [dateFormatter setLocale:[NSLocale currentLocale]];
+  
+  if (i == 0)
+    ret = [[dateFormatter PMSymbol] UTF8String];
+  else if (i == 1)
+    ret = [[dateFormatter AMSymbol] UTF8String];
+  
+  [pool release];
+  
+  return ret;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+string Cocoa_GetCountryCode()
+{
+  id pool = [[NSAutoreleasePool alloc] init];
+  NSLocale* myLocale = [NSLocale currentLocale];
+  NSString* countryCode = [myLocale objectForKey:NSLocaleCountryCode];
+  
+  string ret = [countryCode UTF8String];
+  [pool release];
+
+  return ret;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+string Cocoa_GetDateString(time_t time, bool longDate)
+{
+  id pool = [[NSAutoreleasePool alloc] init];
+  NSDateFormatter *dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
+  [dateFormatter setLocale:[NSLocale currentLocale]];
+  
+  if (longDate)
+    [dateFormatter setDateStyle:kCFDateFormatterLongStyle];
+  else
+    [dateFormatter setDateStyle:kCFDateFormatterShortStyle];
+  
+  [dateFormatter setTimeStyle:kCFDateFormatterNoStyle];
+  
+  NSDate* date = [NSDate dateWithTimeIntervalSince1970:time];
+  NSString* formattedDateString = [dateFormatter stringFromDate:date];
+  
+  string ret = [formattedDateString UTF8String];
+  
+  [pool release];
+  return ret;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+string Cocoa_GetTimeString(time_t time)
+{
+  id pool = [[NSAutoreleasePool alloc] init];
+  NSDateFormatter *dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
+  [dateFormatter setLocale:[NSLocale currentLocale]];
+  [dateFormatter setDateStyle:kCFDateFormatterNoStyle];
+  [dateFormatter setTimeStyle:kCFDateFormatterShortStyle];
+   
+  NSDate* date = [NSDate dateWithTimeIntervalSince1970:time];
+  NSString* formattedDateString = [dateFormatter stringFromDate:date];
+   
+  string ret = [formattedDateString UTF8String];
+   
+  [pool release];
   return ret;
 }

@@ -20,6 +20,9 @@
  */
 
 #include "stdafx.h"
+#ifdef __APPLE__
+#include "CocoaUtilsPlus.h"
+#endif
 #include "DateTime.h"
 
 #define SECONDS_PER_DAY 86400UL
@@ -776,10 +779,7 @@ void CDateTime::GetAsSystemTime(SYSTEMTIME& time) const
 
 void CDateTime::GetAsTime(time_t& time) const
 {
-  ULARGE_INTEGER filetime;
-  ToULargeInt(filetime);
-
-  time=(time_t)(filetime.QuadPart-0x19DB1DED53E8000LL)/10000000UL;
+  FileTimeToTimeT(&m_time, &time);
 }
 
 void CDateTime::GetAsTm(tm& time) const
@@ -838,6 +838,18 @@ void CDateTime::SetFromDBDate(const CStdString &date)
 
 CStdString CDateTime::GetAsLocalizedTime(const CStdString &format, bool withSeconds) const
 {
+#ifdef __APPLE__
+
+  // If there's no format, use the system.
+  if (format.IsEmpty())
+  {
+    time_t time = 0;
+    GetAsTime(time);
+    return Cocoa_GetTimeString(time);
+  }
+  
+#endif
+  
   CStdString strOut;
   const CStdString& strFormat = format.IsEmpty() ? g_langInfo.GetTimeFormat() : format;
 
@@ -999,6 +1011,13 @@ CStdString CDateTime::GetAsLocalizedTime(const CStdString &format, bool withSeco
 
 CStdString CDateTime::GetAsLocalizedDate(bool longDate/*=false*/) const
 {
+#ifdef __APPLE__
+  
+  time_t time = 0;
+  GetAsTime(time);
+  return Cocoa_GetDateString(time, longDate);
+  
+#else
   CStdString strOut;
 
   const CStdString& strFormat=g_langInfo.GetDateFormat(longDate);
@@ -1147,6 +1166,7 @@ CStdString CDateTime::GetAsLocalizedDate(bool longDate/*=false*/) const
   }
 
   return strOut;
+#endif
 }
 
 CStdString CDateTime::GetAsLocalizedDateTime(bool longDate/*=false*/, bool withSeconds/*=true*/) const

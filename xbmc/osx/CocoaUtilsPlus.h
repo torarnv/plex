@@ -43,6 +43,19 @@ extern "C"
   // Proxy Settings (continued)
   //
   vector<CStdString> Cocoa_Proxy_ExceptionList();
+  
+  //
+  // Locale functions.
+  //
+  string Cocoa_GetCountryCode();
+  string Cocoa_GetLanguage();
+  string Cocoa_GetLongDateFormat();
+  string Cocoa_GetShortDateFormat();
+  string Cocoa_GetTimeFormat();
+  string Cocoa_GetMeridianSymbol(int i);
+  string Cocoa_GetDateString(time_t time, bool longDate);
+  string Cocoa_GetTimeString(time_t time);
+  
 #ifdef __cplusplus
 }
 #endif

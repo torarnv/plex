@@ -24,6 +24,9 @@
 #include "Settings.h"
 #include "Util.h"
 #include "GUISettings.h"
+#ifdef __APPLE__
+#include "CocoaUtilsPlus.h"
+#endif
 
 CLangInfo g_langInfo;
 
@@ -40,15 +43,12 @@ CLangInfo::CRegion::CRegion(const CRegion& region)
   m_strDVDMenuLanguage=region.m_strDVDMenuLanguage;
   m_strDVDAudioLanguage=region.m_strDVDAudioLanguage;
   m_strDVDSubtitleLanguage=region.m_strDVDSubtitleLanguage;
-
   m_strDateFormatShort=region.m_strDateFormatShort;
   m_strDateFormatLong=region.m_strDateFormatLong;
   m_strTimeFormat=region.m_strTimeFormat;
   m_strMeridiemSymbols[MERIDIEM_SYMBOL_PM]=region.m_strMeridiemSymbols[MERIDIEM_SYMBOL_PM];
   m_strMeridiemSymbols[MERIDIEM_SYMBOL_AM]=region.m_strMeridiemSymbols[MERIDIEM_SYMBOL_AM];
-  m_strTimeFormat=region.m_strTimeFormat;
-  m_tempUnit=region.m_tempUnit;
-  m_speedUnit=region.m_speedUnit;
+  
   m_strTimeZone = region.m_strTimeZone;
 }
 
@@ -72,60 +72,23 @@ void CLangInfo::CRegion::SetDefaults()
   m_strDVDAudioLanguage="en";
   m_strDVDSubtitleLanguage="en";
 
+#ifdef __APPLE__
+  m_strDateFormatShort = Cocoa_GetShortDateFormat();
+  m_strDateFormatLong = Cocoa_GetLongDateFormat();
+  m_strTimeFormat = Cocoa_GetTimeFormat();
+  m_strMeridiemSymbols[MERIDIEM_SYMBOL_PM] = Cocoa_GetMeridianSymbol(MERIDIEM_SYMBOL_PM);
+  m_strMeridiemSymbols[MERIDIEM_SYMBOL_AM] = Cocoa_GetMeridianSymbol(MERIDIEM_SYMBOL_AM);
+#else
   m_strDateFormatShort="DD/MM/YYYY";
   m_strDateFormatLong="DDDD, D MMMM YYYY";
   m_strTimeFormat="HH:mm:ss";
-  m_tempUnit=TEMP_UNIT_CELSIUS;
-  m_speedUnit=SPEED_UNIT_KMH;
+#endif
+  
   m_strTimeZone.clear();
-}
-
-void CLangInfo::CRegion::SetTempUnit(const CStdString& strUnit)
-{
-  if (strUnit.Equals("F"))
-    m_tempUnit=TEMP_UNIT_FAHRENHEIT;
-  else if (strUnit.Equals("K"))
-    m_tempUnit=TEMP_UNIT_KELVIN;
-  else if (strUnit.Equals("C"))
-    m_tempUnit=TEMP_UNIT_CELSIUS;
-  else if (strUnit.Equals("Re"))
-    m_tempUnit=TEMP_UNIT_REAUMUR;
-  else if (strUnit.Equals("Ra"))
-    m_tempUnit=TEMP_UNIT_RANKINE;
-  else if (strUnit.Equals("Ro"))
-    m_tempUnit=TEMP_UNIT_ROMER;
-  else if (strUnit.Equals("De"))
-    m_tempUnit=TEMP_UNIT_DELISLE;
-  else if (strUnit.Equals("N"))
-    m_tempUnit=TEMP_UNIT_NEWTON;
 }
 
 void CLangInfo::CRegion::SetSpeedUnit(const CStdString& strUnit)
 {
-  if (strUnit.Equals("kmh"))
-    m_speedUnit=SPEED_UNIT_KMH;
-  else if (strUnit.Equals("mpmin"))
-    m_speedUnit=SPEED_UNIT_MPMIN;
-  else if (strUnit.Equals("mps"))
-    m_speedUnit=SPEED_UNIT_MPS;
-  else if (strUnit.Equals("fth"))
-    m_speedUnit=SPEED_UNIT_FTH;
-  else if (strUnit.Equals("ftm"))
-    m_speedUnit=SPEED_UNIT_FTMIN;
-  else if (strUnit.Equals("fts"))
-    m_speedUnit=SPEED_UNIT_FTS;
-  else if (strUnit.Equals("mph"))
-    m_speedUnit=SPEED_UNIT_MPH;
-  else if (strUnit.Equals("kts"))
-    m_speedUnit=SPEED_UNIT_KTS;
-  else if (strUnit.Equals("beaufort"))
-    m_speedUnit=SPEED_UNIT_BEAUFORT;
-  else if (strUnit.Equals("inchs"))
-    m_speedUnit=SPEED_UNIT_INCHPS;
-  else if (strUnit.Equals("yards"))
-    m_speedUnit=SPEED_UNIT_YARDPS;
-  else if (strUnit.Equals("fpf"))
-    m_speedUnit=SPEED_UNIT_FPF;
 }
 
 void CLangInfo::CRegion::SetTimeZone(const CStdString& strTimeZone)
@@ -144,6 +107,7 @@ CLangInfo::~CLangInfo()
 
 bool CLangInfo::Load(const CStdString& strFileName)
 {
+  printf("Loading file: %s\n", strFileName.c_str());
   SetDefaults();
 
   TiXmlDocument xmlDoc;
@@ -207,30 +171,6 @@ bool CLangInfo::Load(const CStdString& strFileName)
       if (region.m_strName.IsEmpty())
         region.m_strName="N/A";
 
-      const TiXmlNode *pDateLong=pRegion->FirstChild("datelong");
-      if (pDateLong && !pDateLong->NoChildren())
-        region.m_strDateFormatLong=pDateLong->FirstChild()->Value();
-
-      const TiXmlNode *pDateShort=pRegion->FirstChild("dateshort");
-      if (pDateShort && !pDateShort->NoChildren())
-        region.m_strDateFormatShort=pDateShort->FirstChild()->Value();
-
-      const TiXmlElement *pTime=pRegion->FirstChildElement("time");
-      if (pTime && !pTime->NoChildren())
-      {
-        region.m_strTimeFormat=pTime->FirstChild()->Value();
-        region.m_strMeridiemSymbols[MERIDIEM_SYMBOL_AM]=pTime->Attribute("symbolAM");
-        region.m_strMeridiemSymbols[MERIDIEM_SYMBOL_PM]=pTime->Attribute("symbolPM");
-      }
-
-      const TiXmlNode *pTempUnit=pRegion->FirstChild("tempunit");
-      if (pTempUnit && !pTempUnit->NoChildren())
-        region.SetTempUnit(pTempUnit->FirstChild()->Value());
-
-      const TiXmlNode *pSpeedUnit=pRegion->FirstChild("speedunit");
-      if (pSpeedUnit && !pSpeedUnit->NoChildren())
-        region.SetSpeedUnit(pSpeedUnit->FirstChild()->Value());
-
       const TiXmlNode *pTimeZone=pRegion->FirstChild("timezone");
       if (pTimeZone && !pTimeZone->NoChildren())
         region.SetTimeZone(pTimeZone->FirstChild()->Value());
@@ -239,9 +179,6 @@ bool CLangInfo::Load(const CStdString& strFileName)
 
       pRegion=pRegion->NextSiblingElement("region");
     }
-
-    const CStdString& strName=g_guiSettings.GetString("region.country");
-    SetCurrentRegion(strName);
   }
 
   const TiXmlNode *pTokens = pRootElement->FirstChild("sorttokens");
@@ -365,22 +302,39 @@ const CStdString& CLangInfo::GetCurrentRegion()
 
 CLangInfo::TEMP_UNIT CLangInfo::GetTempUnit()
 {
-  return m_currentRegion->m_tempUnit;
+  return (CLangInfo::TEMP_UNIT)g_guiSettings.GetInt("region.temperatureunits");
 }
 
 // Returns the temperature unit string for the current language
 const CStdString& CLangInfo::GetTempUnitString()
 {
-  return g_localizeStrings.Get(TEMP_UNIT_STRINGS+m_currentRegion->m_tempUnit);
+  TEMP_UNIT tempUnit = GetTempUnit();
+  
+  if (tempUnit == 0)
+    return g_localizeStrings.Get(TEMP_UNIT_STRINGS+0);
+  else
+    return g_localizeStrings.Get(TEMP_UNIT_STRINGS+1+tempUnit);
 }
 
 CLangInfo::SPEED_UNIT CLangInfo::GetSpeedUnit()
 {
-  return m_currentRegion->m_speedUnit;
+  return (CLangInfo::SPEED_UNIT)g_guiSettings.GetInt("region.speedunits");
 }
 
 // Returns the speed unit string for the current language
 const CStdString& CLangInfo::GetSpeedUnitString()
 {
-  return g_localizeStrings.Get(SPEED_UNIT_STRINGS+m_currentRegion->m_speedUnit);
+  // Translate offset (we whacked a bunch of useless ones, more is not always better).
+  SPEED_UNIT unit = GetSpeedUnit();
+  int offset = 0;
+  
+  switch (unit)
+  {
+  case SPEED_UNIT_KMH: offset=0; break;
+  case SPEED_UNIT_MPS: offset=2; break;
+  case SPEED_UNIT_MPH: offset=6; break;
+  case SPEED_UNIT_BEAUFORT: offset=8; break;
+  }
+  
+  return g_localizeStrings.Get(SPEED_UNIT_STRINGS+offset);
 }

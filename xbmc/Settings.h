@@ -34,6 +34,9 @@
 
 #include <vector>
 #include <map>
+#include <string>
+
+using namespace std;
 
 #define CACHE_AUDIO 0
 #define CACHE_VIDEO 1
@@ -433,6 +436,14 @@ protected:
   void LoadUserFolderLayout();
 
   void LoadRSSFeeds();
+  
+ public:
+  
+   string GetLocale();
+  
+ private:
+   
+   map<string, string> m_languageMap;
 };
 
 extern class CSettings g_settings;
