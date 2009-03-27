@@ -722,7 +722,7 @@ void CGUIDialogKeyboard::OnIPAddress()
   int length = 0;
   if (start > -1)
   {
-    length = reg.GetSublength(0);
+    length = reg.GetSubLength(0);
     ip = utf8String.Mid(start, length);
   }
   else

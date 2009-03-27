@@ -360,7 +360,7 @@ const BOOL CUtil::HostInExceptionList(CStdString hostname, std::vector<CStdStrin
     exceptionItem = (*it);
     if (hostIpAddresses.size() > 0 && ipAndSubnetMaskReg.RegFind(exceptionItem) > -1)
     {
-      CStdString ipAddressStr = exceptionItem.substr(ipAndSubnetMaskReg.GetSubStart(1),  ipAndSubnetMaskReg.GetSublength(1));
+      CStdString ipAddressStr = exceptionItem.substr(ipAndSubnetMaskReg.GetSubStart(1),  ipAndSubnetMaskReg.GetSubLength(1));
 
       int pos, dots;
       for (pos = -1, dots = 0; dots < 3 &&  ((pos = ipAddressStr.Find(".", pos)) > -1); dots++, pos++)
@@ -370,7 +370,7 @@ const BOOL CUtil::HostInExceptionList(CStdString hostname, std::vector<CStdStrin
         ipAddressStr.AppendFormat(".0");
 
       in_addr_t ipAddress = inet_addr(ipAddressStr.c_str());
-      unsigned int shift = atoi(exceptionItem.substr(ipAndSubnetMaskReg.GetSubStart(2),  ipAndSubnetMaskReg.GetSublength(2)).c_str());
+      unsigned int shift = atoi(exceptionItem.substr(ipAndSubnetMaskReg.GetSubStart(2),  ipAndSubnetMaskReg.GetSubLength(2)).c_str());
       in_addr_t subnetMask = htonl(0xFFFFFFFF << 32 - shift);
       vector<in_addr_t>::iterator ip_it;
       for (ip_it = hostIpAddresses.begin(); ip_it != hostIpAddresses.end(); ip_it++)
@@ -697,15 +697,15 @@ bool CUtil::GetVolumeFromFileName(const CStdString& strFileName, CStdString& str
       else if( iCount > 1 )
       {
         //Second Sub value contains the stacking
-        strVolumeNumber = strFileName.Mid(iFoundToken + reg.GetSubStart(2), reg.GetSublength(2));
+        strVolumeNumber = strFileName.Mid(iFoundToken + reg.GetSubStart(2), reg.GetSubLength(2));
 
         strFileTitle = strFileName.Left(iFoundToken);
 
         //First Sub value contains prefix
-        strFileTitle += strFileName.Mid(iFoundToken + reg.GetSubStart(1), reg.GetSublength(1));
+        strFileTitle += strFileName.Mid(iFoundToken + reg.GetSubStart(1), reg.GetSubLength(1));
 
         //Third Sub value contains suffix
-        strFileTitle += strFileName.Mid(iFoundToken + reg.GetSubStart(3), reg.GetSublength(3));
+        strFileTitle += strFileName.Mid(iFoundToken + reg.GetSubStart(3), reg.GetSubLength(3));
         strFileTitle += strFileNameTemp.Mid(iFoundToken + iRegLength);
         //CLog::Log(LOGNOTICE, "GetVolumeFromFileName : 4 : " + strFileName + " : " + strVolumeNumber + " : " + strFileTitle);
         return true;

@@ -21,15 +21,13 @@
  
 #include "stdafx.h"
 #include "DVDSubtitleParserSami.h"
-#include "DVDCodecs/Overlay/DVDOverlayText.h"
 #include "DVDClock.h"
-#include "utils/RegExp.h"
 #include "DVDStreamInfo.h"
 
 using namespace std;
 
 CDVDSubtitleParserSami::CDVDSubtitleParserSami(CDVDSubtitleStream* stream, const string& filename)
-    : CDVDSubtitleParser(stream, filename)
+    : CDVDSubtitleParser(stream, filename),m_reg(true)
 {
 
 }
@@ -44,50 +42,20 @@ bool CDVDSubtitleParserSami::Open(CDVDStreamInfo &hints)
   if (!m_pStream->Open(m_strFileName))
     return false;
 
+  if (!initializeParsingInfo())
+    return false;
+
   char line[1024];
-  char text[1024];
 
-  CRegExp reg;
-  if (!reg.RegComp("<SYNC START=([0-9]+)>"))
-    assert(0);
-
-  bool reuse=false;
-  while (reuse || m_pStream->ReadLine(line, sizeof(line)))
+  while ( m_pStream->ReadLine(line, sizeof(line)))
   {
-    if (reg.RegFind(line) > -1)
+    CDVDOverlayText* pOverlay = parseLineAndReturnOverlayText( line);
+    if ( pOverlay)
     {
-      char* startFrame = reg.GetReplaceString("\\1");
-      m_pStream->ReadLine(text,sizeof(text));
-      m_pStream->ReadLine(line,sizeof(line));
-      if (reg.RegFind(line) > -1)
-      {
-        char* endFrame   = reg.GetReplaceString("\\1");
-      
-        CDVDOverlayText* pOverlay = new CDVDOverlayText();
-        pOverlay->Acquire(); // increase ref count with one so that we can hold a handle to this overlay
-
-        pOverlay->iPTSStartTime = atoi(startFrame)*DVD_TIME_BASE/1000; 
-        pOverlay->iPTSStopTime  = atoi(endFrame)*DVD_TIME_BASE/1000;
-
-        free(endFrame);
-
-        CStdStringW strUTF16;
-        CStdStringA strUTF8;
-        g_charsetConverter.subtitleCharsetToW(text, strUTF16);
-        g_charsetConverter.wToUTF8(strUTF16, strUTF8);
-        if (strUTF8.IsEmpty())
-          continue;
-        // add a new text element to our container
-        pOverlay->AddElement(new CDVDOverlayText::CElementText(strUTF8.c_str()));
-        reuse = true;
-      
-        m_collection.Add(pOverlay);
-      }
-      free(startFrame);
+      m_collection.Add( pOverlay);
     }
-    else
-      reuse = false;
   }
+  m_pStream->Close();
 
   return true;
 }
@@ -108,3 +76,116 @@ CDVDOverlay* CDVDSubtitleParserSami::Parse(double iPts)
   return  m_collection.Get(iPts);;
 }
 
+bool CDVDSubtitleParserSami::initializeParsingInfo()
+{
+  m_startTime = 0;
+  m_endTime = 0;
+  m_pOverlay = NULL;
+  m_textCount = 0;
+
+  if ( !m_reg.RegComp("<SYNC (Start|START)=([0-9]+)><[^>]+>"))
+  {
+    CLog::Log(LOGINFO, "reg compile faile");
+    return false;
+  }
+  return true;
+}
+
+// There can be text within the same line like "<SYNC Start=1234><P Class=XX>some text<br>some text"
+char* CDVDSubtitleParserSami::getTextFromSyncLine( char* line)
+{
+  char* first = strchr( line, '>');
+  if ( first == NULL) return NULL;
+  char* second = strchr( first + 1, '>');
+  if ( second == NULL) return NULL;
+  char* text = second + 1;
+  if ( *text != '\0' && strstr( text, "&nbsp;") == NULL) // ignore line containing "&nbsp;"
+  {
+    return text;
+  }
+  return NULL;
+}
+CDVDOverlayText* CDVDSubtitleParserSami::getOverlayTextObjectCompleted()
+{
+  // if all informations for overlay text are collected, return OverlayText object and initialize it.
+  if ( m_pOverlay && m_textCount != 0 && m_endTime != 0)
+  {
+    CDVDOverlayText* ret = m_pOverlay;
+    ret->iPTSStartTime = m_startTime * DVD_TIME_BASE/1000;
+    ret->iPTSStopTime = m_endTime * DVD_TIME_BASE/1000;
+    //CLog::Log(LOGINFO, "Sami stime:%f, etime:%f", ret->iPTSStartTime, ret->iPTSStopTime);
+
+    m_pOverlay = NULL;
+    m_startTime = m_endTime;
+    m_endTime = 0;
+    m_textCount = 0;
+
+    return ret;
+  }
+  return NULL;
+}
+
+void CDVDSubtitleParserSami::convertAndAddElement( char* line)
+{
+  if ( m_startTime == 0)
+  {
+    return;
+  }
+  CStdStringW strUTF16;
+  CStdStringA strUTF8;
+
+  g_charsetConverter.subtitleCharsetToW(line, strUTF16);
+  g_charsetConverter.wToUTF8(strUTF16, strUTF8);
+
+  if (!strUTF8.IsEmpty())
+  {
+    // if overlay text object is initial state, create object
+    if ( m_pOverlay == NULL && m_textCount == 0)
+    {
+      m_pOverlay = new CDVDOverlayText();
+      m_pOverlay->Acquire(); // increase ref count with one so that we can hold a handle to this overlay
+    }
+    // remove "<br>" at the end of line. it's for better display overlay text.
+    char* str = strdup( strUTF8.c_str());
+    char* str_br = strstr(str + strlen(str)-6,"<br>");
+    if ( str_br) *str_br='\0';
+    // add a new text element to our container
+    m_pOverlay->AddElement(new CDVDOverlayText::CElementText(str));
+    free(str);
+    m_textCount++;
+  }
+}
+
+void CDVDSubtitleParserSami::addTime( char* line)
+{
+  if ( m_textCount == 0)
+  {
+    m_startTime = atoi( line);
+  }
+  else
+  {
+    m_endTime = atoi( line);
+  }
+}
+CDVDOverlayText* CDVDSubtitleParserSami::parseLineAndReturnOverlayText( char* line)
+{
+  if ( m_reg.RegFind( line) > -1)
+  {
+    //CLog::Log(LOGINFO, "Sami sync: %s", line);
+    char* timeFrame = m_reg.GetReplaceString("\\2");
+    addTime( timeFrame);
+    char* text = getTextFromSyncLine( line);
+    if ( text)
+    {
+      convertAndAddElement( text);
+    }
+
+    return getOverlayTextObjectCompleted();
+  }
+  else
+  {
+    //CLog::Log(LOGINFO, "Sami text: %s", line);
+    convertAndAddElement( line);
+    return NULL;
+  }
+}
