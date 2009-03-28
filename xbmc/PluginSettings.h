@@ -49,9 +49,13 @@ class CPluginSettings : public CBasicSettings
 {
 public:
   CPluginSettings();
-  virtual ~CPluginSettings();
+  virtual ~CPluginSettings(); 
   bool Load(const CURL& url);
   bool Save(void);
+  
+  bool LoadFromPlexMediaServer(TiXmlElement* root);
+  bool SaveToPlexMediaServer(const CStdString& strPath);
+  
   static bool SettingsExist(const CStdString &strPath);
   
   CPluginSettings& operator =(const CBasicSettings&);

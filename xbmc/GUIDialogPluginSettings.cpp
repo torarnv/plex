@@ -97,6 +97,38 @@ bool CGUIDialogPluginSettings::OnMessage(CGUIMessage& message)
 }
 
 // \brief Show CGUIDialogOK dialog, then wait for user to dismiss it.
+void CGUIDialogPluginSettings::ShowAndGetInput(const CStdString& path, const CStdString& compositeXml)
+{
+  // Parse the settings XML.
+  TiXmlDocument doc;
+  doc.Parse(compositeXml.c_str());
+  
+  // Get the root element.
+  TiXmlElement* root = doc.RootElement();
+  if (root == 0)
+    return;
+  
+  // Create the dialog.
+  CGUIDialogPluginSettings* pDialog = (CGUIDialogPluginSettings*) m_gWindowManager.GetWindow(WINDOW_DIALOG_PLUGIN_SETTINGS);
+
+  // Set the title.
+  pDialog->m_strHeading = "";
+  const char* title = root->Attribute("title");
+  if (title)
+    pDialog->m_strHeading = title;
+
+  // Load the settings.
+  CPluginSettings settings;
+  settings.LoadFromPlexMediaServer(root);
+  pDialog->m_settings = settings;
+
+  pDialog->DoModal();
+
+  settings = pDialog->m_settings;
+  settings.SaveToPlexMediaServer(path);
+}
+
+// \brief Show CGUIDialogOK dialog, then wait for user to dismiss it.
 void CGUIDialogPluginSettings::ShowAndGetInput(CURL& url)
 {
   m_url = url;
@@ -344,7 +376,7 @@ void CGUIDialogPluginSettings::CreateControls()
   SET_CONTROL_LABEL(CONTROL_HEADING_LABEL, m_strHeading);
 
   // Create our base path, used for type "fileenum" settings
-  CStdString basepath = "special://home/plugins/";
+  CStdString basepath = "Q:\\plugins\\";
   CUtil::AddFileToFolder(basepath, m_url.GetHostName(), basepath);
   CUtil::AddFileToFolder(basepath, m_url.GetFileName(), basepath);
 

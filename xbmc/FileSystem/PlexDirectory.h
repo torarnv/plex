@@ -23,13 +23,15 @@ class CPlexDirectory : public IDirectory,
                        public CThread
 {
  public:
-  CPlexDirectory();
+  CPlexDirectory(bool parseResults=true);
   virtual ~CPlexDirectory();
   
   virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
   virtual DIR_CACHE_TYPE GetCacheType(const CStdString &strPath) const { return DIR_CACHE_ONCE; };
   static string ProcessUrl(const string& parent, const string& url, bool isDirectory);
   virtual void SetTimeout(int timeout) { m_timeout = timeout; }
+  
+  string GetData() { return m_data; } 
   
  protected:
    
@@ -45,6 +47,7 @@ class CPlexDirectory : public IDirectory,
   CStdString m_url;
   CStdString m_data;
   bool       m_bSuccess;
+  bool       m_bParseResults;
   int        m_timeout;
   CFileCurl  m_http;
 };

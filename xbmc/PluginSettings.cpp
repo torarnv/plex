@@ -22,8 +22,10 @@
 #include "PluginSettings.h"
 #include "Util.h"
 #include "FileSystem/File.h"
+#include "FileSystem/FileCurl.h"
 #include "FileSystem/Directory.h"
 
+using namespace XFILE;
 
 CBasicSettings::CBasicSettings()
 {
@@ -129,6 +131,87 @@ CPluginSettings::CPluginSettings()
 
 CPluginSettings::~CPluginSettings()
 {
+}
+
+bool CPluginSettings::LoadFromPlexMediaServer(TiXmlElement* root)
+{
+  m_pluginXmlDoc.Clear();
+  m_userXmlDoc.Clear();
+
+  // This holds the settings.
+  TiXmlElement xmlSettingsElement("settings");
+  TiXmlNode* pSettings = m_pluginXmlDoc.InsertEndChild(xmlSettingsElement);
+  
+  // This holds the values.
+  TiXmlElement xmlValuesElement("settings");
+  TiXmlNode* pValues = m_userXmlDoc.InsertEndChild(xmlValuesElement);
+  
+  TiXmlElement *setting = root->FirstChildElement("Setting");
+  while (setting)
+  {
+    TiXmlElement xmlSetting("setting");
+    TiXmlElement xmlValueSetting("setting");
+    
+    // Walk through the attributes.
+    TiXmlAttribute* attrib = setting->FirstAttribute();
+    while (attrib)
+    {
+      string name = attrib->Name();
+      string value = attrib->Value();
+      
+      if (name == "id" || name == "value")
+        xmlValueSetting.SetAttribute(name, value);
+      
+      if (name != "value")
+        xmlSetting.SetAttribute(name, value);
+      
+      attrib = attrib->Next();
+    }
+    
+    pSettings->InsertEndChild(xmlSetting);
+    pValues->InsertEndChild(xmlValueSetting);
+    
+    setting = setting->NextSiblingElement("Setting");
+  }
+  
+  return true;
+}
+
+bool CPluginSettings::SaveToPlexMediaServer(const CStdString& path)
+{
+  // Build up URL parameters with id and value.
+  TiXmlElement* root = m_userXmlDoc.RootElement();
+  string params = "?";
+  
+  for (TiXmlElement* setting = root->FirstChildElement("setting"); setting; setting = setting->NextSiblingElement("setting"))
+  {
+    const char* id = setting->Attribute("id");
+    const char* value = setting->Attribute("value");
+    
+    if (id)
+    {
+      CStdString strName = id;
+      CStdString strValue = value;
+      
+      CUtil::URLEncode(strName);
+      CUtil::URLEncode(strValue);
+      params += strName + "=" + strValue + "&";
+    }
+  }
+
+  // Compute the new path.
+  string strPath = path;
+  strPath += "set" + params.substr(0, params.size()-1);
+  
+  // Send the parameters back to the Plex Media Server.
+  CURL url(strPath);
+  CStdString protocol = url.GetProtocol();
+  url.SetProtocol("http");
+  url.SetPort(32400);  
+
+  // Make the request.
+  CFileCurl http;
+  return http.Open(url, false);
 }
 
 bool CPluginSettings::Load(const CURL& url)

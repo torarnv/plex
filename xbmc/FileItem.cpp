@@ -68,7 +68,6 @@ CFileItem::CFileItem(const CSong& song)
   m_lStartOffset = song.iStartOffset;
   m_lEndOffset = song.iEndOffset;
   m_strThumbnailImage = _P(song.strThumb);
-  m_bIsPopupMenuItem = false;
 }
 
 CFileItem::CFileItem(const CStdString &path, const CAlbum& album)
@@ -80,7 +79,6 @@ CFileItem::CFileItem(const CStdString &path, const CAlbum& album)
   SetLabel(album.strAlbum);
   m_strPath = _P(path);
   m_bIsFolder = true;
-  m_bIsSearchDir = false;
   m_strLabel2 = album.strArtist;
   CUtil::AddSlashAtEnd(m_strPath);
   GetMusicInfoTag()->SetAlbum(album);
@@ -97,8 +95,6 @@ CFileItem::CFileItem(const CStdString &path, const CAlbum& album)
   SetProperty("label", album.strLabel);
   if (album.iRating > 0)
     SetProperty("rating", album.iRating);
-  
-  m_bIsPopupMenuItem = false;
 }
 
 CFileItem::CFileItem(const CVideoInfoTag& movie)
@@ -106,7 +102,6 @@ CFileItem::CFileItem(const CVideoInfoTag& movie)
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
   m_pictureInfoTag = NULL;
-  m_bIsSearchDir = false;
   Reset();
   SetLabel(movie.m_strTitle);
   if (movie.m_strFileNameAndPath.IsEmpty())
@@ -161,8 +156,6 @@ CFileItem::CFileItem(const CGenre& genre)
   SetLabel(genre.strGenre);
   m_strPath = _P(genre.strGenre);
   m_bIsFolder = true;
-  m_bIsSearchDir = false;
-  m_strSearchPrompt = "";
   CUtil::AddSlashAtEnd(m_strPath);
   GetMusicInfoTag()->SetGenre(genre.strGenre);
 }
@@ -172,7 +165,7 @@ CFileItem::CFileItem(const CFileItem& item)
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
   m_pictureInfoTag = NULL;
-  m_bIsSearchDir = false;
+  Reset();
   *this = item;
 }
 
@@ -235,7 +228,6 @@ CFileItem::CFileItem(const CMediaSource& share)
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
   m_pictureInfoTag = NULL;
-  m_bIsSearchDir = false;
   Reset();
   m_bIsFolder = true;
   m_bIsShareOrDrive = true;
@@ -345,6 +337,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   m_extrainfo = item.m_extrainfo;
   m_strFanartUrl = item.m_strFanartUrl;
   m_bIsPopupMenuItem = item.m_bIsPopupMenuItem;
+  m_bIsSettingsDir = item.m_bIsSettingsDir;
   m_bIsSearchDir = item.m_bIsSearchDir;
   m_strSearchPrompt = item.m_strSearchPrompt;
   
@@ -389,9 +382,13 @@ void CFileItem::Reset()
   m_pictureInfoTag=NULL;
   m_extrainfo.Empty();
   m_strFanartUrl.Empty();
+  
   m_bIsPopupMenuItem = false;
+  m_bIsSettingsDir = false;
   m_bIsSearchDir = false;
   m_strSearchPrompt = "";
+  m_displayMessageTitle = "";
+  m_displayMessageContents = "";
   
   SetInvalid();
 }

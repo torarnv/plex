@@ -81,8 +81,10 @@ CSettings::CSettings(void)
   m_languageMap["cs"] = "Czech";
   m_languageMap["da"] = "Danish";
   m_languageMap["nl"] = "Dutch";
-  m_languageMap["en"] = "English";
-  m_languageMap["en-US"] = "English (US)";
+  m_languageMap["en"] = "English (US)";
+  m_languageMap["en-GB"] = "English";
+  m_languageMap["en-AU"] = "English";
+  m_languageMap["en-CA"] = "English";
   m_languageMap["eo"] = "Esperanto";
   m_languageMap["fi"] = "Finnish";
   m_languageMap["fr"] = "French";
@@ -2891,23 +2893,24 @@ string CSettings::GetLocale()
   
 #ifdef __APPLE__
   
-  // Get the system locale.
-  string systemLocale = Cocoa_GetLanguage();
+  // Get the system language.
+  string systemLang = Cocoa_GetLanguage();
+  printf("Lang: %s\n", systemLang.c_str());
   
-  if (m_languageMap.find(systemLocale) != m_languageMap.end())
+  if (m_languageMap.find(systemLang) != m_languageMap.end())
   {
     // Great match.
-    ret = m_languageMap[systemLocale];
+    ret = m_languageMap[systemLang];
   }
   else
   {
     // See if we can just get the language.
-    int dash = systemLocale.find("-");
+    int dash = systemLang.find("-");
     if (dash != -1)
     {
-      systemLocale = systemLocale.substr(0, dash);
-      if (m_languageMap.find(systemLocale) != m_languageMap.end())
-        ret = m_languageMap[systemLocale];
+      systemLang = systemLang.substr(0, dash);
+      if (m_languageMap.find(systemLang) != m_languageMap.end())
+        ret = m_languageMap[systemLang];
     }
   }
   

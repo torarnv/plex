@@ -751,27 +751,44 @@ bool CGUIMediaWindow::OnClick(int iItem)
     // Show a context menu for PMS popup directories
     if (pItem->m_bIsPopupMenuItem)
     {
-      CFileItemList* fileItems = new CFileItemList();
+      CFileItemList fileItems;
       vector<CStdString> items;
       CPlexDirectory plexDir;
-      plexDir.GetDirectory(directory.m_strPath, *fileItems);
-      for ( int i = 0; i < fileItems->Size(); i++ )
+      
+      plexDir.GetDirectory(directory.m_strPath, fileItems);
+      for ( int i = 0; i < fileItems.Size(); i++ )
       {
-        CFileItemPtr item = fileItems->Get(i);
+        CFileItemPtr item = fileItems.Get(i);
         items.push_back(item->GetLabel());
       }
+      
       int choice = CGUIDialogContextMenu::ShowAndGetChoice(items, GetContextPosition());
       if (choice > 0)
       {
-        CFileItemPtr selectedItem = fileItems->Get(choice-1);
+        CFileItemPtr selectedItem = fileItems.Get(choice-1);
         if (selectedItem->m_bIsFolder)
+        {
           Update(selectedItem->m_strPath);
+        }
         else
-        { selectedItem->SetLabel(pItem->GetLabel() + ": " + selectedItem->GetLabel());
+        { 
+          selectedItem->SetLabel(pItem->GetLabel() + ": " + selectedItem->GetLabel());
           OnPlayMedia(selectedItem.get());
         }
       }
-      delete fileItems;
+      return true;
+    }
+    
+    // Show preferences.
+    if (pItem->m_bIsSettingsDir)
+    {
+      CFileItemList fileItems;
+      vector<CStdString> items;
+      CPlexDirectory plexDir(false);
+      
+      plexDir.GetDirectory(directory.m_strPath, fileItems);
+      CGUIDialogPluginSettings::ShowAndGetInput(pItem->m_strPath, plexDir.GetData());
+      
       return true;
     }
     

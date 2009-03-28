@@ -9,6 +9,8 @@
 
 #include "stdafx.h"
 #include "Album.h"
+#include "CocoaUtilsPlus.h"
+#include "CocoaUtils.h"
 #include "PlexDirectory.h"
 #include "DirectoryCache.h"
 #include "Util.h"
@@ -30,9 +32,10 @@ using namespace DIRECTORY;
 #define MASTER_PLEX_MEDIA_SERVER "http://localhost:32400"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-CPlexDirectory::CPlexDirectory()
+CPlexDirectory::CPlexDirectory(bool parseResults)
   : m_bStop(false)
   , m_bSuccess(true)
+  , m_bParseResults(parseResults)
 {
   m_timeout = 300;
 }
@@ -100,15 +103,18 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   if (m_bSuccess == false)
     return false;
   
+  // See if we're supposed to parse the results or not.
+  if (m_bParseResults == false)
+    return true;
+  
   // Parse returned xml.
   TiXmlDocument doc;
   doc.Parse(m_data.c_str());
 
   TiXmlElement* root = doc.RootElement();
-  if(root == 0)
+  if (root == 0)
   {
-    CLog::Log(LOGERROR, "%s - Unable to parse xml\n%s", __FUNCTION__, m_data.c_str());
-    
+    CLog::Log(LOGERROR, "%s - Unable to parse XML\n%s", __FUNCTION__, m_data.c_str());
     return false;
   }
   
@@ -294,10 +300,12 @@ class PlexMediaDirectory : public PlexMediaNode
     newItem->SetProperty("description", pItem->GetProperty("description"));
     pItem = newItem;
     
-    // Check for search directories
+    // Check for special directories.
     const char* search = el.Attribute("search");
     const char* prompt = el.Attribute("prompt");
+    const char* settings = el.Attribute("settings");
     
+    // Check for search directory.
     if (search && strlen(search) > 0 && prompt)
     {
       string strSearch = search;
@@ -308,13 +316,21 @@ class PlexMediaDirectory : public PlexMediaNode
       }
     }
     
-    // Check for popup menus
+    // Check for popup menus.
     const char* popup = el.Attribute("popup");
     if (popup && strlen(popup) > 0)
     {
       string strPopup = popup;
       if (strPopup == "1")
         pItem->m_bIsPopupMenuItem = true;
+    }
+    
+    // Check for preferences.
+    if (settings && strlen(settings) > 0)
+    {
+      string strSettings = settings;
+      if (strSettings == "1")
+        pItem->m_bIsSettingsDir = true;
     }
   }
 };
@@ -627,6 +643,11 @@ void CPlexDirectory::Process()
   url.SetProtocol("http");
   url.SetPort(32400);  
 
+  // Set request headers.
+  m_http.SetRequestHeader("X-Plex-Version", Cocoa_GetAppVersion());
+  m_http.SetRequestHeader("X-Plex-Language", Cocoa_GetLanguage());
+  printf("Sending down %s / %s\n", Cocoa_GetAppVersion(), Cocoa_GetLanguage().c_str());
+  
   m_http.SetTimeout(m_timeout);
   if (m_http.Open(url, false) == false) 
   {

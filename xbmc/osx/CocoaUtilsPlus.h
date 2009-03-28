@@ -8,6 +8,7 @@
 
 #ifndef _COCOA_UTILS_PLUS_H_
 #define _COCOA_UTILS_PLUS_H_
+#ifdef __APPLE__
 
 #include <vector>
 #include <string>
@@ -59,5 +60,5 @@ extern "C"
 #ifdef __cplusplus
 }
 #endif
-
+#endif
 #endif
