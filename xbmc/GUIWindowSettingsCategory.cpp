@@ -628,24 +628,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       FillInSoundSkins(pSetting);
     }
-    else if (strSetting.Equals("region.temperatureunits"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel(g_localizeStrings.Get(20027), CLangInfo::TEMP_UNIT_FAHRENHEIT);
-      pControl->AddLabel(g_localizeStrings.Get(20029), CLangInfo::TEMP_UNIT_CELSIUS);
-      pControl->SetValue(pSettingInt->GetData());
-    }
-    else if (strSetting.Equals("region.speedunits"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel(g_localizeStrings.Get(20200), CLangInfo::SPEED_UNIT_KMH);
-      pControl->AddLabel(g_localizeStrings.Get(20202), CLangInfo::SPEED_UNIT_MPS);
-      pControl->AddLabel(g_localizeStrings.Get(20206), CLangInfo::SPEED_UNIT_MPH);
-      pControl->AddLabel(g_localizeStrings.Get(20208), CLangInfo::SPEED_UNIT_BEAUFORT);
-      pControl->SetValue(pSettingInt->GetData());
-    }
 #ifdef _LINUX
     else if (strSetting.Equals("locale.timezonecountry"))
     {
@@ -1392,10 +1374,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     { // TODO: Determine whether we are using a TTF font or not.
       //   CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       //   if (pControl) pControl->SetEnabled(g_guiSettings.GetString("lookandfeel.font").Right(4) == ".ttf");
-    }
-    else if (strSetting.Equals("region.temperatureunits") || strSetting.Equals("region.speedunits"))
-    {
-      g_weatherManager.ResetTimer();
     }
     else if (strSetting.Equals("screensaver.dimlevel"))
     {

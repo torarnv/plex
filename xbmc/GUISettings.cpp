@@ -731,22 +731,6 @@ CGUISettings::CGUISettings(void)
   AddSeparator(10, "lookandfeel.sep2");
 
 	AddCategory(7,"region", 20026);
-	
-	// Temperature units; figure out the appropriate default. Of course, US is the odd one out.
-	string countryCode = Cocoa_GetCountryCode();
-	int defaultTempUnit = CLangInfo::TEMP_UNIT_CELSIUS;
-	if (countryCode == "US")
-	  defaultTempUnit = CLangInfo::TEMP_UNIT_FAHRENHEIT;
-	
-	AddInt(2, "region.temperatureunits", 398, defaultTempUnit, CLangInfo::TEMP_UNIT_FAHRENHEIT, 1, CLangInfo::TEMP_UNIT_CELSIUS, SPIN_CONTROL_TEXT);
-	
-	// Speed units; figure out the appropriate default.
-	int defaultSpeedUnit = CLangInfo::SPEED_UNIT_KMH;
-	if (countryCode == "US")
-	  defaultSpeedUnit = CLangInfo::SPEED_UNIT_MPH;
-
-	AddInt(2, "region.speedunits", 399, defaultSpeedUnit, CLangInfo::SPEED_UNIT_KMH, 1, CLangInfo::SPEED_UNIT_BEAUFORT, SPIN_CONTROL_TEXT);
-	
 	AddString(3, "region.charset",735,"DEFAULT", SPIN_CONTROL_TEXT); // charset is set by the language file
 	
 	//  AddCategory(7, "filelists", 14018);

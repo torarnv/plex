@@ -213,6 +213,15 @@ string Cocoa_GetLanguage()
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+bool Cocoa_IsMetricSystem()
+{
+  NSLocale* locale = [NSLocale currentLocale];
+  NSNumber* isMetric = [locale objectForKey:NSLocaleUsesMetricSystem];
+  
+  return [isMetric boolValue] == YES;
+}
+
+///////////////////////////////////////////////////////////////////////////////
 static string Cocoa_GetFormatString(int dateFormat, int timeFormat)
 {
   id pool = [[NSAutoreleasePool alloc] init];

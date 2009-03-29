@@ -302,7 +302,11 @@ const CStdString& CLangInfo::GetCurrentRegion()
 
 CLangInfo::TEMP_UNIT CLangInfo::GetTempUnit()
 {
+#ifdef __APPLE__
+  return Cocoa_IsMetricSystem() ? TEMP_UNIT_CELSIUS : TEMP_UNIT_FAHRENHEIT;
+#else
   return (CLangInfo::TEMP_UNIT)g_guiSettings.GetInt("region.temperatureunits");
+#endif
 }
 
 // Returns the temperature unit string for the current language
@@ -318,7 +322,11 @@ const CStdString& CLangInfo::GetTempUnitString()
 
 CLangInfo::SPEED_UNIT CLangInfo::GetSpeedUnit()
 {
+#ifdef __APPLE__
+  return Cocoa_IsMetricSystem() ? SPEED_UNIT_KMH : SPEED_UNIT_MPH;
+#else
   return (CLangInfo::SPEED_UNIT)g_guiSettings.GetInt("region.speedunits");
+#endif
 }
 
 // Returns the speed unit string for the current language

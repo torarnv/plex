@@ -50,6 +50,7 @@ extern "C"
   //
   string Cocoa_GetCountryCode();
   string Cocoa_GetLanguage();
+  bool   Cocoa_IsMetricSystem();
   string Cocoa_GetLongDateFormat();
   string Cocoa_GetShortDateFormat();
   string Cocoa_GetTimeFormat();
