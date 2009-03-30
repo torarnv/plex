@@ -38,6 +38,7 @@ extern "C"
   int  Cocoa_GetDisplay(int screen);
   int Cocoa_GetCurrentDisplay();
   void  Cocoa_MoveWindowToDisplay(int display);
+  void Cocoa_ActivateWindow();
   
   //
   // Open GL.

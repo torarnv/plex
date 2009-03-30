@@ -25,6 +25,7 @@
 #include <boost/date_time/posix_time/posix_time_types.hpp>
  
 #include "stdafx.h"
+#include "CocoaUtils.h"
 #include "PlexMediaServerPlayer.h"
 #include "FileItem.h"
 #include "GUIFontManager.h"
@@ -196,6 +197,10 @@ void CPlexMediaServerPlayer::Process()
         OnPaused();
       else if (line.find("PROGRESS") == 0)
         OnProgress(boost::lexical_cast<int>(line.substr(9)));
+      else if (line == "ACTIVATE")
+        Cocoa_ActivateWindow();
+      else
+        printf("Unknown command: [%s]\n", line.c_str());
     }
   }
 

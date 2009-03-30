@@ -57,6 +57,11 @@ void Cocoa_Initialize(void* pApplication)
   CocoaPlus_Initialize();
 }
 
+void Cocoa_ActivateWindow()
+{
+  [[NSApplication sharedApplication] activateIgnoringOtherApps:YES];
+}
+
 void Cocoa_DisplayError(const char* strError)
 {
   NSAlert *alert = [NSAlert alertWithMessageText:@"Fatal Error"
