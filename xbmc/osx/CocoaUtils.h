@@ -172,6 +172,11 @@ extern "C"
 	//
 	void Cocoa_ExecAppleScriptFile(const char* filePath);
 	void Cocoa_ExecAppleScript(const char* scriptSource);
+  
+  //
+  // Cocoa GUI
+  //
+  bool Cocoa_IsGUIShowing();
 
 #ifdef __cplusplus
 }

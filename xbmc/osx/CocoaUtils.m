@@ -32,6 +32,8 @@
 #import "AppleHardwareInfo.h"
 #import "SUPlexUpdater.h"
 
+#import "AdvancedSettingsController.h"
+
 extern int GetProcessPid(const char* processName);
 extern void CocoaPlus_Initialize();
 
@@ -1215,4 +1217,9 @@ void Cocoa_ExecAppleScript(const char* scriptSource)
 	NSAppleScript* appleScript = [[NSAppleScript alloc] initWithSource:[NSString stringWithUTF8String:scriptSource]];
 	[appleScript executeAndReturnError:nil];
 	[appleScript release];
+}
+
+bool Cocoa_IsGUIShowing()
+{
+  return [[AdvancedSettingsController sharedInstance] windowIsVisible];
 }

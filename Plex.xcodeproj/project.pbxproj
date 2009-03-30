@@ -14,6 +14,14 @@
 		1A2C5DE90E7EF479002F23FA /* relaunch.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A2C5DE80E7EF479002F23FA /* relaunch.m */; };
 		1A2C5DEC0E7EF4BD002F23FA /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A2C5DEB0E7EF4BD002F23FA /* AppKit.framework */; };
 		1A2C5DF70E7EF598002F23FA /* relaunch in Copy Relaunch */ = {isa = PBXBuildFile; fileRef = 1A2C5DE30E7EF410002F23FA /* relaunch */; };
+		1A448E920F8059C1006E71B2 /* AdvancedSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A448E910F8059C1006E71B2 /* AdvancedSettingsController.m */; };
+		1A448EB90F8066BB006E71B2 /* Library.icns in Resources */ = {isa = PBXBuildFile; fileRef = 1A448EB50F8066BB006E71B2 /* Library.icns */; };
+		1A448EBA0F8066BB006E71B2 /* Movies.icns in Resources */ = {isa = PBXBuildFile; fileRef = 1A448EB60F8066BB006E71B2 /* Movies.icns */; };
+		1A448EBB0F8066BB006E71B2 /* Music.icns in Resources */ = {isa = PBXBuildFile; fileRef = 1A448EB70F8066BB006E71B2 /* Music.icns */; };
+		1A448EBC0F8066BB006E71B2 /* System.icns in Resources */ = {isa = PBXBuildFile; fileRef = 1A448EB80F8066BB006E71B2 /* System.icns */; };
+		1A448EBE0F806887006E71B2 /* RSS.png in Resources */ = {isa = PBXBuildFile; fileRef = 1A448EBD0F806887006E71B2 /* RSS.png */; };
+		1A448EDA0F813112006E71B2 /* BWToolkitFramework.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1A448ED90F813112006E71B2 /* BWToolkitFramework.framework */; };
+		1A448F130F813714006E71B2 /* BWToolkitFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A448ED90F813112006E71B2 /* BWToolkitFramework.framework */; };
 		1A53C11A0EAC0020009A10F3 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A53C1190EAC0020009A10F3 /* SystemConfiguration.framework */; };
 		1A53C7490EB00AD1009A10F3 /* frontrowlauncher.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A53C7480EB00AD1009A10F3 /* frontrowlauncher.m */; };
 		1A53C7FC0EB00B43009A10F3 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A2C5DEB0E7EF4BD002F23FA /* AppKit.framework */; };
@@ -970,6 +978,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				1A448EDA0F813112006E71B2 /* BWToolkitFramework.framework in CopyFiles */,
 				E3C1A6610E71275B00CE0104 /* Sparkle.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -992,6 +1001,14 @@
 		1A2C5DE30E7EF410002F23FA /* relaunch */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = relaunch; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A2C5DE80E7EF479002F23FA /* relaunch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = relaunch.m; sourceTree = "<group>"; };
 		1A2C5DEB0E7EF4BD002F23FA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		1A448E900F8059C1006E71B2 /* AdvancedSettingsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AdvancedSettingsController.h; sourceTree = "<group>"; };
+		1A448E910F8059C1006E71B2 /* AdvancedSettingsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AdvancedSettingsController.m; sourceTree = "<group>"; };
+		1A448EB50F8066BB006E71B2 /* Library.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = Library.icns; path = guiresources/Library.icns; sourceTree = "<group>"; };
+		1A448EB60F8066BB006E71B2 /* Movies.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = Movies.icns; path = guiresources/Movies.icns; sourceTree = "<group>"; };
+		1A448EB70F8066BB006E71B2 /* Music.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = Music.icns; path = guiresources/Music.icns; sourceTree = "<group>"; };
+		1A448EB80F8066BB006E71B2 /* System.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = System.icns; path = guiresources/System.icns; sourceTree = "<group>"; };
+		1A448EBD0F806887006E71B2 /* RSS.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = RSS.png; path = guiresources/RSS.png; sourceTree = "<group>"; };
+		1A448ED90F813112006E71B2 /* BWToolkitFramework.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = BWToolkitFramework.framework; sourceTree = "<group>"; };
 		1A53C1190EAC0020009A10F3 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = /System/Library/Frameworks/SystemConfiguration.framework; sourceTree = "<absolute>"; };
 		1A53C7400EB00A52009A10F3 /* frontrowlauncher */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = frontrowlauncher; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A53C7480EB00AD1009A10F3 /* frontrowlauncher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = frontrowlauncher.m; sourceTree = "<group>"; };
@@ -3117,6 +3134,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1A448F130F813714006E71B2 /* BWToolkitFramework.framework in Frameworks */,
 				E371C50C0E2F2DF500FBF841 /* AppKit.framework in Frameworks */,
 				E371C50D0E2F2DF500FBF841 /* ApplicationServices.framework in Frameworks */,
 				E371C50E0E2F2DF500FBF841 /* AudioToolbox.framework in Frameworks */,
@@ -3211,6 +3229,7 @@
 				E371CC190E33473A00FBF841 /* AppleRemote.cpp */,
 				E371CBB00E3044D900FBF841 /* Plex.icns */,
 				08FB7795FE84155DC02AAC07 /* Source */,
+				1A448EAB0F8066A5006E71B2 /* GUI Resources */,
 				C6859E96029091FE04C91782 /* Documentation */,
 				08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */,
 				19C28FBDFE9D53C911CA2CBB /* Products */,
@@ -3240,6 +3259,7 @@
 				E3ADDD130EAA68DC003921C8 /* QTKit.framework */,
 				1A2C5DEB0E7EF4BD002F23FA /* AppKit.framework */,
 				E3C56E520F86011E0021BE13 /* AddressBook.framework */,
+				1A448ED90F813112006E71B2 /* BWToolkitFramework.framework */,
 				94DEBCDD0F647401003FF0E9 /* libavcodec-osx.a */,
 				94DEBCDE0F647401003FF0E9 /* libavformat-osx.a */,
 				94DEBCDF0F647401003FF0E9 /* libavutil-osx.a */,
@@ -3336,6 +3356,18 @@
 				1A01F0FE0E7D37AA00DC186E /* SUUpdateDriver.h */,
 			);
 			name = Sparkle;
+			sourceTree = "<group>";
+		};
+		1A448EAB0F8066A5006E71B2 /* GUI Resources */ = {
+			isa = PBXGroup;
+			children = (
+				1A448EB50F8066BB006E71B2 /* Library.icns */,
+				1A448EB60F8066BB006E71B2 /* Movies.icns */,
+				1A448EB70F8066BB006E71B2 /* Music.icns */,
+				1A448EB80F8066BB006E71B2 /* System.icns */,
+				1A448EBD0F806887006E71B2 /* RSS.png */,
+			);
+			name = "GUI Resources";
 			sourceTree = "<group>";
 		};
 		1AA457080E7EBD50004CC8D2 /* Headers */ = {
@@ -3481,6 +3513,8 @@
 				1A5484540E79EA340025CA32 /* BackgroundMusicPlayer.mm */,
 				EF5D57790EB4833200B16174 /* CocoaUtilsPlus.h */,
 				EF5D577A0EB4833200B16174 /* CocoaUtilsPlus.mm */,
+				1A448E900F8059C1006E71B2 /* AdvancedSettingsController.h */,
+				1A448E910F8059C1006E71B2 /* AdvancedSettingsController.m */,
 			);
 			path = osx;
 			sourceTree = "<group>";
@@ -6606,6 +6640,11 @@
 				1A5535E50E86B02F005AF349 /* ModelsWithBattery.plist in Resources */,
 				1AF6A79C0E994BFB00D96BD7 /* ModelNames.plist in Resources */,
 				1A01F0530E7D2F3400DC186E /* plex in Resources */,
+				1A448EB90F8066BB006E71B2 /* Library.icns in Resources */,
+				1A448EBA0F8066BB006E71B2 /* Movies.icns in Resources */,
+				1A448EBB0F8066BB006E71B2 /* Music.icns in Resources */,
+				1A448EBC0F8066BB006E71B2 /* System.icns in Resources */,
+				1A448EBE0F806887006E71B2 /* RSS.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7461,6 +7500,7 @@
 				E3F766080F346CC300667633 /* md5.cpp in Sources */,
 				E3F766230F3471D300667633 /* DVDInputStreamStack.cpp in Sources */,
 				949384630F591AE6004DFC17 /* FileEyeTVSocket.mm in Sources */,
+				1A448E920F8059C1006E71B2 /* AdvancedSettingsController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7668,6 +7708,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/plex/Frameworks\"",
+					"\"$(SRCROOT)\"",
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
@@ -7766,6 +7807,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/plex/Frameworks\"",
+					"\"$(SRCROOT)\"",
 				);
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;

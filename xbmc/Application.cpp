@@ -3107,7 +3107,8 @@ bool CApplication::OnKey(CKey& key)
   if (g_Keyboard.GetAlt()  == true  ||
       g_Keyboard.GetApple() == true ||
       g_Keyboard.GetCtrl() == true  ||
-      g_Keyboard.GetRAlt()  == true)
+      g_Keyboard.GetRAlt()  == true ||
+      Cocoa_IsGUIShowing())
   {
       g_Keyboard.Reset();
       return false;
