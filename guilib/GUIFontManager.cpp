@@ -207,6 +207,7 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
   fontInfo.aspect = originalAspect;
   fontInfo.fontFilePath = strPath;
   fontInfo.fileName = strFilename;
+  fontInfo.variant = variant;
   m_vecFontInfo.push_back(fontInfo);
 
   return pNewFont;
@@ -226,7 +227,8 @@ void GUIFontManager::ReloadTTFFonts(void)
       int iSize = fontInfo.size;
       CStdString& strPath = fontInfo.fontFilePath;
       CStdString& strFilename = fontInfo.fileName;
-
+      CStdString& variant = fontInfo.variant;
+      
       // #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
       if (g_SkinInfo.GetVersion() > 2.0 && m_skinResolution == PAL_16x9 || m_skinResolution == PAL60_16x9 || m_skinResolution == NTSC_16x9 || m_skinResolution == HDTV_480p_16x9)
         aspect *= 0.75f;
@@ -236,13 +238,13 @@ void GUIFontManager::ReloadTTFFonts(void)
 
       // check if we already have this font file loaded (font object could differ only by color or style)
       CStdString TTFfontName;
-      TTFfontName.Format("%s_%f_%f", strFilename, newSize, aspect);
+      TTFfontName.Format("%s_%f_%f_%s", strFilename, newSize, aspect, variant);
 
       CGUIFontTTF* pFontFile = GetFontFile(TTFfontName);
       if (!pFontFile)
       {
          pFontFile = new CGUIFontTTF(TTFfontName);
-         bool bFontLoaded = pFontFile->Load(strPath, newSize, aspect);
+         bool bFontLoaded = pFontFile->Load(strPath, newSize, aspect, 1.0f, variant);
          pFontFile->CopyReferenceCountFrom(*currentFontTTF);
 
          if (!bFontLoaded)
