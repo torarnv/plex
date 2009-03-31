@@ -3078,7 +3078,7 @@ int CDVDPlayer::GetCacheSize()
   if (file.IsHD()) bFileOnHD = true;
   else if (file.IsISO9660()) bFileOnISO = true;
   else if (file.IsOnDVD()) bFileOnUDF = true;
-  else if (file.IsOnLAN()) bFileOnLAN = true;
+  else if (file.IsSmb() || file.IsOnLAN()) bFileOnLAN = true;
   else if (file.IsInternetStream()) bFileOnInternet = true;  
 
   bool bIsVideo = file.IsVideo();
