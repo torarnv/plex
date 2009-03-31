@@ -751,6 +751,18 @@ void CApplicationMessenger::ToggleFullscreen()
   SendMessage(tMsg, true);
 }
 
+void CApplicationMessenger::MoveToNextScreen()
+{
+  ThreadMessage tMsg = {TMSG_MOVE_TO_NEXT_SCREEN};
+  SendMessage(tMsg, true);
+}
+
+void CApplicationMessenger::MoveToPrevScreen()
+{
+  ThreadMessage tMsg = {TMSG_MOVE_TO_PREV_SCREEN};
+  SendMessage(tMsg, true);
+}
+
 void CApplicationMessenger::DoModal(CGUIDialog *pDialog, int iWindowID, const CStdString &param)
 {
   ThreadMessage tMsg = {TMSG_GUI_DO_MODAL};

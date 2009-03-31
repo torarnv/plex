@@ -3812,6 +3812,8 @@ const BUILT_IN commands[] = {
   { "Control.Move",               true,   "Tells the specified control to 'move' to another entry specified by offset" },
   { "SendClick",                  true,   "Send a click message from the given control to the given window" },
   { "CheckForUpdates",            false,  "Check for software updates" },
+  { "MoveToNextScreen",           false,  "Move to the next screen" },
+  { "MoveToPrevScreen",           false,  "Move to the previous screen" },
 };
 
 bool CUtil::IsBuiltIn(const CStdString& execString)
@@ -4806,6 +4808,14 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       action.fAmount1 = 1.0f;
       g_application.OnAction(action);
     }
+  }
+  else if (execute.Equals("movetoprevscreen"))
+  {
+    g_application.getApplicationMessenger().MoveToPrevScreen();
+  }
+  else if (execute.Equals("movetonextscreen"))
+  {
+    g_application.getApplicationMessenger().MoveToNextScreen();
   }
   else
     return -1;
