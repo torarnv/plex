@@ -32,6 +32,7 @@ class CGUIWindowPrograms :
 public:
   CGUIWindowPrograms(void);
   virtual ~CGUIWindowPrograms(void);
+  virtual bool OnAction(const CAction &action);
   virtual bool OnMessage(CGUIMessage& message);
 protected:
   virtual void OnItemLoaded(CFileItem* pItem) {};
@@ -51,4 +52,6 @@ protected:
   int m_iRegionSet; // for cd stuff
 
   CProgramThumbLoader m_thumbLoader;
+  
+  CStdString m_startDirectory;
 };

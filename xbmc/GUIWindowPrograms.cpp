@@ -63,6 +63,19 @@ CGUIWindowPrograms::~CGUIWindowPrograms(void)
 {
 }
 
+bool CGUIWindowPrograms::OnAction(const CAction &action)
+{
+  if (action.wID == ACTION_PARENT_DIR)
+  {
+    if (g_advancedSettings.m_bUseEvilB && m_vecItems->m_strPath == m_startDirectory)
+    {
+      m_gWindowManager.PreviousWindow();
+      return true;
+    }
+  }
+  return CGUIMediaWindow::OnAction(action);
+}
+
 bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
@@ -79,14 +92,19 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
     {
       m_iRegionSet = 0;
       m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-
+      
+      // check for valid quickpath parameter
+      CStdStringArray params;
+      StringUtils::SplitString(message.GetStringParam(), ",", params);
+      bool returning = params.size() > 1 && params[1] == "return";
+      
       // check for a passed destination path
 
-      CStdString strDestination = message.GetStringParam();
+      CStdString strDestination = params.size() ? params[0] : "";
       if (!strDestination.IsEmpty())
       {
         message.SetStringParam("");
-        CLog::Log(LOGINFO, "Attempting to quickpath to: %s", strDestination.c_str());
+        CLog::Log(LOGINFO, "Attempting to %s to: %s", returning ? "return" : "quickpath", strDestination.c_str());
         // reset directory path, as we have effectively cleared it here
         m_history.ClearPathHistory();
       }
@@ -146,10 +164,23 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
             CLog::Log(LOGERROR, "  Failed! Destination parameter (%s) does not match a valid source!", strDestination.c_str());
           }
         }
+        /*
+        if (!returning || m_vecItems->m_strPath.Left(strDestination.GetLength()) != strDestination)
+        { // we're not returning to the same path, so set our directory to the requested path
+          m_vecItems->m_strPath = strDestination;
+        }*/
         SetHistoryForPath(m_vecItems->m_strPath);
       }
-
-      return CGUIMediaWindow::OnMessage(message);
+      
+      if (!CGUIMediaWindow::OnMessage(message))
+        return false;
+      
+      if (message.GetParam1() != WINDOW_INVALID)
+      { // first time to this window - make sure we set the root path
+        m_startDirectory = returning ? m_vecItems->m_strPath : "";
+      }
+      
+      return true;
     }
   break;
 
