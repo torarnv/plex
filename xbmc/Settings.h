@@ -254,6 +254,11 @@ public:
   struct stSettings
   {
 public:
+    stSettings()
+      : m_viewStateVideoNavEpisodes(65590, SORT_METHOD_EPISODE, SORT_ORDER_ASC)
+      , m_viewStateVideoNavSeasons(65536, SORT_METHOD_LABEL, SORT_ORDER_ASC)
+      {}
+  
     CStdString m_pictureExtensions;
     CStdString m_musicExtensions;
     CStdString m_videoExtensions;
