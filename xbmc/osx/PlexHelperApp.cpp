@@ -197,6 +197,10 @@ void PlexHelperApp::Configure()
     // Make sure we reinstall/start if needed.
     oldMode = MODE_DISABLED;
     oldAlwaysOn = false;
+    
+    // Make sure it's stopped.
+    while (GetProcessPid(GetHelperBinaryName()) != -1)
+      usleep(10);
   }
 
   // Turning off?
