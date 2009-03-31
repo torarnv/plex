@@ -439,7 +439,7 @@ protected:
   
  public:
   
-   string GetLocale();
+   string GetLanguage();
   
  private:
    

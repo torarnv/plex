@@ -1237,7 +1237,7 @@ HRESULT CApplication::Create(HWND hWnd)
   g_charsetConverter.reset();
 
   // Load the langinfo to have user charset <-> utf-8 conversion
-  CStdString strLanguage = g_settings.GetLocale();
+  CStdString strLanguage = g_settings.GetLanguage();
   
   strLanguage[0] = toupper(strLanguage[0]);
 
@@ -2486,7 +2486,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
       g_settings.Save();
     }
     else
-      CLog::Log(LOGERROR, "    no ttf font found, but needed for the language %s.", g_settings.GetLocale().c_str());
+      CLog::Log(LOGERROR, "    no ttf font found, but needed for the language %s.", g_settings.GetLanguage().c_str());
   }
   
   if (g_langInfo.ForceUnicodeFont())
@@ -2508,7 +2508,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   // load in the skin strings
   CStdString skinPath, skinEnglishPath;
   CUtil::AddFileToFolder(strSkinPath, "language", skinPath);
-  CUtil::AddFileToFolder(skinPath, g_settings.GetLocale(), skinPath);
+  CUtil::AddFileToFolder(skinPath, g_settings.GetLanguage(), skinPath);
   CUtil::AddFileToFolder(skinPath, "strings.xml", skinPath);
 
   CUtil::AddFileToFolder(strSkinPath, "language", skinEnglishPath);

@@ -575,7 +575,7 @@ void CPluginDirectory::LoadPluginStrings(const CURL &url)
   CUtil::AddFileToFolder(pathToFallbackLanguageFile, "resources", pathToFallbackLanguageFile);
   CUtil::AddFileToFolder(pathToLanguageFile, "language", pathToLanguageFile);
   CUtil::AddFileToFolder(pathToFallbackLanguageFile, "language", pathToFallbackLanguageFile);
-  CUtil::AddFileToFolder(pathToLanguageFile, g_settings.GetLocale(), pathToLanguageFile);
+  CUtil::AddFileToFolder(pathToLanguageFile, g_settings.GetLanguage(), pathToLanguageFile);
   CUtil::AddFileToFolder(pathToFallbackLanguageFile, "english", pathToFallbackLanguageFile);
   CUtil::AddFileToFolder(pathToLanguageFile, "strings.xml", pathToLanguageFile);
   CUtil::AddFileToFolder(pathToFallbackLanguageFile, "strings.xml", pathToFallbackLanguageFile);

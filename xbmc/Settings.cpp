@@ -1773,7 +1773,7 @@ bool CSettings::LoadProfile(int index)
     g_charsetConverter.reset();
 
     // Load the langinfo to have user charset <-> utf-8 conversion
-    CStdString strLanguage = g_settings.GetLocale();
+    CStdString strLanguage = g_settings.GetLanguage();
     strLanguage[0] = toupper(strLanguage[0]);
 
     CStdString strLangInfoPath;
@@ -2887,7 +2887,7 @@ void CSettings::CreateProfileFolders()
   }
 }
 
-string CSettings::GetLocale()
+string CSettings::GetLanguage()
 {
   string ret = "English";
   
@@ -2895,7 +2895,6 @@ string CSettings::GetLocale()
   
   // Get the system language.
   string systemLang = Cocoa_GetLanguage();
-  printf("Lang: %s\n", systemLang.c_str());
   
   if (m_languageMap.find(systemLang) != m_languageMap.end())
   {
