@@ -53,6 +53,9 @@ class CFileItemList;
 #ifdef _LINUX
 #include "linux/LinuxResourceCounter.h"
 #endif
+#ifdef __APPLE__
+#include "CoreAudioPlexSupport.h"
+#endif
 
 class CWebServer;
 class CXBFileZilla;
@@ -350,6 +353,10 @@ protected:
   
 #ifdef HAS_EVENT_SERVER
   std::map<std::string, std::map<int, float> > m_lastAxisMap;
+#endif
+  
+#ifdef __APPLE__
+  PlexAudioDevicePtr m_defaultSystemDevice;
 #endif
 };
 

@@ -235,7 +235,6 @@
 #ifdef __APPLE__
 #include "CocoaUtils.h"
 #include "PlexRemoteHelper.h"
-#include "CoreAudioPlexSupport.h"
 #include "PlexMediaServerHelper.h"
 #include "QTPlayer.h"
 #include "GUIDialogUtils.h"
@@ -1185,7 +1184,14 @@ HRESULT CApplication::Create(HWND hWnd)
   
   // Set the correct audio device.
   if (device && g_guiSettings.GetBool("audiooutput.systemoutputfollows"))
+  {
+    // Save the default so we can restore it.
+    m_defaultSystemDevice = PlexAudioDevices::FindDefault();
+    printf("Saving old default of %s\n", m_defaultSystemDevice->getName().c_str());
+    
+    // Set the one in the preferences.
     device->setDefault();
+  }
   
   // Start background music playing
   m_bBackgroundMusicEnabled = g_guiSettings.GetBool("backgroundmusic.bgmusicenabled");
@@ -4496,6 +4502,15 @@ void CApplication::Stop()
   //Both xbox and linux don't finish the run cycle but exit immediately after a call to g_application.Stop()
   //so they never get to Destroy() in CXBApplicationEx::Run(), we call it here.
   Destroy();
+#endif
+
+#ifdef __APPLE__
+  // Restore system default audio device.
+  if (m_defaultSystemDevice)
+  {
+    printf("Restoring system default of %s\n", m_defaultSystemDevice->getName().c_str());
+    m_defaultSystemDevice->setDefault();
+  }
 #endif
 }
 

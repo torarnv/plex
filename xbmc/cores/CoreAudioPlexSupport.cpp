@@ -42,7 +42,6 @@ PlexAudioDevice::PlexAudioDevice(AudioDeviceID deviceID)
     SAFELY(AudioDeviceGetProperty(deviceID, 0, false, kAudioDevicePropertyDeviceName, &paramSize, pStrName));
     if (err == noErr)
     {
-      printf("DevID: %p DevName: %s\n", deviceID, pStrName);
       m_deviceName = pStrName;
       
       // See if the device is writable (can output).
@@ -51,8 +50,6 @@ PlexAudioDevice::PlexAudioDevice(AudioDeviceID deviceID)
       // If the device does have output, see if it supports digital.
       if (m_hasOutput)
         m_supportsDigital = computeDeviceSupportsDigital();
-      else
-        printf("Skipping input-only device %s\n", m_deviceName.c_str());
       
       m_isValid = true;
     }
