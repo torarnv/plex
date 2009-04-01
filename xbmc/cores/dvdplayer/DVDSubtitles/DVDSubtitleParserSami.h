@@ -23,8 +23,8 @@
 
 #include "DVDSubtitleParser.h"
 #include "DVDSubtitleLineCollection.h"
-#include "utils/RegExp.h"
-#include "DVDCodecs/Overlay/DVDOverlayText.h"
+class CDVDOverlayText;
+class CRegExp;
 
 class CDVDSubtitleParserSami : public CDVDSubtitleParser
 {
@@ -39,20 +39,6 @@ public:
   virtual CDVDOverlay* Parse(double iPts);
 
 private:
-  int ParseFile();
-  bool initializeParsingInfo();
-  CDVDOverlayText* parseLineAndReturnOverlayText( char* line);
-  void addTime( char* time);
-  char* getTextFromSyncLine( char* line);
-  CDVDOverlayText* getOverlayTextObjectCompleted();
-  void convertAndAddElement( char* line);
-
-private:
+  void AddText(CRegExp& tags, CDVDOverlayText*, const char* data, int len);
   CDVDSubtitleLineCollection m_collection;
-
-  double m_startTime;
-  double m_endTime;
-  int m_textCount;
-  CDVDOverlayText* m_pOverlay;
-  CRegExp m_reg;
 };
