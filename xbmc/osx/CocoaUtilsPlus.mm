@@ -5,8 +5,10 @@
 //  Created by Enrique Osuna on 10/26/2008.
 //  Copyright 2008 __MyCompanyName__. All rights reserved.
 //
+#include "stdafx.h"
 #include "CocoaUtilsPlus.h"
 #include "XBMCMain.h"
+#include "Settings.h"
 #include "MediaSource.h"
 #include <Cocoa/Cocoa.h>
 #include <CoreFoundation/CFString.h>
@@ -206,6 +208,11 @@ vector<CStdString> Cocoa_Proxy_ExceptionList()
 ///////////////////////////////////////////////////////////////////////////////
 string Cocoa_GetLanguage()
 {
+  // See if we're overriden.
+  if (g_advancedSettings.m_language.size() > 0)
+    return g_advancedSettings.m_language;
+  
+  // Otherwise, use the OS X default.
   NSArray* languages = [NSLocale preferredLanguages];
   NSString* language = [languages objectAtIndex:0];
   
@@ -215,6 +222,16 @@ string Cocoa_GetLanguage()
 ///////////////////////////////////////////////////////////////////////////////
 bool Cocoa_IsMetricSystem()
 {
+  // See if we're overriden.
+  if (g_advancedSettings.m_units.size() > 0)
+  {
+    if (g_advancedSettings.m_units == "metric")
+      return true;
+    else
+      return false;
+  }
+   
+  // Otherwise, use the OS X default.
   NSLocale* locale = [NSLocale currentLocale];
   NSNumber* isMetric = [locale objectForKey:NSLocaleUsesMetricSystem];
   

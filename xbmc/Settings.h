@@ -249,6 +249,9 @@ public:
     
     int m_secondsToVisualizer;
     bool m_bVisualizerOnPlay;
+    
+    CStdString m_language;
+    CStdString m_units;
   };
 
   struct stSettings

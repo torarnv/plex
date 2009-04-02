@@ -1327,6 +1327,9 @@ void CSettings::LoadAdvancedSettings()
   GetInteger(pRootElement, "secondstovisualizer", g_advancedSettings.m_secondsToVisualizer, 10, 0, 6000);
   XMLUtils::GetBoolean(pRootElement, "visualizeronplay", g_advancedSettings.m_bVisualizerOnPlay);
 
+  GetString(pRootElement, "language", g_advancedSettings.m_language);
+  GetString(pRootElement, "units", g_advancedSettings.m_units);
+  
   //Tuxbox
   pElement = pRootElement->FirstChildElement("tuxbox");
   if (pElement)
