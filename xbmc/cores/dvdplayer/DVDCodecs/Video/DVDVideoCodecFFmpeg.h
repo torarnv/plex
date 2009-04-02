@@ -48,7 +48,7 @@ protected:
   AVFrame* m_pFrame;
   AVCodecContext* m_pCodecContext;
 
-  AVFrame* m_pConvertFrame;
+  AVPicture* m_pConvertFrame;
 
   int m_iPictureWidth;
   int m_iPictureHeight;
