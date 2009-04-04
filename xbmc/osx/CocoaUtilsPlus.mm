@@ -396,4 +396,9 @@ string Cocoa_GetMyCountry()
   return Cocoa_GetMyAddressField(kABAddressCountryKey);
 }
 
+///////////////////////////////////////////////////////////////////////////////
+string Cocoa_GetMyState()
+{
+  return Cocoa_GetMyAddressField(kABAddressStateKey);
+}
 

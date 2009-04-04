@@ -39,6 +39,7 @@
 #endif
 #include "utils/Network.h"
 #include "LangInfo.h"
+#include "Weather.h"
 
 #ifdef __APPLE__
 #include "CocoaUtils.h"
@@ -247,21 +248,6 @@ CGUISettings::CGUISettings(void)
   AddString(5, "xlinkkai.password", 710, "", BUTTON_CONTROL_HIDDEN_INPUT, false, 710);
   AddString(6, "xlinkkai.server", 14042, "", BUTTON_CONTROL_IP_INPUT);
 #endif
-
-#ifdef __APPLE__
-  string zip = Cocoa_GetMyZip();
-  string country = Cocoa_GetMyCountry();
-  string city = Cocoa_GetMyCity();
-
-  printf("%s %s %s\n", city.c_str(), country.c_str(), zip.c_str());
-#endif
-
-  // My Weather settings
-  AddGroup(2, 8);
-  AddCategory(2, "weather", 16000);
-  AddString(1, "weather.areacode1", 14019, "USCA0987 - San Francisco, CA", BUTTON_CONTROL_STANDARD);
-  AddString(2, "weather.areacode2", 14020, "UKXX0085 - London, United Kingdom", BUTTON_CONTROL_STANDARD);
-  AddString(3, "weather.areacode3", 14021, "NZXX0049 - Wellington, New Zealand", BUTTON_CONTROL_STANDARD);
 
   // My Music Settings
   AddGroup(3, 2);
@@ -694,6 +680,43 @@ CGUISettings::CGUISettings(void)
   AddBool(2, "upnp.renderer", 21881, false);
   AddSeparator(3,"upnp.sep1");
 
+  string location = "USCA0987 - San Francisco, CA";
+  
+#ifdef __APPLE__
+  // Find reasonable default for weather.
+  string zip = Cocoa_GetMyZip();
+  string country = Cocoa_GetMyCountry();
+  string city = Cocoa_GetMyCity();
+  string state = Cocoa_GetMyState();
+
+  string addressToken;
+  if (Cocoa_GetCountryCode() == "US")
+  {
+    if (zip.size() > 0)
+      addressToken = zip;
+    else if (city.size() > 0 && state.size() > 0)
+      addressToken = city + "," + state;
+  }
+  else if (city.size() > 0)
+  {
+    addressToken = city;
+  }
+  
+  // Now look up the location.
+  if (addressToken.size() > 0)
+  {
+    string result = CWeather::GetTopSearchResult(addressToken);
+    if (result.size() > 0)
+      location = result;
+  }
+#endif
+
+  // My Weather settings
+  AddGroup(2, 8);
+  AddCategory(2, "weather", 16000);
+  AddString(1, "weather.areacode1", 14019, location.c_str(), BUTTON_CONTROL_STANDARD);
+  AddString(2, "weather.areacode2", 14020, "UKXX0085 - London, United Kingdom", BUTTON_CONTROL_STANDARD);
+  AddString(3, "weather.areacode3", 14021, "NZXX0049 - Wellington, New Zealand", BUTTON_CONTROL_STANDARD);
 
   // remote events settings
 #ifdef HAS_EVENT_SERVER

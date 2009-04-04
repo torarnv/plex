@@ -519,6 +519,37 @@ void CWeather::LoadLocalizedToken()
   }
 }
 
+CStdString CWeather::GetTopSearchResult(const CStdString& strSearch)
+{
+  // Do the download.
+  CStdString strURL;
+  CStdString strXML;
+  CHTTP httpUtil;
+
+  strURL.Format("http://xoap.weather.com/search/search?where=%s", strSearch);
+  if (!httpUtil.Get(strURL, strXML))
+    return "";
+
+  // Parse the XML.
+  TiXmlDocument xmlDoc;
+  xmlDoc.Parse(strXML.c_str());
+  if (xmlDoc.Error())
+    return "";
+
+  TiXmlElement *pRootElement = xmlDoc.RootElement();
+  TiXmlElement *pElement = pRootElement->FirstChildElement("loc");
+  CStdString strItemTmp;
+  while (pElement)
+  {
+    if (!pElement->NoChildren())
+      return pElement->Attribute("id");
+
+    pElement = pElement->NextSiblingElement("loc");
+  }
+  
+  return "";
+}
+
 bool CWeather::GetSearchResults(const CStdString &strSearch, CStdString &strResult)
 {
   // Check to see if the user entered a weather.com code

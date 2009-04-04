@@ -71,8 +71,12 @@ CNetworkInterface* CNetwork::GetFirstConnectedInterface()
 
 bool CNetwork::IsAvailable()
 {
+#ifdef __APPLE__
+  return true;
+#else
    std::vector<CNetworkInterface*>& ifaces = GetInterfaceList();
    return (ifaces.size() != 0);
+#endif
 }
 
 bool CNetwork::IsConnected()

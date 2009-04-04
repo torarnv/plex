@@ -63,6 +63,7 @@ extern "C"
   //
   string Cocoa_GetMyZip();
   string Cocoa_GetMyCity();
+  string Cocoa_GetMyState();
   string Cocoa_GetMyCountry();
 
 #ifdef __cplusplus
