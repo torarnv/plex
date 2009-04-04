@@ -330,23 +330,21 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
     {
       // let ffmpeg decide which demuxer we have to open
       AVProbeData pd;
-      BYTE probe_buffer[FFMPEG_FILE_BUFFER_SIZE + AVPROBE_PADDING_SIZE];
+      BYTE probe_buffer[4096];
 
       // init probe data
       pd.buf = probe_buffer;
       pd.filename = strFile.c_str();
 
       // read data using avformat's buffers
-      pd.buf_size = m_dllAvFormat.get_buffer(m_ioContext, pd.buf, context->max_packet_size);
+      pd.buf_size = m_dllAvFormat.get_buffer(m_ioContext, pd.buf, sizeof(probe_buffer));
       if (pd.buf_size == 0)
       {
         CLog::Log(LOGERROR, "%s - error reading from input stream, %s", __FUNCTION__, strFile.c_str());
         return false;
       }
-      memset(pd.buf+context->max_packet_size, 0, AVPROBE_PADDING_SIZE);
-
       // restore position again
-      m_dllAvFormat.url_fseek(m_ioContext , 0, SEEK_SET);
+      m_dllAvFormat.url_fseek(m_ioContext, 0, SEEK_SET);
 
       iformat = m_dllAvFormat.av_probe_input_format(&pd, 1);
       if (!iformat)
@@ -355,9 +353,9 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
         return false;
       }
       else if(iformat->name)
-        CLog::Log(LOGERROR, "%s - probing detected format [%s]", __FUNCTION__, iformat->name);
+        CLog::Log(LOGINFO, "%s - probing detected format [%s]", __FUNCTION__, iformat->name);
       else
-        CLog::Log(LOGERROR, "%s - probing detected unnamed format", __FUNCTION__);
+        CLog::Log(LOGINFO, "%s - probing detected unnamed format", __FUNCTION__);
     }
 
     // open the demuxer
