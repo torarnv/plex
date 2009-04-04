@@ -11,6 +11,7 @@
 #include "Settings.h"
 #include "MediaSource.h"
 #include <Cocoa/Cocoa.h>
+#import <AddressBook/AddressBook.h>
 #include <CoreFoundation/CFString.h>
 #include <CoreServices/CoreServices.h>
 #import <SystemConfiguration/SystemConfiguration.h>
@@ -349,3 +350,50 @@ string Cocoa_GetTimeString(time_t time)
   [pool release];
   return ret;
 }
+
+///////////////////////////////////////////////////////////////////////////////
+string Cocoa_GetMyAddressField(NSString* field)
+{
+  string ret;
+
+  id pool = [[NSAutoreleasePool alloc] init];
+  ABPerson* aPerson = [[ABAddressBook sharedAddressBook] me];
+  ABMutableMultiValue* anAddressList = [aPerson valueForProperty:kABAddressProperty];
+
+  if (anAddressList)
+  {
+    int primaryIndex = [anAddressList indexForIdentifier:[anAddressList primaryIdentifier]];
+    if (primaryIndex >= 0)
+    {
+      NSMutableDictionary* anAddress = [anAddressList valueAtIndex:primaryIndex];
+      NSString* value = (NSString* )[anAddress objectForKey:field];
+
+      if (value)
+        ret = [value UTF8String];
+    }
+  }
+
+  [pool release];
+
+  return ret;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+string Cocoa_GetMyZip()
+{
+  return Cocoa_GetMyAddressField(kABAddressZIPKey);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+string Cocoa_GetMyCity()
+{
+  return Cocoa_GetMyAddressField(kABAddressCityKey);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+string Cocoa_GetMyCountry()
+{
+  return Cocoa_GetMyAddressField(kABAddressCountryKey);
+}
+
+

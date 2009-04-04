@@ -248,6 +248,14 @@ CGUISettings::CGUISettings(void)
   AddString(6, "xlinkkai.server", 14042, "", BUTTON_CONTROL_IP_INPUT);
 #endif
 
+#ifdef __APPLE__
+  string zip = Cocoa_GetMyZip();
+  string country = Cocoa_GetMyCountry();
+  string city = Cocoa_GetMyCity();
+
+  printf("%s %s %s\n", city.c_str(), country.c_str(), zip.c_str());
+#endif
+
   // My Weather settings
   AddGroup(2, 8);
   AddCategory(2, "weather", 16000);

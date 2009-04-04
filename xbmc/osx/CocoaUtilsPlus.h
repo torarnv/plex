@@ -58,6 +58,13 @@ extern "C"
   string Cocoa_GetDateString(time_t time, bool longDate);
   string Cocoa_GetTimeString(time_t time);
   
+  //
+  // Address book functions.
+  //
+  string Cocoa_GetMyZip();
+  string Cocoa_GetMyCity();
+  string Cocoa_GetMyCountry();
+
 #ifdef __cplusplus
 }
 #endif
