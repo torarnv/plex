@@ -117,7 +117,7 @@ void PlexHelperApp::Restart()
     {
       // Make *sure* the process has exited.
       pid_t  wpid = waitpid(pid, &status, WUNTRACED);
-      while (GetProcessPid(GetHelperBinaryName()) != -1)
+      for(int i=0; GetProcessPid(GetHelperBinaryName()) != -1 && i<10000; i++)
         usleep(10);
     }
     
@@ -199,7 +199,7 @@ void PlexHelperApp::Configure()
     oldAlwaysOn = false;
     
     // Make sure it's stopped.
-    while (GetProcessPid(GetHelperBinaryName()) != -1)
+    for(int i=0; GetProcessPid(GetHelperBinaryName()) != -1 && i<10000; i++)
       usleep(10);
   }
 
