@@ -683,6 +683,7 @@ CGUISettings::CGUISettings(void)
   string location = "USCA0987 - San Francisco, CA";
   
 #ifdef __APPLE__
+#if 0
   // Find reasonable default for weather.
   string zip = Cocoa_GetMyZip();
   string country = Cocoa_GetMyCountry();
@@ -709,6 +710,7 @@ CGUISettings::CGUISettings(void)
     if (result.size() > 0)
       location = result;
   }
+#endif
 #endif
 
   // My Weather settings
