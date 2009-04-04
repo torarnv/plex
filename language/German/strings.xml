@@ -2007,5 +2007,10 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   
   <!-- strings 30000 thru 30999 sind für Plugins und Plugin-Einstellungen reserviert -->
   <!-- strings 31000 thru 31999 sind für Skins reserviert -->
+
   <!-- strings 32000 thru 32999 sind für Skripte reserviert -->
+
+  <string id="40300">Anamorphes Cinemascope</string>
+
+
 </strings>

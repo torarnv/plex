@@ -487,6 +487,11 @@
   <string id="570">Ημ/νία προσάρτησης</string>
   <string id="571">Προεπιλεγμένη</string>
   <string id="572">Εταιρεία (studio)</string>
+  <string id="574">Υποστήριξη Ψηφιακής Εξόδου</string>
+  <string id="575">Aυτόματη</string>
+  <string id="576">Υποχρεωτικά Ψηφιακή</string>
+  <string id="577">Εξισορρόπηση έντασης φωνής</string>
+  <string id="578">Σύνδεση με την έξοδο του συστήματος</string>
   <string id="580">Σειρά ταξινόμησης</string>
   <string id="581">Κριτήρια ταξινόμησης</string>
   <string id="582">Λειτουργία Προβολής</string>
@@ -944,6 +949,16 @@
   <string id="13130">Display Blanking</string>
   <string id="13131">Ανενεργή</string>
   <string id="13132">Blank displays</string>
+
+  <string id="13130">Μαύρισμα Οθόνης</string>
+  <string id="13131">Απενεργοποίηση</string>
+  <string id="13132">Blank displays</string>
+
+  <string id="13134">Αύξηση απόδοσης H.264</string>
+  <string id="13135">Απενεργοποίηση</string>
+  <string id="13136">Μέτρια</string>
+  <string id="13137">Υψηλή</string>
+
   <string id="13140">Έχουν Aνιχνευτεί Ενεργές Συνδέσεις! </string>
   <string id="13141">Εάν συνεχίσετε, δεν θα είναι δυνατός πλέον ο έλεγχος του XBMC.</string>
   <string id="13142">Να διακοπεί η λειτουργία του Απομακρυσμένου Διακομιστή;</string>
@@ -1127,6 +1142,7 @@
   <string id="13417">Στοιχειώδης (ARB)</string>
   <string id="13418">Εξειδικευμένη (GLSL)</string>
   <string id="13419">Λογισμικό</string>
+	<string id="13450">Τοποθέτηση σε Ύπνο</string>
   <string id="13600">Apple Remote</string>
   <string id="13601">Κατάσταση</string>
   <string id="13602">Να εκτελείται πάντα</string>
@@ -1136,6 +1152,14 @@
   <string id="13612">Τηλεχειριστήριο Γενικής Χρήσης</string>
   <string id="13620">Σφάλμα συσκευής (Apple Remote)</string>
   <string id="13621">Αδυναμία υποστήριξης συσκευής (Apple Remote).</string>
+
+  <string id="13630">Διαμοιραστής Πολυμέσων</string>
+  <string id="13631">Κατάσταση</string>  
+  <string id="13632">- Μονίμως σε λειτουργία</string>
+
+  <string id="13633">Ανενεργός</string>
+  <string id="13634">Ενεργός</string>
+
   <string id="14000">Στοίβαγμα</string>
   <string id="14001">Σκόρπισμα</string>
   <string id="14003">Λήψη αρχείου λίστας αναπαραγωγής...</string>
@@ -1359,6 +1383,12 @@
   <string id="16308">Lanczos (με λογισμικό)</string>
   <string id="16309">Sinc (με λογισμικό)</string>
   <string id="17500">Προβολή Λήξης χρόνου Αναστόλης</string>
+
+  <string id="18101">Ένταση Μουσικής Υποβάθρου</string>
+  <string id="18102">Ενεργοποίηση Μουσικών Θεμάτων</string>
+  <string id="18103">- Αυτόματο Kατέβασμα Μουσικών Θεμάτων</string>
+  <string id="18104">Ενεργοποίηση Μουσικής Υπόβαθρου</string>
+
   <string id="20000">Φάκελο εξαγωγής CDDA</string>
   <string id="20001">Χρήση Εξωτερικού Αναπαραγωγέα DVD</string>
   <string id="20002">Εξωτερικός Αναπαραγωγέας DVD</string>
@@ -1849,4 +1879,49 @@
   <string id="29800">Λειτουργία Συλλογής</string>
   <string id="29801">Διάταξη Πληκτρολογίου QWERTY</string>
   <string id="29999">Εφαρμογή Ρυθμίσεων Φίλτρου Flicker</string>
+
+  <string id="40000">Software Update</string>
+  <string id="40001">New Version Available</string>
+  <string id="40002">Install with Software Update</string>
+  <string id="40003">A new version of Plex is available.</string>
+  <string id="40004">Version: %@  (you have %@)</string>
+  <string id="40005">Would you like to download and install it now?</string>
+  <string id="40006">You currently have the latest version of Plex (%@)</string>
+  <string id="40007">Downloading Plex update</string>
+  <string id="40008">%@ of %@</string>
+  <string id="40009">%@ downloaded</string>
+  <string id="40010">Extracting Plex update</string>
+  <string id="40011">Installing Plex update</string>
+  <string id="40012">Update Failed</string>
+  <string id="40013">An error has occurred.</string>
+  <string id="40014">Please check the console for more details.</string>
+  <string id="40015">Checking for updates</string>
+  <string id="40016">Έλεγχος Αναβάθμισης...</string>
+  <string id="40017">Αυτόματος έλεγχος αναβαθμίσεων</string>
+  <string id="40018">Αναβάθμιση</string>
+  <string id="40019">- If Updates Are Available</string>
+  <string id="40020">Ahow a Notification</string>
+  <string id="40021">Ask to Install</string>
+  <string id="40022">Αυτόματος έλεγχος αναβαθμίσεων?</string>
+  <string id="40023">Would you like Plex to alert you when updates</string>
+  <string id="40024">are available?</string>
+  <string id="40025">- Check For Updates</string>
+  <string id="40026">Κάθε Ώρα</string>
+  <string id="40027">Κάθε Μέρα</string>
+  <string id="40028">Εβδομαδιαία</string>
+  
+  <string id="40100">Applications</string>
+  <string id="40101">Add Application</string>
+  <string id="40102">Remove Application</string>
+  <string id="40103">Browse for Application</string>
+  <string id="40104">RSS</string>
+  <string id="40105">Energy Saver</string>
+  <string id="40106">Remove Workflow</string>
+
+  <string id="40200">Unsupported path</string>
+  <string id="40201">Plex Media Server paths can't be added to multipath</string>
+  <string id="40202">sources.</string>
+  <string id="40203">Plex Media Server</string>
+  <string id="40204">Waiting for response...</string>
+
 </strings>
