@@ -16,6 +16,7 @@
 #import "PlexApplication.h"
 #import "KeyboardLayouts.h"
 #import "BackgroundMusicPlayer.h"
+#import "CocoaUtils.h"
 
 extern CApplication g_application;
 
@@ -114,6 +115,9 @@ BOOL gCalledAppMainline = FALSE;
 
 - (void)sendEvent:(NSEvent *)anEvent 
 {
+  if (Cocoa_IsGUIShowing())
+    [super sendEvent:anEvent];
+
   SVKey sv_key;
   NSUInteger modif;
   
