@@ -419,13 +419,10 @@ void CUtil::AutodetectPlexSources(CStdString strPlexPath, VECSOURCES& dstSources
     CFileItemList* fileItems = new CFileItemList();
     CPlexDirectory plexDir;
     plexDir.SetTimeout(2);
-    printf("Set up directory\n");
     
     CUtil::AddSlashAtEnd(strPlexPath);
-    printf("Added slash\n");
     if (plexDir.GetDirectory(strPlexPath, *fileItems))
     {
-      printf("Got directory\n"); 
       if (fileItems->Size() == 0) return;
       
       // Make sure all items in the PlexDirectory are added as sources
@@ -466,10 +463,7 @@ void CUtil::AutodetectPlexSources(CStdString strPlexPath, VECSOURCES& dstSources
         
         pmsSources.push_back(share);
         if (CUtil::GetMatchingSource(share.strName, dstSources, bIsSourceName) < 0)
-        {
-          printf("%s not found in source list - adding %s\n", share.strName.c_str(), share.strPath.c_str());
           dstSources.push_back(share);
-        }
       }
       delete fileItems;
       
@@ -480,10 +474,7 @@ void CUtil::AutodetectPlexSources(CStdString strPlexPath, VECSOURCES& dstSources
         if ((share.strPath.find(strPlexPath) != string::npos) && (share.strPath.find("/", strPlexPath.length()) == share.strPath.length()-1))
         {
           if (CUtil::GetMatchingSource(dstSources.at(i).strName, pmsSources, bIsSourceName) < 0)
-          {
-            printf("%s not found in PMS directory list - removing\n", dstSources.at(i).strPath.c_str());
             dstSources.erase(dstSources.begin()+i);
-          }
         }
       }
       
@@ -499,10 +490,7 @@ void CUtil::AutodetectPlexSources(CStdString strPlexPath, VECSOURCES& dstSources
     {
       CMediaSource share = dstSources.at(i);
       if ((share.strPath.find(strPlexPath) != string::npos) && (share.strPath.find("/", strPlexPath.length()) == share.strPath.length()-1))
-      {
-        printf("PMS unavailable - removing %s\n", dstSources.at(i).strPath.c_str());
         dstSources.erase(dstSources.begin()+i);
-      }
     }
   }
 }

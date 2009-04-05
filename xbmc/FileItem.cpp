@@ -2599,6 +2599,10 @@ CStdString CFileItem::CacheFanart(bool probe) const
       pic.CacheImage(m_strFanartUrl, localFanart);
       return localFanart;
     }
+    else
+    {
+      return localFanart;
+    }
   }
   
   if (IsVideoDb())
@@ -2998,7 +3002,6 @@ void CFileItem::SetQuickFanart(const CStdString& fanartURL)
   m_strFanartUrl = fanartURL;
   
   // See if it's already cached.
-  CacheFanart(fanartURL);
   if (CFile::Exists(GetCachedProgramFanart()))
     SetProperty("fanart_image", GetCachedProgramFanart());
 }

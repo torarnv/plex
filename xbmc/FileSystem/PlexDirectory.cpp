@@ -141,12 +141,12 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   if (title2 && strlen(title2) > 0)
     items.SetSecondTitle(title2);
 
-  // Set fanart on items.
+  // Set fanart on items if they don't have their own.
   for (int i=0; i<items.Size(); i++)
   {
     CFileItemPtr pItem = items[i];
     
-    if (strFanart.size() > 0)
+    if (strFanart.size() > 0 && pItem->GetQuickFanart().size() == 0)
       pItem->SetQuickFanart(strFanart);
       
     // Make sure sort label is lower case.
