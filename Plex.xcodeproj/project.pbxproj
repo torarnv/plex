@@ -7625,7 +7625,7 @@
 		1DEB924C08733DCA0010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APPLICATION_VERSION = 0.5.18;
+				APPLICATION_VERSION = 0.7.13.5;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					_DEBUG,
 					_LINUX,
@@ -7663,7 +7663,7 @@
 		1DEB924D08733DCA0010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APPLICATION_VERSION = "0.5-RC2";
+				APPLICATION_VERSION = 0.7.13.5;
 				ARCHS = i386;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					_DEBUG,
@@ -7702,7 +7702,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				APPLICATION_VERSION = 0.7.13.2;
+				APPLICATION_VERSION = 0.7.13.5;
 				CODE_SIGN_IDENTITY = "";
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -7800,7 +7800,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				APPLICATION_VERSION = 0.7.13.2;
+				APPLICATION_VERSION = 0.7.13.5;
 				CODE_SIGN_IDENTITY = Plex;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
