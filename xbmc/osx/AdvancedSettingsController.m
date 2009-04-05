@@ -113,7 +113,7 @@ NSXMLElement* rootElement(NSXMLDocument* xmlDoc, NSString* nodeName)
   {
     NSLog(@"Creating node %@", nodeName);
     NSXMLElement* el = [NSXMLElement elementWithName:nodeName];
-    [xmlDoc addChild:el];
+    [[xmlDoc rootElement] addChild:el];
     return el;
   }
   else
@@ -284,29 +284,30 @@ NSXMLElement* rootElement(NSXMLDocument* xmlDoc, NSString* nodeName)
   // Load the advancedsettings.xml file
   NSXMLElement* root = (NSXMLElement *)[NSXMLNode elementWithName:@"advancedsettings"];
   NSXMLDocument* xmlDoc;
-  NSError* err = nil;
-  NSURL* furl = [NSURL fileURLWithPath:[ADVSETTINGS_FILE stringByExpandingTildeInPath]];
-  if (!furl) {
-    NSLog(@"Can't create an URL from file.");
-    return;
-  }
-  xmlDoc = [[NSXMLDocument alloc] initWithContentsOfURL:furl
-                                                options:(NSXMLNodePreserveWhitespace|NSXMLNodePreserveCDATA)
-                                                  error:&err];
-  if (xmlDoc == nil) {
-    xmlDoc = [[NSXMLDocument alloc] initWithContentsOfURL:furl
-                                                  options:NSXMLDocumentTidyXML
-                                                    error:&err];
-  }
-  if (xmlDoc == nil)  {
-    if (err) {
-      NSLog(@"%@", err);
-    }
-    xmlDoc = [[NSXMLDocument alloc] initWithRootElement:root];
-  }
   
-  if (err) {
-    NSLog(@"%@", err);
+  if ([[NSFileManager defaultManager] fileExistsAtPath:[ADVSETTINGS_FILE stringByExpandingTildeInPath]])
+  {
+      NSError* err = nil;
+    NSURL* furl = [NSURL fileURLWithPath:[ADVSETTINGS_FILE stringByExpandingTildeInPath]];
+    if (!furl) {
+      NSLog(@"Can't create an URL from file.");
+      return;
+    }
+    xmlDoc = [[NSXMLDocument alloc] initWithContentsOfURL:furl
+                                                  options:(NSXMLNodePreserveWhitespace|NSXMLNodePreserveCDATA)
+                                                    error:&err];
+    if (xmlDoc == nil) {
+      xmlDoc = [[NSXMLDocument alloc] initWithContentsOfURL:furl
+                                                    options:NSXMLDocumentTidyXML
+                                                      error:&err];
+    }
+    if ((xmlDoc == nil) || err) {
+      NSLog(@"%@", err);
+      xmlDoc = [[NSXMLDocument alloc] initWithRootElement:root];
+    }
+  }
+  else
+  {
     xmlDoc = [[NSXMLDocument alloc] initWithRootElement:root];
   }
 
