@@ -78,6 +78,7 @@
 #include "GUIWindowMusicInfo.h"
 #ifdef __APPLE__
 #include "CocoaUtils.h"
+#include "CocoaUtilsPlus.h"
 #endif
 
 using namespace std;
@@ -918,6 +919,10 @@ TIME_FORMAT CGUIInfoManager::TranslateTimeFormat(const CStdString &format)
   else if (format.Equals("(hh:mm)")) return TIME_FORMAT_HH_MM;
   else if (format.Equals("(mm:ss)")) return TIME_FORMAT_MM_SS;
   else if (format.Equals("(hh:mm:ss)")) return TIME_FORMAT_HH_MM_SS;
+#ifdef __APPLE__
+  else if (format.Equals("(short)")) return TIME_FORMAT_SHORT;
+  else if (format.Equals("(short_no_meridian)")) return TIME_FORMAT_SHORT_NO_MERIDIAN;
+#endif
   return TIME_FORMAT_GUESS;
 }
 
@@ -2665,6 +2670,12 @@ CStdString CGUIInfoManager::LocalizeTime(const CDateTime &time, TIME_FORMAT form
     return time.GetAsLocalizedTime(use12hourclock ? "h:mm" : "HH:mm", false);
   case TIME_FORMAT_HH_MM_SS:
     return time.GetAsLocalizedTime("", true);
+#ifdef __APPLE__
+  case TIME_FORMAT_SHORT:
+    return time.GetAsLocalizedTime(Cocoa_GetTimeFormat(true), true);
+  case TIME_FORMAT_SHORT_NO_MERIDIAN:
+    return time.GetAsLocalizedTime(Cocoa_GetTimeFormat(false), true);
+#endif
   default:
     break;
   }

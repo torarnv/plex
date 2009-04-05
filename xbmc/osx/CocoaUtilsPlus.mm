@@ -268,13 +268,18 @@ string Cocoa_GetShortDateFormat()
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-string Cocoa_GetTimeFormat()
+string Cocoa_GetTimeFormat(bool withMeridian)
 {
   string ret = Cocoa_GetFormatString(kCFDateFormatterNoStyle, kCFDateFormatterShortStyle);
   
-  boost::replace_all(ret, "a", "xx");
+  if (withMeridian)
+    boost::replace_all(ret, "a", "xx");
+  else
+    boost::replace_all(ret, "a", "");
+  
   boost::replace_all(ret, " z", "");
   
+  boost::trim(ret);
   return ret;
 }
 

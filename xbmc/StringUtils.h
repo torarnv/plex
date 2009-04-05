@@ -44,7 +44,12 @@ enum TIME_FORMAT { TIME_FORMAT_GUESS = 0,
                    TIME_FORMAT_HH,
                    TIME_FORMAT_HH_SS, // not particularly useful, but included so that they can be bit-tested
                    TIME_FORMAT_HH_MM,
-                   TIME_FORMAT_HH_MM_SS };
+                   TIME_FORMAT_HH_MM_SS,
+#ifdef __APPLE__
+                   TIME_FORMAT_SHORT_NO_MERIDIAN,
+                   TIME_FORMAT_SHORT,
+#endif
+                   };
 
 class StringUtils
 {

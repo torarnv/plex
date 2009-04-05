@@ -53,7 +53,7 @@ extern "C"
   bool   Cocoa_IsMetricSystem();
   string Cocoa_GetLongDateFormat();
   string Cocoa_GetShortDateFormat();
-  string Cocoa_GetTimeFormat();
+  string Cocoa_GetTimeFormat(bool withMeridian=true);
   string Cocoa_GetMeridianSymbol(int i);
   string Cocoa_GetDateString(time_t time, bool longDate);
   string Cocoa_GetTimeString(time_t time);
