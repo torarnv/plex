@@ -23,9 +23,9 @@
   IBOutlet NSButton* showExtensions;
   IBOutlet NSButton* showAddSource;
   IBOutlet NSButton* ignoreSortTokens;
-  IBOutlet NSPopUpButton* showAllSeasons;
-  IBOutlet NSPopUpButton* flattenTVShows;
-  IBOutlet NSPopUpButton* scalingAlgorithm;
+  IBOutlet NSPopUpButton* showAllSeasons; //
+  IBOutlet NSPopUpButton* flattenTVShows; //
+  IBOutlet NSPopUpButton* scalingAlgorithm; //
   IBOutlet NSButton* vizOnPlay;
   IBOutlet NSTextField* timeToViz;
   IBOutlet NSTextField* httpProxyUsername;

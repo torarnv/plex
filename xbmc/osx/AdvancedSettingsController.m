@@ -14,13 +14,14 @@
 
 id g_advancedSettingsController;
 
-void setEnabledFromXML(NSXMLDocument* xmlDoc, NSButton* control, NSString* xpath)
+void setEnabledFromXML(NSXMLDocument* xmlDoc, NSButton* control, NSString* xpath, BOOL invert)
 {
   NSArray* nodes;
   nodes = [xmlDoc nodesForXPath:xpath error:nil];
   if ([nodes count] > 0)
   {
-    if ([[(NSXMLElement*)[nodes objectAtIndex:0] stringValue] isEqualToString:@"true"])
+    if ((([[(NSXMLElement*)[nodes objectAtIndex:0] stringValue] isEqualToString:@"true"]) && (invert == NO)) ||
+      (([[(NSXMLElement*)[nodes objectAtIndex:0] stringValue] isEqualToString:@"false"]) && (invert == YES)))
     {
       // NSLog(@"Enabling control for %@", xpath);
       [control setState:NSOnState];
@@ -33,13 +34,20 @@ void setEnabledFromXML(NSXMLDocument* xmlDoc, NSButton* control, NSString* xpath
   }
 }
 
-void enabledFromControl(NSXMLElement* xmlElement, NSButton* control, NSString* nodeName)
+void enabledFromControl(NSXMLElement* xmlElement, NSButton* control, NSString* nodeName, BOOL invert)
 {
   NSString* strValue;
-  if ([control state] == NSOnState)
+  if ((([control state] == NSOnState) && (invert == NO)) || (([control state] == NSOffState) && (invert == YES)))
     strValue = @"true";
   else
     strValue = @"false";
+  
+  for (NSXMLElement* child in [xmlElement children])
+    if ([[child name] isEqualToString:nodeName])
+    {
+      [child setStringValue:strValue];
+      return;
+    }
   [xmlElement addChild:[NSXMLElement elementWithName:nodeName stringValue:strValue]];
 }
 
@@ -62,7 +70,57 @@ void setStringFromXML(NSXMLDocument* xmlDoc, NSTextField* control, NSString* xpa
 
 void stringFromControl(NSXMLElement* xmlElement, NSTextField* control, NSString* nodeName)
 {
+  for (NSXMLElement* child in [xmlElement children])
+    if ([[child name] isEqualToString:nodeName])
+    {
+      [child setStringValue:[control stringValue]];
+      return;
+    }
   [xmlElement addChild:[NSXMLElement elementWithName:nodeName stringValue:[control stringValue]]];
+}
+
+void setPopupFromXML(NSXMLDocument* xmlDoc, NSPopUpButton* control, NSString* xpath)
+{
+  NSArray* nodes;
+  nodes = [xmlDoc nodesForXPath:xpath error:nil];
+  if ([nodes count] > 0)
+  {
+    @try
+    {
+      [control selectItemWithTag:[[(NSXMLElement*)[nodes objectAtIndex:0] stringValue] intValue]]; 
+    }
+    @catch (id e) {}
+  }
+}
+
+void tagFromControl(NSXMLElement* xmlElement, NSPopUpButton* control, NSString* nodeName)
+{
+  NSString* strValue = [NSString stringWithFormat:@"%d", [[control selectedItem] tag]];
+  for (NSXMLElement* child in [xmlElement children])
+    if ([[child name] isEqualToString:nodeName])
+    {
+      [child setStringValue:strValue];
+      return;
+    }
+  [xmlElement addChild:[NSXMLElement elementWithName:nodeName stringValue:strValue]];
+}
+
+NSXMLElement* rootElement(NSXMLDocument* xmlDoc, NSString* nodeName)
+{
+  NSArray* nodes;
+  nodes = [xmlDoc nodesForXPath:[NSString stringWithFormat:@"./advancedsettings/%@", nodeName] error:nil];
+  if ([nodes count] == 0)
+  {
+    NSLog(@"Creating node %@", nodeName);
+    NSXMLElement* el = [NSXMLElement elementWithName:nodeName];
+    [xmlDoc addChild:el];
+    return el;
+  }
+  else
+  {
+    NSLog(@"Returning existing node %@", nodeName);
+    return [nodes objectAtIndex:0];
+  }
 }
 
 + (AdvancedSettingsController*)sharedInstance
@@ -203,42 +261,82 @@ void stringFromControl(NSXMLElement* xmlElement, NSTextField* control, NSString*
   }
   
   // Query the XML document and set GUI control states
-  /*
-  setEnabledFromXML(xmlDoc, debugLogging, @"./advancedsettings/system/debuglogging");
-  setEnabledFromXML(xmlDoc, opticalMedia, @"./advancedsettings/enableopticalmedia");
-  setEnabledFromXML(xmlDoc, fakeFullscreen, @"./advancedsettings/fakefullscreen");
-  setEnabledFromXML(xmlDoc, cleanOnUpdate, @"./advancedsettings/videolibrary/cleanonupdate");
-  setEnabledFromXML(xmlDoc, fileDeletion, @"./advancedsettings/filelists/allowfiledeletion");
+  setEnabledFromXML(xmlDoc, debugLogging, @"./advancedsettings/system/debuglogging", NO);
+  setEnabledFromXML(xmlDoc, opticalMedia, @"./advancedsettings/enableopticalmedia", NO);
+  setEnabledFromXML(xmlDoc, trueFullscreen, @"./advancedsettings/fakefullscreen", YES);
+  setEnabledFromXML(xmlDoc, cleanOnUpdate, @"./advancedsettings/videolibrary/cleanonupdate", NO);
+  setEnabledFromXML(xmlDoc, fileDeletion, @"./advancedsettings/filelists/allowfiledeletion", NO);
+  setEnabledFromXML(xmlDoc, showExtensions, @"./advancedsettings/filelists/hideextensions", YES);
+  setEnabledFromXML(xmlDoc, showAddSource, @"./advancedsettings/filelists/disableaddsourcebuttons", YES);
+  setEnabledFromXML(xmlDoc, ignoreSortTokens, @"./advancedsettings/filelists/ignorethewhensorting", NO);
+  setEnabledFromXML(xmlDoc, vizOnPlay, @"./advancedsettings/visualizeronplay", NO);
   setStringFromXML(xmlDoc, httpProxyUsername, @"./advancedsettings/network/httpproxyusername");
   setStringFromXML(xmlDoc, httpProxyPassword, @"./advancedsettings/network/httpproxypassword");
-  */
+  setStringFromXML(xmlDoc, timeToViz, @"./advancedsettings/secondstovisualizer");
+  setPopupFromXML(xmlDoc, scalingAlgorithm, @"./advancedsettings/videoplayer/upscalingalgorithm");
+  setPopupFromXML(xmlDoc, flattenTVShows, @"./advancedsettings/videolibrary/flattentvshows");
+  
   [xmlDoc release];
 }
 
 -(void)saveSettings
 {
-  /*
-  NSXMLElement *root = (NSXMLElement *)[NSXMLNode elementWithName:@"advancedsettings"];
-  NSXMLDocument *xmlDoc = [[NSXMLDocument alloc] initWithRootElement:root];
+  // Load the advancedsettings.xml file
+  NSXMLElement* root = (NSXMLElement *)[NSXMLNode elementWithName:@"advancedsettings"];
+  NSXMLDocument* xmlDoc;
+  NSError* err = nil;
+  NSURL* furl = [NSURL fileURLWithPath:[ADVSETTINGS_FILE stringByExpandingTildeInPath]];
+  if (!furl) {
+    NSLog(@"Can't create an URL from file.");
+    return;
+  }
+  xmlDoc = [[NSXMLDocument alloc] initWithContentsOfURL:furl
+                                                options:(NSXMLNodePreserveWhitespace|NSXMLNodePreserveCDATA)
+                                                  error:&err];
+  if (xmlDoc == nil) {
+    xmlDoc = [[NSXMLDocument alloc] initWithContentsOfURL:furl
+                                                  options:NSXMLDocumentTidyXML
+                                                    error:&err];
+  }
+  if (xmlDoc == nil)  {
+    if (err) {
+      NSLog(@"%@", err);
+    }
+    xmlDoc = [[NSXMLDocument alloc] initWithRootElement:root];
+  }
   
-  NSXMLElement* system = [NSXMLElement elementWithName:@"system"];
-  NSXMLElement* network = [NSXMLElement elementWithName:@"network"];
-  NSXMLElement* filelists = [NSXMLElement elementWithName:@"filelists"];
-  NSXMLElement* videolibrary = [NSXMLElement elementWithName:@"videolibrary"];
+  if (err) {
+    NSLog(@"%@", err);
+    xmlDoc = [[NSXMLDocument alloc] initWithRootElement:root];
+  }
+
+  root = [xmlDoc rootElement];
   
-  enabledFromControl(system, debugLogging, @"debuglogging");
-  enabledFromControl(root, opticalMedia, @"enableopticalmedia");
-  enabledFromControl(root, fakeFullscreen, @"fakefullscreen");
-  enabledFromControl(videolibrary, cleanOnUpdate, @"cleanonupdate");
-  enabledFromControl(filelists, fileDeletion, @"allowfiledeletion");
+  NSXMLElement* system = rootElement(xmlDoc, @"system");
+  NSXMLElement* network = rootElement(xmlDoc, @"network");
+  NSXMLElement* filelists = rootElement(xmlDoc, @"filelists");
+  NSXMLElement* videolibrary = rootElement(xmlDoc, @"videolibrary");
+  NSXMLElement* videoplayer = rootElement(xmlDoc, @"videoplayer");
+  enabledFromControl(system, debugLogging, @"debuglogging", NO);
+  enabledFromControl(root, opticalMedia, @"enableopticalmedia", NO);
+  enabledFromControl(root, trueFullscreen, @"fakefullscreen", YES);
+  enabledFromControl(videolibrary, cleanOnUpdate, @"cleanonupdate", NO);
+  enabledFromControl(filelists, fileDeletion, @"allowfiledeletion", NO); 
+  enabledFromControl(filelists, showExtensions, @"hidefileextensions", YES);
+  enabledFromControl(filelists, showAddSource, @"disableaddsourcebuttons", YES);
+  enabledFromControl(filelists, ignoreSortTokens, @"ignorethewhensorting", NO);
+  enabledFromControl(root, vizOnPlay, @"visualizeronplay", NO);
   stringFromControl(network, httpProxyUsername, @"httpproxyusername");
   stringFromControl(network, httpProxyPassword, @"httpproxypassword");
+  stringFromControl(root, timeToViz, @"secondstovisualizer");
+  tagFromControl(videoplayer, scalingAlgorithm, @"upscalingalgorithm");
+  tagFromControl(videolibrary, flattenTVShows, @"flattentvshows");
+  /*
   
-  [root addChild:system];
-  [root addChild:network];
-  [root addChild:filelists];
-  [root addChild:videolibrary];
-  
+
+
+
+  */
   //NSLog([xmlDoc XMLStringWithOptions:NSXMLNodePrettyPrint]);
   NSData* xmlData = [xmlDoc XMLDataWithOptions:NSXMLNodePrettyPrint];
   if (![xmlData writeToFile:[ADVSETTINGS_FILE stringByExpandingTildeInPath] atomically:YES]) {
@@ -247,7 +345,7 @@ void stringFromControl(NSXMLElement* xmlElement, NSTextField* control, NSString*
   }
   
   [xmlDoc release];
-   */
+  
   m_settingChanged = NO;
 }
 
