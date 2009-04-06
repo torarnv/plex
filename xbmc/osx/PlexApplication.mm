@@ -17,6 +17,7 @@
 #import "KeyboardLayouts.h"
 #import "BackgroundMusicPlayer.h"
 #import "CocoaUtils.h"
+#import "AdvancedSettingsController.h"
 
 extern CApplication g_application;
 
@@ -115,11 +116,14 @@ BOOL gCalledAppMainline = FALSE;
 
 - (void)sendEvent:(NSEvent *)anEvent 
 {
-  if (Cocoa_IsGUIShowing())
-    [super sendEvent:anEvent];
-
   SVKey sv_key;
   NSUInteger modif;
+
+  // If the advanced settings window is visible, detect the Cmd+W shortcut & close the window.
+  if ((([anEvent modifierFlags] & NSCommandKeyMask) != 0) && ([anEvent type] == NSKeyDown) && ([anEvent keyCode] == 13) && (Cocoa_IsGUIShowing()))
+  {
+    [[AdvancedSettingsController sharedInstance] closeWindow];
+  }  
   
   if(NSKeyDown == [anEvent type] || NSKeyUp == [anEvent type]) 
   {
@@ -134,8 +138,8 @@ BOOL gCalledAppMainline = FALSE;
       sv_key.Alt = ( modif & NSAlternateKeyMask ) != 0;
       sv_key.Ctrl = ( modif & NSControlKeyMask ) != 0;
     }
-
-    if(!g_OSXKeyboardLayouts.Process(sv_key) && modif & NSCommandKeyMask)
+    
+    if((!g_OSXKeyboardLayouts.Process(sv_key) && modif & NSCommandKeyMask) || (Cocoa_IsGUIShowing()))
     {
 			[super sendEvent: anEvent];
     }

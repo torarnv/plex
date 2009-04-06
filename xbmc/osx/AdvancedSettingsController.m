@@ -111,19 +111,17 @@ NSXMLElement* rootElement(NSXMLDocument* xmlDoc, NSString* nodeName)
   nodes = [xmlDoc nodesForXPath:[NSString stringWithFormat:@"./advancedsettings/%@", nodeName] error:nil];
   if ([nodes count] == 0)
   {
-    NSLog(@"Creating node %@", nodeName);
     NSXMLElement* el = [NSXMLElement elementWithName:nodeName];
     [[xmlDoc rootElement] addChild:el];
     return el;
   }
   else
   {
-    NSLog(@"Returning existing node %@", nodeName);
     return [nodes objectAtIndex:0];
   }
 }
 
-+ (AdvancedSettingsController*)sharedInstance
++(AdvancedSettingsController*)sharedInstance
 {
   return (AdvancedSettingsController*)g_advancedSettingsController;
 }
@@ -137,7 +135,7 @@ NSXMLElement* rootElement(NSXMLDocument* xmlDoc, NSString* nodeName)
   return self;
 }
 
-- (void)awakeFromNib
+-(void)awakeFromNib
 {
   g_advancedSettingsController = (id)self;
   m_settingChanged = NO;
@@ -146,12 +144,12 @@ NSXMLElement* rootElement(NSXMLDocument* xmlDoc, NSString* nodeName)
   [self loadSettings];
 }
 
-- (void)windowWillClose:(NSNotification *)notification
+-(void)windowWillClose:(NSNotification *)notification
 {
   [NSApp stopModal];
 }
 
-- (BOOL)windowShouldClose:(id)theWindow
+-(BOOL)windowShouldClose:(id)theWindow
 {
   if (m_settingChanged == YES)
   {
@@ -167,6 +165,8 @@ NSXMLElement* rootElement(NSXMLDocument* xmlDoc, NSString* nodeName)
                       @"Do you want to save these changes?");
     return NO;
   }
+  else
+    m_isVisible = NO;
   
   if (m_shouldClose == YES || m_settingChanged == NO)
   {
@@ -176,9 +176,9 @@ NSXMLElement* rootElement(NSXMLDocument* xmlDoc, NSString* nodeName)
   return NO;
 }
 
-- (void)sheetDidEndShouldSave: (NSWindow *)sheet
-                   returnCode: (int)returnCode
-                  contextInfo: (void *)contextInfo
+-(void)sheetDidEndShouldSave: (NSWindow *)sheet
+                  returnCode: (int)returnCode
+                 contextInfo: (void *)contextInfo
 {
   if (returnCode == NSAlertDefaultReturn)
   {
@@ -200,7 +200,18 @@ NSXMLElement* rootElement(NSXMLDocument* xmlDoc, NSString* nodeName)
 -(IBAction)showWindow:(id)sender
 {
   m_isVisible = YES;
-  [[NSApplication sharedApplication] runModalForWindow:window];
+  if (NSRunAlertPanel(@"Are you sure you want to continue?", @"Modifying the advanced settings can cause unexpected or unreliable behaviour. Please be careful when changing these settings.", @"Continue", @"Cancel", nil) == NSAlertDefaultReturn)
+  {
+    [[NSApplication sharedApplication] runModalForWindow:window];
+  }
+  else
+    m_isVisible = NO;
+}
+
+-(void)closeWindow
+{
+  if ([self windowShouldClose:window])
+    [window close];
 }
 
 -(BOOL)windowIsVisible
@@ -210,7 +221,6 @@ NSXMLElement* rootElement(NSXMLDocument* xmlDoc, NSString* nodeName)
 
 -(IBAction)settingChanged:(id)sender
 {
-  NSLog(@"Setting changed");
   m_settingChanged = YES;
 }
 
@@ -344,13 +354,7 @@ NSXMLElement* rootElement(NSXMLDocument* xmlDoc, NSString* nodeName)
   stringFromControl(root, timeToViz, @"secondstovisualizer");
   tagFromControl(videoplayer, scalingAlgorithm, @"upscalingalgorithm");
   tagFromControl(videolibrary, flattenTVShows, @"flattentvshows");
-  /*
-  
 
-
-
-  */
-  //NSLog([xmlDoc XMLStringWithOptions:NSXMLNodePrettyPrint]);
   NSData* xmlData = [xmlDoc XMLDataWithOptions:NSXMLNodePrettyPrint];
   if (![xmlData writeToFile:[ADVSETTINGS_FILE stringByExpandingTildeInPath] atomically:YES]) {
     NSBeep();

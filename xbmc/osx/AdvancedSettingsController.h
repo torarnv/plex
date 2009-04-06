@@ -15,7 +15,7 @@
   BOOL m_settingChanged;
   BOOL m_shouldClose;
   BOOL m_isVisible;
-  
+
   IBOutlet NSButton* debugLogging;
   IBOutlet NSButton* opticalMedia;
   IBOutlet NSButton* fileDeletion;
@@ -24,9 +24,9 @@
   IBOutlet NSButton* showExtensions;
   IBOutlet NSButton* showAddSource;
   IBOutlet NSButton* ignoreSortTokens;
-  IBOutlet NSPopUpButton* showAllSeasons; //
-  IBOutlet NSPopUpButton* flattenTVShows; //
-  IBOutlet NSPopUpButton* scalingAlgorithm; //
+  IBOutlet NSPopUpButton* showAllSeasons;
+  IBOutlet NSPopUpButton* flattenTVShows;
+  IBOutlet NSPopUpButton* scalingAlgorithm;
   IBOutlet NSButton* vizOnPlay;
   IBOutlet NSTextField* timeToViz;
   IBOutlet NSTextField* httpProxyUsername;
@@ -36,6 +36,7 @@
 +(AdvancedSettingsController*)sharedInstance;
 
 -(IBAction)showWindow:(id)sender;
+-(void)closeWindow;
 -(BOOL)windowIsVisible;
 
 -(IBAction)settingChanged:(id)sender;
