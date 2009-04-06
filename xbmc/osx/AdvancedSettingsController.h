@@ -14,6 +14,7 @@
   
   BOOL m_settingChanged;
   BOOL m_shouldClose;
+  BOOL m_isVisible;
   
   IBOutlet NSButton* debugLogging;
   IBOutlet NSButton* opticalMedia;

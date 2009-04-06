@@ -128,11 +128,21 @@ NSXMLElement* rootElement(NSXMLDocument* xmlDoc, NSString* nodeName)
   return (AdvancedSettingsController*)g_advancedSettingsController;
 }
 
+-(id)init
+{
+  if (self = [super init])
+  {
+    m_isVisible = NO;    
+  }
+  return self;
+}
+
 - (void)awakeFromNib
 {
   g_advancedSettingsController = (id)self;
   m_settingChanged = NO;
   m_shouldClose = NO;
+  m_isVisible = NO;
   [self loadSettings];
 }
 
@@ -182,18 +192,20 @@ NSXMLElement* rootElement(NSXMLDocument* xmlDoc, NSString* nodeName)
     [self loadSettings];
     m_settingChanged = NO;
     m_shouldClose = YES;
+    m_isVisible = NO;
     [window close];    
   }
 }
 
 -(IBAction)showWindow:(id)sender
 {
+  m_isVisible = YES;
   [[NSApplication sharedApplication] runModalForWindow:window];
 }
 
 -(BOOL)windowIsVisible
 {
-  return [window isVisible];
+  return m_isVisible;
 }
 
 -(IBAction)settingChanged:(id)sender
@@ -357,9 +369,9 @@ NSXMLElement* rootElement(NSXMLDocument* xmlDoc, NSString* nodeName)
     NSString* pathToRelaunch = [[NSBundle mainBundle] bundlePath];
     NSString* relaunchPath = [[NSBundle mainBundle] pathForResource:@"relaunch" ofType:nil];
     [NSTask launchedTaskWithLaunchPath:relaunchPath arguments:[NSArray arrayWithObjects:pathToRelaunch, [NSString stringWithFormat:@"%d", [[NSProcessInfo processInfo] processIdentifier]], nil]];
-    
     [NSApp terminate:self];
   }
+  m_isVisible = NO;
 }
 
 @end
