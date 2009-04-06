@@ -184,8 +184,13 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
           CStdString strDir;
           if (iItem < 0 || iItem >= m_vecItems->Size())
             return false;
-
+          
           CFileItemPtr item = m_vecItems->Get(iItem);
+
+          // Don't show the Info dialog for Plex paths
+          if (CUtil::IsPlexMediaServer(item->m_strPath))
+            return false;
+          
           if (m_vecItems->IsPluginFolder() || m_vecItems->IsMythTV())
             info.strContent = "plugin";
           else
