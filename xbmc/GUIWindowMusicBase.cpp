@@ -200,6 +200,9 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
         }
         else if (iAction == ACTION_SHOW_INFO)
         {
+          CFileItemPtr fileItem = m_vecItems->Get(iItem);
+          if (CUtil::IsPlexMediaServer(fileItem->m_strPath))
+            return false;
           OnInfo(iItem);
         }
         else if (iAction == ACTION_DELETE_ITEM)
