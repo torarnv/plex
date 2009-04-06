@@ -141,6 +141,11 @@ NSXMLElement* rootElement(NSXMLDocument* xmlDoc, NSString* nodeName)
   m_settingChanged = NO;
   m_shouldClose = NO;
   m_isVisible = NO;
+  
+  // Remove RSS feeds & background music views until they're implemented
+  [toolbar removeItemAtIndex:2];
+  [musicTabView removeTabViewItem:[[musicTabView tabViewItems] objectAtIndex:1]];
+  
   [self loadSettings];
 }
 

@@ -7,10 +7,13 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import <BWToolkitFramework/BWSelectableToolbar.h>
 
 
 @interface AdvancedSettingsController : NSObject {
   IBOutlet NSWindow* window;
+  IBOutlet BWSelectableToolbar* toolbar;
+  IBOutlet NSTabView* musicTabView;
   
   BOOL m_settingChanged;
   BOOL m_shouldClose;
