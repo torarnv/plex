@@ -105,6 +105,17 @@ void tagFromControl(NSXMLElement* xmlElement, NSPopUpButton* control, NSString* 
   [xmlElement addChild:[NSXMLElement elementWithName:nodeName stringValue:strValue]];
 }
 
+void fromString(NSXMLElement* xmlElement, NSString* str, NSString* nodeName)
+{
+  for (NSXMLElement* child in [xmlElement children])
+    if ([[child name] isEqualToString:nodeName])
+    {
+      [child setStringValue:str];
+      return;
+    }
+  [xmlElement addChild:[NSXMLElement elementWithName:nodeName stringValue:str]];  
+}
+
 NSXMLElement* rootElement(NSXMLDocument* xmlDoc, NSString* nodeName)
 {
   NSArray* nodes;
@@ -303,6 +314,24 @@ NSXMLElement* rootElement(NSXMLDocument* xmlDoc, NSString* nodeName)
   setPopupFromXML(xmlDoc, scalingAlgorithm, @"./advancedsettings/videoplayer/upscalingalgorithm");
   setPopupFromXML(xmlDoc, flattenTVShows, @"./advancedsettings/videolibrary/flattentvshows");
   
+  NSArray* nodes = [xmlDoc nodesForXPath:@"./advancedsettings/videolibrary/hideallitems" error:nil];
+  if ([nodes count] > 0)
+  {
+    if ([[[nodes objectAtIndex:0] stringValue] isEqualToString:@"true"])
+      [showAllSeasons selectItemWithTag:0];
+    else
+    {
+      NSArray* nodes2 = [xmlDoc nodesForXPath:@"./advancedsettings/videolibrary/allitemsonbottom" error:nil];
+      if ([nodes2 count] > 0)
+      {
+        if ([[[nodes2 objectAtIndex:0] stringValue] isEqualToString:@"true"])
+          [showAllSeasons selectItemWithTag:2];
+        else
+          [showAllSeasons selectItemWithTag:1];
+      }
+    }
+  }
+  
   [xmlDoc release];
 }
 
@@ -359,6 +388,21 @@ NSXMLElement* rootElement(NSXMLDocument* xmlDoc, NSString* nodeName)
   stringFromControl(root, timeToViz, @"secondstovisualizer");
   tagFromControl(videoplayer, scalingAlgorithm, @"upscalingalgorithm");
   tagFromControl(videolibrary, flattenTVShows, @"flattentvshows");
+  
+  switch([showAllSeasons selectedTag])
+  {
+    case 0:
+      fromString(videolibrary, @"true", @"hideallitems");
+      break;
+    case 1:
+      fromString(videolibrary, @"false", @"hideallitems");
+      fromString(videolibrary, @"false", @"allitemsonbottom");
+      break;
+    case 2:
+      fromString(videolibrary, @"false", @"hideallitems");
+      fromString(videolibrary, @"true", @"allitemsonbottom");
+      break;
+  }
 
   NSData* xmlData = [xmlDoc XMLDataWithOptions:NSXMLNodePrettyPrint];
   if (![xmlData writeToFile:[ADVSETTINGS_FILE stringByExpandingTildeInPath] atomically:YES]) {
