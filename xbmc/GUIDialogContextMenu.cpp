@@ -113,13 +113,18 @@ int CGUIDialogContextMenu::AddButton(int iLabel)
 
 void CGUIDialogContextMenu::SetPosition(float posX, float posY)
 {
+#if 1
+  CenterWindow();
+#else
   if (posY + GetHeight() > g_settings.m_ResInfo[m_coordsRes].iHeight)
     posY = g_settings.m_ResInfo[m_coordsRes].iHeight - GetHeight();
   if (posY < 0) posY = 0;
   if (posX + GetWidth() > g_settings.m_ResInfo[m_coordsRes].iWidth)
     posX = g_settings.m_ResInfo[m_coordsRes].iWidth - GetWidth();
   if (posX < 0) posX = 0;
+  
   CGUIDialog::SetPosition(posX, posY);
+#endif
 }
 
 int CGUIDialogContextMenu::AddButton(const CStdString &strLabel)
