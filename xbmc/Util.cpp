@@ -433,6 +433,7 @@ void CUtil::AutodetectPlexSources(CStdString strPlexPath, VECSOURCES& dstSources
         share.strName = item->GetLabel();
         share.strPath = item->m_strPath;
         share.m_strFanartUrl = item->GetQuickFanart();
+        share.m_ignore = true;
         
         // Download thumbnail if needed.
         CStdString cachedThumb(item->GetCachedProgramThumb());
