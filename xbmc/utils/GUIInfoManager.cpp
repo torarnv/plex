@@ -113,6 +113,7 @@ CGUIInfoManager::CGUIInfoManager(void)
   m_frameCounter = 0;
   m_frameClumpTime = 0;
   m_fps = 0.0;
+  m_slideshowShowDescription = false;
 }
 
 CGUIInfoManager::~CGUIInfoManager(void)
