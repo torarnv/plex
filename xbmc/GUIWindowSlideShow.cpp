@@ -38,6 +38,7 @@ using namespace DIRECTORY;
 
 #define MAX_ZOOM_FACTOR                     10
 #define MAX_PICTURE_SIZE             2048*2048
+#define DESCRIPTION_DISPLAY_TIME            10
 
 #define IMMEDIATE_TRANSISTION_TIME          20
 
@@ -229,6 +230,7 @@ void CGUIWindowSlideShow::Select(const CStdString& strPicture)
       m_iNextSlide = m_iCurrentSlide + 1;
       if (m_iNextSlide >= m_slides->Size())
         m_iNextSlide = 0;
+      UpdateDescription();
       return ;
     }
   }
@@ -259,6 +261,15 @@ void CGUIWindowSlideShow::StartSlideShow(bool screensaver)
 
 void CGUIWindowSlideShow::Render()
 {
+  if (stopwatch.IsRunning())
+  {
+    if ((int)stopwatch.GetElapsedSeconds() == DESCRIPTION_DISPLAY_TIME)
+    {
+      stopwatch.Stop();
+      if (g_infoManager.GetSlideshowShowDescription() == true)
+        g_infoManager.SetSlideshowShowDescription(false);
+    }
+  }
   // reset the screensaver if we're in a slideshow
   if (m_bSlideShow) g_application.ResetScreenSaver();
   int iSlides = m_slides->Size();
@@ -421,6 +432,7 @@ void CGUIWindowSlideShow::Render()
     if (m_Image[1 - m_iCurrentPic].IsLoaded())
       m_iCurrentPic = 1 - m_iCurrentPic;
     m_iCurrentSlide = m_iNextSlide;
+    UpdateDescription();
     if (bSlideShow)
     {
       m_iNextSlide++;
@@ -466,7 +478,11 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
       // If the item has a description, allow toggling
       CFileItemPtr fileItem = m_slides->Get(m_iCurrentSlide);
       if (fileItem->GetProperty("description") != "")
+      {
         g_infoManager.SetSlideshowShowDescription(!g_infoManager.GetSlideshowShowDescription());
+        if (stopwatch.IsRunning())
+          stopwatch.Stop();
+      }
     }
     break;
   case ACTION_PREVIOUS_MENU:
@@ -834,6 +850,18 @@ void CGUIWindowSlideShow::GetCheckedSize(float width, float height, int &maxWidt
   maxWidth = g_graphicsContext.GetMaxTextureSize();
   maxHeight = g_graphicsContext.GetMaxTextureSize();
 #endif
+}
+
+void CGUIWindowSlideShow::UpdateDescription()
+{
+  if (stopwatch.IsRunning())
+    stopwatch.Stop();
+  CFileItemPtr fileItem = m_slides->Get(m_iCurrentSlide);
+  if (fileItem->GetProperty("description") != "")
+  {
+    stopwatch.StartZero();
+    g_infoManager.SetSlideshowShowDescription(true);
+  }
 }
 
 CFileItemPtr CGUIWindowSlideShow::GetCurrentListItem(int offset)
