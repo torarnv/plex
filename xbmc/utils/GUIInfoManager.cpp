@@ -588,7 +588,10 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("lastfm.canban")) ret = LASTFM_CANBAN;
   }
   else if (strCategory.Equals("slideshow"))
-    ret = CPictureInfoTag::TranslateString(strTest.Mid(strCategory.GetLength() + 1));
+  {
+    if (strTest.Equals("slideshow.showdescription")) ret = SLIDESHOW_SHOW_DESCRIPTION;
+    else ret = CPictureInfoTag::TranslateString(strTest.Mid(strCategory.GetLength() + 1));
+  }
   else if (strCategory.Left(9).Equals("container"))
   {
     int id = atoi(strCategory.Mid(10, strCategory.GetLength() - 11));
@@ -1929,6 +1932,10 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
       if (it != m_containerMoves.end())
         bReturn = condition == CONTAINER_ON_NEXT ? it->second > 0 : it->second < 0;
     }
+  }
+  else if (condition == SLIDESHOW_SHOW_DESCRIPTION)
+  {
+    bReturn = m_slideshowShowDescription;
   }
   else if (g_application.IsPlaying())
   {
@@ -4115,6 +4122,16 @@ void CGUIInfoManager::SetCurrentSongTag(const MUSIC_INFO::CMusicInfoTag &tag)
   //CLog::Log(LOGDEBUG, "Asked to SetCurrentTag");
   *m_currentFile->GetMusicInfoTag() = tag; 
   m_currentFile->m_lStartOffset = 0;
+}
+
+bool CGUIInfoManager::GetSlideshowShowDescription()
+{
+  return m_slideshowShowDescription;
+}
+
+void CGUIInfoManager::SetSlideshowShowDescription(bool show)
+{
+  m_slideshowShowDescription = show;
 }
 
 const CFileItem& CGUIInfoManager::GetCurrentSlide() const

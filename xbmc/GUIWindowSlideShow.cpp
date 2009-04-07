@@ -148,6 +148,7 @@ void CGUIWindowSlideShow::Reset()
 {
   g_infoManager.SetShowCodec(false);
   m_bSlideShow = false;
+  m_bScreensaver = false;
   m_bPause = false;
   m_bErrorMessage = false;
   m_bReloadImage = false;
@@ -222,6 +223,8 @@ void CGUIWindowSlideShow::Select(const CStdString& strPicture)
     const CFileItemPtr item = m_slides->Get(i);
     if (item->m_strPath == strPicture)
     {
+      // If the picture has a description, show it!
+      g_infoManager.SetSlideshowShowDescription(item->GetProperty("description") != "");
       m_iCurrentSlide = i;
       m_iNextSlide = m_iCurrentSlide + 1;
       if (m_iNextSlide >= m_slides->Size())
@@ -456,6 +459,14 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
         // no need to set the picture here, it's done in Render()
         pictureInfo->DoModal();
       }
+    }
+    break;
+  case ACTION_SHOW_INFO:
+    {
+      // If the item has a description, allow toggling
+      CFileItemPtr fileItem = m_slides->Get(m_iCurrentSlide);
+      if (fileItem->GetProperty("description") != "")
+        g_infoManager.SetSlideshowShowDescription(!g_infoManager.GetSlideshowShowDescription());
     }
     break;
   case ACTION_PREVIOUS_MENU:

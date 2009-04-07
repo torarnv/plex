@@ -394,6 +394,7 @@ class CDateTime;
 
 #define SLIDE_INFO_START            900
 #define SLIDE_INFO_END              980
+#define SLIDESHOW_SHOW_DESCRIPTION  990
 
 #define FANART_COLOR1               1000
 #define FANART_COLOR2               1001
@@ -606,6 +607,9 @@ public:
 
   void SetLaunchingXBEName(const CStdString &name) { m_launchingXBE = name; };
   void SetContainerMoving(int id, int direction) { m_containerMoves[id] = direction; };
+  
+  bool GetSlideshowShowDescription();
+  void SetSlideshowShowDescription(bool show);
 
 protected:
   // routines for window retrieval
@@ -645,6 +649,7 @@ protected:
   unsigned int m_MusicBitrate;
   CFileItem* m_currentSlide;
   int i_SmartRequest;
+  bool m_slideshowShowDescription;
  
   // fan stuff
   DWORD m_lastSysHeatInfoTime;
