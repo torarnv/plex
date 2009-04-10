@@ -459,10 +459,13 @@ namespace VIDEO
           m_database.GetTvShowInfo(pItem->m_strPath,showDetails,lTvShowId);
           
           // check for a theme file
-          std::string tvShowId = showDetails.m_strEpisodeGuide.substr(26);
-          tvShowId = tvShowId.substr(0, tvShowId.find(".xml"));
-          CLog::Log(LOGINFO, "Downloading TV theme %s", tvShowId.c_str());
-          Cocoa_CheckForThemeWithId(tvShowId.c_str());
+          if (showDetails.m_strEpisodeGuide.length() >= 26)
+          {
+            std::string tvShowId = showDetails.m_strEpisodeGuide.substr(26);
+            tvShowId = tvShowId.substr(0, tvShowId.find(".xml"));
+            CLog::Log(LOGINFO, "Downloading TV theme %s", tvShowId.c_str());
+            Cocoa_CheckForThemeWithId(tvShowId.c_str());
+          }
           
           files.clear();
           EnumerateSeriesFolder(pItem.get(),files);
