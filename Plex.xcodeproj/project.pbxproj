@@ -30,6 +30,7 @@
 		1A5535900E86AA9E005AF349 /* AppleHardwareInfo.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1A55358F0E86AA9E005AF349 /* AppleHardwareInfo.mm */; };
 		1A5535E50E86B02F005AF349 /* ModelsWithBattery.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1A5535E40E86B02F005AF349 /* ModelsWithBattery.plist */; };
 		1A5536300E86CCD4005AF349 /* GUIDialogUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A55362F0E86CCD4005AF349 /* GUIDialogUtils.cpp */; };
+		1A57382F0F8EC940001943A9 /* GUIWindowNowPlaying.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A57382E0F8EC940001943A9 /* GUIWindowNowPlaying.cpp */; };
 		1A6927FB0EAAB06100A01B8A /* SUPlexBackgroundUpdateDialogDriver.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A6927FA0EAAB06100A01B8A /* SUPlexBackgroundUpdateDialogDriver.m */; };
 		1AA456B70E7EA3DD004CC8D2 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AA456B60E7EA3DD004CC8D2 /* Security.framework */; };
 		1AD99BDD0E9EF07200503917 /* QTPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1AD99BDC0E9EF07200503917 /* QTPlayer.cpp */; };
@@ -1021,6 +1022,8 @@
 		1A5535E40E86B02F005AF349 /* ModelsWithBattery.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = ModelsWithBattery.plist; path = plex/ModelsWithBattery.plist; sourceTree = "<group>"; };
 		1A55362E0E86CCD4005AF349 /* GUIDialogUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogUtils.h; sourceTree = "<group>"; };
 		1A55362F0E86CCD4005AF349 /* GUIDialogUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogUtils.cpp; sourceTree = "<group>"; };
+		1A57382D0F8EC940001943A9 /* GUIWindowNowPlaying.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowNowPlaying.h; sourceTree = "<group>"; };
+		1A57382E0F8EC940001943A9 /* GUIWindowNowPlaying.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowNowPlaying.cpp; sourceTree = "<group>"; };
 		1A6927F90EAAB06100A01B8A /* SUPlexBackgroundUpdateDialogDriver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUPlexBackgroundUpdateDialogDriver.h; sourceTree = "<group>"; };
 		1A6927FA0EAAB06100A01B8A /* SUPlexBackgroundUpdateDialogDriver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SUPlexBackgroundUpdateDialogDriver.m; sourceTree = "<group>"; };
 		1AA456B20E7EA2E7004CC8D2 /* SUConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUConstants.h; sourceTree = "<group>"; };
@@ -3778,6 +3781,8 @@
 				E37D5CB40D3023BB0081D327 /* osx */,
 				E336EF4A0E602A8B00270758 /* GUIDialogFullScreenInfo.cpp */,
 				E336EF4B0E602A8B00270758 /* GUIDialogFullScreenInfo.h */,
+				1A57382D0F8EC940001943A9 /* GUIWindowNowPlaying.h */,
+				1A57382E0F8EC940001943A9 /* GUIWindowNowPlaying.cpp */,
 				E336EF000E60250700270758 /* GUIViewStatePictures.cpp */,
 				E336EF010E60250700270758 /* GUIViewStatePictures.h */,
 				E336EF020E60250700270758 /* GUIViewStatePrograms.cpp */,
@@ -7501,6 +7506,7 @@
 				E3F766230F3471D300667633 /* DVDInputStreamStack.cpp in Sources */,
 				949384630F591AE6004DFC17 /* FileEyeTVSocket.mm in Sources */,
 				1A448E920F8059C1006E71B2 /* AdvancedSettingsController.m in Sources */,
+				1A57382F0F8EC940001943A9 /* GUIWindowNowPlaying.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -372,6 +372,9 @@
 #define WINDOW_SETTINGS_PROFILES          10034
 #define WINDOW_GAMESAVES                  10035
 
+// New Plex windows
+#define WINDOW_NOW_PLAYING                10050
+
 #define WINDOW_DIALOG_YES_NO              10100
 #define WINDOW_DIALOG_PROGRESS            10101
 #define WINDOW_DIALOG_INVITE              10102
