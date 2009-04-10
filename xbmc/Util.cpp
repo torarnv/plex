@@ -3803,6 +3803,7 @@ const BUILT_IN commands[] = {
   { "CheckForUpdates",            false,  "Check for software updates" },
   { "MoveToNextScreen",           false,  "Move to the next screen" },
   { "MoveToPrevScreen",           false,  "Move to the previous screen" },
+  { "ToggleDisplayBlanking",      false,  "Toggle display blanking" },
 };
 
 bool CUtil::IsBuiltIn(const CStdString& execString)
@@ -3859,7 +3860,6 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   CStdString strParameterCaseIntact = parameter;
   parameter.ToLower();
   execute.ToLower();
-
   if (execute.Equals("reboot") || execute.Equals("restart"))  //Will reboot the xbox, aka cold reboot
   {
     g_application.getApplicationMessenger().Restart();
@@ -4805,6 +4805,16 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   else if (execute.Equals("movetonextscreen"))
   {
     g_application.getApplicationMessenger().MoveToNextScreen();
+  }
+  else if (execute.Equals("toggledisplayblanking"))
+  {
+    int setting = g_guiSettings.GetInt("videoscreen.displayblanking");
+    setting++;
+    if (setting > BLANKING_ALL_DISPLAYS)
+      setting = BLANKING_DISABLED;
+    g_guiSettings.SetInt("videoscreen.displayblanking", setting);
+
+    UpdateDisplayBlanking();
   }
   else
     return -1;
@@ -6203,6 +6213,15 @@ CStdString CUtil::TranslatePathConvertCase(const CStdString& path)
 #else
    return translatedPath;
 #endif
+}
+
+void CUtil::UpdateDisplayBlanking()
+{
+  int value = g_guiSettings.GetInt("videoscreen.displayblanking");
+  if (value == BLANKING_ALL_DISPLAYS && g_advancedSettings.m_fullScreen == true)
+    Cocoa_GL_BlankOtherDisplays(g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].iScreen);
+  else
+    Cocoa_GL_UnblankOtherDisplays(g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].iScreen); 
 }
 
 #ifdef _LINUX
