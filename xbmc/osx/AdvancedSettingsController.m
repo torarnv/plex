@@ -379,7 +379,7 @@ NSXMLElement* rootElement(NSXMLDocument* xmlDoc, NSString* nodeName)
   enabledFromControl(root, trueFullscreen, @"fakefullscreen", YES);
   enabledFromControl(videolibrary, cleanOnUpdate, @"cleanonupdate", NO);
   enabledFromControl(filelists, fileDeletion, @"allowfiledeletion", NO); 
-  enabledFromControl(filelists, showExtensions, @"hidefileextensions", YES);
+  enabledFromControl(filelists, showExtensions, @"hideextensions", YES);
   enabledFromControl(filelists, showAddSource, @"disableaddsourcebuttons", YES);
   enabledFromControl(filelists, ignoreSortTokens, @"ignorethewhensorting", NO);
   enabledFromControl(root, vizOnPlay, @"visualizeronplay", NO);

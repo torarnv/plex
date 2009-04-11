@@ -338,6 +338,8 @@ public:
 
   static CStdString TranslatePath(const CStdString& path);
   static CStdString TranslatePathConvertCase(const CStdString& path);
+  
+  static void UpdateDisplayBlanking();
 
 #ifdef _LINUX
   // this will run the command using sudo in a new process.

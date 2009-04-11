@@ -1021,13 +1021,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
           pControl->SetEnabled(true);
 
           if (g_advancedSettings.m_fakeFullScreen == true)
-          {
-            int value = g_guiSettings.GetInt("videoscreen.displayblanking");
-            if (value == BLANKING_ALL_DISPLAYS && g_advancedSettings.m_fullScreen == true)
-              Cocoa_GL_BlankOtherDisplays(g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].iScreen);
-            else
-              Cocoa_GL_UnblankOtherDisplays(g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].iScreen);
-          }
+            CUtil::UpdateDisplayBlanking();
         }
         else
         {

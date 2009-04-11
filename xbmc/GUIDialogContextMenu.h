@@ -132,7 +132,7 @@ public:
   virtual void DoModal(int iWindowID = WINDOW_INVALID, const CStdString &param = "");
   virtual void OnWindowLoaded();
   virtual void OnWindowUnload();
-  virtual void SetPosition(float posX, float posY);
+  virtual void SetPosition(float posX, float posY, bool center = true);
   void ClearButtons();
   int AddButton(int iLabel);
   int AddButton(const CStdString &strButton);
