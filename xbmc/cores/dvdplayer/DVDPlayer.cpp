@@ -810,7 +810,7 @@ void CDVDPlayer::Process()
   if (m_pDlgCache)
     m_pDlgCache->SetMessage(g_localizeStrings.Get(10213));
 
-#if 0 // disable this untill our queues are time based
+#if 1 // disable this untill our queues are time based
   if(!m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) 
   && !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
     SetCaching(true);
@@ -3046,6 +3046,8 @@ int CDVDPlayer::GetCacheSize()
       strFile.Find("http://blip.tv") == 0             ||
       strFile.Find("http://vid.cnn.com") == 0         ||
       (strFile.Find(":32400") != -1 && strFile.Find("/video/youtube") != -1) ||
+      (strFile.Find(":32400") != -1 && strFile.Find("/video/charlierose") != -1)
+      ||
       
       // Check for BBC iPlayer streams
       (strFile.Find(".edgefcs.net:1935/ondemand?_fcs_vhost=") > 0 &&
