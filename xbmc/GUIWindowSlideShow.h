@@ -23,6 +23,7 @@
 
 #include "GUIWindow.h"
 #include "utils/Thread.h"
+#include "utils/CriticalSection.h"
 #include "SlideShowPicture.h"
 #include "DllImageLib.h"
 #include "Stopwatch.h"
@@ -120,6 +121,6 @@ private:
   bool m_bReloadImage;
   DllImageLib m_ImageLib;
   RESOLUTION m_Resolution;
-  
   CStopWatch stopwatch;
+  CCriticalSection m_slideSection;
 };
