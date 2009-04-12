@@ -76,9 +76,11 @@ void CGUIAudioManager::DeInitialize(int iDevice)
 
   if (m_actionSound)
   {
-    //  Wait for finish when an action sound is playing
-    while(m_actionSound->IsPlaying());
-
+    //  Wait for finish when an action sound is playing, and don't busy wait.
+    for(int i=0; m_actionSound->IsPlaying() && i<20000; i++)
+      usleep(10);
+    
+    m_actionSound->Stop();
     delete m_actionSound;
     m_actionSound=NULL;
   }
