@@ -650,7 +650,6 @@ void CPlexDirectory::Process()
   // Set request headers.
   m_http.SetRequestHeader("X-Plex-Version", Cocoa_GetAppVersion());
   m_http.SetRequestHeader("X-Plex-Language", Cocoa_GetLanguage());
-  printf("Sending down %s / %s\n", Cocoa_GetAppVersion(), Cocoa_GetLanguage().c_str());
   
   m_http.SetTimeout(m_timeout);
   if (m_http.Open(url, false) == false) 
