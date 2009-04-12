@@ -44,6 +44,8 @@ public:
   CAudioContext();
   virtual ~CAudioContext();
 
+  void                        SetSoundDeviceCallback(IAudioDeviceChangedCallback* pCallback);
+
   void                        SetActiveDevice(int iDevice);
   int                         GetActiveDevice();
 
@@ -74,7 +76,7 @@ protected:
 #endif
 
   int                          m_iDevice;
- CStdString                   m_strDevice;
+  IAudioDeviceChangedCallback* m_pCallback;
   bool                         m_bAC3EncoderActive;
 };
 
