@@ -46,6 +46,7 @@ class PlexAudioDevice
   bool          hasOutput()       const { return m_hasOutput; }
   AudioDeviceID getDeviceID()     const { return m_deviceID; }
   bool          isAlive();
+  void          reset();
   
   /// Set the device to be the default.
   void setDefault();

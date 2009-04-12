@@ -1182,6 +1182,10 @@ HRESULT CApplication::Create(HWND hWnd)
       g_guiSettings.SetString("audiooutput.audiodevice", device->getName().c_str());
   }
   
+  // Reset the device.
+  if (device)
+    device->reset();
+  
   // Set the correct audio device.
   if (device && g_guiSettings.GetBool("audiooutput.systemoutputfollows"))
   {

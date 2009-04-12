@@ -62,7 +62,6 @@ class CoreAudioAUHAL
 		virtual void Flush();
 		int PacketSize() { return m_dwPacketSize; }
 
-
 		// Addpackets - make ringbuffer private
 
 		static bool LastOpenWasSpdif() { bool ret = s_lastPlayWasSpdif; s_lastPlayWasSpdif = false; return ret; }
