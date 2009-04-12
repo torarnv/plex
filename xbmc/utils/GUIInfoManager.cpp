@@ -86,6 +86,7 @@ using namespace XFILE;
 using namespace DIRECTORY;
 using namespace MEDIA_DETECT;
 using namespace MUSIC_INFO;
+using namespace PLAYLIST;
 
 CGUIInfoManager g_infoManager;
 
@@ -911,6 +912,7 @@ int CGUIInfoManager::TranslateMusicPlayerString(const CStdString &info) const
   else if (info.Equals("exists")) return MUSICPLAYER_EXISTS;
   else if (info.Equals("hasprevious")) return MUSICPLAYER_HASPREVIOUS;
   else if (info.Equals("hasnext")) return MUSICPLAYER_HASNEXT;
+  else if (info.Equals("hasdifferentcovernext")) return MUSICPLAYER_HASDIFFERENTCOVERNEXT;
   return 0;
 }
 
@@ -2046,6 +2048,19 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
         bReturn = false;
         if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC)
           bReturn = (g_playlistPlayer.GetCurrentSong() < (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() - 1)); // not last song
+      }
+      break;
+    case MUSICPLAYER_HASDIFFERENTCOVERNEXT:
+      {
+        bReturn = false;
+        if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC)
+        {
+          if (g_playlistPlayer.GetCurrentSong() < (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() - 1))
+          {
+            CPlayList playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
+            bReturn = !playlist[g_playlistPlayer.GetCurrentSong()]->GetCachedMusicThumb().Equals(playlist[g_playlistPlayer.GetNextSong()]->GetCachedMusicThumb());
+          }
+        }
       }
       break;
     case MUSICPLAYER_PLAYLISTPLAYING:
