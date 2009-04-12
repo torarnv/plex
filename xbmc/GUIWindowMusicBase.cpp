@@ -1106,9 +1106,12 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
     OnClick(iItem);
   }
   
-  // Either way, turn on visualizer so we can control things.
+  // Either way, turn on now playing so we can control things.
   if (g_advancedSettings.m_bVisualizerOnPlay)
-    g_application.getApplicationMessenger().ActivateVisualizer();
+  {
+    printf("Activating Now Playing window\n");
+    m_gWindowManager.ActivateWindow(WINDOW_NOW_PLAYING);
+  }
 }
 
 void CGUIWindowMusicBase::LoadPlayList(const CStdString& strPlayList)
