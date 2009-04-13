@@ -668,8 +668,6 @@ void CGUIWindowMusicBase::OnShuffleItem(int iItem)
 {
   if ( iItem < 0 || iItem >= m_vecItems->Size() ) return ;
   
-  int iOldSize=g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size();
-  
   CFileItemPtr item(new CFileItem(*m_vecItems->Get(iItem)));
   
   if (item->IsRAR() || item->IsZIP())
@@ -703,7 +701,7 @@ void CGUIWindowMusicBase::OnShuffleItem(int iItem)
     return;
   }*/
   
-  g_playlistPlayer.SetShuffle(PLAYLIST_MUSIC, true);
+  g_playlistPlayer.SetShuffle(PLAYLIST_MUSIC, true, true);
   g_playlistPlayer.Play();
   m_gWindowManager.ActivateWindow(WINDOW_NOW_PLAYING);
 }
@@ -1157,8 +1155,6 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
       m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
 
     // play!
-    if (g_advancedSettings.m_bAutoShuffle)
-      g_playlistPlayer.SetShuffle(PLAYLIST_MUSIC, false);
     g_playlistPlayer.Play();
   }
   else if (pItem->IsPlayList())
@@ -1240,10 +1236,6 @@ bool CGUIWindowMusicBase::OnPlayMedia(int iItem)
     g_playlistPlayer.ClearPlaylist(PLAYLIST_MUSIC);
     g_playlistPlayer.Add(PLAYLIST_MUSIC, pItem);
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
-    if (g_advancedSettings.m_bAutoShuffle)
-    {
-      g_playlistPlayer.SetShuffle(PLAYLIST_MUSIC, false);
-    }
     g_playlistPlayer.Play();
     return true;
   }
