@@ -913,7 +913,8 @@ int CGUIInfoManager::TranslateMusicPlayerString(const CStdString &info) const
   else if (info.Equals("exists")) return MUSICPLAYER_EXISTS;
   else if (info.Equals("hasprevious")) return MUSICPLAYER_HASPREVIOUS;
   else if (info.Equals("hasnext")) return MUSICPLAYER_HASNEXT;
-  else if (info.Equals("hasdifferentcovernext")) return MUSICPLAYER_HASDIFFERENTCOVERNEXT;
+  else if (info.Equals("hasnewcovernext")) return MUSICPLAYER_HAS_NEW_COVER_NEXT;
+  else if (info.Equals("nextnewcover")) return MUSICPLAYER_NEXT_NEW_COVER;
   return 0;
 }
 
@@ -2054,7 +2055,7 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
           bReturn = (g_playlistPlayer.GetCurrentSong() < (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() - 1)); // not last song
       }
       break;
-    case MUSICPLAYER_HASDIFFERENTCOVERNEXT:
+    case MUSICPLAYER_HAS_NEW_COVER_NEXT:
       {
         bReturn = false;
         if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC)
@@ -2062,8 +2063,7 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
           if (g_playlistPlayer.GetCurrentSong() < (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() - 1))
           {
             CPlayList playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
-            printf("%s\n", playlist[g_playlistPlayer.GetCurrentSong()]->GetCachedMusicThumb().c_str());
-            bReturn = !playlist[g_playlistPlayer.GetCurrentSong()]->GetCachedMusicThumb().Equals(playlist[g_playlistPlayer.GetNextSong()]->GetCachedMusicThumb());
+            bReturn = !playlist[g_playlistPlayer.GetCurrentSong()]->GetThumbnailImage().Equals(playlist[g_playlistPlayer.GetNextSong()]->GetThumbnailImage());
           }
         }
       }
@@ -2548,6 +2548,23 @@ CStdString CGUIInfoManager::GetImage(int info, DWORD contextWindow)
   {
     if (!g_application.IsPlayingAudio()) return "";
     return m_currentFile->HasThumbnail() ? m_currentFile->GetThumbnailImage() : "defaultAlbumCover.png";
+  }
+  else if (info == MUSICPLAYER_NEXT_NEW_COVER)
+  {
+    if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC)
+    {
+      if (g_playlistPlayer.GetCurrentSong() < (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() - 1))
+      {
+        CPlayList playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
+        for (int i=g_playlistPlayer.GetCurrentSong()+1; i < g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size(); i++)
+        {
+          printf("%s\n", playlist[g_playlistPlayer.GetCurrentSong()]->GetThumbnailImage().c_str());
+          if (!playlist[g_playlistPlayer.GetCurrentSong()]->GetThumbnailImage().Equals(playlist[i]->GetThumbnailImage()))
+            return playlist[i]->GetThumbnailImage();
+        }
+      }
+    }
+    return "";
   }
   else if (info == MUSICPLAYER_RATING)
   {
