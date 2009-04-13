@@ -97,6 +97,7 @@ class CDateTime;
 #define PLAYER_CACHELEVEL            39
 #define PLAYER_STAR_RATING           40
 #define PLAYER_CHAPTERNAME           41
+#define PLAYER_HAS_MUSIC_PLAYLIST    42
 
 #define WEATHER_CONDITIONS          100
 #define WEATHER_TEMPERATURE         101

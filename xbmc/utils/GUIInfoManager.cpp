@@ -189,6 +189,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     if (strTest.Equals("player.hasmedia")) ret = PLAYER_HAS_MEDIA;
     else if (strTest.Equals("player.hasaudio")) ret = PLAYER_HAS_AUDIO;
     else if (strTest.Equals("player.hasvideo")) ret = PLAYER_HAS_VIDEO;
+    else if (strTest.Equals("player.hasmusicplaylist")) ret = PLAYER_HAS_MUSIC_PLAYLIST;
     else if (strTest.Equals("player.playing")) ret = PLAYER_PLAYING;
     else if (strTest.Equals("player.paused")) ret = PLAYER_PAUSED;
     else if (strTest.Equals("player.rewinding")) ret = PLAYER_REWINDING;
@@ -1953,6 +1954,9 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
     case PLAYER_HAS_VIDEO:
       bReturn = g_application.IsPlayingVideo();
       break;
+    case PLAYER_HAS_MUSIC_PLAYLIST:
+      bReturn = (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC);
+      break;
     case PLAYER_PLAYING:
       bReturn = !g_application.IsPaused() && (g_application.GetPlaySpeed() == 1);
       break;
@@ -2058,6 +2062,7 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
           if (g_playlistPlayer.GetCurrentSong() < (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() - 1))
           {
             CPlayList playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
+            printf("%s\n", playlist[g_playlistPlayer.GetCurrentSong()]->GetCachedMusicThumb().c_str());
             bReturn = !playlist[g_playlistPlayer.GetCurrentSong()]->GetCachedMusicThumb().Equals(playlist[g_playlistPlayer.GetNextSong()]->GetCachedMusicThumb());
           }
         }
