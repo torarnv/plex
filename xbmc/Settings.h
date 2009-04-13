@@ -250,6 +250,8 @@ public:
     int m_secondsToVisualizer;
     bool m_bVisualizerOnPlay;
     
+    bool m_bAutoShuffle;
+    
     CStdString m_language;
     CStdString m_units;
   };

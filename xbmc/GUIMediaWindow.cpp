@@ -893,12 +893,13 @@ bool CGUIMediaWindow::OnClick(int iItem)
 
         // play
         g_playlistPlayer.SetCurrentPlaylist(iPlaylist);
+        if (g_advancedSettings.m_bAutoShuffle)
+          g_playlistPlayer.SetShuffle(PLAYLIST_MUSIC, false);
         g_playlistPlayer.Play(songToPlay);
 
         // Turn on now playing so we can control things.
         if (m_guiState->GetPlaylist() == PLAYLIST_MUSIC && g_advancedSettings.m_bVisualizerOnPlay) 
         {
-          printf("Activating Now Playing window\n");
           m_gWindowManager.ActivateWindow(WINDOW_NOW_PLAYING);
         }
       }
