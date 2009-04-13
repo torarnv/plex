@@ -1956,7 +1956,7 @@ bool CUtil::IsOnLAN(const CStdString& strPath)
     return false;
 
   CStdString host = url.GetHostName();
-  if(host.length() == 0)
+  if(host.length() == 0 || host.substr(0, 1) == "/")
     return false;
 
   unsigned long address = ntohl(inet_addr(host.c_str()));
