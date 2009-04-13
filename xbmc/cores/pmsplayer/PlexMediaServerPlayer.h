@@ -93,6 +93,8 @@ public:
   
   virtual CStdString GetPlayerState() { return ""; }
   virtual bool SetPlayerState(CStdString state) { return true; }
+
+  static void RequireServerRestart() { g_needToRestartMediaServer = true; } 
   
 private:
 
@@ -124,6 +126,8 @@ private:
   CHTTP      m_http;
   
   int m_frameCount;
+  
+  static bool g_needToRestartMediaServer;
   
   ipc::named_mutex     m_frameMutex;
   ipc::named_condition m_frameCond;

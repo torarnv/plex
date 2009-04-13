@@ -27,6 +27,7 @@
 #include "stdafx.h"
 #include "CocoaUtils.h"
 #include "PlexMediaServerPlayer.h"
+#include "PlexMediaServerHelper.h"
 #include "FileItem.h"
 #include "GUIFontManager.h"
 #include "GUIWindowManager.h"
@@ -43,6 +44,8 @@
 
 #include <vector>
 #include <set>
+
+bool CPlexMediaServerPlayer::g_needToRestartMediaServer = false;
 
 CPlexMediaServerPlayer::CPlexMediaServerPlayer(IPlayerCallback& callback)
     : IPlayer(callback)
@@ -78,6 +81,17 @@ CPlexMediaServerPlayer::~CPlexMediaServerPlayer()
 
 bool CPlexMediaServerPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 {
+  bool didWeRestart = false;
+  
+  // See if we need to restart the media server.
+  if (g_needToRestartMediaServer == true)
+  {
+    printf("Restarting media server because of 5.1 CoreAudio issue.\n");
+    PlexMediaServerHelper::Get().Restart();
+    g_needToRestartMediaServer = false;
+    didWeRestart = true;
+  }
+  
   // Initialize the renderer, so it doesn't try to render too soon.
   g_renderManager.PreInit();
   
@@ -91,9 +105,18 @@ bool CPlexMediaServerPlayer::OpenFile(const CFileItem& file, const CPlayerOption
   url.SetPort(32400);
 
   printf("Opening [%s] => [%s]\n", file.m_strPath.c_str(), url.GetURL().c_str());
+  
+retry:  
   int status = m_http.Open(url.GetURL(), "GET", 0, true);
   if (status != 200)
   {
+    // If we just restarted we might not be up quite yet.
+    if ((status == 0 || status == 503) && didWeRestart && m_bStop == false)
+    {
+      usleep(100);
+      goto retry;
+    }
+    
     printf("ERROR: this didn't work [%d]\n", status);
     return false;
   }
