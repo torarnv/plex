@@ -32,6 +32,7 @@
 #include "utils/MusicInfoScraper.h"
 #include "PlayListPlayer.h"
 #include "MusicInfoLoader.h"
+#include "ThumbLoader.h"
 
 struct SScraperInfo;
 
@@ -42,7 +43,7 @@ struct SScraperInfo;
  CGUIWindowMusicBase is the base class for
  all music windows.
  */
-class CGUIWindowMusicBase : public CGUIMediaWindow
+class CGUIWindowMusicBase : public CGUIMediaWindow, public IBackgroundLoaderObserver
 {
 public:
   CGUIWindowMusicBase(DWORD dwID, const CStdString &xmlFile);
@@ -101,4 +102,5 @@ protected:
   bool m_hideExtensions;
   CMusicDatabase m_musicdatabase;
   MUSIC_INFO::CMusicInfoLoader m_musicInfoLoader;
+  CMusicThumbLoader m_thumbLoader;
 };

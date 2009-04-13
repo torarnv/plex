@@ -72,7 +72,7 @@ using namespace MUSIC_INFO;
 CGUIWindowMusicBase::CGUIWindowMusicBase(DWORD dwID, const CStdString &xmlFile)
     : CGUIMediaWindow(dwID, xmlFile)
 {
-
+  m_thumbLoader.SetObserver(this);
 }
 
 CGUIWindowMusicBase::~CGUIWindowMusicBase ()
@@ -133,6 +133,9 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_DEINIT:
     {
+      if (m_thumbLoader.IsLoading())
+        m_thumbLoader.StopThread();
+      
       m_musicdatabase.Close();
     }
     break;
@@ -697,6 +700,7 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
     // recursive
     CFileItemList items;
     GetDirectory(pItem->m_strPath, items);
+    
     //OnRetrieveMusicInfo(items);
     FormatAndSort(items);
     for (int i = 0; i < items.Size(); ++i)
@@ -721,6 +725,7 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
         {
           AddItemToPlayList(playlist[i], queuedItems);
         }
+        
         return;
       }
     }
@@ -1077,6 +1082,9 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
 
     CFileItemList queuedItems;
     AddItemToPlayList(item, queuedItems);
+    
+    m_thumbLoader.Load(queuedItems);
+    
     if (g_partyModeManager.IsEnabled())
     {
       g_partyModeManager.AddUserSongs(queuedItems, true);
@@ -1314,6 +1322,9 @@ void CGUIWindowMusicBase::OnRetrieveMusicInfo(CFileItemList& items)
 
 bool CGUIWindowMusicBase::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
+  if (m_thumbLoader.IsLoading())
+    m_thumbLoader.StopThread();
+  
   items.SetThumbnailImage("");
   bool bResult = CGUIMediaWindow::GetDirectory(strDirectory,items);
   if (bResult)

@@ -26,7 +26,7 @@
 
 class CFileItemList;
 
-class CGUIWindowMusicNav : public CGUIWindowMusicBase, public IBackgroundLoaderObserver
+class CGUIWindowMusicNav : public CGUIWindowMusicBase
 {
 public:
 

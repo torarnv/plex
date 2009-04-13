@@ -2558,7 +2558,6 @@ CStdString CGUIInfoManager::GetImage(int info, DWORD contextWindow)
         CPlayList playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
         for (int i=g_playlistPlayer.GetCurrentSong()+1; i < g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size(); i++)
         {
-          printf("%s\n", playlist[g_playlistPlayer.GetCurrentSong()]->GetThumbnailImage().c_str());
           if (!playlist[g_playlistPlayer.GetCurrentSong()]->GetThumbnailImage().Equals(playlist[i]->GetThumbnailImage()))
             return playlist[i]->GetThumbnailImage();
         }
