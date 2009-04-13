@@ -641,6 +641,8 @@ void CGUIWindowMusicBase::OnQueueItem(int iItem)
   CLog::Log(LOGDEBUG, "Adding file %s%s to music playlist", item->m_strPath.c_str(), item->m_bIsFolder ? " (folder) " : "");
   CFileItemList queuedItems;
   AddItemToPlayList(item, queuedItems);
+  
+  m_thumbLoader.Load(queuedItems);
 
   // select next item
   m_viewControl.SetSelectedItem(iItem + 1);
@@ -688,10 +690,14 @@ void CGUIWindowMusicBase::OnShuffleItem(int iItem)
     CLog::Log(LOGDEBUG, "Shuffling files %s%s and adding to music playlist", item->m_strPath.c_str(), item->m_bIsFolder ? " (folder) " : "");
     CFileItemList queuedItems;
     AddItemToPlayList(item, queuedItems);
+    m_thumbLoader.Load(queuedItems);
     g_playlistPlayer.Add(PLAYLIST_MUSIC, queuedItems);
   }
   else
+  {
     g_playlistPlayer.Add(PLAYLIST_MUSIC, *m_vecItems);
+    m_thumbLoader.Load(*m_vecItems);
+  }
   
   /*
   // if party mode, add items but DONT start playing
