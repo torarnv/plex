@@ -834,6 +834,9 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
   if (itemNumber >= 0 && itemNumber < m_vecItems->Size())
     item = m_vecItems->Get(itemNumber);
 
+  if (g_application.IsPlayingAudio())
+    buttons.Add(CONTEXT_BUTTON_NOW_PLAYING, 13350);
+  
   if (item && !item->IsParentFolder())
   {
     if (item->GetExtraInfo().Equals("lastfmloved"))
@@ -880,7 +883,7 @@ void CGUIWindowMusicBase::GetNonContextButtons(CContextButtons &buttons)
   if (!m_vecItems->IsVirtualDirectoryRoot())
     buttons.Add(CONTEXT_BUTTON_GOTO_ROOT, 20128);
   if (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() > 0)
-    buttons.Add(CONTEXT_BUTTON_NOW_PLAYING, 13350);
+    buttons.Add(CONTEXT_BUTTON_PLAYLIST, 559);
   buttons.Add(CONTEXT_BUTTON_SETTINGS, 5);
 }
 
@@ -953,6 +956,10 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
 
   case CONTEXT_BUTTON_NOW_PLAYING:
+    m_gWindowManager.ActivateWindow(WINDOW_NOW_PLAYING);
+    return true;      
+  
+  case CONTEXT_BUTTON_PLAYLIST:
     m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
     return true;
 
