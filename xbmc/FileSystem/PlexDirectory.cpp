@@ -275,14 +275,30 @@ class PlexMediaNode
      else if (strPath.find("/Decades/") != -1 || strPath.find("/Recently%20Added") != -1 || strPath.find("/Most%20Played") != -1 || strPath.find("/Recently%20Played/") != -1 || strPath.find("/Genre/") != -1)
        strDirLabel = "%A - %B";
    }
+   
+   string GetLabel(const TiXmlElement& el)
+   {
+     // FIXME: We weren't consistent, so no we need to accept multiple ones until 
+     // we release this and update the framework.
+     //
+     if (el.Attribute("title"))
+       return el.Attribute("title");
+     else if (el.Attribute("label"))
+       return el.Attribute("label");
+     else if (el.Attribute("name"))
+       return el.Attribute("name");
+     else if (el.Attribute("track"))
+       return el.Attribute("track");
+     
+     return "";
+   }
 };
 
 class PlexMediaDirectory : public PlexMediaNode
 {
   virtual void DoBuildFileItem(CFileItemPtr& pItem, const string& parentPath, TiXmlElement& el)
   {
-    pItem->SetLabel(el.Attribute("name"));
-    
+    pItem->SetLabel(GetLabel(el));
     CVideoInfoTag tag;
     tag.m_strTitle = pItem->GetLabel();
     
@@ -354,7 +370,7 @@ class PlexMediaAlbum : public PlexMediaNode
   {
     CAlbum album;
     
-    album.strLabel = el.Attribute("label");
+    album.strLabel = GetLabel(el);
     album.idAlbum = boost::lexical_cast<int>(el.Attribute("key"));
     album.strAlbum = el.Attribute("album");
     album.strArtist = el.Attribute("artist");
@@ -487,7 +503,7 @@ class PlexMediaTrack : public PlexMediaNode
     pItem->m_bIsFolder = false;
     
     CSong song;
-    song.strTitle = (el.Attribute("track"));
+    song.strTitle = GetLabel(el);
     song.strArtist = el.Attribute("artist");
     song.strAlbum = el.Attribute("album");
     song.strFileName = pItem->m_strPath;
@@ -539,7 +555,7 @@ class PlexMediaRoll : public PlexMediaNode
 {
   virtual void DoBuildFileItem(CFileItemPtr& pItem, const string& parentPath, TiXmlElement& el)
   {
-    pItem->SetLabel(el.Attribute("label"));
+    pItem->SetLabel(GetLabel(el));
   }
 };
 
@@ -547,7 +563,7 @@ class PlexMediaPhotoAlbum : public PlexMediaNode
 {
   virtual void DoBuildFileItem(CFileItemPtr& pItem, const string& parentPath, TiXmlElement& el)
   {
-    pItem->SetLabel(el.Attribute("label"));
+    pItem->SetLabel(GetLabel(el));
   }
 };
 
@@ -555,7 +571,7 @@ class PlexMediaPhotoKeyword : public PlexMediaNode
 {
   virtual void DoBuildFileItem(CFileItemPtr& pItem, const string& parentPath, TiXmlElement& el)
   {
-    pItem->SetLabel(el.Attribute("label"));
+    pItem->SetLabel(GetLabel(el));
   }
 };
 
@@ -564,12 +580,7 @@ class PlexMediaPhoto : public PlexMediaNode
   virtual void DoBuildFileItem(CFileItemPtr& pItem, const string& parentPath, TiXmlElement& el)
   {
     pItem->m_bIsFolder = false;
-    
-    // FIXME: Shouldn't have two ways to get this.
-    if (el.Attribute("title"))
-      pItem->SetLabel(el.Attribute("title"));
-    else
-      pItem->SetLabel(el.Attribute("label"));
+    pItem->SetLabel(GetLabel(el));
     
     // Summary.
     const char* summary = el.Attribute("summary");
