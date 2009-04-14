@@ -840,13 +840,13 @@ CStdString CDateTime::GetAsLocalizedTime(const CStdString &format, bool withSeco
 {
 #ifdef __APPLE__
 
-  // If there's no format, use the system.
+  time_t time = 0;
+  GetAsTime(time);
+  
   if (format.IsEmpty())
-  {
-    time_t time = 0;
-    GetAsTime(time);
     return Cocoa_GetTimeString(time);
-  }
+  else
+    return Cocoa_GetTimeString(format, time);
   
 #endif
   

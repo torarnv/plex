@@ -113,7 +113,7 @@ string Cocoa_GetSystemFontPathFromDisplayName(const string displayName)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-vector<in_addr_t> Cocoa_AddressesForHost(const string hostname)
+vector<in_addr_t> Cocoa_AddressesForHost(const string& hostname)
 {
   NSHost *host = [NSHost hostWithName:[NSString stringWithCString:hostname.c_str()]];
   vector<in_addr_t> ret;
@@ -123,7 +123,7 @@ vector<in_addr_t> Cocoa_AddressesForHost(const string hostname)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-bool Cocoa_AreHostsEqual(const string host1, const string host2)
+bool Cocoa_AreHostsEqual(const string& host1, const string& host2)
 {
   NSHost *h1 = [NSHost hostWithName:[NSString stringWithCString:host1.c_str()]];
   NSHost *h2 = [NSHost hostWithName:[NSString stringWithCString:host2.c_str()]];
@@ -131,7 +131,7 @@ bool Cocoa_AreHostsEqual(const string host1, const string host2)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-VECSOURCES Cocoa_GetPlexMediaServersAsSourcesWithMediaType(const string mediaType)
+VECSOURCES Cocoa_GetPlexMediaServersAsSourcesWithMediaType(const string& mediaType)
 {
   VECSOURCES ret;
   @synchronized([[XBMCMain sharedInstance] plexMediaServers])
@@ -151,42 +151,12 @@ VECSOURCES Cocoa_GetPlexMediaServersAsSourcesWithMediaType(const string mediaTyp
   return ret;
 }
 
+///////////////////////////////////////////////////////////////////////////////
 bool Cocoa_IsLocalPlexMediaServerRunning()
 {
-#if 1
-  
   bool isRunning = PlexMediaServerHelper::Get().IsRunning(); 
   printf("Cocoa_IsLocalPlexMediaServerRunning() => %d\n", isRunning);
-  
   return isRunning;
-  
-#else
-  NSArray* localAddresses = [[NSHost currentHost] addresses];
-  
-  NSLog(@"Local hostname: %@", [[NSHost currentHost] name]);
-  NSLog(@"Local addresses: \n%@", localAddresses);
-  NSData* address = nil;
-  for (NSNetService* service in [[XBMCMain sharedInstance] plexMediaServers])
-  {
-    struct sockaddr_in *socketAddress = nil;
-    int i = 0;
-    for( ; i < [[service addresses] count]; i++ )
-    {
-      address = [[service addresses] objectAtIndex: i];
-      socketAddress = (struct sockaddr_in *) [address bytes];
-      NSString* pmsAddr = [NSString stringWithFormat: @"%s", inet_ntoa(socketAddress->sin_addr)];
-      NSLog(@"Detected PMS address: %@", pmsAddr);
-      for (NSString* localAddr in localAddresses)
-        if ([pmsAddr isEqualToString:localAddr])
-        {
-          NSLog(@"Local PMS is running!");
-          return true;
-        }
-    }
-  }
-  NSLog(@"Local PMS is NOT found!");
-  return false;
-#endif
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -272,12 +242,16 @@ string Cocoa_GetTimeFormat(bool withMeridian)
 {
   string ret = Cocoa_GetFormatString(kCFDateFormatterNoStyle, kCFDateFormatterShortStyle);
   
-  if (withMeridian)
-    boost::replace_all(ret, "a", "xx");
-  else
+  // Optionally remove meridian.
+  if (withMeridian == false)
     boost::replace_all(ret, "a", "");
+
+  // Remove timezone.
+  boost::replace_all(ret, "z", "");
+  boost::replace_all(ret, "Z", "");
   
-  boost::replace_all(ret, " z", "");
+  // Remove extra spaces.
+  boost::replace_all(ret, "  ", "");
   
   boost::trim(ret);
   return ret;
@@ -347,6 +321,23 @@ string Cocoa_GetTimeString(time_t time)
   [dateFormatter setDateStyle:kCFDateFormatterNoStyle];
   [dateFormatter setTimeStyle:kCFDateFormatterShortStyle];
    
+  NSDate* date = [NSDate dateWithTimeIntervalSince1970:time];
+  NSString* formattedDateString = [dateFormatter stringFromDate:date];
+   
+  string ret = [formattedDateString UTF8String];
+   
+  [pool release];
+  return ret;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+string Cocoa_GetTimeString(const string& format, time_t time)
+{
+  id pool = [[NSAutoreleasePool alloc] init];
+  NSDateFormatter *dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
+  [dateFormatter setLocale:[NSLocale currentLocale]];
+  [dateFormatter setDateFormat:[NSString stringWithCString:format.c_str()]];
+
   NSDate* date = [NSDate dateWithTimeIntervalSince1970:time];
   NSString* formattedDateString = [dateFormatter stringFromDate:date];
    
