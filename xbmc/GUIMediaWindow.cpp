@@ -530,7 +530,7 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
 
   // see if we can load a previously cached folder
   CFileItemList cachedItems(strDirectory);
-  if (!strDirectory.IsEmpty() && cachedItems.Load())
+  if (!strDirectory.IsEmpty() && CUtil::IsPlexMediaServer(strDirectory) == false && cachedItems.Load())
   {
     newItems.Assign(cachedItems, true); // true to keep any previous items (".." item)
   }
@@ -695,8 +695,6 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
   if (m_vecItems->GetSaveInHistory())
     m_history.AddPath(m_vecItems->m_strPath);
 
-  //m_history.DumpPathHistory();
-  
   // PLEX - check for message to display.
   if (newItems.m_displayMessage)
   {
@@ -766,10 +764,15 @@ bool CGUIMediaWindow::OnClick(int iItem)
       CStdString strSearchTerm = "";
       if (CGUIDialogKeyboard::ShowAndGetInput(strSearchTerm, pItem->m_strSearchPrompt, false))
       {
+        // Encode the query.
+        CUtil::URLEncode(strSearchTerm);
         directory.m_strPath += strSearchTerm;
       }
       // If no query was entered or the user dismissed the keyboard, do nothing
-      else return true;
+      else
+      {
+        return true;
+      }
     }
     
     // Show a context menu for PMS popup directories
