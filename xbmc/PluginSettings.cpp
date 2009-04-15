@@ -19,13 +19,17 @@
  *
  */
 #include "stdafx.h"
+#include "GUIDialogOK.h"
 #include "PluginSettings.h"
 #include "Util.h"
+#include "FileItem.h"
 #include "FileSystem/File.h"
 #include "FileSystem/FileCurl.h"
 #include "FileSystem/Directory.h"
+#include "FileSystem/PlexDirectory.h"
 
 using namespace XFILE;
+using namespace DIRECTORY;
 
 CBasicSettings::CBasicSettings()
 {
@@ -204,14 +208,19 @@ bool CPluginSettings::SaveToPlexMediaServer(const CStdString& path)
   strPath += "set" + params.substr(0, params.size()-1);
   
   // Send the parameters back to the Plex Media Server.
-  CURL url(strPath);
-  CStdString protocol = url.GetProtocol();
-  url.SetProtocol("http");
-  url.SetPort(32400);  
+  CFileItemList fileItems;
+  CPlexDirectory plexDir;
+  
+  if (plexDir.GetDirectory(strPath, fileItems))
+  {
+    // Display a message if there is one.
+    if (fileItems.m_displayMessage)
+      CGUIDialogOK::ShowAndGetInput(fileItems.m_displayMessageTitle, fileItems.m_displayMessageContents, "", "");
+    
+    return true;
+  }
 
-  // Make the request.
-  CFileCurl http;
-  return http.Open(url, false);
+  return false;
 }
 
 bool CPluginSettings::Load(const CURL& url)
