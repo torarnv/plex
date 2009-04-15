@@ -29,11 +29,10 @@ CoreAudioRenderer::CoreAudioRenderer(IAudioCallback* pCallback, int iChannels, u
 	m_bIsMusic = bIsMusic;
 	
 	m_dwPacketSize = 512;
-	//(int)((float)iChannels*(uiBitsPerSample/8)* uiSamplesPerSec * CA_BUFFER_FACTOR / 5); // Pass 20% of the buffer at a time
-	//if (uiSamplesPerSec < 25000)
+	if (uiSamplesPerSec < 25000)
 	{
 	  // Use small buffer for low samplerates.
-	  //m_dwPacketSize /= 5; 
+	  m_dwPacketSize = 256; 
 	}
 	
 	// set the stream parameters
