@@ -275,7 +275,7 @@ CSettings::CSettings(void)
   g_advancedSettings.m_sambastatfiles = true;
 
   g_advancedSettings.m_musicThumbs = "folder.jpg|Folder.jpg|folder.JPG|Folder.JPG|cover.jpg|Cover.jpg|cover.jpeg";
-  g_advancedSettings.m_dvdThumbs = "folder.jpg|Folder.jpg|folder.JPG|Folder.JPG";
+  g_advancedSettings.m_dvdThumbs = "preview.jpg|Preview.jpg|preview.JPG|Preview.JPG|folder.jpg|Folder.jpg|folder.JPG|Folder.JPG";
 
   g_advancedSettings.m_bMusicLibraryHideAllItems = false;
   g_advancedSettings.m_bMusicLibraryAllItemsOnBottom = false;
