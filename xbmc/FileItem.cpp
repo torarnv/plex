@@ -2540,9 +2540,14 @@ CStdString CFileItem::GetUserVideoThumb() const
   // 2. if a folder, check for folder.jpg
   if (m_bIsFolder)
   {
-    CStdString folderThumb(PTH_IC(GetFolderThumb()));
-    if (CFile::Exists(folderThumb))
-      return folderThumb;
+    CStdStringArray thumbs;
+    StringUtils::SplitString(g_advancedSettings.m_dvdThumbs, "|", thumbs);
+    for (unsigned int i = 0; i < thumbs.size(); ++i)
+    {
+      CStdString folderThumb(PTH_IC(GetFolderThumb(thumbs[i])));
+      if (CFile::Exists(folderThumb))
+        return folderThumb;
+    }
   }
   // No thumb found
   return "";
