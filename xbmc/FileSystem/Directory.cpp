@@ -52,7 +52,13 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
 
     // check our cache for this path
     if (g_directoryCache.GetDirectory(strPath, items))
+    {
+      // It was a cache hit.
       items.m_strPath = _P(strPath);
+
+      // We're going to clear all sub-paths from the cache here.
+      g_directoryCache.ClearSubPaths(strPath);
+    }
     else
     { 
       // need to clear the cache (in case the directory fetch fails)
