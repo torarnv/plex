@@ -122,7 +122,10 @@ bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString
     XFILE::CFile file;
     file.Open(strThumbFileName);
     if (file.GetLength() == 0)
+    {
       XFILE::CFile::Delete(strThumbFileName);
+      return false;
+    }
   }
   else
   {
