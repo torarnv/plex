@@ -36,6 +36,7 @@ CPlexDirectory::CPlexDirectory(bool parseResults)
   : m_bStop(false)
   , m_bSuccess(true)
   , m_bParseResults(parseResults)
+  , m_dirCacheType(DIR_CACHE_ALWAYS)
 {
   m_timeout = 300;
 }
@@ -198,6 +199,11 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     if (noHistory && strcmp(noHistory, "1") == 0)
       items.SetSaveInHistory(false);
   
+  // See if we're not supposed to cache this directory.
+  const char* noCache = root->Attribute("nocache");
+  if (noCache && strcmp(noCache, "1") == 0)
+    m_dirCacheType = DIR_CACHE_NEVER;
+    
   return true;
 }
 
