@@ -5846,7 +5846,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
         m_gWindowManager.PreviousWindow();
       }
       
-      if (!IsPlayingAudio() && m_gWindowManager.GetActiveWindow() == WINDOW_NOW_PLAYING)
+      if (!IsPlayingAudio() && g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_NONE && m_gWindowManager.GetActiveWindow() == WINDOW_NOW_PLAYING)
       {
         m_gWindowManager.PreviousWindow();
       }
