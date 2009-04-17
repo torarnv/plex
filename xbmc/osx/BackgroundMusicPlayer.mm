@@ -13,6 +13,8 @@
 #define BACKGROUND_MUSIC_THEME_DOWNLOAD_URL       @"http://tvthemes.plexapp.com"
 #define BACKGROUND_MUSIC_THEME_REQ_LIMIT          3600
 #define BACKGROUND_MUSIC_FADE_DURATION            0.6
+#define BACKGROUND_MUSIC_MAIN_CONST               0.6
+#define BACKGROUND_MUSIC_THEME_CONST              0.85
 
 @implementation BackgroundMusicPlayer
 
@@ -334,8 +336,8 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
 - (void)updateMusicVolume
 {
   // Update the volume of mainMusic & themeMusic using the background music volume setting in relation to the global system volume
-  [mainMusic setVolume:(float)(volume * (globalVolumeAsPercent / 100.0f) * (volumeCrossFadeLevel / 100.0f) * (volumeFadeLevel / 100.0f))];
-  [themeMusic setVolume:(float)(volume * (globalVolumeAsPercent / 100.0f) * ((100 - volumeCrossFadeLevel) / 100.0f) * (volumeFadeLevel / 100.0f))];
+  [mainMusic setVolume:(float)((volume * (globalVolumeAsPercent / 100.0f) * (volumeCrossFadeLevel / 100.0f) * (volumeFadeLevel / 100.0f)) * BACKGROUND_MUSIC_MAIN_CONST)];
+  [themeMusic setVolume:(float)((volume * (globalVolumeAsPercent / 100.0f) * ((100 - volumeCrossFadeLevel) / 100.0f) * (volumeFadeLevel / 100.0f)) * BACKGROUND_MUSIC_THEME_CONST)];
 }
 
 - (float)volume
