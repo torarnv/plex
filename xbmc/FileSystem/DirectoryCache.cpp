@@ -63,7 +63,7 @@ bool CDirectoryCache::GetDirectory(const CStdString& strPath, CFileItemList &ite
   for (civecCache i = m_vecCache.begin(); i != m_vecCache.end(); i++)
   {
     const CDir* dir = *i;
-    if (dir->m_strPath == storedPath && dir->m_cacheType == CFileItemList::CACHE_ALWAYS)
+    if (dir->m_strPath == storedPath && dir->m_cacheType == DIR_CACHE_ALWAYS)
     {
       items.Assign(*dir->m_Items);
       return true;
@@ -127,11 +127,10 @@ void CDirectoryCache::ClearSubPaths(const CStdString& strPath)
   CUtil::RemoveSlashAtEnd(storedPath);
 
   ivecCache i = m_vecCache.begin();
-  while (i != m_vecCache.end())
+  for (bool found=false; i != m_vecCache.end(); )
   {
     CDir* dir = *i;
-    if (strncmp(dir->m_strPath.c_str(), storedPath.c_str(), storedPath.GetLength()) == 0 &&
-        dir->m_strPath.size() > storedPath.size())
+    if (found)
     {
       delete dir;
       i = m_vecCache.erase(i);
@@ -140,6 +139,9 @@ void CDirectoryCache::ClearSubPaths(const CStdString& strPath)
     {
       i++;
     }
+    
+    if (storedPath == dir->m_strPath)
+      found = true;
   }
 }
 
