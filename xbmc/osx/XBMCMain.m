@@ -10,7 +10,7 @@
 #import "AppleRemote.h"
 
 #define PLEX_SERVICE_PORT 32401
-#define PLEX_SERVICE_TYPE @"_plexmediaserver._tcp"
+#define PLEX_SERVICE_TYPE @"_plexmediasvr._tcp"
 
 @implementation XBMCMain
 
