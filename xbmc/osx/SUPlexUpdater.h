@@ -12,7 +12,8 @@
 #define UPDATE_ALERT_NOTIFY 0
 #define UPDATE_ALERT_ASK 1
 
-@interface SUPlexUpdater : SUUpdater {
+@interface SUPlexUpdater : SUUpdater 
+{
 @private
   int updateAlertType;
   NSDate *lastCheckTime;
@@ -29,6 +30,11 @@
 - (void)setCheckInterval:(double)seconds;
 - (void)setSuspended:(BOOL)willSuspend;
 - (void)userAlerted;
-
 - (void)setLastCheckTime:(NSDate *)value;
+@end
+
+@interface SUPlexUpdaterDelegate : NSObject
+{
+}
+- (NSArray *)feedParametersForUpdater:(SUUpdater *)updater sendingSystemProfile:(BOOL)sendingProfile;
 @end

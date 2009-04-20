@@ -66,5 +66,6 @@ string Cocoa_GetMyCountry();
 // Misc.
 //
 string Cocoa_GetMachineSerialNumber();
+string Cocoa_GetPrimaryMacAddress();
 
 #endif

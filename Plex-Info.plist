@@ -4,6 +4,8 @@
 <dict>
 	<key>SUFeedURL</key>
 	<string>http://www.plexapp.com/PlexAppcastUnstable.xml</string>
+	<key>SUEnableSystemProfiling</key>
+	<string>YES</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleExecutable</key>

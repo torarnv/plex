@@ -177,7 +177,7 @@ extern "C"
   // Cocoa GUI
   //
   bool Cocoa_IsGUIShowing();
-
+  
 #ifdef __cplusplus
 }
 #endif
