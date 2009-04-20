@@ -4680,9 +4680,8 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     // Suspend the updater
     Cocoa_SetUpdateSuspended(true);
 
-    // Stop the background music (if enabled)
-    m_bBackgroundMusicEnabled = Cocoa_IsBackgroundMusicEnabled();
-    Cocoa_SetBackgroundMusicEnabled(false);
+    // Stop the background music
+    Cocoa_StopBackgroundMusic(true);
 #endif
     
     bResult = m_pPlayer->OpenFile(item, options);
@@ -5593,10 +5592,6 @@ bool CApplication::OnMessage(CGUIMessage& message)
       // Restart the updater
       Cocoa_SetUpdateSuspended(false);
       
-      // Start the background music (if enabled)
-      Cocoa_SetBackgroundMusicEnabled(m_bBackgroundMusicEnabled);
-      Cocoa_StartBackgroundMusic();
-      
       // Require a server restart of the Plex Media Server if we just played a 5.1 surround file. 
       // This sucks, but no way around it for now, as it seems to screw up a WebKit process, and 
       // even reloading the WebKit plug-in doesn't help.
@@ -5697,6 +5692,13 @@ bool CApplication::OnMessage(CGUIMessage& message)
         ResetScreenSaverWindow();
         m_gWindowManager.PreviousWindow();
       }
+      
+      // Start the background music (if enabled)
+      if (!IsPlayingVideo() && !IsPlayingAudio())
+      {
+        Cocoa_StartBackgroundMusic();
+      }
+      
       return true;
     }
     break;
