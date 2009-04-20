@@ -722,6 +722,10 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
   if (!pItem->CanQueue() || pItem->IsRAR() || pItem->IsZIP() || pItem->IsParentFolder()) // no zip/rar enques thank you!
     return;
 
+  // FIXME, this just prevents hangs with huge recursive playlists for now.
+  if (queuedItems.Size() > 500)
+    return;
+  
   // fast lookup is needed here
   queuedItems.SetFastLookup(true);
 
@@ -773,9 +777,7 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
 
         CPlayList playlist = *pPlayList;
         for (int i = 0; i < (int)playlist.size(); ++i)
-        {
           AddItemToPlayList(playlist[i], queuedItems);
-        }
         
         return;
       }
