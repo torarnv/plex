@@ -62,4 +62,9 @@ string Cocoa_GetMyCity();
 string Cocoa_GetMyState();
 string Cocoa_GetMyCountry();
 
+//
+// Misc.
+//
+string Cocoa_GetMachineSerialNumber();
+
 #endif
