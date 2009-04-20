@@ -218,7 +218,7 @@ class PlexMediaNode
      pItem->m_bIsFolder = true;
      
      const char* key = el.Attribute("key");
-     if (key == 0)
+     if (key == 0 || strlen(key) == 0)
        return CFileItemPtr();
        
      string src = key;
