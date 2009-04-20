@@ -5323,10 +5323,9 @@ void CApplication::CheckScreenSaver()
   
   // How long to screensaver? The setting, unless we're playing music, in which case much quicker.
   long timeToScreenSaver = g_guiSettings.GetInt("screensaver.time")*60*1000L;
-  /*
+  
   if (IsPlayingAudio())
     timeToScreenSaver = MIN(g_advancedSettings.m_secondsToVisualizer*1000L, timeToScreenSaver);
-  */ //Don't do this now we have Now Playing - TODO: Remove eventually
   
   if (timeGetTime() - m_dwSaverTick >= timeToScreenSaver)
     ActivateScreenSaver();
@@ -5335,8 +5334,12 @@ void CApplication::CheckScreenSaver()
 void CApplication::ActivateVisualizer()
 {
   m_screenSaverMode = "Visualisation";
-  m_gWindowManager.ActivateWindow(WINDOW_VISUALISATION);
-  return;
+  
+  // See which visualizer to activate.
+  if (g_guiSettings.GetString("mymusic.visualisation") == "Now Playing.vis")
+    m_gWindowManager.ActivateWindow(WINDOW_NOW_PLAYING);
+  else
+    m_gWindowManager.ActivateWindow(WINDOW_VISUALISATION);
 }
 
 // activate the screensaver.
@@ -5361,8 +5364,7 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
     // Check if we are Playing Audio and Vis instead Screensaver!
     else if (IsPlayingAudio() && g_guiSettings.GetBool("screensaver.usemusicvisinstead") && g_guiSettings.GetString("mymusic.visualisation") != "None")
     { // activate the visualisation
-      m_screenSaverMode = "Visualisation";
-      m_gWindowManager.ActivateWindow(WINDOW_VISUALISATION);
+      ActivateVisualizer();
       return;
     }
   }
@@ -6455,7 +6457,7 @@ bool CApplication::SwitchToFullScreen()
   // special case for switching between GUI & visualisation mode. (only if we're playing an audio song)
   if (IsPlayingAudio() && m_gWindowManager.GetActiveWindow() != WINDOW_VISUALISATION)
   { // then switch to visualisation
-    m_gWindowManager.ActivateWindow(WINDOW_VISUALISATION);
+    ActivateVisualizer();
     g_TextureManager.Flush();
     return true;
   }

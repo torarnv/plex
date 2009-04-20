@@ -39,5 +39,6 @@ bool CGUIWindowNowPlaying::OnAction(const CAction &action)
     m_gWindowManager.PreviousWindow();
     return true;
   }
+  
   return false;
 }

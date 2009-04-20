@@ -3189,7 +3189,7 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
 
   sort(vecVis.begin(), vecVis.end(), sortstringbyname());
 
-  // add the "disabled" setting first
+  // Add the "disabled" setting first
   int iVis = 0;
   int iCurrentVis = 0;
   {
@@ -3197,6 +3197,15 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
     msg.SetLabel(231);
     g_graphicsContext.SendMessage(msg);
   }
+  
+  // Now add the "Now Playing" pseudo-viz.
+  {
+    CGUIMessage msg(GUI_MSG_LABEL_ADD, iWinID, iControlID, iVis++);
+    msg.SetLabel(40150);
+    g_graphicsContext.SendMessage(msg);
+  }
+  
+  // Now add all the visualizers we found.
   for (int i = 0; i < (int) vecVis.size(); ++i)
   {
     CStdString strVis = vecVis[i];
@@ -3210,6 +3219,8 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
       g_graphicsContext.SendMessage(msg);
     }
   }
+  
+  // Now activate the selected one.
   {
     CGUIMessage msg(GUI_MSG_ITEM_SELECT, iWinID, iControlID, iCurrentVis);
     g_graphicsContext.SendMessage(msg);

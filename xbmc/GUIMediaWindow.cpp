@@ -900,9 +900,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
 
         // Turn on now playing so we can control things.
         if (m_guiState->GetPlaylist() == PLAYLIST_MUSIC && g_advancedSettings.m_bVisualizerOnPlay) 
-        {
-          m_gWindowManager.ActivateWindow(WINDOW_NOW_PLAYING);
-        }
+          g_application.getApplicationMessenger().ActivateVisualizer();
       }
       return true;
     }

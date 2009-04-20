@@ -2098,6 +2098,8 @@
   <string id="40104">RSS</string>
   <string id="40105">Energy Saver</string>
   <string id="40106">Remove Workflow</string>
+  
+  <string id="40150">Now Playing</string>
 
   <string id="40200">Unsupported path</string>
   <string id="40201">Plex Media Server paths can't be added to multipath</string>

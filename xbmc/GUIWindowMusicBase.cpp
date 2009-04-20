@@ -709,7 +709,9 @@ void CGUIWindowMusicBase::OnShuffleItem(int iItem)
   
   g_playlistPlayer.SetShuffle(PLAYLIST_MUSIC, true, true);
   g_playlistPlayer.Play();
-  m_gWindowManager.ActivateWindow(WINDOW_NOW_PLAYING);
+  
+  if (g_advancedSettings.m_bVisualizerOnPlay)
+    g_application.getApplicationMessenger().ActivateVisualizer();
 }
 
 
@@ -1175,11 +1177,9 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
     OnClick(iItem);
   }
   
-  // Either way, turn on now playing so we can control things.
+  // Either way, turn on visualizer so we can control things.
   if (g_advancedSettings.m_bVisualizerOnPlay)
-  {
-    m_gWindowManager.ActivateWindow(WINDOW_NOW_PLAYING);
-  }
+    g_application.getApplicationMessenger().ActivateVisualizer();
 }
 
 void CGUIWindowMusicBase::LoadPlayList(const CStdString& strPlayList)
