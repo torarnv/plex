@@ -33,6 +33,7 @@ CGUIButtonControl::CGUIButtonControl(DWORD dwParentID, DWORD dwControlId, float 
     , m_imgFocus(dwParentID, dwControlId, posX, posY, width, height, textureFocus)
     , m_imgNoFocus(dwParentID, dwControlId, posX, posY, width, height, textureNoFocus)
     , m_textLayout(labelInfo.font, false), m_textLayout2(labelInfo.font, false)
+    , m_bHidden(false)
 {
   m_bSelected = false;
   m_bTabButton = false;
@@ -124,9 +125,16 @@ void CGUIButtonControl::Render()
     CStdString label2(m_info2.GetLabel(m_dwParentID));
     if (!label2.IsEmpty())
     {
+      CStdString stringToRender = label2;
+      if (m_bHidden)
+      {
+        stringToRender = "";
+        stringToRender.append(label2.size(), L'*');
+      }
+      
       float textWidth, textHeight;
       m_textLayout.GetTextExtent(textWidth, textHeight);
-      m_textLayout2.Update(label2);
+      m_textLayout2.Update(stringToRender);
 
       float width = m_width - 2 * m_label.offsetX - textWidth - 5;
       if (width < 0) width = 0;

@@ -79,6 +79,8 @@ public:
   virtual void OnClick();
   bool HasClickActions() { return m_clickActions.size() > 0; };
 
+  void SetHidden(bool hidden) { m_bHidden = hidden; }
+  
 protected:
   void OnFocus();
 
@@ -100,5 +102,6 @@ protected:
   bool m_bTabButton;
 
   bool m_bSelected;
+  bool m_bHidden;
 };
 #endif

@@ -393,6 +393,7 @@ void CGUIDialogPluginSettings::CreateControls()
   while (setting)
   {
     const char *type = setting->Attribute("type");
+    const char *option = setting->Attribute("option");
     const char *id = setting->Attribute("id");
     CStdString values;
     if (setting->Attribute("values"))
@@ -423,6 +424,9 @@ void CGUIDialogPluginSettings::CreateControls()
         ((CGUIButtonControl *)pControl)->SetLabel(label);
         if (id)
           ((CGUIButtonControl *)pControl)->SetLabel2(m_settings.Get(id));
+        
+        if (option && strcmpi(option, "hidden") == 0)
+          ((CGUIButtonControl *)pControl)->SetHidden(true);
       }
       else if (strcmpi(type, "bool") == 0)
       {
