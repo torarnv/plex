@@ -50,6 +50,7 @@ private:
   bool TranslateSingleString(const CStdString &strCondition, std::vector<CStdString> &enableVec);
   CBasicSettings m_settings;
   CStdString m_strHeading;
+  bool m_okSelected; 
 };
 
 #endif

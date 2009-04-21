@@ -55,6 +55,7 @@ using namespace DIRECTORY;
 
 CGUIDialogPluginSettings::CGUIDialogPluginSettings()
    : CGUIDialogBoxBase(WINDOW_DIALOG_PLUGIN_SETTINGS, "DialogPluginSettings.xml")
+   , m_okSelected(false)
 {}
 
 CGUIDialogPluginSettings::~CGUIDialogPluginSettings(void)
@@ -78,7 +79,10 @@ bool CGUIDialogPluginSettings::OnMessage(CGUIMessage& message)
       bool bCloseDialog = false;
 
       if (iControl == ID_BUTTON_OK)
+      {
+        m_okSelected = true;
         SaveSettings();
+      }
       else if (iControl == ID_BUTTON_DEFAULT)
         SetDefaults();
       else
@@ -123,9 +127,12 @@ void CGUIDialogPluginSettings::ShowAndGetInput(const CStdString& path, const CSt
   pDialog->m_settings = settings;
 
   pDialog->DoModal();
-
-  settings = pDialog->m_settings;
-  settings.SaveToPlexMediaServer(path);
+  
+  if (pDialog->m_okSelected)
+  {
+    settings = pDialog->m_settings;
+    settings.SaveToPlexMediaServer(path);
+  }
 }
 
 // \brief Show CGUIDialogOK dialog, then wait for user to dismiss it.
