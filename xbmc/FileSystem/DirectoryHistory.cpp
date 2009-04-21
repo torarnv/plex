@@ -51,7 +51,7 @@ void CDirectoryHistory::RemoveSelectedItem(const CStdString& strDirectory)
   }
 }
 
-void CDirectoryHistory::SetSelectedItem(const CStdString& strSelectedItem, const CStdString& strDirectory)
+void CDirectoryHistory::SetSelectedItem(const CStdString& strSelectedItem, const CStdString& strDirectory, int selectedIndex)
 {
   if (strSelectedItem.size() == 0) return ;
   // if (strDirectory.size()==0) return;
@@ -75,6 +75,7 @@ void CDirectoryHistory::SetSelectedItem(const CStdString& strSelectedItem, const
     if ( strDir == item.m_strDirectory)
     {
       item.m_strItem = strItem;
+      item.m_index = selectedIndex;
       return ;
     }
   }
@@ -82,6 +83,7 @@ void CDirectoryHistory::SetSelectedItem(const CStdString& strSelectedItem, const
   CHistoryItem item;
   item.m_strItem = strItem;
   item.m_strDirectory = strDir;
+  item.m_index = selectedIndex;
   m_vecHistory.push_back(item);
 }
 
@@ -103,6 +105,23 @@ const CStdString& CDirectoryHistory::GetSelectedItem(const CStdString& strDirect
     }
   }
   return m_strNull;
+}
+
+int CDirectoryHistory::GetSelectedIndex(const CStdString& strDirectory) const
+{
+  CStdString strDir = strDirectory;
+  strDir.ToLower();
+  while (CUtil::HasSlashAtEnd(strDir) )
+  {
+    strDir = strDir.Left(strDir.size() - 1);
+  }
+  for (int i = 0; i < (int)m_vecHistory.size(); ++i)
+  {
+    const CHistoryItem& item = m_vecHistory[i];
+    if (strDir == item.m_strDirectory)
+      return item.m_index;
+  }
+  return -1;
 }
 
 void CDirectoryHistory::AddPath(const CStdString& strPath)

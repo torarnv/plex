@@ -577,7 +577,7 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
 
   CStdString strOldDirectory = m_vecItems->m_strPath;
 
-  m_history.SetSelectedItem(strSelectedItem, strOldDirectory);
+  m_history.SetSelectedItem(strSelectedItem, strOldDirectory, iItem);
 
   // Get the new directory.
   CFileItemList newItems;
@@ -669,7 +669,6 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
   strSelectedItem = m_history.GetSelectedItem(m_vecItems->m_strPath);
 
   bool bSelectedFound = false;
-  //int iSongInDirectory = -1;
   for (int i = 0; i < m_vecItems->Size(); ++i)
   {
     CFileItemPtr pItem = m_vecItems->Get(i);
@@ -687,6 +686,21 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
     }
   }
 
+  // If that didn't work, see if we stored a selected index, and use this.
+  if (bSelectedFound == false)
+  {
+    int selectedItem = m_history.GetSelectedIndex(m_vecItems->m_strPath);
+    if (selectedItem != -1)
+    {
+      // Clip to number of real items.
+      if (selectedItem >= m_vecItems->Size())
+        selectedItem = m_vecItems->Size() - 1;
+      
+      m_viewControl.SetSelectedItem(selectedItem);
+      bSelectedFound = true;
+    }
+  }
+  
   // if we haven't found the selected item, select the first item
   if (!bSelectedFound)
     m_viewControl.SetSelectedItem(0);

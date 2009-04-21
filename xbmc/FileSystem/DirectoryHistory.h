@@ -30,12 +30,14 @@ public:
     virtual ~CHistoryItem(){};
     CStdString m_strItem;
     CStdString m_strDirectory;
+    int m_index;
   };
   CDirectoryHistory();
   virtual ~CDirectoryHistory();
 
-  void SetSelectedItem(const CStdString& strSelectedItem, const CStdString& strDirectory);
+  void SetSelectedItem(const CStdString& strSelectedItem, const CStdString& strDirectory, int selectedIndex=-1);
   const CStdString& GetSelectedItem(const CStdString& strDirectory) const;
+  int GetSelectedIndex(const CStdString& strDirectory) const;
   void RemoveSelectedItem(const CStdString& strDirectory);
 
   void AddPath(const CStdString& strPath);
