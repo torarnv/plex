@@ -253,7 +253,7 @@ CGUISettings::CGUISettings(void)
   AddGroup(3, 2);
   AddCategory(3, "mymusic", 16000);
 #ifdef __APPLE__
-  AddString(1, "mymusic.visualisation", 250, "ProjectM.vis", SPIN_CONTROL_TEXT);
+  AddString(1, "mymusic.visualisation", 250, "Now Playing.vis", SPIN_CONTROL_TEXT);
 #elif defined(_WIN32PC)
   AddString(1, "mymusic.visualisation", 250, "opengl_spectrum_win32.vis", SPIN_CONTROL_TEXT);
 #else

@@ -5089,7 +5089,7 @@ void CApplication::StopPlaying()
 #endif
 
     // turn off visualisation window when stopping
-    if (iWin == WINDOW_VISUALISATION)
+    if (IsVisualizerActive())
       m_gWindowManager.PreviousWindow();
 
     // TODO: Add saving of watched status in here
@@ -5305,14 +5305,25 @@ bool CApplication::ResetScreenSaverWindow()
 
 void CApplication::CheckActive()
 {
-  if ((IsPlayingVideo() && !IsPaused()) || m_gWindowManager.IsWindowActive(WINDOW_SCREENSAVER) || (m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION & !IsPaused()) || m_gWindowManager.IsWindowActive(WINDOW_DIALOG_PROGRESS))
+  if ((IsPlayingVideo() && !IsPaused()) || 
+      m_gWindowManager.IsWindowActive(WINDOW_SCREENSAVER) || 
+      (IsVisualizerActive() && !IsPaused()) || 
+      m_gWindowManager.IsWindowActive(WINDOW_DIALOG_PROGRESS))
+  {
     m_bInactive = false;
+  }
   else if (!m_bInactive)
   {
     // Start the timer going ...
     m_dwShutdownTick = m_dwSaverTick = timeGetTime();
     m_bInactive = true;
   }
+}
+
+bool CApplication::IsVisualizerActive()
+{
+  return (m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION || 
+          m_gWindowManager.GetActiveWindow() == WINDOW_NOW_PLAYING);
 }
 
 void CApplication::CheckScreenSaver()
@@ -5848,12 +5859,9 @@ bool CApplication::OnMessage(CGUIMessage& message)
         m_gWindowManager.PreviousWindow();
       }
       
-      if (!IsPlayingAudio() && g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_NONE && m_gWindowManager.GetActiveWindow() == WINDOW_NOW_PLAYING)
-      {
-        m_gWindowManager.PreviousWindow();
-      }
-
-      if (!IsPlayingAudio() && g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_NONE && m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION)
+      if (!IsPlayingAudio() && 
+          g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_NONE && 
+          IsVisualizerActive())
       {
         g_settings.Save();  // save vis settings
         ResetScreenSaverWindow();
@@ -5869,7 +5877,9 @@ bool CApplication::OnMessage(CGUIMessage& message)
       }
 
       // DVD ejected while playing in vis ?
-      if (!IsPlayingAudio() && (m_itemCurrentFile->IsCDDA() || m_itemCurrentFile->IsOnDVD()) && !CDetectDVDMedia::IsDiscInDrive() && m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION)
+      if (!IsPlayingAudio() && (m_itemCurrentFile->IsCDDA() || m_itemCurrentFile->IsOnDVD()) && 
+          !CDetectDVDMedia::IsDiscInDrive() && 
+          IsVisualizerActive())
       {
         // yes, disable vis
         g_settings.Save();    // save vis settings
@@ -6455,8 +6465,9 @@ bool CApplication::SwitchToFullScreen()
     return true;
   }
   // special case for switching between GUI & visualisation mode. (only if we're playing an audio song)
-  if (IsPlayingAudio() && m_gWindowManager.GetActiveWindow() != WINDOW_VISUALISATION)
-  { // then switch to visualisation
+  if (IsPlayingAudio() && IsVisualizerActive() == false) 
+  { 
+    // then switch to visualisation
     ActivateVisualizer();
     g_TextureManager.Flush();
     return true;

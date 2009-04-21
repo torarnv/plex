@@ -34,9 +34,25 @@ CGUIWindowNowPlaying::~CGUIWindowNowPlaying(void)
 
 bool CGUIWindowNowPlaying::OnAction(const CAction &action)
 {
+  CStdString strAction = action.strAction;
+  strAction = strAction.ToLower();
+  
   if (action.wID == ACTION_PREVIOUS_MENU || action.wID == ACTION_PARENT_DIR)
   {
     m_gWindowManager.PreviousWindow();
+    return true;
+  }
+  else if (action.wID == ACTION_CONTEXT_MENU || action.wID == ACTION_SHOW_INFO)
+  {
+    return true;
+  }
+  else if (action.wID == ACTION_SHOW_GUI)
+  {
+    m_gWindowManager.PreviousWindow();
+    return true;
+  }
+  else if (strAction == "activatewindow(playercontrols)")
+  {
     return true;
   }
   

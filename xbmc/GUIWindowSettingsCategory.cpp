@@ -3135,7 +3135,6 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
     if (!pItem->m_bIsFolder)
     {
       CStdString strExtension;
-      printf("Trying %s\n", pItem->m_strPath.c_str());
       CUtil::GetExtension(pItem->m_strPath, strExtension);
       if (strExtension == ".vis")
       {
@@ -3198,11 +3197,16 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
     g_graphicsContext.SendMessage(msg);
   }
   
-  // Now add the "Now Playing" pseudo-viz.
+  // Now add the "Now Playing" pseudo-viz. FIXME, allow for localization.
   {
-    CGUIMessage msg(GUI_MSG_LABEL_ADD, iWinID, iControlID, iVis++);
-    msg.SetLabel(40150);
+    CGUIMessage msg(GUI_MSG_LABEL_ADD, iWinID, iControlID, iVis);
+    msg.SetLabel("Now Playing");
     g_graphicsContext.SendMessage(msg);
+    
+    if (strcmpi(msg.GetLabel().c_str(), strDefaultVis.c_str()) == 0)
+      iCurrentVis = iVis;
+    
+    iVis++;
   }
   
   // Now add all the visualizers we found.

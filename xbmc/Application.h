@@ -330,6 +330,7 @@ protected:
   float NavigationIdleTime();
   void CheckForTitleChange();
   void CheckActive();
+  bool IsVisualizerActive();
 
   void SaveCurrentFileSettings();
 
