@@ -1,9 +1,4 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Language file translated with Team XBMC Translator-->
-<!--Translator: airplanez-->
-<!--Email: airplanez@-->
-<!--Date of translation: 02/24/2009-->
-<!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
   <string id="1">사진</string>
@@ -385,7 +380,7 @@
   <string id="479">스킨 &amp; 언어</string>
   <string id="480">모양새</string>
   <string id="481">오디오 옵션</string>
-  <string id="482">XBMC 정보</string>
+  <string id="482">Plex 정보</string>
   <string id="485">앨범 삭제</string>
   <string id="486">반복</string>
   <string id="487">한곡 반복</string>
@@ -913,7 +908,7 @@
   <string id="13131">사용안함</string>
   <string id="13132">여백 표시</string>
   <string id="13140">활성 연결 감지됨!</string>
-  <string id="13141">진행할경우, XBMC 제어를 할수 없음</string>
+  <string id="13141">진행할경우, Plex 제어를 할수 없음</string>
   <string id="13142">사용안함. 이벤트 서버를 중지 하시겠습니까?</string>
   <string id="13144">애플 리모트 모드를 변경 하시겠습니까?</string>
   <string id="13145">만약 XMBC를 제어하는데 애플 리모트를</string>
@@ -1526,7 +1521,7 @@
   <string id="20252">컵 채우기 (비디오)</string>
   <string id="20300">웹 서버 디렉터리 (HTTP)</string>
   <string id="20301">웹 서버 디렉터리 (HTTPS)</string>
-  <string id="20306">알수없음. xbmc.log의 MD5를 BiosIDs.ini에 추가해 주세요.</string>
+  <string id="20306">알수없음. Plex.log의 MD5를 BiosIDs.ini에 추가해 주세요.</string>
   <string id="20307">보조 DNS 서버</string>
   <string id="20308">DHCP 서버:</string>
   <string id="20309">새 폴더 생성</string>

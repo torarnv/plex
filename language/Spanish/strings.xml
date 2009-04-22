@@ -400,7 +400,7 @@
   <string id="479">Skin e idioma</string>
   <string id="480">Apariencia</string>
   <string id="481">Opciones de Sonido</string>
-  <string id="482">Acerca de XBMC</string>
+  <string id="482">Acerca de Plex</string>
   <string id="483">Álbum</string>
   <string id="484">Intérprete</string>
   <string id="485">Eliminar álbum</string>
@@ -412,7 +412,7 @@
   <string id="492">Redimensionar subtítulos VOB</string>
   <string id="493">Opciones Avanzadas (¡Sólo expertos!)</string>
   <string id="494">Margen total de sonido (dB)</string>
-  <string id="495">Sobremuestrear vídeos a resolución XBMC</string>
+  <string id="495">Sobremuestrear vídeos a resolución Plex</string>
   <string id="496">Calibración</string>
   <string id="497">Ocultar extensiones de ficheros</string>
   <string id="498">Por: Tipo</string>
@@ -661,7 +661,7 @@
   <string id="999">Jugar en Línea</string>
   <string id="1000">Vista previa del salvapantallas</string>
   <string id="1001">Imposible conectar</string>
-  <string id="1002">XBMC ha sido incapaz de conectar a la dirección de red.</string>
+  <string id="1002">Plex ha sido incapaz de conectar a la dirección de red.</string>
   <string id="1003">Podría ser debido a que la red no esté conectada.</string>
   <string id="1004">¿Desea añadirla de todos modos?</string>
   <string id="1005">Introduzca el nombre para este recurso compartido</string>
@@ -1060,7 +1060,7 @@
   <string id="13306">Ocultar iconos de subir de directorio</string>
   <string id="13307">Plantilla de nombrado de pistas</string>
   <string id="13308">¿Desea reiniciar su Xbox</string>
-  <string id="13309">en lugar de sólo XBMC?</string>
+  <string id="13309">en lugar de sólo Plex?</string>
   <string id="13310">Efecto de Zoom</string>
   <string id="13311">Efecto de flotar</string>
   <string id="13312">Reducción de las bandas negras</string>
@@ -1204,7 +1204,7 @@
   <string id="14036">Servidores</string>
   <string id="14037">Apariencia</string>
   <string id="14038">Configuración de red cambiada</string>
-  <string id="14039">XBMC necesita reiniciar para poder cambiar su</string>
+  <string id="14039">Plex necesita reiniciar para poder cambiar su</string>
   <string id="14040">configuración de red. ¿Quiere reiniciar ahora?</string>
   <string id="14041">Postprocesado</string>
   <string id="14042">Dirección IP del motor</string>
@@ -1284,7 +1284,7 @@
   <string id="15034">ha iniciado sesión</string>
   <string id="15035">ha iniciado una conversación de voz</string>
   <string id="15036">te ha enviado una invitación</string>
-  <string id="15037">XBMC no puede confirmar que su red sea accesible.</string>
+  <string id="15037">Plex no puede confirmar que su red sea accesible.</string>
   <string id="15038">Vd. puede experimentar dificultades entrando en, u hospedando juegos.</string>
   <string id="15039">Imposible localizar el juego automáticamente.</string>
   <string id="15040">Inserte el disco del juego en su Xbox o pulse 'A' para cancelar</string>
@@ -1327,7 +1327,7 @@
   <string id="15202">Usuario Last.FM</string>
   <string id="15203">Contraseña Last.FM</string>
   <string id="15204">Imposible conectar: durmiendo...</string>
-  <string id="15205">Por favor, actualice XBMC</string>
+  <string id="15205">Por favor, actualice Plex</string>
   <string id="15206">Autorización incorrecta: compruebe usuario y contraseña</string>
   <string id="15207">Conectado</string>
   <string id="15208">No Conectado</string>
@@ -1476,7 +1476,7 @@
   <string id="20006">Directorio de listas de reproducción</string>
   <string id="20007">Grabaciones</string>
   <string id="20008">Instantáneas</string>
-  <string id="20009">Usar XBMC</string>
+  <string id="20009">Usar Plex</string>
   <string id="20010">Imagen de artista</string>
   <string id="20011">Listas Rep. Música</string>
   <string id="20012">Listas Rep. Vídeo</string>
@@ -1668,7 +1668,7 @@
   <string id="20304"></string>
   <string id="20305"></string>
 
-  <string id="20306">Desconocido. Por favor añada la firma MD5 de xbmc.log a BiosIDs.ini</string>
+  <string id="20306">Desconocido. Por favor añada la firma MD5 de Plex.log a BiosIDs.ini</string>
   <string id="20307">DNS Secundario</string>
   <string id="20308">Servidor DHCP:</string>
   <string id="20309">Crear nuevo directorio</string>

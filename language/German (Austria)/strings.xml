@@ -1,10 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Language file translated with Team XBMC Translator-->
-<!--Translator: Karli-->
-<!--Email: karlimero@networld.at-->
-<!--Date of translation: 10/26/2007-->
-<!--$Revision$-->
-<!--Based on english strings version 10541-->
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
   <string id="0">Programme</string>
   <string id="1">Bilder</string>
@@ -14,7 +8,7 @@
   <string id="5">Einstellungen</string>
   <string id="7">Dateimanager</string>
   <string id="8">Wetter</string>
-  <string id="9">xbmc media center</string>
+  <string id="9">Plex media center</string>
   <string id="11">Montag</string>
   <string id="12">Dienstag</string>
   <string id="13">Mittwoch</string>
@@ -397,7 +391,7 @@ wirklich aus der Datenbank entfernen?</string>
   <string id="479">Skin und Sprache</string>
   <string id="480">Darstellung</string>
   <string id="481">Audio-Optionen</string>
-  <string id="482">Über XBMC</string>
+  <string id="482">Über Plex</string>
   <string id="483">Album</string>
   <string id="484">Interpret</string>
   <string id="485">Lösche Album</string>
@@ -624,7 +618,7 @@ komplett aktualisieren oder nur nach neuen Dateien suchen?</string>
   <string id="999">Online spielen</string>
   <string id="1000">Vorschau</string>
   <string id="1001">Verbindung nicht möglich</string>
-  <string id="1002">XBMC konnte sich nicht mit der Netzwerkfreigabe verbinden.</string>
+  <string id="1002">Plex konnte sich nicht mit der Netzwerkfreigabe verbinden.</string>
   <string id="1003">Es könnte sein, daß das Netzwerk nicht verbunden ist.</string>
   <string id="1004">Soll die Freigabe trotzdem hinzugefügt werden?</string>
   <string id="1005">Bitte geben Sie einen Namen ein</string>
@@ -949,7 +943,7 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="13306">Symbol zum übergeordneten Ordner ausblenden</string>
   <string id="13307">Formatvorlage für Musiktitel-Dateinamen</string>
   <string id="13308">Möchten Sie die XBOX neu starten?</string>
-  <string id="13309">Wählen Sie 'Nein' um XBMC neu zu starten.</string>
+  <string id="13309">Wählen Sie 'Nein' um Plex neu zu starten.</string>
   <string id="13310">Übergang streckend</string>
   <string id="13311">Übergang gleitend</string>
   <string id="13312">Ränderreduktion</string>
@@ -1070,7 +1064,7 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="14036">Server</string>
   <string id="14037">Darstellung</string>
   <string id="14038">Netzwerkeinstellungen wurden geändert</string>
-  <string id="14039">XBMC muss neu gestartet werden, damit die Änderung</string>
+  <string id="14039">Plex muss neu gestartet werden, damit die Änderung</string>
   <string id="14040">wirksam wird. Soll jetzt neu gestartet werden?</string>
   <string id="14041">Post-Processing</string>
   <string id="14042">IP-Adresse der Engine</string>
@@ -1147,7 +1141,7 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="15034">hat sich angemeldet</string>
   <string id="15035">hat einen Voice-Chat initiiert</string>
   <string id="15036">hat Ihnen eine Einladung gesendet</string>
-  <string id="15037">XBMC konnte das XLink-Kai Netzwerk nicht erreichen!</string>
+  <string id="15037">Plex konnte das XLink-Kai Netzwerk nicht erreichen!</string>
   <string id="15038">Sie könnten Probleme haben über XLink-Kai zu spielen.</string>
   <string id="15039">Das Spiel konnte nicht automatisch gefunden werden.</string>
   <string id="15040">Bitte legen Sie die DVD in die XBOX ein oder wählen Sie</string>
@@ -1189,7 +1183,7 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="15202">Benutzername</string>
   <string id="15203">Passwort</string>
   <string id="15204">Verbindung fehlgeschlagen.</string>
-  <string id="15205">Bitte installieren Sie eine neuere Version von XBMC!</string>
+  <string id="15205">Bitte installieren Sie eine neuere Version von Plex!</string>
   <string id="15206">Authorisierung fehlgeschlagen: Bitte Benutzerdaten prüfen!</string>
   <string id="15207">Verbunden</string>
   <string id="15208">Nicht verbunden</string>
@@ -1301,7 +1295,7 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="20006">Ordner für Playlisten</string>
   <string id="20007">Aufnahmen</string>
   <string id="20008">Screenshots</string>
-  <string id="20009">XBMC verwenden</string>
+  <string id="20009">Plex verwenden</string>
   <string id="20011">Musik Playlisten</string>
   <string id="20012">Video Playlisten</string>
   <string id="20013">Möchten Sie das Spiel jetzt starten?</string>
@@ -1507,7 +1501,7 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   </string>
   <string id="20305">
   </string>
-  <string id="20306">Unbekannt. Bitte MD5-Prüfsumme von xbmc.log zu BiosIDs.ini hinzufügen.</string>
+  <string id="20306">Unbekannt. Bitte MD5-Prüfsumme von Plex.log zu BiosIDs.ini hinzufügen.</string>
   <string id="20307">Sekundärer DNS-Server</string>
   <string id="20308">DHCP-Server</string>
   <string id="20309">Neuer Ordner</string>

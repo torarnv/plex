@@ -1,8 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Language file translated with Team XBMC Translator-->
-<!--Translator: jutski (->7/2006) Mika Pirinen (1/2007->)-->
-<!--Date of translation: 11/10/2008  kommentit: kottis(at)gmail.com -->
-<!--Finnish strings based on English strings version 15826 -->
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
   <string id="0">Ohjelmat</string>
   <string id="1">Kuvat</string>
@@ -10,10 +6,10 @@
   <string id="3">Videot</string>
   <string id="4">TV-opas</string>
   <string id="5">Asetukset</string>
-  <string id="6">XBMC SVN</string>
+  <string id="6">Plex SVN</string>
   <string id="7">Tiedostonhallinta</string>
   <string id="8">Säätila</string>
-  <string id="9">xbmc media center</string>
+  <string id="9">Plex media center</string>
   
   <string id="11">Maanantai</string>
   <string id="12">Tiistai</string>
@@ -666,7 +662,7 @@
   <string id="999"></string>
   <string id="1000">Näytönsäästäjän esikatselu</string>
   <string id="1001">Ei saada yhteyttä</string>
-  <string id="1002">XBMC ei saanut yhteyttä verkko-osoitteeseen.</string>
+  <string id="1002">Plex ei saanut yhteyttä verkko-osoitteeseen.</string>
   <string id="1003">Saattaa olla ettei verkkoyhteyttä ole.</string>
   <string id="1004">Haluatko silti lisätä sijainnin?</string>
   <string id="1005"></string>
@@ -984,11 +980,11 @@
   <string id="13132">Tyhjä näyttö</string>
 
   <string id="13140">Yhdistetty yhteys on käytössä!</string>
-  <string id="13141">Mikäli jatkat,et välttämättä pysty käyttämään XBMC:a</string>
+  <string id="13141">Mikäli jatkat,et välttämättä pysty käyttämään Plex:a</string>
   <string id="13142">tämän jälkeen. Haluatko varmasti pysäyttää etätapahtumat?</string>
 
   <string id="13144">Vaihdetaanko Apple kauko-ohjain?</string>
-  <string id="13145">Mikäli käytät nyt Apple kauko-ohjausta XBMC:n ohjaukseen,</string>
+  <string id="13145">Mikäli käytät nyt Apple kauko-ohjausta Plex:n ohjaukseen,</string>
   <string id="13146">et voi tämän jälkeen vaihtaa sillä asetuksia</string>
   <string id="13147">Haluatko jatkaa ?</string>
 
@@ -1077,7 +1073,7 @@
   <string id="13306">Piilota päähakemisto</string>
   <string id="13307">Kappaleen nimeämistapa</string>
   <string id="13308">Käynnistetäänkö järjestelmä uudelleen,</string>
-  <string id="13309">vai pelkkä XBMC?</string>
+  <string id="13309">vai pelkkä Plex?</string>
   <string id="13310">Zoomaus tehoste</string>
   <string id="13311">Kellunta tehoste</string>
   <string id="13312">Mustien reunojen poisto</string>
@@ -1223,7 +1219,7 @@
   <string id="14036">Palvelimet</string>
   <string id="14037">Ulkoasu</string>
   <string id="14038">Verkkoasetuksia muutettu</string>
-  <string id="14039">XBMC täytyy käynnistää uudelleen, jotta uudet</string>
+  <string id="14039">Plex täytyy käynnistää uudelleen, jotta uudet</string>
   <string id="14040">asetukset tulevat käyttöön. Käynnistetäänkö uudelleen nyt?</string>
   <string id="14041">Jälkikäsittely</string>
   <string id="14042"></string>
@@ -1346,7 +1342,7 @@
   <string id="15202">Last.FM käyttäjätunnus</string>
   <string id="15203">Last.FM salasana</string>
   <string id="15204">Ei saatu yhteyttä: odotetaan...</string>
-  <string id="15205">XBMC täytyy päivittää</string>
+  <string id="15205">Plex täytyy päivittää</string>
   <string id="15206">Tunnistautumisvirhe: tarkista salasana ja tunnus</string>
   <string id="15207">Yhdistetty</string>
   <string id="15208">Ei yhdistetty</string>
@@ -1495,7 +1491,7 @@
   <string id="20006">Soittolistakansio</string>
   <string id="20007">Nauhoitukset</string>
   <string id="20008">Kuvakaappaukset</string>
-  <string id="20009">Käytä XBMC:a</string>
+  <string id="20009">Käytä Plex:a</string>
   <string id="20010"></string>
   <string id="20011">Soittolistat</string>
   <string id="20012">Videolistat</string>

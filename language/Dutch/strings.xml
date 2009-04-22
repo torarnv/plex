@@ -1,10 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Language file translated with Team XBMC Translator-->
-<!--Translator: Ronald Loggen-->
-<!--Email: ronaldloggen@gmail.com-->
-<!--Date of translation: 10/08/2008-->
-<!--$Revision$-->
-<!--Based on english strings version 15828-->
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
   <string id="0">Programma's</string>
   <string id="1">Afbeeldingen</string>
@@ -14,7 +8,7 @@
   <string id="5">Instellingen</string>
   <string id="7">Bestandsbeheer</string>
   <string id="8">Weer</string>
-  <string id="9">XBMC Media Center</string>
+  <string id="9">Plex Media Center</string>
   <string id="11">maandag</string>
   <string id="12">dinsdag</string>
   <string id="13">woensdag</string>
@@ -278,7 +272,7 @@
   <string id="354">Matrix Sporen</string>
   <string id="355">Schermbeveiliging wachttijd</string>
   <string id="356">Schermbeveiliging type</string>
-  <string id="357">Inactieve XBMC afsluiten na</string>
+  <string id="357">Inactieve Plex afsluiten na</string>
   <string id="358">Alle albums</string>
   <string id="359">Recent toegevoegde albums</string>
   <string id="360">Schermbeveiliging</string>
@@ -396,7 +390,7 @@
   <string id="479">Skin en taal</string>
   <string id="480">Uiterlijk</string>
   <string id="481">Geluidsinstellingen</string>
-  <string id="482">Over XBMC</string>
+  <string id="482">Over Plex</string>
   <string id="483">Album</string>
   <string id="484">Artiest</string>
   <string id="485">Verwijder album</string>
@@ -632,7 +626,7 @@
   <string id="999">Online gamen</string>
   <string id="1000">Test schermbeveiliging</string>
   <string id="1001">Verbinden niet mogelijk</string>
-  <string id="1002">XBMC kon niet verbinden met de netwerk locatie.</string>
+  <string id="1002">Plex kon niet verbinden met de netwerk locatie.</string>
   <string id="1003">Dit kan veroorzaakt worden doordat het netwerk niet verbonden is.</string>
   <string id="1004">Wilt u het toch toevoegen?</string>
   <string id="1005">Voer een naam in voor deze locatie</string>
@@ -989,7 +983,7 @@
   <string id="13306">Hoofdmap verbergen</string>
   <string id="13307">Tracks weergeven als</string>
   <string id="13308">Wilt u de Xbox opnieuw opstarten</string>
-  <string id="13309">in plaats van alleen XBMC?</string>
+  <string id="13309">in plaats van alleen Plex?</string>
   <string id="13310">Zoom effect</string>
   <string id="13311">Zweef effect</string>
   <string id="13312">Rand reductie</string>
@@ -1130,7 +1124,7 @@ voor deze visualisatie</string>
   <string id="14036">Servers</string>
   <string id="14037">Uiterlijk</string>
   <string id="14038">Netwerkinstellingen gewijzigd</string>
-  <string id="14039">XBMC moet herstarten om de netwerkinstellingen</string>
+  <string id="14039">Plex moet herstarten om de netwerkinstellingen</string>
   <string id="14040">te wijzigen. Wilt u nu herstarten?</string>
   <string id="14041">Voorbewerking</string>
   <string id="14042">Kai engine IP-adres</string>
@@ -1207,9 +1201,9 @@ voor deze visualisatie</string>
   <string id="15034">heeft zich net aangemeld</string>
   <string id="15035">doet mee met de voice chat</string>
   <string id="15036">heeft u een uitnodiging gestuurd</string>
-  <string id="15037">XBMC was niet in staat te controleren of uw netwerk bereikbaar is.</string>
+  <string id="15037">Plex was niet in staat te controleren of uw netwerk bereikbaar is.</string>
   <string id="15038">Het kan zijn dat u problemen tegenkomt tijdens het meedoen of hosten van spellen.</string>
-  <string id="15039">XBMC kon het spel niet automatisch vinden.</string>
+  <string id="15039">Plex kon het spel niet automatisch vinden.</string>
   <string id="15040">Plaats de speldisk in uw Xbox of druk op 'A' om te stoppen</string>
   <string id="15041">en het spel zelf te starten.</string>
   <string id="15042">Toegang geweigerd</string>
@@ -1249,7 +1243,7 @@ voor deze visualisatie</string>
   <string id="15202">Last.FM gebruikersnaam</string>
   <string id="15203">Last.FM wachtwoord</string>
   <string id="15204">Verbinding mislukt</string>
-  <string id="15205">Update XBMC a.u.b.</string>
+  <string id="15205">Update Plex a.u.b.</string>
   <string id="15206">Authentificatie mislukt: controleer gebruikersnaam en wachtwoord</string>
   <string id="15207">Verbonden</string>
   <string id="15208">Niet verbonden</string>
@@ -1375,7 +1369,7 @@ voor deze visualisatie</string>
   <string id="20006">Playlistmap</string>
   <string id="20007">Opnames</string>
   <string id="20008">Screenshots</string>
-  <string id="20009">Gebruik XBMC</string>
+  <string id="20009">Gebruik Plex</string>
   <string id="20011">Muziekafspeellijsten</string>
   <string id="20012">Video-afspeellijsten</string>
   <string id="20013">Wilt u het spel starten?</string>
@@ -1554,7 +1548,7 @@ voor deze visualisatie</string>
   <string id="20250">Feesten maar! (video's)</string>
   <string id="20251">Drankjes mixen (video's)</string>
   <string id="20252">Glazen vullen (video's)</string>
-  <string id="20306">Onbekend. Voeg de MD5 vanuit xbmc.log toe in BiosIDs.ini.</string>
+  <string id="20306">Onbekend. Voeg de MD5 vanuit Plex.log toe in BiosIDs.ini.</string>
   <string id="20307">Secundaire DNS</string>
   <string id="20308">DHCP-server:</string>
   <string id="20309">Nieuwe map</string>

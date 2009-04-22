@@ -1,5 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--$Revision$-->
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
   <string id="0">Programe</string>
   <string id="1">Imagini</string>
@@ -409,7 +408,7 @@
   <string id="479">Skin si Limba</string>
   <string id="480">Interfata</string>
   <string id="481">Configurare Audio</string>
-  <string id="482">Despre XBMC</string>
+  <string id="482">Despre Plex</string>
   <string id="483">Album</string>
   <string id="484">Artist</string>
   <string id="485">Sterge album</string>
@@ -657,7 +656,7 @@
   <string id="14036">Servere</string>
   <string id="14037">Look and Feel</string>
   <string id="14038">Setari network schimate</string>
-  <string id="14039">XBMC trebuie restartat pt a schimba</string>
+  <string id="14039">Plex trebuie restartat pt a schimba</string>
   <string id="14040">setarile de retea. Doriti restartarea imediata?</string>
   <string id="14041">Post Processing</string>
   <string id="14042">Adresa IP Engine</string>

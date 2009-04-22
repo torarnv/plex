@@ -1,10 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Language file translated with Team XBMC Translator-->
-<!--Translator: djoens-->
-<!--Email: djoens2000@yahoo.com-->
-<!--Date of translation: 09/17/2006-->
-<!--$Revision$-->
-<!--Based on english strings version 1.343-->
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
   <string id="0">Program</string>
   <string id="1">Gambar</string>
@@ -398,7 +392,7 @@
   <string id="479">Kulit dan Bahasa</string>
   <string id="480">Penampilan</string>
   <string id="481">Pilihan Audio</string>
-  <string id="482">Tentang XBMC</string>
+  <string id="482">Tentang Plex</string>
   <string id="483">Album</string>
   <string id="484">Artis</string>
   <string id="485">Hapus album</string>
@@ -556,7 +550,7 @@
   <string id="999">Permainan Online</string>
   <string id="1000">Preview Screensaver</string>
   <string id="1001">Tidak bisa tersambung</string>
-  <string id="1002">XBMC tidak dapat tersambung ke lokasi jaringan.</string>
+  <string id="1002">Plex tidak dapat tersambung ke lokasi jaringan.</string>
   <string id="1003">Kemungkinan jaringan tidak tersambung.</string>
   <string id="1004">Anda ingin menambahkan begitu saja?</string>
   <string id="1005">Masukan nama untuk share ini</string>
@@ -870,7 +864,7 @@
   <string id="13306">Sembunyikan Induk Item Folder</string>
   <string id="13307">Template Penamaan Folder</string>
   <string id="13308">Anda yakin ingin mem-boot xbox</string>
-  <string id="13309">daripada hanya XBMC?</string>
+  <string id="13309">daripada hanya Plex?</string>
   <string id="13310">Efek Zoom</string>
   <string id="13311">Efek Float</string>
   <string id="13312">Pengurangan Bar Hitam</string>
@@ -991,7 +985,7 @@ utk visualisasi ini</string>
   <string id="14036">Server</string>
   <string id="14037">Lihat dan Rasakan</string>
   <string id="14038">Setelan Jaringan berubah</string>
-  <string id="14039">XBMC harus dimulai ulang untuk mengganti</string>
+  <string id="14039">Plex harus dimulai ulang untuk mengganti</string>
   <string id="14040">pemasangan setelan jaringan. Anda mau lakukan sekarang?</string>
   <string id="14041">Post Processing</string>
   <string id="14042">Alamat Mesin IP</string>
@@ -1028,7 +1022,7 @@ utk visualisasi ini</string>
   <string id="14073">XLink Kai tidak aktif.</string>
   <string id="15000">XLink Kai</string>
   <string id="15001">Servis tidak tersambung, anda mau mencobanya</string>
-  <string id="15002">menyambungkan dengan XBMC Media Center?</string>
+  <string id="15002">menyambungkan dengan Plex Media Center?</string>
   <string id="15003">Masukkan pesan anda</string>
   <string id="15004">Anda diundang untuk main %s.</string>
   <string id="15005">Tanggal: %s</string>
@@ -1063,9 +1057,9 @@ utk visualisasi ini</string>
   <string id="15034">baru saja masuk</string>
   <string id="15035">telah memulai obrolan suara </string>
   <string id="15036">telah mengirim Anda undangan</string>
-  <string id="15037">XBMC tidak mampu mengkonfirmasi jaringan Anda telah tersambungkan.</string>
+  <string id="15037">Plex tidak mampu mengkonfirmasi jaringan Anda telah tersambungkan.</string>
   <string id="15038">Anda mungkin mengalami kesulitan bergabung atau hosting permainan.</string>
-  <string id="15039">XBMC Media Center tidak dapat menemukan permainan secara otomatis.</string>
+  <string id="15039">Plex Media Center tidak dapat menemukan permainan secara otomatis.</string>
   <string id="15040">Masukkan disk permainan ke dalam XBOX atau tekan 'A' utk membatalkan</string>
   <string id="15041">dan jalankan permainan secara manual.</string>
   <string id="15042">Akses Ditolak</string>
@@ -1105,7 +1099,7 @@ utk visualisasi ini</string>
   <string id="15202">NamaPengguna LastFM</string>
   <string id="15203">Password LastFM</string>
   <string id="15204">Tidak bisa tersambung: sleeping...</string>
-  <string id="15205">Harap Memperbaharui XBMC</string>
+  <string id="15205">Harap Memperbaharui Plex</string>
   <string id="15206">Pengajuan gagal: kesalahan otorisasi.</string>
   <string id="15207">Tersambung</string>
   <string id="15208">Tidak Tersambung</string>
@@ -1212,7 +1206,7 @@ utk visualisasi ini</string>
   <string id="20006">Folder DaftarMain</string>
   <string id="20007">Perekaman</string>
   <string id="20008">Screenshots</string>
-  <string id="20009">Gunakan XBMC</string>
+  <string id="20009">Gunakan Plex</string>
   <string id="20010">Gambar Artis</string>
   <string id="20011">DaftarMain Musik</string>
   <string id="20012">DaftarMain Video</string>
@@ -1396,7 +1390,7 @@ utk visualisasi ini</string>
   <string id="20303">Mendeteksi Kecepatan CPU</string>
   <string id="20304">Mendeteksi Tanggal Produksi</string>
   <string id="20305">Mendeteksi Unit Terpasang</string>
-  <string id="20306">Tidak diketahui. Harap tambahkan MD5 dari xbmc.log ke BiosIDs.ini.</string>
+  <string id="20306">Tidak diketahui. Harap tambahkan MD5 dari Plex.log ke BiosIDs.ini.</string>
   <string id="20307">Secondary DNS</string>
   <string id="20308">Server DHCP:</string>
   <string id="20309">Buat Folder Baru</string>

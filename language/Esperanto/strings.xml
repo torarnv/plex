@@ -1,5 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--$Revision$-->
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
   <string id="0">Mia Softvaroj</string>
   <string id="1">Mia Bildoj</string>
@@ -410,7 +409,7 @@
   <string id="479">Skin and Language</string>
   <string id="480">Appearance</string>
   <string id="481">Audio Options</string>
-  <string id="482">About XBMC</string>
+  <string id="482">About Plex</string>
   <string id="483">Albumo</string>
   <string id="484">Artisto</string>
   <string id="485">Forviŝi albumo</string>
@@ -574,7 +573,7 @@
   <string id="999">Interreto-gaming</string>
   <string id="1000">ekranosaver PreVido</string>
   <string id="1001">Unable to connect</string>
-  <string id="1002">XBMC was unable to connect to la network location.</string>
+  <string id="1002">Plex was unable to connect to la network location.</string>
   <string id="1003">This could be due to la network not being connected.</string>
   <string id="1004">Would you like to add it anyway?</string>
   <string id="1005">tajpi a nomo for this share</string>
@@ -754,7 +753,7 @@
   <string id="12320">c</string>
   <string id="12321">ok</string>
   <string id="12322">*</string>
-  <string id="12324">XBMC Master Lock</string>
+  <string id="12324">Plex Master Lock</string>
   <string id="12325">Locked! tajpi Code...</string>
   <string id="12326">tajpi pasvorto</string>
   <string id="12327">tajpi Master Code</string>
@@ -798,7 +797,7 @@
   <string id="12366">Master Lock is changed. Master Code is now set to:</string>
   <string id="12367">Master Code is not Valid!</string>
   <string id="12368">Plaĉi tajpi a Valid Master Code!</string>
-  <string id="12369">XBMC Startup Lock</string>
+  <string id="12369">Plex Startup Lock</string>
   <string id="12370">Master Lock Mode changed, la Master Code wasn't set!</string>
   <string id="12371">Plaĉi Set a new Master Code!</string>
   <string id="12372">Lock Preferoj &amp; Mia vicos</string>
@@ -911,7 +910,7 @@
   <string id="13306">Hide Parent Folder Items</string>
   <string id="13307">Track Naming Template</string>
   <string id="13308">Do you wish to reboot your xbox</string>
-  <string id="13309">instead of just XBMC?</string>
+  <string id="13309">instead of just Plex?</string>
   <string id="13310">Zoom Effect</string>
   <string id="13311">Float Effect</string>
   <string id="13312">Black Bar Reduction</string>
@@ -1047,7 +1046,7 @@ for this visualisation</string>
   <string id="14036">Servers</string>
   <string id="14037">Look and Feel</string>
   <string id="14038">Network Preferoj changed</string>
-  <string id="14039">XBMC requires to restart to change your</string>
+  <string id="14039">Plex requires to restart to change your</string>
   <string id="14040">network setup.  Would you like to restart now?</string>
   <string id="14041">Post Processing</string>
   <string id="14042">Engine IP Address</string>
@@ -1084,7 +1083,7 @@ for this visualisation</string>
   <string id="14073">XLink Kai is not enabled.</string>
   <string id="15000">XLink Kai</string>
   <string id="15001">La service is not connected, would you like to attempt</string>
-  <string id="15002">reconnecting it with XBMC Media Ctajpi?</string>
+  <string id="15002">reconnecting it with Plex Media Ctajpi?</string>
   <string id="15003">tajpi your message</string>
   <string id="15004">You've been invited to play %s.</string>
   <string id="15005">Dati: %s</string>
@@ -1119,9 +1118,9 @@ for this visualisation</string>
   <string id="15034">has just signed in</string>
   <string id="15035">has initiated voice chat</string>
   <string id="15036">has sent you an invitation</string>
-  <string id="15037">XBMC is unable to confirm your network is reachable.</string>
+  <string id="15037">Plex is unable to confirm your network is reachable.</string>
   <string id="15038">You may experience difficulties joining or hosting games.</string>
-  <string id="15039">XBMC Media Ctajpi unable to locate game aŭtomateĉiomy.</string>
+  <string id="15039">Plex Media Ctajpi unable to locate game aŭtomateĉiomy.</string>
   <string id="15040">Insert la game disk into your XBOX or press 'A' to cancel</string>
   <string id="15041">and launch la game manuĉiomy.</string>
   <string id="15042">Access Denied</string>
@@ -1163,7 +1162,7 @@ for this visualisation</string>
   <string id="15202">LastFM Uzulonomo</string>
   <string id="15203">LastFM pasvorto</string>
   <string id="15204">Unable to handshake: sleeping...</string>
-  <string id="15205">Plaĉi Updati XBMC</string>
+  <string id="15205">Plaĉi Updati Plex</string>
   <string id="15206">Submission failed: bad authorization.</string>
   <string id="15207">Connected</string>
   <string id="15208">Not Connected</string>

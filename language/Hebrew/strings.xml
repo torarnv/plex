@@ -1,9 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Language file translated with Team XBMC Translator-->
-<!--Translator: Psike-->
-<!--Date of translation: 08/17/2008-->
-<!--$Revision$-->
-<!--Based on english strings version 14727-->
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
   <string id="0">התוכניות שלי</string>
   <string id="1">התמונות שלי</string>
@@ -400,7 +395,7 @@
   <string id="479">סקין ושפה</string>
   <string id="480">ממשק משתמש</string>
   <string id="481">אפשרויות אודיו</string>
-  <string id="482"> XBMC אודות</string>
+  <string id="482"> Plex אודות</string>
   <string id="483">אלבום</string>
   <string id="484">אמן</string>
   <string id="485">מחק אלבום</string>
@@ -895,7 +890,7 @@
   <string id="13004">- אורך קובץ מינימאלי</string>
   <string id="13005">כיבוי</string>
   <string id="13006">תפריט ראשוני</string>
-  <string id="13008">כאשר סוגר XBMC</string>
+  <string id="13008">כאשר סוגר Plex</string>
   <string id="13009">אל תעשה דבר</string>
   <string id="13010">מצב שינה</string>
   <string id="13011">השהייה</string>
@@ -983,7 +978,7 @@
   <string id="13306">הסתר פריטי ספריית אב</string>
   <string id="13307">הסתר מספרי רצועות</string>
   <string id="13308">האם ברצונך לאתחל את הXBOX</string>
-  <string id="13309">במקום רק את XBMC?</string>
+  <string id="13309">במקום רק את Plex?</string>
   <string id="13310">אפקט זום</string>
   <string id="13311">אפקט ציפה</string>
   <string id="13312">הפחת פסים שחורים</string>
@@ -1112,7 +1107,7 @@
   <string id="14036">שרתים</string>
   <string id="14037">תצוגה והרגשה</string>
   <string id="14038">הגדרות רשת שונו</string>
-  <string id="14039">XBMC דורש אתחול כדי לשנות את</string>
+  <string id="14039">Plex דורש אתחול כדי לשנות את</string>
   <string id="14040">הגדרות הרשת. האם לאתחל כעת?</string>
   <string id="14041">לאחר עיבוד</string>
   <string id="14042">כתובת IP של המנוע</string>
@@ -1155,7 +1150,7 @@
   <string id="14080">איזור זמן</string>
   <string id="15000">XLink Kai</string>
   <string id="15001">השירות לא מחובר. האם ברצונך</string>
-  <string id="15002">XBMC Media Center להתחבר עם?</string>
+  <string id="15002">Plex Media Center להתחבר עם?</string>
   <string id="15003">הכנס הודעה</string>
   <string id="15004">%s הוזמת לשחק.</string>
   <string id="15005">%s :תאריך</string>
@@ -1190,9 +1185,9 @@
   <string id="15034">הצטרף</string>
   <string id="15035">התחיל שיחה קולית</string>
   <string id="15036">שלח בקשה</string>
-  <string id="15037">אינו מצליח לאשר שהנך מחובר לרשת XBMC.</string>
+  <string id="15037">אינו מצליח לאשר שהנך מחובר לרשת Plex.</string>
   <string id="15038">עשויות להיות בעיות בהצטרפות או אירוח משחקים</string>
-  <string id="15039">לא הצליח לאתר משחק אוטומטית XBMC Media Center.</string>
+  <string id="15039">לא הצליח לאתר משחק אוטומטית Plex Media Center.</string>
   <string id="15040">לבטל 'A' הכנס את הדיסק למכשיר או לחץ</string>
   <string id="15041">ולהפעיל את המשחק ידנית.</string>
   <string id="15042">גישה לא מורשית</string>
@@ -1232,7 +1227,7 @@
   <string id="15202">LastFM משתמש</string>
   <string id="15203">LastFM סיסמא</string>
   <string id="15204">לחיצת ידיים נכשלה...</string>
-  <string id="15205">XBMC אנא עדכן</string>
+  <string id="15205">Plex אנא עדכן</string>
   <string id="15206">שליחה נכשלה: זיהוי שגוי.</string>
   <string id="15207">מחובר</string>
   <string id="15208">לא מחובר</string>
@@ -1356,7 +1351,7 @@
   <string id="20006">תיקית רשימת השמעה</string>
   <string id="20007">הקלטות</string>
   <string id="20008">תמונות מסך</string>
-  <string id="20009">השתמש ב XBMC</string>
+  <string id="20009">השתמש ב Plex</string>
   <string id="20010">תמונת אמן</string>
   <string id="20011">רשימות השמעה למוזיקה</string>
   <string id="20012">רשימות השמעה לוידאו</string>
@@ -1540,7 +1535,7 @@
   <string id="20303">מאתר מהירות CPU</string>
   <string id="20304">מאתר תאריך ייצור</string>
   <string id="20305">מאתר יחידות מחוברות</string>
-  <string id="20306">לא ידוע, אנא הוסף MD5 מ xbmc.log ל BiosDs.ini.</string>
+  <string id="20306">לא ידוע, אנא הוסף MD5 מ Plex.log ל BiosDs.ini.</string>
   <string id="20307">DNS משני</string>
   <string id="20308">שרת DHCP:</string>
   <string id="20309">צור תיקיה חדשה</string>

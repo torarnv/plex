@@ -1,8 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--Translator: Kristján Bjarni Guðmundsson-->
-<!--Date of translation: 28/09/2008-->
-<!--$Revision$-->
-<!--Based on english strings version 15695-->
 <strings>
   <string id="0">Forrit</string>
   <string id="1">Ljósmyndir</string>
@@ -10,10 +6,10 @@
   <string id="3">Myndefni</string>
   <string id="4">Sjónvarpsvísir</string>
   <string id="5">Stillingar</string>
-  <string id="6">XBMC SVN</string>
+  <string id="6">Plex SVN</string>
   <string id="7">Skráarsýsl</string>
   <string id="8">Veður</string>
-  <string id="9">xbmc media center</string>
+  <string id="9">Plex media center</string>
 
   <string id="11">Mánudagur</string>
   <string id="12">Þriðjudagur</string>
@@ -405,7 +401,7 @@
   <string id="479">Útlit og tungumál</string>
   <string id="480">Viðmót</string>
   <string id="481">Hljóðvalmöguleikar</string>
-  <string id="482">Um XBMC</string>
+  <string id="482">Um Plex</string>
   <string id="483"/>
   <string id="484"/>
   <string id="485">Eyða plötu</string>
@@ -666,7 +662,7 @@
   <string id="999"/>
   <string id="1000">Skjáhvílu Sýnishorn</string>
   <string id="1001">Get ekki tengst</string>
-  <string id="1002">XBMC getur ekki tengst við net slóð.</string>
+  <string id="1002">Plex getur ekki tengst við net slóð.</string>
   <string id="1003">Þetta gæti verið vegna þess að netið er ekki tengt.</string>
   <string id="1004">Viltu bæta því samt við?</string>
   <string id="1005"/>
@@ -952,7 +948,7 @@
   <string id="13005">Slökkva</string>
   <string id="13006">Mælaborð</string>
   <string id="13007">Nota slóða að eigin mælaborði</string>
-  <string id="13008">Þegar hætt er í XBMC</string> 
+  <string id="13008">Þegar hætt er í Plex</string> 
   <string id="13009">Gera ekkert</string> 
   <string id="13010">Dvali</string>
   <string id="13011">Svæfa</string>
@@ -982,12 +978,12 @@
   <string id="13132">Tómur skjár</string>
 
   <string id="13140">Uppgötvaði virkar tengingar!</string>
-  <string id="13141">Ef þú heldur áfram, er hætta á því að þú munir geta stjórnað XBMC</string>
+  <string id="13141">Ef þú heldur áfram, er hætta á því að þú munir geta stjórnað Plex</string>
   <string id="13142">áfram. Ertu viss um að þú viljir stöðva Atriðaþjón?</string>
 
   <string id="13144">Breyta ham Apple fjarstýringar?</string>
   <string id="13145">Ef þú ert núna þegar að nota Apple fjarstýringu til að stjórna</string>
-  <string id="13146">XBMC, gæti breyting á þessu haft áhrif á getu þína</string>
+  <string id="13146">Plex, gæti breyting á þessu haft áhrif á getu þína</string>
   <string id="13147">til að halda áfram að stjórna því. Viltu halda áfram?</string>
 
   <string id="13150">HDD lykill:</string>
@@ -1074,7 +1070,7 @@
   <string id="13306">Fela yfirmöppu tákn</string>
   <string id="13307">Sniðmát laganafna</string>
   <string id="13308">Viltu endurræsa Xbox</string>
-  <string id="13309">í staðinn fyrir bara XBMC?</string>
+  <string id="13309">í staðinn fyrir bara Plex?</string>
   <string id="13310">Aðdráttar áhrif</string>
   <string id="13311">Fljóta áhrif</string>
   <string id="13312">Minnka svartar rendur</string>
@@ -1215,7 +1211,7 @@
   <string id="14036">Miðlarar</string>
   <string id="14037">Útlit</string>
   <string id="14038">Netstillingum breytt</string>
-  <string id="14039">XBMC þarf að endurræsa til að virkja</string>
+  <string id="14039">Plex þarf að endurræsa til að virkja</string>
   <string id="14040">netstillingar.  Viltu endurræsa núna?</string>
   <string id="14041">Eftirvinnsla</string>
   <string id="14042"/>
@@ -1338,7 +1334,7 @@
   <string id="15202">Last.FM Notandanafn</string>
   <string id="15203">Last.FM Lykilorð</string>
   <string id="15204">Get ekki tengst með handabandi: bíð...</string>
-  <string id="15205">Vinsamlegast Uppfærðu XBMC</string>
+  <string id="15205">Vinsamlegast Uppfærðu Plex</string>
   <string id="15206">Sending mistókst: Rangar Heimildir</string>
   <string id="15207">Tengdur</string>
   <string id="15208">Ekki tengdur</string>
@@ -1487,7 +1483,7 @@
   <string id="20006">Lagalista mappa</string>
   <string id="20007">upptökur</string>
   <string id="20008">Skjámyndir</string>
-  <string id="20009">Nota XBMC</string>
+  <string id="20009">Nota Plex</string>
   <string id="20010"/>
   <string id="20011">Lagalistar</string>
   <string id="20012">Myndbandalistar</string>
@@ -1684,7 +1680,7 @@
   <string id="20304"/>
   <string id="20305"/>
 
-  <string id="20306">Óþekkt. Vinsamlegast bættu við MD5 frá xbmc.log í BiosIDs.ini.</string>
+  <string id="20306">Óþekkt. Vinsamlegast bættu við MD5 frá Plex.log í BiosIDs.ini.</string>
   <string id="20307">Auka DNS</string>
   <string id="20308">DHCP Miðill:</string>
   <string id="20309">Búa til nýja möppu</string>

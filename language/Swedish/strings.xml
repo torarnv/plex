@@ -377,7 +377,7 @@
   <string id="479">Skal och språk</string>
   <string id="480">Utseende</string>
   <string id="481">Ljudval</string>
-  <string id="482">Om XBMC</string>
+  <string id="482">Om Plex</string>
   <string id="485">Radera album</string>
   <string id="486">Repetera</string>
   <string id="487">Repetera en</string>
@@ -623,7 +623,7 @@
   <string id="797">Maximalt antal klienter</string>
   <string id="1000">Förhandsgranska skärmsläckare</string>
   <string id="1001">Kunde inte ansluta</string>
-  <string id="1002">XBMC kunde inte ansluta till nätverksplatsen.</string>
+  <string id="1002">Plex kunde inte ansluta till nätverksplatsen.</string>
   <string id="1003">Detta kan bero på att nätverket inte är anslutet.</string>
   <string id="1004">Vill du lägga till detta i alla fall?</string>
   <string id="1006">IP adress</string>
@@ -906,10 +906,10 @@
   <string id="13137">Hög</string>
   <string id="13140">Aktiva anslutningar detekterade!</string>
   <string id="13141">Om du fortsätter kommer du kanske inte att kunna kontrollera</string>
-  <string id="13142">XBMC längre. Är du säker att du vill stoppa händelseservern?</string>
+  <string id="13142">Plex längre. Är du säker att du vill stoppa händelseservern?</string>
   <string id="13144">Ändra Apple-fjärrläge?</string>
   <string id="13145">Om du för närvarande använder Apple-fjärr för att kontrollera</string>
-  <string id="13146">XBMC, ändra denna inställning kan påverka din möjlighet</string>
+  <string id="13146">Plex, ändra denna inställning kan påverka din möjlighet</string>
   <string id="13147">till fortsatt kontroll av det. Vill du fortsätta?</string>
   <string id="13150">HDD nyckel:</string>
   <string id="13151">HDD temp:</string>
@@ -988,7 +988,7 @@
   <string id="13306">Göm föremål i övermappen</string>
   <string id="13307">Låtnamn enligt</string>
   <string id="13308">Vill du starta om systemet</string>
-  <string id="13309">istället för endast XBMC?</string>
+  <string id="13309">istället för endast Plex?</string>
   <string id="13310">Zoomeffekt</string>
   <string id="13311">Flyteffekt</string>
   <string id="13312">Reducera svart ram</string>
@@ -1140,7 +1140,7 @@
   <string id="14036">Servrar</string>
   <string id="14037">Utseende</string>
   <string id="14038">Nätverksinställningar ändrade</string>
-  <string id="14039">XBMC behöver startas om för att slutföra din</string>
+  <string id="14039">Plex behöver startas om för att slutföra din</string>
   <string id="14040">nätverksinställning. Vill du starta om nu?</string>
   <string id="14041">Efterbehandling</string>
   <string id="14043">- Stäng av under spelning</string>
@@ -1355,7 +1355,7 @@
   <string id="20006">Spellistsmapp</string>
   <string id="20007">Inspelningar</string>
   <string id="20008">Skärmdumpar</string>
-  <string id="20009">Använd XBMC</string>
+  <string id="20009">Använd Plex</string>
   <string id="20011">Musikspellistor</string>
   <string id="20012">Filmspellistor</string>
   <string id="20013">Vill du starta spelet?</string>
@@ -1532,7 +1532,7 @@
   <string id="20250">Festa på! (filmer)</string>
   <string id="20251">Blandar drinkar (filmer)</string>
   <string id="20252">Fyller glasen (filmer)</string>
-  <string id="20306">Okänd. Lägg till MD5 från xbmc.log till BiosIDs.ini.</string>
+  <string id="20306">Okänd. Lägg till MD5 från Plex.log till BiosIDs.ini.</string>
   <string id="20307">Sekundär DNS</string>
   <string id="20308">DHCP server:</string>
   <string id="20309">Skapa ny mapp</string>

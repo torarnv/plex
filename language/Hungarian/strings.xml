@@ -1,10 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Language file translated with Team XBMC Translator-->
-<!--Translator: EkE & Sigismund-->
-<!--Email: eke@konzolozz.hu & sigismundpower@vipmail.hu-->
-<!--Date of translation: 06/14/2007-->
-<!--$Revision$-->
-<!--Based on english strings version 9182-->
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
   <string id="0">Programok</string>
   <string id="1">Képek</string>
@@ -406,7 +400,7 @@
   <string id="479">Felület és Nyelv</string>
   <string id="480">Megjelenítés</string>
   <string id="481">Audió beállítások</string>
-  <string id="482">Az XBMC-rõl</string>
+  <string id="482">Az Plex-rõl</string>
   <string id="483">Album</string>
   <string id="484">Elõadó</string>
   <string id="485">Album törlése</string>
@@ -629,7 +623,7 @@
   <string id="999">Online Játék</string>
   <string id="1000">Képernyõ-pihentetõ elõnézet</string>
   <string id="1001">Nem tudok kapcsolódni</string>
-  <string id="1002">Az XBMC képtelen csatlakozni a hálózati helyhez</string>
+  <string id="1002">Az Plex képtelen csatlakozni a hálózati helyhez</string>
   <string id="1003">Ez elõfordulhat, amennyiben nem csatlakoztattad a hálózatot</string>
   <string id="1004">Mindenképp hozzáadod?</string>
   <string id="1005">Adj nevet a megosztásnak</string>
@@ -968,7 +962,7 @@
   <string id="13306">A szülõ-könyvtár elemeinek elrejtése</string>
   <string id="13307">Sablon zenesávok elnevezéséhez</string>
   <string id="13308">Szeretné újraindítani az Xboxod?</string>
-  <string id="13309">az XBMC helyett?</string>
+  <string id="13309">az Plex helyett?</string>
   <string id="13310">Zoom effekt</string>
   <string id="13311">Úsztató effekt</string>
   <string id="13312">Fekete sáv csökkentés</string>
@@ -1089,7 +1083,7 @@ nincsenek beállítások</string>
   <string id="14036">Szerverek</string>
   <string id="14037">Kinézet</string>
   <string id="14038">A hálózati beállítások megváltoztatva</string>
-  <string id="14039">Az XBMC-t újra kell indítani, hogy a változtatásokhoz</string>
+  <string id="14039">Az Plex-t újra kell indítani, hogy a változtatásokhoz</string>
   <string id="14040">Szeretnéd most újraindítani?</string>
   <string id="14041">Utólagos feldolg.</string>
   <string id="14042">Az Engine IP-címe</string>
@@ -1166,9 +1160,9 @@ nincsenek beállítások</string>
   <string id="15034">bejelentkezett</string>
   <string id="15035">beszélgetésre invitál</string>
   <string id="15036">meghívást küldött</string>
-  <string id="15037">Az XBMC nem tudja megállapítani stabil-e a kapcsolat.</string>
+  <string id="15037">Az Plex nem tudja megállapítani stabil-e a kapcsolat.</string>
   <string id="15038">Játék létrehozásnál vagy csatlakozáskor problémáid adódhatnak.</string>
-  <string id="15039">Az XBMC nem találja a játékot.</string>
+  <string id="15039">Az Plex nem találja a játékot.</string>
   <string id="15040">Helyezze a játékot a meghajtóba vagy nyomja meg az 'A'-t</string>
   <string id="15041">A játék automatikusan elindul.</string>
   <string id="15042">Hozzáférés megtagadva</string>
@@ -1208,7 +1202,7 @@ nincsenek beállítások</string>
   <string id="15202">LastFM felhasználónév</string>
   <string id="15203">LastFM Jelszó</string>
   <string id="15204">Kapcsolatfelvétel sikertelen!</string>
-  <string id="15205">Kérlek frissítsd az XBMC-t</string>
+  <string id="15205">Kérlek frissítsd az Plex-t</string>
   <string id="15206">Küldés sikertelen: rossz felhasználó/jelszó.</string>
   <string id="15207">Csatlakoztatva</string>
   <string id="15208">Nincs csatlakozás</string>
@@ -1317,7 +1311,7 @@ nincsenek beállítások</string>
   <string id="20006">Lejátszólista mappája</string>
   <string id="20007">Rögzítések</string>
   <string id="20008">Pillanatképek </string>
-  <string id="20009">XBMC használata</string>
+  <string id="20009">Plex használata</string>
   <string id="20010">Elõadó képe</string>
   <string id="20011">Zenei lejátszólista</string>
   <string id="20012">Film lejátszólista</string>
