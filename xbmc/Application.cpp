@@ -5002,7 +5002,7 @@ void CApplication::OnQueueNextItem()
 
 void CApplication::OnPlayBackStopped()
 {
-  // Re-enable sounds. 
+  // Re-enable sounds.
   g_audioManager.Enable(true);
 
   // Reset FPS to the display FPS. 
@@ -5778,6 +5778,9 @@ bool CApplication::OnMessage(CGUIMessage& message)
   case GUI_MSG_PLAYBACK_ENDED:
   case GUI_MSG_PLAYLISTPLAYER_STOPPED:
     {
+      // Re-enable sounds.
+      g_audioManager.Enable(true);
+      
 #ifdef __APPLE__
       // Restart the updater
       Cocoa_SetUpdateSuspended(false);
