@@ -37,8 +37,6 @@ CGEventRef tapEventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef 
   NSEvent* nsEvent = [NSEvent eventWithCGEvent:event];
   NSInteger data = [nsEvent data1];
   
-  printf( "Got event of type %d - data1 %i \n", type, data);
-  
   if(data!=1051136)
     return event;
   else
@@ -161,7 +159,6 @@ VECSOURCES Cocoa_GetPlexMediaServersAsSourcesWithMediaType(const string& mediaTy
 bool Cocoa_IsLocalPlexMediaServerRunning()
 {
   bool isRunning = PlexMediaServerHelper::Get().IsRunning(); 
-  printf("Cocoa_IsLocalPlexMediaServerRunning() => %d\n", isRunning);
   return isRunning;
 }
 
