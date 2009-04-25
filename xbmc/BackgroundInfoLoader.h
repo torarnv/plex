@@ -41,7 +41,7 @@ public:
 class CBackgroundInfoLoader : public IRunnable
 {
 public:
-  CBackgroundInfoLoader(int nThreads=-1);
+  CBackgroundInfoLoader(int nThreads=-1, int pauseBetweenLoadsInMS=0);
   virtual ~CBackgroundInfoLoader();
 
   void Load(CFileItemList& items);
@@ -69,6 +69,7 @@ protected:
   volatile bool m_bStop;
   int  m_nRequestedThreads;
   int  m_nActiveThreads;
+  int  m_pauseBetweenLoadsInMS;
 
   IBackgroundLoaderObserver* m_pObserver;
   IProgressCallback* m_pProgressCallback;
