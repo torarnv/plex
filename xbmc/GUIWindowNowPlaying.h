@@ -22,12 +22,16 @@
  */
 
 #include "GUIWindow.h"
+#include "ThumbLoader.h"
 
-class CGUIWindowNowPlaying :
-  public CGUIWindow
-  {
-  public:
-    CGUIWindowNowPlaying(void);
-    virtual ~CGUIWindowNowPlaying(void);
-    virtual bool OnAction(const CAction &action);
-  };
+class CGUIWindowNowPlaying : public CGUIWindow
+{
+ public:
+   CGUIWindowNowPlaying(void);
+   virtual ~CGUIWindowNowPlaying(void);
+   virtual bool OnAction(const CAction &action);
+   virtual bool OnMessage(CGUIMessage& message);
+   
+ private:
+   CMusicThumbLoader m_thumbLoader;
+};

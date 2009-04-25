@@ -19,16 +19,24 @@
  *
  */
 
+#include <boost/foreach.hpp>
 #include "stdafx.h"
+#include "FileItem.h"
 #include "GUIWindowManager.h"
+#include "PlayListPlayer.h"
+#include "PlayList.h"
 
 #include "GUIWindowNowPlaying.h"
 
-CGUIWindowNowPlaying::CGUIWindowNowPlaying(void) : CGUIWindow(WINDOW_NOW_PLAYING, "NowPlaying.xml")
+using namespace PLAYLIST;
+
+CGUIWindowNowPlaying::CGUIWindowNowPlaying() 
+  : CGUIWindow(WINDOW_NOW_PLAYING, "NowPlaying.xml")
+  , m_thumbLoader(1, 200)
 {
 }
 
-CGUIWindowNowPlaying::~CGUIWindowNowPlaying(void)
+CGUIWindowNowPlaying::~CGUIWindowNowPlaying()
 {
 }
 
@@ -57,4 +65,31 @@ bool CGUIWindowNowPlaying::OnAction(const CAction &action)
   }
   
   return false;
+}
+
+bool CGUIWindowNowPlaying::OnMessage(CGUIMessage& message)
+{
+  switch (message.GetMessage())
+  {
+    case GUI_MSG_WINDOW_DEINIT:
+    {
+      if (m_thumbLoader.IsLoading())
+        m_thumbLoader.StopThread();
+    }
+    break;
+
+    case GUI_MSG_WINDOW_INIT:
+    {
+      CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
+      CFileItemList list;
+      
+      for (int i=0; i<playlist.size(); i++)
+        list.Add(playlist[i]);
+      
+      m_thumbLoader.Load(list);
+    }
+    break;
+  }
+  
+  return CGUIWindow::OnMessage(message);
 }
