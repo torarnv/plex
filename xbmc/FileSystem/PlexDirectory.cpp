@@ -131,7 +131,6 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   string strSecondDirLabel = "%Y";
   
   Parse(m_url, root, items, strFileLabel, strDirLabel, strSecondDirLabel);
-  items.AddSortMethod(SORT_METHOD_NONE, 552, LABEL_MASKS(strFileLabel, "%D", strDirLabel, strSecondDirLabel));
   
   // Set the window titles
   const char* title1 = root->Attribute("title1");
@@ -167,6 +166,18 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     CGUIViewState* viewState = CGUIViewState::GetViewState(0, items);
     viewState->SaveViewAsControl(atoi(viewmode));
   }
+  
+  // Override labels.
+  const char* fileLabel = root->Attribute("filelabel");
+  if (fileLabel && strlen(fileLabel) > 0)
+    strFileLabel = fileLabel;
+
+  const char* dirLabel = root->Attribute("dirlabel");
+  if (dirLabel && strlen(dirLabel) > 0)
+    strDirLabel = dirLabel;
+
+  // Add the sort method.
+  items.AddSortMethod(SORT_METHOD_NONE, 552, LABEL_MASKS(strFileLabel, "%D", strDirLabel, strSecondDirLabel));
   
   // Set the content label.
   const char* content = root->Attribute("content");
