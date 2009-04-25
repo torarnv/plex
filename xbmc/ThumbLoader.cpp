@@ -72,6 +72,7 @@ bool CVideoThumbLoader::ExtractThumb(const CStdString &strPath, const CStdString
 
 bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
 {
+ 
   if (pItem->m_bIsShareOrDrive) return true;
   CStdString cachedThumb(pItem->GetCachedVideoThumb());
 
@@ -187,7 +188,8 @@ bool CProgramThumbLoader::LoadItem(CFileItem *pItem)
   return true;
 }
 
-CMusicThumbLoader::CMusicThumbLoader()
+CMusicThumbLoader::CMusicThumbLoader(int numThreads, int pauseBetweenLoads)
+  : CBackgroundInfoLoader(numThreads, pauseBetweenLoads)
 {
 }
 
@@ -196,10 +198,12 @@ CMusicThumbLoader::~CMusicThumbLoader()
 }
 
 bool CMusicThumbLoader::LoadItem(CFileItem* pItem)
-{
+{ 
   if (pItem->m_bIsShareOrDrive) return true;
   if (!pItem->HasThumbnail())
+  {
     pItem->SetUserMusicThumb();
+  }
   else
   {
     // look for remote thumbs
@@ -208,7 +212,9 @@ bool CMusicThumbLoader::LoadItem(CFileItem* pItem)
     {
       CStdString cachedThumb(pItem->GetCachedMusicThumb());
       if(CFile::Exists(cachedThumb))
+      {
         pItem->SetThumbnailImage(cachedThumb);
+      }
       else
       {
         CPicture pic;
@@ -219,6 +225,14 @@ bool CMusicThumbLoader::LoadItem(CFileItem* pItem)
       }
     }  
   }
+  
+  if (!pItem->HasProperty("fanart_image"))
+  {
+    pItem->CacheFanart();
+    if (CFile::Exists(pItem->GetCachedProgramFanart()))
+      pItem->SetProperty("fanart_image",pItem->GetCachedProgramFanart());
+  }
+ 
   return true;
 }
 

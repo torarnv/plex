@@ -56,7 +56,7 @@ public:
 class CMusicThumbLoader : public CBackgroundInfoLoader
 {
 public:
-  CMusicThumbLoader();
+  CMusicThumbLoader(int numThreads=-1, int pauseBetweenLoads=0);
   virtual ~CMusicThumbLoader();
   virtual bool LoadItem(CFileItem* pItem);
 };
