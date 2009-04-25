@@ -72,7 +72,6 @@ using namespace MUSIC_INFO;
 CGUIWindowMusicBase::CGUIWindowMusicBase(DWORD dwID, const CStdString &xmlFile)
     : CGUIMediaWindow(dwID, xmlFile)
 {
-  m_thumbLoader.SetObserver(this);
 }
 
 CGUIWindowMusicBase::~CGUIWindowMusicBase ()
@@ -133,9 +132,6 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_DEINIT:
     {
-      if (m_thumbLoader.IsLoading())
-        m_thumbLoader.StopThread();
-      
       m_musicdatabase.Close();
     }
     break;
@@ -642,8 +638,6 @@ void CGUIWindowMusicBase::OnQueueItem(int iItem)
   CFileItemList queuedItems;
   AddItemToPlayList(item, queuedItems);
   
-  m_thumbLoader.Load(queuedItems);
-
   // select next item
   m_viewControl.SetSelectedItem(iItem + 1);
 
@@ -690,13 +684,11 @@ void CGUIWindowMusicBase::OnShuffleItem(int iItem)
     CLog::Log(LOGDEBUG, "Shuffling files %s%s and adding to music playlist", item->m_strPath.c_str(), item->m_bIsFolder ? " (folder) " : "");
     CFileItemList queuedItems;
     AddItemToPlayList(item, queuedItems);
-    m_thumbLoader.Load(queuedItems);
     g_playlistPlayer.Add(PLAYLIST_MUSIC, queuedItems);
   }
   else
   {
     g_playlistPlayer.Add(PLAYLIST_MUSIC, *m_vecItems);
-    m_thumbLoader.Load(*m_vecItems);
   }
   
   /*
@@ -1141,8 +1133,6 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
     CFileItemList queuedItems;
     AddItemToPlayList(item, queuedItems);
     
-    m_thumbLoader.Load(queuedItems);
-    
     if (g_partyModeManager.IsEnabled())
     {
       g_partyModeManager.AddUserSongs(queuedItems, true);
@@ -1377,9 +1367,6 @@ void CGUIWindowMusicBase::OnRetrieveMusicInfo(CFileItemList& items)
 
 bool CGUIWindowMusicBase::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
-  if (m_thumbLoader.IsLoading())
-    m_thumbLoader.StopThread();
-  
   items.SetThumbnailImage("");
   bool bResult = CGUIMediaWindow::GetDirectory(strDirectory,items);
   if (bResult)
