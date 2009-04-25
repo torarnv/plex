@@ -126,6 +126,8 @@ void XBPyThread::Process()
   PyEval_AcquireLock();
 
   m_threadState = Py_NewInterpreter();
+  
+  PyThreadState_Swap(NULL);
   PyEval_ReleaseLock();
 
   if (!m_threadState) {
@@ -199,6 +201,7 @@ void XBPyThread::Process()
     else CLog::Log(LOGINFO, "Scriptresult: Success\n");
   }
 
+  PyThreadState_Swap(NULL);
   PyEval_ReleaseLock();
 
   // when a script uses threads or timers - we have to wait for them to be over before we terminate the interpreter.
