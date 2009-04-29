@@ -25,7 +25,6 @@
 #include "Id3Tag.h"
 #include "Settings.h"
 #include "FileSystem/File.h"
-#include "Util.h"
 
 using namespace MUSIC_INFO;
 
@@ -152,27 +151,24 @@ bool CMusicInfoTagLoaderMP3::Load(const CStdString& strFileName, CMusicInfoTag& 
 
 bool CMusicInfoTagLoaderMP3::ReadSeekAndReplayGainInfo(const CStdString &strFileName)
 {
-  if (CUtil::IsPlexMediaServer(strFileName) == false)
-  {
-    // First check for an APEv2 tag
-    CAPEv2Tag apeTag;
-    if (apeTag.ReadTag(strFileName.c_str()))
-    { // found - let's copy over the additional info (if any)
-      if (apeTag.GetReplayGain().iHasGainInfo)
-        m_replayGainInfo = apeTag.GetReplayGain();
-    }
-  
-    if (!m_replayGainInfo.iHasGainInfo)
-    { // Nothing found query id3 tag
-      CID3Tag id3tag;
-      if (id3tag.Read(strFileName))
-      {
-        if (id3tag.GetReplayGain().iHasGainInfo)
-          m_replayGainInfo = id3tag.GetReplayGain();
-      }
+  // First check for an APEv2 tag
+  CAPEv2Tag apeTag;
+  if (apeTag.ReadTag(strFileName.c_str()))
+  { // found - let's copy over the additional info (if any)
+    if (apeTag.GetReplayGain().iHasGainInfo)
+      m_replayGainInfo = apeTag.GetReplayGain();
+  }
+
+  if (!m_replayGainInfo.iHasGainInfo)
+  { // Nothing found query id3 tag
+    CID3Tag id3tag;
+    if (id3tag.Read(strFileName))
+    {
+      if (id3tag.GetReplayGain().iHasGainInfo)
+        m_replayGainInfo = id3tag.GetReplayGain();
     }
   }
-    
+
   // now read the duration
   int duration = ReadDuration(strFileName);
 
