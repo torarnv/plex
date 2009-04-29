@@ -712,11 +712,9 @@ void Cocoa_UpdateSystemActivity()
 
 void Cocoa_TurnOffScreenSaver()
 {
-  if (GetProcessPid("ScreenSaverEngin") != -1)
-  {
-    NSAppleScript* stopScript = [[NSAppleScript alloc] initWithSource:@"tell application \"/System/Library/Frameworks/ScreenSaver.framework/Versions/A/Resources/ScreenSaverEngine.app\" to quit"];
-    [stopScript executeAndReturnError:nil];
-  }
+  int pid = GetProcessPid("ScreenSaverEngin");
+  if (pid != -1)
+    kill(pid, SIGKILL);
 }
                    
 int Cocoa_SleepSystem()
