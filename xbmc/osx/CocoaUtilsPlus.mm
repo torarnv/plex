@@ -25,10 +25,13 @@
 #include "PlexMediaServerHelper.h"
 
 #include <boost/algorithm/string.hpp>
+#include <map>
 
 #define COCOA_KEY_PLAYPAUSE  1051136
 #define COCOA_KEY_PREV_TRACK 1313280
 #define COCOA_KEY_NEXT_TRACK 1248000
+
+static map<string, string> g_isoLangMap;
 
 ///////////////////////////////////////////////////////////////////////////////
 CGEventRef tapEventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef event, void *refcon)
@@ -46,6 +49,210 @@ CGEventRef tapEventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef 
 ///////////////////////////////////////////////////////////////////////////////
 void CocoaPlus_Initialize()
 {
+  g_isoLangMap["aar"] = "aa";
+  g_isoLangMap["abk"] = "ab";
+  g_isoLangMap["ave"] = "ae";
+  g_isoLangMap["afr"] = "af";
+  g_isoLangMap["aka"] = "ak";
+  g_isoLangMap["amh"] = "am";
+  g_isoLangMap["arg"] = "an";
+  g_isoLangMap["ara"] = "ar";
+  g_isoLangMap["asm"] = "as";
+  g_isoLangMap["ava"] = "av";
+  g_isoLangMap["aym"] = "ay";
+  g_isoLangMap["aze"] = "az";
+  g_isoLangMap["bak"] = "ba";
+  g_isoLangMap["bel"] = "be";
+  g_isoLangMap["bul"] = "bg";
+  g_isoLangMap["bih"] = "bh";
+  g_isoLangMap["bis"] = "bi";
+  g_isoLangMap["bam"] = "bm";
+  g_isoLangMap["ben"] = "bn";
+  g_isoLangMap["bod"] = "bo";
+  g_isoLangMap["tib"] = "bo"; // Alternate.
+  g_isoLangMap["bre"] = "br";
+  g_isoLangMap["bos"] = "bs";
+  g_isoLangMap["cat"] = "ca";
+  g_isoLangMap["che"] = "ce";
+  g_isoLangMap["cha"] = "ch";
+  g_isoLangMap["cos"] = "co";
+  g_isoLangMap["cre"] = "cr";
+  g_isoLangMap["ces"] = "cs";
+  g_isoLangMap["cze"] = "cs";
+  g_isoLangMap["chu"] = "cu";
+  g_isoLangMap["chv"] = "cv";
+  g_isoLangMap["cym"] = "cy";
+  g_isoLangMap["wel"] = "cy"; // Alternate.
+  g_isoLangMap["dan"] = "da";
+  g_isoLangMap["deu"] = "de";
+  g_isoLangMap["ger"] = "de"; // Alternate.
+  g_isoLangMap["div"] = "dv";
+  g_isoLangMap["dzo"] = "dz";
+  g_isoLangMap["ewe"] = "ee";
+  g_isoLangMap["ell"] = "el";
+  g_isoLangMap["gre"] = "el"; // Alternate.
+  g_isoLangMap["eng"] = "en";
+  g_isoLangMap["epo"] = "eo";
+  g_isoLangMap["spa"] = "es";
+  g_isoLangMap["est"] = "et";
+  g_isoLangMap["eus"] = "eu";
+  g_isoLangMap["baq"] = "eu"; // Alternate.
+  g_isoLangMap["fas"] = "fa";
+  g_isoLangMap["per"] = "fa"; // Alternate.
+  g_isoLangMap["ful"] = "ff";
+  g_isoLangMap["fin"] = "fi";
+  g_isoLangMap["fij"] = "fj";
+  g_isoLangMap["fao"] = "fo";
+  g_isoLangMap["fra"] = "fr";
+  g_isoLangMap["fre"] = "fr"; // Alternate.
+  g_isoLangMap["fry"] = "fy";
+  g_isoLangMap["gle"] = "ga";
+  g_isoLangMap["gla"] = "gd";
+  g_isoLangMap["glg"] = "gl";
+  g_isoLangMap["grn"] = "gn";
+  g_isoLangMap["guj"] = "gu";
+  g_isoLangMap["glv"] = "gv";
+  g_isoLangMap["hau"] = "ha";
+  g_isoLangMap["heb"] = "he";
+  g_isoLangMap["hin"] = "hi";
+  g_isoLangMap["hmo"] = "ho";
+  g_isoLangMap["hrv"] = "hr";
+  g_isoLangMap["hat"] = "ht";
+  g_isoLangMap["hun"] = "hu";
+  g_isoLangMap["hye"] = "hy";
+  g_isoLangMap["arm"] = "hy"; // Alternate.
+  g_isoLangMap["her"] = "hz";
+  g_isoLangMap["ina"] = "ia";
+  g_isoLangMap["ind"] = "id";
+  g_isoLangMap["ile"] = "ie";
+  g_isoLangMap["ibo"] = "ig";
+  g_isoLangMap["iii"] = "ii";
+  g_isoLangMap["ipk"] = "ik";
+  g_isoLangMap["ido"] = "io";
+  g_isoLangMap["isl"] = "is";
+  g_isoLangMap["ice"] = "is";
+  g_isoLangMap["ita"] = "it";
+  g_isoLangMap["iku"] = "iu";
+  g_isoLangMap["jpn"] = "ja";
+  g_isoLangMap["jav"] = "jv";
+  g_isoLangMap["kat"] = "ka";
+  g_isoLangMap["geo"] = "ka";
+  g_isoLangMap["kon"] = "kg";
+  g_isoLangMap["kik"] = "ki";
+  g_isoLangMap["kua"] = "kj";
+  g_isoLangMap["kaz"] = "kk";
+  g_isoLangMap["kal"] = "kl";
+  g_isoLangMap["khm"] = "km";
+  g_isoLangMap["kan"] = "kn";
+  g_isoLangMap["kor"] = "ko";
+  g_isoLangMap["kau"] = "kr";
+  g_isoLangMap["kas"] = "ks";
+  g_isoLangMap["kur"] = "ku";
+  g_isoLangMap["kom"] = "kv";
+  g_isoLangMap["cor"] = "kw";
+  g_isoLangMap["kir"] = "ky";
+  g_isoLangMap["lat"] = "la";
+  g_isoLangMap["ltz"] = "lb";
+  g_isoLangMap["lug"] = "lg";
+  g_isoLangMap["lim"] = "li";
+  g_isoLangMap["lin"] = "ln";
+  g_isoLangMap["lao"] = "lo";
+  g_isoLangMap["lit"] = "lt";
+  g_isoLangMap["lub"] = "lu";
+  g_isoLangMap["lav"] = "lv";
+  g_isoLangMap["mlg"] = "mg";
+  g_isoLangMap["mah"] = "mh";
+  g_isoLangMap["mri"] = "mi";
+  g_isoLangMap["mao"] = "mi"; // Alternate.
+  g_isoLangMap["mkd"] = "mk";
+  g_isoLangMap["mac"] = "mk"; // Alternate.
+  g_isoLangMap["mal"] = "ml";
+  g_isoLangMap["mon"] = "mn";
+  g_isoLangMap["mar"] = "mr";
+  g_isoLangMap["msa"] = "ms";
+  g_isoLangMap["may"] = "ms"; // Alternate.
+  g_isoLangMap["mlt"] = "mt";
+  g_isoLangMap["mya"] = "my";
+  g_isoLangMap["bur"] = "my"; // Alternate.
+  g_isoLangMap["nau"] = "na";
+  g_isoLangMap["nob"] = "nb";
+  g_isoLangMap["nde"] = "nd";
+  g_isoLangMap["nep"] = "ne";
+  g_isoLangMap["ndo"] = "ng";
+  g_isoLangMap["nld"] = "nl";
+  g_isoLangMap["dut"] = "nl"; // Alternate.
+  g_isoLangMap["nno"] = "nn";
+  g_isoLangMap["nor"] = "no";
+  g_isoLangMap["nbl"] = "nr";
+  g_isoLangMap["nav"] = "nv";
+  g_isoLangMap["nya"] = "ny";
+  g_isoLangMap["oci"] = "oc";
+  g_isoLangMap["oji"] = "oj";
+  g_isoLangMap["orm"] = "om";
+  g_isoLangMap["ori"] = "or";
+  g_isoLangMap["oss"] = "os";
+  g_isoLangMap["pan"] = "pa";
+  g_isoLangMap["pli"] = "pi";
+  g_isoLangMap["pol"] = "pl";
+  g_isoLangMap["pus"] = "ps";
+  g_isoLangMap["por"] = "pt";
+  g_isoLangMap["que"] = "qu";
+  g_isoLangMap["roh"] = "rm";
+  g_isoLangMap["run"] = "rn";
+  g_isoLangMap["ron"] = "ro";
+  g_isoLangMap["rum"] = "ro"; // Alternate.
+  g_isoLangMap["rus"] = "ru";
+  g_isoLangMap["kin"] = "rw";
+  g_isoLangMap["san"] = "sa";
+  g_isoLangMap["srd"] = "sc";
+  g_isoLangMap["snd"] = "sd";
+  g_isoLangMap["sme"] = "se";
+  g_isoLangMap["sag"] = "sg";
+  g_isoLangMap["sin"] = "si";
+  g_isoLangMap["slk"] = "sk";
+  g_isoLangMap["slo"] = "sk"; // Alternate.
+  g_isoLangMap["slv"] = "sl";
+  g_isoLangMap["smo"] = "sm";
+  g_isoLangMap["sna"] = "sn";
+  g_isoLangMap["som"] = "so";
+  g_isoLangMap["sqi"] = "sq";
+  g_isoLangMap["srp"] = "sr";
+  g_isoLangMap["ssw"] = "ss";
+  g_isoLangMap["sot"] = "st";
+  g_isoLangMap["sun"] = "su";
+  g_isoLangMap["swe"] = "sv";
+  g_isoLangMap["swa"] = "sw";
+  g_isoLangMap["tam"] = "ta";
+  g_isoLangMap["tel"] = "te";
+  g_isoLangMap["tgk"] = "tg";
+  g_isoLangMap["tha"] = "th";
+  g_isoLangMap["tir"] = "ti";
+  g_isoLangMap["tuk"] = "tk";
+  g_isoLangMap["tgl"] = "tl";
+  g_isoLangMap["tsn"] = "tn";
+  g_isoLangMap["ton"] = "to";
+  g_isoLangMap["tur"] = "tr";
+  g_isoLangMap["tso"] = "ts";
+  g_isoLangMap["tat"] = "tt";
+  g_isoLangMap["twi"] = "tw";
+  g_isoLangMap["tah"] = "ty";
+  g_isoLangMap["uig"] = "ug";
+  g_isoLangMap["ukr"] = "uk";
+  g_isoLangMap["urd"] = "ur";
+  g_isoLangMap["uzb"] = "uz";
+  g_isoLangMap["ven"] = "ve";
+  g_isoLangMap["vie"] = "vi";
+  g_isoLangMap["vol"] = "vo";
+  g_isoLangMap["wln"] = "wa";
+  g_isoLangMap["wol"] = "wo";
+  g_isoLangMap["xho"] = "xh";
+  g_isoLangMap["yid"] = "yi";
+  g_isoLangMap["yor"] = "yo";
+  g_isoLangMap["zha"] = "za";
+  g_isoLangMap["zho"] = "zh";
+  g_isoLangMap["chi"] = "zh"; // Alternate.
+  g_isoLangMap["zul"] = "zu";
+  
 #if 0
   // kCGHeadInsertEventTap - can't use this because stopping in debugger/hang means nobody gets it!
   CFMachPortRef eventPort = CGEventTapCreate(kCGSessionEventTap, kCGTailAppendEventTap, kCGEventTapOptionDefault, CGEventMaskBit(NX_SYSDEFINED), tapEventCallback, NULL);
@@ -191,6 +398,27 @@ string Cocoa_GetLanguage()
   NSString* language = [languages objectAtIndex:0];
   
   return [language UTF8String];
+}
+
+///////////////////////////////////////////////////////////////////////////////
+string Cocoa_GetSimpleLanguage()
+{
+  string lang = Cocoa_GetLanguage();
+  int    dash = lang.find("-");
+  
+  if (dash != -1)
+    lang = lang.substr(0, dash);
+  
+  return lang;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+string Cocoa_ConvertIso6392ToIso6391(const string& lang)
+{
+  if (g_isoLangMap.find(lang) != g_isoLangMap.end())
+    return g_isoLangMap[lang];
+  
+  return ""; 
 }
 
 ///////////////////////////////////////////////////////////////////////////////

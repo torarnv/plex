@@ -45,6 +45,8 @@ vector<CStdString> Cocoa_Proxy_ExceptionList();
 //
 string Cocoa_GetCountryCode();
 string Cocoa_GetLanguage();
+string Cocoa_GetSimpleLanguage();
+string Cocoa_ConvertIso6392ToIso6391(const string& lang);
 bool   Cocoa_IsMetricSystem();
 string Cocoa_GetLongDateFormat();
 string Cocoa_GetShortDateFormat();

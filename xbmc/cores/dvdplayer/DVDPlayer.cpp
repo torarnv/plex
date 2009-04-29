@@ -53,6 +53,12 @@
 #endif
 #include "Settings.h"
 #include "FileItem.h"
+#ifdef __APPLE__
+#include <vector>
+#include <boost/foreach.hpp>
+#include "CocoaUtilsPlus.h"
+#include "XBAudioConfig.h"
+#endif
 
 using namespace std;
 
@@ -206,7 +212,6 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer)
     else
       source = Source(STREAM_SOURCE_DEMUX_SUB, filename);
 
-
     for(int i=0;i<count;i++)
     {
       CDemuxStream* stream = demuxer->GetStream(i);
@@ -219,6 +224,14 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer)
       s.id       = stream->iId;
       s.language = stream->language;
       s.filename = demuxer->GetFileName();
+      s.codec    = stream->codec;
+      
+      if (s.type == STREAM_AUDIO)
+      {
+        CDemuxStreamAudio* audioStream = (CDemuxStreamAudio* )stream;
+        s.numChannels = audioStream->iChannels;
+      }
+      
       stream->GetStreamName(s.name);
       if(stream->type == STREAM_AUDIO)
       {
@@ -231,6 +244,7 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer)
           s.name += type;
         }
       }
+      
       Update(s);
     }
   }
@@ -522,13 +536,16 @@ void CDVDPlayer::OpenDefaultStreams()
   if(!valid)
     CloseVideoStream(true);
 
+  bool foundMatchingAudioStream = false;
+  
   if(!m_PlayerOptions.video_only)
   {
-    // open audio stream
     count = m_SelectionStreams.Count(STREAM_AUDIO);
     valid = false;
-    if(g_stSettings.m_currentVideoSettings.m_AudioStream >= 0 
-    && g_stSettings.m_currentVideoSettings.m_AudioStream < count)
+
+    // Open the stream saved in the setting.
+    if (g_stSettings.m_currentVideoSettings.m_AudioStream >= 0 && 
+        g_stSettings.m_currentVideoSettings.m_AudioStream < count)
     {
       SelectionStream& s = m_SelectionStreams.Get(STREAM_AUDIO, g_stSettings.m_currentVideoSettings.m_AudioStream);
       if(OpenAudioStream(s.id, s.source))
@@ -537,6 +554,92 @@ void CDVDPlayer::OpenDefaultStreams()
         CLog::Log(LOGWARNING, "%s - failed to restore selected audio stream (%d)", __FUNCTION__, g_stSettings.m_currentVideoSettings.m_AudioStream);
     }
 
+#ifdef __APPLE__
+    
+    // Try a smart open.
+    if (g_guiSettings.GetBool("videoplayer.autoselectaudiostream"))
+    {
+      bool dtsEnabled = false;
+      bool ac3Enabled = false;
+      string lang     = Cocoa_GetSimpleLanguage();
+      SelectionStream* pickedStream = 0;
+      
+      if (g_audioConfig.HasDigitalOutput() == true)
+      {
+        dtsEnabled = g_audioConfig.GetDTSEnabled();
+        ac3Enabled = g_audioConfig.GetAC3Enabled();
+      }
+      
+      // First try to find the right language.
+      printf("Auto-selecting audio stream, DTS=%d, AC3=%d.\n", dtsEnabled, ac3Enabled);
+      vector<SelectionStream*> correctLanguage;
+      for (int i=0; i<count; i++)
+      {
+        SelectionStream& s = m_SelectionStreams.Get(STREAM_AUDIO, i);
+        string iso6391 = Cocoa_ConvertIso6392ToIso6391(s.language);
+        
+        printf(" * Considering %s with %s\n", iso6391.c_str(), lang.c_str());
+        if (Cocoa_ConvertIso6392ToIso6391(s.language) == lang)
+        {
+          printf(" * Language match for audio stream: %s\n", lang.c_str());
+          correctLanguage.push_back(&s);
+        }
+      }
+      
+      if (correctLanguage.size() > 1)
+      {
+        int score = 0;
+        
+        // Pick the best one based on format.
+        BOOST_FOREACH(SelectionStream* s, correctLanguage)
+        {
+          if (s->codec == CODEC_ID_DTS && dtsEnabled)
+          {
+            pickedStream = s;
+            score = 6;
+          }
+          else if (s->codec == CODEC_ID_AC3 && ac3Enabled && score < 5)
+          {
+            pickedStream = s;
+            score = 5;
+          }
+          else if (s->codec == CODEC_ID_AAC && ac3Enabled && score < 4)
+          {
+            pickedStream = s;
+            score = 4;
+          }
+          else if (s->codec != CODEC_ID_VORBIS && s->numChannels == 2 && ac3Enabled == false && dtsEnabled == false && score < 2)
+          {
+            // We check for Vorbis because (a) they don't seem to A/V sync very well and
+            // they tend to be used as director's comments tracks.
+            //
+            pickedStream = s;
+            score = 2;
+          }
+        }
+
+        // If we didn't luck out, just pick the first one.
+        if (pickedStream == 0)
+          pickedStream = correctLanguage[0];
+        
+        if (pickedStream)
+          printf(" * Decided to use codec=%d, channels=%d, score=%d\n", pickedStream->codec, pickedStream->numChannels, score);
+      }
+      else if (correctLanguage.size() == 1)
+      {
+        pickedStream = correctLanguage[0];
+      }
+      
+      // If we selected a stream, try to open it.
+      if (pickedStream != 0 && OpenAudioStream(pickedStream->id, pickedStream->source))
+      {
+        foundMatchingAudioStream = true;
+        valid = true;
+      }
+    }
+#endif
+    
+    // Just pick the first valid stream.
     for(int i = 0; i<count && !valid; i++)
     {
       SelectionStream& s = m_SelectionStreams.Get(STREAM_AUDIO, i);
@@ -553,6 +656,8 @@ void CDVDPlayer::OpenDefaultStreams()
     m_dvdPlayerVideo.EnableSubtitle(true);
     count = m_SelectionStreams.Count(STREAM_SUBTITLE);
     valid = false;
+    
+    // Try opening from settings.
     if(g_stSettings.m_currentVideoSettings.m_SubtitleStream >= 0 
     && g_stSettings.m_currentVideoSettings.m_SubtitleStream < count)
     {
@@ -563,6 +668,41 @@ void CDVDPlayer::OpenDefaultStreams()
         CLog::Log(LOGWARNING, "%s - failed to restore selected subtitle stream (%d)", __FUNCTION__, g_stSettings.m_currentVideoSettings.m_SubtitleStream);
     }
 
+#ifdef __APPLE__
+
+    // Try a smart open.
+    if (g_guiSettings.GetBool("subtitles.autoselectsubtitlestream"))
+    {
+      if (foundMatchingAudioStream == true)
+      {
+        // We don't need subtitles since the language matched.
+        printf("Not setting subtitles since we have a language match.\n");
+        valid = true;
+        m_dvdPlayerVideo.EnableSubtitle(false);
+      }
+      else
+      {
+        // Look for a language match.
+        string lang = Cocoa_GetSimpleLanguage();
+        
+        for (int i=0; i<count && !valid; i++)
+        {
+          SelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, i);
+          string iso6391 = Cocoa_ConvertIso6392ToIso6391(s.language);
+          
+          printf(" * Considering %s with %s\n", iso6391.c_str(), lang.c_str());
+          if (Cocoa_ConvertIso6392ToIso6391(s.language) == lang)
+          {
+            printf(" * Language match for subtitle stream: %s\n", lang.c_str());
+            if (OpenSubtitleStream(s.id, s.source))
+              valid = true;
+          }
+        }
+      }
+    }
+      
+#endif
+    
     for(int i = 0;i<count && !valid; i++)
     {
       SelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, i);

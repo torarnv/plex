@@ -88,15 +88,23 @@ public:
   }
 };
 
-typedef struct 
+struct SelectionStream 
 {
+  SelectionStream()
+    : numChannels(0)
+    , codec(CODEC_ID_NONE) {}
+  
   StreamType   type;
   std::string  filename;
   std::string  language;
   std::string  name;
   int          source;
-  int          id;  
-} SelectionStream;
+  int          id;
+  
+  int          numChannels;
+  CodecID      codec;
+  
+};
 
 class CSelectionStreams
 {

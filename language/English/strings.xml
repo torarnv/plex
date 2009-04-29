@@ -990,6 +990,9 @@
   <string id="13135">Disabled</string>
   <string id="13136">Medium</string>
   <string id="13137">High</string>
+  
+  <string id="13138">Automatically Select Audio Stream</string>
+  <string id="13139">Automatically Select Subtitle Stream</string>
 
   <string id="13140">Active Connections Detected!</string>
   <string id="13141">If you proceed, you might not be able to control Plex</string>
