@@ -564,7 +564,7 @@ void CDVDPlayer::OpenDefaultStreams()
       string lang     = Cocoa_GetSimpleLanguage();
       SelectionStream* pickedStream = 0;
       
-      if (g_audioConfig.HasDigitalOutput() == true)
+      if (g_audioConfig.UseDigitalOutput() == true)
       {
         dtsEnabled = g_audioConfig.GetDTSEnabled();
         ac3Enabled = g_audioConfig.GetAC3Enabled();
