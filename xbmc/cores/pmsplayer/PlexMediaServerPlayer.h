@@ -94,7 +94,8 @@ public:
   virtual CStdString GetPlayerState() { return ""; }
   virtual bool SetPlayerState(CStdString state) { return true; }
 
-  static void RequireServerRestart() { g_needToRestartMediaServer = true; } 
+  static void RequireServerRestart() { g_needToRestartMediaServer = true; }
+  static bool IsRestartRequired() { return g_needToRestartMediaServer; }
   
 private:
 

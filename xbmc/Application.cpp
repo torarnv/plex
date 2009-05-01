@@ -20,6 +20,8 @@
  */
 
 #include "stdafx.h"
+#include <iostream>
+#include <fstream>
 #include "Application.h"
 #include "KeyboardLayoutConfiguration.h"
 #ifdef HAS_XBOX_HARDWARE
@@ -266,86 +268,8 @@ using namespace EVENTSERVER;
 // Atm this saves you 7 mb of memory
 #define USE_RELEASE_LIBS
 
-#ifdef HAS_LCD
-#ifdef _XBOX
-#pragma comment (lib,"xbmc/lib/libXenium/XeniumSPIg.lib")
-#endif
-#endif
-#ifdef HAS_KAI_VOICE
-#pragma comment (lib,"xbmc/lib/libSpeex/libSpeex.lib")
-#endif
-
-#if defined(_DEBUG) && !defined(USE_RELEASE_LIBS)
- #ifdef _XBOX
-  #ifdef HAS_FILESYSTEM
-    #pragma comment (lib,"xbmc/lib/libXBMS/libXBMSd.lib")    // SECTIONNAME=LIBXBMS
-    #pragma comment (lib,"xbmc/lib/libsmb/libsmbd.lib")      // SECTIONNAME=LIBSMB
-    #pragma comment (lib,"xbmc/lib/libxdaap/libxdaapd.lib") // SECTIONNAME=LIBXDAAP
-    #pragma comment (lib,"xbmc/lib/libRTV/libRTVd.lib")    // SECTIONNAME=LIBRTV
-  #endif
-  #pragma comment (lib,"xbmc/lib/libGoAhead/goaheadd.lib") // SECTIONNAME=LIBHTTP
-  #pragma comment (lib,"xbmc/lib/sqLite/libSQLite3d.lib")
-  #pragma comment (lib,"xbmc/lib/libshout/libshoutd.lib" )
-  #pragma comment (lib,"xbmc/lib/libcdio/libcdiod.lib" )
-  #pragma comment (lib,"xbmc/lib/libiconv/libiconvd.lib")
-  #pragma comment (lib,"xbmc/lib/libfribidi/libfribidid.lib")
-  #pragma comment (lib,"xbmc/lib/libpcre/libpcred.lib")
- #else
-  #if defined(HAS_FILESYSTEM) && !defined(_LINUX)
-    #pragma comment (lib,"../../xbmc/lib/libXBMS/libXBMSd.lib")    // SECTIONNAME=LIBXBMS
-    #pragma comment (lib,"../../xbmc/lib/libsmb/libsmbd.lib")      // SECTIONNAME=LIBSMB
-    #pragma comment (lib,"../../xbmc/lib/libxdaap/libxdaapd.lib") // SECTIONNAME=LIBXDAAP
-    #pragma comment (lib,"../../xbmc/lib/libRTV/libRTVd_win32.lib")
-  #endif
-  #pragma comment (lib,"../../xbmc/lib/libGoAhead/goahead_win32d.lib") // SECTIONNAME=LIBHTTP
-  #pragma comment (lib,"../../xbmc/lib/sqLite/libSQLite3_win32d.lib")
-  #pragma comment (lib,"../../xbmc/lib/libshout/libshout_win32d.lib" )
-  #pragma comment (lib,"../../xbmc/lib/libcdio/libcdio_win32d.lib" )
-  #pragma comment (lib,"../../xbmc/lib/libiconv/libiconvd.lib")
-  #pragma comment (lib,"../../xbmc/lib/libfribidi/libfribidid.lib")
-  #pragma comment (lib,"../../xbmc/lib/libpcre/libpcred.lib")
- #endif
- #ifdef HAS_MIKMOD
-  #pragma comment (lib,"xbmc/lib/mikxbox/mikxboxd.lib")  // SECTIONNAME=MOD_RW,MOD_RX
- #endif
-#else
- #if defined (HAS_FILESYSTEM) && !defined (_LINUX)
-
- #endif
- #ifdef _XBOX
-  #ifdef HAS_FILESYSTEM
-    #pragma comment (lib,"xbmc/lib/libXBMS/libXBMS.lib")
-    #pragma comment (lib,"xbmc/lib/libsmb/libsmb.lib")
-    #pragma comment (lib,"xbmc/lib/libxdaap/libxdaap.lib") // SECTIONNAME=LIBXDAAP
-    #pragma comment (lib,"xbmc/lib/libRTV/libRTV.lib")    // SECTIONNAME=LIBRTV
-  #endif
-  #pragma comment (lib,"xbmc/lib/libGoAhead/goahead.lib")
-  #pragma comment (lib,"xbmc/lib/sqLite/libSQLite3.lib")
-  #pragma comment (lib,"xbmc/lib/libcdio/libcdio.lib")
-  #pragma comment (lib,"xbmc/lib/libshout/libshout.lib")
-  #pragma comment (lib,"xbmc/lib/libiconv/libiconv.lib")
-  #pragma comment (lib,"xbmc/lib/libfribidi/libfribidi.lib")
- #elif !defined(_LINUX)
-  #ifdef HAS_FILESYSTEM
-    #pragma comment (lib,"../../xbmc/lib/libXBMS/libXBMS.lib")
-    #pragma comment (lib,"../../xbmc/lib/libsmb/libsmb.lib")
-    #pragma comment (lib,"../../xbmc/lib/libxdaap/libxdaap.lib")
-    #pragma comment (lib,"../../xbmc/lib/libRTV/libRTV_win32.lib")
-  #endif
-  #pragma comment (lib,"../../xbmc/lib/libGoAhead/goahead_win32.lib")
-  #pragma comment (lib,"../../xbmc/lib/sqLite/libSQLite3_win32.lib")
-  #pragma comment (lib,"../../xbmc/lib/libshout/libshout_win32.lib" )
-  #pragma comment (lib,"../../xbmc/lib/libcdio/libcdio_win32.lib" )
-  #pragma comment (lib,"../../xbmc/lib/libiconv/libiconv.lib")
-  #pragma comment (lib,"../../xbmc/lib/libfribidi/libfribidi.lib")
-  #pragma comment (lib,"../../xbmc/lib/libpcre/libpcre.lib")
- #endif
- #ifdef HAS_MIKMOD
-  #pragma comment (lib,"xbmc/lib/mikxbox/mikxbox.lib")
- #endif
-#endif
-
 #define MAX_FFWD_SPEED 5
+#define CRASH_DETECTION_FILE _P("U:/CleanlyExited")
 
 CStdString g_LoadErrorStr;
 
@@ -633,21 +557,6 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
   }
   ++iLine;
 
-#ifdef HAS_XBOX_HARDWARE
-  if (MapDrives)
-  {
-    // map in default drives
-    CIoSupport::RemapDriveLetter('C',"Harddisk0\\Partition2");
-    CIoSupport::RemapDriveLetter('D',"Cdrom0");
-    CIoSupport::RemapDriveLetter('E',"Harddisk0\\Partition1");
-
-    //Add. also Drive F/G
-    if (CIoSupport::PartitionExists(6))
-      CIoSupport::RemapDriveLetter('F',"Harddisk0\\Partition6");
-    if (CIoSupport::PartitionExists(7))
-      CIoSupport::RemapDriveLetter('G',"Harddisk0\\Partition7");
-  }
-#endif
   bool Pal = g_graphicsContext.GetVideoResolution() == PAL_4x3;
 
   if (HaveGamepad)
@@ -656,134 +565,6 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
 
 #ifndef HAS_XBOX_NETWORK
   bool NetworkUp = m_network.IsAvailable();
-#endif
-
-#ifdef HAS_XBOX_NETWORK
-  bool NetworkUp = false;
-
-  // Boot up the network for FTP
-  if (InitNetwork)
-  {
-    std::vector<int> netorder;
-    if (m_bXboxMediacenterLoaded)
-    {
-      if (g_guiSettings.GetInt("network.assignment") == NETWORK_DHCP)
-      {
-        netorder.push_back(NETWORK_DHCP);
-        netorder.push_back(NETWORK_STATIC);
-      }
-      else if (g_guiSettings.GetInt("network.assignment") == NETWORK_STATIC)
-      {
-        netorder.push_back(NETWORK_STATIC);
-        netorder.push_back(NETWORK_DHCP);
-      }
-      else
-      {
-        netorder.push_back(NETWORK_DASH);
-        netorder.push_back(NETWORK_DHCP);
-        netorder.push_back(NETWORK_STATIC);
-      }
-    }
-    else
-    {
-      netorder.push_back(NETWORK_DASH);
-      netorder.push_back(NETWORK_DHCP);
-      netorder.push_back(NETWORK_STATIC);
-    }
-
-    while(1)
-    {
-      std::vector<int>::iterator it;
-      for( it = netorder.begin();it != netorder.end(); it++)
-      {
-        m_network.Deinitialize();
-
-        if (!(XNetGetEthernetLinkStatus() & XNET_ETHERNET_LINK_ACTIVE))
-        {
-          FEH_TextOut(pFont, iLine, L"Network cable unplugged");
-          break;
-        }
-
-        switch( (*it) )
-        {
-          case NETWORK_DASH:
-            FEH_TextOut(pFont, iLine, L"Init network using dash settings...");
-            m_network.Initialize(NETWORK_DASH, "","","","");
-            break;
-          case NETWORK_DHCP:
-            FEH_TextOut(pFont, iLine, L"Init network using DHCP...");
-            m_network.Initialize(NETWORK_DHCP, "","","","");
-            break;
-          default:
-            FEH_TextOut(pFont, iLine, L"Init network using static ip...");
-            if( m_bXboxMediacenterLoaded )
-            {
-              m_network.Initialize(NETWORK_STATIC,
-                    g_guiSettings.GetString("network.ipaddress").c_str(),
-                    g_guiSettings.GetString("network.subnet").c_str(),
-                    g_guiSettings.GetString("network.gateway").c_str(),
-                    g_guiSettings.GetString("network.dns").c_str() );
-            }
-            else
-            {
-              m_network.Initialize(NETWORK_STATIC,
-                    "192.168.0.42",
-                    "255.255.255.0",
-                    "192.168.0.1",
-                    "192.168.0.1" );
-            }
-            break;
-        }
-
-        int count = 0;
-
-        DWORD dwState = XNET_GET_XNADDR_PENDING;
-
-        while(dwState == XNET_GET_XNADDR_PENDING)
-        {
-          dwState = m_network.UpdateState();
-
-          if( dwState != XNET_GET_XNADDR_PENDING )
-            break;
-
-          if (HaveGamepad && AnyButtonDown())
-            m_applicationMessenger.Restart();
-
-
-          Sleep(50);
-          ++count;
-        }
-
-        if( dwState != XNET_GET_XNADDR_PENDING && dwState != XNET_GET_XNADDR_NONE )
-        {
-          /* yay, we got network */
-          NetworkUp = true;
-          break;
-        }
-        /* increment line before next attempt */
-        ++iLine;
-      }
-
-      /* break out of the continous loop if we have network*/
-      if( NetworkUp )
-        break;
-      else
-      {
-        int n = 10;
-        while (n)
-        {
-          FEH_TextOut(pFont, (iLine + 1) | 0x8000, L"Unable to init network, retrying in %d seconds", n--);
-          for (int i = 0; i < 20; ++i)
-          {
-            Sleep(50);
-
-            if (HaveGamepad && AnyButtonDown())
-              m_applicationMessenger.Restart();
-          }
-        }
-      }
-    }
-  }
 #endif
 
   if( NetworkUp )
@@ -1170,6 +951,19 @@ HRESULT CApplication::Create(HWND hWnd)
   // Configure and possible manually start the helpers.
   PlexRemoteHelper::Get().Configure();
   PlexMediaServerHelper::Get().Configure();
+  
+  // See if we crashed the last time.
+  if (CFile::Exists(CRASH_DETECTION_FILE))
+  {
+    // Oops, make sure we restart the media server just in case.
+    if (g_guiSettings.GetBool("plexmediaserver.alwayson"))
+      PlexMediaServerHelper::Get().Restart();
+  }
+  else
+  {
+    // Create the file so we know if we crashed on exit.
+    ofstream out(CRASH_DETECTION_FILE);
+  }
   
   // Note that the screensaver should turn off.
   Cocoa_UpdateSystemActivity();
@@ -4422,6 +4216,20 @@ void CApplication::Stop()
 {
   try
   {
+#ifdef __APPLE__
+    
+    // We've exited cleanly, so we can delete the crash file.
+    CFile::Delete(CRASH_DETECTION_FILE);
+    
+    // Also, if we were supposed to restart the Plex Media Server, do so now.
+    if (CPlexMediaServerPlayer::IsRestartRequired() == true &&
+        g_guiSettings.GetBool("plexmediaserver.alwayson"))
+    {
+      PlexMediaServerHelper::Get().Restart();
+    }
+    
+#endif
+
     CLog::Log(LOGNOTICE, "Storing total System Uptime");
     g_stSettings.m_iSystemTimeTotalUp = g_stSettings.m_iSystemTimeTotalUp + (int)(timeGetTime() / 60000);
 
