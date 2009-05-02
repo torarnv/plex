@@ -1507,9 +1507,9 @@
   <string id="16305">Lanczos3</string>
   <string id="16306">Sinc8</string>
   
-  <string id="16307">Bicubic (software)</string>
-  <string id="16308">Lanczos (software)</string>  
-  <string id="16309">Sinc (software)</string>
+  <string id="16307">Bicubic</string>
+  <string id="16308">Lanczos</string>  
+  <string id="16309">Sinc</string>
 
   <string id="17500">Sleep Display When Inactive For</string>
   <string id="17501">Display Brightness</string>
