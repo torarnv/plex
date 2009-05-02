@@ -132,6 +132,9 @@ void PlexHelperApp::Restart()
 /////////////////////////////////////////////////////////////////////////////
 void PlexHelperApp::Start()
 {
+  // Let the subclass do anything it needs to.
+  DoPreStart();
+  
   int pid = GetProcessPid(GetHelperBinaryName());
   if (pid == -1)
   {

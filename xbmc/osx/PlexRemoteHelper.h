@@ -33,6 +33,7 @@ class PlexRemoteHelper : public PlexHelperApp
    
   bool IsRemoteBuddyInstalled();
    
+  virtual void   DoPreStart();
   virtual bool   DoConfigure(int& mode, bool& alwaysRunning, bool& errorStarting);
   virtual string GetConfigString();
   
