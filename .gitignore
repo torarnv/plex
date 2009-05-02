@@ -15,3 +15,5 @@ xbmc/cores/dvdplayer/Codecs/ffmpeg/ffplay_g
 xbmc/cores/dvdplayer/Codecs/ffmpeg/ffserver
 xbmc/cores/dvdplayer/Codecs/ffmpeg/ffserver_g
 *.pyc
+xbmc/cores/dvdplayer/Codecs/ffmpeg/config.h
+xbmc/cores/dvdplayer/Codecs/ffmpeg/version.h
