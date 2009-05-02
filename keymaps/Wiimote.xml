@@ -1,0 +1,308 @@
+<keymap>
+  <global>
+    <wiiremote>
+      <a>Select</a>
+      <b>PreviousMenu</b>      
+      <left>Left</left>
+      <right>Right</right>
+      <up>Up</up>
+      <down>Down</down> 
+      <plus>VolumeUp</plus>
+      <minus>VolumeDown</minus>      
+      <home>XBMC.ActivateWindow(Home)</home>     
+      <one>ContextMenu</one>
+      <two></two>
+    </wiiremote>
+  </global>
+
+  <Home>
+    <wiiremote> 
+      <home>Fullscreen</home> 
+      <one>ActivateWindow(PlayerControls)</one>    
+      <two>ActivateWindow(shutdownmenu)</two>
+      <f1>XBMC.ShutDown()</f1>
+    </wiiremote>
+  </Home>
+  
+  <MyFiles>
+    <wiiremote>
+      <plus>Copy</plus>
+      <minus>Rename</minus>
+      <one>Highlight</one>
+      <two>Delete</two>
+    </wiiremote>
+  </MyFiles>
+  
+  <MyMusicPlaylist>
+    <wiiremote>
+      <b>Playlist</b>      <!-- Close playlist -->
+      <plus>MoveItemUp</plus>
+      <minus>MoveItemDown</minus>      
+      <two>Delete</two>
+    </wiiremote>
+  </MyMusicPlaylist>
+
+  <MyMusicPlaylistEditor>
+    <wiiremote>
+      <plus>MoveItemUp</plus>
+      <minus>MoveItemDown</minus>      
+      <two>Delete</two>
+    </wiiremote>        
+  </MyMusicPlaylistEditor>
+  
+  <MyMusicFiles>
+     <wiiremote>  
+      <b>ParentDir</b>
+    </wiiremote>
+ </MyMusicFiles>
+
+  <MyMusicLibrary>
+    <wiiremote>
+      <one>Queue</one>
+      <two>Playlist</two>
+      <b>ParentDir</b>
+    </wiiremote>
+  </MyMusicLibrary>
+
+  <FullscreenVideo>
+    <wiiremote>
+      <right>FastForward</right>
+      <left>Rewind</left>
+      <up>Play</up>
+      <down>Stop</down>
+      <a>OSD</a>
+      <b>ShowSubtitles</b>
+      <one>Info</one>
+      <two>AspectRatio</two>
+    </wiiremote>
+  </FullscreenVideo>
+
+  <FullscreenInfo>
+    <wiiremote>
+      <b>Close</b>
+      <one>Close</one>
+      <two>Close</two>
+    </wiiremote>
+  </FullscreenInfo>
+
+  <PlayerControls>
+    <wiiremote>
+      <b>Close</b>
+      <one>Close</one>
+      <two>Close</two>
+    </wiiremote>
+  </PlayerControls>
+
+  <Visualisation>
+    <wiiremote>
+      <up>Pause</up>
+      <down>Stop</down>
+      <right>IncreaseRating</right>
+      <left>DecreaseRating</left>
+      <a>ActivateWindow(MusicOSD)</a>
+      <b>ActivateWindow(Home)</b>
+      <one>ActivateWindow(PlayerControls)</one>
+      <two>ActivateWindow(MusicPlaylist)</two>
+    </wiiremote>
+  </Visualisation>
+
+  <MusicOSD>
+    <wiiremote>
+      <b>Close</b>
+      <one>Info</one>
+      <two>ShowPreset</two>
+    </wiiremote>
+  </MusicOSD>
+
+  <VisualisationSettings>
+    <wiiremote>
+      <b>Close</b>
+      <one>ActivateWindow(VisualisationPresetList)</one>
+    </wiiremote>
+  </VisualisationSettings>
+
+  <VisualisationPresetList>
+    <wiiremote>
+      <b>Close</b>
+    </wiiremote>
+  </VisualisationPresetList>
+
+  <SlideShow>
+    <wiiremote>
+      <up>ZoomIn</up>
+      <down>ZoomOut</down>
+      <a>Info</a>
+      <one>CodecInfo</one>
+      <two>ZoomNormal</two>
+    </wiiremote>
+  </SlideShow>
+
+  <ScreenCalibration>
+    <wiiremote>
+      <a>NextCalibration</a>
+      <two>ResetCalibration</two>      
+    </wiiremote>
+  </ScreenCalibration>
+
+  <GUICalibration>
+    <wiiremote>
+      <a>NextCalibration</a>
+      <two>ResetCalibration</two>      
+    </wiiremote>
+  </GUICalibration>
+
+  <SelectDialog>
+    <wiiremote>
+      <b>Close</b>
+    </wiiremote>
+  </SelectDialog>
+  
+  <VideoOSD>
+    <wiiremote>
+      <b>Close</b>
+    </wiiremote>
+  </VideoOSD>
+
+  <VideoMenu>
+  </VideoMenu>
+
+  <OSDVideoSettings>
+    <wiiremote>
+      <b>Close</b>
+    </wiiremote>
+  </OSDVideoSettings>
+
+  <OSDAudioSettings>
+    <wiiremote>
+      <b>Close</b>
+    </wiiremote>
+  </OSDAudioSettings>
+
+  <VideoBookmarks>
+    <wiiremote>
+      <b>Close</b>    
+      <two>Delete</two>
+    </wiiremote>
+  </VideoBookmarks>
+
+  <MyVideoLibrary>
+    <wiiremote>
+      <one>Queue</one>
+      <two>Playlist</two>
+      <b>ParentDir</b>
+    </wiiremote>
+  </MyVideoLibrary>
+
+  <MyVideoFiles>
+    <wiiremote>
+      <b>ParentDir</b>
+    </wiiremote>
+  </MyVideoFiles>
+
+  <MyVideoPlaylist>
+    <wiiremote>
+      <b>Playlist</b>
+      <plus>MoveItemUp</plus>
+      <minus>MoveItemDown</minus>
+      <two>Delete</two>
+    </wiiremote>
+  </MyVideoPlaylist>
+
+  <VirtualKeyboard>
+    <wiiremote>
+      <minus>CursorLeft</minus>
+      <plus>CursorRight</plus>
+      <one>Shift</one>
+      <two>BackSpace</two>
+    </wiiremote>
+  </VirtualKeyboard>
+
+  <MyPictures>
+  </MyPictures>
+
+  <ContextMenu>
+    <wiiremote>
+      <b>Close</b>    
+    </wiiremote>
+  </ContextMenu>
+
+  <FileStackingDialog>
+  </FileStackingDialog>
+
+  <Scripts>
+    <wiiremote>
+      <two>XBMC.ActivateWindow(ScriptsDebugInfo)</two>
+    </wiiremote>
+  </Scripts>
+
+  <ScriptsDebugInfo>
+    <wiiremote>
+      <two>Info</two> <!-- clears debug python info -->
+    </wiiremote>
+  </ScriptsDebugInfo>
+
+  <NumericInput>
+    <wiiremote>
+      <minus>SkipPrevious</minus>
+      <plus>SkipNext</plus>
+      <two>BackSpace</two>
+    </wiiremote>
+  </NumericInput>
+
+  <Weather>
+  </Weather>
+
+  <Settings>
+  </Settings>
+
+  <MyPicturesSettings>
+  </MyPicturesSettings>
+
+  <MyProgramsSettings>
+  </MyProgramsSettings>
+
+  <MyWeatherSettings>
+  </MyWeatherSettings>
+
+  <MyMusicSettings>
+  </MyMusicSettings>
+
+  <SystemSettings>
+  </SystemSettings>
+
+  <MyVideosSettings>
+  </MyVideosSettings>
+
+  <NetworkSettings>
+  </NetworkSettings>
+
+  <AppearanceSettings>
+  </AppearanceSettings>
+
+  <Profiles>
+  </Profiles>
+
+  <systeminfo>
+  </systeminfo>
+
+  <shutdownmenu>
+  </shutdownmenu>
+
+  <submenu>
+  </submenu>
+
+  <MusicInformation>
+  </MusicInformation>
+
+  <MovieInformation>
+  </MovieInformation>
+
+  <LockSettings>
+  </LockSettings>
+
+  <ProfileSettings>
+  </ProfileSettings>
+  
+  <PictureInfo>
+  </PictureInfo>
+</keymap>

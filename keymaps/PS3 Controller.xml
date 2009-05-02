@@ -1,0 +1,178 @@
+<keymap>
+  <global>
+    <joystick name="Sony PLAYSTATION(R)3 Controller">   
+      <altname>PS3 Controller</altname>
+      <button id="15">Select</button>                   
+      <button id="14">ParentDir</button>                
+      <button id="16">FullScreen</button>
+      <button id="13">Queue</button>
+      <button id="11">PreviousMenu</button>
+      <button id="8">Left</button>
+      <button id="6">Right</button>
+      <button id="5">Up</button>
+      <button id="7">Down</button>
+      <button id="2">Screenshot</button>
+      <button id="3">XBMC.ActivateWindow(ShutdownMenu)</button>
+      <button id="4">XBMC.ActivateWindow(PlayerControls)</button>
+      <axis id="4" limit="+1">VolumeDown</axis>
+      <axis id="4" limit="-1">VolumeUp</axis>
+      <axis id="1" limit="+1">AnalogSeekForward</axis>
+      <axis id="1" limit="-1">AnalogSeekBack</axis>
+      <axis id="13" limit="+1">ScrollUp</axis>
+      <axis id="14" limit="+1">ScrollDown</axis>
+    </joystick>
+  </global>
+
+  <Home>
+  </Home>
+  
+  <MyFiles>
+  </MyFiles>
+  
+  <MyMusicPlaylist>
+  </MyMusicPlaylist>
+
+  <MyMusicPlaylistEditor>
+  </MyMusicPlaylistEditor>
+  
+  <MyMusicFiles>
+  </MyMusicFiles>
+
+  <MyMusicLibrary>
+  </MyMusicLibrary>
+
+  <FullscreenVideo>
+  </FullscreenVideo>
+
+  <FullscreenInfo>
+  </FullscreenInfo>
+
+  <PlayerControls>
+  </PlayerControls>
+
+  <Visualisation>
+  </Visualisation>
+
+  <MusicOSD>
+  </MusicOSD>
+
+  <VisualisationSettings>
+  </VisualisationSettings>
+
+  <VisualisationPresetList>
+  </VisualisationPresetList>
+
+  <SlideShow>
+  </SlideShow>
+
+  <ScreenCalibration>
+  </ScreenCalibration>
+
+  <GUICalibration>
+  </GUICalibration>
+
+  <SelectDialog>
+  </SelectDialog>
+  
+  <VideoOSD>
+  </VideoOSD>
+
+  <VideoMenu>
+  </VideoMenu>
+
+  <OSDVideoSettings>
+  </OSDVideoSettings>
+
+  <OSDAudioSettings>
+  </OSDAudioSettings>
+
+  <VideoBookmarks>
+  </VideoBookmarks>
+
+  <MyVideoLibrary>
+  </MyVideoLibrary>
+
+  <MyVideoFiles>
+  </MyVideoFiles>
+
+  <MyVideoPlaylist>
+  </MyVideoPlaylist>
+
+  <VirtualKeyboard>
+  </VirtualKeyboard>
+
+  <MyPictures>
+  </MyPictures>
+
+  <ContextMenu>
+  </ContextMenu>
+
+  <FileStackingDialog>
+  </FileStackingDialog>
+
+  <Scripts>
+  </Scripts>
+
+  <ScriptsDebugInfo>
+  </ScriptsDebugInfo>
+
+  <NumericInput>
+  </NumericInput>
+
+  <Weather>
+  </Weather>
+
+  <Settings>
+  </Settings>
+
+  <MyPicturesSettings>
+  </MyPicturesSettings>
+
+  <MyProgramsSettings>
+  </MyProgramsSettings>
+
+  <MyWeatherSettings>
+  </MyWeatherSettings>
+
+  <MyMusicSettings>
+  </MyMusicSettings>
+
+  <SystemSettings>
+  </SystemSettings>
+
+  <MyVideosSettings>
+  </MyVideosSettings>
+
+  <NetworkSettings>
+  </NetworkSettings>
+
+  <AppearanceSettings>
+  </AppearanceSettings>
+
+  <Profiles>
+  </Profiles>
+
+  <systeminfo>
+  </systeminfo>
+
+  <shutdownmenu>
+  </shutdownmenu>
+
+  <submenu>
+  </submenu>
+
+  <MusicInformation>
+  </MusicInformation>
+
+  <MovieInformation>
+  </MovieInformation>
+
+  <LockSettings>
+  </LockSettings>
+
+  <ProfileSettings>
+  </ProfileSettings>
+  
+  <PictureInfo>
+  </PictureInfo>
+</keymap>

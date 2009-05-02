@@ -1,0 +1,413 @@
+<keymap>
+  <global>
+    <joystick name="Wireless 360 Controller">
+      <button id="1">Select</button>                                        <!-- A button -->
+      <button id="2">ParentDir</button>                                     <!-- B button -->
+      <button id="3">FullScreen</button>                                    <!-- X button -->
+      <button id="4">Queue</button>                                         <!-- Y button -->
+      <button id="9">XBMC.ActivateWindow(PlayerControls)</button>           <!-- start button -->
+      <button id="10">PreviousMenu</button>                                 <!-- back button -->
+      <button id="5">ContextMenu</button>                                   <!-- left bump button (white) -->
+      <button id="11">XBMC.ActivateWindow(ShutdownMenu)</button>            <!-- big green X -->
+      <button id="12">Up</button>                                           <!-- dpad up -->
+      <button id="13">Down</button>                                         <!-- dpad down -->
+      <button id="14">Left</button>                                         <!-- dpad left -->
+      <button id="15">Right</button>                                        <!-- dpad right -->
+      <axis id="1" limit="-1">AnalogSeekBack</axis>
+      <axis id="1" limit="+1">AnalogSeekForward</axis>
+      <axis id="4" limit="+1">VolumeUp</axis>
+      <axis id="4" limit="-1">VolumeDown</axis>
+      <axis id="5" limit="0">ScrollUp</axis>                                <!-- left analog trigger -->
+      <axis id="6" limit="0">ScrollDown</axis>                              <!-- right analog trigger -->
+    </joystick>
+  </global>
+
+  <Home>
+    <joystick name="Wireless 360 Controller">
+      <button id="6">XBMC.Skin.ToggleSetting(HomeViewToggle)</button>       <!-- right bump button (black) -->
+    </joystick>
+  </Home>
+  
+  <MyFiles>
+   <joystick name="Wireless 360 Controller">
+     <button id="4">Highlight</button>                                      <!-- Y button -->
+   </joystick>
+  </MyFiles>
+  
+  <MyMusicPlaylist>
+    <joystick name="Wireless 360 Controller">
+      <button id="4">Delete</button>                                        <!-- Y button -->
+      <button id="2">Playlist</button>                                      <!-- B button -->
+      <button id="10">Playlist</button>                                     <!-- back button -->
+    </joystick>
+  </MyMusicPlaylist>
+
+  <MyMusicPlaylistEditor>
+    <joystick name="Wireless 360 Controller">	
+      <button id="4">Queue</button>                                         <!-- Y button -->
+    </joystick>
+  </MyMusicPlaylistEditor>
+  
+  <MyMusicFiles>
+    <joystick name="Wireless 360 Controller">	
+      <button id="4">Queue</button>                                         <!-- Y button -->
+    </joystick>
+  </MyMusicFiles>
+
+  <MyMusicLibrary>
+    <joystick name="Wireless 360 Controller">	
+      <button id="4">Queue</button>                                         <!-- Y button -->
+    </joystick>
+  </MyMusicLibrary>
+
+  <FullscreenVideo>
+    <joystick name="Wireless 360 Controller">	
+      <button id="1">Pause</button>                                         <!-- A button -->
+      <button id="2">Stop</button>                                          <!-- B button -->
+      <button id="4">AspectRatio</button>                                   <!-- Y button -->
+      <button id="9">OSD</button>                                           <!-- start button -->
+      <button id="10">SmallStepBack</button>                                <!-- back button -->
+      <button id="5">Info</button>                                          <!-- left bump button (white) -->
+      <button id="6">CodecInfo</button>                                     <!-- right bump button (black) -->
+      <button id="12">BigStepForward</button>                               <!-- dpad up -->
+      <button id="13">BigStepBack</button>                                  <!-- dpad down -->
+      <button id="14">StepBack</button>                                     <!-- dpad left -->
+      <button id="15">StepForward</button>                                  <!-- dpad right -->
+      <axis id="5" limit="0">AnalogRewind</axis>                            <!-- left analog trigger -->
+      <axis id="6" limit="0">AnalogFastForward</axis>                       <!-- right analog trigger -->	  
+    </joystick>
+  </FullscreenVideo>
+
+  <FullscreenInfo>
+  </FullscreenInfo>
+
+  <PlayerControls>
+    <joystick name="Wireless 360 Controller">
+      <button id="9">Close</button>                                         <!-- start button -->
+      <button id="10">Close</button>                                        <!-- back button -->
+    </joystick> 
+  </PlayerControls>
+
+  <Visualisation>
+    <joystick name="Wireless 360 Controller">
+      <button id="1">Pause</button>                                         <!-- A button -->
+      <button id="2">Stop</button>                                          <!-- B button -->
+      <button id="4">XBMC.ActivateWindow(VisualisationPresetList)</button>  <!-- Y button -->
+      <button id="9">XBMC.ActivateWindow(MusicOSD)</button>                 <!-- start button -->
+      <button id="10">PreviousMenu</button>                                 <!-- back button -->
+      <button id="5">Info</button>                                          <!-- left bump button (white) -->
+      <button id="6">ShowPreset</button>                                    <!-- right bump button (black) -->
+      <button id="12">NextPreset</button>                                   <!-- dpad up -->
+      <button id="13">PreviousPreset</button>                               <!-- dpad down -->
+      <button id="14">SkipPrevious</button>                                 <!-- dpad left -->
+      <button id="15">SkipNext</button>                                     <!-- dpad right -->
+      <axis id="5" limit="0">AnalogRewind</axis>                            <!-- left analog trigger -->
+      <axis id="6" limit="0">AnalogFastForward</axis>                       <!-- right analog trigger -->	  
+    </joystick>
+  </Visualisation>
+
+  <MusicOSD>
+    <joystick name="Wireless 360 Controller">
+      <button id="9">Close</button>                                         <!-- start button -->
+      <button id="10">Close</button>                                        <!-- back button -->
+      <button id="5">Info</button>                                          <!-- left bump button (white) -->
+      <button id="6">ShowPreset</button>                                    <!-- right bump button (black) -->
+    </joystick>
+  </MusicOSD>
+
+  <VisualisationSettings>
+    <joystick name="Wireless 360 Controller">
+      <button id="2">Close</button>                                         <!-- B button -->
+      <button id="9">Close</button>                                         <!-- start button -->
+      <button id="10">Close</button>                                        <!-- back button -->
+    </joystick>
+  </VisualisationSettings>
+
+  <VisualisationPresetList>
+    <joystick name="Wireless 360 Controller">
+      <button id="2">Close</button>                                         <!-- B button -->
+      <button id="4">Close</button>                                         <!-- Y button -->
+      <button id="9">Close</button>                                         <!-- start button -->
+      <button id="10">Close</button>                                        <!-- back button -->
+    </joystick>
+  </VisualisationPresetList>
+
+  <SlideShow>
+    <joystick name="Wireless 360 Controller">
+      <button id="1">Pause</button>                                         <!-- A button -->
+      <button id="2">Stop</button>                                          <!-- B button -->
+      <button id="3">ZoomNormal</button>                                    <!-- X button -->
+      <button id="4">Rotate</button>                                        <!-- Y button -->      
+      <button id="10">Stop</button>                                         <!-- back button -->
+      <button id="5">Info</button>                                          <!-- left bump button (white) -->
+      <button id="6">CodecInfo</button>                                     <!-- right bump button (black) -->
+      <button id="12">ZoomIn</button>                                       <!-- dpad up -->
+      <button id="13">ZoomOut</button>                                      <!-- dpad down -->
+      <button id="14">PreviousPicture</button>                              <!-- dpad left -->
+      <button id="15">NextPicture</button>                                  <!-- dpad right -->
+      <axis id="1" limit="-1">AnalogMove</axis>
+      <axis id="1" limit="+1">AnalogMove</axis>
+      <axis id="4" limit="+1">VolumeUp</axis>
+      <axis id="4" limit="-1">VolumeDown</axis>
+    </joystick>
+  </SlideShow>
+
+  <ScreenCalibration>
+    <joystick name="Wireless 360 Controller">
+      <button id="1">NextCalibration</button>                               <!-- A button -->
+      <button id="2">PreviousMenu</button>                                  <!-- B button -->
+      <button id="5">NextResolution</button>                                <!-- left bump button (white) -->
+      <button id="6">ResetCalibration</button>                              <!-- right bump button (black) -->
+      <axis id="1" limit="-1">AnalogMove</axis>
+      <axis id="1" limit="+1">AnalogMove</axis>
+    </joystick>
+  </ScreenCalibration>
+
+  <GUICalibration>
+    <joystick name="Wireless 360 Controller">
+      <button id="1">NextCalibration</button>                               <!-- A button -->
+      <button id="2">PreviousMenu</button>                                  <!-- B button -->
+      <button id="6">ResetCalibration</button>                              <!-- right bump button (black) -->
+      <axis id="1" limit="-1">AnalogMove</axis>
+      <axis id="1" limit="+1">AnalogMove</axis>
+    </joystick>
+  </GUICalibration>
+
+  <SelectDialog>
+    <joystick name="Wireless 360 Controller">
+      <button id="10">Close</button>                                        <!-- back button -->
+    </joystick>
+  </SelectDialog>
+  
+  <VideoOSD>
+    <joystick name="Wireless 360 Controller">
+      <button id="2">PreviousMenu</button>                                  <!-- B button -->
+      <button id="9">Close</button>                                         <!-- start button -->
+      <button id="10">PreviousMenu</button>                                 <!-- back button -->
+    </joystick>
+  </VideoOSD>
+
+  <VideoMenu>
+    <joystick name="Wireless 360 Controller">
+      <button id="2">Stop</button>                                          <!-- B button -->
+      <button id="4">AspectRatio</button>                                   <!-- Y button -->
+      <button id="9">OSD</button>                                           <!-- start button -->
+      <button id="10">PreviousMenu</button>                                 <!-- back button -->
+      <button id="5">Info</button>                                          <!-- left bump button (white) -->
+      <button id="6">CodecInfo</button>                                     <!-- right bump button (black) -->
+      <axis id="5" limit="0">AnalogRewind</axis>                            <!-- left analog trigger -->
+      <axis id="6" limit="0">AnalogFastForward</axis>                       <!-- right analog trigger -->	  
+    </joystick>
+  </VideoMenu>
+
+  <OSDVideoSettings>
+    <joystick name="Wireless 360 Controller">
+      <button id="2">Close</button>                                         <!-- B button -->
+      <button id="3"/>                                                      <!-- X button -->
+      <button id="4">AspectRatio</button>                                   <!-- Y button -->
+      <button id="9">Close</button>                                         <!-- start button -->
+      <button id="10">Close</button>                                        <!-- back button -->
+    </joystick>
+  </OSDVideoSettings>
+
+  <OSDAudioSettings>
+    <joystick name="Wireless 360 Controller">
+      <button id="2">Close</button>                                         <!-- B button -->
+      <button id="3"/>                                                      <!-- X button -->
+      <button id="4">AspectRatio</button>                                   <!-- Y button -->
+      <button id="9">Close</button>                                         <!-- start button -->
+      <button id="10">Close</button>                                        <!-- back button -->
+    </joystick>
+  </OSDAudioSettings>
+
+  <VideoBookmarks>
+    <joystick name="Wireless 360 Controller">
+      <button id="2">Close</button>                                         <!-- B button -->
+      <button id="3"/>                                                      <!-- X button -->
+      <button id="4">Delete</button>                                        <!-- Y button -->
+      <button id="9">Close</button>                                         <!-- start button -->
+      <button id="10">Close</button>                                        <!-- back button -->
+    </joystick>
+  </VideoBookmarks>
+
+  <MyVideoLibrary>
+    <joystick name="Wireless 360 Controller">
+      <button id="6">Delete</button>                                        <!-- right bump button (black) -->
+    </joystick>
+  </MyVideoLibrary>
+
+  <MyVideoFiles>
+    <joystick name="Wireless 360 Controller">
+      <button id="4">Queue</button>                                         <!-- Y button -->
+      <button id="6">Playlist</button>                                      <!-- right bump button (black) -->
+    </joystick>
+	
+  </MyVideoFiles>
+
+  <MyVideoPlaylist>
+    <joystick name="Wireless 360 Controller">
+      <button id="2">Playlist</button>                                      <!-- B button -->
+      <button id="4">Delete</button>                                        <!-- Y button -->
+      <button id="10">Playlist</button>                                     <!-- back button -->
+      <button id="6">Playlist</button>                                      <!-- right bump button (black) -->
+    </joystick>
+  </MyVideoPlaylist>
+
+  <VirtualKeyboard>
+    <joystick name="Wireless 360 Controller">
+      <button id="2">BackSpace</button>                                     <!-- B button -->
+      <button id="3">Symbols</button>                                       <!-- X button -->
+      <button id="4">Shift</button>                                         <!-- Y button -->
+      <button id="9">Enter</button>                                         <!-- start button -->
+      <axis id="5" limit="0">CursorLeft</axis>                              <!-- left analog trigger -->
+      <axis id="6" limit="0">CursorRight</axis>                             <!-- right analog trigger -->
+    </joystick>
+  </VirtualKeyboard>
+
+  <MyPictures>
+  </MyPictures>
+
+  <ContextMenu>
+  </ContextMenu>
+
+  <Scripts>
+    <joystick name="Wireless 360 Controller">
+      <button id="6">XBMC.ActivateWindow(ScriptsDebugInfo)</button>         <!-- right bump button (black) -->
+    </joystick>
+  </Scripts>
+
+  <ScriptsDebugInfo>
+   <joystick name="Wireless 360 Controller">
+      <button id="5">Info</button>                                          <!-- left bump button (white) -->
+    </joystick>
+  </ScriptsDebugInfo>
+
+  <NumericInput>
+    <joystick name="Wireless 360 Controller">
+      <button id="2">BackSpace</button>                                     <!-- B button -->
+      <button id="9">Enter</button>                                         <!-- start button -->
+      <axis id="5" limit="0">SkipPrevious</axis>                            <!-- left analog trigger -->
+      <axis id="6" limit="0">SkipNext</axis>                                <!-- right analog trigger -->
+    </joystick>
+  </NumericInput>
+
+  <Weather>
+	<joystick name="Wireless 360 Controller">
+      <button id="2">PreviousMenu</button>                                  <!-- B button -->
+    </joystick>
+  </Weather>
+
+  <Settings>
+    <joystick name="Wireless 360 Controller">
+      <button id="2">PreviousMenu</button>                                  <!-- B button -->
+    </joystick>
+  </Settings>
+
+  <MyPicturesSettings>
+    <joystick name="Wireless 360 Controller">
+      <button id="2">PreviousMenu</button>                                  <!-- B button -->
+    </joystick>
+  </MyPicturesSettings>
+
+  <MyProgramsSettings>
+    <joystick name="Wireless 360 Controller">
+      <button id="2">PreviousMenu</button>                                  <!-- B button -->
+    </joystick>
+  </MyProgramsSettings>
+
+  <MyWeatherSettings>
+    <joystick name="Wireless 360 Controller">
+      <button id="2">PreviousMenu</button>                                  <!-- B button -->
+    </joystick>
+  </MyWeatherSettings>
+
+  <MyMusicSettings>
+    <joystick name="Wireless 360 Controller">
+      <button id="2">PreviousMenu</button>                                  <!-- B button -->
+    </joystick>
+  </MyMusicSettings>
+
+  <SystemSettings>
+    <joystick name="Wireless 360 Controller">
+      <button id="2">PreviousMenu</button>                                  <!-- B button -->
+    </joystick>
+  </SystemSettings>
+
+  <MyVideosSettings>
+    <joystick name="Wireless 360 Controller">
+      <button id="2">PreviousMenu</button>                                  <!-- B button -->
+    </joystick>
+  </MyVideosSettings>
+
+  <NetworkSettings>
+    <joystick name="Wireless 360 Controller">
+      <button id="2">PreviousMenu</button>                                  <!-- B button -->
+    </joystick>
+  </NetworkSettings>
+
+  <AppearanceSettings>
+    <joystick name="Wireless 360 Controller">
+      <button id="2">PreviousMenu</button>                                  <!-- B button -->
+    </joystick>
+  </AppearanceSettings>
+
+  <Profiles>
+    <joystick name="Wireless 360 Controller">
+      <button id="2">PreviousMenu</button>                                  <!-- B button -->
+    </joystick>
+  </Profiles>
+
+  <systeminfo>
+    <joystick name="Wireless 360 Controller">
+      <button id="2">PreviousMenu</button>                                  <!-- B button -->
+    </joystick>
+  </systeminfo>
+
+  <shutdownmenu>
+    <joystick name="Wireless 360 Controller">
+      <button id="2">PreviousMenu</button>                                  <!-- B button -->
+    </joystick>
+</shutdownmenu>
+
+  <submenu>
+   <joystick name="Wireless 360 Controller">
+      <button id="2">PreviousMenu</button>                                  <!-- B button -->
+    </joystick>
+  </submenu>
+
+  <MusicInformation>
+    <joystick name="Wireless 360 Controller">
+      <button id="2">Close</button>                                         <!-- B button -->
+    </joystick>
+ </MusicInformation>
+
+  <MovieInformation>
+    <joystick name="Wireless 360 Controller">
+      <button id="2">Close</button>                                         <!-- B button -->
+    </joystick>
+</MovieInformation>
+
+  <LockSettings>
+    <joystick name="Wireless 360 Controller">
+      <button id="2">PreviousMenu</button>                                  <!-- B button -->
+      <button id="9">Close</button>                                         <!-- start button -->
+      <button id="10">PreviousMenu</button>                                 <!-- back button -->
+    </joystick>
+  </LockSettings>
+
+  <ProfileSettings>
+    <joystick name="Wireless 360 Controller">
+      <button id="2">PreviousMenu</button>                                  <!-- B button -->
+      <button id="9">Close</button>                                         <!-- start button -->
+      <button id="10">PreviousMenu</button>                                 <!-- back button -->
+    </joystick>
+  </ProfileSettings>
+  
+  <PictureInfo>
+    <joystick name="Wireless 360 Controller">
+      <button id="6">Close</button>                                         <!-- right bump button (black) -->
+      <button id="14">PreviousPicture</button>                              <!-- dpad left -->
+      <button id="15">NextPicture</button>                                  <!-- dpad right -->
+    </joystick>
+  </PictureInfo>
+</keymap>
