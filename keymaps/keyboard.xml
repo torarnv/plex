@@ -122,6 +122,7 @@
      <keyboard>
       <f>FastForward</f>
       <r>Rewind</r>
+      <h>Stop</h>
       <backspace>SmallStepBack</backspace>
       <opensquarebracket>BigStepBack</opensquarebracket>
       <closesquarebracket>BigStepForward</closesquarebracket>
