@@ -5,7 +5,7 @@
       <q>Queue</q>
       <f>FastForward</f>
       <r>Rewind</r>
-			<h>XBMC.ActivateWindow(Home)</h>
+      <h>Plex.ActivateWindow(Home)</h>
       <left>Left</left>
       <right>Right</right>
       <up>Up</up>
@@ -39,12 +39,12 @@
       <eight>Number8</eight>
       <nine>Number9</nine>
       <backslash>ToggleFullScreen</backslash>
-      <browser_home>XBMC.ActivateWindow(Home)</browser_home>
+      <browser_home>Plex.ActivateWindow(Home)</browser_home>
       <browser_favorites>ActivateWindow(Favourites)</browser_favorites>
       <browser_refresh/>
       <browser_search/>
       <launch_app1_pc_icon>ActivateWindow(MyPrograms)</launch_app1_pc_icon>
-      <launch_media_select>XBMC.ActivateWindow(MyMusic)</launch_media_select>
+      <launch_media_select>Plex.ActivateWindow(MyMusic)</launch_media_select>
       <play_pause>Pause</play_pause>
       <stop>Stop</stop>
       <volume_up>VolumeUp</volume_up>
@@ -125,7 +125,7 @@
       <backspace>SmallStepBack</backspace>
       <opensquarebracket>BigStepBack</opensquarebracket>
       <closesquarebracket>BigStepForward</closesquarebracket>
-      <return>OSD</return>
+      <return>Pause</return>
       <m>OSD</m>
       <i>CodecInfo</i>
       <t>Info</t>
@@ -186,13 +186,13 @@
       <!--<back>NextPreset</back>!-->
       <s>ShowPreset</s>
       <l>LockPreset</l>
-      <f1>XBMC.ActivateWindow(MusicOSD)</f1>
+      <f1>Plex.ActivateWindow(MusicOSD)</f1>
       <f2>Rewind</f2>
       <f3>FastForward</f3>
       <f4>VolumeUp</f4>
       <f5>VolumeDown</f5>
       <f6>Info</f6>
-      <f7>XBMC.ActivateWindow(MyMusic)</f7>
+      <f7>Plex.ActivateWindow(MyMusic)</f7>
       <escape>FullScreen</escape>  
       <f1>FullScreen</f1>
     </keyboard>
@@ -347,6 +347,7 @@
   <MyVideoFiles>
     <keyboard>
       <space>Playlist</space>
+      <f1>ParentDir</f1>
       <q>Queue</q>
       <escape>ParentDir</escape>  
     </keyboard>
@@ -379,6 +380,7 @@
   <MyPrograms>
     <keyboard>
       <escape>ParentDir</escape>
+      <f1>ParentDir</f1>
     </keyboard>
   </MyPrograms>
 
@@ -393,7 +395,7 @@
 
   <Scripts>
     <keyboard>
-      <i>XBMC.ActivateWindow(ScriptsDebugInfo)</i>
+      <i>Plex.ActivateWindow(ScriptsDebugInfo)</i>
     </keyboard>
   </Scripts>
 
@@ -480,6 +482,12 @@
 		<keyboard>
 			<left>SkipPrevious</left>
     	<right>SkipNext</right>
+	<return>Pause</return>
+	<f7>Stop</f7>
+        <f2>Rewind</f2>
+        <f3>FastForward</f3>
+	<f4>VolumeUp</f4>
+        <f5>VolumeDown</f5>
 		</keyboard>
 	</NowPlaying>
 </keymap>
