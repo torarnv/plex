@@ -5694,7 +5694,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       }
       
       // Start the background music (if enabled)
-      if (!IsPlayingVideo() && !IsPlayingAudio())
+      if (!IsPlayingVideo() && !IsPlayingAudio() && (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_NONE))
       {
         Cocoa_StartBackgroundMusic();
       }
