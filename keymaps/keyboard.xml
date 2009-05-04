@@ -17,6 +17,7 @@
       <backspace>ParentDir</backspace>
       <m>ActivateWindow(PlayerControls)</m>
       <s>ActivateWindow(shutdownmenu)</s>
+      <escape>PreviousMenu</escape>
       <i>Info</i>
       <c>ContextMenu</c>
       <space>Pause</space>
@@ -413,35 +414,27 @@
   </Settings>
 
   <MyPicturesSettings>
-        <escape>Plex.ActivateWindow(Settings)</escape> 
   </MyPicturesSettings>
 
   <MyProgramsSettings>
-        <escape>Plex.ActivateWindow(Settings)</escape> 
   </MyProgramsSettings>
 
   <MyWeatherSettings>
-        <escape>Plex.ActivateWindow(Settings)</escape> 
   </MyWeatherSettings>
 
   <MyMusicSettings>
-        <escape>Plex.ActivateWindow(Settings)</escape> 
   </MyMusicSettings>
 
   <SystemSettings>
-        <escape>Plex.ActivateWindow(Settings)</escape> 
   </SystemSettings>
 
   <MyVideosSettings>
-        <escape>Plex.ActivateWindow(Settings)</escape> 
   </MyVideosSettings>
 
   <NetworkSettings>
-        <escape>Plex.ActivateWindow(Settings)</escape> 
   </NetworkSettings>
 
   <AppearanceSettings>
-        <escape>Plex.ActivateWindow(Settings)</escape> 
   </AppearanceSettings>
 
   <Profiles>
