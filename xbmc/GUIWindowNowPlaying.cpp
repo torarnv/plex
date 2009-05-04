@@ -106,6 +106,7 @@ void CGUIWindowNowPlaying::Render()
   if (m_flipTimer.GetElapsedSeconds() >= NOW_PLAYING_FLIP_TIME)
   {
     g_infoManager.m_nowPlayingFlipped = !g_infoManager.m_nowPlayingFlipped;
+    g_infoManager.ResetCache();
     m_flipTimer.Reset();
   }
   CGUIWindow::Render();
