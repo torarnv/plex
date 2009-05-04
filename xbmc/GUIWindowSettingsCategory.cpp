@@ -2229,6 +2229,9 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   }
   else if (strSetting.Equals("screensaver.slideshowpath"))
   {
+    g_mediaManager.GetNetworkLocations(g_settings.m_pictureSources);
+    g_mediaManager.GetLocalDrives(g_settings.m_pictureSources);
+	  
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CStdString path = pSettingString->GetData();
     if (CGUIDialogFileBrowser::ShowAndGetDirectory(g_settings.m_pictureSources, g_localizeStrings.Get(pSettingString->m_iHeadingString), path))
