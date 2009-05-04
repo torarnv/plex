@@ -251,6 +251,7 @@ public:
     bool m_bVisualizerOnPlay;
     
     bool m_bAutoShuffle;
+    bool m_bUseAnamorphicZoom;
     
     CStdString m_language;
     CStdString m_units;

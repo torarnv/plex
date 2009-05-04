@@ -318,6 +318,7 @@ CSettings::CSettings(void)
   g_advancedSettings.m_bVisualizerOnPlay = true;
   
   g_advancedSettings.m_bAutoShuffle = true;
+  g_advancedSettings.m_bUseAnamorphicZoom = false;
 }
 
 CSettings::~CSettings(void)
@@ -1330,6 +1331,7 @@ void CSettings::LoadAdvancedSettings()
   XMLUtils::GetBoolean(pRootElement, "visualizeronplay", g_advancedSettings.m_bVisualizerOnPlay);
   
   XMLUtils::GetBoolean(pRootElement, "autoshuffle", g_advancedSettings.m_bAutoShuffle);
+  XMLUtils::GetBoolean(pRootElement, "anamorphiczoom", g_advancedSettings.m_bUseAnamorphicZoom);
 
   GetString(pRootElement, "language", g_advancedSettings.m_language);
   GetString(pRootElement, "units", g_advancedSettings.m_units);
