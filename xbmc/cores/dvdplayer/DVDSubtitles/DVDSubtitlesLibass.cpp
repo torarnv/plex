@@ -28,7 +28,9 @@ using namespace std;
 
 CDVDSubtitlesLibass::CDVDSubtitlesLibass()
 {
-
+  // Make sure we set up the environment for SSA+fontconfig.
+  setenv("FONTCONFIG_PATH", _P("Q:/fontconfig/"), 1);
+  
   m_track = NULL;
   m_library = NULL;
   m_references = 1;
