@@ -23,15 +23,18 @@
 
 #include "GUIWindow.h"
 #include "ThumbLoader.h"
+#include "Stopwatch.h"
 
 class CGUIWindowNowPlaying : public CGUIWindow
 {
- public:
-   CGUIWindowNowPlaying(void);
-   virtual ~CGUIWindowNowPlaying(void);
-   virtual bool OnAction(const CAction &action);
-   virtual bool OnMessage(CGUIMessage& message);
+public:
+  CGUIWindowNowPlaying(void);
+  virtual ~CGUIWindowNowPlaying(void);
+  virtual bool OnAction(const CAction &action);
+  virtual bool OnMessage(CGUIMessage& message);
+  virtual void Render();
    
- private:
-   CMusicThumbLoader m_thumbLoader;
+private:
+  CMusicThumbLoader m_thumbLoader;
+  CStopWatch m_flipTimer;
 };

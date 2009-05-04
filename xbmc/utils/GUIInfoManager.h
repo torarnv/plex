@@ -211,6 +211,7 @@ class CDateTime;
 #define MUSICPLAYER_PLAYLISTPLAYING 225
 #define MUSICPLAYER_HAS_NEW_COVER_NEXT 226
 #define MUSICPLAYER_NEXT_NEW_COVER  227
+#define MUSICPLAYER_NOW_PLAYING_FLIPPED 228
 
 #define VIDEOPLAYER_TITLE             250
 #define VIDEOPLAYER_GENRE             251
@@ -613,7 +614,9 @@ public:
   
   bool GetSlideshowShowDescription();
   void SetSlideshowShowDescription(bool show);
-
+  
+  bool m_nowPlayingFlipped;
+  
 protected:
   // routines for window retrieval
   bool CheckWindowCondition(CGUIWindow *window, int condition) const;

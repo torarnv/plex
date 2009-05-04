@@ -115,6 +115,7 @@ CGUIInfoManager::CGUIInfoManager(void)
   m_frameClumpTime = 0;
   m_fps = 0.0;
   m_slideshowShowDescription = false;
+  m_nowPlayingFlipped = false;
 }
 
 CGUIInfoManager::~CGUIInfoManager(void)
@@ -915,6 +916,7 @@ int CGUIInfoManager::TranslateMusicPlayerString(const CStdString &info) const
   else if (info.Equals("hasnext")) return MUSICPLAYER_HASNEXT;
   else if (info.Equals("hasnewcovernext")) return MUSICPLAYER_HAS_NEW_COVER_NEXT;
   else if (info.Equals("nextnewcover")) return MUSICPLAYER_NEXT_NEW_COVER;
+  else if (info.Equals("nowplayingflipped")) return MUSICPLAYER_NOW_PLAYING_FLIPPED;
   return 0;
 }
 
@@ -2066,6 +2068,11 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
             bReturn = !playlist[g_playlistPlayer.GetCurrentSong()]->GetThumbnailImage().Equals(playlist[g_playlistPlayer.GetNextSong()]->GetThumbnailImage());
           }
         }
+      }
+      break;
+    case MUSICPLAYER_NOW_PLAYING_FLIPPED:
+      {
+        bReturn = m_nowPlayingFlipped;
       }
       break;
     case MUSICPLAYER_PLAYLISTPLAYING:

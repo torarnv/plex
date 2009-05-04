@@ -23,10 +23,13 @@
 #include "stdafx.h"
 #include "FileItem.h"
 #include "GUIWindowManager.h"
+#include "GUIInfoManager.h"
 #include "PlayListPlayer.h"
 #include "PlayList.h"
 
 #include "GUIWindowNowPlaying.h"
+
+#define NOW_PLAYING_FLIP_TIME 120
 
 using namespace PLAYLIST;
 
@@ -75,6 +78,7 @@ bool CGUIWindowNowPlaying::OnMessage(CGUIMessage& message)
     {
       if (m_thumbLoader.IsLoading())
         m_thumbLoader.StopThread();
+      m_flipTimer.Stop();
     }
     break;
 
@@ -87,9 +91,22 @@ bool CGUIWindowNowPlaying::OnMessage(CGUIMessage& message)
         list.Add(playlist[i]);
       
       m_thumbLoader.Load(list);
+      
+      g_infoManager.m_nowPlayingFlipped = false;
+      m_flipTimer.StartZero();
     }
     break;
   }
   
   return CGUIWindow::OnMessage(message);
+}
+
+void CGUIWindowNowPlaying::Render()
+{
+  if (m_flipTimer.GetElapsedSeconds() >= NOW_PLAYING_FLIP_TIME)
+  {
+    g_infoManager.m_nowPlayingFlipped = !g_infoManager.m_nowPlayingFlipped;
+    m_flipTimer.Reset();
+  }
+  CGUIWindow::Render();
 }
