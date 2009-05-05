@@ -1944,6 +1944,10 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
   {
     bReturn = m_slideshowShowDescription;
   }
+  else if (condition == MUSICPLAYER_NOW_PLAYING_FLIPPED)
+  {
+    bReturn = m_nowPlayingFlipped;
+  }
   else if (g_application.IsPlaying())
   {
     switch (condition)
@@ -2068,11 +2072,6 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
             bReturn = !playlist[g_playlistPlayer.GetCurrentSong()]->GetThumbnailImage().Equals(playlist[g_playlistPlayer.GetNextSong()]->GetThumbnailImage());
           }
         }
-      }
-      break;
-    case MUSICPLAYER_NOW_PLAYING_FLIPPED:
-      {
-        bReturn = m_nowPlayingFlipped;
       }
       break;
     case MUSICPLAYER_PLAYLISTPLAYING:
