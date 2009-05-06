@@ -1948,6 +1948,29 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
   {
     bReturn = m_nowPlayingFlipped;
   }
+  else if (condition == MUSICPLAYER_HAS_NEW_COVER_NEXT)
+  {
+    bReturn = false;
+    if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC)
+    {
+      if (g_playlistPlayer.GetCurrentSong() < (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() - 1))
+      {
+        CPlayList playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
+        bReturn = !playlist[g_playlistPlayer.GetCurrentSong()]->GetThumbnailImage().Equals(playlist[g_playlistPlayer.GetNextSong()]->GetThumbnailImage());
+      }
+    }
+  }
+  else if (condition == MUSICPLAYER_HASNEXT)
+  {
+    // requires current playlist be PLAYLIST_MUSIC
+    bReturn = false;
+    if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC)
+      bReturn = (g_playlistPlayer.GetCurrentSong() < (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() - 1)); // not last song
+  }
+  else if (condition == PLAYER_HAS_MUSIC_PLAYLIST)
+  {
+    bReturn = (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC);
+  }
   else if (g_application.IsPlaying())
   {
     switch (condition)
@@ -1960,9 +1983,6 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
       break;
     case PLAYER_HAS_VIDEO:
       bReturn = g_application.IsPlayingVideo();
-      break;
-    case PLAYER_HAS_MUSIC_PLAYLIST:
-      bReturn = (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC);
       break;
     case PLAYER_PLAYING:
       bReturn = !g_application.IsPaused() && (g_application.GetPlaySpeed() == 1);
@@ -2047,31 +2067,11 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
       break;
     case MUSICPLAYER_HASPREVIOUS:
       {
+        // TODO: Maybe move this outside the IsPlaying block too?
         // requires current playlist be PLAYLIST_MUSIC
         bReturn = false;
         if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC)
           bReturn = (g_playlistPlayer.GetCurrentSong() > 0); // not first song
-      }
-      break;
-    case MUSICPLAYER_HASNEXT:
-      {
-        // requires current playlist be PLAYLIST_MUSIC
-        bReturn = false;
-        if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC)
-          bReturn = (g_playlistPlayer.GetCurrentSong() < (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() - 1)); // not last song
-      }
-      break;
-    case MUSICPLAYER_HAS_NEW_COVER_NEXT:
-      {
-        bReturn = false;
-        if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC)
-        {
-          if (g_playlistPlayer.GetCurrentSong() < (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() - 1))
-          {
-            CPlayList playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
-            bReturn = !playlist[g_playlistPlayer.GetCurrentSong()]->GetThumbnailImage().Equals(playlist[g_playlistPlayer.GetNextSong()]->GetThumbnailImage());
-          }
-        }
       }
       break;
     case MUSICPLAYER_PLAYLISTPLAYING:
