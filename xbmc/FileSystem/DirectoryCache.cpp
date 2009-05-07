@@ -130,7 +130,17 @@ void CDirectoryCache::ClearSubPaths(const CStdString& strPath)
   for (bool found=false; i != m_vecCache.end(); )
   {
     CDir* dir = *i;
+    printf("Comparing %s to %s (%d characters)\n", 
+        dir->m_strPath.c_str(), 
+        storedPath.c_str(), storedPath.GetLength());
+    
     if (found)
+    {
+      delete dir;
+      i = m_vecCache.erase(i);
+    }
+    else if (strncmp(dir->m_strPath.c_str(), storedPath.c_str(), storedPath.GetLength()) == 0 &&
+             dir->m_strPath.size() > storedPath.size())
     {
       delete dir;
       i = m_vecCache.erase(i);

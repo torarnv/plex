@@ -64,6 +64,7 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
       // need to clear the cache (in case the directory fetch fails)
       // and (re)fetch the folder
       g_directoryCache.ClearDirectory(strPath);
+      g_directoryCache.ClearSubPaths(strPath);
 
       pDirectory->SetAllowPrompting(allowPrompting);
       pDirectory->SetCacheDirectory(cacheDirectory);
