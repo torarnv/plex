@@ -878,6 +878,8 @@
 		E38AABC00E5D46AE00C1B750 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E38AABBF0E5D46AE00C1B750 /* libz.dylib */; };
 		E38AABC90E5D482900C1B750 /* CrashReporter in Copy CrashReporter */ = {isa = PBXBuildFile; fileRef = E38AAB430E5D438B00C1B750 /* CrashReporter */; };
 		E38AABCD0E5D489100C1B750 /* PlexHelper in Copy PlexHelper */ = {isa = PBXBuildFile; fileRef = E371CBF20E32927F00FBF841 /* PlexHelper */; };
+		E3A0E2E40FB195E1005CABFE /* PlexMediaServerScrobbler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3A0E2E30FB195E1005CABFE /* PlexMediaServerScrobbler.cpp */; };
+		E3A1DF910FB1A5C4007E6585 /* libboost_regex-mt.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E3A1DF900FB1A5C4007E6585 /* libboost_regex-mt.a */; };
 		E3AC01F50E39E0ED00DD298E /* libSDL-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E3AC01F40E39E0ED00DD298E /* libSDL-osx.a */; };
 		E3AC01F80E39E16B00DD298E /* libSDL_image-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E3AC01F60E39E16B00DD298E /* libSDL_image-osx.a */; };
 		E3AC01F90E39E16B00DD298E /* libSDL_mixer-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E3AC01F70E39E16B00DD298E /* libSDL_mixer-osx.a */; };
@@ -3042,6 +3044,8 @@
 		E38F12C10D29FF200035C331 /* FileShoutcast.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileShoutcast.cpp; sourceTree = "<group>"; };
 		E38F12E70D2A178F0035C331 /* libportaudio-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libportaudio-osx.a"; path = "xbmc/lib/libportaudio/libportaudio-osx.a"; sourceTree = "<group>"; };
 		E38F12E90D2A17B30035C331 /* libGoAhead-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libGoAhead-osx.a"; path = "xbmc/lib/libGoAhead/libGoAhead-osx.a"; sourceTree = "<group>"; };
+		E3A0E2E30FB195E1005CABFE /* PlexMediaServerScrobbler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PlexMediaServerScrobbler.cpp; sourceTree = "<group>"; };
+		E3A1DF900FB1A5C4007E6585 /* libboost_regex-mt.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_regex-mt.a"; path = "../../../../../../opt/local/lib/libboost_regex-mt.a"; sourceTree = SOURCE_ROOT; };
 		E3A478090D29029A00F3C3A6 /* dlgcache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dlgcache.cpp; sourceTree = "<group>"; };
 		E3A478150D29030100F3C3A6 /* GUIMultiSelectText.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIMultiSelectText.cpp; sourceTree = "<group>"; };
 		E3A478190D29032C00F3C3A6 /* GUIDialogAccessPoints.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogAccessPoints.cpp; sourceTree = "<group>"; };
@@ -3194,6 +3198,7 @@
 				94DEBCE60F647401003FF0E9 /* libswscale-osx.a in Frameworks */,
 				94DEBE2B0F64B949003FF0E9 /* libfaad.a in Frameworks */,
 				E3C56E530F86011E0021BE13 /* AddressBook.framework in Frameworks */,
+				E3A1DF910FB1A5C4007E6585 /* libboost_regex-mt.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3257,6 +3262,7 @@
 		08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				E3A1DF900FB1A5C4007E6585 /* libboost_regex-mt.a */,
 				E38AAB580E5D444500C1B750 /* Carbon.framework */,
 				E38AABBF0E5D46AE00C1B750 /* libz.dylib */,
 				E3ADDD130EAA68DC003921C8 /* QTKit.framework */,
@@ -3776,6 +3782,7 @@
 		E38E14610D25F9F900618676 /* xbmc */ = {
 			isa = PBXGroup;
 			children = (
+				E3A0E2E30FB195E1005CABFE /* PlexMediaServerScrobbler.cpp */,
 				E3FD41920EF459C100C6172C /* PlayListURL.h */,
 				E3FD41930EF459C100C6172C /* PlayListURL.cpp */,
 				E37D5CB40D3023BB0081D327 /* osx */,
@@ -7507,6 +7514,7 @@
 				949384630F591AE6004DFC17 /* FileEyeTVSocket.mm in Sources */,
 				1A448E920F8059C1006E71B2 /* AdvancedSettingsController.m in Sources */,
 				1A57382F0F8EC940001943A9 /* GUIWindowNowPlaying.cpp in Sources */,
+				E3A0E2E40FB195E1005CABFE /* PlexMediaServerScrobbler.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

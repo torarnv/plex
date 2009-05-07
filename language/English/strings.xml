@@ -1212,6 +1212,8 @@
   <string id="13633">Disabled</string>
   <string id="13634">Enabled</string>
 
+  <string id="13635">Enable Scrobbling</string>
+
   <string id="14000">Stack</string>
   <string id="14001">Unstack</string>
   <string id="14003">Downloading playlist file...</string>

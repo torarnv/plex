@@ -21,6 +21,7 @@ install_name_tool -change /opt/local/lib/libogg.0.dylib @executable_path/../Fram
 install_name_tool -change /opt/local/lib/libjpeg.62.dylib @executable_path/../Frameworks/libjpeg.62.dylib ${PLEX}/Contents/MacOS/Plex
 install_name_tool -change /opt/local/lib/libvorbis.0.dylib @executable_path/../Frameworks/libvorbis.0.dylib ${PLEX}/Contents/MacOS/Plex
 install_name_tool -change /opt/local/lib/libfaad.0.dylib @executable_path/../Frameworks/libfaad.0.dylib ${PLEX}/Contents/MacOS/Plex
+install_name_tool -change /opt/local/lib/libboost_regex-mt.dylib @executable_path/../Frameworks/libboost_regex-mt.dylib ${PLEX}/Contents/MacOS/Plex
 
 install_name_tool -change /opt/local/lib/libpcre.0.dylib @executable_path/../Frameworks/libpcre.0.dylib ${PLEX}/Contents/MacOS/Plex
 install_name_tool -change /opt/local/lib/libfontconfig.1.dylib @executable_path/../Frameworks/libfontconfig.1.3.0.dylib ${PLEX}/Contents/MacOS/Plex

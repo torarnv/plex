@@ -240,6 +240,7 @@
 #include "PlexRemoteHelper.h"
 #include "PlexMediaServerHelper.h"
 #include "PlexMediaServerPlayer.h"
+#include "PlexMediaServerScrobbler.h"
 #include "QTPlayer.h"
 #include "GUIDialogUtils.h"
 #include "CoreAudioAUHAL.h"
@@ -4187,6 +4188,7 @@ HRESULT CApplication::Cleanup()
 #endif
     CScrobbler::RemoveInstance();
     CLastFmManager::RemoveInstance();
+    CPlexMediaServerScrobbler::Shutdown();
 #ifdef HAS_EVENT_SERVER
     CEventServer::RemoveInstance();
 #endif
@@ -5554,6 +5556,10 @@ bool CApplication::OnMessage(CGUIMessage& message)
         }
         else
           CScrobbler::GetInstance()->SetSubmitSong(false);
+        
+#ifdef __APPLE__
+        CPlexMediaServerScrobbler::Get()->AllowPlay();
+#endif
       }
       return true;
     }
@@ -6362,17 +6368,26 @@ void CApplication::CheckPlayingProgress()
 
 void CApplication::CheckAudioScrobblerStatus()
 {
-  if (IsPlayingAudio() && CLastFmManager::GetInstance()->CanScrobble(*m_itemCurrentFile) &&
-      !CScrobbler::GetInstance()->ShouldSubmit() && GetTime()==0.0)
+  if (IsPlayingAudio() && GetTime()==0.0)
   {
-    //  We seeked to the beginning of the file
-    //  reinit audio scrobbler
-    CScrobbler::GetInstance()->SetSongStartTime();
-    CScrobbler::GetInstance()->SetSubmitSong(true);
+    if (CLastFmManager::GetInstance()->CanScrobble(*m_itemCurrentFile) &&
+        !CScrobbler::GetInstance()->ShouldSubmit())
+    {
+      //  We seeked to the beginning of the file
+      //  reinit audio scrobbler
+      CScrobbler::GetInstance()->SetSongStartTime();
+      CScrobbler::GetInstance()->SetSubmitSong(true);
+    }
+    
+#ifdef __APPLE__
+    if (g_guiSettings.GetBool("plexmediaserver.scrobble"))
+      CPlexMediaServerScrobbler::Get()->AllowPlay();
+#endif
+    
     return;
   }
 
-  if (!IsPlayingAudio() || !CScrobbler::GetInstance()->ShouldSubmit())
+  if (!IsPlayingAudio())
     return;
 
   //  Don't submit songs to audioscrobber when the user seeks.
@@ -6396,6 +6411,7 @@ void CApplication::CheckAudioScrobblerStatus()
     CScrobbler::GetInstance()->SetSubmitSong(false);
     return;
   }
+  
   if ((dLength)>240.0f)
     dLength=240.0f;
   int iTimeTillSubmit=(int)(dLength-dTime);
@@ -6403,8 +6419,17 @@ void CApplication::CheckAudioScrobblerStatus()
 
   if (dTime>dLength)
   {
-    CScrobbler::GetInstance()->AddSong(*tag);
-    CScrobbler::GetInstance()->SetSubmitSong(false);
+    if (CScrobbler::GetInstance()->ShouldSubmit())
+    {
+      CScrobbler::GetInstance()->AddSong(*tag);
+      CScrobbler::GetInstance()->SetSubmitSong(false);
+    }
+    
+#ifdef __APPLE__
+    // Submit to Plex Media Server.
+    if (g_guiSettings.GetBool("plexmediaserver.scrobble"))
+      CPlexMediaServerScrobbler::Get()->AddPlay(tag->GetURL());
+#endif
   }
 }
 
