@@ -702,13 +702,13 @@ void CDVDPlayer::OpenDefaultStreams()
               valid = true;
           }
         }
-      }
-      
-      if (valid == false)
-      {
+
         // If we didn't find a match, then disable subtitles, and assume audio track was a match.
-        valid = true;
-        m_dvdPlayerVideo.EnableSubtitle(false);
+        if (valid == false)
+        {
+          valid = true;
+          m_dvdPlayerVideo.EnableSubtitle(false);
+        }
       }
     }
       
