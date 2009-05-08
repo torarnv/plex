@@ -537,6 +537,7 @@ void CDVDPlayer::OpenDefaultStreams()
     CloseVideoStream(true);
 
   bool foundMatchingAudioStream = false;
+  bool foundLanguageTaggedAudioStream = false;
   
   if(!m_PlayerOptions.video_only)
   {
@@ -557,7 +558,7 @@ void CDVDPlayer::OpenDefaultStreams()
 #ifdef __APPLE__
     
     // Try a smart open.
-    if (g_guiSettings.GetBool("videoplayer.autoselectaudiostream"))
+    if (valid == false && g_guiSettings.GetBool("videoplayer.autoselectaudiostream"))
     {
       bool dtsEnabled = false;
       bool ac3Enabled = false;
@@ -571,17 +572,21 @@ void CDVDPlayer::OpenDefaultStreams()
       }
       
       // First try to find the right language.
-      printf("Auto-selecting audio stream, DTS=%d, AC3=%d.\n", dtsEnabled, ac3Enabled);
+      CLog::Log(LOGINFO, "Auto-selecting audio stream, DTS=%d, AC3=%d.\n", dtsEnabled, ac3Enabled);
       vector<SelectionStream*> correctLanguage;
       for (int i=0; i<count; i++)
       {
         SelectionStream& s = m_SelectionStreams.Get(STREAM_AUDIO, i);
         string iso6391 = Cocoa_ConvertIso6392ToIso6391(s.language);
         
-        printf(" * Considering %s with %s\n", iso6391.c_str(), lang.c_str());
+        // Keep track of whether we've found any language-tagged stream.
+        if (iso6391.size() > 0)
+          foundLanguageTaggedAudioStream = true;
+        
+        CLog::Log(LOGINFO, " * Considering audio stream %s with %s\n", iso6391.c_str(), lang.c_str());
         if (Cocoa_ConvertIso6392ToIso6391(s.language) == lang)
         {
-          printf(" * Language match for audio stream: %s\n", lang.c_str());
+          CLog::Log(LOGINFO, " * Language match for audio stream: %s\n", lang.c_str());
           correctLanguage.push_back(&s);
         }
       }
@@ -623,7 +628,7 @@ void CDVDPlayer::OpenDefaultStreams()
           pickedStream = correctLanguage[0];
         
         if (pickedStream)
-          printf(" * Decided to use codec=%d, channels=%d, score=%d\n", pickedStream->codec, pickedStream->numChannels, score);
+          CLog::Log(LOGINFO, " * Decided to use codec=%d, channels=%d, score=%d\n", pickedStream->codec, pickedStream->numChannels, score);
       }
       else if (correctLanguage.size() == 1)
       {
@@ -658,8 +663,8 @@ void CDVDPlayer::OpenDefaultStreams()
     valid = false;
     
     // Try opening from settings.
-    if(g_stSettings.m_currentVideoSettings.m_SubtitleStream >= 0 
-    && g_stSettings.m_currentVideoSettings.m_SubtitleStream < count)
+    if (g_stSettings.m_currentVideoSettings.m_SubtitleStream >= 0 && 
+        g_stSettings.m_currentVideoSettings.m_SubtitleStream < count)
     {
       SelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, g_stSettings.m_currentVideoSettings.m_SubtitleStream);
       if(OpenSubtitleStream(s.id, s.source))
@@ -671,33 +676,39 @@ void CDVDPlayer::OpenDefaultStreams()
 #ifdef __APPLE__
 
     // Try a smart open.
-    if (g_guiSettings.GetBool("subtitles.autoselectsubtitlestream"))
+    if (valid == false && g_guiSettings.GetBool("subtitles.autoselectsubtitlestream"))
     {
       if (foundMatchingAudioStream == true)
       {
         // We don't need subtitles since the language matched.
-        printf("Not setting subtitles since we have a language match.\n");
+        CLog::Log(LOGINFO, "Not setting subtitles since we have a language match.\n");
         valid = true;
         m_dvdPlayerVideo.EnableSubtitle(false);
       }
-      else
+      else if (foundLanguageTaggedAudioStream == true)
       {
         // Look for a language match.
         string lang = Cocoa_GetSimpleLanguage();
-        
         for (int i=0; i<count && !valid; i++)
         {
           SelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, i);
           string iso6391 = Cocoa_ConvertIso6392ToIso6391(s.language);
           
-          printf(" * Considering %s with %s\n", iso6391.c_str(), lang.c_str());
+          CLog::Log(LOGINFO, " * Considering %s with %s\n", iso6391.c_str(), lang.c_str());
           if (Cocoa_ConvertIso6392ToIso6391(s.language) == lang)
           {
-            printf(" * Language match for subtitle stream: %s\n", lang.c_str());
+            CLog::Log(LOGINFO, " * Language match for subtitle stream: %s\n", lang.c_str());
             if (OpenSubtitleStream(s.id, s.source))
               valid = true;
           }
         }
+      }
+      
+      if (valid == false)
+      {
+        // If we didn't find a match, then disable subtitles, and assume audio track was a match.
+        valid = true;
+        m_dvdPlayerVideo.EnableSubtitle(false);
       }
     }
       
