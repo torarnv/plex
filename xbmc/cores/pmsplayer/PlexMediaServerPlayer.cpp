@@ -83,13 +83,18 @@ bool CPlexMediaServerPlayer::OpenFile(const CFileItem& file, const CPlayerOption
 {
   bool didWeRestart = false;
   
-  // See if we need to restart the media server.
   if (g_needToRestartMediaServer == true)
   {
+    // We need to restart the media server.
     printf("Restarting media server because of 5.1 CoreAudio issue.\n");
     PlexMediaServerHelper::Get().Restart();
     g_needToRestartMediaServer = false;
     didWeRestart = true;
+  }
+  else
+  {
+    // Make sure we're started.
+    didWeRestart = PlexMediaServerHelper::Get().Start();
   }
   
   // Initialize the renderer, so it doesn't try to render too soon.
@@ -106,15 +111,25 @@ bool CPlexMediaServerPlayer::OpenFile(const CFileItem& file, const CPlayerOption
 
   printf("Opening [%s] => [%s]\n", file.m_strPath.c_str(), url.GetURL().c_str());
   
+  int numTries = 20;
+  
 retry:  
   int status = m_http.Open(url.GetURL(), "GET", 0, true);
   if (status != 200)
   {
+    m_http.Close();
+    
     // If we just restarted we might not be up quite yet.
     if ((status == 0 || status == 503) && didWeRestart && m_bStop == false)
     {
-      usleep(100);
-      goto retry;
+      // Make sure it's started.
+      PlexMediaServerHelper::Get().Start();
+      
+      if (numTries-- > 0)
+      {
+        usleep(200000);
+        goto retry;
+      }
     }
     
     printf("ERROR: this didn't work [%d]\n", status);
