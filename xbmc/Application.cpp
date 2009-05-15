@@ -4188,7 +4188,7 @@ HRESULT CApplication::Cleanup()
 #endif
     CScrobbler::RemoveInstance();
     CLastFmManager::RemoveInstance();
-    CPlexMediaServerScrobbler::Shutdown();
+    //CPlexMediaServerScrobbler::Shutdown();
 #ifdef HAS_EVENT_SERVER
     CEventServer::RemoveInstance();
 #endif
@@ -5558,7 +5558,8 @@ bool CApplication::OnMessage(CGUIMessage& message)
           CScrobbler::GetInstance()->SetSubmitSong(false);
         
 #ifdef __APPLE__
-        CPlexMediaServerScrobbler::Get()->AllowPlay();
+        if (g_guiSettings.GetBool("plexmediaserver.scrobble"))
+          CPlexMediaServerScrobbler::Get()->AllowPlay();
 #endif
       }
       return true;
@@ -6428,7 +6429,7 @@ void CApplication::CheckAudioScrobblerStatus()
 #ifdef __APPLE__
     // Submit to Plex Media Server.
     if (g_guiSettings.GetBool("plexmediaserver.scrobble"))
-      CPlexMediaServerScrobbler::Get()->AddPlay(tag->GetURL());
+      CPlexMediaServerScrobbler::Get()->AddPlay(m_itemCurrentFile->m_strPath.c_str());
 #endif
   }
 }
