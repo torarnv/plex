@@ -59,16 +59,25 @@ void CPlexMediaServerScrobbler::Process()
         ::LeaveCriticalSection(m_lock);
         
         CURL url(action->url);
+        if (url.GetProtocol() == "http" && url.GetPort() == 32400)
+        {
+          url.SetPort(80);
+          url.SetProtocol("plex");
+        }
+        
+        CStdString processedURL;
+        url.GetURL(processedURL);
+        
         if (url.GetProtocol() == "plex")
         {
-          printf("Scrobbling: %s\n", action->url.c_str());
+          printf("Scrobbling: %s\n", processedURL.c_str());
           
           // If we have something like this: plex://localhost/music/iTunes/Artists/OST/58514/58486.mp3
           // Then we want to hit plex://localhost/:/scrobble?key=Artists/OST/58514/58486.mp3&prefix=audio/iTunes
           //
           regex expression("(plex://[^/]+/)([^/]+/[^/]+)/(.*)"); 
           cmatch what; 
-          if (regex_match(action->url.c_str(), what, expression))
+          if (regex_match(processedURL.c_str(), what, expression))
           {
             CStdString base = (string)what[1];
             CStdString prefix = "/" + (string)what[2];
