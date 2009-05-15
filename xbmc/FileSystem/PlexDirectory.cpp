@@ -127,10 +127,11 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
 
   // Walk the parsed tree.
   string strFileLabel = "%N - %T"; 
+  string strSecondFileLabel = "%D";
   string strDirLabel = "%B";
   string strSecondDirLabel = "%Y";
   
-  Parse(m_url, root, items, strFileLabel, strDirLabel, strSecondDirLabel);
+  Parse(m_url, root, items, strFileLabel, strSecondFileLabel, strDirLabel, strSecondDirLabel);
   
   // Set the window titles
   const char* title1 = root->Attribute("title1");
@@ -177,7 +178,7 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     strDirLabel = dirLabel;
 
   // Add the sort method.
-  items.AddSortMethod(SORT_METHOD_NONE, 552, LABEL_MASKS(strFileLabel, "%D", strDirLabel, strSecondDirLabel));
+  items.AddSortMethod(SORT_METHOD_NONE, 552, LABEL_MASKS(strFileLabel, strSecondFileLabel, strDirLabel, strSecondDirLabel));
   
   // Set the content label.
   const char* content = root->Attribute("content");
@@ -282,7 +283,7 @@ class PlexMediaNode
    }
    
    virtual void DoBuildFileItem(CFileItemPtr& pItem, const string& parentPath, TiXmlElement& el) = 0;
-   virtual void ComputeLabels(const string& strPath, string& strFileLabel, string& strDirLabel, string& strSecondDirLabel)
+   virtual void ComputeLabels(const string& strPath, string& strFileLabel, string& strSecondFileLabel, string& strDirLabel, string& strSecondDirLabel)
    {
      strFileLabel = "%N - %T";
      strDirLabel = "%B";
@@ -508,7 +509,7 @@ class PlexMediaVideo : public PlexMediaNode
     pItem = newItem;
   }
   
-  virtual void ComputeLabels(const string& strPath, string& strFileLabel, string& strDirLabel, string& strSecondDirLabel)
+  virtual void ComputeLabels(const string& strPath, string& strFileLabel, string& strSecondFileLabel, string& strDirLabel, string& strSecondDirLabel)
   {
     strDirLabel = "%B";
     strFileLabel = "%K";
@@ -518,6 +519,12 @@ class PlexMediaVideo : public PlexMediaNode
 
 class PlexMediaTrack : public PlexMediaNode
 {
+ public:
+  PlexMediaTrack()
+    : m_hasBitrate(false)
+    , m_hasDuration(false) {}
+ 
+ private:
   virtual void DoBuildFileItem(CFileItemPtr& pItem, const string& parentPath, TiXmlElement& el)
   {
     pItem->m_bIsFolder = false;
@@ -531,7 +538,10 @@ class PlexMediaTrack : public PlexMediaNode
     // Old-school.
     const char* totalTime = el.Attribute("totalTime");
     if (totalTime && strlen(totalTime) > 0)
+    {
       song.iDuration = boost::lexical_cast<int>(totalTime)/1000;
+      m_hasDuration = true;
+    }
     
     // Standard.
     totalTime = el.Attribute("duration");
@@ -547,6 +557,14 @@ class PlexMediaTrack : public PlexMediaNode
     newItem->m_strPath = pItem->m_strPath;
     pItem = newItem;
     
+    const char* bitrate = el.Attribute("bitrate");
+    if (bitrate && strlen(bitrate) > 0)
+    {
+      pItem->m_dwSize = boost::lexical_cast<int>(bitrate);
+      pItem->GetMusicInfoTag()->SetAlbum(bitrate);
+      m_hasBitrate = true;
+    }
+      
     // Path to the track.
     pItem->m_strPath = CPlexDirectory::ProcessUrl(parentPath, el.Attribute("key"), false);
 
@@ -556,9 +574,13 @@ class PlexMediaTrack : public PlexMediaNode
       pItem->SetProperty("description", summary);
   }
   
-  virtual void ComputeLabels(const string& strPath, string& strFileLabel, string& strDirLabel, string& strSecondDirLabel)
+  virtual void ComputeLabels(const string& strPath, string& strFileLabel, string& strSecondFileLabel, string& strDirLabel, string& strSecondDirLabel)
   {
     strDirLabel = "%B";
+
+    // Use bitrate if it's available and duration is not.
+    if (m_hasBitrate == true && m_hasDuration == false)
+      strSecondFileLabel = "%B kbps";
     
     if (strPath.find("/Artists/") != -1 || strPath.find("/Genre/") != -1 || strPath.find("/Albums/") != -1 || 
         strPath.find("/Recently%20Played/By%20Album/") != -1 || strPath.find("Recently%20Played/By%20Artist") != -1 ||
@@ -575,6 +597,9 @@ class PlexMediaTrack : public PlexMediaNode
   }
   
  private:
+   
+  bool m_hasBitrate;
+  bool m_hasDuration;
 };
 
 class PlexMediaRoll : public PlexMediaNode
@@ -653,7 +678,7 @@ PlexMediaNode* PlexMediaNode::Create(const string& name)
 }
   
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void CPlexDirectory::Parse(const CURL& url, TiXmlElement* root, CFileItemList &items, string& strFileLabel, string& strDirLabel, string& strSecondDirLabel)
+void CPlexDirectory::Parse(const CURL& url, TiXmlElement* root, CFileItemList &items, string& strFileLabel, string& strSecondFileLabel, string& strDirLabel, string& strSecondDirLabel)
 {
   PlexMediaNode* mediaNode = 0;
   
@@ -672,7 +697,7 @@ void CPlexDirectory::Parse(const CURL& url, TiXmlElement* root, CFileItemList &i
   {
     CStdString strURL;
     url.GetURL(strURL);
-    mediaNode->ComputeLabels(strURL, strFileLabel, strDirLabel, strSecondDirLabel);
+    mediaNode->ComputeLabels(strURL, strFileLabel, strSecondFileLabel, strDirLabel, strSecondDirLabel);
   }
 }
 
