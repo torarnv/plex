@@ -119,6 +119,9 @@ void PlexHelperApp::Restart()
       pid_t  wpid = waitpid(pid, &status, WUNTRACED);
       for(int i=0; GetProcessPid(GetHelperBinaryName()) != -1 && i<10000; i++)
         usleep(10);
+      
+      if (GetProcessPid(GetHelperBinaryName()) != -1)
+        printf("WARNING: Process is still running.\n");
     }
     
     Start();
@@ -130,14 +133,14 @@ void PlexHelperApp::Restart()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void PlexHelperApp::Start()
+bool PlexHelperApp::Start()
 {
-  // Let the subclass do anything it needs to.
-  DoPreStart();
-  
   int pid = GetProcessPid(GetHelperBinaryName());
   if (pid == -1)
   {
+    // Let the subclass do anything it needs to.
+    DoPreStart();
+    
     // Check for .app.
     string command = "\"" + m_helperInstalledFile + "\"";
     if (m_helperInstalledFile.substr(m_helperInstalledFile.size()-4) == ".app")
@@ -147,7 +150,11 @@ void PlexHelperApp::Start()
     
     CLog::Log(LOGNOTICE, "Asking %s to start [%s]", GetHelperBinaryName().c_str(), command.c_str());
     system(command.c_str());
+    
+    return true;
   }
+  
+  return false;
 }
 
 /////////////////////////////////////////////////////////////////////////////

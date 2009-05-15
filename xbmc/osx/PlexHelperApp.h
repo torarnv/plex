@@ -14,7 +14,7 @@ class PlexHelperApp
    
   enum { MODE_DISABLED=0, MODE_ENABLED=1 };
    
-  void Start();
+  bool Start();
   void Stop(bool hup = false);
   void Configure();
   void Install();
