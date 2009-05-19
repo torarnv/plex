@@ -507,6 +507,11 @@ class PlexMediaVideo : public PlexMediaNode
     newItem->m_bIsFolder = false;
     newItem->m_strPath = pItem->m_strPath;
     pItem = newItem;
+    
+    // Support for specifying RTMP play paths.
+    const char* pPlayPath = el.Attribute("rtmpPlayPath");
+    if (pPlayPath && strlen(pPlayPath) > 0)
+      pItem->SetProperty("PlayPath", pPlayPath);
   }
   
   virtual void ComputeLabels(const string& strPath, string& strFileLabel, string& strSecondFileLabel, string& strDirLabel, string& strSecondDirLabel)
