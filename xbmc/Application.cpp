@@ -5294,15 +5294,15 @@ void CApplication::CheckShutdown()
 
 void CApplication::SleepSystem() 
 {
-  // Set everything to reset when we wake up
-  m_dwShutdownTick = m_dwSaverTick = timeGetTime();
-  m_bInactive = false;
-  m_bDisplaySleeping = true;
-
 #ifdef __APPLE__
   CLog::Log(LOGDEBUG, "Sleeping system.");
   Cocoa_SleepSystem();
 #endif
+  
+  // Set everything to reset when we wake up
+  m_dwShutdownTick = m_dwSaverTick = timeGetTime();
+  m_bInactive = false;
+  m_bDisplaySleeping = true;
 }
 
 void CApplication::ResetDisplaySleep()
