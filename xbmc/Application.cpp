@@ -4683,7 +4683,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     Cocoa_SetUpdateSuspended(true);
 
     // Stop the background music
-    Cocoa_StopBackgroundMusic(true);
+    Cocoa_StopBackgroundMusic(false);
 #endif
     
     bResult = m_pPlayer->OpenFile(item, options);
