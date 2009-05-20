@@ -361,6 +361,7 @@ public:
 
   CStdString m_UPnPUUIDServer;
   int        m_UPnPPortServer;
+  int        m_UPnPMaxReturnedItems;
   CStdString m_UPnPUUIDRenderer;
   int        m_UPnPPortRenderer;
 
