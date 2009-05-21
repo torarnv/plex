@@ -26,10 +26,9 @@
 #include "GUIInfoManager.h"
 #include "PlayListPlayer.h"
 #include "PlayList.h"
+#include "Settings.h"
 
 #include "GUIWindowNowPlaying.h"
-
-#define NOW_PLAYING_FLIP_TIME 120
 
 using namespace PLAYLIST;
 
@@ -103,7 +102,7 @@ bool CGUIWindowNowPlaying::OnMessage(CGUIMessage& message)
 
 void CGUIWindowNowPlaying::Render()
 {
-  if (m_flipTimer.GetElapsedSeconds() >= NOW_PLAYING_FLIP_TIME)
+  if (m_flipTimer.GetElapsedSeconds() >= g_advancedSettings.m_nowPlayingFlipTime)
   {
     g_infoManager.m_nowPlayingFlipped = !g_infoManager.m_nowPlayingFlipped;
     g_infoManager.ResetCache();

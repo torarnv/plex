@@ -316,6 +316,7 @@ CSettings::CSettings(void)
   
   g_advancedSettings.m_secondsToVisualizer = 10;
   g_advancedSettings.m_bVisualizerOnPlay = true;
+  g_advancedSettings.m_nowPlayingFlipTime = 120;
   
   g_advancedSettings.m_bAutoShuffle = true;
   g_advancedSettings.m_bUseAnamorphicZoom = false;
@@ -1328,6 +1329,7 @@ void CSettings::LoadAdvancedSettings()
   XMLUtils::GetBoolean(pRootElement,"rootovershoot",g_advancedSettings.m_bUseEvilB);
   
   GetInteger(pRootElement, "secondstovisualizer", g_advancedSettings.m_secondsToVisualizer, 10, 0, 6000);
+  GetInteger(pRootElement, "nowplayingfliptime", g_advancedSettings.m_nowPlayingFlipTime, 120, 10, 6000);
   XMLUtils::GetBoolean(pRootElement, "visualizeronplay", g_advancedSettings.m_bVisualizerOnPlay);
   
   XMLUtils::GetBoolean(pRootElement, "autoshuffle", g_advancedSettings.m_bAutoShuffle);

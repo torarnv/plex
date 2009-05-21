@@ -311,6 +311,7 @@ NSXMLElement* rootElement(NSXMLDocument* xmlDoc, NSString* nodeName)
   setStringFromXML(xmlDoc, httpProxyUsername, @"./advancedsettings/network/httpproxyusername");
   setStringFromXML(xmlDoc, httpProxyPassword, @"./advancedsettings/network/httpproxypassword");
   setStringFromXML(xmlDoc, timeToViz, @"./advancedsettings/secondstovisualizer");
+  setStringFromXML(xmlDoc, nowPlayingFlipTime, @"./advancedsettings/nowplayingfliptime");
   setPopupFromXML(xmlDoc, scalingAlgorithm, @"./advancedsettings/videoplayer/upscalingalgorithm");
   setPopupFromXML(xmlDoc, flattenTVShows, @"./advancedsettings/videolibrary/flattentvshows");
   
@@ -386,6 +387,7 @@ NSXMLElement* rootElement(NSXMLDocument* xmlDoc, NSString* nodeName)
   stringFromControl(network, httpProxyUsername, @"httpproxyusername");
   stringFromControl(network, httpProxyPassword, @"httpproxypassword");
   stringFromControl(root, timeToViz, @"secondstovisualizer");
+  stringFromControl(root, nowPlayingFlipTime, @"nowplayingfliptime");
   tagFromControl(videoplayer, scalingAlgorithm, @"upscalingalgorithm");
   tagFromControl(videolibrary, flattenTVShows, @"flattentvshows");
   
