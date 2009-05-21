@@ -23,15 +23,68 @@
 #include <IOKit/network/IOEthernetController.h>
 
 #include "PlexMediaServerHelper.h"
+#include "CriticalSection.h"
+#include "SingleLock.h"
 
+#include <boost/shared_ptr.hpp>
 #include <boost/algorithm/string.hpp>
 #include <map>
+
+using namespace boost;
 
 #define COCOA_KEY_PLAYPAUSE  1051136
 #define COCOA_KEY_PREV_TRACK 1313280
 #define COCOA_KEY_NEXT_TRACK 1248000
 
 static map<string, string> g_isoLangMap;
+
+struct CachedTime
+{
+  CachedTime(int time, const string& strTime)
+    : time(time)
+    , strTime(strTime) 
+    {}
+  
+  int time;
+  string strTime;
+};
+typedef boost::shared_ptr<CachedTime> CachedTimePtr;
+
+class CCocoaData
+{
+ public:
+  CCocoaData()
+    : lastDateFormat(-1)
+    , lastTimeFormat(-1)
+    , lastTime(-1)
+    {}
+   
+  CCocoaData& Get()
+  {
+    if (g_instance == 0)
+      g_instance = new CCocoaData();
+    
+    return *g_instance;
+  }
+   
+  int lastDateFormat;
+  int lastTimeFormat;
+  string lastFormatString;
+  
+  int lastTime;
+  string lastFormatFormat;
+  string lastTimeString;
+  
+  map<string, CachedTimePtr> cachedTimeMap;
+  
+  CCriticalSection formatCriticalSection;
+  
+ private:
+  static CCocoaData* g_instance;
+};
+
+CCocoaData* CCocoaData::g_instance = 0;
+  
 
 ///////////////////////////////////////////////////////////////////////////////
 CGEventRef tapEventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef event, void *refcon)
@@ -443,6 +496,12 @@ bool Cocoa_IsMetricSystem()
 ///////////////////////////////////////////////////////////////////////////////
 static string Cocoa_GetFormatString(int dateFormat, int timeFormat)
 {
+  CSingleLock lock(CCocoaData().Get().formatCriticalSection);
+  
+  // Quick exit for repeat question.
+  if (CCocoaData().Get().lastDateFormat == dateFormat && CCocoaData().Get().lastTimeFormat == timeFormat)
+    return CCocoaData().Get().lastFormatString;
+  
   id pool = [[NSAutoreleasePool alloc] init];
   
   NSDateFormatter *dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
@@ -453,6 +512,11 @@ static string Cocoa_GetFormatString(int dateFormat, int timeFormat)
   string ret = [[dateFormatter dateFormat] UTF8String];
   [pool release];
 
+  // Cache for next time.
+  CCocoaData().Get().lastDateFormat = dateFormat;
+  CCocoaData().Get().lastTimeFormat = timeFormat;
+  CCocoaData().Get().lastFormatString = ret;
+  
   return ret;
 }
 
@@ -492,7 +556,6 @@ string Cocoa_GetTimeFormat(bool withMeridian)
 string Cocoa_GetMeridianSymbol(int i)
 {
   string ret;
-  
   id pool = [[NSAutoreleasePool alloc] init];
   NSDateFormatter *dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
   [dateFormatter setLocale:[NSLocale currentLocale]];
@@ -564,6 +627,16 @@ string Cocoa_GetTimeString(time_t time)
 ///////////////////////////////////////////////////////////////////////////////
 string Cocoa_GetTimeString(const string& format, time_t time)
 {
+  CSingleLock lock(CCocoaData().Get().formatCriticalSection);
+  
+  // If we're requesting the same time, return it.
+  if (CCocoaData().Get().cachedTimeMap.find(format) != CCocoaData().Get().cachedTimeMap.end())
+  {
+    CachedTimePtr cachedTime = CCocoaData().Get().cachedTimeMap[format];
+    if (cachedTime->time == time)
+      return cachedTime->strTime;
+  }
+  
   id pool = [[NSAutoreleasePool alloc] init];
   NSDateFormatter *dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
   [dateFormatter setLocale:[NSLocale currentLocale]];
@@ -575,6 +648,8 @@ string Cocoa_GetTimeString(const string& format, time_t time)
   string ret = [formattedDateString UTF8String];
    
   [pool release];
+  
+  CCocoaData().Get().cachedTimeMap[format] = CachedTimePtr(new CachedTime(time, ret));
   return ret;
 }
 
