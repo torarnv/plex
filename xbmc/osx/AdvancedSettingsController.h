@@ -34,6 +34,7 @@
   IBOutlet NSTextField* timeToViz;
   IBOutlet NSTextField* httpProxyUsername;
   IBOutlet NSTextField* httpProxyPassword;
+  IBOutlet NSTextField* nowPlayingFlipTime;
 }
 
 +(AdvancedSettingsController*)sharedInstance;

@@ -249,6 +249,7 @@ public:
     
     int m_secondsToVisualizer;
     bool m_bVisualizerOnPlay;
+    int m_nowPlayingFlipTime;
     
     bool m_bAutoShuffle;
     bool m_bUseAnamorphicZoom;
