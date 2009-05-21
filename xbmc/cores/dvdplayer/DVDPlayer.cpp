@@ -556,13 +556,14 @@ void CDVDPlayer::OpenDefaultStreams()
     }
 
 #ifdef __APPLE__
+    // What's my language?
+    string myLang = Cocoa_GetSimpleLanguage();
     
     // Try a smart open.
     if (valid == false && g_guiSettings.GetBool("videoplayer.autoselectaudiostream"))
     {
       bool dtsEnabled = false;
       bool ac3Enabled = false;
-      string lang     = Cocoa_GetSimpleLanguage();
       SelectionStream* pickedStream = 0;
       
       if (g_audioConfig.UseDigitalOutput() == true)
@@ -583,10 +584,10 @@ void CDVDPlayer::OpenDefaultStreams()
         if (iso6391.size() > 0)
           foundLanguageTaggedAudioStream = true;
         
-        CLog::Log(LOGINFO, " * Considering audio stream %s with %s\n", iso6391.c_str(), lang.c_str());
-        if (Cocoa_ConvertIso6392ToIso6391(s.language) == lang)
+        CLog::Log(LOGINFO, " * Considering audio stream %s with my language %s\n", iso6391.c_str(), myLang.c_str());
+        if (iso6391 == myLang)
         {
-          CLog::Log(LOGINFO, " * Language match for audio stream: %s\n", lang.c_str());
+          CLog::Log(LOGINFO, " * Language match for audio stream: %s\n", myLang.c_str());
           correctLanguage.push_back(&s);
         }
       }
@@ -648,8 +649,20 @@ void CDVDPlayer::OpenDefaultStreams()
     for(int i = 0; i<count && !valid; i++)
     {
       SelectionStream& s = m_SelectionStreams.Get(STREAM_AUDIO, i);
-      if(OpenAudioStream(s.id, s.source))
+      if (OpenAudioStream(s.id, s.source))
+      {
         valid = true;
+        
+#ifdef __APPLE__       
+        // Keep track of whether the pick matched the language.
+        string iso6391 = Cocoa_ConvertIso6392ToIso6391(s.language);
+        if (iso6391 == myLang)
+        {
+          CLog::Log(LOGINFO, " * Well, it was pure luck, but selected stream matched my language [%s]\n", myLang.c_str());
+          foundMatchingAudioStream = true;
+        }
+#endif
+      }
     }
     if(!valid)
       CloseAudioStream(true);
