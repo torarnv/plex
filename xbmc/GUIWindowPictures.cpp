@@ -537,6 +537,12 @@ void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &butt
     // get the usual shares
     CMediaSource *share = CGUIDialogContextMenu::GetShare("pictures", item.get());
     CGUIDialogContextMenu::GetContextButtons("pictures", share, buttons);
+
+    if (item && item->m_bIsFolder)
+    {
+      buttons.Add(CONTEXT_BUTTON_VIEW_SLIDESHOW, 13317);      // View Slideshow
+      buttons.Add(CONTEXT_BUTTON_RECURSIVE_SLIDESHOW, 13318);     // Recursive Slideshow
+    }
   }
   else
   {
