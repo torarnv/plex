@@ -552,7 +552,7 @@ void CGUIDialogMediaSource::UpdateButtons()
     SET_CONTROL_LABEL(CONTROL_PATH, path)
   }
 
-  if (m_type.Equals("video"))
+  if (m_type.Equals("video") && m_paths->Size() > 0)
   {
     SET_CONTROL_VISIBLE(CONTROL_CONTENT)
     if (m_paths->Get(0)->m_strPath.IsEmpty() || m_name.IsEmpty() || CUtil::IsPlexMediaServer(m_paths->Get(0)->m_strPath))
