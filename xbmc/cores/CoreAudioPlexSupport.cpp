@@ -246,7 +246,7 @@ PlexAudioDevicesPtr PlexAudioDevices::FindAll()
           // Check if the selected device is alive and usable.
           if (audioDevices->m_selectedDevice->isAlive() == false)
           {
-            CLog::Log(LOGWARNING, "Selected audio device [%s] is not alive, switching to default device", audioDevices->m_selectedDevice->getName().c_str());
+            CLog::Log(LOGWARNING, "Selected audio device is not alive, switching to default device.");
             audioDevices->m_selectedDevice = audioDevices->m_defaultDevice;
           }
         }
