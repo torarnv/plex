@@ -6,10 +6,10 @@
   <string id="3">Vidéos</string>
   <string id="4">Guide TV</string>
   <string id="5">Paramètres</string>
-  <string id="6">Plex SVN</string>
+  <string id="6">Plex Git</string>
   <string id="7">Fichiers</string>
   <string id="8">Météo</string>
-  <string id="9">Plex media center</string>
+  <string id="9">Plex Media Center</string>
   
   <string id="11">Lundi</string>
   <string id="12">Mardi</string>
@@ -157,7 +157,7 @@
   <string id="222">Annuler</string>
   <string id="224">Vitesse</string>
   <string id="225">Durée transitions</string>
-  <string id="226">Tester Patterns...</string>
+  <string id="226">Motifs de test...</string>
   <string id="227">Recherche CD Audio sur freedb</string>
   <string id="228">Mélanger la sélection lors de son chargement</string>
   <string id="229">Temps d'arrêt du DD</string>
@@ -276,9 +276,9 @@
   <string id="352">Faible</string>
   <string id="353">Noir</string>
   <string id="354">Matrix</string>
-  <string id="355">Temps avant la mise en veille</string>
+  <string id="355">Temps avant l'écran de veille</string>
   <string id="356">Écran de veille</string>
-  <string id="357">Temps avant suspension</string>
+  <string id="357">Temps avant la mise en veille</string>
   <string id="358">Tous les albums</string>
   <string id="359">Albums récemment ajoutés</string>
   <string id="360">Écran de veille</string>
@@ -487,6 +487,11 @@
   <string id="570">Ajouté le</string>
   <string id="571">Défaut</string>
   <string id="572">Studio</string>
+  <string id="574">Support de la sortie numériquet</string>
+  <string id="575">Détection automatique</string>
+  <string id="576">Forcer le numérique</string>
+  <string id="577">Normaliser le volume du film</string>
+  <string id="578">Link System Output</string>
 
   <string id="580">Direction du tri</string>
   <string id="581">Méthode du tri</string>
@@ -913,7 +918,7 @@
   <string id="12357">Sécurité Sources</string>
   <string id="12358">Le mot de passe rentré est vide. Essayez encore.</string>
   <string id="12360">Sécurités Plex</string>
-  <string id="12362">Eteindre après trop de tentatives</string>
+  <string id="12362">Éteindre après trop de tentatives</string>
   <string id="12367">Le code Maitre n'est pas valide!</string>
   <string id="12368">Merci de rentrer un code Maitre valide!</string>
   <string id="12373">Paramètres &amp; Fichiers</string>
@@ -945,7 +950,7 @@
   <string id="13002">Vidéo seule</string>
   <string id="13003">- Délai</string>
   <string id="13004">- Durée minimale du fichier</string>
-  <string id="13005">Eteindre</string>
+  <string id="13005">Éteindre</string>
   <string id="13006">Dashboard</string>
   <string id="13007">Utiliser Dashboard Personnalisé</string>
   <string id="13008">Mode d'arrêt par défaut</string>
@@ -976,9 +981,17 @@
   <string id="13131">Désactivé</string>
   <string id="13132">Activer Blanking</string>
  
+  <string id="13134">Booster la vitesse H.264</string>
+  <string id="13135">Désactivé</string>
+  <string id="13136">Moyen</string>
+  <string id="13137">Élevé</string>
+  
+  <string id="13138">Sélectionner la piste audio automatiquement</string>
+  <string id="13139">Sélectionner les sous-titres automatiquement</string>
+
   <string id="13140">Connexions active détectées !</string>
   <string id="13141">Si vous continuez vous ne serez plus en mesure de contrôler Plex</string>
-  <string id="13142">par la suite. Etes-vous sur de stopper le serveur Event ?</string>
+  <string id="13142">par la suite. Êtes-vous sur de stopper le serveur Event ?</string>
 
   <string id="13144">Changer le mode Apple Remote ?</string>
   <string id="13145">Si vous utilisez actuellement la télécommande Apple pour contrôler</string>
@@ -1037,7 +1050,7 @@
   <string id="13274">Connecté, mais aucun DNS n'est disponible.</string>
   <string id="13275">Disque Dur</string>
   <string id="13276">DVD-ROM</string>
-  <string id="13277">Capacités</string>
+  <string id="13277">Stockage</string>
   <string id="13278">Défaut</string>
   <string id="13279">Réseau</string>
   <string id="13280">Vidéo</string>
@@ -1118,7 +1131,7 @@
   <string id="13356">Traitement matériel</string>
   <string id="13357">Ombrage pixels haute qualité</string>
   <string id="13358">Lire</string>
-  <string id="13359">Définir Image Artiste</string>
+  <string id="13359">Définir l'image de l'artiste</string>
   <string id="13360">Générer les vignettes</string>
   <string id="13361">Activer la Voix</string>
   <string id="13375">Activer le périphérique</string>
@@ -1167,6 +1180,8 @@
   <string id="13418">Advanced Shaders (GLSL)</string>
   <string id="13419">Logiciel</string>
   
+  <string id="13450">Mise en Veille</string>
+  
   <string id="13600">Apple Remote</string>
   <string id="13601">Mode</string>
   <string id="13602">Toujours activé</string>
@@ -1178,6 +1193,19 @@
   
   <string id="13620">Erreur Apple Remote.</string>
   <string id="13621">Le support de la télécommande Apple ne peut être activé.</string>
+  <string id="13622">Veuillez lire la FAQ de Remote Buddy pour le désinstaller.</string>
+
+  <string id="13623">Sofa Control est actif.</string>
+  <string id="13624">Veuillez lire la documentation de Sofa Control pour le désinstaller.</string>
+
+  <string id="13630">Media Server</string>
+  <string id="13631">Mode</string>  
+  <string id="13632">- Toujours actif</string>
+
+  <string id="13633">désactivé</string>
+  <string id="13634">activé</string>
+
+  <string id="13635">Activer le Scrobbling</string>
   
   <string id="14000">Empiler</string>
   <string id="14001">Désempiler</string>
@@ -1250,7 +1278,7 @@
   <string id="14071">Activer les options Supprimer et Renommer</string>
   <string id="14072"></string>
   <string id="14073"></string>
-  <string id="14074">Définir Fuseau horaire</string>
+  <string id="14074">Définir le fuseau horaire</string>
   <string id="14075">Ajuster l'horloge pour l'observation auto. de l'heure d'été</string>
   <string id="14076">Ajouter aux favoris</string>
   <string id="14077">Enlever des favoris</string>   
@@ -1477,6 +1505,26 @@
   <string id="16309">Sinc (logiciel)</string>
 
   <string id="17500">Afficher temps avant la mise en veille</string> 
+  <string id="17501">Luminosité de l'affichage</string>
+  
+  <string id="17701">Baterrie faible</string>
+  <string id="17702">Connecter l'adaptateur secteur</string>
+  
+  <string id="18000">Modèle</string>
+  <string id="18001">Source de courant</string>
+  <string id="18002">Branché au secteur</string>
+  <string id="18003">Branché au secteur (charge en cours)</string>
+  <string id="18004">sur batterie</string>
+  <string id="18005">Niveau de charge</string>
+  <string id="18006">jusqu'à la fin du chargement</string>
+  <string id="18007">restant</string>
+  <string id="18008">Calcul du temps</string>
+  <string id="18009">Activer les alertes en cas de batterie faible</string>
+
+  <string id="18101">Volume de la musique de fond</string>
+  <string id="18102">Activer les thèmes musicaux</string>
+  <string id="18103">- Télécharger les thèmes musicaux automatiquement</string>
+  <string id="18104">Acitver la musique de fond</string>
 
   <string id="20000">Dossier Rip CDDA</string>
   <string id="20001">Utiliser un lecteur DVD externe</string>
@@ -1749,7 +1797,7 @@
   <string id="20368">Code Prod.</string>
   <string id="20369">Masquer le résumé pour les médias non visionnés</string>
   <string id="20370">* Caché pour empêcher les spoilers *</string>
-  <string id="20371">Définir Image Saison</string>
+  <string id="20371">Définir l'image de la saison</string>
   <string id="20372">Image Saison</string>
   <string id="20373">Saison</string>
   <string id="20374">Téléchargement des infos vidéo</string>
@@ -1781,7 +1829,7 @@
   <string id="20400">Clip Musicaux par Artiste</string>
   <string id="20401">Jouer le Clip</string>
   <string id="20402">Récupérer automatiquement les vignettes des acteurs</string>
-  <string id="20403">Définir vignette Acteur</string>
+  <string id="20403">Définir la vignette de l'acteur</string>
   <string id="20404"></string>
   <string id="20405">Supprimer les Signets de l'Épisode</string>
   <string id="20406">Ajouter un Signet pour l'Épisode</string>
@@ -1896,7 +1944,7 @@
   <string id="21439">Règles Mix de soirée</string>
   <string id="21440">Dossier racine</string>
   <string id="21441">Compteur vus</string>
-  <string id="21442">Titre de l'Episode</string>
+  <string id="21442">Titre de l'épisode</string>
 
   <string id="21800">Nom du fichier</string>
   <string id="21801">Répertoire du fichier</string>
@@ -1954,7 +2002,7 @@
   <string id="21878">Drapeau du Copyright</string>
   <string id="21879">Code du Pays</string>
   <string id="21880">Office de Référence</string>
-  <string id="21881">Activer le Rendu UPnP</string>
+  <string id="21881">Activer le rendu UPnP</string>
   <string id="21882">Tenter de sauter l'intro avant le menu du DVD</string>
   <string id="21883">CD Audio Importés</string>
   <string id="21884">Infos sur tous les Artistes</string>
@@ -2001,4 +2049,51 @@
   <!-- strings 30000 thru 30999 reserved for plugins and plugin settings -->
   <!-- strings 31000 thru 31999 reserved for skins -->
   <!-- strings 32000 thru 32999 reserved for scripts -->
+  
+  <string id="40000">Mise à jour</string>
+  <string id="40001">Nouvelle Version Disponible</string>
+  <string id="40002">Installation à l'aide de la mise à jour</string>
+  <string id="40003">Une nouvelle version est disponible.</string>
+  <string id="40004">Version: %@  (vous avez %@)</string>
+  <string id="40005">Voulez vous la télécharger et l'installer maintenant ?</string>
+  <string id="40006">Vous avez déjà la dernière version de Plex (%@)</string>
+  <string id="40007">Téléchargement de la mise à jour</string>
+  <string id="40008">%@ de %@</string>
+  <string id="40009">%@ téléchargé</string>
+  <string id="40010">Décompréssion de la mise à jour de Plex</string>
+  <string id="40011">Installation de la mise à jour de Plex</string>
+  <string id="40012">La mise à jour a échoué</string>
+  <string id="40013">Il y a eut une erreur.</string>
+  <string id="40014">Veuillez vérifer la console pour plus de détails.</string>
+  <string id="40015">Vérification des mises à jour</string>
+  <string id="40016">Vérifier maintenant les mises à jour...</string>
+  <string id="40017">Vérifier automatiquement les mises à jour</string>
+  <string id="40018">Mise à jour</string>
+  <string id="40019">- Si des mises à jour sont diponibles</string>
+  <string id="40020">Afficher une alerte</string>
+  <string id="40021">Demander l'installation</string>
+  <string id="40022">Voulez vous vérfier les mises à jour automatiquement ?</string>
+  <string id="40023">Voulez vous que Plex vous alerte si une mise à jour </string>
+  <string id="40024">est disponible ?</string>
+  <string id="40025">- Vérifier les mises à jour</string>
+  <string id="40026">toutes les heures</string>
+  <string id="40027">tous les jours</string>
+  <string id="40028">toutes les semaines</string>
+  
+  <string id="40100">Applications</string>
+  <string id="40101">Ajouter une application</string>
+  <string id="40102">Supprimer une application</string>
+  <string id="40103">Parcourir les applications</string>
+  <string id="40104">RSS</string>
+  <string id="40105">Économie d'énergie</string>
+  <string id="40106">Supprimer le Workflow</string>
+  
+  <string id="40150">En cours de lecture</string>
+
+  <string id="40200">chemin non suporté</string>
+  <string id="40201">le chemin de Plex Media Server paths ne peut être ajouté au multipath</string>
+  <string id="40202">sources.</string>
+  <string id="40203">Plex Media Server</string>
+  <string id="40204">En attente d'une réponse...</string>
+
 </strings>
