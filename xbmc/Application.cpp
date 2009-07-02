@@ -6076,11 +6076,11 @@ void CApplication::SetHardwareVolume(long hardwareVolume)
   Cocoa_UpdateGlobalVolume(GetVolume());
 
   // and tell our player to update the volume
-  if (m_pPlayer)
+  if (m_pPlayer && g_guiSettings.GetBool("audiooutput.systemvolumefollows") == false)
   {
     m_pPlayer->SetVolume(g_stSettings.m_nVolumeLevel);
     // TODO DRC
-//    m_pPlayer->SetDynamicRangeCompression(g_stSettings.m_dynamicRangeCompressionLevel);
+    // m_pPlayer->SetDynamicRangeCompression(g_stSettings.m_dynamicRangeCompressionLevel);
   }
 }
 

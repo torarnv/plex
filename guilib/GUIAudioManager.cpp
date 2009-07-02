@@ -32,6 +32,7 @@
 #ifdef HAS_SDL_AUDIO
 #include <SDL/SDL_mixer.h>
 #endif
+#include "CoreAudioPlexSupport.h"
 
 using namespace std;
 using namespace DIRECTORY;
@@ -400,24 +401,35 @@ void CGUIAudioManager::SetVolume(int iLevel)
 {
   CSingleLock lock(m_cs);
 
-  if (m_actionSound)
-    m_actionSound->SetVolume(iLevel);
-
-  windowSoundsMap::iterator it=m_windowSounds.begin();
-  while (it!=m_windowSounds.end())
+  if (g_guiSettings.GetBool("audiooutput.systemvolumefollows"))
   {
-    if (it->second)
-      it->second->SetVolume(iLevel);
-
-    ++it;
+    PlexAudioDevicePtr dev = PlexAudioDevices::FindDefault();
+    
+    // Map from [0, 128] to [-60, 0].
+    float vol = ((float)iLevel) * 60.0/128.0 - 60;
+    dev->setVolume(vol);
   }
-
-  pythonSoundsMap::iterator it1=m_pythonSounds.begin();
-  while (it1!=m_pythonSounds.end())
+  else
   {
-    if (it1->second)
-      it1->second->SetVolume(iLevel);
-
-    ++it1;
+    if (m_actionSound)
+      m_actionSound->SetVolume(iLevel);
+  
+    windowSoundsMap::iterator it=m_windowSounds.begin();
+    while (it!=m_windowSounds.end())
+    {
+      if (it->second)
+        it->second->SetVolume(iLevel);
+  
+      ++it;
+    }
+  
+    pythonSoundsMap::iterator it1=m_pythonSounds.begin();
+    while (it1!=m_pythonSounds.end())
+    {
+      if (it1->second)
+        it1->second->SetVolume(iLevel);
+  
+      ++it1;
+    }
   }
 }

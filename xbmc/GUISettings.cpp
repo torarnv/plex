@@ -443,6 +443,7 @@ CGUISettings::CGUISettings(void)
   AddBool(7, "audiooutput.dtspassthrough", 254, true);
   AddBool(8, "audiooutput.normalisevolume", 577, false);
   AddBool(8, "audiooutput.systemoutputfollows", 578, true);
+  AddBool(8, "audiooutput.systemvolumefollows", 579, true);
   
   // Controllers.
   AddCategory(4, "appleremote", 13600);

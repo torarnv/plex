@@ -51,6 +51,12 @@ class PlexAudioDevice
   /// Set the device to be the default.
   void setDefault();
   
+  /// Get the volume.
+  float getVolume();
+  
+  /// Set the volume.
+  void setVolume(float vol);
+  
  private:
   
   bool computeHasOutput();
