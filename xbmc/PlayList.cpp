@@ -399,7 +399,22 @@ bool CPlayList::LoadData(const CStdString& strData)
 bool CPlayList::Expand(int position)
 {
   CFileItemPtr item = m_vecItems[position];
-  auto_ptr<CPlayList> playlist (CPlayListFactory::Create(*item.get()));
+  auto_ptr<CPlayList> playlist;
+  
+  try
+  {
+    playlist = auto_ptr<CPlayList>(CPlayListFactory::Create(*item.get()));
+  }
+  catch (CRedirectToNewPlayerException* ex)
+  {
+    // We just redirected to something completely not handled by CURL, so let's
+    // use that URL instead. Usually MMS, RTMP, or Plex.
+    //
+    m_vecItems[position] = CFileItemPtr(new CFileItem(ex->m_newURL, false));
+    delete ex;
+    return true;
+  }
+  
   if ( NULL == playlist.get())
     return false;
 

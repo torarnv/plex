@@ -92,6 +92,8 @@ namespace XFILE
           __int64	        m_filePos;
 
           bool            m_connected;
+          
+          CStdString      m_strDeadEndUrl; // If we can't redirect, this holds the last URL.
 
           /* returned http header */
           CHttpHeader m_httpheader;
