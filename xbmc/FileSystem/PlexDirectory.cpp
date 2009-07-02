@@ -392,7 +392,7 @@ class PlexMediaAlbum : public PlexMediaNode
     CAlbum album;
     
     album.strLabel = GetLabel(el);
-    album.idAlbum = boost::lexical_cast<int>(el.Attribute("key"));
+    //album.idAlbum = boost::lexical_cast<int>(el.Attribute("key"));
     album.strAlbum = el.Attribute("album");
     album.strArtist = el.Attribute("artist");
     album.strGenre = el.Attribute("genre");
