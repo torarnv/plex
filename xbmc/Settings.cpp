@@ -462,6 +462,15 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
     GetSources(pRootElement, "video", m_videoSources, m_defaultVideoSource);
   }
 
+#ifdef __APPLE__
+  // Add the Plex Media Center sources.
+  CMediaSource plexPhotos;
+  plexPhotos.strName = "Plex Photos";
+  plexPhotos.strPath = "plex://localhost/photos";
+  
+  m_pictureSources.push_back(plexPhotos);
+#endif
+  
   bXboxMediacenter = true;
 
   LoadRSSFeeds();
