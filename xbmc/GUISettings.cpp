@@ -481,7 +481,7 @@ CGUISettings::CGUISettings(void)
 	AddBool(0, "screensaver.uselock",20140,false);
 	AddSeparator(6, "screensaver.sep1");
 	AddInt(0, "screensaver.dimlevel", 362, 20, 0, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
-	AddString(8, "screensaver.slideshowpath", 774, "F:\\Pictures\\", BUTTON_CONTROL_PATH_INPUT, false, 657);
+	AddString(8, "screensaver.slideshowpath", 774, "plex://localhost/photos/iPhoto/Events", BUTTON_CONTROL_PATH_INPUT, false, 657);
 	AddBool(9, "screensaver.slideshowshuffle", 13319, false);
 	AddBool(0, "screensaver.usedimonpause", 22014, true);
 	
