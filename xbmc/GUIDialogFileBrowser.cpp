@@ -309,8 +309,8 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
     bool bParentExists = CUtil::GetParentPath(strDirectory, strParentPath);
 
     // check if current directory is a root share
-/*    if (!g_guiSettings.GetBool("filelists.hideparentdiritems"))
-    {*/
+    if (!CUtil::IsPlexMediaServer(strDirectory))
+    {
       if ( !m_rootDir.IsSource(strDirectory))
       {
         // no, do we got a parent dir?
@@ -336,7 +336,15 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
         m_vecItems->Add(pItem);
         m_strParentPath = "";
       }
-    //}
+    }
+    else
+    {
+      if (!m_rootDir.IsSource(strDirectory))
+        m_strParentPath = strParentPath;
+      else
+        m_strParentPath = "";
+    }
+    
     m_Directory->m_strPath = strDirectory;
     m_rootDir.GetDirectory(strDirectory, *m_vecItems,m_useFileDirectories);
   }
@@ -405,10 +413,11 @@ void CGUIDialogFileBrowser::Render()
   {
     // if we are browsing for folders, and not in the root directory, then we use the parent path,
     // else we use the current file's path
-    if (m_browsingForFolders && !m_Directory->IsVirtualDirectoryRoot())
+    if (m_browsingForFolders && !m_Directory->IsVirtualDirectoryRoot() && !CUtil::IsPlexMediaServer(m_Directory->m_strPath))
       m_selectedPath = m_Directory->m_strPath;
     else
       m_selectedPath = (*m_vecItems)[item]->m_strPath;
+    
     if (m_selectedPath == "net://")
     {
       SET_CONTROL_LABEL(CONTROL_LABEL_PATH, g_localizeStrings.Get(1032)); // "Add Network Location..."
