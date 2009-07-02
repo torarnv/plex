@@ -19,6 +19,10 @@
  *
  */
 
+#include <boost/foreach.hpp>
+#include <map>
+#include <string>
+
 #include "stdafx.h"
 #include "MediaManager.h"
 #include "xbox/IoSupport.h"
@@ -108,6 +112,11 @@ bool CMediaManager::SaveSources()
 
 void CMediaManager::GetLocalDrives(VECSOURCES &localDrives, bool includeQ)
 {
+  // Make a map of existing ones.
+  map<string, bool> pathMap;
+  BOOST_FOREACH(CMediaSource share, localDrives)
+    pathMap[share.strPath] = true;
+  
 #if defined(_WIN32PC)
   char lDrives[128];
   GetLogicalDriveStrings(sizeof(lDrives)-1, lDrives);
@@ -128,6 +137,7 @@ void CMediaManager::GetLocalDrives(VECSOURCES &localDrives, bool includeQ)
     share.m_ignore = true;
     share.strName.Format(g_localizeStrings.Get(21438),pch[0]);
     share.strPath.Format("%s", _P(pch));
+    
     localDrives.push_back(share);
     pch = &pch[strlen(pch) + 1];
   }
@@ -137,6 +147,7 @@ void CMediaManager::GetLocalDrives(VECSOURCES &localDrives, bool includeQ)
     share.strPath = _P("Q:\\");
     share.strName.Format(g_localizeStrings.Get(21438),'Q');
     share.m_ignore = true;
+    
     localDrives.push_back(share) ;
   }
 #else
@@ -147,6 +158,7 @@ void CMediaManager::GetLocalDrives(VECSOURCES &localDrives, bool includeQ)
   share.strName.Format(g_localizeStrings.Get(21438),'C');
   share.m_ignore = true;
   share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
+  
   localDrives.push_back(share);
 #endif
 
@@ -157,13 +169,15 @@ void CMediaManager::GetLocalDrives(VECSOURCES &localDrives, bool includeQ)
   share.strName = g_localizeStrings.Get(21440);
   share.m_ignore = true;
   share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
-  localDrives.push_back(share);
+  if (pathMap.find(share.strPath) == pathMap.end())
+    localDrives.push_back(share);
 #endif
 
   share.strPath = _P("D:\\");
   share.strName = g_localizeStrings.Get(218);
   share.m_iDriveType = CMediaSource::SOURCE_TYPE_DVD;
-  localDrives.push_back(share);
+  if (pathMap.find(share.strPath) == pathMap.end())
+    localDrives.push_back(share);
 
   share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
 #ifndef _LINUX
@@ -205,7 +219,8 @@ void CMediaManager::GetLocalDrives(VECSOURCES &localDrives, bool includeQ)
     share.strPath = result[i];
     share.strName = CUtil::GetFileName(result[i]);
     share.m_ignore = true;
-    localDrives.push_back(share) ;
+    if (pathMap.find(share.strPath) == pathMap.end())
+      localDrives.push_back(share) ;
   }
 #endif
 #endif // Win32PC
@@ -213,15 +228,23 @@ void CMediaManager::GetLocalDrives(VECSOURCES &localDrives, bool includeQ)
 
 void CMediaManager::GetNetworkLocations(VECSOURCES &locations)
 {
+  // Make a map of existing ones.
+  map<string, bool> pathMap;
+  BOOST_FOREACH(CMediaSource share, locations)
+    pathMap[share.strPath] = true;
+  
   // Load our xml file
   LoadSources();
   for (unsigned int i = 0; i < m_locations.size(); i++)
   {
-    CMediaSource share;
-    share.strPath = m_locations[i].path;
-    CURL url(share.strPath);
-    url.GetURLWithoutUserDetails(share.strName);
-    locations.push_back(share);
+    if (pathMap.find(m_locations[i].path) == pathMap.end())
+    {
+      CMediaSource share;
+      share.strPath = m_locations[i].path;
+      CURL url(share.strPath);
+      url.GetURLWithoutUserDetails(share.strName);
+      locations.push_back(share);
+    }
   }
 }
 
