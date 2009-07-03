@@ -6076,7 +6076,7 @@ void CApplication::SetHardwareVolume(long hardwareVolume)
   Cocoa_UpdateGlobalVolume(GetVolume());
 
   // and tell our player to update the volume
-  if (m_pPlayer && g_guiSettings.GetBool("audiooutput.systemvolumefollows") == false)
+  if (m_pPlayer && g_guiSettings.GetBool("audiooutput.systemvolumefollows") == false || g_audioConfig.UseDigitalOutput())
   {
     m_pPlayer->SetVolume(g_stSettings.m_nVolumeLevel);
     // TODO DRC

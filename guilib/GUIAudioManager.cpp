@@ -32,6 +32,7 @@
 #ifdef HAS_SDL_AUDIO
 #include <SDL/SDL_mixer.h>
 #endif
+#include "XBAudioConfig.h"
 #include "CoreAudioPlexSupport.h"
 
 using namespace std;
@@ -401,7 +402,7 @@ void CGUIAudioManager::SetVolume(int iLevel)
 {
   CSingleLock lock(m_cs);
 
-  if (g_guiSettings.GetBool("audiooutput.systemvolumefollows"))
+  if (g_guiSettings.GetBool("audiooutput.systemvolumefollows") && g_audioConfig.UseDigitalOutput())
   {
     PlexAudioDevicePtr dev = PlexAudioDevices::FindDefault();
     
