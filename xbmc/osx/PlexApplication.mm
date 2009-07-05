@@ -158,7 +158,7 @@ BOOL gCalledAppMainline = FALSE;
       sv_key.Ctrl = ( modif & NSControlKeyMask ) != 0;
     }
     
-    if((!g_OSXKeyboardLayouts.Process(sv_key) && modif & NSCommandKeyMask) || (Cocoa_IsGUIShowing()))
+    if((!g_OSXKeyboardLayouts.Process(sv_key) && (modif & NSCommandKeyMask || modif & NSControlKeyMask)) || (Cocoa_IsGUIShowing()))
     {
 			[super sendEvent: anEvent];
     }
