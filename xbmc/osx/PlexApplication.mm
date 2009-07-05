@@ -20,6 +20,7 @@
 #import "AdvancedSettingsController.h"
 
 extern CApplication g_application;
+id g_plexApplication;
 
 int           gArgc;
 const char  **gArgv;
@@ -28,6 +29,16 @@ BOOL gFinderLaunch = FALSE;
 BOOL gCalledAppMainline = FALSE;
 
 @implementation PlexApplication
+
++ (PlexApplication*)sharedInstance
+{
+  return (PlexApplication*)g_plexApplication;
+}
+
+- (void)awakeFromNib
+{
+  g_plexApplication = (id)self;
+}
 
 - (void) finishLaunching
 {
@@ -119,10 +130,18 @@ BOOL gCalledAppMainline = FALSE;
   SVKey sv_key;
   NSUInteger modif;
 
-  // If the advanced settings window is visible, detect the Cmd+W shortcut & close the window.
+  // If the advanced settings window or about window is visible, detect the Cmd+W shortcut & close the window.
   if ((([anEvent modifierFlags] & NSCommandKeyMask) != 0) && ([anEvent type] == NSKeyDown) && ([anEvent keyCode] == 13) && (Cocoa_IsGUIShowing()))
   {
-    [[AdvancedSettingsController sharedInstance] closeWindow];
+    if ([[AdvancedSettingsController sharedInstance] windowIsVisible])
+    {
+      [[AdvancedSettingsController sharedInstance] closeWindow];
+    }
+    if ([aboutWindow isVisible])
+    {
+      [aboutWindow close];
+    }
+    return;
   }  
   
   if(NSKeyDown == [anEvent type] || NSKeyUp == [anEvent type]) 
@@ -163,6 +182,11 @@ BOOL gCalledAppMainline = FALSE;
 - (void)applicationWillBecomeActive:(NSNotification *)aNotification
 {
   [[BackgroundMusicPlayer sharedInstance] performSelectorOnMainThread:@selector(foundFocus) withObject:nil waitUntilDone:YES];
+}
+
+- (BOOL)isAboutWindowVisible
+{
+  return [aboutWindow isVisible];
 }
 
 @end
