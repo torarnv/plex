@@ -2754,6 +2754,28 @@ CStdString CSettings::GetProfilesThumbFolder() const
   return folder;
 }
 
+CStdString CSettings::GetPlexMediaServerThumbFolder() const
+{
+  CStdString folder;
+  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), _P("Thumbnails\\PlexMediaServer"), folder);
+  else
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), _P("Thumbnails\\PlexMediaServer"), folder);
+
+  return folder;
+
+}
+
+CStdString CSettings::GetPlexMediaServerFanartFolder() const
+{
+  CStdString folder;
+  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\PlexMediaServer\\Fanart", folder);
+  else
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\PlexMediaServer\\Fanart", folder);
+
+  return folder;
+}
 
 CStdString CSettings::GetXLinkKaiThumbFolder() const
 {
@@ -2895,6 +2917,10 @@ void CSettings::CreateProfileFolders()
   CreateDirectory(GetProgramsThumbFolder().c_str(), NULL);
   CreateDirectory(GetProgramFanartFolder().c_str(), NULL);
   CreateDirectory(GetPicturesThumbFolder().c_str(), NULL);
+  
+  CreateDirectory(GetPlexMediaServerThumbFolder().c_str(), NULL);
+  CreateDirectory(GetPlexMediaServerFanartFolder().c_str(), NULL);
+  
   CLog::Log(LOGINFO, "  thumbnails folder:%s", GetThumbnailsFolder().c_str());
   for (unsigned int hex=0; hex < 16; hex++)
   {
@@ -2907,6 +2933,10 @@ void CSettings::CreateProfileFolders()
     CreateDirectory(strThumbLoc.c_str(),NULL);
     CUtil::AddFileToFolder(GetVideoThumbFolder(), strHex, strThumbLoc);
     CreateDirectory(strThumbLoc.c_str(),NULL);
+    CUtil::AddFileToFolder(GetPlexMediaServerThumbFolder(), strHex, strThumbLoc);
+    CreateDirectory(strThumbLoc.c_str(), NULL);
+    CUtil::AddFileToFolder(GetProgramsThumbFolder(), strHex, strThumbLoc);
+    CreateDirectory(strThumbLoc.c_str(), NULL);
   }
 }
 

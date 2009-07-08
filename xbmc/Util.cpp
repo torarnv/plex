@@ -436,7 +436,7 @@ void CUtil::AutodetectPlexSources(CStdString strPlexPath, VECSOURCES& dstSources
         share.m_ignore = true;
         
         // Download thumbnail if needed.
-        CStdString cachedThumb(item->GetCachedProgramThumb());
+        CStdString cachedThumb(item->GetCachedPlexMediaServerThumb());
         CStdString thumb(item->GetThumbnailImage());
         
         if (CFile::Exists(cachedThumb))

@@ -410,6 +410,16 @@ bool CFile::IsDir(const CStdString& strFileName)
   return S_ISDIR(stat.st_mode);
 }
 
+int CFile::Age(const CStdString& strFileName)
+{
+  struct __stat64 stat;
+    
+  if (Stat(strFileName, &stat) == 0)
+    return time(0) - (int)stat._st_mtime;
+  
+  return -1;
+}
+
 bool CFile::Exists(const CStdString& strFileName)
 {
   try

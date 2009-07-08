@@ -189,6 +189,12 @@ public:
   CStdString GetCachedFanart() const;
   CStdString GetCachedProgramFanart() const;
   
+  CStdString GetCachedPlexMediaServerThumb() const;
+  static CStdString GetCachedPlexMediaServerThumb(const CStdString& path);
+  
+  CStdString GetCachedPlexMediaServerFanart() const;
+  static CStdString GetCachedPlexMediaServerFanart(const CStdString &path);
+  
   static CStdString GetCachedProgramFanart(const CStdString &path);
   static CStdString GetCachedFanart(const CStdString &path);
 

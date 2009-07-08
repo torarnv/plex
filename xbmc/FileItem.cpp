@@ -56,6 +56,8 @@ using namespace DIRECTORY;
 using namespace PLAYLIST;
 using namespace MUSIC_INFO;
 
+#define MAX_FANART_AGE (3600*24*7)
+
 CFileItem::CFileItem(const CSong& song)
 {
   m_musicInfoTag = NULL;
@@ -2290,8 +2292,21 @@ CStdString CFileItem::GetCachedPictureThumb() const
   crc.ComputeFromLowerCase(m_strPath);
   CStdString hex;
   hex.Format("%08x", (unsigned __int32) crc);
-  CStdString thumb;
-  thumb.Format("%s\\%c\\%s.tbn", g_settings.GetPicturesThumbFolder().c_str(), hex[0], hex.c_str());
+  CStdString thumb, root;
+  
+  // For Plex Media Server thumbs, use the thumb path, because multiple items can refer to the same thumb.
+  if (IsPlexMediaServer() || CUtil::IsPlexMediaServer(m_strThumbnailImage))
+  {
+    crc.ComputeFromLowerCase(m_strThumbnailImage);
+    root = g_settings.GetPlexMediaServerThumbFolder();
+  }
+  else
+  {
+    crc.ComputeFromLowerCase(m_strPath);
+    root = g_settings.GetPicturesThumbFolder();
+  }
+  
+  thumb.Format("%s\\%c\\%s.tbn", root.c_str(), hex[0], hex.c_str());
   return _P(thumb);
 }
 
@@ -2430,6 +2445,8 @@ void CFileItem::SetCachedPictureThumb()
 
 CStdString CFileItem::GetCachedMusicThumb() const
 {
+  CStdString root;
+  
   // get the locally cached thumb
   Crc32 crc;
   if (IsStack())
@@ -2440,22 +2457,29 @@ CStdString CFileItem::GetCachedMusicThumb() const
   else
   {
     // For Plex Media Server thumbs, use the thumb path, because multiple items can refer to the same thumb.
-    if (m_strPath.Left(7) == "plex://" || (m_strPath.Left(7) == "http://" && m_strThumbnailImage.size() > 0))
+    if (IsPlexMediaServer() || CUtil::IsPlexMediaServer(m_strThumbnailImage))
+    {
       crc.ComputeFromLowerCase(m_strThumbnailImage);
+      root = g_settings.GetPlexMediaServerThumbFolder();
+    }
     else
+    {
       crc.ComputeFromLowerCase(m_strPath);
+      root = g_settings.GetMusicThumbFolder();
+    }
   }
 
   CStdString hex;
   hex.Format("%08x", (__int32)crc);
   CStdString thumb;
-  thumb.Format("%s\\%c\\%08x.tbn", g_settings.GetMusicThumbFolder().c_str(), hex[0],(unsigned __int32)crc);
+  thumb.Format("%s\\%c\\%08x.tbn", root.c_str(), hex[0],(unsigned __int32)crc);
   return _P(thumb);
 }
 
 CStdString CFileItem::GetCachedVideoThumb() const
 {
   // get the locally cached thumb
+  CStdString root;
   Crc32 crc;
   if (IsStack())
   {
@@ -2463,12 +2487,24 @@ CStdString CFileItem::GetCachedVideoThumb() const
     crc.ComputeFromLowerCase(dir.GetFirstStackedFile(m_strPath));
   }
   else
-    crc.ComputeFromLowerCase(m_strPath);
+  {
+    // For Plex Media Server thumbs, use the thumb path, because multiple items can refer to the same thumb.
+    if (IsPlexMediaServer() && m_strThumbnailImage.size() > 0)
+    {
+      crc.ComputeFromLowerCase(m_strThumbnailImage);
+      root = g_settings.GetPlexMediaServerThumbFolder();
+    }
+    else
+    {
+      crc.ComputeFromLowerCase(m_strPath);
+      root = g_settings.GetVideoThumbFolder();
+    }
+  }
 
   CStdString hex;
   hex.Format("%08x", (__int32)crc);
   CStdString thumb;
-  thumb.Format("%s\\%c\\%08x.tbn", g_settings.GetVideoThumbFolder().c_str(), hex[0],(unsigned __int32)crc);
+  thumb.Format("%s\\%c\\%08x.tbn", root.c_str(), hex[0],(unsigned __int32)crc);
   return _P(thumb);
 }
 
@@ -2597,8 +2633,8 @@ CStdString CFileItem::CacheFanart(bool probe) const
   // Check for Plex Media Server fan-art.
   if (m_strFanartUrl.size() > 0)
   {
-    CStdString localFanart = GetCachedProgramFanart(m_strFanartUrl);
-    if (CFile::Exists(localFanart) == false)
+    CStdString localFanart = GetCachedPlexMediaServerFanart(m_strFanartUrl);
+    if (CFile::Exists(localFanart) == false || CFile::Age(localFanart) > MAX_FANART_AGE)
     {
       CPicture pic;
       pic.CacheImage(m_strFanartUrl, localFanart);
@@ -2727,6 +2763,41 @@ CStdString CFileItem::GetCachedProgramFanart(const CStdString &path)
   return _P(thumb);
 }
 
+CStdString CFileItem::GetCachedPlexMediaServerThumb() const
+{
+  return GetCachedPlexMediaServerThumb(m_strThumbnailImage);
+}
+
+CStdString CFileItem::GetCachedPlexMediaServerThumb(const CStdString& path)
+{
+  // get the locally cached thumb
+  Crc32 crc;
+  crc.ComputeFromLowerCase(path);
+
+  CStdString hex;
+  hex.Format("%08x", (__int32)crc);
+  
+  CStdString thumb;
+  thumb.Format("%s\\%c\\%08x.tbn", g_settings.GetPlexMediaServerThumbFolder().c_str(), hex[0],(unsigned __int32)crc);
+  return _P(thumb);
+}
+
+CStdString CFileItem::GetCachedPlexMediaServerFanart() const
+{
+  return CFileItem::GetCachedPlexMediaServerFanart(m_strFanartUrl);
+}
+
+CStdString CFileItem::GetCachedPlexMediaServerFanart(const CStdString &path)
+{
+  // get the locally cached thumb
+  Crc32 crc;
+  crc.ComputeFromLowerCase(path);
+
+  CStdString thumb;
+  thumb.Format("%s\\%08x.tbn", g_settings.GetPlexMediaServerFanartFolder().c_str(),(unsigned __int32)crc);
+  return _P(thumb);
+}
+
 CStdString CFileItem::GetCachedFanart(const CStdString &path)
 {
   // get the locally cached thumb
@@ -2742,9 +2813,25 @@ CStdString CFileItem::GetCachedProgramThumb() const
 {
   // get the locally cached thumb
   Crc32 crc;
-  crc.ComputeFromLowerCase(m_strPath);
+  CStdString root;
+  
+  // For Plex Media Server thumbs, use the thumb path, because multiple items can refer to the same thumb.
+  if (IsPlexMediaServer() || CUtil::IsPlexMediaServer(m_strThumbnailImage))
+  {
+    crc.ComputeFromLowerCase(m_strThumbnailImage);
+    root = g_settings.GetPlexMediaServerThumbFolder();
+  }
+  else
+  {
+    crc.ComputeFromLowerCase(m_strPath);
+    root = g_settings.GetProgramsThumbFolder();
+  }
+  
+  CStdString hex;
+  hex.Format("%08x", (__int32)crc);
   CStdString thumb;
-  thumb.Format("%s\\%08x.tbn", g_settings.GetProgramsThumbFolder().c_str(), (unsigned __int32)crc);
+  thumb.Format("%s\\%c\\%08x.tbn", root.c_str(), hex[0],(unsigned __int32)crc);
+
   return _P(thumb);
 }
 
@@ -3006,9 +3093,9 @@ void CFileItem::SetQuickFanart(const CStdString& fanartURL)
 {
   m_strFanartUrl = fanartURL;
   
-  // See if it's already cached.
-  if (CFile::Exists(GetCachedProgramFanart()))
-    SetProperty("fanart_image", GetCachedProgramFanart());
+  // See if it's already cached, and the cached version isn't too old.
+  if (CFile::Exists(GetCachedPlexMediaServerFanart()) && CFile::Age(GetCachedPlexMediaServerFanart()) < MAX_FANART_AGE)
+    SetProperty("fanart_image", GetCachedPlexMediaServerFanart());
 }
 
 CStdString CFileItem::FindTrailer() const
