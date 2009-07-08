@@ -720,7 +720,7 @@ void CDVDPlayer::OpenDefaultStreams()
         if (valid == false)
         {
           valid = true;
-          m_dvdPlayerVideo.EnableSubtitle(false);
+          m_dvdPlayerVideo.EnableSubtitle(false); // FIXME, this is wrong!
         }
       }
     }
@@ -3208,6 +3208,12 @@ int CDVDPlayer::GetCacheSize()
   CFileItem file = g_application.CurrentFileItem();
   CStdString strFile = file.m_strPath;
   printf("Computing cache size for [%s].\n", strFile.c_str());
+  
+  // Special case for MMS.
+  if (strFile.Find("mms://") == 0)
+  {
+    return 128;
+  }
   
   // Special case for web videos.
   if (strFile.Find("http://www.youtube.com") == 0     ||
