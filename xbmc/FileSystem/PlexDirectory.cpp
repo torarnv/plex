@@ -11,6 +11,7 @@
 #include "Album.h"
 #include "CocoaUtilsPlus.h"
 #include "CocoaUtils.h"
+#include "File.h"
 #include "PlexDirectory.h"
 #include "DirectoryCache.h"
 #include "Util.h"
@@ -30,6 +31,8 @@ using namespace XFILE;
 using namespace DIRECTORY;
 
 #define MASTER_PLEX_MEDIA_SERVER "http://localhost:32400"
+#define MAX_THUMBNAIL_AGE (3600*24*2)
+#define MAX_FANART_AGE    (3600*24*7)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CPlexDirectory::CPlexDirectory(bool parseResults)
@@ -258,15 +261,34 @@ class PlexMediaNode
        if (thumb && strlen(thumb) > 0)
        {
          string strThumb = CPlexDirectory::ProcessUrl(parentPath, thumb, false);
+         
+         // See if the item is too old.
+         string cachedFile(CFileItem::GetCachedPlexMediaServerThumb(strThumb));
+         if (CFile::Age(cachedFile) > MAX_THUMBNAIL_AGE)
+         {
+           printf("Whacked thumbnail for being too old [%s]\n", strThumb.c_str());
+           CFile::Delete(cachedFile);
+         }
+
+         // Set the thumbnail URL.
          pItem->SetThumbnailImage(strThumb);
        }
        
        // Fanart.
        const char* fanart = el.Attribute("art");
-       string strFanart;
        if (fanart && strlen(fanart) > 0)
        {
-         strFanart = CPlexDirectory::ProcessUrl(parentPath, fanart, false);
+         string strFanart = CPlexDirectory::ProcessUrl(parentPath, fanart, false);
+         
+         // See if the item is too old.
+         string cachedFile(CFileItem::GetCachedPlexMediaServerFanart(strFanart));
+         if (CFile::Age(cachedFile) > MAX_FANART_AGE)
+         {
+           printf("Whacked fanart for being too old [%s]\n", strFanart.c_str());
+           CFile::Delete(cachedFile);
+         }
+
+         // Set the fanart.
          pItem->SetQuickFanart(strFanart);
        } 
      }

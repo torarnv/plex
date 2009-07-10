@@ -56,8 +56,6 @@ using namespace DIRECTORY;
 using namespace PLAYLIST;
 using namespace MUSIC_INFO;
 
-#define MAX_FANART_AGE (3600*24*7)
-
 CFileItem::CFileItem(const CSong& song)
 {
   m_musicInfoTag = NULL;
@@ -2634,7 +2632,7 @@ CStdString CFileItem::CacheFanart(bool probe) const
   if (m_strFanartUrl.size() > 0)
   {
     CStdString localFanart = GetCachedPlexMediaServerFanart(m_strFanartUrl);
-    if (CFile::Exists(localFanart) == false || CFile::Age(localFanart) > MAX_FANART_AGE)
+    if (CFile::Exists(localFanart) == false)
     {
       CPicture pic;
       pic.CacheImage(m_strFanartUrl, localFanart);
@@ -3094,7 +3092,7 @@ void CFileItem::SetQuickFanart(const CStdString& fanartURL)
   m_strFanartUrl = fanartURL;
   
   // See if it's already cached, and the cached version isn't too old.
-  if (CFile::Exists(GetCachedPlexMediaServerFanart()) && CFile::Age(GetCachedPlexMediaServerFanart()) < MAX_FANART_AGE)
+  if (CFile::Exists(GetCachedPlexMediaServerFanart()))
     SetProperty("fanart_image", GetCachedPlexMediaServerFanart());
 }
 
