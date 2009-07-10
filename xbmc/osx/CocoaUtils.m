@@ -33,6 +33,7 @@
 #import "SUPlexUpdater.h"
 
 #import "AdvancedSettingsController.h"
+#import "PlexApplication.h"
 
 extern int GetProcessPid(const char* processName);
 extern void CocoaPlus_Initialize();
@@ -1219,5 +1220,5 @@ void Cocoa_ExecAppleScript(const char* scriptSource)
 
 bool Cocoa_IsGUIShowing()
 {
-  return [[AdvancedSettingsController sharedInstance] windowIsVisible];
+  return ([[AdvancedSettingsController sharedInstance] windowIsVisible] || [[PlexApplication sharedInstance] isAboutWindowVisible]);
 }

@@ -11,7 +11,10 @@
 
 #define PLEX_MESSAGE SDL_USEREVENT
 
-@interface PlexApplication : NSApplication
+@interface PlexApplication : NSApplication {
+  IBOutlet NSWindow* aboutWindow;
+}
++ (PlexApplication*)sharedInstance;
 - (void)terminate:(id)sender;
 - (IBAction)quit:(id)sender;
 - (IBAction)fullScreenToggle:(id)sender;
@@ -19,4 +22,5 @@
 - (IBAction)moveToPreviousScreen:(id)sender;
 - (IBAction)moveToNextScreen:(id)sender;
 - (void)finishLaunching;
+- (BOOL)isAboutWindowVisible;
 @end
