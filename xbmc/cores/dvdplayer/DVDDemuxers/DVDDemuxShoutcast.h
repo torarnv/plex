@@ -49,6 +49,7 @@ public:
 
   bool SeekTime(int time, bool backwords = false, double* startpts = NULL);
   int GetStreamLength();
+  int GetStreamBitrate() { return 0; }
   CDemuxStream* GetStream(int iStreamId);
   int GetNrOfStreams();
 

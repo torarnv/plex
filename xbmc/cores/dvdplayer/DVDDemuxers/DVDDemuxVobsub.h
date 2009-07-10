@@ -44,6 +44,7 @@ public:
   virtual int           GetNrOfStreams()     { return m_Streams.size(); }
   virtual int           GetStreamLength()    { return 0; }
   virtual std::string   GetFileName()        { return m_Filename; }
+  virtual int           GetStreamBitrate()   { return 0; }
 
 private:
   class CStream 

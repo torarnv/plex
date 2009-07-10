@@ -76,8 +76,8 @@ public:
     ExtraSize = 0;
     language[0] = 0;
     disabled = false;
-	forcelibdts = false;
-
+    forcelibdts = false;
+    iBitRate = 0;
   }
 
   virtual ~CDemuxStream() {}
@@ -106,6 +106,7 @@ public:
 
   char language[4]; // ISO 639 3-letter language code (empty string if undefined)
   bool disabled; // set when stream is disabled. (when no decoder exists)
+  int iBitRate;
 };
 
 class CDemuxStreamVideo : public CDemuxStream
@@ -139,7 +140,6 @@ public:
     iChannels = 0;
     iSampleRate = 0;
     iBlockAlign = 0;
-    iBitRate = 0;
     type = STREAM_AUDIO;
   }
 
@@ -150,7 +150,6 @@ public:
   int iChannels;
   int iSampleRate;
   int iBlockAlign;
-  int iBitRate;
 };
 
 class CDemuxStreamSubtitle : public CDemuxStream
@@ -244,6 +243,11 @@ public:
    * returns the total time in msec
    */
   virtual int GetStreamLength() = 0;
+  
+  /*
+   * Get the total bitrate of the entire stream.
+   */
+  virtual int GetStreamBitrate() = 0;
   
   /*
    * returns the stream or NULL on error, starting from 0

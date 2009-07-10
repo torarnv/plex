@@ -868,6 +868,14 @@ int CDVDDemuxFFmpeg::GetStreamLength()
   return (int)(m_pFormatContext->duration / (AV_TIME_BASE / 1000));
 }
 
+int CDVDDemuxFFmpeg::GetStreamBitrate()
+{
+  if (!m_pFormatContext)
+    return 0;
+  
+  return m_pFormatContext->bit_rate;
+}
+
 CDemuxStream* CDVDDemuxFFmpeg::GetStream(int iStreamId)
 {
   if (iStreamId < 0 || iStreamId >= MAX_STREAMS) return NULL;
@@ -929,6 +937,7 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
           st->fAspect = 0.0;
         else 
           st->fAspect = av_q2d(pStream->sample_aspect_ratio) * pStream->codec->width / pStream->codec->height;
+        st->iBitRate = pStream->codec->bit_rate;
 
         break;
       }

@@ -54,6 +54,8 @@ public:
   void WaitForBuffers()                             { m_messageQueue.WaitUntilEmpty(); }
   bool AcceptsData()                                { return !m_messageQueue.IsFull(); }
   void SendMessage(CDVDMsg* pMsg)                   { m_messageQueue.Put(pMsg); }
+  void SetMaxDataSize(int dataSize)                 { m_messageQueue.SetMaxDataSize(dataSize); }
+  int  GetMaxDataSize()                             { return m_messageQueue.GetMaxDataSize(); }
 
 #ifdef HAS_VIDEO_PLAYBACK
   void Update(bool bPauseDrawing)                   { g_renderManager.Update(bPauseDrawing); }

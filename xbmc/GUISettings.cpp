@@ -501,20 +501,7 @@ CGUISettings::CGUISettings(void)
 #endif
 
   AddCategory(4, "cache", 439);
-  AddInt(1, "cache.harddisk", 14025, 4096, 1024, 1024, 8096, SPIN_CONTROL_INT_PLUS, MASK_KB);
-  AddSeparator(2, "cache.sep1");
-  AddInt(3, "cachevideo.dvdrom", 14026, 2048, 1024, 1024, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB);
-  AddInt(4, "cachevideo.lan", 14027, 4096, 1024, 1024, 32768, SPIN_CONTROL_INT_PLUS, MASK_KB);
-  AddInt(5, "cachevideo.internet", 14028, 4096, 1024, 1024, 32768, SPIN_CONTROL_INT_PLUS, MASK_KB);
-  AddSeparator(6, "cache.sep2");
-  AddInt(7, "cacheaudio.dvdrom", 14030, 256, 256, 512, 4096, SPIN_CONTROL_INT_PLUS, MASK_KB);
-  AddInt(8, "cacheaudio.lan", 14031, 256, 256, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB);
-  AddInt(9, "cacheaudio.internet", 14032, 256, 256, 512, 32768, SPIN_CONTROL_INT_PLUS, MASK_KB);
-  AddSeparator(10, "cache.sep3");
-  AddInt(11, "cachedvd.dvdrom", 14034, 2048, 256, 512, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB);
-  AddInt(12, "cachedvd.lan", 14035, 2048, 256, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB);
-  AddSeparator(13, "cache.sep4");
-  AddInt(14, "cacheunknown.internet", 14060, 4096, 256, 512, 32768, SPIN_CONTROL_INT_PLUS, MASK_KB);
+  AddInt(1, "cache.seconds", 14029, 5, 3, 1, 20, SPIN_CONTROL_INT_PLUS, MASK_SECS);
 
 #ifndef __APPLE__
   AddCategory(4, "videooutput", 21373);

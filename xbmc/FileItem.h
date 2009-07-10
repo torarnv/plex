@@ -267,10 +267,7 @@ public:
   bool m_bIsSearchDir;            // whether to show keyboard & append input as query
   CStdString m_strSearchPrompt;   // text to show as keyboard header
   bool m_bIsSettingsDir;
-  bool m_wasListingCancelled;  
-  bool m_displayMessage;
-  CStdString m_displayMessageTitle;
-  CStdString m_displayMessageContents;
+  int m_iBitrate;
   
 private:
   CStdString GetFolderThumb(const CStdString &folderJPG = "folder.jpg") const;
@@ -410,6 +407,12 @@ public:
   const CStdString& GetSecondTitle() const { return m_secondTitle; }
   
   void ClearSortState();
+  
+  bool m_wasListingCancelled;
+  bool m_displayMessage;
+  CStdString m_displayMessageTitle;
+  CStdString m_displayMessageContents;
+  
 private:
   void Sort(FILEITEMLISTCOMPARISONFUNC func);
   void FillSortFields(FILEITEMFILLFUNC func);

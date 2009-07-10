@@ -449,7 +449,7 @@ bool CDVDPlayer::OpenInputStream()
     CLog::Log(LOGERROR, "CDVDPlayer::OpenInputStream - error opening [%s]", m_filename.c_str());
     return false;
   }
-
+  
   // find any available external subtitles for non dvd files
   if (!m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) 
   &&  !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
@@ -516,7 +516,29 @@ bool CDVDPlayer::OpenDemuxStream()
   m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_DEMUX);
   m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_NAV);
   m_SelectionStreams.Update(m_pInputStream, m_pDemuxer);
-
+  
+  // Compute the bitrate, letting the item override.
+  CFileItem file = g_application.CurrentFileItem();
+  int bitrate = m_pDemuxer->GetStreamBitrate();
+  
+  if (file.m_iBitrate > 0)
+    bitrate = file.m_iBitrate * 1000;
+   
+  // Set the cache size based on the bitrate.
+  if (bitrate > 0)
+  {
+    int numSeconds = g_guiSettings.GetInt("cache.seconds");
+    int totalData = (bitrate / 8) * numSeconds;
+    
+    // At least 256 KB as a floor.
+    if (totalData/1024 < 256)
+      totalData = 1024 * 256;
+    
+    printf("Setting cache size to %dKB (bitrate of %d, numSeconds = %d)\n", totalData/1024, bitrate, numSeconds);
+    m_dvdPlayerVideo.SetMaxDataSize(totalData);
+    m_dvdPlayerAudio.SetMaxDataSize(totalData/2);
+  }
+    
   return true;
 }
 
@@ -3201,111 +3223,6 @@ bool CDVDPlayer::Record(bool bOnOff)
     return true;
   }
   return false;
-}
-
-int CDVDPlayer::GetCacheSize()
-{
-  CFileItem file = g_application.CurrentFileItem();
-  CStdString strFile = file.m_strPath;
-  printf("Computing cache size for [%s].\n", strFile.c_str());
-  
-  // Special case for MMS.
-  if (strFile.Find("mms://") == 0)
-  {
-    return 128;
-  }
-  
-  // Special case for web videos.
-  if (strFile.Find("http://www.youtube.com") == 0     ||
-      strFile.Find("http://www.totaleclips.com") == 0 ||
-      strFile.Find("http://blip.tv") == 0             ||
-      strFile.Find("http://vid.cnn.com") == 0         ||
-      (strFile.Find(":32400") != -1 && strFile.Find("/video/youtube") != -1) ||
-      (strFile.Find(":32400") != -1 && strFile.Find("/video/charlierose") != -1)
-      ||
-      
-      // Check for BBC iPlayer streams
-      (strFile.Find(".edgefcs.net:1935/ondemand?_fcs_vhost=") > 0 &&
-       strFile.Find(".edgefcs.net&auth=") > 0                     &&
-       strFile.Find("&aifp=v001&slist=secure/") > 0               &&
-       strFile.Find("streaming") > 0
-      ))
-       
-    return 256;
-  
-  if (strFile.Find("http://download.cnettv.com.edgesuite.net") != -1)
-    return 1024;
-  else if (strFile.Find("http://content.cnettv.com") != -1)
-    return 1024;
-  else if (strFile.Find("http://video.pitchfork.tv") != -1)
-    return 256;
-  else if (strFile.Find("http://www.plexapp.com/screencasts") != -1)
-    return 900;
-  
-  // First, figure out the source of the file.
-  bool bFileOnHD = false;
-  bool bFileOnISO = false;
-  bool bFileOnUDF = false;
-  bool bFileOnInternet = false;
-  bool bFileOnLAN = false;
-  bool bFileIsDVDImage = false;
-  bool bFileIsDVDIfoFile = false;
-
-  CURL url(strFile);
-  if (file.IsHD()) bFileOnHD = true;
-  else if (file.IsISO9660()) bFileOnISO = true;
-  else if (file.IsOnDVD()) bFileOnUDF = true;
-  else if (file.IsSmb() || file.IsOnLAN()) bFileOnLAN = true;
-  else if (file.IsInternetStream()) bFileOnInternet = true;  
-
-  bool bIsVideo = file.IsVideo();
-  bool bIsAudio = file.IsAudio();
-  bool bIsDVD = false;
-
-  bFileIsDVDImage = file.IsDVDImage();
-  bFileIsDVDIfoFile = file.IsDVDFile(false, true);
-
-  CLog::Log(LOGDEBUG,"file:%s IsDVDImage:%i IsDVDIfoFile:%i", strFile.c_str(), bFileIsDVDImage , bFileIsDVDIfoFile);
-  if (strFile.Find("dvd://") >= 0 || bFileIsDVDImage || bFileIsDVDIfoFile)
-  {
-    bIsDVD = true;
-    bIsVideo = true;
-  }
-
-  if (g_stSettings.m_currentVideoSettings.m_NoCache) return 0;
-
-  if (bFileOnHD)
-  {
-    if ( bIsDVD ) return g_guiSettings.GetInt("cache.harddisk");
-    if ( bIsVideo) return g_guiSettings.GetInt("cache.harddisk");
-    if ( bIsAudio) return g_guiSettings.GetInt("cache.harddisk");
-  }
-  
-  if (bFileOnISO || bFileOnUDF)
-  {
-    if ( bIsDVD ) return g_guiSettings.GetInt("cachedvd.dvdrom");
-    if ( bIsVideo) return g_guiSettings.GetInt("cachevideo.dvdrom");
-    if ( bIsAudio) return g_guiSettings.GetInt("cacheaudio.dvdrom");
-  }
-  
-  if (bFileOnInternet)
-  {
-    if ( bIsVideo) return g_guiSettings.GetInt("cachevideo.internet");
-    if ( bIsAudio) return g_guiSettings.GetInt("cacheaudio.internet");
-    //File is on internet however we don't know what type.
-    return g_guiSettings.GetInt("cacheunknown.internet");
-    //Apparently fixes DreamBox playback.
-    //return 4096;
-  }
-  
-  if (bFileOnLAN)
-  {
-    if ( bIsDVD ) return g_guiSettings.GetInt("cachedvd.lan");
-    if ( bIsVideo) return g_guiSettings.GetInt("cachevideo.lan");
-    if ( bIsAudio) return g_guiSettings.GetInt("cacheaudio.lan");
-  }
-  
-  return 1024;
 }
 
 CDVDPlayer::CPlayerSeek::CPlayerSeek(CDVDPlayer* player)

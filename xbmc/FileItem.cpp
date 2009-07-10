@@ -340,6 +340,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   m_bIsSettingsDir = item.m_bIsSettingsDir;
   m_bIsSearchDir = item.m_bIsSearchDir;
   m_strSearchPrompt = item.m_strSearchPrompt;
+  m_iBitrate = item.m_iBitrate;
   
   return *this;
 }
@@ -387,8 +388,7 @@ void CFileItem::Reset()
   m_bIsSettingsDir = false;
   m_bIsSearchDir = false;
   m_strSearchPrompt = "";
-  m_displayMessageTitle = "";
-  m_displayMessageContents = "";
+  m_iBitrate = 0;
   
   SetInvalid();
 }
@@ -1194,6 +1194,7 @@ CFileItemList::CFileItemList()
   m_displayMessage = false;
   m_displayMessageTitle = "";
   m_displayMessageContents = "";
+  m_iBitrate = 0;
 }
 
 CFileItemList::CFileItemList(const CStdString& strPath)
@@ -1210,6 +1211,7 @@ CFileItemList::CFileItemList(const CStdString& strPath)
   m_displayMessage = false;
   m_displayMessageTitle = "";
   m_displayMessageContents = "";
+  m_iBitrate = 0;
 }
 
 CFileItemList::~CFileItemList()
@@ -1292,6 +1294,7 @@ void CFileItemList::Clear()
   m_displayMessage = false;
   m_displayMessageTitle = "";
   m_displayMessageContents = "";
+  m_iBitrate = 0;
 }
 
 void CFileItemList::ClearItems()
@@ -1409,6 +1412,7 @@ void CFileItemList::Assign(const CFileItemList& itemlist, bool append)
   m_displayMessage = itemlist.m_displayMessage;
   m_displayMessageTitle = itemlist.m_displayMessageTitle;
   m_displayMessageContents = itemlist.m_displayMessageContents;
+  m_iBitrate = itemlist.m_iBitrate;
 }
 
 CFileItemPtr CFileItemList::Get(int iItem)

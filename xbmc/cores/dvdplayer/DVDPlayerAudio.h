@@ -107,6 +107,7 @@ public:
 
   std::string GetPlayerInfo();
   int GetAudioBitrate();
+  void SetMaxDataSize(int dataSize)                     { m_messageQueue.SetMaxDataSize(dataSize); }
 
   // holds stream information for current playing stream
   CDVDStreamInfo m_streaminfo;

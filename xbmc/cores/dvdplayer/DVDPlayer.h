@@ -211,8 +211,6 @@ public:
   virtual bool IsCaching() const { return m_caching; }
   virtual int GetCacheLevel() const ; 
 
-  static int GetCacheSize();
-
   virtual int OnDVDNavResult(void* pData, int iMessage);    
 protected:  
   friend class CSelectionStreams;

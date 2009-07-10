@@ -72,19 +72,25 @@ bool CAudioDecoder::Create(const CFileItem &file, __int64 seekOffset, unsigned i
   // reset our playback timing variables
   m_eof = false;
 
-  // get correct cache size
-  unsigned int filecache = g_guiSettings.GetInt("cacheaudio.lan");
-  if ( file.IsHD() )
-    filecache = g_guiSettings.GetInt("cache.harddisk");
-  else if ( file.IsOnDVD() )
-    filecache = g_guiSettings.GetInt("cacheaudio.dvdrom");
-  else if ( file.IsInternetStream() )
-    filecache = g_guiSettings.GetInt("cacheaudio.internet");
-
   // create our codec
-  m_codec=CodecFactory::CreateCodecDemux(file.m_strPath, file.GetContentType(), filecache * 1024);
+  int totalData = 384*1024;
+  m_codec = CodecFactory::CreateCodecDemux(file.m_strPath, file.GetContentType(), totalData);
 
-  if (!m_codec || !m_codec->Init(file.m_strPath, filecache * 1024))
+  // Compute cache size. FIXME, this needs work as codec doesn't seem to have information.
+  if (m_codec)
+  {
+    int bitrate = m_codec->m_Bitrate;
+    if (bitrate > 0)
+    {
+      int numSeconds = g_guiSettings.GetInt("cache.seconds");
+      totalData = (bitrate / 8) * numSeconds;
+  
+      if (totalData/1024 < 384)
+        totalData = 1024 * 384;
+    }
+  }
+  
+  if (!m_codec || !m_codec->Init(file.m_strPath, totalData))
   {
     CLog::Log(LOGERROR, "CAudioDecoder: Unable to Init Codec while loading file %s", file.m_strPath.c_str());
     Destroy();

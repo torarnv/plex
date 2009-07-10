@@ -128,6 +128,11 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   if (fanart && strlen(fanart) > 0)
     strFanart = ProcessUrl(strPath, fanart, false);
 
+  // See if the item is too old.
+  string cachedFile(CFileItem::GetCachedPlexMediaServerThumb(strFanart));
+  if (CFile::Age(cachedFile) > MAX_FANART_AGE)
+    CFile::Delete(cachedFile);
+  
   // Walk the parsed tree.
   string strFileLabel = "%N - %T"; 
   string strSecondFileLabel = "%D";
@@ -254,6 +259,11 @@ class PlexMediaNode
      if (date && strlen(date) > 0)
        pItem->SetProperty("subtitle", date);
      
+     // Bitrate.
+     const char* bitrate = el.Attribute("bitrate");
+     if (bitrate && strlen(bitrate) > 0)
+       pItem->m_iBitrate = boost::lexical_cast<int>(bitrate);
+     
      try
      {
        // Thumb.
@@ -265,10 +275,7 @@ class PlexMediaNode
          // See if the item is too old.
          string cachedFile(CFileItem::GetCachedPlexMediaServerThumb(strThumb));
          if (CFile::Age(cachedFile) > MAX_THUMBNAIL_AGE)
-         {
-           printf("Whacked thumbnail for being too old [%s]\n", strThumb.c_str());
            CFile::Delete(cachedFile);
-         }
 
          // Set the thumbnail URL.
          pItem->SetThumbnailImage(strThumb);
@@ -283,10 +290,7 @@ class PlexMediaNode
          // See if the item is too old.
          string cachedFile(CFileItem::GetCachedPlexMediaServerFanart(strFanart));
          if (CFile::Age(cachedFile) > MAX_FANART_AGE)
-         {
-           printf("Whacked fanart for being too old [%s]\n", strFanart.c_str());
            CFile::Delete(cachedFile);
-         }
 
          // Set the fanart.
          pItem->SetQuickFanart(strFanart);

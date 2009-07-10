@@ -35,6 +35,7 @@ CDVDMessageQueue::CDVDMessageQueue(const string &owner)
   m_bInitialized  = false;
   m_bCaching      = false;
   m_bEmptied      = true;
+  m_iMaxDataSize  = 0;
   
   InitializeCriticalSection(&m_critSection);
   m_hEvent = CreateEvent(NULL, true, false, NULL);
