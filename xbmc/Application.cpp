@@ -156,7 +156,7 @@
 #include "GUIWindowGameSaves.h"
 #include "GUIWindowLoginScreen.h"
 #include "GUIWindowVisualisation.h"
-#include "GUIWindowSystemInfo.h"
+//#include "GUIWindowSystemInfo.h"
 #include "GUIWindowScreensaver.h"
 #include "GUIWindowSlideShow.h"
 #include "GUIWindowNowPlaying.h"
@@ -1504,7 +1504,7 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIWindowFileManager);      // window id = 3
   m_gWindowManager.Add(new CGUIWindowVideoFiles);          // window id = 6
   m_gWindowManager.Add(new CGUIWindowSettings);                 // window id = 4
-  m_gWindowManager.Add(new CGUIWindowSystemInfo);               // window id = 7
+  //m_gWindowManager.Add(new CGUIWindowSystemInfo);               // window id = 7
   m_gWindowManager.Add(new CGUIWindowTestPattern);      // window id = 8
   m_gWindowManager.Add(new CGUIWindowSettingsScreenCalibration); // window id = 11
   m_gWindowManager.Add(new CGUIWindowSettingsCategory);         // window id = 12 slideshow:window id 2007
