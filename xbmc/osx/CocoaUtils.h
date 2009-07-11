@@ -72,6 +72,7 @@ extern "C"
   int Cocoa_DimDisplayNow();
   void Cocoa_UpdateSystemActivity();
   int Cocoa_SleepSystem();
+  bool Cocoa_ShutDownSystem();
   void Cocoa_TurnOffScreenSaver();
 
   //
