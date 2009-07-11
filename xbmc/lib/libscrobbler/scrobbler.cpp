@@ -15,7 +15,7 @@
     along with libscrobbler; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-  Copyright © 2003 Russell Garrett (russ-scrobbler@garrett.co.uk)
+  Copyright ï¿½ 2003 Russell Garrett (russ-scrobbler@garrett.co.uk)
 */
 #include "stdafx.h"
 #include "scrobbler.h"
@@ -44,7 +44,7 @@ using namespace XFILE;
 #define MAXSUBMISSIONS 50
 
 //#define CLIENT_ID "tst"
-#define CLIENT_ID "xbm"
+#define CLIENT_ID "pmc"
 #define CLIENT_VERSION "0.1"
 
 CScrobbler* CScrobbler::m_pInstance=NULL;
