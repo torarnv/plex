@@ -26,7 +26,7 @@
 #include "Util.h"
 #include "URL.h"
 #include "GUIWindowFileManager.h"
-#include "GUIDialogButtonMenu.h"
+//#include "GUIDialogButtonMenu.h"
 #include "GUIFontManager.h"
 #include "LangCodeExpander.h"
 #include "ButtonTranslator.h"

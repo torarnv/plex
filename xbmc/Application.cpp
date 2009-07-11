@@ -202,7 +202,7 @@
 #include "GUIDialogGamepad.h"
 #include "GUIDialogSubMenu.h"
 #include "GUIDialogFavourites.h"
-#include "GUIDialogButtonMenu.h"
+//#include "GUIDialogButtonMenu.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogMusicScan.h"
 #include "GUIDialogPlayerControls.h"
@@ -1531,7 +1531,7 @@ HRESULT CApplication::Initialize()
 #endif
   m_gWindowManager.Add(new CGUIDialogNumeric);            // window id = 109
   m_gWindowManager.Add(new CGUIDialogGamepad);            // window id = 110
-  m_gWindowManager.Add(new CGUIDialogButtonMenu);         // window id = 111
+  //m_gWindowManager.Add(new CGUIDialogButtonMenu);         // window id = 111
   m_gWindowManager.Add(new CGUIDialogMusicScan);          // window id = 112
   m_gWindowManager.Add(new CGUIDialogPlayerControls);     // window id = 113
   m_gWindowManager.Add(new CGUIDialogMusicOSD);           // window id = 120
@@ -2531,8 +2531,8 @@ bool CApplication::LoadUserWindows(const CStdString& strSkinPath)
         pWindow = new CGUIDialog(0, "");
       else if (strType.Equals("submenu"))
         pWindow = new CGUIDialogSubMenu();
-      else if (strType.Equals("buttonmenu"))
-        pWindow = new CGUIDialogButtonMenu();
+      //else if (strType.Equals("buttonmenu"))
+      //  pWindow = new CGUIDialogButtonMenu();
       else
         pWindow = new CGUIStandardWindow();
 
