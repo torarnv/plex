@@ -8,6 +8,7 @@
 
 #import "AppleHardwareInfo.h"
 #import <sys/sysctl.h>
+#import <IOKit/IOKitLib.h>
 #import <IOKit/ps/IOPowerSources.h>
 #import <IOKit/ps/IOPSKeys.h>
 #import "GUIDialogUtils.h"
@@ -15,6 +16,35 @@
 #define BATTERY_CHECK_INTERVAL     60     // Seconds between checking battery
 #define BATTERY_TIME_WARNING       10     // Minutes of power left before warning
 #define BATTERY_CAPACITY_WARNING   5      // Percent of battery left before warning
+
+enum {
+  kGetSensorReadingID   = 0,  // getSensorReading(int *, int *)
+  kGetLEDBrightnessID   = 1,  // getLEDBrightness(int, int *)
+  kSetLEDBrightnessID   = 2,  // setLEDBrightness(int, int, int *)
+  kSetLEDFadeID         = 3,  // setLEDFade(int, int, int, int *)
+};
+
+BOOL OpenLMUDataPort(io_connect_t &dataPort)
+{
+  io_service_t    serviceObject;
+  kern_return_t   kr;
+  
+  // Get the LMU controller
+  serviceObject = IOServiceGetMatchingService(kIOMasterPortDefault, IOServiceMatching("AppleLMUController"));
+  if (!serviceObject)
+  {
+    return NO;
+  }
+  
+  // Create a connection to the IOService object
+  kr = IOServiceOpen(serviceObject, mach_task_self(), 0, &dataPort);
+  IOObjectRelease(serviceObject);
+  if (kr != KERN_SUCCESS) {
+    return NO;
+  }
+  
+  return YES;
+}
 
 static AppleHardwareInfo *_o_sharedMainInstance = nil;
 
@@ -83,6 +113,8 @@ NSString* GetPowerInfoStringForKey(const char* key)
   runningOnBatteryAndWarningDisplayed = NO;
   batteryTimeWarning = BATTERY_TIME_WARNING;
   batteryCapacityWarning = BATTERY_CAPACITY_WARNING;
+  keyboardBacklightEnabled = YES;
+  keyboardBacklightTimer = nil;
 
   id pool = [[NSAutoreleasePool alloc] init];
   
@@ -201,6 +233,71 @@ NSString* GetPowerInfoStringForKey(const char* key)
   {
     runningOnBatteryAndWarningDisplayed = NO;
   }
+}
+
+- (void)checkKeyboardBacklightLevel
+{
+  if (keyboardBacklightEnabled) return;
+  
+  kern_return_t   kr;
+  io_connect_t    dataPort = 0;
+  SInt32          in_unknown = 0, in_brightness = 0, in_time_ms = 10, out_brightness;
+  IOItemCount     getInputCount = 1;
+  IOItemCount     setInputCount = 3;
+  IOItemCount     outputCount = 1;
+  
+  // Open the data port
+  if (!OpenLMUDataPort(dataPort)) return;
+  
+  // Get the current brightness level
+  kr = IOConnectMethodScalarIScalarO(dataPort, kGetLEDBrightnessID, getInputCount, outputCount, in_unknown, &out_brightness);
+
+  // If the backlight is lit, set the level back to 0
+  if (out_brightness > 0)
+  {
+    kr = IOConnectMethodScalarIScalarO(dataPort, kSetLEDFadeID, setInputCount, outputCount, in_unknown, in_brightness, in_time_ms, &out_brightness);
+  }
+}
+
+- (void)setKeyboardBacklightEnabled:(BOOL)enabled
+{ 
+  if (enabled == keyboardBacklightEnabled) return;
+  
+  kern_return_t   kr;
+  io_connect_t    dataPort = 0;
+  SInt32          in_unknown = 0, in_brightness, in_time_ms = 1000, out_brightness;
+  IOItemCount     getInputCount = 1;
+  IOItemCount     setInputCount = 3;
+  IOItemCount     outputCount = 1;
+  
+  // Get the data port
+  if (!OpenLMUDataPort(dataPort)) return;
+  
+  // If enabling, cancel the timer & restore the old brightness value
+  if (enabled)
+  {
+    in_brightness = oldKeyboardBacklightBrightness;
+    if (keyboardBacklightTimer != nil)
+    {
+      [keyboardBacklightTimer invalidate];
+      [keyboardBacklightTimer release];
+    }
+  }
+  
+  // If disabling, store the old brightness value, set the brightness level to 0 & start a timer to maintain the state.
+  else
+  {
+    // Start a timer to check the backlight level while playing - it'll come back on again if the ambient light sensor is enabled & the light level changes.
+    kr = IOConnectMethodScalarIScalarO(dataPort, kGetLEDBrightnessID, getInputCount, outputCount, in_unknown, &out_brightness);
+    oldKeyboardBacklightBrightness = out_brightness;
+    in_brightness = 0;
+    
+    keyboardBacklightTimer = [NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(checkKeyboardBacklightLevel) userInfo:nil repeats:YES];
+  }
+
+  kr = IOConnectMethodScalarIScalarO(dataPort, kSetLEDFadeID, setInputCount, outputCount, in_unknown, in_brightness, in_time_ms, &out_brightness);
+  keyboardBacklightEnabled = enabled;
+
 }
 
 @end

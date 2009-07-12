@@ -18,6 +18,11 @@
   
   int batteryTimeWarning;
   int batteryCapacityWarning;
+  
+  NSTimer* keyboardBacklightTimer;
+  BOOL keyboardBacklightEnabled;
+  SInt32 oldKeyboardBacklightBrightness;
+  
 }
 
 @property (assign) int batteryTimeWarning;
@@ -37,5 +42,7 @@
 
 - (void)setLowBatteryWarningEnabled:(BOOL)enabled;
 - (void)checkBatteryCapacity;
+
+- (void)setKeyboardBacklightEnabled:(BOOL)enabled;
 
 @end

@@ -5563,6 +5563,12 @@ bool CApplication::OnMessage(CGUIMessage& message)
           CPlexMediaServerScrobbler::Get()->AllowPlay();
 #endif
       }
+      
+      // Turn off the keyboard backlight if playing video
+      if (IsPlayingVideo())
+      {
+        Cocoa_HW_SetKeyboardBacklightEnabled(false);
+      }
       return true;
     }
     break;
@@ -5603,6 +5609,9 @@ bool CApplication::OnMessage(CGUIMessage& message)
       // Start the background music (if enabled)
       Cocoa_SetBackgroundMusicEnabled(m_bBackgroundMusicEnabled);
       Cocoa_StartBackgroundMusic();
+      
+      // Enable the keyboard backlight again (will have no effect if not previously disabled)
+      Cocoa_HW_SetKeyboardBacklightEnabled(true);
       
       // Require a server restart of the Plex Media Server if we just played a 5.1 surround file. 
       // This sucks, but no way around it for now, as it seems to screw up a WebKit process, and 

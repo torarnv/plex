@@ -979,6 +979,9 @@ void Cocoa_HW_SetBatteryTimeWarning(int timeWarning)
 void Cocoa_HW_SetBatteryCapacityWarning(int capacityWarning)
 { [AppleHardwareInfo sharedInstance].batteryCapacityWarning = capacityWarning; }
 
+void Cocoa_HW_SetKeyboardBacklightEnabled(bool enabled)
+{ [[AppleHardwareInfo sharedInstance] setKeyboardBacklightEnabled:enabled]; }
+
 void Cocoa_CheckForUpdates()
 {
   [[SUPlexUpdater sharedInstance] checkForUpdatesWithUI:nil];

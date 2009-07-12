@@ -118,6 +118,7 @@ extern "C"
   void Cocoa_HW_SetBatteryWarningEnabled(bool enabled);
   void Cocoa_HW_SetBatteryTimeWarning(int timeWarning);
   void Cocoa_HW_SetBatteryCapacityWarning(int capacityWarning);
+  void Cocoa_HW_SetKeyboardBacklightEnabled(bool enabled);
 
   //
   // Background music control functions
