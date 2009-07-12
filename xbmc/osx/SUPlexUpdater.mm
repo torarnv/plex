@@ -33,7 +33,7 @@ id g_plexUpdater;
 - (void)awakeFromNib
 {
   g_plexUpdater = (id)self;
-  [g_plexUpdater setDelegate:[[SUPlexUpdaterDelegate alloc] init]];
+  [g_plexUpdater setDelegate:self];
   isSuspended = NO;
   userHasBeenAlerted = NO;
   timer = nil;
@@ -134,9 +134,9 @@ id g_plexUpdater;
 {
   return NO;
 }
-@end
 
-@implementation SUPlexUpdaterDelegate
+#pragma mark Delegate methods
+
 - (NSArray *)feedParametersForUpdater:(SUUpdater *)updater sendingSystemProfile:(BOOL)sendingProfile
 {
   string macAddr = Cocoa_GetPrimaryMacAddress();
@@ -161,5 +161,10 @@ id g_plexUpdater;
           nil];
   
   return [NSArray arrayWithObjects:appDict, nil];
+}
+
+- (BOOL)updaterShouldPromptForPermissionToCheckForUpdates:(id)bundle
+{
+  return NO;
 }
 @end

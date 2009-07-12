@@ -13,6 +13,5 @@
 }
 - (float)appNameLabelFontSize;
 - (NSString*)versionString;
-- (BOOL)updaterShouldPromptForPermissionToCheckForUpdates:(id)bundle;
 
 @end

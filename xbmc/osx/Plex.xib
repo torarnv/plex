@@ -2503,14 +2503,6 @@ gcQAhoY</bytes>
 					</object>
 					<int key="connectionID">904</int>
 				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">delegate</string>
-						<reference key="source" ref="821496234"/>
-						<reference key="destination" ref="908504182"/>
-					</object>
-					<int key="connectionID">905</int>
-				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<object class="NSArray" key="orderedObjects">

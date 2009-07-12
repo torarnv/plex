@@ -75,10 +75,4 @@ extern CApplication g_application;
   return TRUE;
 }
 
-// Prevent Sparkle from showing a Cocoa dialog
-- (BOOL)updaterShouldPromptForPermissionToCheckForUpdates:(id)bundle
-{
-  return NO;
-}
-
 @end
