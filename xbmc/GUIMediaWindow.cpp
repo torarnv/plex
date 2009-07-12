@@ -854,6 +854,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
       plexDir.GetDirectory(directory.m_strPath, fileItems);
       CGUIDialogPluginSettings::ShowAndGetInput(pItem->m_strPath, plexDir.GetData());
       
+      Update(m_vecItems->m_strPath);
       return true;
     }
     
