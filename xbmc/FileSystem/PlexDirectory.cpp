@@ -122,6 +122,16 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     return false;
   }
   
+  // Check if any restrictions should be applied
+  bool disableFanart = false;
+
+  if (g_advancedSettings.m_bEnableViewRestrictions)
+  {
+    const char* strDisableFanart = root->Attribute("disableFanart");
+    if (strDisableFanart && strcmp(strDisableFanart, "1") == 0)
+      disableFanart = true;
+  }
+  
   // Get the fanart.
   const char* fanart = root->Attribute("art");
   string strFanart;
@@ -150,12 +160,12 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   if (title2 && strlen(title2) > 0)
     items.SetSecondTitle(title2);
 
-  // Set fanart on items if they don't have their own.
+  // Set fanart on items if they don't have their own, or if individual item fanart is disabled
   for (int i=0; i<items.Size(); i++)
   {
     CFileItemPtr pItem = items[i];
     
-    if (strFanart.size() > 0 && pItem->GetQuickFanart().size() == 0)
+    if ((strFanart.size() > 0 && pItem->GetQuickFanart().size() == 0) || disableFanart)
       pItem->SetQuickFanart(strFanart);
       
     // Make sure sort label is lower case.

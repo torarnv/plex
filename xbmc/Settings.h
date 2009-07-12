@@ -254,6 +254,9 @@ public:
     bool m_bAutoShuffle;
     bool m_bUseAnamorphicZoom;
     
+    bool m_bEnableViewRestrictions;
+    
+    
     CStdString m_language;
     CStdString m_units;
   };
