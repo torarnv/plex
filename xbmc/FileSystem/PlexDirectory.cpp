@@ -186,12 +186,22 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     items.SetQuickFanart(strFanart);
     
   // Set the view mode.
-  const char* viewmode = root->Attribute("viewmode");
-  if (viewmode && strlen(viewmode) > 0)
+  const char* viewMode;
+  bool hasViewMode = false;
+  viewMode = root->Attribute("viewmode");
+  if (viewMode && strlen(viewMode) > 0)
+    hasViewMode = true;
+  else
   {
-    items.SetDefaultViewMode(atoi(viewmode));
+    viewMode = root->Attribute("viewMode");
+    if (viewMode && strlen(viewMode) > 0)
+      hasViewMode = true;
+  }
+  if (hasViewMode)
+  {
+    items.SetDefaultViewMode(atoi(viewMode));
     CGUIViewState* viewState = CGUIViewState::GetViewState(0, items);
-    viewState->SaveViewAsControl(atoi(viewmode));
+    viewState->SaveViewAsControl(atoi(viewMode));
   }
   
   // Override labels.
@@ -242,6 +252,9 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   
   // See if we're not supposed to cache this directory.
   const char* noCache = root->Attribute("nocache");
+  if (noCache && strcmp(noCache, "1") == 0)
+    m_dirCacheType = DIR_CACHE_NEVER;
+  noCache = root->Attribute("noCache");
   if (noCache && strcmp(noCache, "1") == 0)
     m_dirCacheType = DIR_CACHE_NEVER;
   
