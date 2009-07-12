@@ -406,6 +406,12 @@ public:
   void SetSecondTitle(const CStdString& title) { m_secondTitle = title; }
   const CStdString& GetSecondTitle() const { return m_secondTitle; }
   
+  void SetDefaultViewMode(int viewMode) { m_defaultViewMode = viewMode; }
+  int GetDefaultViewMode() const { return m_defaultViewMode; }
+  
+  void SetDisabledViewModes(const CStdString& viewModes) { m_disabledViewModes = viewModes; }
+  const CStdString& GetDisabledViewModes() const { return m_disabledViewModes; }
+  
   void ClearSortState();
   
   bool m_wasListingCancelled;
@@ -430,6 +436,9 @@ private:
   
   CStdString m_firstTitle;
   CStdString m_secondTitle;
+  
+  int m_defaultViewMode;
+  CStdString m_disabledViewModes;
 
   std::vector<SORT_METHOD_DETAILS> m_sortDetails;
 

@@ -57,6 +57,8 @@
 
 #define CONTROL_LABELFILES        12
 
+#define DEFAULT_MODE_FOR_DISABLED_VIEWS 65586
+
 using namespace std;
 using namespace DIRECTORY;
 
@@ -364,7 +366,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
         viewMode = m_viewControl.GetViewModeByID(message.GetParam1());
       else if (message.GetParam2())
         viewMode = m_viewControl.GetNextViewMode((int)message.GetParam2());
-
+      
       if (m_guiState.get())
         m_guiState->SaveViewAsControl(viewMode);
 
@@ -425,9 +427,31 @@ void CGUIMediaWindow::UpdateButtons()
       }
     }
 
-    // Update list/thumb control
-    m_viewControl.SetCurrentView(m_guiState->GetViewAsControl());
-
+    // Update list/thumb control if the selected view isn't disabled
+    bool allowChange = true;
+    int viewMode = m_guiState->GetViewAsControl();
+    
+    // Check the list of disabled view modes for this directory
+    CStdStringArray viewModes;
+    StringUtils::SplitString(CurrentDirectory().GetDisabledViewModes(), ",", viewModes);
+    for (unsigned int i = 0; i < viewModes.size(); i++)
+    {
+      if (atoi(viewModes[i]) == viewMode)
+        allowChange = false;
+    }
+    
+    // If the change is allowed, go ahead & set the view mode
+    if (allowChange)
+      m_viewControl.SetCurrentView(viewMode);
+    
+    // If not allowed, but we have a default view mode, use that instead
+    else if (CurrentDirectory().GetDefaultViewMode() > 0)
+      m_viewControl.SetCurrentView(CurrentDirectory().GetDefaultViewMode());
+    
+    // Otherwise, use the global default
+    else
+      m_viewControl.SetCurrentView(DEFAULT_MODE_FOR_DISABLED_VIEWS);
+    
     // Update sort by button
     if (m_guiState->GetSortMethod()==SORT_METHOD_NONE)
     {

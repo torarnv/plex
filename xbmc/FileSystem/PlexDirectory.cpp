@@ -122,16 +122,6 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     return false;
   }
   
-  // Check if any restrictions should be applied
-  bool disableFanart = false;
-
-  if (g_advancedSettings.m_bEnableViewRestrictions)
-  {
-    const char* strDisableFanart = root->Attribute("disableFanart");
-    if (strDisableFanart && strcmp(strDisableFanart, "1") == 0)
-      disableFanart = true;
-  }
-  
   // Get the fanart.
   const char* fanart = root->Attribute("art");
   string strFanart;
@@ -150,6 +140,23 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   string strSecondDirLabel = "%Y";
   
   Parse(m_url, root, items, strFileLabel, strSecondFileLabel, strDirLabel, strSecondDirLabel);
+  
+  
+  // Check if any restrictions should be applied
+  bool disableFanart = false;
+  
+  if (g_advancedSettings.m_bEnableViewRestrictions)
+  {
+    // Disable fanart
+    const char* strDisableFanart = root->Attribute("disableFanart");
+    if (strDisableFanart && strcmp(strDisableFanart, "1") == 0)
+      disableFanart = true;
+    
+    // Disabled view modes
+    const char* disabledViewModes = root->Attribute("disabledViewModes");
+    if (disabledViewModes && strlen(disabledViewModes) > 0)
+      items.SetDisabledViewModes(disabledViewModes);
+  }
   
   // Set the window titles
   const char* title1 = root->Attribute("title1");
@@ -182,6 +189,7 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   const char* viewmode = root->Attribute("viewmode");
   if (viewmode && strlen(viewmode) > 0)
   {
+    items.SetDefaultViewMode(atoi(viewmode));
     CGUIViewState* viewState = CGUIViewState::GetViewState(0, items);
     viewState->SaveViewAsControl(atoi(viewmode));
   }

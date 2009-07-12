@@ -1290,6 +1290,8 @@ void CFileItemList::Clear()
   m_content.Empty();
   m_firstTitle.Empty();
   m_secondTitle.Empty();
+  m_defaultViewMode = 0;
+  m_disabledViewModes.Empty();
   m_wasListingCancelled = false;
   m_displayMessage = false;
   m_displayMessageTitle = "";
@@ -1408,6 +1410,8 @@ void CFileItemList::Assign(const CFileItemList& itemlist, bool append)
   
   m_firstTitle = itemlist.m_firstTitle;
   m_secondTitle = itemlist.m_secondTitle;
+  m_defaultViewMode = itemlist.m_defaultViewMode;
+  m_disabledViewModes = itemlist.m_disabledViewModes;
   m_wasListingCancelled = itemlist.m_wasListingCancelled;
   m_displayMessage = itemlist.m_displayMessage;
   m_displayMessageTitle = itemlist.m_displayMessageTitle;
@@ -1656,6 +1660,8 @@ void CFileItemList::Serialize(CArchive& ar)
     ar << m_content;
     ar << m_firstTitle;
     ar << m_secondTitle;
+    ar << m_defaultViewMode;
+    ar << m_disabledViewModes;
 
     for (; i < (int)m_items.size(); ++i)
     {
@@ -1716,6 +1722,8 @@ void CFileItemList::Serialize(CArchive& ar)
     ar >> m_content;
     ar >> m_firstTitle;
     ar >> m_secondTitle;
+    ar >> m_defaultViewMode;
+    ar >> m_disabledViewModes;
 
     for (int i = 0; i < iSize; ++i)
     {
