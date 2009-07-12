@@ -224,7 +224,7 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     
     items.m_displayMessage = true; 
     items.m_displayMessageTitle = header; 
-    items.m_displayMessageContents = root->Attribute("message");
+    items.m_displayMessageContents = strMessage;
     
     // Don't cache these.
     m_dirCacheType = DIR_CACHE_NEVER;
@@ -244,7 +244,7 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   const char* noCache = root->Attribute("nocache");
   if (noCache && strcmp(noCache, "1") == 0)
     m_dirCacheType = DIR_CACHE_NEVER;
-    
+  
   return true;
 }
 
