@@ -80,14 +80,14 @@
       <clear>Delete</clear>
       <channelplus>MoveItemUp</channelplus>
       <channelminus>MoveItemDown</channelminus>
-	<number2>JumpSMS2</number2>
-	<number3>JumpSMS3</number3>
-	<number4>JumpSMS4</number4>
-	<number5>JumpSMS5</number5>
-	<number6>JumpSMS6</number6>
-	<number7>JumpSMS7</number7>
-	<number8>JumpSMS8</number8>
-	<number9>JumpSMS9</number9>
+	<two>JumpSMS2</two>
+	<three>JumpSMS3</three>
+	<four>JumpSMS4</four>
+	<five>JumpSMS5</five>
+	<six>JumpSMS6</six>
+	<seven>JumpSMS7</seven>
+	<eight>JumpSMS8</eight>
+	<nine>JumpSMS9</nine>
     </harmonyremote>
   </MyMusicPlaylist>
 
