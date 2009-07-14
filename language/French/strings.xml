@@ -54,12 +54,12 @@
   <string id="117">Effacer</string>
   <string id="118">Renommer</string>
   <string id="119">Nouveau</string>
-  <string id="120">Confirmer copie du fichier</string>
-  <string id="121">Confirmer déplacement du fichier</string>
-  <string id="122">Confirmer effacement du fichier</string>
+  <string id="120">Confirmer la copie du fichier</string>
+  <string id="121">Confirmer le déplacement du fichier</string>
+  <string id="122">Confirmer l'effacement du fichier ? Ceci va supprimer votre fichier.</string>
   <string id="123">Êtes-vous sûr de copier ce(s) fichier(s)?</string>
   <string id="124">Êtes-vous sûr de déplacer ce(s) fichier(s)?</string>
-  <string id="125">Voulez-vous supprimer ce(s) fichier(s)?</string>
+  <string id="125">Voulez-vous supprimer ce(s) fichier(s)? Ceci va supprimer votre fichier.</string>
   <string id="126">Statut</string>
   <string id="127">Objets</string>
   <string id="128">Général</string>
@@ -83,8 +83,8 @@
   <string id="146">Type :</string>
   <string id="147">Statique</string>
   <string id="148">DHCP</string>
-  <string id="149">MAC</string>
-  <string id="150">IP</string>
+  <string id="149">Adresse MAC</string>
+  <string id="150">Adresse IP</string>
   <string id="151">Câble :</string>
   <string id="152">Half duplex</string>
   <string id="153">Full duplex</string>
@@ -207,12 +207,12 @@
   <string id="273">Compensation taille affichage : Bas droite</string>
   <string id="274">Position des sous-titres</string>
   <string id="275">Étalonnage</string>
-  <string id="276">Déplacer la flèche pour modifier la taille d'affichage</string>
-  <string id="277">Déplacer le bandeau pour changer la position des sous-titres</string>
-  <string id="278">Déplacer le rectangle jusqu'à ce qu'il soit un carré parfait</string>
+  <string id="276">Ajustez la flèche pour modifier la taille d'affichage</string>
+  <string id="277">Ajustez la barre pour changer la position des sous-titres</string>
+  <string id="278">Ajustez le rectangle jusqu'à ce qu'il soit un carré parfait</string>
   <string id="279">Impossible de charger les préférences</string>
-  <string id="280">Utiliser les exceptions par défaut</string>
-  <string id="281">Vérifiez les fichiers .xml</string>
+  <string id="280">Utiliser les configurations par défaut</string>
+  <string id="281">Vérifiez les fichiers XML</string>
   <string id="282">%i résultat(s) trouvé</string>
   <string id="283">Résultats de la recherche</string>
   <string id="284">Aucun résultat</string>
@@ -332,7 +332,7 @@
   <string id="408">à</string>
   <string id="409">Défauts</string>
   
-  <string id="410">Interrogation de Weather.com</string>
+  <string id="410">Interrogation service Météo</string>
   <string id="411">Récupère la météo pour :</string>
   <string id="412">Échec de la récupération météo</string>
   <string id="413">Manuel</string>
@@ -364,7 +364,7 @@
   <string id="439">Cache</string>
   <string id="440">Disque dur</string>
   <string id="441">UDF</string>
-  <string id="442">LAN</string>
+  <string id="442">Réseau Local</string>
   <string id="443">Internet</string>
   <string id="444">Vidéo</string>
   <string id="445">Audio</string>
@@ -417,7 +417,7 @@
   <string id="496">Calibrage</string>
   <string id="497">Masquer les extensions de fichiers</string>
   <string id="498">Lister par : Type</string>
-  <string id="499">Connexion impossible à www.allmusic.com</string>
+  <string id="499">Connexion impossible pour recherche en ligne</string>
   <string id="500">Échec du téléchargement des infos de l'album</string>
   <string id="501">Recherche des noms d'album...</string>
   <string id="502">Ouvert</string>
@@ -487,11 +487,11 @@
   <string id="570">Ajouté le</string>
   <string id="571">Défaut</string>
   <string id="572">Studio</string>
-  <string id="574">Support de la sortie numériquet</string>
+  <string id="574">Support de la sortie numérique</string>
   <string id="575">Détection automatique</string>
   <string id="576">Forcer le numérique</string>
   <string id="577">Normaliser le volume du film</string>
-  <string id="578">Link System Output</string>
+  <string id="578">Lier la Sortie Système</string>
 
   <string id="580">Direction du tri</string>
   <string id="581">Méthode du tri</string>
@@ -534,9 +534,9 @@
   <string id="629">Type de vue</string>
   <string id="630">Normale</string>
   <string id="631">Zoom</string>
-  <string id="632">Étirée 4 :3</string>
-  <string id="633">Étirée 14 :9</string>
-  <string id="634">Étirée 16 :9</string>
+  <string id="632">Étirée 4:3</string>
+  <string id="633">Étirée 14:9</string>
+  <string id="634">Étirée 16:9</string>
   <string id="635">Originale</string>
   <string id="636">Personnalisée</string>
   <string id="637">Replay Gain</string>
@@ -779,7 +779,7 @@
   <string id="1412">venteux</string>
   <string id="1413">bruine</string>
   <string id="1414">Orageux</string>
-  <string id="1415">Drizzle</string>
+  <string id="1415">Bruine</string>
   <string id="1416">Brumeux</string>
 
   <!-- strings through to 1450 reserved for weather translation -->
@@ -977,9 +977,9 @@
   <string id="13118">Lanczos</string>
   <string id="13119">Sinc</string>
 
-  <string id="13130">Blanking Affichage</string>
+  <string id="13130">Noircir l'écran secondaire</string>
   <string id="13131">Désactivé</string>
-  <string id="13132">Activer Blanking</string>
+  <string id="13132">Activé</string>
  
   <string id="13134">Booster la vitesse H.264</string>
   <string id="13135">Désactivé</string>
@@ -1194,7 +1194,7 @@
   <string id="13620">Erreur Apple Remote.</string>
   <string id="13621">Le support de la télécommande Apple ne peut être activé.</string>
   <string id="13622">Veuillez lire la FAQ de Remote Buddy pour le désinstaller.</string>
-
+  
   <string id="13623">Sofa Control est actif.</string>
   <string id="13624">Veuillez lire la documentation de Sofa Control pour le désinstaller.</string>
 
@@ -1270,7 +1270,7 @@
   <string id="14063">Date &amp; Heure</string>
   <string id="14064">Configurer la date</string>
   <string id="14065">Configurer l'heure</string>
-  <string id="14066">Saisissez l'heure dans ce format HH :MM</string>
+  <string id="14066">Saisissez l'heure dans ce format HH:MM</string>
   <string id="14067">Saisissez la Date dans ce format DD/MM/YYYY</string>
   <string id="14068">Saisissez l'adresse IP</string>
   <string id="14069">Voulez-vous appliquer cette configuration ?</string>
@@ -1359,7 +1359,7 @@
   <string id="15108">Sons Navigation</string>
   <string id="15109">Défaut</string>
   <string id="15111">Thème du Skin</string>
-  <string id="15112">Thème par Défaut</string>
+  <string id="15112">Thème par défaut</string>
   
   <string id="15200">Last.FM</string>
   <string id="15201">Envoyer les stats des chansons à Last.FM</string>
@@ -1379,6 +1379,8 @@
   <string id="15215">Masquer Nom quand Vue Vignettes</string>
   <string id="15216">Jouer lors du mix de soirée</string>
   
+  <string id="15230">Arrière plan</string>
+
   <string id="15250">Envoyer les stats Last.FM Radio à Last.FM</string>
   <string id="15251">Connexion à Last.FM...</string>
   <string id="15252">Sélection des stations...</string>
@@ -1439,7 +1441,7 @@
   
   <string id="16000">Général</string>
   <string id="16001">Configuration Matériel Audio...</string>
-  <string id="16002">Recherche CDDB</string>
+  <string id="16002">Recherche internet</string>
   <string id="16003">Lecteur</string>
   <string id="16004">Jouer les médias depuis le disque</string>
   
@@ -1506,7 +1508,7 @@
 
   <string id="17500">Afficher temps avant la mise en veille</string> 
   <string id="17501">Luminosité de l'affichage</string>
-  
+
   <string id="17701">Baterrie faible</string>
   <string id="17702">Connecter l'adaptateur secteur</string>
   
@@ -1605,8 +1607,8 @@
   <string id="20083">Afficher les infos Musique</string>
   <string id="20084">Afficher les infos Météo</string>
   <string id="20085">Afficher les infos Système</string>
-  <string id="20086">Afficher l'espace disque disponible sur C : E : F :</string>
-  <string id="20087">Afficher l'espace disque disponible sur E : F : G :</string>
+  <string id="20086">Afficher l'espace disque disponible sur C: E: F:</string>
+  <string id="20087">Afficher l'espace disque disponible sur E: F: G:</string>
   <string id="20088">Infos Météo</string>
   <string id="20089">Espace disque libre</string>
   <string id="20090">Entrer le nom d'un partage existant</string>
@@ -1718,7 +1720,7 @@
   <string id="20197">Importer une bibliothèque Musicale</string>
   <string id="20198">Aucun Artist trouvé !</string>
   <string id="20199">Le téléchargement des infos Artist n'a pas fonctionné</string>
-
+  <string id="20250">Compteur des musiques récentes</string>
   <!-- string id's 20200 thru 20211 are reserved for speedstrings (LocalizeStrings.cpp)-->
   
   <string id="20250">Mix de Soirée lancé ! (videos)</string>
@@ -1851,7 +1853,8 @@
   <string id="20422">Toujours</string>
   <string id="20423">A un trailer</string>
   <string id="20424">Faux</string>
-
+  <string id="20425">Diaporama des FanArts</string>
+  <string id="20475">Nombre de vidéos récentes</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Afficher les dossiers et les fichiers cachés</string>
@@ -2054,7 +2057,7 @@
   <string id="40001">Nouvelle Version Disponible</string>
   <string id="40002">Installation à l'aide de la mise à jour</string>
   <string id="40003">Une nouvelle version est disponible.</string>
-  <string id="40004">Version: %@  (vous avez %@)</string>
+  <string id="40004">Version : %@  (vous avez %@)</string>
   <string id="40005">Voulez vous la télécharger et l'installer maintenant ?</string>
   <string id="40006">Vous avez déjà la dernière version de Plex (%@)</string>
   <string id="40007">Téléchargement de la mise à jour</string>
