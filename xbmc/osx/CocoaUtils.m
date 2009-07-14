@@ -735,6 +735,53 @@ int Cocoa_SleepSystem()
   return 0;
 }        
 
+OSStatus SendAppleEventToSystemProcess(AEEventID EventToSend)
+{
+  AEAddressDesc targetDesc;
+  static const ProcessSerialNumber kPSNOfSystemProcess = { 0, kSystemProcess };
+  AppleEvent eventReply = {typeNull, NULL};
+  AppleEvent appleEventToSend = {typeNull, NULL};
+  
+  OSStatus error = noErr;
+  
+  error = AECreateDesc(typeProcessSerialNumber, &kPSNOfSystemProcess, 
+                       sizeof(kPSNOfSystemProcess), &targetDesc);
+  
+  if (error != noErr)
+  {
+    return(error);
+  }
+  
+  error = AECreateAppleEvent(kCoreEventClass, EventToSend, &targetDesc, 
+                             kAutoGenerateReturnID, kAnyTransactionID, &appleEventToSend);
+  
+  AEDisposeDesc(&targetDesc);
+  if (error != noErr)
+  {
+    return(error);
+  }
+  
+  error = AESend(&appleEventToSend, &eventReply, kAENoReply, 
+                 kAENormalPriority, kAEDefaultTimeout, NULL, NULL);
+  
+  AEDisposeDesc(&appleEventToSend);
+  if (error != noErr)
+  {
+    return(error);
+  }
+  
+  AEDisposeDesc(&eventReply);
+  
+  return(error); 
+}
+
+bool Cocoa_ShutDownSystem()
+{
+  OSStatus error = noErr;
+  error = SendAppleEventToSystemProcess(kAEShutDown);
+  return (error == noErr);
+}
+
 void Cocoa_HideMouse()
 {
   [NSCursor hide];
@@ -931,6 +978,9 @@ void Cocoa_HW_SetBatteryTimeWarning(int timeWarning)
 
 void Cocoa_HW_SetBatteryCapacityWarning(int capacityWarning)
 { [AppleHardwareInfo sharedInstance].batteryCapacityWarning = capacityWarning; }
+
+void Cocoa_HW_SetKeyboardBacklightEnabled(bool enabled)
+{ [[AppleHardwareInfo sharedInstance] setKeyboardBacklightEnabled:enabled]; }
 
 void Cocoa_CheckForUpdates()
 {

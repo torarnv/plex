@@ -156,7 +156,7 @@
 #include "GUIWindowGameSaves.h"
 #include "GUIWindowLoginScreen.h"
 #include "GUIWindowVisualisation.h"
-#include "GUIWindowSystemInfo.h"
+//#include "GUIWindowSystemInfo.h"
 #include "GUIWindowScreensaver.h"
 #include "GUIWindowSlideShow.h"
 #include "GUIWindowNowPlaying.h"
@@ -202,7 +202,7 @@
 #include "GUIDialogGamepad.h"
 #include "GUIDialogSubMenu.h"
 #include "GUIDialogFavourites.h"
-#include "GUIDialogButtonMenu.h"
+//#include "GUIDialogButtonMenu.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogMusicScan.h"
 #include "GUIDialogPlayerControls.h"
@@ -1504,7 +1504,7 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIWindowFileManager);      // window id = 3
   m_gWindowManager.Add(new CGUIWindowVideoFiles);          // window id = 6
   m_gWindowManager.Add(new CGUIWindowSettings);                 // window id = 4
-  m_gWindowManager.Add(new CGUIWindowSystemInfo);               // window id = 7
+  //m_gWindowManager.Add(new CGUIWindowSystemInfo);               // window id = 7
   m_gWindowManager.Add(new CGUIWindowTestPattern);      // window id = 8
   m_gWindowManager.Add(new CGUIWindowSettingsScreenCalibration); // window id = 11
   m_gWindowManager.Add(new CGUIWindowSettingsCategory);         // window id = 12 slideshow:window id 2007
@@ -1531,7 +1531,7 @@ HRESULT CApplication::Initialize()
 #endif
   m_gWindowManager.Add(new CGUIDialogNumeric);            // window id = 109
   m_gWindowManager.Add(new CGUIDialogGamepad);            // window id = 110
-  m_gWindowManager.Add(new CGUIDialogButtonMenu);         // window id = 111
+  //m_gWindowManager.Add(new CGUIDialogButtonMenu);         // window id = 111
   m_gWindowManager.Add(new CGUIDialogMusicScan);          // window id = 112
   m_gWindowManager.Add(new CGUIDialogPlayerControls);     // window id = 113
   m_gWindowManager.Add(new CGUIDialogMusicOSD);           // window id = 120
@@ -2531,8 +2531,8 @@ bool CApplication::LoadUserWindows(const CStdString& strSkinPath)
         pWindow = new CGUIDialog(0, "");
       else if (strType.Equals("submenu"))
         pWindow = new CGUIDialogSubMenu();
-      else if (strType.Equals("buttonmenu"))
-        pWindow = new CGUIDialogButtonMenu();
+      //else if (strType.Equals("buttonmenu"))
+      //  pWindow = new CGUIDialogButtonMenu();
       else
         pWindow = new CGUIStandardWindow();
 
@@ -5562,6 +5562,12 @@ bool CApplication::OnMessage(CGUIMessage& message)
           CPlexMediaServerScrobbler::Get()->AllowPlay();
 #endif
       }
+      
+      // Turn off the keyboard backlight if playing video
+      if (IsPlayingVideo())
+      {
+        Cocoa_HW_SetKeyboardBacklightEnabled(false);
+      }
       return true;
     }
     break;
@@ -5602,6 +5608,9 @@ bool CApplication::OnMessage(CGUIMessage& message)
       // Start the background music (if enabled)
       Cocoa_SetBackgroundMusicEnabled(m_bBackgroundMusicEnabled);
       Cocoa_StartBackgroundMusic();
+      
+      // Enable the keyboard backlight again (will have no effect if not previously disabled)
+      Cocoa_HW_SetKeyboardBacklightEnabled(true);
       
       // Require a server restart of the Plex Media Server if we just played a 5.1 surround file. 
       // This sucks, but no way around it for now, as it seems to screw up a WebKit process, and 

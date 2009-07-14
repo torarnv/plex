@@ -141,6 +141,23 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   
   Parse(m_url, root, items, strFileLabel, strSecondFileLabel, strDirLabel, strSecondDirLabel);
   
+  
+  // Check if any restrictions should be applied
+  bool disableFanart = false;
+  
+  if (g_advancedSettings.m_bEnableViewRestrictions)
+  {
+    // Disable fanart
+    const char* strDisableFanart = root->Attribute("disableFanart");
+    if (strDisableFanart && strcmp(strDisableFanart, "1") == 0)
+      disableFanart = true;
+    
+    // Disabled view modes
+    const char* disabledViewModes = root->Attribute("disabledViewModes");
+    if (disabledViewModes && strlen(disabledViewModes) > 0)
+      items.SetDisabledViewModes(disabledViewModes);
+  }
+  
   // Set the window titles
   const char* title1 = root->Attribute("title1");
   const char* title2 = root->Attribute("title2");
@@ -150,12 +167,12 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   if (title2 && strlen(title2) > 0)
     items.SetSecondTitle(title2);
 
-  // Set fanart on items if they don't have their own.
+  // Set fanart on items if they don't have their own, or if individual item fanart is disabled
   for (int i=0; i<items.Size(); i++)
   {
     CFileItemPtr pItem = items[i];
     
-    if (strFanart.size() > 0 && pItem->GetQuickFanart().size() == 0)
+    if ((strFanart.size() > 0 && pItem->GetQuickFanart().size() == 0) || disableFanart)
       pItem->SetQuickFanart(strFanart);
       
     // Make sure sort label is lower case.
@@ -169,11 +186,22 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     items.SetQuickFanart(strFanart);
     
   // Set the view mode.
-  const char* viewmode = root->Attribute("viewmode");
-  if (viewmode && strlen(viewmode) > 0)
+  const char* viewMode;
+  bool hasViewMode = false;
+  viewMode = root->Attribute("viewmode");
+  if (viewMode && strlen(viewMode) > 0)
+    hasViewMode = true;
+  else
   {
+    viewMode = root->Attribute("viewMode");
+    if (viewMode && strlen(viewMode) > 0)
+      hasViewMode = true;
+  }
+  if (hasViewMode)
+  {
+    items.SetDefaultViewMode(atoi(viewMode));
     CGUIViewState* viewState = CGUIViewState::GetViewState(0, items);
-    viewState->SaveViewAsControl(atoi(viewmode));
+    viewState->SaveViewAsControl(atoi(viewMode));
   }
   
   // Override labels.
@@ -206,7 +234,7 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     
     items.m_displayMessage = true; 
     items.m_displayMessageTitle = header; 
-    items.m_displayMessageContents = root->Attribute("message");
+    items.m_displayMessageContents = strMessage;
     
     // Don't cache these.
     m_dirCacheType = DIR_CACHE_NEVER;
@@ -226,7 +254,10 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   const char* noCache = root->Attribute("nocache");
   if (noCache && strcmp(noCache, "1") == 0)
     m_dirCacheType = DIR_CACHE_NEVER;
-    
+  noCache = root->Attribute("noCache");
+  if (noCache && strcmp(noCache, "1") == 0)
+    m_dirCacheType = DIR_CACHE_NEVER;
+  
   return true;
 }
 

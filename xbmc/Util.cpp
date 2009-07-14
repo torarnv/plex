@@ -3735,8 +3735,9 @@ const BUILT_IN commands[] = {
   { "Help",                       false,  "This help message" },
   { "Reboot",                     false,  "Reboot the xbox (power cycle)" },
   { "Restart",                    false,  "Restart the xbox (power cycle)" },
-  { "ShutDown",                   false,  "Shutdown the xbox" },
+  { "ShutDown",                   false,  "Quit Plex" },
   { "SleepSystem",                false,  "Go to standby mode"},
+  { "ShutDownSystem",             false,  "Send a shut down request to Mac OS X" },
   { "Dashboard",                  false,  "Run your dashboard" },
   { "RestartApp",                 false,  "Restart XBMC" },
   { "Credits",                    false,  "Run XBMCs Credits" },
@@ -3872,6 +3873,12 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   {
 #ifdef __APPLE__
 	g_application.getApplicationMessenger().SleepSystem();
+#endif
+  }
+  else if (execute.Equals("ShutDownSystem"))
+  {
+#ifdef __APPLE__
+    Cocoa_ShutDownSystem();
 #endif
   }
   else if (execute.Equals("dashboard"))

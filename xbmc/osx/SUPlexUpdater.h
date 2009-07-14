@@ -32,9 +32,3 @@
 - (void)userAlerted;
 - (void)setLastCheckTime:(NSDate *)value;
 @end
-
-@interface SUPlexUpdaterDelegate : NSObject
-{
-}
-- (NSArray *)feedParametersForUpdater:(SUUpdater *)updater sendingSystemProfile:(BOOL)sendingProfile;
-@end

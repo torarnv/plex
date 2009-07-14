@@ -74,4 +74,5 @@ extern CApplication g_application;
   gArgv[gArgc] = NULL;
   return TRUE;
 }
+
 @end

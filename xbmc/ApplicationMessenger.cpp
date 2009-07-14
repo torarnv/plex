@@ -387,6 +387,9 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
 
         // stop playing file
         if (g_application.IsPlaying()) g_application.StopPlaying();
+        
+        // Turn on the keyboard backlight
+        Cocoa_HW_SetKeyboardBacklightEnabled(true);
       }
       break;
 

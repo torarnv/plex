@@ -26,7 +26,7 @@
 #include "Util.h"
 #include "URL.h"
 #include "GUIWindowFileManager.h"
-#include "GUIDialogButtonMenu.h"
+//#include "GUIDialogButtonMenu.h"
 #include "GUIFontManager.h"
 #include "LangCodeExpander.h"
 #include "ButtonTranslator.h"
@@ -317,9 +317,12 @@ CSettings::CSettings(void)
   g_advancedSettings.m_secondsToVisualizer = 10;
   g_advancedSettings.m_bVisualizerOnPlay = true;
   g_advancedSettings.m_nowPlayingFlipTime = 120;
+  g_advancedSettings.m_bBackgroundMusicOnlyWhenFocused = true;
   
   g_advancedSettings.m_bAutoShuffle = true;
   g_advancedSettings.m_bUseAnamorphicZoom = false;
+  
+  g_advancedSettings.m_bEnableViewRestrictions = true;
 }
 
 CSettings::~CSettings(void)
@@ -1340,9 +1343,14 @@ void CSettings::LoadAdvancedSettings()
   GetInteger(pRootElement, "secondstovisualizer", g_advancedSettings.m_secondsToVisualizer, 10, 0, 6000);
   GetInteger(pRootElement, "nowplayingfliptime", g_advancedSettings.m_nowPlayingFlipTime, 120, 10, 6000);
   XMLUtils::GetBoolean(pRootElement, "visualizeronplay", g_advancedSettings.m_bVisualizerOnPlay);
+  XMLUtils::GetBoolean(pRootElement, "backgroundmusiconlywhenfocused", g_advancedSettings.m_bBackgroundMusicOnlyWhenFocused);
   
   XMLUtils::GetBoolean(pRootElement, "autoshuffle", g_advancedSettings.m_bAutoShuffle);
   XMLUtils::GetBoolean(pRootElement, "anamorphiczoom", g_advancedSettings.m_bUseAnamorphicZoom);
+  
+  XMLUtils::GetBoolean(pRootElement, "enableviewrestrictions", g_advancedSettings.m_bEnableViewRestrictions);
+  
+  
 
   GetString(pRootElement, "language", g_advancedSettings.m_language);
   GetString(pRootElement, "units", g_advancedSettings.m_units);

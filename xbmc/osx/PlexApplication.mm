@@ -9,6 +9,7 @@
 #define BOOL CPP_BOOL
 #include "stdafx.h"
 #include "Application.h"
+#include "Settings.h"
 #include "FileItem.h"
 #undef BOOL
 #undef DEBUG
@@ -176,12 +177,14 @@ BOOL gCalledAppMainline = FALSE;
 
 - (void)applicationWillResignActive:(NSNotification *)aNotification
 {
-  [[BackgroundMusicPlayer sharedInstance] performSelectorOnMainThread:@selector(lostFocus) withObject:nil waitUntilDone:YES];
+  if (g_advancedSettings.m_bBackgroundMusicOnlyWhenFocused)
+    [[BackgroundMusicPlayer sharedInstance] performSelectorOnMainThread:@selector(lostFocus) withObject:nil waitUntilDone:YES];
 }
 
 - (void)applicationWillBecomeActive:(NSNotification *)aNotification
 {
-  [[BackgroundMusicPlayer sharedInstance] performSelectorOnMainThread:@selector(foundFocus) withObject:nil waitUntilDone:YES];
+  if (g_advancedSettings.m_bBackgroundMusicOnlyWhenFocused)
+    [[BackgroundMusicPlayer sharedInstance] performSelectorOnMainThread:@selector(foundFocus) withObject:nil waitUntilDone:YES];
 }
 
 - (BOOL)isAboutWindowVisible
