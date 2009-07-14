@@ -402,13 +402,15 @@ void CGUIAudioManager::SetVolume(int iLevel)
 {
   CSingleLock lock(m_cs);
 
-  if (g_guiSettings.GetBool("audiooutput.systemvolumefollows") && g_audioConfig.UseDigitalOutput())
+  if (g_guiSettings.GetBool("audiooutput.systemvolumefollows") && !g_audioConfig.UseDigitalOutput())
   {
     PlexAudioDevicePtr dev = PlexAudioDevices::FindDefault();
-    
-    // Map from [0, 128] to [-60, 0].
-    float vol = ((float)iLevel) * 60.0/128.0 - 60;
-    dev->setVolume(vol);
+    if (dev)
+    {
+      // Map from [0, 128] to [-60, 0].
+      float vol = ((float)iLevel) * 60.0/128.0 - 60;
+      dev->setVolume(vol);
+    }
   }
   else
   {

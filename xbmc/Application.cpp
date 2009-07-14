@@ -4890,7 +4890,6 @@ bool CApplication::IsPlayingFullScreenVideo() const
 
 void CApplication::StopPlaying()
 {
-  int iWin = m_gWindowManager.GetActiveWindow();
   if ( IsPlaying() )
   {
 #ifdef HAS_KARAOKE
@@ -5853,6 +5852,22 @@ void CApplication::Process()
 
 void CApplication::ProcessSlow()
 {
+  // Get the system volume if we're linked.
+  if (g_guiSettings.GetBool("audiooutput.systemvolumefollows") && !g_audioConfig.UseDigitalOutput())
+  {
+    PlexAudioDevicePtr device = PlexAudioDevices::FindDefault();
+    if (device)
+    {
+      // Get the current system volume level. 
+      float volume = device->getVolume();
+      float plexVol = g_stSettings.m_nVolumeLevel/100.0;
+      
+      // Save the current system volume level if they differ substantially.
+      if (fabs(volume - plexVol) > 0.5)
+        g_stSettings.m_nVolumeLevel = volume*100.0;
+    }
+  }
+  
   // Check to see if there is any activity going on
   CheckActive();
 
@@ -6076,7 +6091,7 @@ void CApplication::SetHardwareVolume(long hardwareVolume)
   Cocoa_UpdateGlobalVolume(GetVolume());
 
   // and tell our player to update the volume
-  if (m_pPlayer && g_guiSettings.GetBool("audiooutput.systemvolumefollows") == false || g_audioConfig.UseDigitalOutput())
+  if (m_pPlayer && !(g_guiSettings.GetBool("audiooutput.systemvolumefollows") && !g_audioConfig.UseDigitalOutput()))
   {
     m_pPlayer->SetVolume(g_stSettings.m_nVolumeLevel);
     // TODO DRC
