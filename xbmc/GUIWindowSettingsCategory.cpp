@@ -1181,12 +1181,15 @@ void CGUIWindowSettingsCategory::UpdateSettings()
 			}
 		}
  		
- 		// Set the default output device.
- 		if (g_guiSettings.GetBool("audiooutput.systemoutputfollows"))
+ 		PlexAudioDevicePtr device = PlexAudioDevices::FindByName(g_guiSettings.GetString("audiooutput.audiodevice"));
+ 		if (device)
  		{
- 		  PlexAudioDevicePtr device = PlexAudioDevices::FindByName(g_guiSettings.GetString("audiooutput.audiodevice"));
- 		  if (device)
+ 		  // Set the default output device.
+ 		  if (g_guiSettings.GetBool("audiooutput.systemoutputfollows"))
  		    device->setDefault();
+ 		  
+ 		  // Set the selected device.
+ 		  PlexAudioDevices::SetSelected(device);
  		}
 	}
 #endif

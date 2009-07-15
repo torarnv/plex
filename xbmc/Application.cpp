@@ -5864,9 +5864,9 @@ void CApplication::ProcessSlow()
   // Get the system volume if we're linked.
   if (g_guiSettings.GetBool("audiooutput.systemvolumefollows") && !g_audioConfig.UseDigitalOutput())
   {
-    PlexAudioDevicePtr device = PlexAudioDevices::FindDefault();
+    PlexAudioDevicePtr device = PlexAudioDevices::GetSelected();
     if (device)
-    {
+    {    
       // Get the current system volume level. 
       float volume = device->getVolume();
       float plexVol = g_stSettings.m_nVolumeLevel/100.0;

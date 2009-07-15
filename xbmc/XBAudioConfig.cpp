@@ -43,7 +43,7 @@ bool XBAudioConfig::HasDigitalOutput()
 	return (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL);
 #else
 	// See if the device supports digital mode.
-	PlexAudioDevicePtr device = PlexAudioDevices::FindByName(g_guiSettings.GetString("audiooutput.audiodevice"));
+	PlexAudioDevicePtr device = PlexAudioDevices::GetSelected();
 	if (device)
 	  return device->supportsDigital();
 	else

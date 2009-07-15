@@ -34,6 +34,7 @@
 #endif
 #include "XBAudioConfig.h"
 #include "CoreAudioPlexSupport.h"
+#include "Settings.h"
 
 using namespace std;
 using namespace DIRECTORY;
@@ -410,6 +411,10 @@ void CGUIAudioManager::SetVolume(int iLevel)
       // Map from [0, 128] to [-60, 0].
       float vol = ((float)iLevel) * 60.0/128.0 - 60;
       dev->setVolume(vol);
+      
+      // Immediately read back the volume, because it might be slightly different.
+      vol = dev->getVolume();
+      g_stSettings.m_nVolumeLevel = vol*100.0;
     }
   }
   else

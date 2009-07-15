@@ -22,6 +22,8 @@
       printf("PlexAudioDevice: Error %4.4s doing %s\n", (char* )&err, #expr); \
   }
 
+PlexAudioDevicePtr PlexAudioDevices::g_selectedDevice;
+
 ///////////////////////////////////////////////////////////////////////////////
 PlexAudioDevice::PlexAudioDevice(AudioDeviceID deviceID)
   : m_deviceID(deviceID)
@@ -312,19 +314,19 @@ PlexAudioDevicesPtr PlexAudioDevices::FindAll()
                
               // Set the selected device.
               if (g_guiSettings.GetSetting("audiooutput.audiodevice") && g_guiSettings.GetString("audiooutput.audiodevice") == audioDevice->getName())
-                audioDevices->m_selectedDevice = audioDevice;
+                audioDevices->g_selectedDevice = audioDevice;
             }
           }
            
           // If we haven't selected any devices, select the default one.
-          if (!audioDevices->m_selectedDevice)
-            audioDevices->m_selectedDevice = audioDevices->m_defaultDevice;
+          if (!audioDevices->g_selectedDevice)
+            audioDevices->g_selectedDevice = audioDevices->m_defaultDevice;
           
           // Check if the selected device is alive and usable.
-          if (audioDevices->m_selectedDevice->isAlive() == false)
+          if (audioDevices->g_selectedDevice->isAlive() == false)
           {
             CLog::Log(LOGWARNING, "Selected audio device is not alive, switching to default device.");
-            audioDevices->m_selectedDevice = audioDevices->m_defaultDevice;
+            audioDevices->g_selectedDevice = audioDevices->m_defaultDevice;
           }
         }
       }

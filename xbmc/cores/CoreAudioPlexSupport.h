@@ -78,7 +78,7 @@ class PlexAudioDevices
  public:
    
    PlexAudioDevicePtr          getDefaultDevice()  { return m_defaultDevice; }
-   PlexAudioDevicePtr          getSelectedDevice() { return m_selectedDevice; }
+   PlexAudioDevicePtr          getSelectedDevice() { return g_selectedDevice; }
    vector<PlexAudioDevicePtr>& getDevices()        { return m_audioDevices; }
    
    /// Get all devices.
@@ -90,6 +90,10 @@ class PlexAudioDevices
    /// Get the default device.
    static PlexAudioDevicePtr FindDefault();
    
+   /// Get/set the selected device.
+   static PlexAudioDevicePtr GetSelected() { return g_selectedDevice; }
+   static void SetSelected(PlexAudioDevicePtr& device) { g_selectedDevice = device; }
+   
  protected:
    
   PlexAudioDevices() {}
@@ -98,7 +102,7 @@ class PlexAudioDevices
    
   vector<PlexAudioDevicePtr> m_audioDevices;
   PlexAudioDevicePtr         m_defaultDevice;
-  PlexAudioDevicePtr         m_selectedDevice;
+  static PlexAudioDevicePtr  g_selectedDevice;
 };
 
 typedef boost::shared_ptr<PlexAudioDevices> PlexAudioDevicesPtr;
