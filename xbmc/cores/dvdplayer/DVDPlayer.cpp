@@ -710,6 +710,8 @@ void CDVDPlayer::OpenDefaultStreams()
 
 #ifdef __APPLE__
 
+    bool invisibleOpen = false;
+    
     // Try a smart open.
     if (valid == false && g_guiSettings.GetBool("subtitles.autoselectsubtitlestream"))
     {
@@ -717,8 +719,7 @@ void CDVDPlayer::OpenDefaultStreams()
       {
         // We don't need subtitles since the language matched.
         CLog::Log(LOGINFO, "Not setting subtitles since we have a language match.\n");
-        valid = true;
-        m_dvdPlayerVideo.EnableSubtitle(false);
+        invisibleOpen = true;
       }
       else if (foundLanguageTaggedAudioStream == true)
       {
@@ -740,23 +741,23 @@ void CDVDPlayer::OpenDefaultStreams()
 
         // If we didn't find a match, then disable subtitles, and assume audio track was a match.
         if (valid == false)
-        {
-          valid = true;
-          m_dvdPlayerVideo.EnableSubtitle(false); // FIXME, this is wrong!
-        }
+          invisibleOpen = true;
       }
     }
       
 #endif
-    
+
     for(int i = 0;i<count && !valid; i++)
     {
       SelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, i);
       if(OpenSubtitleStream(s.id, s.source))
         valid = true;
     }
-    if(!valid)
+    
+    if (!valid)
       CloseSubtitleStream(false);
+    else if (invisibleOpen)
+      SetSubtitleVisible(false);
   }
   else
     m_dvdPlayerVideo.EnableSubtitle(false);
