@@ -33,6 +33,7 @@ class CGUIWindowVideoFiles : public CGUIWindowVideoBase
 public:
   CGUIWindowVideoFiles(void);
   virtual ~CGUIWindowVideoFiles(void);
+  virtual bool OnAction(const CAction &action);
   virtual bool OnMessage(CGUIMessage& message);
 
   void GetStackedDirectory(const CStdString &strPath, CFileItemList &items);
@@ -53,6 +54,8 @@ protected:
   
   virtual void LoadPlayList(const CStdString& strFileName);
   void PlayFolder(const CFileItem* pItem);
+  
+  CStdString m_startDirectory;
 
 private:
   bool m_stackingAvailable;
