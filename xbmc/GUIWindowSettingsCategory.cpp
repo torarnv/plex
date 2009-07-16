@@ -2232,6 +2232,8 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   }
   else if (strSetting.Equals("screensaver.slideshowpath"))
   {
+    // Make sure we detect the PMS sources.
+    CUtil::AutodetectPlexSources("plex://localhost/photos/", g_settings.m_pictureSources);
     g_mediaManager.GetNetworkLocations(g_settings.m_pictureSources);
     g_mediaManager.GetLocalDrives(g_settings.m_pictureSources);
 	  

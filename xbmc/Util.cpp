@@ -407,8 +407,6 @@ const BOOL CUtil::HostInExceptionList(CStdString hostname, std::vector<CStdStrin
 
 void CUtil::AutodetectPlexSources(CStdString strPlexPath, VECSOURCES& dstSources)
 {
-  // TODO: Remove debug printf code
-  
   bool bIsSourceName = true;
   bool bPerformRemove = true;
   
