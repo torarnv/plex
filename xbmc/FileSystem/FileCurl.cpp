@@ -33,6 +33,8 @@
 #include "../linux/XFileUtils.h"
 #endif
 
+#include "Application.h"
+#include "FileItem.h"
 #include "DllLibCurl.h"
 #include "FileShoutcast.h"
 #include "CocoaUtils.h"
@@ -430,6 +432,14 @@ void CFileCurl::SetCommonOptions(CReadState* state)
   g_curlInterface.easy_setopt(h, CURLOPT_CONNECTTIMEOUT, m_timeout);
   g_curlInterface.easy_setopt(h, CURLOPT_LOW_SPEED_LIMIT, 1);
   g_curlInterface.easy_setopt(h, CURLOPT_LOW_SPEED_TIME, m_timeout);
+  
+  // See if we need to add any options from the FileItem.
+  if (g_application.CurrentFileItem().m_strPath == m_url)
+  {
+    CStdString cookies = g_application.CurrentFileItem().GetProperty("httpCookies");
+    if (cookies.size() > 0)
+      g_curlInterface.easy_setopt(h, CURLOPT_COOKIE, cookies.c_str());
+  }
 }
 
 void CFileCurl::SetRequestHeaders(CReadState* state)
