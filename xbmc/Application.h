@@ -138,8 +138,11 @@ public:
   bool PlayMediaSync(const CFileItem& item, int iPlaylist = PLAYLIST_MUSIC);
   bool ProcessAndStartPlaylist(const CStdString& strPlayList, PLAYLIST::CPlayList& playlist, int iPlaylist);
   bool PlayFile(const CFileItem& item, bool bRestart = false);
+  void FinishPlayingFile(bool bResult, const CStdString& error="");
+  
   void StopPlaying();
   void Restart(bool bSamePosition = true);
+  void RestartWithNewPlayer(CDlgCache* cacheDlg, const CStdString& newURL);
   void DelayedPlayerRestart();
   void CheckDelayedPlayerRestart();
   void RenderFullScreen();
@@ -236,6 +239,7 @@ public:
   DWORD m_dwSkinTime;
   bool m_bIsPaused;
   bool m_bPlaybackStarting;
+  bool m_bPlaybackInFullScreen;
   std::queue<CGUIMessage> m_vPlaybackStarting;
 
   CCdgParser* m_pCdgParser;

@@ -340,6 +340,7 @@ CApplication::CApplication(void)
   m_nextPlaylistItem = -1;
   m_playCountUpdated = false;
   m_bPlaybackStarting = false;
+  m_bPlaybackInFullScreen = false;
   m_bBackgroundMusicEnabled = false;
   
   //true while we in IsPaused mode! Workaround for OnPaused, which must be add. after v2.0
@@ -4657,12 +4658,13 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
   // tell system we are starting a file
   m_bPlaybackStarting = true;
+  m_bPlaybackInFullScreen = options.fullscreen;
 
   // We should restart the player, unless the previous and next tracks are using
   // one of the players that allows gapless playback (paplayer, dvdplayer)
   if (m_pPlayer)
   {
-    if ( !(m_eCurrentPlayer == eNewCore && (m_eCurrentPlayer == EPC_DVDPLAYER || m_eCurrentPlayer  == EPC_PAPLAYER)) )
+    if ( !(m_eCurrentPlayer == eNewCore && (m_eCurrentPlayer == EPC_DVDPLAYER || m_eCurrentPlayer  == EPC_PAPLAYER || m_eCurrentPlayer == EPC_PMSPLAYER)) )
     {
       delete m_pPlayer;
       m_pPlayer = NULL;
@@ -4695,7 +4697,18 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     bResult = false;
   }
 
-  if(bResult)
+  // If the player is opening asynchronously, we'll finish up with a callback.
+  // Otherwise complete the open synchronously.
+  //
+  if (m_pPlayer->CanOpenAsync() == false)
+    FinishPlayingFile(bResult);
+
+  return bResult;
+}
+
+void CApplication::FinishPlayingFile(bool bResult, const CStdString& error)
+{
+  if (bResult)
   {
     if (m_iPlaySpeed != 1)
     {
@@ -4708,7 +4721,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     if( IsPlayingVideo() )
     {
       // if player didn't manange to switch to fullscreen by itself do it here
-      if( options.fullscreen && g_renderManager.IsStarted()
+      if(m_bPlaybackInFullScreen && g_renderManager.IsStarted()
        && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO )
        SwitchToFullScreen();
     }
@@ -4720,7 +4733,17 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
   if(!bResult || !IsPlaying())
   {
-    // since we didn't manage to get playback started, send any queued up messages
+    // Display error message.
+    if (g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist()).size() == 1)
+    {
+      CStdString err = error;
+      if (err.size() == 0)
+        err = g_localizeStrings.Get(42008);
+        
+      CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(257), err + ".", "", "");
+    }
+    
+    // Since we didn't manage to get playback started, send any queued up messages
     while(m_vPlaybackStarting.size())
     {
       m_gWindowManager.SendMessage(m_vPlaybackStarting.front());
@@ -4730,8 +4753,6 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
   while(m_vPlaybackStarting.size()) m_vPlaybackStarting.pop();
   m_bPlaybackStarting = false;
-
-  return bResult;
 }
 
 void CApplication::OnPlayBackEnded()
@@ -5992,6 +6013,35 @@ void CApplication::CheckDelayedPlayerRestart()
     m_restartPlayerTimer.Reset();
     Restart(true);
   }
+}
+
+void CApplication::RestartWithNewPlayer(CDlgCache* cacheDlg, const CStdString& newURL)
+{
+  printf("Asked to restart with new player, URL = %s\n", newURL.c_str());
+  
+  CFileItem newFile(newURL, false);
+  newFile.SetLabel(m_itemCurrentFile->GetLabel());
+  *m_itemCurrentFile = newFile;
+  
+  // We're moving to a new player, so whack the old one.
+  delete m_pPlayer;
+  m_pPlayer = 0;
+  
+  // Create the new player.
+  EPLAYERCORES eNewCore = CPlayerCoreFactory::GetDefaultPlayer(newFile);
+  m_eCurrentPlayer = eNewCore;
+  m_pPlayer = CPlayerCoreFactory::CreatePlayer(eNewCore, *this);
+  
+  // See if we're passing along the cache dialog.
+  if (cacheDlg)
+  {
+    if (eNewCore == EPC_PMSPLAYER)
+      ((CPlexMediaServerPlayer* )m_pPlayer)->SetCacheDialog(cacheDlg);
+    else
+      cacheDlg->Close();
+  }
+  
+  PlayFile(*m_itemCurrentFile, false);
 }
 
 void CApplication::Restart(bool bSamePosition)

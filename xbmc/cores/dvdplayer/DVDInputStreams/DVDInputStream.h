@@ -62,6 +62,9 @@ public:
   virtual BitstreamStats GetBitstreamStats() const { return m_stats; }
 
   void SetFileItem(const CFileItem& item);
+  
+  void SetError(const std::string& error) { m_strError = error; }
+  const std::string& GetError() const { return m_strError; }
 
 protected:
   DVDStreamType m_streamType;
@@ -69,4 +72,5 @@ protected:
   BitstreamStats m_stats;
   std::string m_content;
   CFileItem m_item;
+  std::string m_strError;
 };

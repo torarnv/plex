@@ -2114,5 +2114,15 @@
   <string id="40203">Plex Media Server</string>
   <string id="40204">Waiting for response...</string>
 
+  <string id="42000">Could not read from input stream</string>
+  <string id="42001">Could not determine input format</string>
+  <string id="42002">Could not read file header</string>
+  <string id="42003">Unknown format</string>
+  <string id="42004">Could not read data from file</string>
+  <string id="42005">Not enough memory to open file</string>
+  <string id="42006">File was not found</string>
+  <string id="42007">Unsupported network protocol</string>
+  <string id="42008">Error while opening file</string>
+
 </strings>
 

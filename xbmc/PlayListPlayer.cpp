@@ -246,12 +246,14 @@ void CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPr
     CLog::Log(LOGERROR,"Playlist Player: skipping unplayable item: %i, path [%s]", m_iCurrentSong, item->m_strPath.c_str());
     playlist.SetUnPlayable(m_iCurrentSong);
 
-    // abort on 100 failed CONSECTUTIVE songs
+    // abort on 100 failed CONSECUTIVE songs
     if (!m_iFailedSongs)
       m_failedSongsStart = playAttempt;
     m_iFailedSongs++;
-    if ((m_iFailedSongs >= g_advancedSettings.m_playlistRetries && g_advancedSettings.m_playlistRetries >= 0)
-        || (timeGetTime() - m_failedSongsStart  >= (unsigned int)g_advancedSettings.m_playlistTimeout * 1000) && g_advancedSettings.m_playlistTimeout)
+    
+    if (playlist.size() > 1 && 
+        ((m_iFailedSongs >= g_advancedSettings.m_playlistRetries && g_advancedSettings.m_playlistRetries >= 0)
+        || (timeGetTime() - m_failedSongsStart  >= (unsigned int)g_advancedSettings.m_playlistTimeout * 1000) && g_advancedSettings.m_playlistTimeout))
     {
       CLog::Log(LOGDEBUG,"Playlist Player: too many consecutive failures... aborting playback");
 

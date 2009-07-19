@@ -53,6 +53,7 @@
 #endif
 #include "Settings.h"
 #include "FileItem.h"
+#include "FileSystem/File.h"
 #ifdef __APPLE__
 #include <vector>
 #include <boost/foreach.hpp>
@@ -61,6 +62,7 @@
 #endif
 
 using namespace std;
+using namespace XFILE;
 
 void CSelectionStreams::Clear(StreamType type, StreamSource source)
 {
@@ -259,7 +261,8 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
       m_dvdPlayerVideo(&m_clock, &m_overlayContainer),
       m_dvdPlayerAudio(&m_clock),
       m_dvdPlayerSubtitle(&m_overlayContainer),
-      m_messenger("player")
+      m_messenger("player"),
+      m_bFileOpenComplete(false)
 {
   m_pDemuxer = NULL;
   m_pSubtitleDemuxer = NULL;
@@ -301,6 +304,8 @@ CDVDPlayer::~CDVDPlayer()
 
 bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 {
+  bool ret = true;
+  
   try
   {
     if (m_pDlgCache)
@@ -322,6 +327,7 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
     if(ThreadHandle())
       CloseFile();
 
+    m_bFileOpenComplete = false;
     m_bAbortRequest = false;
     m_seeking = false;
     SetPlaySpeed(DVD_PLAYSPEED_NORMAL);
@@ -336,32 +342,51 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 
     ResetEvent(m_hReadyEvent);
     Create();
-    WaitForSingleObject(m_hReadyEvent, INFINITE);
-
-    // Playback might have been stopped due to some error
-    if (m_bStop || m_bAbortRequest) 
-    {
-      if (m_pDlgCache)
-      {
-        m_pDlgCache->Close();
-        m_pDlgCache = NULL;
-      }
-      return false;
-    }
-
-   
-    return true;
   }
   catch(...)
   {
     CLog::Log(LOGERROR, "%s - Exception thrown on open", __FUNCTION__);
+    
     if (m_pDlgCache)
     {
       m_pDlgCache->Close();
-      m_pDlgCache = NULL;
+      m_pDlgCache = 0;
     }
+    
+    ret = false;
+  }
 
-    return false;
+  return ret;
+}
+
+void CDVDPlayer::OpenFileComplete()
+{
+  if (m_bStop || m_bAbortRequest) 
+  {
+    if (m_pDlgCache)
+    {
+      m_pDlgCache->Close();
+      m_pDlgCache = 0;
+    }
+  }
+  
+  if (m_bFileOpenComplete == false)
+  {
+    m_bFileOpenComplete = true;
+    
+    bool ret = true;
+    if (m_bStop || m_bAbortRequest)
+      ret = false;
+        
+    CStdString err;
+    if (m_pInputStream && m_pInputStream->GetError().size() > 0)
+      err = m_pInputStream->GetError();
+    else if (m_pDemuxer && m_pDemuxer->GetError().size() > 0)
+      err = m_pDemuxer->GetError();
+    else if (m_strError.size() > 0)
+      err = m_strError;
+    
+    g_application.getApplicationMessenger().MediaOpenComplete(ret, err);
   }
 }
 
@@ -491,7 +516,8 @@ bool CDVDPlayer::OpenDemuxStream()
     int attempts = 10;
     while(!m_bStop && attempts-- > 0)
     {
-      m_pDemuxer = CDVDFactoryDemuxer::CreateDemuxer(m_pInputStream);
+      m_strError = "";
+      m_pDemuxer = CDVDFactoryDemuxer::CreateDemuxer(m_pInputStream, m_strError);
       if(!m_pDemuxer && m_pInputStream->NextStream())
       {
         CLog::Log(LOGDEBUG, "%s - New stream available from input, retry open", __FUNCTION__);
@@ -925,9 +951,21 @@ void CDVDPlayer::Process()
   if (m_pDlgCache && m_pDlgCache->IsCanceled())
     return;
  
-  if (!OpenInputStream())
+  try 
   {
-    m_bAbortRequest = true;
+    if (!OpenInputStream())
+    {
+      m_bAbortRequest = true;
+      return;
+    }
+  }
+  catch (CRedirectToNewPlayerException* ex)
+  {
+    printf("We just got redirected to %s\n", ex->m_newURL.c_str());
+    g_application.getApplicationMessenger().RestartWithNewPlayer(m_pDlgCache, ex->m_newURL);
+    delete ex;
+    m_bFileOpenComplete = true;
+    m_pDlgCache = 0;
     return;
   }
 
@@ -985,8 +1023,8 @@ void CDVDPlayer::Process()
   UpdateApplication(0);
   UpdatePlayState(0);
 
-  // we are done initializing now, set the readyevent
-  SetEvent(m_hReadyEvent);
+  // we are done initializing now.
+  OpenFileComplete();
 
   if(m_PlayerOptions.identify == false)
     m_callback.OnPlayBackStarted();
@@ -1662,8 +1700,8 @@ void CDVDPlayer::OnExit()
   {
     CLog::Log(LOGNOTICE, "CDVDPlayer::OnExit()");
 
-    // set event to inform openfile something went wrong in case openfile is still waiting for this event
-    SetEvent(m_hReadyEvent);
+    // Open file is complete.
+    OpenFileComplete();
     SetCaching(false);
 
     // close each stream
@@ -1718,13 +1756,15 @@ void CDVDPlayer::OnExit()
     m_pInputStream = NULL;
     m_pDemuxer = NULL;   
   }
-  // set event to inform openfile something went wrong in case openfile is still waiting for this event
-  SetEvent(m_hReadyEvent);
+  
   if (m_pDlgCache)
   {
     m_pDlgCache->Close();
-    m_pDlgCache = NULL;
+    m_pDlgCache = 0;
   }
+  
+  // Open file is complete.
+  OpenFileComplete();
 
   m_bStop = true;
   // if we didn't stop playing, advance to the next item in xbmc's playlist

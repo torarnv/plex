@@ -287,6 +287,10 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
     case TMSG_MEDIA_RESTART:
       g_application.Restart(true);
       break;
+      
+    case TMSG_MEDIA_RESTART_WITH_NEW_PLAYER:
+      g_application.RestartWithNewPlayer((CDlgCache* )pMsg->lpVoid, pMsg->strParam);
+      break;
 		  
     case TMSG_SLEEPSYSTEM:
       g_application.SleepSystem();
@@ -401,6 +405,11 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
         g_application.m_pPlayer->Pause();
       }
       break;
+      
+    case TMSG_MEDIA_OPEN_COMPLETE:
+      g_application.FinishPlayingFile(pMsg->dwParam1, pMsg->strParam);
+      break;
+      
     case TMSG_SWITCHTOFULLSCREEN:
       if( m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO )
         g_application.SwitchToFullScreen();
@@ -660,6 +669,14 @@ void CApplicationMessenger::MediaStop()
   SendMessage(tMsg, true);
 }
 
+void CApplicationMessenger::MediaOpenComplete(bool bStatus, const CStdString& strErrorMsg)
+{
+  ThreadMessage tMsg = {TMSG_MEDIA_OPEN_COMPLETE};
+  tMsg.dwParam1 = bStatus;
+  tMsg.strParam = strErrorMsg;
+  SendMessage(tMsg, false);
+}
+
 void CApplicationMessenger::MediaPause()
 {
   ThreadMessage tMsg = {TMSG_MEDIA_PAUSE};
@@ -735,6 +752,14 @@ void CApplicationMessenger::RestartApp()
 {
   ThreadMessage tMsg = {TMSG_RESTARTAPP};
   SendMessage(tMsg);
+}
+
+void CApplicationMessenger::RestartWithNewPlayer(CDlgCache* dlg, const std::string& newURL)
+{
+  ThreadMessage tMsg = {TMSG_MEDIA_RESTART_WITH_NEW_PLAYER};
+  tMsg.strParam = newURL;
+  tMsg.lpVoid = dlg;
+  SendMessage(tMsg, false);
 }
 
 void CApplicationMessenger::SleepSystem()

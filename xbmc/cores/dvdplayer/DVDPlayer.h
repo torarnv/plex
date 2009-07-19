@@ -211,11 +211,16 @@ public:
   virtual bool IsCaching() const { return m_caching; }
   virtual int GetCacheLevel() const ; 
 
-  virtual int OnDVDNavResult(void* pData, int iMessage);    
+  virtual int OnDVDNavResult(void* pData, int iMessage);  
+  
+  virtual bool CanOpenAsync() { return true; }
+  
 protected:  
   friend class CSelectionStreams;
   void LockStreams()                                            { EnterCriticalSection(&m_critStreamSection); }
   void UnlockStreams()                                          { LeaveCriticalSection(&m_critStreamSection); }
+  
+  void OpenFileComplete();
   
   virtual void OnStartup();
   virtual void OnExit();
@@ -269,6 +274,8 @@ protected:
   double m_UpdateApplication;
 
   bool m_bAbortRequest;
+  bool m_bFileOpenComplete;
+  std::string m_strError;
 
   std::string m_filename; // holds the actual filename
   std::string m_content;  // hold a hint to what content file contains (mime type)

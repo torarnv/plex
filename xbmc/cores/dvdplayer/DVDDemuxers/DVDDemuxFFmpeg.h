@@ -103,6 +103,8 @@ public:
 
   AVFormatContext* m_pFormatContext;
 
+  static std::string GetErrorString(int code);
+  
 protected:
   friend class CDemuxStreamAudioFFmpeg;
   friend class CDemuxStreamVideoFFmpeg;

@@ -35,6 +35,9 @@ class CFileItem;
 #define TMSG_MEDIA_PAUSE          202
 #define TMSG_MEDIA_RESTART        203
 
+#define TMSG_MEDIA_OPEN_COMPLETE  207
+#define TMSG_MEDIA_RESTART_WITH_NEW_PLAYER 208
+
 #define TMSG_PLAYLISTPLAYER_PLAY  210
 #define TMSG_PLAYLISTPLAYER_NEXT  211
 #define TMSG_PLAYLISTPLAYER_PREV  212
@@ -79,6 +82,7 @@ typedef struct
 }
 ThreadMessage;
 
+class CDlgCache;
 class CApplicationMessenger
 {
 
@@ -95,6 +99,7 @@ public:
   void MediaPlay(const CFileItem &item);
   void MediaStop();
   void MediaPause();
+  void MediaOpenComplete(bool bStatus, const CStdString& error = "");
   void MediaRestart(bool bWait);
 
   void PlayListPlayerPlay();
@@ -115,6 +120,7 @@ public:
   void ActivateVisualizer();
   void MoveToNextScreen();
   void MoveToPrevScreen();
+  void RestartWithNewPlayer(CDlgCache* dlg, const std::string& newURL);
   
   CStdString GetResponse();
   int SetResponse(CStdString response);

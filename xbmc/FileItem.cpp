@@ -1111,7 +1111,10 @@ const CStdString& CFileItem::GetContentType() const
           || m_strPath.Left(8).Equals("https://")
           || m_strPath.Left(7).Equals("upnp://"))
     {
-      CFileCurl::GetContent(GetAsUrl(), m_ref);
+      // See if we have content type already.
+      // FIXME
+      
+      //CFileCurl::GetContent(GetAsUrl(), m_ref);
 
       // try to get content type again but with an NSPlayer User-Agent
       // in order for server to provide correct content-type.  Allows us

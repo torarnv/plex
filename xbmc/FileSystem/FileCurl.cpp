@@ -641,6 +641,12 @@ bool CFileCurl::Open(const CURL& url, bool bBinary)
     CLog::Log(LOGDEBUG,"FileCurl - file <%s> is a shoutcast stream. re-opening", m_url.c_str());
     throw new CRedirectException(new CFileShoutcast); 
   }
+  
+  // Did we hit a dead end?
+  if (m_state->m_strDeadEndUrl.size() > 0)
+  {
+    throw new CRedirectToNewPlayerException(m_state->m_strDeadEndUrl);
+  }
 
   m_multisession = false;
   if(m_url.Left(5).Equals("http:") || m_url.Left(6).Equals("https:"))

@@ -77,6 +77,12 @@ CPlexMediaServerPlayer::~CPlexMediaServerPlayer()
     delete m_mappedRegion;
     m_mappedRegion = 0;
   }
+  
+  if (m_pDlgCache)
+  {
+    m_pDlgCache->Close();
+    m_pDlgCache = 0;
+  }
 }
 
 bool CPlexMediaServerPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
@@ -100,17 +106,15 @@ bool CPlexMediaServerPlayer::OpenFile(const CFileItem& file, const CPlayerOption
   // Initialize the renderer, so it doesn't try to render too soon.
   g_renderManager.PreInit();
   
-  if (m_pDlgCache)
-    m_pDlgCache->Close();
-  m_pDlgCache = new CDlgCache(0, g_localizeStrings.Get(10214), file.GetLabel());
+  if (m_pDlgCache == 0)
+    m_pDlgCache = new CDlgCache(0, g_localizeStrings.Get(10214), file.GetLabel());
 
   // Construct the real URL.
   CURL url(file.m_strPath);
   url.SetProtocol("http");
   url.SetPort(32400);
 
-  printf("Opening [%s] => [%s]\n", file.m_strPath.c_str(), url.GetURL().c_str());
-  
+  printf("Opening [%s]\n", file.m_strPath.c_str());
   int numTries = 20;
   
 retry:  

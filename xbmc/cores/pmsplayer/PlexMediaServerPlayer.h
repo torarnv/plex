@@ -97,6 +97,8 @@ public:
   static void RequireServerRestart() { g_needToRestartMediaServer = true; }
   static bool IsRestartRequired() { return g_needToRestartMediaServer; }
   
+  void SetCacheDialog(CDlgCache* cacheDialog) { m_pDlgCache = cacheDialog; }
+  
 private:
 
   void OnFrameMap(const string& args);

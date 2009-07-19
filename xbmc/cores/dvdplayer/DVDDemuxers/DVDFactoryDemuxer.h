@@ -24,8 +24,11 @@
 class CDVDDemux;
 class CDVDInputStream;
 
+#include <string>
+using namespace std;
+
 class CDVDFactoryDemuxer
 {
 public:
-  static CDVDDemux* CreateDemuxer(CDVDInputStream* pInputStream);
+  static CDVDDemux* CreateDemuxer(CDVDInputStream* pInputStream, string& error);
 };

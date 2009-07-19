@@ -265,8 +265,11 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 
     // special stream type that makes avformat handle file opening
     // allows internal ffmpeg protocols to be used
-    if( m_dllAvFormat.av_open_input_file(&m_pFormatContext, strFile.c_str(), iformat, FFMPEG_FILE_BUFFER_SIZE, NULL) < 0 )
+    int ret = 0;
+    if( (ret=m_dllAvFormat.av_open_input_file(&m_pFormatContext, strFile.c_str(), iformat, FFMPEG_FILE_BUFFER_SIZE, NULL)) < 0 )
     {
+      m_pInput->SetError(GetErrorString(ret));
+      
       CLog::Log(LOGDEBUG, "Error, could not open file %s", strFile.c_str());
       Dispose();
       return false;
@@ -344,6 +347,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 
       if (pd.buf_size == 0)
       {
+        SetError(g_localizeStrings.Get(42000));
         CLog::Log(LOGERROR, "%s - error reading from input stream, %s", __FUNCTION__, strFile.c_str());
         return false;
       }
@@ -353,6 +357,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       iformat = m_dllAvFormat.av_probe_input_format(&pd, 1);
       if (!iformat)
       {
+        SetError(g_localizeStrings.Get(42001));
         CLog::Log(LOGERROR, "%s - error probing input format, %s", __FUNCTION__, strFile.c_str());
         return false;
       }
@@ -363,8 +368,10 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
     }
 
     // open the demuxer
-    if (m_dllAvFormat.av_open_input_stream(&m_pFormatContext, m_ioContext, strFile.c_str(), iformat, NULL) < 0)
+    int ret = 0;
+    if ( (ret=m_dllAvFormat.av_open_input_stream(&m_pFormatContext, m_ioContext, strFile.c_str(), iformat, NULL)) < 0)
     {
+      SetError(GetErrorString(ret));
       CLog::Log(LOGERROR, "%s - Error, could not open file %s", __FUNCTION__, strFile.c_str());
       Dispose();
       return false;
@@ -1130,5 +1137,37 @@ bool CDVDDemuxFFmpeg::SeekChapter(int chapter, double* startpts)
   AVChapter *ch = m_pFormatContext->chapters[chapter-1];
   double dts = ConvertTimestamp(ch->start, ch->time_base.den, ch->time_base.num);
   return SeekTime(DVD_TIME_TO_MSEC(dts), false, startpts);
+}
+
+std::string CDVDDemuxFFmpeg::GetErrorString(int code)
+{
+  switch (code)
+  {
+  case AVERROR_INVALIDDATA:
+    return g_localizeStrings.Get(42002); // Could not read file header.
+    break;
+    
+  case AVERROR_NOFMT:
+    return g_localizeStrings.Get(42003); // Unknown format.
+    break;
+    
+  case AVERROR(EIO):
+    return g_localizeStrings.Get(42004); // Could not read data from file.
+
+  case AVERROR(ENOMEM):
+    return g_localizeStrings.Get(42005); // Memory allocation error occurred.
+    break;
+    
+  case AVERROR(ENOENT):
+    return g_localizeStrings.Get(42006); // No such file or directory.
+    break;
+
+  case AVERROR(EPROTONOSUPPORT):
+    return g_localizeStrings.Get(42007); // Unsupported network protocol.
+    break;
+
+  default:
+    return g_localizeStrings.Get(42008); // Error while opening file.
+  }
 }
 

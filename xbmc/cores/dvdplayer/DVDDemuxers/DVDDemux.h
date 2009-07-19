@@ -292,5 +292,13 @@ public:
    * return the subtitle stream, or NULL if it does not exist
    */
   CDemuxStreamSubtitle* GetStreamFromSubtitleId(int iSubtitleIndex);
+
+  /*
+   * Error string.
+   */
+  void SetError(const std::string& error) { m_strError = error; }
+  const std::string& GetError() const { return m_strError; }
   
+ private:
+  std::string m_strError;
 };

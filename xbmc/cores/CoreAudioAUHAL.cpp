@@ -317,7 +317,7 @@ DWORD CoreAudioAUHAL::GetSpace()
 
 float CoreAudioAUHAL::GetHardwareLatency()
 {
-	float latency = CA_BUFFER_FACTOR + ((float)deviceParameters->hardwareFrameLatency / deviceParameters->stream_format.mSampleRate);
+	float latency = /*CA_BUFFER_FACTOR +*/ ((float)deviceParameters->hardwareFrameLatency / deviceParameters->stream_format.mSampleRate);
 	if (deviceParameters->b_digital)
 		latency += 0.032;
 	//if (m_bEncodeAC3)
@@ -509,6 +509,7 @@ int CoreAudioAUHAL::OpenPCM(struct CoreAudioDeviceParameters *deviceParameters, 
 	deviceParameters->outputBuffer = (PaUtilRingBuffer *)malloc(sizeof(PaUtilRingBuffer));
 	deviceParameters->outputBufferData = malloc(framecount * deviceParameters->stream_format.mBytesPerFrame);
 
+	printf("Size of ring buffer is %d bytes.\n", deviceParameters->stream_format.mBytesPerFrame * framecount);
 	PaUtil_InitializeRingBuffer(deviceParameters->outputBuffer,
 								deviceParameters->stream_format.mBytesPerFrame,
 								framecount, deviceParameters->outputBufferData);

@@ -145,6 +145,8 @@ public:
   virtual CStdString GetPlayerState() { return ""; };
   virtual bool SetPlayerState(CStdString state) { return false;};
   
+  virtual bool CanOpenAsync() { return false; }
+  
 protected:
   IPlayerCallback& m_callback;
 };
