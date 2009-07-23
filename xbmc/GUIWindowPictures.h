@@ -60,6 +60,7 @@ protected:
 
   CGUIDialogProgress* m_dlgProgress;
   DllImageLib m_ImageLib;
-
+  bool m_forceShuffle;
+  
   CPictureThumbLoader m_thumbLoader;
 };

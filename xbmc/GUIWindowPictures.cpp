@@ -56,6 +56,7 @@ using namespace PLAYLIST;
 
 CGUIWindowPictures::CGUIWindowPictures(void)
     : CGUIMediaWindow(WINDOW_PICTURES, "MyPics.xml")
+    , m_forceShuffle(false)
 {
   m_thumbLoader.SetObserver(this);
 }
@@ -512,7 +513,7 @@ void CGUIWindowPictures::OnSlideShow(const CStdString &strPicture)
   }
   if (!strPicture.IsEmpty())
     delete items;
-  if (g_guiSettings.GetBool("slideshow.shuffle"))
+  if (g_guiSettings.GetBool("slideshow.shuffle") || m_forceShuffle == true)
     pSlideShow->Shuffle();
   pSlideShow->StartSlideShow();
   if (pSlideShow->NumSlides())
@@ -542,6 +543,7 @@ void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &butt
     {
       buttons.Add(CONTEXT_BUTTON_VIEW_SLIDESHOW, 13317);      // View Slideshow
       buttons.Add(CONTEXT_BUTTON_RECURSIVE_SLIDESHOW, 13318);     // Recursive Slideshow
+      buttons.Add(CONTEXT_BUTTON_SHUFFLE, 191);      // Shuffle (randomize slideshow).
     }
   }
   else
@@ -552,6 +554,7 @@ void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &butt
       {
         buttons.Add(CONTEXT_BUTTON_VIEW_SLIDESHOW, 13317);      // View Slideshow
         buttons.Add(CONTEXT_BUTTON_RECURSIVE_SLIDESHOW, 13318);     // Recursive Slideshow
+        buttons.Add(CONTEXT_BUTTON_SHUFFLE, 191);      // Shuffle (randomize slideshow).
       }
       if (!(item->m_bIsFolder || item->IsZIP() || item->IsRAR() || item->IsCBZ() || item->IsCBR()))
         buttons.Add(CONTEXT_BUTTON_INFO, 13406); // picture info
@@ -591,6 +594,11 @@ bool CGUIWindowPictures::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     return true;
   case CONTEXT_BUTTON_RECURSIVE_SLIDESHOW:
     OnSlideShowRecursive(item->m_strPath);
+    return true;
+  case CONTEXT_BUTTON_SHUFFLE:
+    m_forceShuffle = true;
+    OnSlideShow(item->m_strPath);
+    m_forceShuffle = false;
     return true;
   case CONTEXT_BUTTON_INFO:
     OnInfo(itemNumber);
