@@ -67,19 +67,37 @@ CGUIWindowVideoFiles::~CGUIWindowVideoFiles()
 {
 }
 
+bool CGUIWindowVideoFiles::OnAction(const CAction &action)
+{
+  if (action.wID == ACTION_PARENT_DIR)
+  {
+    if (g_advancedSettings.m_bUseEvilB && m_vecItems->m_strPath == m_startDirectory)
+    {
+      m_gWindowManager.PreviousWindow();
+      return true;
+    }
+  }
+  return CGUIWindowVideoBase::OnAction(action);
+}
+
 bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
   {
   case GUI_MSG_WINDOW_INIT:
     {
+      // check for valid quickpath parameter
+      CStdStringArray params;
+      StringUtils::SplitString(message.GetStringParam(), ",", params);
+      bool returning = params.size() > 1 && params[1] == "return";
+      
       // check for a passed destination path
-      CStdString strDestination = message.GetStringParam();
+      CStdString strDestination = params.size() ? params[0] : "";
       if (!strDestination.IsEmpty())
       {
         message.SetStringParam("");
         g_stSettings.m_iVideoStartWindow = GetID();
-        CLog::Log(LOGINFO, "Attempting to quickpath to: %s", strDestination.c_str());
+        CLog::Log(LOGINFO, "Attempting to %s to: %s", returning ? "return" : "quickpath", strDestination.c_str());
         // reset directory path, as we have effectively cleared it here
         m_history.ClearPathHistory();
       }
@@ -154,7 +172,15 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
         SetHistoryForPath(m_vecItems->m_strPath);
       }
 
-      return CGUIWindowVideoBase::OnMessage(message);
+      if (!CGUIWindowVideoBase::OnMessage(message))
+        return false;
+      
+      if (message.GetParam1() != WINDOW_INVALID)
+      { // first time to this window - make sure we set the root path
+        m_startDirectory = returning ? m_vecItems->m_strPath : "";
+      }
+      
+      return true;
     }
     break;
 
