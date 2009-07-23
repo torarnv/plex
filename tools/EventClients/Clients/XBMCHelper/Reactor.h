@@ -59,8 +59,8 @@ class Reactor
     
     if (_itsThread == 0)
     {
-      pthread_create(&_itsThread, NULL, Run, (void *)this);
       _isRunning = true;
+      pthread_create(&_itsThread, NULL, Run, (void *)this);
     }
   }
 
