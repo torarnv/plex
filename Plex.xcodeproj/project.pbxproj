@@ -47,6 +47,7 @@
 		94DEBCE50F647401003FF0E9 /* libpostproc-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 94DEBCE00F647401003FF0E9 /* libpostproc-osx.a */; };
 		94DEBCE60F647401003FF0E9 /* libswscale-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 94DEBCE10F647401003FF0E9 /* libswscale-osx.a */; };
 		94DEBE2B0F64B949003FF0E9 /* libfaad.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 94DEBE2A0F64B949003FF0E9 /* libfaad.a */; };
+		E3065EA210182FEB004555EF /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3065EA110182FEB004555EF /* CoreVideo.framework */; };
 		E31312180EC647FB00629994 /* PlexRemoteHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E31312160EC647FB00629994 /* PlexRemoteHelper.cpp */; };
 		E31312190EC647FB00629994 /* PlexHelperApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E31312170EC647FB00629994 /* PlexHelperApp.cpp */; };
 		E313121E0EC64B7300629994 /* PlexMediaServerHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E313121C0EC64B7300629994 /* PlexMediaServerHelper.cpp */; };
@@ -1132,6 +1133,7 @@
 		94DEBCE10F647401003FF0E9 /* libswscale-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libswscale-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libswscale-osx.a"; sourceTree = "<group>"; };
 		94DEBE2A0F64B949003FF0E9 /* libfaad.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfaad.a; path = xbmc/lib/libfaad2/libfaad.a; sourceTree = "<group>"; };
 		B1A921F30DF6D14F0024CC4F /* libbz2.1.0.4.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libbz2.1.0.4.dylib; path = /opt/local/lib/libbz2.1.0.4.dylib; sourceTree = "<absolute>"; };
+		E3065EA110182FEB004555EF /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		E30B3E8E0D5D59290030A311 /* libShout-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libShout-osx.a"; path = "xbmc/lib/libshout/libShout-osx.a"; sourceTree = "<group>"; };
 		E31312160EC647FB00629994 /* PlexRemoteHelper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PlexRemoteHelper.cpp; sourceTree = "<group>"; };
 		E31312170EC647FB00629994 /* PlexHelperApp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PlexHelperApp.cpp; sourceTree = "<group>"; };
@@ -3199,6 +3201,7 @@
 				94DEBE2B0F64B949003FF0E9 /* libfaad.a in Frameworks */,
 				E3C56E530F86011E0021BE13 /* AddressBook.framework in Frameworks */,
 				E3A1DF910FB1A5C4007E6585 /* libboost_regex-mt.a in Frameworks */,
+				E3065EA210182FEB004555EF /* CoreVideo.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3245,6 +3248,7 @@
 				E371C1E10E2F2AC300FBF841 /* Plex-Info.plist */,
 				1A5535E40E86B02F005AF349 /* ModelsWithBattery.plist */,
 				1AF6A79B0E994BFB00D96BD7 /* ModelNames.plist */,
+				E3065EA110182FEB004555EF /* CoreVideo.framework */,
 			);
 			name = XBMC;
 			sourceTree = "<group>";
