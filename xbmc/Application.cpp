@@ -4265,6 +4265,8 @@ void CApplication::Stop()
     StopServices();
     //Sleep(5000);
 
+    StopPlaying();
+    
     if (m_pPlayer)
     {
       CLog::Log(LOGNOTICE, "stop mplayer");

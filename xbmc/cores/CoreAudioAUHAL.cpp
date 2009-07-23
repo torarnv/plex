@@ -222,6 +222,8 @@ HRESULT CoreAudioAUHAL::Deinitialize()
 	
     if( deviceParameters->b_digital )
     {
+      printf("Stopping CoreAudio device.\n");
+      
         /* Stop device */
         err = AudioDeviceStop( deviceParameters->device_id,
 							  (AudioDeviceIOProc)RenderCallbackSPDIF );
@@ -286,7 +288,10 @@ HRESULT CoreAudioAUHAL::Deinitialize()
     // the stream format change and setting parameters. 
     //
     if (deviceParameters->b_digital && deviceParameters->b_revert)
+    {
+      printf("Reverting CoreAudio stream mode\n");
       AudioStreamChangeFormat(deviceParameters, deviceParameters->i_stream_id, deviceParameters->sfmt_revert);
+    }
    
   m_bIsInitialized = false;
 	return S_OK;
