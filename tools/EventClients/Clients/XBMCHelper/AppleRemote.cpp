@@ -643,7 +643,7 @@ void setupAndRun()
     CFMutableArrayRef      cookies;
     bool				   validRemoteFound = FALSE;
 
-	// Add the event queue for the hardware Apple Remote
+    // Add the event queue for the hardware Apple Remote
     hidMatchDictionary = IOServiceMatching("AppleIRController");
     hidService = IOServiceGetMatchingService(kIOMasterPortDefault, hidMatchDictionary);
 
@@ -657,33 +657,37 @@ void setupAndRun()
       ioReturnValue = IOObjectRelease(hidDevice);
       print_errmsg_if_io_err(ioReturnValue, (char* )"Failed to release HID.");
 
-      if (hidDeviceInterface)  {
-		  gAppleHidQueueInterfece = prepareQueue(hidDeviceInterface, cookies);
-	  }
+      if (hidDeviceInterface)  
+        gAppleHidQueueInterfece = prepareQueue(hidDeviceInterface, cookies);
+      else
+        printf("ERROR: No hidDeviceInterface.\n");
 		
-	  validRemoteFound = TRUE;
-	}
+      validRemoteFound = TRUE;
+    }
+    else
+    {
+      printf("ERROR: No hidService.\n");
+    }
 
-	// Add an event queue for IRKeyboardEmu, which allows Apple Remote emulation
-	hidMatchDictionary = IOServiceMatching("IRKeyboardEmu");
+    // Add an event queue for IRKeyboardEmu, which allows Apple Remote emulation
+    hidMatchDictionary = IOServiceMatching("IRKeyboardEmu");
     hidService = IOServiceGetMatchingService(kIOMasterPortDefault, hidMatchDictionary);
 	
     if (hidService) 
     {
-		hidDevice = (io_object_t)hidService;
+      hidDevice = (io_object_t)hidService;
 		
-		createHIDDeviceInterface(hidDevice, &hidDeviceInterface);
-		gEmuHidDeviceInterface = hidDeviceInterface;
-		cookies = getHIDCookies((IOHIDDeviceInterface122 **)hidDeviceInterface);
-		ioReturnValue = IOObjectRelease(hidDevice);
-		print_errmsg_if_io_err(ioReturnValue, (char* )"Failed to release HID.");
+      createHIDDeviceInterface(hidDevice, &hidDeviceInterface);
+      gEmuHidDeviceInterface = hidDeviceInterface;
+      cookies = getHIDCookies((IOHIDDeviceInterface122 **)hidDeviceInterface);
+      ioReturnValue = IOObjectRelease(hidDevice);
+      print_errmsg_if_io_err(ioReturnValue, (char* )"Failed to release HID.");
+      
+      if (hidDeviceInterface)
+        gEmuHidQueueInterfece  = prepareQueue(hidDeviceInterface, cookies);
 		
-		if (hidDeviceInterface)  {
-			gEmuHidQueueInterfece  = prepareQueue(hidDeviceInterface, cookies);
-		}
-		
-		validRemoteFound = TRUE;
-	}
+      validRemoteFound = TRUE;
+    }
 	
 	if (validRemoteFound)
 	{
