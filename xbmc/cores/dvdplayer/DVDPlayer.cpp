@@ -564,9 +564,13 @@ bool CDVDPlayer::OpenDemuxStream()
     if (totalData/1024 > 15*1024)
       totalData = 1024 * 15 * 1024;
     
+    int audioCacheSize = totalData/2;
+    if (audioCacheSize < 1024*1024)
+      audioCacheSize = 1024*1024;
+    
     printf("Setting cache size to %dKB (bitrate of %d, numSeconds = %d)\n", totalData/1024, bitrate, numSeconds);
     m_dvdPlayerVideo.SetMaxDataSize(totalData);
-    m_dvdPlayerAudio.SetMaxDataSize(totalData/2);
+    m_dvdPlayerAudio.SetMaxDataSize(audioCacheSize);
   }
     
   return true;
