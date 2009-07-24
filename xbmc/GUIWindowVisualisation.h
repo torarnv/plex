@@ -23,6 +23,7 @@
 
 #include "GUIWindow.h"
 #include "MusicInfoTag.h"
+#include "Stopwatch.h"
 #include "ThumbLoader.h"
 
 class CGUIWindowVisualisation :
@@ -42,6 +43,7 @@ protected:
   DWORD m_dwLockedTimer;
   bool m_bShowPreset;
   CMusicThumbLoader m_thumbLoader;
+  CStopWatch m_flipTimer;
   MUSIC_INFO::CMusicInfoTag m_tag;    // current tag info, for finding when the info manager updates
 };
 

@@ -172,6 +172,7 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
     break;
   case GUI_MSG_WINDOW_DEINIT:
     {
+      m_flipTimer.Stop();
       if (m_thumbLoader.IsLoading())
         m_thumbLoader.StopThread();
       
@@ -221,6 +222,10 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
         m_dwInitTimer = g_advancedSettings.m_songInfoDuration * 50;
       }
 
+      // Start the flip timer.
+      g_infoManager.m_nowPlayingFlipped = false;
+      m_flipTimer.StartZero();
+      
       // Start the thumbloader.
       CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
       CFileItemList list;
@@ -293,6 +298,14 @@ void CGUIWindowVisualisation::Render()
     if (!m_dwLockedTimer && !m_bShowPreset)
       g_infoManager.SetShowCodec(false);
   }
+  
+  if (m_flipTimer.GetElapsedSeconds() >= g_advancedSettings.m_nowPlayingFlipTime)
+   {
+     g_infoManager.m_nowPlayingFlipped = !g_infoManager.m_nowPlayingFlipped;
+     g_infoManager.ResetCache();
+     m_flipTimer.Reset();
+   }
+  
   CGUIWindow::Render();
 }
 
