@@ -28,12 +28,15 @@
 #include "ButtonTranslator.h"
 #include "GUIDialogVisualisationPresetList.h"
 #include "GUIWindowManager.h"
+#include "PlayList.h"
+#include "FileItem.h"
 #include "Settings.h"
 #ifdef HAS_KARAOKE
 #include "CdgParser.h"
 #endif
 
 using namespace MUSIC_INFO;
+using namespace PLAYLIST;
 
 #define TRANSISTION_COUNT   50  // 1 second
 #define TRANSISTION_LENGTH 200  // 4 seconds
@@ -43,6 +46,7 @@ using namespace MUSIC_INFO;
 
 CGUIWindowVisualisation::CGUIWindowVisualisation(void)
     : CGUIWindow(WINDOW_VISUALISATION, "MusicVisualisation.xml")
+    , m_thumbLoader(1, 200)
 {
   m_dwInitTimer = 0;
   m_dwLockedTimer = 0;
@@ -109,7 +113,9 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
     {
       // actual action is taken care of in CApplication::OnAction()
       m_dwInitTimer = g_advancedSettings.m_songInfoDuration * 50;
-      g_infoManager.SetShowInfo(true);
+      
+      bool hide = g_settings.GetSkinBool(g_settings.TranslateSkinBool("hidenowplayinginviz"));
+      g_infoManager.SetShowInfo(hide);
     }
     break;
     // TODO: These should be mapped to it's own function - at the moment it's overriding
@@ -166,6 +172,9 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
     break;
   case GUI_MSG_WINDOW_DEINIT:
     {
+      if (m_thumbLoader.IsLoading())
+        m_thumbLoader.StopThread();
+      
       // check and close any OSD windows
       CGUIDialogMusicOSD *pOSD = (CGUIDialogMusicOSD *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_OSD);
       if (pOSD && pOSD->IsDialogRunning()) pOSD->Close(true);
@@ -188,9 +197,12 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
         return true;
       }
 
+      bool hide = g_settings.GetSkinBool(g_settings.TranslateSkinBool("hidenowplayinginviz"));
+      
       // hide or show the preset button(s)
       g_infoManager.SetShowCodec(m_bShowPreset);
-      g_infoManager.SetShowInfo(true);  // always show the info initially.
+      g_infoManager.SetShowInfo(hide);  // always show the info initially.
+      
       CGUIWindow::OnMessage(message);
       if (g_infoManager.GetCurrentSongTag())
         m_tag = *g_infoManager.GetCurrentSongTag();
@@ -208,6 +220,16 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
         // start display init timer (fade out after 3 secs...)
         m_dwInitTimer = g_advancedSettings.m_songInfoDuration * 50;
       }
+
+      // Start the thumbloader.
+      CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
+      CFileItemList list;
+      
+      for (int i=0; i<playlist.size(); i++)
+        list.Add(playlist[i]);
+      
+      m_thumbLoader.Load(list);
+      
       return true;
     }
   }
@@ -250,8 +272,11 @@ void CGUIWindowVisualisation::Render()
   { // need to fade in then out again
     m_tag = *tag;
     // fade in
-    m_dwInitTimer = g_advancedSettings.m_songInfoDuration * 50;
-    g_infoManager.SetShowInfo(true);
+    if (g_settings.GetSkinBool(g_settings.TranslateSkinBool("hidenowplayinginviz")) == true)
+    {
+      m_dwInitTimer = g_advancedSettings.m_songInfoDuration * 50;
+      g_infoManager.SetShowInfo(true);
+    }
   }
   if (m_dwInitTimer)
   {
