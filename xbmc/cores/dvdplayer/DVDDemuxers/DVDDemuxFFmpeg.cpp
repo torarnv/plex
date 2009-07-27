@@ -880,7 +880,29 @@ int CDVDDemuxFFmpeg::GetStreamBitrate()
   if (!m_pFormatContext)
     return 0;
   
-  return m_pFormatContext->bit_rate;
+  // Get the bitrate of the file.
+  int overallBitrate = m_pFormatContext->bit_rate; 
+  
+  // Get the aggregate bitrate of the streams.
+  int  aggregateBitrate = 0;
+  int  numStreams = GetNrOfStreams();
+  bool missingStreamInfo = false;
+  
+  for (int i=0; i<numStreams; i++)
+  {
+    CDemuxStream* stream = GetStream(i);
+    aggregateBitrate += stream->iBitRate;
+    
+    if (stream->iBitRate == 0)
+      missingStreamInfo = true;
+  }
+
+  printf("Aggregate bitrate = %d, file bitrate = %d.\n", aggregateBitrate, overallBitrate);
+  
+  if (missingStreamInfo)
+    return overallBitrate;
+  else
+    return aggregateBitrate;
 }
 
 CDemuxStream* CDVDDemuxFFmpeg::GetStream(int iStreamId)
