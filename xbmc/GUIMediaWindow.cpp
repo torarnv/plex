@@ -642,9 +642,12 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
     m_history.RemoveParentPath();
     Update(strParentPath);
     
+    if (strParentPath.IsEmpty())
+      return true;
+    
     // Note whether the listing was canceled or not.
     m_vecItems->m_wasListingCancelled = newItems.m_wasListingCancelled;
-        
+    
     return false;
   }
 
@@ -1004,7 +1007,7 @@ void CGUIMediaWindow::ShowShareErrorMessage(CFileItem* pItem)
 void CGUIMediaWindow::GoParentFolder()
 {
   //m_history.DumpPathHistory();
-
+  
   // remove current directory if its on the stack
   // there were some issues due some folders having a trailing slash and some not
   // so just add a trailing slash to all of them for comparison.
