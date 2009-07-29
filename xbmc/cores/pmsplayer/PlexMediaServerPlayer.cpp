@@ -137,6 +137,12 @@ retry:
     }
     
     printf("ERROR: this didn't work [%d]\n", status);
+    if (m_pDlgCache)
+    {
+      m_pDlgCache->Close();
+      m_pDlgCache = 0;
+    }
+    
     return false;
   }
   
