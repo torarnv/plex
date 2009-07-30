@@ -195,7 +195,7 @@ bool PlexAudioDevice::isAlive()
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-float PlexAudioDevice::getVolume()
+float PlexAudioDevice::getVolume(bool& isMuted)
 {
   float         ret = 0;
   OSStatus      err = noErr;
@@ -220,18 +220,13 @@ float PlexAudioDevice::getVolume()
   int muted = 0;
   paramSize = sizeof(muted);
   SAFELY(AudioDeviceGetProperty(m_deviceID, 0, FALSE, kAudioDevicePropertyMute, &paramSize, &muted));
-  
-  // If it's muted pretend the volume is at minimum.
-  if (muted == 1)
-    ret = -60.0;
-  else
-    ret = ((volume[0]+volume[1])/2.00)*60.0/65.0;
-  
-  return ret;
+  isMuted = (muted == 1);
+    
+  return ((volume[0]+volume[1])/2.00)*60.0/65.0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void PlexAudioDevice::setVolume(float vol)
+void PlexAudioDevice::setVolume(float vol, bool isMuted)
 {
   UInt32   paramSize = 0;
   OSStatus err = noErr;
@@ -240,13 +235,10 @@ void PlexAudioDevice::setVolume(float vol)
   // Convert from Plex's [-60, 0] to [-65, 0].
   vol = (65.0/60.0) * vol;
       
-  // Make sure we're not muted if we're setting volume.
-  if (vol > -65.0)
-  {
-    int muted = 0;
-    paramSize = sizeof(muted);
-    SAFELY(AudioDeviceSetProperty(m_deviceID, NULL, 0, false, kAudioDevicePropertyMute, paramSize, &muted));
-  }
+  // Pass along the muted parameter.
+  int muted = (isMuted == true) ? 1 : 0;
+  paramSize = sizeof(muted);
+  SAFELY(AudioDeviceSetProperty(m_deviceID, NULL, 0, false, kAudioDevicePropertyMute, paramSize, &muted));
   
   // Try to set master-channel (0) volume.
   paramSize = sizeof(canSet);

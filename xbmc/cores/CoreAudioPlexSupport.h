@@ -52,10 +52,10 @@ class PlexAudioDevice
   void setDefault();
   
   /// Get the volume.
-  float getVolume();
+  float getVolume(bool& isMuted);
   
   /// Set the volume.
-  void setVolume(float vol);
+  void setVolume(float vol, bool isMuted);
   
  private:
   

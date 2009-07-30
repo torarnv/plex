@@ -408,12 +408,26 @@ void CGUIAudioManager::SetVolume(int iLevel)
     PlexAudioDevicePtr dev = PlexAudioDevices::FindDefault();
     if (dev)
     {
-      // Map from [0, 128] to [-60, 0].
+      if (iLevel == VOLUME_MINIMUM)
+        iLevel = 0;
+      else if (iLevel == VOLUME_MAXIMUM)
+        iLevel = 128;
+      
       float vol = ((float)iLevel) * 60.0/128.0 - 60;
-      dev->setVolume(vol);
+      
+      // Use the premute level if we're muting, which is out of 100, which is fucking stupid.
+      if (g_stSettings.m_bMute || iLevel < 0)
+      {
+        iLevel = g_stSettings.m_iPreMuteVolumeLevel;
+        vol = ((float)iLevel) * 60.0/100.0 - 60;
+      }
+      
+      // Map from [0, 128] to [-60, 0].
+      dev->setVolume(vol, g_stSettings.m_bMute);
       
       // Immediately read back the volume, because it might be slightly different.
-      vol = dev->getVolume();
+      bool isMuted = false;
+      vol = dev->getVolume(isMuted);
       g_stSettings.m_nVolumeLevel = vol*100.0;
     }
   }

@@ -5878,19 +5878,24 @@ void CApplication::Process()
 
 void CApplication::ProcessSlow()
 {
-  // Get the system volume if we're linked.
+  // Get the OS X volume if we're linked.
   if (g_guiSettings.GetBool("audiooutput.systemvolumefollows") && !g_audioConfig.UseDigitalOutput())
   {
     PlexAudioDevicePtr device = PlexAudioDevices::GetSelected();
     if (device)
     {    
-      // Get the current system volume level. 
-      float volume = device->getVolume();
+      // Get the current system volume level.
+      bool  isMuted = false;
+      float volume = device->getVolume(isMuted);
       float plexVol = g_stSettings.m_nVolumeLevel/100.0;
       
       // Save the current system volume level if they differ substantially.
       if (fabs(volume - plexVol) > 0.5)
         g_stSettings.m_nVolumeLevel = volume*100.0;
+      
+      // Make sure the mute flag stays in sync.
+      if (isMuted != g_stSettings.m_bMute)
+        Mute();
     }
   }
   
@@ -6127,7 +6132,7 @@ void CApplication::SetHardwareVolume(long hardwareVolume)
     g_stSettings.m_dynamicRangeCompressionLevel = 0;
     g_stSettings.m_nVolumeLevel = hardwareVolume;
   }
-
+  
   // update mute state
   if(!g_stSettings.m_bMute && hardwareVolume <= VOLUME_MINIMUM)
   {
@@ -6196,13 +6201,17 @@ void CApplication::SetPlaySpeed(int iSpeed)
   m_iPlaySpeed = iSpeed;
 
   m_pPlayer->ToFFRW(m_iPlaySpeed);
-  if (m_iPlaySpeed == 1)
-  { // restore volume
-    m_pPlayer->SetVolume(g_stSettings.m_nVolumeLevel);
-  }
-  else
-  { // mute volume
-    m_pPlayer->SetVolume(VOLUME_MINIMUM);
+  
+  if (!(g_guiSettings.GetBool("audiooutput.systemvolumefollows") && !g_audioConfig.UseDigitalOutput()))
+  {
+    if (m_iPlaySpeed == 1)
+    { // restore volume
+      m_pPlayer->SetVolume(g_stSettings.m_nVolumeLevel);
+    }
+    else
+    { // mute volume
+      m_pPlayer->SetVolume(VOLUME_MINIMUM);
+    }
   }
 }
   
