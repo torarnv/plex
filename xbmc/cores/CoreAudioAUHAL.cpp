@@ -143,12 +143,18 @@ CoreAudioAUHAL::CoreAudioAUHAL(const CStdString& strName, const char *strCodec, 
 	// Build a list of devices.
 	deviceArray = PlexAudioDevices::FindAll();
 
+	if (!deviceArray->getSelectedDevice())
+	{
+	  CLog::Log(LOGERROR, "There is no selected device, very strange, there are %d available ones.", deviceArray->getDevices().size());
+	  return;
+	}
+	
 	i_param_size = sizeof(deviceParameters->i_hog_pid);
 	err = AudioDeviceGetProperty( deviceArray->getSelectedDevice()->getDeviceID(), 0, FALSE, kAudioDevicePropertyHogMode, &i_param_size, &deviceParameters->i_hog_pid );
 	if( err != noErr )
 	{
 	  /* This is not a fatal error. Some drivers simply don't support this property */
-	  CLog::Log(LOGINFO, "could not check whether device is hogged: %4.4s", (char *)&err );
+	  CLog::Log(LOGINFO, "Could not check whether device is hogged: %4.4s", (char *)&err );
 	  deviceParameters->i_hog_pid = -1;
 	}
 
