@@ -132,14 +132,14 @@ void CDirectoryCache::ClearSubPaths(const CStdString& strPath)
     CDir* dir = *i;
     if (found)
     {
-      delete dir;
       i = m_vecCache.erase(i);
+      delete dir;
     }
     else if (strncmp(dir->m_strPath.c_str(), storedPath.c_str(), storedPath.GetLength()) == 0 &&
              dir->m_strPath.size() > storedPath.size())
     {
-      delete dir;
       i = m_vecCache.erase(i);
+      delete dir;
     }
     else
     {
