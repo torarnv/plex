@@ -31,6 +31,10 @@
 #define MAX_THREAD_COUNT 5
 #endif
 
+// Static initializers.
+CCriticalSection        CBackgroundRunner::g_lock;
+set<CBackgroundRunner*> CBackgroundRunner::g_activeThreads;
+
 CBackgroundInfoLoader::CBackgroundInfoLoader(int nThreads, int pauseBetweenLoadsInMS)
 {
   m_bStop = true;
@@ -44,8 +48,6 @@ CBackgroundInfoLoader::CBackgroundInfoLoader(int nThreads, int pauseBetweenLoads
 
 CBackgroundInfoLoader::~CBackgroundInfoLoader()
 {
-  StopThread();
-  
   if (m_workerGroup)
   {
     m_workerGroup->Stop();
@@ -85,7 +87,7 @@ void CBackgroundRunner::Process()
   }
 
   // We're done.
-  m_group.WorkerDone();
+  m_group.WorkerDone(this);
 }
 
 void CBackgroundInfoLoader::OnLoaderFinished()
@@ -137,6 +139,7 @@ void CBackgroundInfoLoader::StopAsync()
   {
     // Tell it to stop and then forget about it.
     m_workerGroup->Stop();
+    m_workerGroup->Detach();
     m_workerGroup = 0;
   }
  

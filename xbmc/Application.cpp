@@ -4253,6 +4253,11 @@ void CApplication::Stop()
     CGUIDialogVideoScan *videoScan = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
     if (videoScan /*&& videoScan->IsDialogRunning()*/)
       videoScan->StopScanning();
+
+    // Make sure background loader threads are all dead.
+    CBackgroundRunner::StopAll();
+    while (CBackgroundRunner::GetNumActive() != 0)
+      Sleep(50);
     
     m_bStop = true;
     CLog::Log(LOGNOTICE, "stop all");

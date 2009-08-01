@@ -27,9 +27,11 @@
 #include "FileItem.h"
 
 #include <vector>
+#include <set>
 #include "boost/shared_ptr.hpp"
 #include "boost/foreach.hpp"
 
+using namespace std;
 class CFileItem; 
 typedef boost::shared_ptr<CFileItem> CFileItemPtr;
 class CFileItemList;
@@ -69,7 +71,7 @@ public:
 protected:
 
   CFileItemList *m_pVecItems;
-  std::vector<CFileItemPtr> m_vecItems; // FileItemList would delete the items and we only want to keep a reference.
+  vector<CFileItemPtr> m_vecItems; // FileItemList would delete the items and we only want to keep a reference.
   CCriticalSection m_lock;
 
   bool m_bRunning;
@@ -80,7 +82,7 @@ protected:
   IBackgroundLoaderObserver* m_pObserver;
   IProgressCallback* m_pProgressCallback;
 
-  std::vector<CThread *> m_workers;
+  vector<CThread *> m_workers;
   
   CBackgroundRunnerGroup* m_workerGroup;
 };
@@ -96,13 +98,32 @@ class CBackgroundRunner : public CThread
   
   CBackgroundRunner(CBackgroundRunnerGroup& group)
     : m_group(group)
-    , m_bStop(false)
   {
+    CSingleLock lock(g_lock);
+    g_activeThreads.insert(this);
+    
     SetName("Background Runner");
     Create(true);
   }
   
-  virtual ~CBackgroundRunner() {} 
+  virtual ~CBackgroundRunner() 
+  {
+    CSingleLock lock(g_lock);
+    g_activeThreads.erase(this);
+  } 
+  
+  static void StopAll()
+  {
+    CSingleLock lock(g_lock);
+    BOOST_FOREACH(CBackgroundRunner* runner, g_activeThreads)
+      runner->Stop();
+  }
+  
+  static int GetNumActive()
+  {
+    CSingleLock lock(g_lock);
+    return g_activeThreads.size();
+  }
   
   void Stop()
   {
@@ -114,7 +135,9 @@ class CBackgroundRunner : public CThread
  private:
   
   CBackgroundRunnerGroup& m_group;
-  volatile bool           m_bStop;
+  
+  static CCriticalSection        g_lock;
+  static set<CBackgroundRunner*> g_activeThreads;
 };
 
 /////////////////////////////////////////////////////////////////////////////
@@ -138,10 +161,11 @@ class CBackgroundRunnerGroup
       m_loader->OnLoaderStart();
       
       // Start the threads.
+      CSingleLock lock(m_lock);
       for (int i=0; i<numThreads; i++)
       {
         CBackgroundRunner* runner = new CBackgroundRunner(*this);
-        m_runners.push_back(runner);
+        m_runners.insert(runner);
       }
     }
   }
@@ -172,7 +196,7 @@ class CBackgroundRunnerGroup
     CFileItemPtr pItem;
     
     CSingleLock lock(m_lock);
-    std::vector<CFileItemPtr>::iterator iter = m_vecItems.begin();
+    vector<CFileItemPtr>::iterator iter = m_vecItems.begin();
     if (iter != m_vecItems.end())
     {
       pItem = *iter;
@@ -202,7 +226,7 @@ class CBackgroundRunnerGroup
           NotifyObserver(item);
           
           // Pause if it was requested.
-          if (m_msBetweenLoads > 0)
+          if (m_msBetweenLoads > 0 && m_stopped == false)
             ::usleep(m_msBetweenLoads*1000);
         }
       }
@@ -219,9 +243,10 @@ class CBackgroundRunnerGroup
       m_loader->GetObserver()->OnItemLoaded(item.get());
   }
   
-  void WorkerDone()
+  void WorkerDone(CBackgroundRunner* worker)
   {
     EnterCriticalSection(m_lock);
+    m_runners.erase(worker);
     
     // If we're the last one on, turn the lights off.
     if (--m_nActiveThreads == 0)
@@ -243,11 +268,11 @@ class CBackgroundRunnerGroup
     return m_nActiveThreads; 
   }
   
-  CBackgroundInfoLoader*           m_loader;
-  int                              m_msBetweenLoads;
-  int                              m_nActiveThreads;
-  std::vector<CFileItemPtr>        m_vecItems;
-  CCriticalSection                 m_lock;
-  std::vector<CBackgroundRunner* > m_runners;
-  bool                             m_stopped;
+  CBackgroundInfoLoader*      m_loader;
+  int                         m_msBetweenLoads;
+  int                         m_nActiveThreads;
+  vector<CFileItemPtr>        m_vecItems;
+  CCriticalSection            m_lock;
+  set<CBackgroundRunner* >    m_runners;
+  bool                        m_stopped;
 };
