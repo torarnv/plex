@@ -251,10 +251,15 @@ class CBackgroundRunnerGroup
     // If we're the last one on, turn the lights off.
     if (--m_nActiveThreads == 0)
     {
-      if (m_loader)
-        m_loader->OnLoaderFinished();
-      
+      // We don't want to hold this lock, because otherwise we'll have taken 
+      // locks in the opposite order.
+      //
+      CBackgroundInfoLoader* loader = m_loader;
       LeaveCriticalSection(m_lock);
+      
+      if (loader)
+        loader->OnLoaderFinished();
+
       delete this;
     }
     else
