@@ -1111,10 +1111,28 @@ const CStdString& CFileItem::GetContentType() const
           || m_strPath.Left(8).Equals("https://")
           || m_strPath.Left(7).Equals("upnp://"))
     {
-      // See if we have content type already.
-      // FIXME
-      
-      //CFileCurl::GetContent(GetAsUrl(), m_ref);
+      int start = 0;
+      if (IsPlexMediaServer() && m_strPath.size() > 8 && (start=m_strPath.find("/", 8)))
+      {
+        CStdString path = m_strPath.substr(start);
+        if (path.substr(0, 6) == "/video")
+          m_ref = "video/unknown";
+        else if (path.substr(0, 6) == "/music")
+          m_ref = "audio/unknown";
+      }
+      else if (IsVideo())
+      {
+        m_ref = "video/unknown";
+      }
+      else if (IsAudio())
+      {
+        m_ref = "audio/unknown";
+      }
+      else
+      {
+        // Last chance, slow...
+        CFileCurl::GetContent(GetAsUrl(), m_ref);
+      }
 
       // try to get content type again but with an NSPlayer User-Agent
       // in order for server to provide correct content-type.  Allows us

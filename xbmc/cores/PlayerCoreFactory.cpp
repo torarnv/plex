@@ -162,6 +162,12 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
 
   if ( item.IsInternetStream() )
   {
+    if (item.IsVideo() == true)
+    {
+      vecCores.push_back(EPC_DVDPLAYER);
+    }
+    else
+    {
     CStdString content = item.GetContentType();
 
     if (content == "video/x-flv"
@@ -176,6 +182,7 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
       //unknown contenttype, send mp2 to pap
       if( url.GetFileType() == "mp2")
         vecCores.push_back(EPC_PAPLAYER);
+    }
     }
   }
 
