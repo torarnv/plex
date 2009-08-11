@@ -1447,6 +1447,7 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         { 
           OnPlayMedia(contextItem.get());
         }
+        return true;
       }
     }
     break;
