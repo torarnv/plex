@@ -985,6 +985,7 @@ bool CGUIWindowVideoNav::DeleteItem(CFileItem* pItem)
 
 void CGUIWindowVideoNav::OnFinalizeFileItems(CFileItemList& items)
 {
+  CGUIMediaWindow::OnFinalizeFileItems(items);
   m_unfilteredItems->Append(items);
   // now filter as necessary
   CVideoDatabaseDirectory dir;
