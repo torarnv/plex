@@ -1216,6 +1216,7 @@ CFileItemList::CFileItemList()
   m_displayMessageTitle = "";
   m_displayMessageContents = "";
   m_iBitrate = 0;
+  m_autoRefresh = 0;
 }
 
 CFileItemList::CFileItemList(const CStdString& strPath)
@@ -1233,6 +1234,7 @@ CFileItemList::CFileItemList(const CStdString& strPath)
   m_displayMessageTitle = "";
   m_displayMessageContents = "";
   m_iBitrate = 0;
+  m_autoRefresh = 0;
 }
 
 CFileItemList::~CFileItemList()
@@ -1318,6 +1320,7 @@ void CFileItemList::Clear()
   m_displayMessageTitle = "";
   m_displayMessageContents = "";
   m_iBitrate = 0;
+  m_autoRefresh = 0;
 }
 
 void CFileItemList::ClearItems()
@@ -1438,6 +1441,7 @@ void CFileItemList::Assign(const CFileItemList& itemlist, bool append)
   m_displayMessageTitle = itemlist.m_displayMessageTitle;
   m_displayMessageContents = itemlist.m_displayMessageContents;
   m_iBitrate = itemlist.m_iBitrate;
+  m_autoRefresh = itemlist.m_autoRefresh;
 }
 
 CFileItemPtr CFileItemList::Get(int iItem)
@@ -1683,6 +1687,7 @@ void CFileItemList::Serialize(CArchive& ar)
     ar << m_secondTitle;
     ar << m_defaultViewMode;
     ar << m_disabledViewModes;
+    ar << (int)m_autoRefresh;
 
     for (; i < (int)m_items.size(); ++i)
     {
@@ -1745,6 +1750,7 @@ void CFileItemList::Serialize(CArchive& ar)
     ar >> m_secondTitle;
     ar >> m_defaultViewMode;
     ar >> m_disabledViewModes;
+    ar >> (int&)m_autoRefresh;
 
     for (int i = 0; i < iSize; ++i)
     {

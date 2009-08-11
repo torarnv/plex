@@ -418,6 +418,7 @@ public:
   bool m_displayMessage;
   CStdString m_displayMessageTitle;
   CStdString m_displayMessageContents;
+  int m_autoRefresh;
   
 private:
   void Sort(FILEITEMLISTCOMPARISONFUNC func);

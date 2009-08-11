@@ -46,7 +46,8 @@ public:
   virtual bool HasListItems() const { return true; };
   const CGUIViewState *GetViewState() const;
   virtual CFileItemPtr GetCurrentListItem(int offset = 0);
-
+  virtual void Render();
+  
 protected:
   virtual void LoadAdditionalTags(TiXmlElement *root);
   CGUIControl *GetFirstFocusableControl(int id);
@@ -97,4 +98,5 @@ protected:
   int m_iSelectedItem;
   
   bool m_wasDirectoryListingCancelled;
+  CStopWatch m_refreshTimer;
 };

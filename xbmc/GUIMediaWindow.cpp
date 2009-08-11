@@ -199,6 +199,10 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
     {
       m_iSelectedItem = m_viewControl.GetSelectedItem();
       m_iLastControl = GetFocusedControlID();
+      if (m_refreshTimer.IsRunning())
+      {
+        m_refreshTimer.Stop();
+      }
       CGUIWindow::OnMessage(message);
       // Call ClearFileItems() after our window has finished doing any WindowClose
       // animations
@@ -763,7 +767,21 @@ void CGUIMediaWindow::OnPrepareFileItems(CFileItemList &items)
 // to modify the fileitems. Eg. to modify the item label
 void CGUIMediaWindow::OnFinalizeFileItems(CFileItemList &items)
 {
-
+  // Check whether the refresh timer is required
+  if (m_vecItems->m_autoRefresh > 0)
+  {
+    if (!m_refreshTimer.IsRunning())
+    {
+      m_refreshTimer.StartZero();
+    }
+  }
+  else
+  {
+    if (m_refreshTimer.IsRunning())
+    {
+      m_refreshTimer.Stop();
+    }    
+  }
 }
 
 // \brief With this function you can react on a users click in the list/thumb panel.
@@ -1461,4 +1479,16 @@ CPoint CGUIMediaWindow::GetContextPosition() const
     pos.y = pList->GetYPosition() + pList->GetHeight() / 2;
   }
   return pos;
+}
+
+void CGUIMediaWindow::Render()
+{
+  if (m_refreshTimer.IsRunning() && m_vecItems->m_autoRefresh > 0 && m_refreshTimer.GetElapsedSeconds() >= m_vecItems->m_autoRefresh)
+  {
+    int selectedItem = m_viewControl.GetSelectedItem();
+    Update(m_vecItems->m_strPath);
+    m_viewControl.SetSelectedItem(selectedItem);
+    m_refreshTimer.Reset();
+  }
+  CGUIWindow::Render();
 }
