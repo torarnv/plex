@@ -205,9 +205,9 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   }
   if (hasViewMode)
   {
-    items.SetDefaultViewMode(atoi(viewMode));
+    items.SetDefaultViewMode(boost::lexical_cast<int>(viewMode));
     CGUIViewState* viewState = CGUIViewState::GetViewState(0, items);
-    viewState->SaveViewAsControl(atoi(viewMode));
+    viewState->SaveViewAsControl(boost::lexical_cast<int>(viewMode));
   }
   
   // Override labels.
@@ -268,7 +268,7 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   const char* autoRefresh = root->Attribute("autoRefresh");
   if (autoRefresh && strlen(autoRefresh) > 0)
   {
-    items.m_autoRefresh = atoi(autoRefresh);
+    items.m_autoRefresh = boost::lexical_cast<int>(autoRefresh);
     // Don't cache the directory if it's going to be autorefreshed
     m_dirCacheType = DIR_CACHE_NEVER;
   }
