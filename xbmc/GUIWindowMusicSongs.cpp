@@ -385,8 +385,10 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
   if (itemNumber >= 0 && itemNumber < m_vecItems->Size())
     item = m_vecItems->Get(itemNumber);
 
+  bool includeStandardContextButtons = true;
   if (item)
   {
+    includeStandardContextButtons = item->m_includeStandardContextItems;
     // are we in the playlists location?
     bool inPlaylists = m_vecItems->m_strPath.Equals(CUtil::MusicPlaylistsLocation()) || 
                        m_vecItems->m_strPath.Equals("special://musicplaylists/");
@@ -409,50 +411,53 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
     else
     {
       CGUIWindowMusicBase::GetContextButtons(itemNumber, buttons);
-      if (!item->IsPlayList())
+      if (includeStandardContextButtons)
       {
-        if (item->IsAudio() && !item->IsLastFM() && !item->IsShoutCast())
-          buttons.Add(CONTEXT_BUTTON_SONG_INFO, 658); // Song Info
-        else if (!item->IsParentFolder() && !item->IsLastFM() && !item->IsShoutCast() && 
-                 !item->m_strPath.Left(3).Equals("new") && item->m_bIsFolder)
+        if (!item->IsPlayList())
         {
+          if (item->IsAudio() && !item->IsLastFM() && !item->IsShoutCast())
+            buttons.Add(CONTEXT_BUTTON_SONG_INFO, 658); // Song Info
+          else if (!item->IsParentFolder() && !item->IsLastFM() && !item->IsShoutCast() && 
+                   !item->m_strPath.Left(3).Equals("new") && item->m_bIsFolder)
+          {
 #if 0
-          if (m_musicdatabase.GetAlbumIdByPath(item->m_strPath) > -1)
+            if (m_musicdatabase.GetAlbumIdByPath(item->m_strPath) > -1)
 #endif
-            buttons.Add(CONTEXT_BUTTON_INFO, 13351); // Album Info
+              buttons.Add(CONTEXT_BUTTON_INFO, 13351); // Album Info
+          }
         }
-      }
 
-      // enable Rip CD Audio or Track button if we have an audio disc
-      if (CDetectDVDMedia::IsDiscInDrive() && m_vecItems->IsCDDA())
-      {
-        // those cds can also include Audio Tracks: CDExtra and MixedMode!
-        CCdInfo *pCdInfo = CDetectDVDMedia::GetCdInfo();
-        if (pCdInfo->IsAudio(1) || pCdInfo->IsCDExtra(1) || pCdInfo->IsMixedMode(1))
-          buttons.Add(CONTEXT_BUTTON_RIP_TRACK, 610);
-      }
-
-      // enable CDDB lookup if the current dir is CDDA
-      if (CDetectDVDMedia::IsDiscInDrive() && m_vecItems->IsCDDA() && 
-         (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
-      {
-        buttons.Add(CONTEXT_BUTTON_CDDB, 16002);
-      }
-
-      if (!item->IsParentFolder() && !item->IsReadOnly())
-      {
-        // either we're at the playlist location or its been explicitly allowed
-        if (inPlaylists || g_guiSettings.GetBool("filelists.allowfiledeletion"))
+        // enable Rip CD Audio or Track button if we have an audio disc
+        if (CDetectDVDMedia::IsDiscInDrive() && m_vecItems->IsCDDA())
         {
-          buttons.Add(CONTEXT_BUTTON_DELETE, 117);
-          buttons.Add(CONTEXT_BUTTON_RENAME, 118);
+          // those cds can also include Audio Tracks: CDExtra and MixedMode!
+          CCdInfo *pCdInfo = CDetectDVDMedia::GetCdInfo();
+          if (pCdInfo->IsAudio(1) || pCdInfo->IsCDExtra(1) || pCdInfo->IsMixedMode(1))
+            buttons.Add(CONTEXT_BUTTON_RIP_TRACK, 610);
+        }
+
+        // enable CDDB lookup if the current dir is CDDA
+        if (CDetectDVDMedia::IsDiscInDrive() && m_vecItems->IsCDDA() && 
+           (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
+        {
+          buttons.Add(CONTEXT_BUTTON_CDDB, 16002);
+        }
+
+        if (!item->IsParentFolder() && !item->IsReadOnly())
+        {
+          // either we're at the playlist location or its been explicitly allowed
+          if (inPlaylists || g_guiSettings.GetBool("filelists.allowfiledeletion"))
+          {
+            buttons.Add(CONTEXT_BUTTON_DELETE, 117);
+            buttons.Add(CONTEXT_BUTTON_RENAME, 118);
+          }
         }
       }
     }
 
     // Add the scan button(s)
     CGUIDialogMusicScan *pScanDlg = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-    if (g_guiSettings.GetBool("musiclibrary.enabled") && pScanDlg)
+    if (g_guiSettings.GetBool("musiclibrary.enabled") && pScanDlg && includeStandardContextButtons)
     {
       if (pScanDlg->IsScanning())
         buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353); // Stop Scanning
@@ -466,9 +471,12 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
       }
     }
   }
-  if (!m_vecItems->IsVirtualDirectoryRoot() && !m_vecItems->IsPlexMediaServer())
-    buttons.Add(CONTEXT_BUTTON_SWITCH_MEDIA, 523);
-  CGUIWindowMusicBase::GetNonContextButtons(buttons);
+  if (includeStandardContextButtons)
+  {
+    if (!m_vecItems->IsVirtualDirectoryRoot() && !m_vecItems->IsPlexMediaServer())
+      buttons.Add(CONTEXT_BUTTON_SWITCH_MEDIA, 523);
+    CGUIWindowMusicBase::GetNonContextButtons(buttons);
+  }
 }
 
 bool CGUIWindowMusicSongs::OnContextButton(int itemNumber, CONTEXT_BUTTON button)

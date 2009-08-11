@@ -887,7 +887,7 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
   if (g_application.IsPlayingAudio())
     buttons.Add(CONTEXT_BUTTON_NOW_PLAYING, 13350);
   
-  if (item && !item->IsParentFolder())
+  if (item && !item->IsParentFolder() && item->m_includeStandardContextItems)
   {
     if (item->GetExtraInfo().Equals("lastfmloved"))
     {

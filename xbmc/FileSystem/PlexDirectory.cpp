@@ -351,6 +351,32 @@ class PlexMediaNode
      if (pItem->m_bIsFolder == true && pItem->m_strPath[pItem->m_strPath.size()-1] != '/')
        pItem->m_strPath += "/";
      
+     // Set up the context menu
+     for (TiXmlElement* element = el.FirstChildElement(); element; element=element->NextSiblingElement())
+     {
+       string name = element->Value();
+       if (name == "ContextMenu")
+       {
+         const char* includeStandardItems = element->Attribute("includeStandardItems");
+         if (includeStandardItems && strcmp(includeStandardItems, "0") == 0)
+           pItem->m_includeStandardContextItems = false;
+         
+         PlexMediaNode* contextNode = 0;
+         for (TiXmlElement* contextElement = element->FirstChildElement(); contextElement; contextElement=contextElement->NextSiblingElement())
+         {
+           contextNode = PlexMediaNode::Create(contextElement->Value());
+           if (contextNode != 0)
+           {
+             CFileItemPtr contextItem = contextNode->BuildFileItem(url, *contextElement);
+             if (contextItem)
+             {
+               pItem->m_contextItems.push_back(contextItem);
+             }
+           }
+         }
+       }
+     }
+     
      return pItem;
    }
    

@@ -591,10 +591,13 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
   CFileItemPtr item;
   if (itemNumber >= 0 && itemNumber < m_vecItems->Size())
     item = m_vecItems->Get(itemNumber);
-
+  
+  bool includeStandardContextButtons = true;
+  
   CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
   if (item)
   {
+    includeStandardContextButtons = item->m_includeStandardContextItems;
     // are we in the playlists location?
     if (m_vecItems->IsVirtualDirectoryRoot())
     {
@@ -627,81 +630,84 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
     {
       CGUIWindowVideoBase::GetContextButtons(itemNumber, buttons);
       // Movie Info button
-      if (pScanDlg && pScanDlg->IsScanning())
-        buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);
-      if (g_guiSettings.GetBool("videolibrary.enabled") &&
-        (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
+      if (includeStandardContextButtons)
       {
-        SScraperInfo info;
-        VIDEO::SScanSettings settings;
-        int iFound = GetScraperForItem(item.get(), info, settings);
-
-        int infoString = 13346;
-        if (info.strContent.Equals("tvshows"))
-          infoString = item->m_bIsFolder ? 20351 : 20352;
-        if (info.strContent.Equals("musicvideos"))
-          infoString = 20393;
-
-        if (item->m_bIsFolder)
+        if (pScanDlg && pScanDlg->IsScanning())
+          buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);
+        if (g_guiSettings.GetBool("videolibrary.enabled") &&
+          (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
         {
-          if ((!pScanDlg || (pScanDlg && !pScanDlg->IsScanning())) && !item->IsPlexMediaServer())
-            if (!item->IsPlayList())
-              buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
-          if (iFound==0)
-          { // scraper not set - allow movie information or set content
-            CStdString strPath(item->m_strPath);
-            CUtil::AddSlashAtEnd(strPath);
-            if ((info.strContent.Equals("movies") && m_database.HasMovieInfo(strPath)) ||
-                (info.strContent.Equals("tvshows") && m_database.HasTvShowInfo(strPath)))
-              buttons.Add(CONTEXT_BUTTON_INFO, infoString);
-          }
-          else
-          { // scraper found - allow to add to library, scan for new content, or set different type of content
-            if (!info.strContent.Equals("musicvideos"))
-              buttons.Add(CONTEXT_BUTTON_INFO, infoString);
-            else
-            {
+          SScraperInfo info;
+          VIDEO::SScanSettings settings;
+          int iFound = GetScraperForItem(item.get(), info, settings);
+
+          int infoString = 13346;
+          if (info.strContent.Equals("tvshows"))
+            infoString = item->m_bIsFolder ? 20351 : 20352;
+          if (info.strContent.Equals("musicvideos"))
+            infoString = 20393;
+
+          if (item->m_bIsFolder)
+          {
+            if ((!pScanDlg || (pScanDlg && !pScanDlg->IsScanning())) && !item->IsPlexMediaServer())
               if (!item->IsPlayList())
                 buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
+            if (iFound==0)
+            { // scraper not set - allow movie information or set content
+              CStdString strPath(item->m_strPath);
+              CUtil::AddSlashAtEnd(strPath);
+              if ((info.strContent.Equals("movies") && m_database.HasMovieInfo(strPath)) ||
+                  (info.strContent.Equals("tvshows") && m_database.HasTvShowInfo(strPath)))
+                buttons.Add(CONTEXT_BUTTON_INFO, infoString);
             }
-            if (!info.strPath.IsEmpty() && !info.strContent.IsEmpty())
-              if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
-                buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
+            else
+            { // scraper found - allow to add to library, scan for new content, or set different type of content
+              if (!info.strContent.Equals("musicvideos"))
+                buttons.Add(CONTEXT_BUTTON_INFO, infoString);
+              else
+              {
+                if (!item->IsPlayList())
+                  buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
+              }
+              if (!info.strPath.IsEmpty() && !info.strContent.IsEmpty())
+                if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
+                  buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
+            }
+          }
+          else
+          {
+            // single file
+            if ((info.strContent.Equals("movies") && (iFound > 0 || 
+                 m_database.HasMovieInfo(item->m_strPath)))      || 
+                 m_database.HasEpisodeInfo(item->m_strPath)      || 
+                 info.strContent.Equals("musicvideos"))
+            {
+              buttons.Add(CONTEXT_BUTTON_INFO, infoString);
+            }
+            m_database.Open();
+            if (!item->IsParentFolder())
+            {
+              if (!m_database.HasMovieInfo(item->m_strPath) && !m_database.HasEpisodeInfo(item->m_strPath) && !item->IsPlexMediaServer())
+                buttons.Add(CONTEXT_BUTTON_ADD_TO_LIBRARY, 527); // Add to Database
+            }
+            m_database.Close();
           }
         }
-        else
+        if (!item->IsParentFolder())
         {
-          // single file
-          if ((info.strContent.Equals("movies") && (iFound > 0 || 
-               m_database.HasMovieInfo(item->m_strPath)))      || 
-               m_database.HasEpisodeInfo(item->m_strPath)      || 
-               info.strContent.Equals("musicvideos"))
-          {
-            buttons.Add(CONTEXT_BUTTON_INFO, infoString);
-          }
-          m_database.Open();
-          if (!item->IsParentFolder())
-          {
-            if (!m_database.HasMovieInfo(item->m_strPath) && !m_database.HasEpisodeInfo(item->m_strPath) && !item->IsPlexMediaServer())
-              buttons.Add(CONTEXT_BUTTON_ADD_TO_LIBRARY, 527); // Add to Database
-          }
-          m_database.Close();
-        }
-      }
-      if (!item->IsParentFolder())
-      {
-        if ((m_vecItems->m_strPath.Equals("special://videoplaylists/")) || 
-             g_guiSettings.GetBool("filelists.allowfiledeletion"))
-        { // video playlists or file operations are allowed
-          if (!item->IsReadOnly())
-          {
-            buttons.Add(CONTEXT_BUTTON_DELETE, 117);
-            buttons.Add(CONTEXT_BUTTON_RENAME, 118);
+          if ((m_vecItems->m_strPath.Equals("special://videoplaylists/")) || 
+               g_guiSettings.GetBool("filelists.allowfiledeletion"))
+          { // video playlists or file operations are allowed
+            if (!item->IsReadOnly())
+            {
+              buttons.Add(CONTEXT_BUTTON_DELETE, 117);
+              buttons.Add(CONTEXT_BUTTON_RENAME, 118);
+            }
           }
         }
+        if (m_vecItems->IsPluginFolder() && item->HasVideoInfoTag())
+          buttons.Add(CONTEXT_BUTTON_INFO,13346); // only movie information for now
       }
-      if (m_vecItems->IsPluginFolder() && item->HasVideoInfoTag())
-        buttons.Add(CONTEXT_BUTTON_INFO,13346); // only movie information for now
     }
   }
   else
@@ -709,10 +715,13 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
     if (pScanDlg && pScanDlg->IsScanning())
       buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);	// Stop Scanning
   }
-  if (!m_vecItems->IsVirtualDirectoryRoot() && !m_vecItems->IsPlexMediaServer())
-    buttons.Add(CONTEXT_BUTTON_SWITCH_MEDIA, 523);
+  if (includeStandardContextButtons)
+  {
+    if (!m_vecItems->IsVirtualDirectoryRoot() && !m_vecItems->IsPlexMediaServer())
+      buttons.Add(CONTEXT_BUTTON_SWITCH_MEDIA, 523);
 
-  CGUIWindowVideoBase::GetNonContextButtons(itemNumber, buttons);
+    CGUIWindowVideoBase::GetNonContextButtons(itemNumber, buttons);
+  }
 }
 
 bool CGUIWindowVideoFiles::OnContextButton(int itemNumber, CONTEXT_BUTTON button)

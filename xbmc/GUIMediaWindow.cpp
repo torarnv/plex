@@ -1349,6 +1349,13 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
 
   if (item == NULL)
      return;
+  
+  for (int i=0; i < item->m_contextItems.size(); ++i)
+  {
+    CFileItemPtr contextItem = item->m_contextItems[i];
+    CVideoInfoTag* infoTag = contextItem->GetVideoInfoTag();
+    buttons.Add((CONTEXT_BUTTON)(CONTEXT_BUTTON_DYNAMIC1 + i), infoTag->m_strTitle);
+  }
  
   if (item->IsPluginFolder())
   {
@@ -1380,7 +1387,7 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
   {
 #endif
   // TODO: FAVOURITES Conditions on masterlock and localisation
-  if (!item->IsParentFolder() && !item->m_strPath.Equals("add") && !item->m_strPath.Equals("newplaylist://") && !item->m_strPath.Left(19).Equals("newsmartplaylist://"))
+  if (!item->IsParentFolder() && !item->m_strPath.Equals("add") && !item->m_strPath.Equals("newplaylist://") && !item->m_strPath.Left(19).Equals("newsmartplaylist://") && item->m_includeStandardContextItems)
   {
     if (CFavourites::IsFavourite(item.get(), GetID()))
       buttons.Add(CONTEXT_BUTTON_ADD_FAVOURITE, 14077);     // Remove Favourite
@@ -1425,6 +1432,23 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       return true;
     }
   default:
+    if (button >= (int)CONTEXT_BUTTON_DYNAMIC1 && button <= (int)CONTEXT_BUTTON_DYNAMIC99)
+    {
+      CFileItemPtr item = m_vecItems->Get(itemNumber);
+      int index = button - (int)CONTEXT_BUTTON_DYNAMIC1;
+      if (index >= 0 && index < item->m_contextItems.size())
+      {
+        CFileItemPtr contextItem = item->m_contextItems[index];
+        if (contextItem->m_bIsFolder)
+        {
+          Update(contextItem->m_strPath);
+        }
+        else
+        { 
+          OnPlayMedia(contextItem.get());
+        }
+      }
+    }
     break;
   }
   return false;

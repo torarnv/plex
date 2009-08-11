@@ -533,6 +533,7 @@ void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &butt
   if (itemNumber >= 0 && itemNumber < m_vecItems->Size())
     item = m_vecItems->Get(itemNumber);
 
+  bool includeStandardContextButtons = true;
   if ( m_vecItems->IsVirtualDirectoryRoot() && item)
   {
     // get the usual shares
@@ -550,29 +551,37 @@ void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &butt
   {
     if (item)
     {
-      if (item->m_bIsFolder)
+      includeStandardContextButtons = item->m_includeStandardContextItems;
+      if (includeStandardContextButtons)
       {
-        buttons.Add(CONTEXT_BUTTON_VIEW_SLIDESHOW, 13317);      // View Slideshow
-        buttons.Add(CONTEXT_BUTTON_RECURSIVE_SLIDESHOW, 13318);     // Recursive Slideshow
-        buttons.Add(CONTEXT_BUTTON_SHUFFLE, 191);      // Shuffle (randomize slideshow).
-      }
-      if (!(item->m_bIsFolder || item->IsZIP() || item->IsRAR() || item->IsCBZ() || item->IsCBR()))
-        buttons.Add(CONTEXT_BUTTON_INFO, 13406); // picture info
+        if (item->m_bIsFolder)
+        {
+          buttons.Add(CONTEXT_BUTTON_VIEW_SLIDESHOW, 13317);      // View Slideshow
+          buttons.Add(CONTEXT_BUTTON_RECURSIVE_SLIDESHOW, 13318);     // Recursive Slideshow
+          buttons.Add(CONTEXT_BUTTON_SHUFFLE, 191);      // Shuffle (randomize slideshow).
+        }
+        if (!(item->m_bIsFolder || item->IsZIP() || item->IsRAR() || item->IsCBZ() || item->IsCBR()))
+          buttons.Add(CONTEXT_BUTTON_INFO, 13406); // picture info
 
-      if (!m_thumbLoader.IsLoading())
-        buttons.Add(CONTEXT_BUTTON_REFRESH_THUMBS, 13315);         // Create Thumbnails
-      if (g_guiSettings.GetBool("filelists.allowfiledeletion") && !item->IsReadOnly())
-      {
-        buttons.Add(CONTEXT_BUTTON_DELETE, 117);
-        buttons.Add(CONTEXT_BUTTON_RENAME, 118);
+        if (!m_thumbLoader.IsLoading())
+          buttons.Add(CONTEXT_BUTTON_REFRESH_THUMBS, 13315);         // Create Thumbnails
+        if (g_guiSettings.GetBool("filelists.allowfiledeletion") && !item->IsReadOnly())
+        {
+          buttons.Add(CONTEXT_BUTTON_DELETE, 117);
+          buttons.Add(CONTEXT_BUTTON_RENAME, 118);
+        }
       }
     }
-    buttons.Add(CONTEXT_BUTTON_GOTO_ROOT, 20128);
-    if (!item->IsPlexMediaServer())
-      buttons.Add(CONTEXT_BUTTON_SWITCH_MEDIA, 523);
+    if (includeStandardContextButtons)
+    {
+      buttons.Add(CONTEXT_BUTTON_GOTO_ROOT, 20128);
+      if (!item->IsPlexMediaServer())
+        buttons.Add(CONTEXT_BUTTON_SWITCH_MEDIA, 523);
+    }
   }
   CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
-  buttons.Add(CONTEXT_BUTTON_SETTINGS, 5);                  // Settings
+  if (item->m_includeStandardContextItems)
+    buttons.Add(CONTEXT_BUTTON_SETTINGS, 5);                  // Settings
 }
 
 bool CGUIWindowPictures::OnContextButton(int itemNumber, CONTEXT_BUTTON button)

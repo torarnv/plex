@@ -54,6 +54,13 @@ class CURL;
 #define STARTOFFSET_RESUME (-1) 
 
 class CMediaSource;
+class CFileItem;
+
+/*!
+ \brief A shared pointer to CFileItem
+ \sa CFileItem
+ */
+typedef boost::shared_ptr<CFileItem> CFileItemPtr;
 
 /*!
   \brief Represents a file on a share
@@ -268,6 +275,8 @@ public:
   CStdString m_strSearchPrompt;   // text to show as keyboard header
   bool m_bIsSettingsDir;
   int m_iBitrate;
+  bool m_includeStandardContextItems;
+  std::vector<CFileItemPtr> m_contextItems;
   
 private:
   CStdString GetFolderThumb(const CStdString &folderJPG = "folder.jpg") const;
@@ -282,12 +291,6 @@ private:
   CVideoInfoTag* m_videoInfoTag;
   CPictureInfoTag* m_pictureInfoTag;
 };
-
-/*!
-  \brief A shared pointer to CFileItem
-  \sa CFileItem
-  */
-typedef boost::shared_ptr<CFileItem> CFileItemPtr;
 
 /*!
   \brief A vector of pointer to CFileItem

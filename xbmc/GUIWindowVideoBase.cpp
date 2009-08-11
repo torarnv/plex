@@ -959,10 +959,12 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
   if (itemNumber >= 0 && itemNumber < m_vecItems->Size())
     item = m_vecItems->Get(itemNumber);
 
+  bool includeStandardContextButtons = true;
   // contextual buttons
   if (item)
   {
-    if (!item->IsParentFolder())
+    includeStandardContextButtons = item->m_includeStandardContextItems;
+    if (!item->IsParentFolder() && includeStandardContextButtons)
     {
       CStdString path(item->m_strPath);
       if (item->IsVideoDb() && item->HasVideoInfoTag())

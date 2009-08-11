@@ -258,6 +258,7 @@ CFileItem::~CFileItem(void)
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
   m_pictureInfoTag = NULL;
+  m_contextItems.clear();
 }
 
 const CFileItem& CFileItem::operator=(const CFileItem& item)
@@ -341,6 +342,13 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   m_bIsSearchDir = item.m_bIsSearchDir;
   m_strSearchPrompt = item.m_strSearchPrompt;
   m_iBitrate = item.m_iBitrate;
+  m_includeStandardContextItems = item.m_includeStandardContextItems;
+  
+  m_contextItems.clear();
+  for (int i=0; i < item.m_contextItems.size(); ++i)
+  {
+    m_contextItems.push_back(item.m_contextItems[i]);
+  }
   
   return *this;
 }
@@ -389,6 +397,7 @@ void CFileItem::Reset()
   m_bIsSearchDir = false;
   m_strSearchPrompt = "";
   m_iBitrate = 0;
+  m_includeStandardContextItems = true;
   
   SetInvalid();
 }
@@ -442,6 +451,13 @@ void CFileItem::Serialize(CArchive& ar)
     }
     else
       ar << 0;
+    
+    ar << (int)(m_contextItems.size());
+    for (int i=0; i < m_contextItems.size(); ++i)
+    {
+      CFileItemPtr pContextItem = m_contextItems[i];
+      ar << *pContextItem;
+    }
   }
   else
   {
@@ -477,6 +493,19 @@ void CFileItem::Serialize(CArchive& ar)
     ar >> iType;
     if (iType == 1)
       ar >> *GetPictureInfoTag();
+    
+    int iContextMenuSize = 0;
+    ar >> iContextMenuSize;
+    if (iContextMenuSize > 0)
+    {
+      m_contextItems.reserve(iContextMenuSize);
+      for (int i=0; i < iContextMenuSize; ++i)
+      {
+        CFileItemPtr pItem(new CFileItem);
+        ar >> *pItem;
+        m_contextItems.push_back(pItem);
+      }
+    }
 
     SetInvalid();
   }
