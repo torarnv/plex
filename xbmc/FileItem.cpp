@@ -429,7 +429,7 @@ void CFileItem::Serialize(CArchive& ar)
     ar << m_bCanQueue;
     ar << m_contenttype;
     ar << m_extrainfo;
-
+    
     if (m_musicInfoTag)
     {
       ar << 1;
@@ -482,7 +482,7 @@ void CFileItem::Serialize(CArchive& ar)
     ar >> m_bCanQueue;
     ar >> m_contenttype;
     ar >> m_extrainfo;
-
+    
     int iType;
     ar >> iType;
     if (iType == 1)
@@ -1100,10 +1100,13 @@ void CFileItem::SetLabel(const CStdString &strLabel)
 
 void CFileItem::SetFileSizeLabel()
 {
-  if( m_bIsFolder && m_dwSize == 0 )
-    SetLabel2("");
-  else
-    SetLabel2(StringUtils::SizeToString(m_dwSize));
+  if (!m_bLabelPreformated)
+  {
+    if( m_bIsFolder && m_dwSize == 0 )
+      SetLabel2("");
+    else
+      SetLabel2(StringUtils::SizeToString(m_dwSize));
+  }
 }
 
 CURL CFileItem::GetAsUrl() const
@@ -2127,7 +2130,8 @@ void CFileItemList::Stack()
 
             item->m_bIsFolder = false;
             item->m_strPath = dvdPath;
-            item->SetLabel2("");
+            if (!IsLabelPreformated())
+              item->SetLabel2("");
             item->SetLabelPreformated(true);
             m_sortMethod = SORT_METHOD_NONE; /* sorting is now broken */
 

@@ -310,6 +310,20 @@ class PlexMediaNode
      if (bitrate && strlen(bitrate) > 0)
        pItem->m_iBitrate = boost::lexical_cast<int>(bitrate);
      
+     const char* label2;
+     label2 = el.Attribute("infolabel");
+     if (label2 && strlen(label2) > 0)
+     {
+       pItem->SetLabel2(label2);
+       pItem->SetLabelPreformated(true);
+     }
+     label2 = el.Attribute("infoLabel");
+     if (label2 && strlen(label2) > 0)
+     {
+       pItem->SetLabel2(label2);
+       pItem->SetLabelPreformated(true);
+     }
+     
      try
      {
        // Thumb.
