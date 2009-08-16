@@ -3734,6 +3734,7 @@ const BUILT_IN commands[] = {
   { "Reboot",                     false,  "Reboot the xbox (power cycle)" },
   { "Restart",                    false,  "Restart the xbox (power cycle)" },
   { "ShutDown",                   false,  "Quit Plex" },
+  { "Quit",                       false,  "Quit Plex" },
   { "SleepSystem",                false,  "Go to standby mode"},
   { "ShutDownSystem",             false,  "Send a shut down request to Mac OS X" },
   { "Dashboard",                  false,  "Run your dashboard" },
@@ -3863,7 +3864,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   {
     g_application.getApplicationMessenger().Restart();
   }
-  else if (execute.Equals("shutdown"))
+  else if (execute.Equals("shutdown") || execute.Equals("quit"))
   {
     g_application.getApplicationMessenger().Shutdown();
   }
