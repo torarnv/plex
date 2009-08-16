@@ -3744,6 +3744,7 @@ const BUILT_IN commands[] = {
   { "UpdateSources",              false,  "Updates sources" },
   { "Mastermode",                 false,  "Control master mode" },
   { "ActivateWindow",             true,   "Activate the specified window" },
+{ "ActivateWindowWithFocus",    true,   "Activate the specified window & focus the specified control" },
   { "ReplaceWindow",              true,   "Replaces the current window with the new one" },
   { "TakeScreenshot",             false,  "Takes a Screenshot" },
   { "RunScript",                  true,   "Run the specified script" },
@@ -3923,6 +3924,59 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   else if (execute.Equals("reset")) //Will reset the xbox, aka soft reset
   {
     g_application.getApplicationMessenger().Reset();
+  }
+  else if (execute.Equals("activatewindowwithfocus"))
+  {
+    CStdString strWindow;
+    CStdString strControl;
+    
+    // split the parameter on first comma
+    int iPos = parameter.Find(",");
+    if (iPos == 0 || iPos < 0)
+    {
+      // error condition missing argumet
+      // ActivateWindowWithFocus(1,)
+      CLog::Log(LOGERROR, "ActivateWindowWithFocus called with invalid parameter: %s", parameter.c_str());
+      return -7;
+    }
+    else
+    {
+      // path parameter included
+      // ActivateWindow(5001,101)
+      strWindow = strParameterCaseIntact.Left(iPos);
+      strControl = strParameterCaseIntact.Mid(iPos + 1);
+    }
+    // confirm the window destination is actually a number
+    // before switching
+    int iWindow = g_buttonTranslator.TranslateWindowString(strWindow.c_str());
+    if (iWindow != WINDOW_INVALID)
+    {
+      // disable the screensaver
+      g_application.ResetScreenSaverWindow();
+      if (iWindow != m_gWindowManager.GetActiveWindow())
+        m_gWindowManager.ActivateWindow(iWindow);
+      
+      // see whether we have more than one param
+      std::vector<CStdString> params;
+      StringUtils::SplitString(strControl,",",params);
+      if (params.size())
+      {
+        int controlID = atol(params[0].c_str());
+        int subItem = (params.size() > 1) ? atol(params[1].c_str())+1 : 0;
+        CGUIMessage msg(GUI_MSG_SETFOCUS, iWindow, controlID, subItem);
+        g_graphicsContext.SendMessage(msg);
+      }
+      else
+      {
+        CLog::Log(LOGERROR, "ActivateWindowWithFocus called with invalid parameter: %s", parameter.c_str());
+        return -7;
+      }
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "ActivateWindowWithFocus called with invalid destination window: %s", strWindow.c_str());
+      return false;
+    }
   }
   else if (execute.Equals("activatewindow") || execute.Equals("replacewindow"))
   {
