@@ -227,6 +227,11 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
         if (newItem != GetSelectedItem())
         {
           SelectItem(newItem);
+          
+          // Send another SETFOCUS message to ensure focused items are displayed correctly. A bit of a hack, but seems to work.
+          CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), GetID(), 0, 0);
+          SendWindowMessage(msg);
+          
           return true;
         }
       }
