@@ -436,10 +436,15 @@ void CGUIWindow::SetPosition(float posX, float posY)
 
 void CGUIWindow::CenterWindow()
 {
+  OffsetWindowFromCenter(0, 0);
+}
+
+void CGUIWindow::OffsetWindowFromCenter(float offsetX, float offsetY)
+{
   if (m_bRelativeCoords)
   {
-    m_posX = (g_settings.m_ResInfo[m_coordsRes].iWidth - GetWidth()) / 2;
-    m_posY = (g_settings.m_ResInfo[m_coordsRes].iHeight - GetHeight()) / 2;
+    m_posX = ((g_settings.m_ResInfo[m_coordsRes].iWidth - GetWidth()) / 2) + offsetX;
+    m_posY = ((g_settings.m_ResInfo[m_coordsRes].iHeight - GetHeight()) / 2) + offsetY;
   }
 }
 

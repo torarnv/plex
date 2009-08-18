@@ -87,6 +87,7 @@ public:
   virtual bool Load(TiXmlElement* pRootElement);
   virtual void SetPosition(float posX, float posY);
   void CenterWindow();
+  void OffsetWindowFromCenter(float offsetX, float offsetY);
   virtual void Render();
 
   // Close should never be called on this base class (only on derivatives) - its here so that window-manager can use a general close
