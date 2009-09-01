@@ -638,7 +638,6 @@ void setupAndRun()
     CFMutableDictionaryRef hidMatchDictionary = NULL;
     io_service_t           hidService = (io_service_t)0;
     io_object_t            hidDevice = (io_object_t)0;
-    IOHIDDeviceInterface **hidDeviceInterface = NULL;
     IOReturn               ioReturnValue = kIOReturnSuccess;
     CFMutableArrayRef      cookies;
     bool				   validRemoteFound = FALSE;
@@ -649,6 +648,8 @@ void setupAndRun()
 
     if (hidService) 
     {
+	  IOHIDDeviceInterface **hidDeviceInterface = NULL;
+
       hidDevice = (io_object_t)hidService;
 
       createHIDDeviceInterface(hidDevice, &hidDeviceInterface);
@@ -667,9 +668,11 @@ void setupAndRun()
 	// Add an event queue for IRKeyboardEmu, which allows Apple Remote emulation
 	hidMatchDictionary = IOServiceMatching("IRKeyboardEmu");
     hidService = IOServiceGetMatchingService(kIOMasterPortDefault, hidMatchDictionary);
-	
+
     if (hidService) 
     {
+		IOHIDDeviceInterface **hidDeviceInterface = NULL;
+
 		hidDevice = (io_object_t)hidService;
 		
 		createHIDDeviceInterface(hidDevice, &hidDeviceInterface);
@@ -736,22 +739,26 @@ pascal OSStatus switchEventsHandler(EventHandlerCallRef nextHandler,
   if (verbose)
     printf("New app is frontmost, reopening Apple Remote\n");
 
+  IOReturn err;
   if (gAppleHidDeviceInterface)
   {
-	  if ((*gAppleHidDeviceInterface)->close(gAppleHidDeviceInterface) != KERN_SUCCESS)
-		  printf("ERROR closing Apple Remote device\n");
-	  
-	  if ((*gAppleHidDeviceInterface)->open(gAppleHidDeviceInterface, kIOHIDOptionsTypeSeizeDevice) != KERN_SUCCESS)
-		  printf("ERROR opening Apple Remote device\n");
+	  if ((err = (*gAppleHidDeviceInterface)->close(gAppleHidDeviceInterface)) != KERN_SUCCESS)
+		  printf("ERROR closing Apple Remote device %p; error was 0x%08x\n",
+				 *gAppleHidDeviceInterface, err);
+
+	  /* #define kIOReturnNotOpen         iokit_common_err(0x2cd) // device not open  */
+	  if ((err = (*gAppleHidDeviceInterface)->open(gAppleHidDeviceInterface, kIOHIDOptionsTypeSeizeDevice)) != KERN_SUCCESS)
+		  printf("ERROR opening Apple Remote device %p; error was 0x%08x\n",
+				 *gAppleHidDeviceInterface, err);
   }
 
   if (gEmuHidDeviceInterface)
   {
-	  if ((*gEmuHidDeviceInterface)->close(gEmuHidDeviceInterface) != KERN_SUCCESS)
-		  printf("ERROR closing Apple Remote emulation device\n");
+	  if ((err = (*gAppleHidDeviceInterface)->close(gAppleHidDeviceInterface)) != KERN_SUCCESS)
+		  printf("ERROR closing Apple Remote emulation device; error was 0x%08x\n", err);
 	  
-	  if ((*gEmuHidDeviceInterface)->open(gEmuHidDeviceInterface, kIOHIDOptionsTypeSeizeDevice) != KERN_SUCCESS)
-		  printf("ERROR opening Apple Remote emulation device\n");	  
+	  if ((err = (* gEmuHidDeviceInterface)->open(gEmuHidDeviceInterface, kIOHIDOptionsTypeSeizeDevice)) != KERN_SUCCESS)
+		  printf("ERROR opening Apple Remote emulation device; error was 0x%08x\n", err);
   }
   
   if (verbose)
