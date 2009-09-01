@@ -112,7 +112,9 @@ public:
   void ToggleFullscreen();
   void SleepSystem();
   void ActivateVisualizer();
-
+  void MoveToNextScreen();
+  void MoveToPrevScreen();
+  
   CStdString GetResponse();
   int SetResponse(CStdString response);
   void HttpApi(std::string cmd, bool wait = false);

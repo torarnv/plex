@@ -72,7 +72,6 @@ using namespace MUSIC_INFO;
 CGUIWindowMusicBase::CGUIWindowMusicBase(DWORD dwID, const CStdString &xmlFile)
     : CGUIMediaWindow(dwID, xmlFile)
 {
-
 }
 
 CGUIWindowMusicBase::~CGUIWindowMusicBase ()
@@ -200,6 +199,9 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
         }
         else if (iAction == ACTION_SHOW_INFO)
         {
+          CFileItemPtr fileItem = m_vecItems->Get(iItem);
+          if (CUtil::IsPlexMediaServer(fileItem->m_strPath))
+            return false;
           OnInfo(iItem);
         }
         else if (iAction == ACTION_DELETE_ITEM)
@@ -635,7 +637,7 @@ void CGUIWindowMusicBase::OnQueueItem(int iItem)
   CLog::Log(LOGDEBUG, "Adding file %s%s to music playlist", item->m_strPath.c_str(), item->m_bIsFolder ? " (folder) " : "");
   CFileItemList queuedItems;
   AddItemToPlayList(item, queuedItems);
-
+  
   // select next item
   m_viewControl.SetSelectedItem(iItem + 1);
 
@@ -658,6 +660,53 @@ void CGUIWindowMusicBase::OnQueueItem(int iItem)
   }
 }
 
+void CGUIWindowMusicBase::OnShuffleItem(int iItem)
+{
+  if ( iItem < 0 || iItem >= m_vecItems->Size() ) return ;
+  
+  CFileItemPtr item(new CFileItem(*m_vecItems->Get(iItem)));
+  
+  if (item->IsRAR() || item->IsZIP())
+    return;
+  
+  // Clear the playlist
+  g_playlistPlayer.Reset();
+  g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
+  g_playlistPlayer.Clear();
+  
+  //  Allow queuing of unqueueable items
+  //  when we try to queue them directly
+  if (!item->CanQueue())
+    item->SetCanQueue(true);
+  
+  if (item->m_bIsFolder)
+  {
+    CLog::Log(LOGDEBUG, "Shuffling files %s%s and adding to music playlist", item->m_strPath.c_str(), item->m_bIsFolder ? " (folder) " : "");
+    CFileItemList queuedItems;
+    AddItemToPlayList(item, queuedItems);
+    g_playlistPlayer.Add(PLAYLIST_MUSIC, queuedItems);
+  }
+  else
+  {
+    g_playlistPlayer.Add(PLAYLIST_MUSIC, *m_vecItems);
+  }
+  
+  /*
+  // if party mode, add items but DONT start playing
+  if (g_partyModeManager.IsEnabled())
+  {
+    g_partyModeManager.AddUserSongs(queuedItems, false);
+    return;
+  }*/
+  
+  g_playlistPlayer.SetShuffle(PLAYLIST_MUSIC, true, true);
+  g_playlistPlayer.Play();
+  
+  if (g_advancedSettings.m_bVisualizerOnPlay)
+    g_application.getApplicationMessenger().ActivateVisualizer();
+}
+
+
 /// \brief Add unique file and folders and its subfolders to playlist
 /// \param pItem The file item to add
 void CGUIWindowMusicBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItemList &queuedItems)
@@ -665,6 +714,10 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
   if (!pItem->CanQueue() || pItem->IsRAR() || pItem->IsZIP() || pItem->IsParentFolder()) // no zip/rar enques thank you!
     return;
 
+  // FIXME, this just prevents hangs with huge recursive playlists for now.
+  if (queuedItems.Size() > 500)
+    return;
+  
   // fast lookup is needed here
   queuedItems.SetFastLookup(true);
 
@@ -694,6 +747,7 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
     // recursive
     CFileItemList items;
     GetDirectory(pItem->m_strPath, items);
+    
     //OnRetrieveMusicInfo(items);
     FormatAndSort(items);
     for (int i = 0; i < items.Size(); ++i)
@@ -715,9 +769,8 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
 
         CPlayList playlist = *pPlayList;
         for (int i = 0; i < (int)playlist.size(); ++i)
-        {
           AddItemToPlayList(playlist[i], queuedItems);
-        }
+        
         return;
       }
     }
@@ -831,6 +884,9 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
   if (itemNumber >= 0 && itemNumber < m_vecItems->Size())
     item = m_vecItems->Get(itemNumber);
 
+  if (g_application.IsPlayingAudio())
+    buttons.Add(CONTEXT_BUTTON_NOW_PLAYING, 13350);
+  
   if (item && !item->IsParentFolder())
   {
     if (item->GetExtraInfo().Equals("lastfmloved"))
@@ -844,7 +900,9 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
     else if (item->CanQueue())
     {
       buttons.Add(CONTEXT_BUTTON_QUEUE_ITEM, 13347); //queue
-
+      if (g_advancedSettings.m_bAutoShuffle)
+        buttons.Add(CONTEXT_BUTTON_SHUFFLE, 191);
+      
       // allow a folder to be ad-hoc queued and played by the default player
       if (item->m_bIsFolder || (item->IsPlayList() && 
          !g_advancedSettings.m_playlistAsFolders))
@@ -877,7 +935,7 @@ void CGUIWindowMusicBase::GetNonContextButtons(CContextButtons &buttons)
   if (!m_vecItems->IsVirtualDirectoryRoot())
     buttons.Add(CONTEXT_BUTTON_GOTO_ROOT, 20128);
   if (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() > 0)
-    buttons.Add(CONTEXT_BUTTON_NOW_PLAYING, 13350);
+    buttons.Add(CONTEXT_BUTTON_PLAYLIST, 559);
   buttons.Add(CONTEXT_BUTTON_SETTINGS, 5);
 }
 
@@ -950,6 +1008,10 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
 
   case CONTEXT_BUTTON_NOW_PLAYING:
+    m_gWindowManager.ActivateWindow(WINDOW_NOW_PLAYING);
+    return true;      
+  
+  case CONTEXT_BUTTON_PLAYLIST:
     m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
     return true;
 
@@ -975,6 +1037,9 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       m_vecItems->RemoveDiscCache();
       Update(m_vecItems->m_strPath);
     }
+    return true;
+  case CONTEXT_BUTTON_SHUFFLE:
+    OnShuffleItem(itemNumber);
     return true;
   default:
     break;
@@ -1067,6 +1132,7 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
 
     CFileItemList queuedItems;
     AddItemToPlayList(item, queuedItems);
+    
     if (g_partyModeManager.IsEnabled())
     {
       g_partyModeManager.AddUserSongs(queuedItems, true);

@@ -54,8 +54,6 @@
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
 #define CONTROL_BTNSORTASC         4
-#define CONTROL_VIEW_START        50
-#define CONTROL_VIEW_END          59
 
 #define CONTROL_LABELFILES        12
 
@@ -79,20 +77,46 @@ CGUIMediaWindow::~CGUIMediaWindow()
   delete m_vecItems;
 }
 
+#define CONTROL_VIEW_START        50
+#define CONTROL_VIEW_END          59
+
+void CGUIMediaWindow::LoadAdditionalTags(TiXmlElement *root)
+{
+  CGUIWindow::LoadAdditionalTags(root);
+  // configure our view control
+  m_viewControl.Reset();
+  m_viewControl.SetParentWindow(GetID());
+  TiXmlElement *element = root->FirstChildElement("views");
+  if (element && element->FirstChild())
+  { // format is <views>50,29,51,95</views>
+    CStdString allViews = element->FirstChild()->Value();
+    CStdStringArray views;
+    StringUtils::SplitString(allViews, ",", views);
+    for (unsigned int i = 0; i < views.size(); i++)
+    {
+      int controlID = atol(views[i].c_str());
+      CGUIControl *control = (CGUIControl *)GetControl(controlID);
+      if (control && control->IsContainer())
+        m_viewControl.AddView(control);
+    }
+  }
+  else
+  { // backward compatibility
+    vector<CGUIControl *> controls;
+    GetContainers(controls);
+    for (ciControls it = controls.begin(); it != controls.end(); it++)
+    {
+      CGUIControl *control = *it;
+      if (control->GetID() >= CONTROL_VIEW_START && control->GetID() <= CONTROL_VIEW_END)
+        m_viewControl.AddView(control);
+    }
+  }
+  m_viewControl.SetViewControlID(CONTROL_BTNVIEWASICONS);
+}
+
 void CGUIMediaWindow::OnWindowLoaded()
 {
   CGUIWindow::OnWindowLoaded();
-  m_viewControl.Reset();
-  m_viewControl.SetParentWindow(GetID());
-  vector<CGUIControl *> controls;
-  GetContainers(controls);
-  for (ciControls it = controls.begin(); it != controls.end(); it++)
-  {
-    CGUIControl *control = *it;
-    if (control->GetID() >= CONTROL_VIEW_START && control->GetID() <= CONTROL_VIEW_END)
-      m_viewControl.AddView(control);
-  }
-  m_viewControl.SetViewControlID(CONTROL_BTNVIEWASICONS);
   SetupShares();
 }
 
@@ -506,7 +530,7 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
 
   // see if we can load a previously cached folder
   CFileItemList cachedItems(strDirectory);
-  if (!strDirectory.IsEmpty() && cachedItems.Load())
+  if (!strDirectory.IsEmpty() && CUtil::IsPlexMediaServer(strDirectory) == false && cachedItems.Load())
   {
     newItems.Assign(cachedItems, true); // true to keep any previous items (".." item)
   }
@@ -553,7 +577,7 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
 
   CStdString strOldDirectory = m_vecItems->m_strPath;
 
-  m_history.SetSelectedItem(strSelectedItem, strOldDirectory);
+  m_history.SetSelectedItem(strSelectedItem, strOldDirectory, iItem);
 
   // Get the new directory.
   CFileItemList newItems;
@@ -645,7 +669,6 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
   strSelectedItem = m_history.GetSelectedItem(m_vecItems->m_strPath);
 
   bool bSelectedFound = false;
-  //int iSongInDirectory = -1;
   for (int i = 0; i < m_vecItems->Size(); ++i)
   {
     CFileItemPtr pItem = m_vecItems->Get(i);
@@ -663,6 +686,21 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
     }
   }
 
+  // If that didn't work, see if we stored a selected index, and use this.
+  if (bSelectedFound == false)
+  {
+    int selectedItem = m_history.GetSelectedIndex(m_vecItems->m_strPath);
+    if (selectedItem != -1)
+    {
+      // Clip to number of real items.
+      if (selectedItem >= m_vecItems->Size())
+        selectedItem = m_vecItems->Size() - 1;
+      
+      m_viewControl.SetSelectedItem(selectedItem);
+      bSelectedFound = true;
+    }
+  }
+  
   // if we haven't found the selected item, select the first item
   if (!bSelectedFound)
     m_viewControl.SetSelectedItem(0);
@@ -671,8 +709,6 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
   if (m_vecItems->GetSaveInHistory())
     m_history.AddPath(m_vecItems->m_strPath);
 
-  //m_history.DumpPathHistory();
-  
   // PLEX - check for message to display.
   if (newItems.m_displayMessage)
   {
@@ -742,36 +778,58 @@ bool CGUIMediaWindow::OnClick(int iItem)
       CStdString strSearchTerm = "";
       if (CGUIDialogKeyboard::ShowAndGetInput(strSearchTerm, pItem->m_strSearchPrompt, false))
       {
+        // Encode the query.
+        CUtil::URLEncode(strSearchTerm);
         directory.m_strPath += strSearchTerm;
       }
       // If no query was entered or the user dismissed the keyboard, do nothing
-      else return true;
+      else
+      {
+        return true;
+      }
     }
     
     // Show a context menu for PMS popup directories
     if (pItem->m_bIsPopupMenuItem)
     {
-      CFileItemList* fileItems = new CFileItemList();
+      CFileItemList fileItems;
       vector<CStdString> items;
       CPlexDirectory plexDir;
-      plexDir.GetDirectory(directory.m_strPath, *fileItems);
-      for ( int i = 0; i < fileItems->Size(); i++ )
+      
+      plexDir.GetDirectory(directory.m_strPath, fileItems);
+      for ( int i = 0; i < fileItems.Size(); i++ )
       {
-        CFileItemPtr item = fileItems->Get(i);
+        CFileItemPtr item = fileItems.Get(i);
         items.push_back(item->GetLabel());
       }
+      
       int choice = CGUIDialogContextMenu::ShowAndGetChoice(items, GetContextPosition());
       if (choice > 0)
       {
-        CFileItemPtr selectedItem = fileItems->Get(choice-1);
+        CFileItemPtr selectedItem = fileItems.Get(choice-1);
         if (selectedItem->m_bIsFolder)
+        {
           Update(selectedItem->m_strPath);
+        }
         else
-        { selectedItem->SetLabel(pItem->GetLabel() + ": " + selectedItem->GetLabel());
+        { 
+          selectedItem->SetLabel(pItem->GetLabel() + ": " + selectedItem->GetLabel());
           OnPlayMedia(selectedItem.get());
         }
       }
-      delete fileItems;
+      return true;
+    }
+    
+    // Show preferences.
+    if (pItem->m_bIsSettingsDir)
+    {
+      CFileItemList fileItems;
+      vector<CStdString> items;
+      CPlexDirectory plexDir(false);
+      
+      plexDir.GetDirectory(directory.m_strPath, fileItems);
+      CGUIDialogPluginSettings::ShowAndGetInput(pItem->m_strPath, plexDir.GetData());
+      
       return true;
     }
     
@@ -800,7 +858,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
       return true;
     }
 
-    if (m_guiState.get() && m_guiState->AutoPlayNextItem() && !g_partyModeManager.IsEnabled() && !pItem->IsPlayList())
+    if (m_guiState.get() && m_guiState->AutoPlayNextItem() && !g_partyModeManager.IsEnabled() && !pItem->IsPlayList() && !pItem->IsWebKit())
     {
       // TODO: music videos!     
       if (pItem->m_strPath == "add" && pItem->GetLabel() == g_localizeStrings.Get(1026) && m_guiState->GetPlaylist() == PLAYLIST_MUSIC) // 'add source button' in empty root
@@ -854,7 +912,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
         g_playlistPlayer.SetCurrentPlaylist(iPlaylist);
         g_playlistPlayer.Play(songToPlay);
 
-        // Turn on visualizer so we can control things.
+        // Turn on now playing so we can control things.
         if (m_guiState->GetPlaylist() == PLAYLIST_MUSIC && g_advancedSettings.m_bVisualizerOnPlay) 
           g_application.getApplicationMessenger().ActivateVisualizer();
       }
@@ -1368,7 +1426,7 @@ bool CGUIMediaWindow::WaitForNetwork() const
 CPoint CGUIMediaWindow::GetContextPosition() const
 {
   CPoint pos(200, 100);
-  const CGUIControl *pList = GetControl(CONTROL_VIEW_START);
+  const CGUIControl *pList = GetControl(m_viewControl.GetCurrentControl());
   if (pList)
   {
     pos.x = pList->GetXPosition() + pList->GetWidth() / 2;

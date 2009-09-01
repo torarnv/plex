@@ -23,8 +23,10 @@
 
 #include "GUIWindow.h"
 #include "utils/Thread.h"
+#include "utils/CriticalSection.h"
 #include "SlideShowPicture.h"
 #include "DllImageLib.h"
+#include "Stopwatch.h"
 
 class CFileItemList;
 
@@ -95,6 +97,7 @@ private:
   void Zoom(int iZoom);
   void Move(float fX, float fY);
   void GetCheckedSize(float width, float height, int &maxWidth, int &maxHeight);
+  void UpdateDescription();
 
   int m_iCurrentSlide;
   int m_iNextSlide;
@@ -118,4 +121,6 @@ private:
   bool m_bReloadImage;
   DllImageLib m_ImageLib;
   RESOLUTION m_Resolution;
+  CStopWatch stopwatch;
+  CCriticalSection m_slideSection;
 };

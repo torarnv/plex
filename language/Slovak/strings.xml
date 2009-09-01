@@ -1,8 +1,4 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 10/06/2008-->
-<!--$Revision$-->
-<!--Based on english strings version 15704-->
 <strings>
   <string id="0">Programy</string>
   <string id="1">Obrázky</string>
@@ -12,7 +8,7 @@
   <string id="5">Nastavenia</string>
   <string id="7">Správca súborov</string>
   <string id="8">Počasie</string>
-  <string id="9">xbmc media center</string>
+  <string id="9">Plex media center</string>
   <string id="11">Pondelok</string>
   <string id="12">Utorok</string>
   <string id="13">Streda</string>
@@ -382,7 +378,7 @@
   <string id="479">Vzhľad a jazyk</string>
   <string id="480">Prostredie</string>
   <string id="481">Nastavenia zvuk</string>
-  <string id="482">O XBMC</string>
+  <string id="482">O Plex</string>
   <string id="485">Odstrániť album</string>
   <string id="486">Opakovať</string>
   <string id="487">Opakovať jeden</string>
@@ -623,7 +619,7 @@
   <string id="797">Maximálny počet klientov</string>
   <string id="1000">Ukážka šetriča obrazovky</string>
   <string id="1001">Nedá sa pripojiť</string>
-  <string id="1002">XBMC sa nemohol pripojiť na sieťové miesto.</string>
+  <string id="1002">Plex sa nemohol pripojiť na sieťové miesto.</string>
   <string id="1003">Toto môže byť kvôli nedostupnosti siete.</string>
   <string id="1004">Radi by ste to aj tak pridali?</string>
   <string id="1006">IP adresa</string>
@@ -899,11 +895,11 @@
   <string id="13131">Zakázané</string>
   <string id="13132">Vypni obrazovku</string>
   <string id="13140">Zistené aktívne spojenie!</string>
-  <string id="13141">Ak budete pokračovať, môžeťe stratiť ovládanie XBMC</string>
+  <string id="13141">Ak budete pokračovať, môžeťe stratiť ovládanie Plex</string>
   <string id="13142">natrvalo. Určiťe chcete zastaviť event server?</string>
   <string id="13144">Zmeniť mód diaľkového ovládania Apple?</string>
   <string id="13145">Ak práve používate diaľkové ovládanie Apple na ovládanie</string>
-  <string id="13146">XBMC, zmenou nastavenia možete ovplyvniť vašu</string>
+  <string id="13146">Plex, zmenou nastavenia možete ovplyvniť vašu</string>
   <string id="13147">schopnosť ovládať ho. Chcete pokračovať?</string>
   <string id="13150">HDD Kľúč:</string>
   <string id="13151">HDD Teplota:</string>
@@ -982,7 +978,7 @@
   <string id="13306">Schovať rodičovský priečinok</string>
   <string id="13307">Maska menovania stôp</string>
   <string id="13308">Naozaj chcete reštartovať systém</string>
-  <string id="13309">alebo len XBMC?</string>
+  <string id="13309">alebo len Plex?</string>
   <string id="13310">Efekt zväčšenia</string>
   <string id="13311">Efekt splynutia</string>
   <string id="13312">Redukcia čiernych okrajov</string>
@@ -1125,7 +1121,7 @@ pre túto vizualizáciu</string>
   <string id="14036">Servery</string>
   <string id="14037">Vzhľad</string>
   <string id="14038">Sieťové nastavenia boli zmenené</string>
-  <string id="14039">XBMC vyžaduje reštart pre zmenu</string>
+  <string id="14039">Plex vyžaduje reštart pre zmenu</string>
   <string id="14040">sieťových nastavení. Reštartovať?</string>
   <string id="14041">Post Processing</string>
   <string id="14043">- Vypínanie počas prehrávania</string>
@@ -1185,7 +1181,7 @@ pre túto vizualizáciu</string>
   <string id="15202">Last.FM meno</string>
   <string id="15203">Last.FM heslo</string>
   <string id="15204">Nedá sa nadviazať spojenie: spím...</string>
-  <string id="15205">Prosím aktualizujte XBMC</string>
+  <string id="15205">Prosím aktualizujte Plex</string>
   <string id="15206">Zlá autorizácia: Skontrolujte meno a heslo</string>
   <string id="15207">Pripojený</string>
   <string id="15208">Odpojený</string>
@@ -1322,7 +1318,7 @@ pre túto vizualizáciu</string>
   <string id="20006">Priečinok playlist-ov</string>
   <string id="20007">Nahrávky</string>
   <string id="20008">Screenshoty</string>
-  <string id="20009">Použiť XBMC</string>
+  <string id="20009">Použiť Plex</string>
   <string id="20011">Hudobné playlist-y</string>
   <string id="20012">Video playlist-y</string>
   <string id="20013">Chcete spustiť túto hru?</string>
@@ -1501,7 +1497,7 @@ pre túto vizualizáciu</string>
   <string id="20250">Párty zahájená! (videa)</string>
   <string id="20251">Miešam nápoje (videa)</string>
   <string id="20252">Nalievam poháre (videa)</string>
-  <string id="20306">Neznámy. Prosím pridajte MD5 z xbmc.log do BiosIDs.ini.</string>
+  <string id="20306">Neznámy. Prosím pridajte MD5 z Plex.log do BiosIDs.ini.</string>
   <string id="20307">Sekundárne DNS</string>
   <string id="20308">DHCP Server:</string>
   <string id="20309">Vytvoriť nový priečinok</string>

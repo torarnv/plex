@@ -108,7 +108,7 @@ public:
       FT_Done_FreeType(m_library);
   }
 
-  FT_Face GetFont(const CStdString &filename, float size, float aspect)
+  FT_Face GetFont(const CStdString &filename, float size, float aspect, const CStdString& variant)
   {
     // don't have it yet - create it
     if (!m_library)
@@ -121,9 +121,30 @@ public:
 
     FT_Face face;
 
-    // ok, now load the font face
-    if (FT_New_Face( m_library, filename.c_str(), 0, &face ))
-      return NULL;
+    // Iterate through the available faces if we're requesting a specific variant.
+    if (variant.size() > 0)
+    {
+      bool found = false;
+      for (int i=0; FT_New_Face(m_library, filename.c_str(), i, &face) == 0 && i < face->num_faces; i++)
+      {
+        if (variant == face->style_name)
+        {
+          found = true;
+          break;
+        }
+        
+        FT_Done_Face(face);
+      }
+      
+      if (found == false)
+        return 0;
+    }
+    else
+    {
+      // ok, now load the font face
+      if (FT_New_Face( m_library, filename.c_str(), 0, &face ))
+        return NULL;
+    }
 
     unsigned int ydpi = GetDPI();
     unsigned int xdpi = (unsigned int)ROUND(ydpi * aspect);
@@ -251,7 +272,7 @@ void CGUIFontTTF::Clear()
   m_face = NULL;
 }
 
-bool CGUIFontTTF::Load(const CStdString& strFile, float height, float aspect, float lineSpacing)
+bool CGUIFontTTF::Load(const CStdString& strFile, float height, float aspect, float lineSpacing, const CStdString& variant)
 {
   CStdString strFilename = strFile;
   
@@ -268,7 +289,7 @@ bool CGUIFontTTF::Load(const CStdString& strFile, float height, float aspect, fl
 
   // we now know that this object is unique - only the GUIFont objects are non-unique, so no need
   // for reference tracking these fonts
-  m_face = g_freeTypeLibrary.GetFont(strFilename, height, aspect);
+  m_face = g_freeTypeLibrary.GetFont(strFilename, height, aspect, variant);
 
   if (!m_face)
     return false;

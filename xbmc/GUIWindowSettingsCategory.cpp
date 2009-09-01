@@ -26,6 +26,7 @@
 #include "Application.h"
 #include "KeyboardLayoutConfiguration.h"
 #include "FileSystem/HDDirectory.h"
+#include "LangInfo.h"
 #include "Util.h"
 #include "GUILabelControl.h"
 #include "GUICheckMarkControl.h"
@@ -204,44 +205,6 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
     }
   case GUI_MSG_LOAD_SKIN:
     {
-      // Do we need to reload the language file
-      if (!m_strNewLanguage.IsEmpty())
-      {
-        g_guiSettings.SetString("region.language", m_strNewLanguage);
-        g_settings.Save();
-
-        CStdString strLangInfoPath;
-        strLangInfoPath.Format("Q:\\language\\%s\\langinfo.xml", m_strNewLanguage.c_str());
-        g_langInfo.Load(_P(strLangInfoPath));
-
-        if (g_langInfo.ForceUnicodeFont() && !g_fontManager.IsFontSetUnicode())
-        {
-          CLog::Log(LOGINFO, "Language needs a ttf font, loading first ttf font available");
-          CStdString strFontSet;
-          if (g_fontManager.GetFirstFontSetUnicode(strFontSet))
-          {
-            m_strNewSkinFontSet=strFontSet;
-          }
-          else
-            CLog::Log(LOGERROR, "No ttf font found but needed: %s", strFontSet.c_str());
-        }
-
-        g_charsetConverter.reset();
-
-        CStdString strKeyboardLayoutConfigurationPath;
-        strKeyboardLayoutConfigurationPath.Format("Q:\\language\\%s\\keyboardmap.xml", m_strNewLanguage.c_str());
-        strKeyboardLayoutConfigurationPath = _P(strKeyboardLayoutConfigurationPath);
-        CLog::Log(LOGINFO, "load keyboard layout configuration info file: %s", strKeyboardLayoutConfigurationPath.c_str());
-        g_keyboardLayoutConfiguration.Load(strKeyboardLayoutConfigurationPath);
-
-        CStdString strLanguagePath;
-        strLanguagePath.Format("Q:\\language\\%s\\strings.xml", m_strNewLanguage.c_str());
-        g_localizeStrings.Load(_P(strLanguagePath));
-
-        // also tell our weather to reload, as this must be localized
-        g_weatherManager.ResetTimer();
-      }
-
       // Do we need to reload the skin font set
       if (!m_strNewSkinFontSet.IsEmpty())
       {
@@ -665,10 +628,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       FillInSoundSkins(pSetting);
     }
-    else if (strSetting.Equals("region.language"))
-    {
-      FillInLanguages(pSetting);
-    }
 #ifdef _LINUX
     else if (strSetting.Equals("locale.timezonecountry"))
     {
@@ -754,8 +713,8 @@ void CGUIWindowSettingsCategory::CreateSettings()
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
       pControl->AddLabel(g_localizeStrings.Get(13113), SOFTWARE_UPSCALING_DISABLED);
-      pControl->AddLabel(g_localizeStrings.Get(13120), SOFTWARE_UPSCALING_SD_CONTENT);
-      //pControl->AddLabel(g_localizeStrings.Get(13115), SOFTWARE_UPSCALING_ALWAYS);
+      pControl->AddLabel(g_localizeStrings.Get(13114), SOFTWARE_UPSCALING_SD_CONTENT);
+      pControl->AddLabel(g_localizeStrings.Get(13115), SOFTWARE_UPSCALING_ALWAYS);
       pControl->SetValue(pSettingInt->GetData());
     }
     else if (strSetting.Equals("videoplayer.upscalingalgorithm"))
@@ -763,7 +722,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
       pControl->AddLabel(g_localizeStrings.Get(13117), VS_SCALINGMETHOD_BICUBIC_SOFTWARE);
-      //pControl->AddLabel(g_localizeStrings.Get(13118), VS_SCALINGMETHOD_LANCZOS_SOFTWARE);
+      pControl->AddLabel(g_localizeStrings.Get(13118), VS_SCALINGMETHOD_LANCZOS_SOFTWARE);
       //pControl->AddLabel(g_localizeStrings.Get(13119), VS_SCALINGMETHOD_SINC_SOFTWARE);
       pControl->SetValue(pSettingInt->GetData());
     }
@@ -900,10 +859,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(GetSetting(strSetting)->GetID());
       if (pSettingString->GetData().IsEmpty())
         pControl->SetLabel2(g_localizeStrings.Get(20009));
-    }
-    else if (strSetting.Equals("region.country"))
-    {
-      FillInRegions(pSetting);
     }
     else if (strSetting.Equals("musicfiles.viewmode"))
     {
@@ -1066,13 +1021,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
           pControl->SetEnabled(true);
 
           if (g_advancedSettings.m_fakeFullScreen == true)
-          {
-            int value = g_guiSettings.GetInt("videoscreen.displayblanking");
-            if (value == BLANKING_ALL_DISPLAYS && g_advancedSettings.m_fullScreen == true)
-              Cocoa_GL_BlankOtherDisplays(g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].iScreen);
-            else
-              Cocoa_GL_UnblankOtherDisplays(g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].iScreen);
-          }
+            CUtil::UpdateDisplayBlanking();
         }
         else
         {
@@ -1812,10 +1761,6 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   {
     JumpToSection(WINDOW_SETTINGS_SYSTEM, "cache");
   }
-  else if (strSetting.Equals("weather.jumptoregion"))
-  {
-    JumpToSection(WINDOW_SETTINGS_APPEARANCE, "region");
-  }
   else if (strSetting.Equals("lastfm.enable") || strSetting.Equals("lastfm.username") || strSetting.Equals("lastfm.password"))
   {
     if (g_guiSettings.GetBool("lastfm.enable") || g_guiSettings.GetBool("lastfm.recordtoprofile"))
@@ -2200,22 +2145,6 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       ILED::CLEDControl(iData);
 #endif
   }
-  else if (strSetting.Equals("region.language"))
-  { // new language chosen...
-    CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
-    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-    CStdString strLanguage = pControl->GetCurrentLabel();
-    if (strLanguage != ".svn" && strLanguage != pSettingString->GetData())
-    {
-      m_strNewLanguage = strLanguage;
-      g_application.DelayLoadSkin();
-    }
-    else
-    { // Do not reload the language we are already using
-      m_strNewLanguage.Empty();
-      g_application.CancelDelayLoadSkin();
-    }
-  }
   else if (strSetting.Equals("lookandfeel.skintheme"))
   { //a new Theme was chosen
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
@@ -2300,6 +2229,9 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   }
   else if (strSetting.Equals("screensaver.slideshowpath"))
   {
+    g_mediaManager.GetNetworkLocations(g_settings.m_pictureSources);
+    g_mediaManager.GetLocalDrives(g_settings.m_pictureSources);
+	  
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CStdString path = pSettingString->GetData();
     if (CGUIDialogFileBrowser::ShowAndGetDirectory(g_settings.m_pictureSources, g_localizeStrings.Get(pSettingString->m_iHeadingString), path))
@@ -2361,14 +2293,6 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     g_guiSettings.m_replayGain.iPreAmp = g_guiSettings.GetInt("musicplayer.replaygainpreamp");
     g_guiSettings.m_replayGain.iNoGainPreAmp = g_guiSettings.GetInt("musicplayer.replaygainnogainpreamp");
     g_guiSettings.m_replayGain.bAvoidClipping = g_guiSettings.GetBool("musicplayer.replaygainavoidclipping");
-  }
-  else if (strSetting.Equals("region.country"))
-  {
-    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-
-    const CStdString& strRegion=pControl->GetCurrentLabel();
-    g_langInfo.SetCurrentRegion(strRegion);
-    g_guiSettings.SetString("region.country", strRegion);
   }
   else if (strSetting.Equals("locale.timeserver") || strSetting.Equals("locale.timeserveraddress"))
   {
@@ -3214,7 +3138,6 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
     if (!pItem->m_bIsFolder)
     {
       CStdString strExtension;
-      printf("Trying %s\n", pItem->m_strPath.c_str());
       CUtil::GetExtension(pItem->m_strPath, strExtension);
       if (strExtension == ".vis")
       {
@@ -3268,7 +3191,7 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
 
   sort(vecVis.begin(), vecVis.end(), sortstringbyname());
 
-  // add the "disabled" setting first
+  // Add the "disabled" setting first
   int iVis = 0;
   int iCurrentVis = 0;
   {
@@ -3276,6 +3199,20 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
     msg.SetLabel(231);
     g_graphicsContext.SendMessage(msg);
   }
+  
+  // Now add the "Now Playing" pseudo-viz. FIXME, allow for localization.
+  {
+    CGUIMessage msg(GUI_MSG_LABEL_ADD, iWinID, iControlID, iVis);
+    msg.SetLabel("Now Playing");
+    g_graphicsContext.SendMessage(msg);
+    
+    if (strcmpi(msg.GetLabel().c_str(), strDefaultVis.c_str()) == 0)
+      iCurrentVis = iVis;
+    
+    iVis++;
+  }
+  
+  // Now add all the visualizers we found.
   for (int i = 0; i < (int) vecVis.size(); ++i)
   {
     CStdString strVis = vecVis[i];
@@ -3289,6 +3226,8 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
       g_graphicsContext.SendMessage(msg);
     }
   }
+  
+  // Now activate the selected one.
   {
     CGUIMessage msg(GUI_MSG_ITEM_SELECT, iWinID, iControlID, iCurrentVis);
     g_graphicsContext.SendMessage(msg);
@@ -3493,6 +3432,7 @@ void CGUIWindowSettingsCategory::FillInVSyncs(CSetting *pSetting)
 
 void CGUIWindowSettingsCategory::FillInLanguages(CSetting *pSetting)
 {
+#if 0
   CSettingString *pSettingString = (CSettingString*)pSetting;
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->Clear();
@@ -3529,6 +3469,7 @@ void CGUIWindowSettingsCategory::FillInLanguages(CSetting *pSetting)
   }
 
   pControl->SetValue(iCurrentLang);
+#endif
 }
 
 void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
@@ -3677,6 +3618,7 @@ bool CGUIWindowSettingsCategory::SetFTPServerUserPass()
 
 void CGUIWindowSettingsCategory::FillInRegions(CSetting *pSetting)
 {
+#if 0
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->SetType(SPIN_CONTROL_TYPE_TEXT);
   pControl->Clear();
@@ -3700,6 +3642,7 @@ void CGUIWindowSettingsCategory::FillInRegions(CSetting *pSetting)
   }
 
   pControl->SetValue(iCurrentRegion);
+#endif
 }
 
 CBaseSettingControl *CGUIWindowSettingsCategory::GetSetting(const CStdString &strSetting)

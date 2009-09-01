@@ -97,6 +97,7 @@ class CDateTime;
 #define PLAYER_CACHELEVEL            39
 #define PLAYER_STAR_RATING           40
 #define PLAYER_CHAPTERNAME           41
+#define PLAYER_HAS_MUSIC_PLAYLIST    42
 
 #define WEATHER_CONDITIONS          100
 #define WEATHER_TEMPERATURE         101
@@ -208,6 +209,9 @@ class CDateTime;
 #define MUSICPLAYER_HASNEXT         223
 #define MUSICPLAYER_EXISTS          224
 #define MUSICPLAYER_PLAYLISTPLAYING 225
+#define MUSICPLAYER_HAS_NEW_COVER_NEXT 226
+#define MUSICPLAYER_NEXT_NEW_COVER  227
+#define MUSICPLAYER_NOW_PLAYING_FLIPPED 228
 
 #define VIDEOPLAYER_TITLE             250
 #define VIDEOPLAYER_GENRE             251
@@ -394,6 +398,7 @@ class CDateTime;
 
 #define SLIDE_INFO_START            900
 #define SLIDE_INFO_END              980
+#define SLIDESHOW_SHOW_DESCRIPTION  990
 
 #define FANART_COLOR1               1000
 #define FANART_COLOR2               1001
@@ -606,7 +611,12 @@ public:
 
   void SetLaunchingXBEName(const CStdString &name) { m_launchingXBE = name; };
   void SetContainerMoving(int id, int direction) { m_containerMoves[id] = direction; };
-
+  
+  bool GetSlideshowShowDescription();
+  void SetSlideshowShowDescription(bool show);
+  
+  bool m_nowPlayingFlipped;
+  
 protected:
   // routines for window retrieval
   bool CheckWindowCondition(CGUIWindow *window, int condition) const;
@@ -645,6 +655,7 @@ protected:
   unsigned int m_MusicBitrate;
   CFileItem* m_currentSlide;
   int i_SmartRequest;
+  bool m_slideshowShowDescription;
  
   // fan stuff
   DWORD m_lastSysHeatInfoTime;

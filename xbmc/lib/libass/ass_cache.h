@@ -1,22 +1,24 @@
 // -*- c-basic-offset: 8; indent-tabs-mode: t -*-
 // vim:ts=8:sw=8:noet:ai:
 /*
-  Copyright (C) 2006 Evgeniy Stepanov <eugeni.stepanov@gmail.com>
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
-*/
+ * Copyright (C) 2006 Evgeniy Stepanov <eugeni.stepanov@gmail.com>
+ *
+ * This file is part of libass.
+ *
+ * libass is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * libass is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with libass; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
 
 #ifndef LIBASS_CACHE_H
 #define LIBASS_CACHE_H
@@ -40,6 +42,7 @@ typedef struct bitmap_hash_key_s {
 	unsigned outline; // border width, 16.16 fixed point value
 	int bold, italic;
 	char be; // blur edges
+	double blur; // gaussian blur
 
 	unsigned scale_x, scale_y; // 16.16
 	int frx, fry, frz; // signed 16.16
@@ -61,6 +64,27 @@ void* cache_add_bitmap(bitmap_hash_key_t* key, bitmap_hash_val_t* val);
 bitmap_hash_val_t* cache_find_bitmap(bitmap_hash_key_t* key);
 void ass_bitmap_cache_reset(void);
 void ass_bitmap_cache_done(void);
+
+
+// Cache for composited bitmaps
+typedef struct composite_hash_key_s {
+	int aw, ah, bw, bh;
+	int ax, ay, bx, by;
+	bitmap_hash_key_t a;
+	bitmap_hash_key_t b;
+} composite_hash_key_t;
+
+typedef struct composite_hash_val_s {
+	unsigned char* a;
+	unsigned char* b;
+} composite_hash_val_t;
+
+void ass_composite_cache_init(void);
+void* cache_add_composite(composite_hash_key_t* key, composite_hash_val_t* val);
+composite_hash_val_t* cache_find_composite(composite_hash_key_t* key);
+void ass_composite_cache_reset(void);
+void ass_composite_cache_done(void);
+
 
 // describes an outline glyph
 typedef struct glyph_hash_key_s {

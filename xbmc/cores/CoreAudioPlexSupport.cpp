@@ -42,7 +42,6 @@ PlexAudioDevice::PlexAudioDevice(AudioDeviceID deviceID)
     SAFELY(AudioDeviceGetProperty(deviceID, 0, false, kAudioDevicePropertyDeviceName, &paramSize, pStrName));
     if (err == noErr)
     {
-      printf("DevID: %p DevName: %s\n", deviceID, pStrName);
       m_deviceName = pStrName;
       
       // See if the device is writable (can output).
@@ -51,8 +50,6 @@ PlexAudioDevice::PlexAudioDevice(AudioDeviceID deviceID)
       // If the device does have output, see if it supports digital.
       if (m_hasOutput)
         m_supportsDigital = computeDeviceSupportsDigital();
-      else
-        printf("Skipping input-only device %s\n", m_deviceName.c_str());
       
       m_isValid = true;
     }
@@ -125,7 +122,6 @@ bool PlexAudioDevice::computeStreamSupportsDigital(AudioStreamID streamID)
     {
       for(int i=0; i<numFormats && ret == false; i++)
       {
-        //CLog::Log(LOGDEBUG, STREAM_FORMAT_MSG(" * Supported format: ", pFormatList[i]));
         if (pFormatList[i].mFormatID == 'IAC3' || pFormatList[i].mFormatID == kAudioFormat60958AC3)
           ret = true;
       }
@@ -142,6 +138,45 @@ void PlexAudioDevice::setDefault()
 {
   OSStatus err = noErr;
   SAFELY(AudioHardwareSetProperty(kAudioHardwarePropertyDefaultOutputDevice, sizeof (UInt32), &m_deviceID));
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void PlexAudioDevice::reset()
+{
+  OSStatus err = noErr;
+  UInt32   paramSize = 0;
+  AudioStreamBasicDescription deviceFormat;
+
+  // Set up the basic default format.
+  deviceFormat.mSampleRate = 48000.0;
+  deviceFormat.mFormatID = kAudioFormatLinearPCM;
+  deviceFormat.mFormatFlags = kLinearPCMFormatFlagIsSignedInteger | kAudioFormatFlagIsPacked;
+  deviceFormat.mBitsPerChannel = 16;
+  deviceFormat.mChannelsPerFrame = 2;
+  deviceFormat.mFramesPerPacket = 1;
+  deviceFormat.mBytesPerFrame = 4;
+  deviceFormat.mBytesPerPacket = 4;
+  deviceFormat.mReserved = 0;
+  
+  // Retrieve all the output streams.
+  SAFELY(AudioDeviceGetPropertyInfo(m_deviceID, 0, FALSE, kAudioDevicePropertyStreams, &paramSize, NULL));
+  if (err == noErr)
+  {
+    int numStreams = paramSize / sizeof(AudioStreamID);
+    AudioStreamID* pStreams = (AudioStreamID *)malloc(paramSize);
+
+    SAFELY(AudioDeviceGetProperty(m_deviceID, 0, FALSE, kAudioDevicePropertyStreams, &paramSize, pStreams));
+    if (err == noErr)
+    {
+      for (int i=0; i<numStreams; i++)
+      {
+        // Change the format.
+        SAFELY(AudioStreamSetProperty(pStreams[i], 0, 0, kAudioStreamPropertyPhysicalFormat, sizeof(AudioStreamBasicDescription), &deviceFormat));
+      }
+    }
+
+    free(pStreams);
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////

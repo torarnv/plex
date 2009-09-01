@@ -41,7 +41,7 @@ public:
 class CBackgroundInfoLoader : public IRunnable
 {
 public:
-  CBackgroundInfoLoader(int nThreads=-1);
+  CBackgroundInfoLoader(int nThreads=-1, int pauseBetweenLoadsInMS=0);
   virtual ~CBackgroundInfoLoader();
 
   void Load(CFileItemList& items);
@@ -52,6 +52,7 @@ public:
   virtual bool LoadItem(CFileItem* pItem) { return false; };
 
   void StopThread(); // will actually stop all worker threads.
+  void StopAsync();  // will ask loader to stop as soon as possible, but not block
 
   void SetNumOfWorkers(int nThreads); // -1 means auto compute num of required threads
 
@@ -65,9 +66,10 @@ protected:
 
   bool m_bStartCalled;
   bool m_bRunning;
-  bool m_bStop;
+  volatile bool m_bStop;
   int  m_nRequestedThreads;
   int  m_nActiveThreads;
+  int  m_pauseBetweenLoadsInMS;
 
   IBackgroundLoaderObserver* m_pObserver;
   IProgressCallback* m_pProgressCallback;

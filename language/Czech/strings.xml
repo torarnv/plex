@@ -1,8 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Language file translated with Team XBMC Translator-->
-<!--Translator: ezechiel1917-->
-<!--Date of translation: 10/15/2008-->
-<!--$Revision$-->
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
   <string id="0">Programy</string>
   <string id="1">Obrázky</string>
@@ -12,7 +8,7 @@
   <string id="5">Nastavení</string>
   <string id="7">Manažer</string>
   <string id="8">Počasí</string>
-  <string id="9">xbmc media center</string>
+  <string id="9">Plex media center</string>
   <string id="11">pondělí</string>
   <string id="12">úterý</string>
   <string id="13">středa</string>
@@ -196,7 +192,7 @@
   <string id="260">Shoutcast</string>
   <string id="261">Probíhá příprava spuštění...</string>
   <string id="262">Výstup skriptů</string>
-  <string id="263">Povolit webový server XBMC:</string>
+  <string id="263">Povolit webový server Plex:</string>
   <string id="264">Nahrávat</string>
   <string id="265">Ukončit nahrávání</string>
   <string id="266">Dle stopy</string>
@@ -406,7 +402,7 @@
   <string id="479">Vzhled &amp; Jazyk</string>
   <string id="480">Prostředí</string>
   <string id="481">Zvuk</string>
-  <string id="482">O xbmc</string>
+  <string id="482">O Plex</string>
   <string id="483">Album</string>
   <string id="484">Interpret</string>
   <string id="485">Odebrat album</string>
@@ -418,7 +414,7 @@
   <string id="492">Velikost Vobsubs</string>
   <string id="493">Pokročilá nastavení (Pouze pro experty!)</string>
   <string id="494">Celková hlasitost</string>
-  <string id="495">Přepočítávat videa do rozlišení graf. rozhraní XBMC</string>
+  <string id="495">Přepočítávat videa do rozlišení graf. rozhraní Plex</string>
   <string id="496">Kalibrace</string>
   <string id="497">Nezobrazovat přípony médií</string>
   <string id="498">Dle typu</string>
@@ -660,7 +656,7 @@
   <string id="999">Online hry</string>
   <string id="1000">Náhled spořiče obrazovky</string>
   <string id="1001">Nemohu se připojit.</string>
-  <string id="1002">XBMC se nepodařilo připojit k síťovému prostředku.</string>
+  <string id="1002">Plex se nepodařilo připojit k síťovému prostředku.</string>
   <string id="1003">Je možné, že síť není připojena.</string>
   <string id="1004">Chcete ho přesto přidat?</string>
   <string id="1005">Zadejte název pro tuto sdílenou složku</string>
@@ -929,7 +925,7 @@
   <string id="12391">minut</string>
   <string id="12392">hodin</string>
   <string id="12393">dní</string>
-  <string id="12394">Celková doba používaní XBMC</string>
+  <string id="12394">Celková doba používaní Plex</string>
   <string id="12600">Počasí</string>
   <string id="12900">Spořič obrazovky</string>
   <string id="12901">Celoobrazovkové OSD</string>
@@ -945,7 +941,7 @@
   <string id="13009">Ukončit</string>
   <string id="13010">Režim spánku</string>
   <string id="13011">Úsporný režim</string>
-  <string id="13012">Ukončit XBMC</string>
+  <string id="13012">Ukončit Plex</string>
   <string id="13013">Restartovat</string>
   <string id="13100">Filtr blikání</string>
   <string id="13101">Ponechat nastavení ovladače (vyžaduje restart)</string>
@@ -969,10 +965,10 @@
   <string id="13132">Povolit blikání</string>
   <string id="13140">Nalezeny aktivní spojení!</string>
   <string id="13141">V případě, že budete pokračovat je pravděpodobné že nebudete</string>
-  <string id="13142">moct nadále ovládat XBMC. Opravdu chcete ukončit Event Server.</string>
+  <string id="13142">moct nadále ovládat Plex. Opravdu chcete ukončit Event Server.</string>
   <string id="13144">Chcete změnit mód Dálkového ovladače Apple?</string>
   <string id="13145">V případě, že používáte Dálkový ovladač Apple</string>
-  <string id="13146">k ovládání XBMC, změnou tohoto nastavení můžete</string>
+  <string id="13146">k ovládání Plex, změnou tohoto nastavení můžete</string>
   <string id="13147">přijít o možnost ovládání. Opravdu chcete pokračovat?</string>
   <string id="13150">Klíč:</string>
   <string id="13151">Teplota:</string>
@@ -1051,7 +1047,7 @@
   <string id="13306">Nezobrazovat položku pro návrat o složku zpět (..)</string>
   <string id="13307">Způsob zobrazení názvu stopy</string>
   <string id="13308">Opravdu chcete restartovat XBOX</string>
-  <string id="13309">místo XBMC?</string>
+  <string id="13309">místo Plex?</string>
   <string id="13310">Efekt přiblížení</string>
   <string id="13311">Efekt splynutí</string>
   <string id="13312">Redukce černých krajů</string>
@@ -1196,7 +1192,7 @@ není k dispozici žádné nastavení</string>
   <string id="14037">Nastavení</string>
   <string id="14038">Nastavení sítě bylo změněno</string>
   <string id="14039">Změna síťového nastavení vyžaduje</string>
-  <string id="14040">restart XBMC. Chcete ho provést nyní?</string>
+  <string id="14040">restart Plex. Chcete ho provést nyní?</string>
   <string id="14041">Post Processing</string>
   <string id="14042">IP adresa KAI enginu</string>
   <string id="14043">- Aktivovat vypnutí v případě že je hra spuštěna</string>
@@ -1274,9 +1270,9 @@ není k dispozici žádné nastavení</string>
   <string id="15034">se pravě přihlásil</string>
   <string id="15035">inicioval hlasový chat</string>
   <string id="15036">vám poslal pozvánku</string>
-  <string id="15037">XBMC nemůže potvrdit že síť je dostupná.</string>
+  <string id="15037">Plex nemůže potvrdit že síť je dostupná.</string>
   <string id="15038">Připojení ke hrám nebo jejich hostování nemusí být vždy funkční.</string>
-  <string id="15039">XBMC nenalezl hru ve složce s hrami.</string>
+  <string id="15039">Plex nenalezl hru ve složce s hrami.</string>
   <string id="15040">Vložte do XBOXu DVD s hrou nebo stiskněte 'A' pro storno</string>
   <string id="15041">a spusťte hru manuálně z jejího umístění.</string>
   <string id="15042">Přístup byl zamítnut</string>
@@ -1316,7 +1312,7 @@ není k dispozici žádné nastavení</string>
   <string id="15202">Last.FM - Uživatelské jméno</string>
   <string id="15203">Last.FM - Heslo</string>
   <string id="15204">Nepovolená operace: Probíhá ukončování...</string>
-  <string id="15205">Aktualizujte prosím XBMC</string>
+  <string id="15205">Aktualizujte prosím Plex</string>
   <string id="15206">Neuspěšná autorizace: Zkontrolujte uživ. jméno a heslo</string>
   <string id="15207">Připojeno</string>
   <string id="15208">Nepřipojeno</string>
@@ -1453,7 +1449,7 @@ není k dispozici žádné nastavení</string>
   <string id="20006">Složka se Seznamem stop</string>
   <string id="20007">Nahrané</string>
   <string id="20008">Screenshoty</string>
-  <string id="20009">Použít XBMC</string>
+  <string id="20009">Použít Plex</string>
   <string id="20010">Obrázek Interpreta</string>
   <string id="20011">Seznam stop - Hudba</string>
   <string id="20012">Seznam stop - Video</string>
@@ -1648,7 +1644,7 @@ není k dispozici žádné nastavení</string>
   </string>
   <string id="20305">
   </string>
-  <string id="20306">Neznámá. Prosím přidejt MD5 ze souboru xbmc.log do BiosIDs.ini.</string>
+  <string id="20306">Neznámá. Prosím přidejt MD5 ze souboru Plex.log do BiosIDs.ini.</string>
   <string id="20307">Sekundární DNS</string>
   <string id="20308">DHCP Server:</string>
   <string id="20309">Vytvořit novou složku</string>

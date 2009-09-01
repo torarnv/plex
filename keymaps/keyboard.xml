@@ -1,0 +1,492 @@
+<keymap>
+  <global>
+    <keyboard>
+      <p>Play</p>
+      <q>Queue</q>
+      <f>FastForward</f>
+      <r>Rewind</r>
+      <h>Plex.ActivateWindow(Home)</h>
+      <left>Left</left>
+      <right>Right</right>
+      <up>Up</up>
+      <down>Down</down>
+      <pageup>PageUp</pageup>
+      <pagedown>PageDown</pagedown>
+      <return>Select</return>
+	  <enter>Select</enter>
+      <backspace>ParentDir</backspace>
+      <m>ActivateWindow(PlayerControls)</m>
+      <s>ActivateWindow(shutdownmenu)</s>
+      <escape>PreviousMenu</escape>
+      <i>Info</i>
+      <c>ContextMenu</c>
+      <space>Pause</space>
+      <x>Stop</x>
+      <period>SkipNext</period>
+      <comma>SkipPrevious</comma>
+      <tab>FullScreen</tab>
+      <printscreen>Screenshot</printscreen>
+      <minus>VolumeDown</minus>
+      <plus>VolumeUp</plus>
+      <zero>Number0</zero>
+      <one>Number1</one>
+      <two>Number2</two>
+      <three>Number3</three>
+      <four>Number4</four>
+      <five>Number5</five>
+      <six>Number6</six>
+      <seven>Number7</seven>
+      <eight>Number8</eight>
+      <nine>Number9</nine>
+      <backslash>ToggleFullScreen</backslash>
+      <browser_home>Plex.ActivateWindow(Home)</browser_home>
+      <browser_favorites>ActivateWindow(Favourites)</browser_favorites>
+      <browser_refresh/>
+      <browser_search/>
+      <launch_app1_pc_icon>ActivateWindow(MyPrograms)</launch_app1_pc_icon>
+      <launch_media_select>Plex.ActivateWindow(MyMusic)</launch_media_select>
+      <play_pause>Pause</play_pause>
+      <stop>Stop</stop>
+      <volume_up>VolumeUp</volume_up>
+      <volume_mute>Mute</volume_mute>
+      <volume_down>VolumeDown</volume_down>
+      <next_track>SkipNext</next_track>
+      <prev_track>SkipPrevious</prev_track>
+      <launch_mail/>
+      <key id="61620"/> <!-- same as above, launch_mail, but using button code (based on vkey id) -->
+      <home>Home</home>
+      <end>End</end>
+      <f1>PreviousMenu</f1>
+      <f2>ActivateWindow(PlayerControls)</f2>
+      <f3>Right</f3>
+      <f4>ScrollUp</f4>
+      <f5>ScrollDown</f5>
+      <f6>Info</f6>
+      <f7>ContextMenu</f7>
+      <a>PrevLetter</a>
+      <z>NextLetter</z>
+    </keyboard>
+  </global>
+
+  <Home>
+    <keyboard>
+      <i>info</i>
+    </keyboard>
+  </Home>
+  
+  <MyFiles>
+    <keyboard>
+      <space>Highlight</space>
+      <delete>Delete</delete>
+	  <c>ContextMenu</c>
+      <p>Copy</p>
+      <m>Move</m>
+      <r>Rename</r>
+      <f1>ParentDir</f1>
+      <escape>ParentDir</escape> 
+    </keyboard>
+  </MyFiles>
+  
+  <MyMusicPlaylist>
+    <keyboard>
+      <space>Playlist</space> <!-- Close playlist -->
+      <delete>Delete</delete>
+      <u>MoveItemUp</u>
+      <d>MoveItemDown</d>
+    </keyboard>
+  </MyMusicPlaylist>
+
+  <MyMusicPlaylistEditor>
+  </MyMusicPlaylistEditor>
+  
+  <MyMusicFiles>
+    <keyboard>
+      <space>Playlist</space>
+      <q>Queue</q>
+      <f1>ParentDir</f1>
+      <f3>Queue</f3>
+      <escape>ParentDir</escape> 
+    </keyboard>
+  </MyMusicFiles>
+
+  <MyMusicLibrary>
+    <keyboard>
+      <space>Playlist</space>
+      <q>Queue</q>
+      <f1>ParentDir</f1>
+    </keyboard>
+  </MyMusicLibrary>
+
+  <FullscreenVideo>
+     <keyboard>
+      <f>FastForward</f>
+      <r>Rewind</r>
+      <h>Stop</h>
+      <backspace>SmallStepBack</backspace>
+      <opensquarebracket>BigStepBack</opensquarebracket>
+      <closesquarebracket>BigStepForward</closesquarebracket>
+      <return>Pause</return>
+      <m>OSD</m>
+      <i>CodecInfo</i>
+      <t>Info</t>
+      <o>ShowTime</o>
+      <z>AspectRatio</z>
+      <s>ShowSubtitles</s>
+      <l>NextSubtitle</l>      
+      <left>StepBack</left>
+      <right>StepForward</right>
+      <up>BigStepForward</up>
+      <down>BigStepBack</down>
+      <a>AudioNextLanguage</a>
+      <f1>OSD</f1>
+      <f2>Rewind</f2>
+      <f3>FastForward</f3>
+      <f4>VolumeUp</f4>
+      <f5>VolumeDown</f5>
+      <f6>Info</f6>
+      <f7>Stop</f7>
+      <escape>Stop</escape> 
+    </keyboard>
+ </FullscreenVideo>
+
+  <FullscreenInfo>
+    <keyboard>
+      <f>FastForward</f>
+      <r>Rewind</r>
+      <period>StepForward</period>
+      <backspace>Close</backspace>
+      <t>Close</t>
+      <i>CodecInfo</i>
+    </keyboard>
+  </FullscreenInfo>
+
+  <PlayerControls>
+	<keyboard>
+    	<m>close</m>
+	</keyboard>
+  </PlayerControls>
+
+  <Visualisation>
+    <keyboard>
+      <f>FastForward</f>
+      <r>Rewind</r>
+      <period>SkipNext</period>
+      <comma>SkipPrevious</comma>
+      <return>ActivateWindow(MusicOSD)</return>
+      <m>ActivateWindow(MusicOSD)</m>
+      <i>CodecInfo</i>
+      <t>Info</t>
+      <p>ActivateWindow(VisualisationPresetList)</p>
+      <v>ActivateWindow(VisualisationSettings)</v>
+      <n>ActivateWindow(MusicPlaylist)</n>
+      <left>SkipPrevious</left>
+      <right>SkipNext</right>
+      <up>IncreaseRating</up>
+      <down>DecreaseRating</down>
+      <!--<back>NextPreset</back>!-->
+      <s>ShowPreset</s>
+      <l>LockPreset</l>
+      <f1>Plex.ActivateWindow(MusicOSD)</f1>
+      <f2>Rewind</f2>
+      <f3>FastForward</f3>
+      <f4>VolumeUp</f4>
+      <f5>VolumeDown</f5>
+      <f6>Info</f6>
+      <f7>Plex.ActivateWindow(MyMusic)</f7>
+      <escape>FullScreen</escape>  
+      <f1>FullScreen</f1>
+    </keyboard>
+  </Visualisation>
+
+  <MusicOSD>
+    <keyboard>
+      <f>FastForward</f>
+      <r>Rewind</r>
+      <period>SkipNext</period>
+      <comma>SkipPrevious</comma>
+      <m>Close</m>
+      <i>CodecInfo</i>
+      <t>Info</t>
+      <p>ActivateWindow(VisualisationPresetList)</p>
+      <v>ActivateWindow(VisualisationSettings)</v>
+      <n>ActivateWindow(MusicPlaylist)</n>
+      <f7>stop</f7>
+      <escape>Close</escape> 
+    </keyboard>
+  </MusicOSD>
+
+  <VisualisationSettings>
+    <keyboard>
+      <f>FastForward</f>
+      <r>Rewind</r>
+      <period>SkipNext</period>
+      <comma>SkipPrevious</comma>
+      <m>Close</m>
+      <i>CodecInfo</i>
+      <t>Info</t>
+      <p>ActivateWindow(VisualisationPresetList)</p>
+      <v>Close</v>
+      <n>ActivateWindow(MusicPlaylist)</n>
+      <f7>stop</f7>
+    </keyboard>
+  </VisualisationSettings>
+
+  <VisualisationPresetList>
+    <keyboard>
+      <f>FastForward</f>
+      <r>Rewind</r>
+      <period>SkipNext</period>
+      <comma>SkipPrevious</comma>
+      <m>Close</m>
+      <i>CodecInfo</i>
+      <t>Info</t>
+      <p>Close</p>
+      <v>Close</v>
+      <n>ActivateWindow(MusicPlaylist)</n>
+      <f7>stop</f7>
+    </keyboard>
+  </VisualisationPresetList>
+
+  <SlideShow>
+    <keyboard>
+      <zero>ZoomNormal</zero>
+      <one>ZoomLevel1</one>
+      <two>ZoomLevel2</two>
+      <three>ZoomLevel3</three>
+      <four>ZoomLevel4</four>
+      <five>ZoomLevel5</five>
+      <six>ZoomLevel6</six>
+      <seven>ZoomLevel7</seven>
+      <eight>ZoomLevel8</eight>
+      <nine>ZoomLevel9</nine>
+      <i>CodecInfo</i>
+      <t>Info</t>
+      <period>NextPicture</period>
+      <comma>PreviousPicture</comma>
+      <plus>ZoomIn</plus>
+      <minus>ZoomOut</minus>
+      <r>Rotate</r>
+      <p>Pause</p>
+      <f5>ZoomOut</f5>
+      <f4>ZoomIn</f4>
+    </keyboard>
+  </SlideShow>
+
+  <ScreenCalibration>
+    <keyboard>
+      <return>NextCalibration</return>
+      <d>ResetCalibration</d>
+      <r>NextResolution</r>
+      <f5>NextCalibration</f5>
+      <f3>NextResolution</f3>
+    </keyboard>
+  </ScreenCalibration>
+
+  <GUICalibration>
+    <keyboard>
+      <return>NextCalibration</return>
+      <d>ResetCalibration</d>
+      <f5>NextCalibration</f5>
+    </keyboard>
+  </GUICalibration>
+
+  <SelectDialog>
+    <keyboard>
+      <escape>Close</escape>
+    </keyboard>
+  </SelectDialog>
+  
+  <VideoOSD>
+    <keyboard>
+      <backspace>HideSubMenu</backspace>
+      <escape>Close</escape>
+    </keyboard>
+  </VideoOSD>
+
+  <VideoMenu>
+    <keyboard>
+      <return>OSD</return>
+      <backspace>PreviousMenu</backspace>
+      <f1>OSD</f1>
+    </keyboard>
+  </VideoMenu>
+
+  <OSDVideoSettings>
+    <keyboard>
+      <backspace>HideSubMenu</backspace>
+      <escape>Close</escape>
+    </keyboard>
+  </OSDVideoSettings>
+
+  <OSDAudioSettings>
+    <keyboard>
+      <backspace>HideSubMenu</backspace>
+      <escape>Close</escape>
+    </keyboard>
+  </OSDAudioSettings>
+
+  <VideoBookmarks>
+    <keyboard>
+      <backspace>HideSubMenu</backspace>
+      <escape>Close</escape>
+      <delete>Delete</delete>
+    </keyboard>
+  </VideoBookmarks>
+
+  <MyVideoLibrary>
+    <keyboard>
+      <delete>Delete</delete>
+      <space>Playlist</space>
+      <w>ToggleWatched</w>
+      <f1>ParentDir</f1>
+      <escape>ParentDir</escape> 
+    </keyboard>
+  </MyVideoLibrary>
+
+  <MyVideoFiles>
+    <keyboard>
+      <space>Playlist</space>
+      <f1>ParentDir</f1>
+      <q>Queue</q>
+      <escape>ParentDir</escape>  
+    </keyboard>
+  </MyVideoFiles>
+
+  <MyVideoPlaylist>
+    <keyboard>
+      <space>Playlist</space> <!-- Close playlist -->
+      <delete>Delete</delete>
+      <u>MoveItemUp</u>
+      <d>MoveItemDown</d>
+      <f1>Playlist</f1> <!-- Close playlist -->
+      <f2>MoveItemUp</f2>
+      <f3>MoveItemDown</f3>
+      <f7>Delete</f7>
+      <escape>Playlist</escape> 
+    </keyboard>
+  </MyVideoPlaylist>
+
+  <VirtualKeyboard>
+  </VirtualKeyboard>
+
+  <MyPictures>
+   <keyboard>
+    <escape>ParentDir</escape> 
+    <f1>ParentDir</f1>
+   </keyboard>
+  </MyPictures>
+
+  <MyPrograms>
+    <keyboard>
+      <escape>ParentDir</escape>
+      <f1>ParentDir</f1>
+    </keyboard>
+  </MyPrograms>
+
+  <ContextMenu>
+    <keyboard>
+      <menu>Close</menu>
+    </keyboard>
+  </ContextMenu>
+
+  <FileStackingDialog>
+  </FileStackingDialog>
+
+  <Scripts>
+    <keyboard>
+      <i>Plex.ActivateWindow(ScriptsDebugInfo)</i>
+    </keyboard>
+  </Scripts>
+
+  <ScriptsDebugInfo>
+    <keyboard>
+      <i>Info</i> <!-- clears debug python info -->
+    </keyboard>
+  </ScriptsDebugInfo>
+
+  <NumericInput>
+  </NumericInput>
+
+  <Weather>
+  </Weather>
+
+  <Settings>
+  </Settings>
+
+  <MyPicturesSettings>
+  </MyPicturesSettings>
+
+  <MyProgramsSettings>
+  </MyProgramsSettings>
+
+  <MyWeatherSettings>
+  </MyWeatherSettings>
+
+  <MyMusicSettings>
+  </MyMusicSettings>
+
+  <SystemSettings>
+  </SystemSettings>
+
+  <MyVideosSettings>
+  </MyVideosSettings>
+
+  <NetworkSettings>
+  </NetworkSettings>
+
+  <AppearanceSettings>
+  </AppearanceSettings>
+
+  <Profiles>
+  </Profiles>
+
+  <systeminfo>
+  </systeminfo>
+
+  <shutdownmenu>
+  </shutdownmenu>
+
+  <submenu>
+  </submenu>
+
+  <MusicInformation>
+    <keyboard>
+	  <escape>Close</escape> 
+	</keyboard>
+  </MusicInformation>
+
+  <MovieInformation>
+     <keyboard>
+       <escape>Close</escape> 
+     </keyboard>
+ </MovieInformation>
+
+  <LockSettings>
+  </LockSettings>
+
+  <ProfileSettings>
+  </ProfileSettings>
+  
+  <PictureInfo>
+    <keyboard>
+      <period>NextPicture</period>
+      <comma>PreviousPicture</comma>
+      <i>Close</i>
+      <space>Pause</space>
+      <escape>Close</escape> 
+    </keyboard>
+  </PictureInfo>
+
+	<NowPlaying>
+		<keyboard>
+			<left>SkipPrevious</left>
+    	<right>SkipNext</right>
+	<return>Pause</return>
+	<f7>Stop</f7>
+        <f2>Rewind</f2>
+        <f3>FastForward</f3>
+	<f4>VolumeUp</f4>
+        <f5>VolumeDown</f5>
+		</keyboard>
+	</NowPlaying>
+</keymap>

@@ -78,6 +78,7 @@
 #include "GUIWindowMusicInfo.h"
 #ifdef __APPLE__
 #include "CocoaUtils.h"
+#include "CocoaUtilsPlus.h"
 #endif
 
 using namespace std;
@@ -85,6 +86,7 @@ using namespace XFILE;
 using namespace DIRECTORY;
 using namespace MEDIA_DETECT;
 using namespace MUSIC_INFO;
+using namespace PLAYLIST;
 
 CGUIInfoManager g_infoManager;
 
@@ -112,6 +114,8 @@ CGUIInfoManager::CGUIInfoManager(void)
   m_frameCounter = 0;
   m_frameClumpTime = 0;
   m_fps = 0.0;
+  m_slideshowShowDescription = false;
+  m_nowPlayingFlipped = false;
 }
 
 CGUIInfoManager::~CGUIInfoManager(void)
@@ -186,6 +190,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     if (strTest.Equals("player.hasmedia")) ret = PLAYER_HAS_MEDIA;
     else if (strTest.Equals("player.hasaudio")) ret = PLAYER_HAS_AUDIO;
     else if (strTest.Equals("player.hasvideo")) ret = PLAYER_HAS_VIDEO;
+    else if (strTest.Equals("player.hasmusicplaylist")) ret = PLAYER_HAS_MUSIC_PLAYLIST;
     else if (strTest.Equals("player.playing")) ret = PLAYER_PLAYING;
     else if (strTest.Equals("player.paused")) ret = PLAYER_PAUSED;
     else if (strTest.Equals("player.rewinding")) ret = PLAYER_REWINDING;
@@ -587,7 +592,10 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("lastfm.canban")) ret = LASTFM_CANBAN;
   }
   else if (strCategory.Equals("slideshow"))
-    ret = CPictureInfoTag::TranslateString(strTest.Mid(strCategory.GetLength() + 1));
+  {
+    if (strTest.Equals("slideshow.showdescription")) ret = SLIDESHOW_SHOW_DESCRIPTION;
+    else ret = CPictureInfoTag::TranslateString(strTest.Mid(strCategory.GetLength() + 1));
+  }
   else if (strCategory.Left(9).Equals("container"))
   {
     int id = atoi(strCategory.Mid(10, strCategory.GetLength() - 11));
@@ -906,6 +914,9 @@ int CGUIInfoManager::TranslateMusicPlayerString(const CStdString &info) const
   else if (info.Equals("exists")) return MUSICPLAYER_EXISTS;
   else if (info.Equals("hasprevious")) return MUSICPLAYER_HASPREVIOUS;
   else if (info.Equals("hasnext")) return MUSICPLAYER_HASNEXT;
+  else if (info.Equals("hasnewcovernext")) return MUSICPLAYER_HAS_NEW_COVER_NEXT;
+  else if (info.Equals("nextnewcover")) return MUSICPLAYER_NEXT_NEW_COVER;
+  else if (info.Equals("nowplayingflipped")) return MUSICPLAYER_NOW_PLAYING_FLIPPED;
   return 0;
 }
 
@@ -918,6 +929,10 @@ TIME_FORMAT CGUIInfoManager::TranslateTimeFormat(const CStdString &format)
   else if (format.Equals("(hh:mm)")) return TIME_FORMAT_HH_MM;
   else if (format.Equals("(mm:ss)")) return TIME_FORMAT_MM_SS;
   else if (format.Equals("(hh:mm:ss)")) return TIME_FORMAT_HH_MM_SS;
+#ifdef __APPLE__
+  else if (format.Equals("(short)")) return TIME_FORMAT_SHORT;
+  else if (format.Equals("(short_no_meridian)")) return TIME_FORMAT_SHORT_NO_MERIDIAN;
+#endif
   return TIME_FORMAT_GUESS;
 }
 
@@ -1339,7 +1354,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
     strLabel = g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getName();
     break;
   case SYSTEM_LANGUAGE:
-    strLabel = g_guiSettings.GetString("region.language");
+    strLabel = g_settings.GetLanguage();
     break;
   case SYSTEM_PROGRESS_BAR:
     {
@@ -1925,6 +1940,37 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
         bReturn = condition == CONTAINER_ON_NEXT ? it->second > 0 : it->second < 0;
     }
   }
+  else if (condition == SLIDESHOW_SHOW_DESCRIPTION)
+  {
+    bReturn = m_slideshowShowDescription;
+  }
+  else if (condition == MUSICPLAYER_NOW_PLAYING_FLIPPED)
+  {
+    bReturn = m_nowPlayingFlipped;
+  }
+  else if (condition == MUSICPLAYER_HAS_NEW_COVER_NEXT)
+  {
+    bReturn = false;
+    if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC)
+    {
+      if (g_playlistPlayer.GetCurrentSong() < (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() - 1))
+      {
+        CPlayList playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
+        bReturn = !playlist[g_playlistPlayer.GetCurrentSong()]->GetThumbnailImage().Equals(playlist[g_playlistPlayer.GetNextSong()]->GetThumbnailImage());
+      }
+    }
+  }
+  else if (condition == MUSICPLAYER_HASNEXT)
+  {
+    // requires current playlist be PLAYLIST_MUSIC
+    bReturn = false;
+    if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC)
+      bReturn = (g_playlistPlayer.GetCurrentSong() < (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() - 1)); // not last song
+  }
+  else if (condition == PLAYER_HAS_MUSIC_PLAYLIST)
+  {
+    bReturn = (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC);
+  }
   else if (g_application.IsPlaying())
   {
     switch (condition)
@@ -2021,18 +2067,11 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
       break;
     case MUSICPLAYER_HASPREVIOUS:
       {
+        // TODO: Maybe move this outside the IsPlaying block too?
         // requires current playlist be PLAYLIST_MUSIC
         bReturn = false;
         if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC)
           bReturn = (g_playlistPlayer.GetCurrentSong() > 0); // not first song
-      }
-      break;
-    case MUSICPLAYER_HASNEXT:
-      {
-        // requires current playlist be PLAYLIST_MUSIC
-        bReturn = false;
-        if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC)
-          bReturn = (g_playlistPlayer.GetCurrentSong() < (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() - 1)); // not last song
       }
       break;
     case MUSICPLAYER_PLAYLISTPLAYING:
@@ -2516,6 +2555,22 @@ CStdString CGUIInfoManager::GetImage(int info, DWORD contextWindow)
     if (!g_application.IsPlayingAudio()) return "";
     return m_currentFile->HasThumbnail() ? m_currentFile->GetThumbnailImage() : "defaultAlbumCover.png";
   }
+  else if (info == MUSICPLAYER_NEXT_NEW_COVER)
+  {
+    if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC)
+    {
+      if (g_playlistPlayer.GetCurrentSong() < (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() - 1))
+      {
+        CPlayList playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
+        for (int i=g_playlistPlayer.GetCurrentSong()+1; i < g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size(); i++)
+        {
+          if (!playlist[g_playlistPlayer.GetCurrentSong()]->GetThumbnailImage().Equals(playlist[i]->GetThumbnailImage()))
+            return playlist[i]->GetThumbnailImage();
+        }
+      }
+    }
+    return "";
+  }
   else if (info == MUSICPLAYER_RATING)
   {
     if (!g_application.IsPlayingAudio()) return "";
@@ -2665,6 +2720,12 @@ CStdString CGUIInfoManager::LocalizeTime(const CDateTime &time, TIME_FORMAT form
     return time.GetAsLocalizedTime(use12hourclock ? "h:mm" : "HH:mm", false);
   case TIME_FORMAT_HH_MM_SS:
     return time.GetAsLocalizedTime("", true);
+#ifdef __APPLE__
+  case TIME_FORMAT_SHORT:
+    return time.GetAsLocalizedTime(Cocoa_GetTimeFormat(true), true);
+  case TIME_FORMAT_SHORT_NO_MERIDIAN:
+    return time.GetAsLocalizedTime(Cocoa_GetTimeFormat(false), true);
+#endif
   default:
     break;
   }
@@ -4104,6 +4165,16 @@ void CGUIInfoManager::SetCurrentSongTag(const MUSIC_INFO::CMusicInfoTag &tag)
   //CLog::Log(LOGDEBUG, "Asked to SetCurrentTag");
   *m_currentFile->GetMusicInfoTag() = tag; 
   m_currentFile->m_lStartOffset = 0;
+}
+
+bool CGUIInfoManager::GetSlideshowShowDescription()
+{
+  return m_slideshowShowDescription;
+}
+
+void CGUIInfoManager::SetSlideshowShowDescription(bool show)
+{
+  m_slideshowShowDescription = show;
 }
 
 const CFileItem& CGUIInfoManager::GetCurrentSlide() const

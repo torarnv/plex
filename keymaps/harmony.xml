@@ -1,0 +1,472 @@
+<keymap>
+  <global>
+    <harmonyremote>
+      <play>Play</play>
+      <pause>Pause</pause>
+      <stop>Stop</stop>
+      <forward>FastForward</forward>
+      <rewind>Rewind</rewind>
+      <left>Left</left>
+      <right>Right</right>
+      <up>Up</up>
+      <down>Down</down>
+      <ok>Select</ok>
+      <prev>ParentDir</prev>
+      <menu>ContextMenu</menu>
+      <exit>PreviousMenu</exit>
+      <info>Info</info>
+      <skip>SkipNext</skip>
+      <replay>SkipPrevious</replay>
+      <guide>FullScreen</guide>
+      <record>Screenshot</record>
+      <volumeplus>VolumeUp</volumeplus>
+      <volumeminus>VolumeDown</volumeminus>
+      <channelplus>PageUp</channelplus>
+      <channelminus>PageDown</channelminus>
+      <mute>Mute</mute>
+
+      <power>XBMC.ShutDown()</power>
+      <sleep>XBMC.SleepSystem()</sleep>
+      <aspect>AspectRatio</aspect>
+      <queue>Queue</queue>
+      <largeup>PageUp</largeup>
+      <largedown>PageDown</largedown>
+
+      <F1>XBMC.ActivateWindow(Music)</F1>
+      <F2>XBMC.ActivateWindow(videolibrary,tvshowtitles,return)</F2>
+      <F3>XBMC.ActivateWindow(videolibrary,movietitles,return)</F3>
+      <F4>XBMC.ActivateWindow(Weather)</F4>
+
+      <red>XBMC.ActivateWindow(Music)</red>
+      <green>XBMC.ActivateWindow(videolibrary,tvshowtitles,return)</green>
+      <yellow>xbmc.ActivateWindow(videolibrary,movietitles,return)</yellow>
+      <blue>XBMC.ActivateWindow(Weather)</blue>
+
+      <F5>Plex.RunAppleScript(do shell script "drutil tray eject = 1")</F5>
+      <two>JumpSMS2</two>
+      <three>JumpSMS3</three>
+      <four>JumpSMS4</four>
+      <five>JumpSMS5</five>
+      <six>JumpSMS6</six>
+      <seven>JumpSMS7</seven>
+      <eight>JumpSMS8</eight>
+      <nine>JumpSMS9</nine>
+
+    </harmonyremote>
+  </global>
+
+  <Home>
+    <harmonyremote>
+      <menu>XBMC.ActivateWindow(PlayerControls)</menu>
+      <info>XBMC.ActivateWindow(Settings)</info>
+      <exit>XBMC.ActivateWindow(ShutdownMenu)</exit>
+      <enter>XBMC.ActivateWindow(SystemInfo)</enter>
+      <one>ToggleFullScreen</one>
+    </harmonyremote>
+  </Home>
+  
+  <MyFiles>
+    <harmonyremote>
+      <one>Highlight</one>
+      <four>Copy</four>
+      <seven>Move</seven>
+      <clear>Delete</clear>
+    </harmonyremote>
+  </MyFiles>
+  
+  <MyMusicPlaylist>
+    <harmonyremote>
+      <prev>Playlist</prev> <!-- Close playlist -->
+      <clear>Delete</clear>
+      <channelplus>MoveItemUp</channelplus>
+      <channelminus>MoveItemDown</channelminus>
+	<number2>JumpSMS2</number2>
+	<number3>JumpSMS3</number3>
+	<number4>JumpSMS4</number4>
+	<number5>JumpSMS5</number5>
+	<number6>JumpSMS6</number6>
+	<number7>JumpSMS7</number7>
+	<number8>JumpSMS8</number8>
+	<number9>JumpSMS9</number9>
+    </harmonyremote>
+  </MyMusicPlaylist>
+
+  <MyMusicPlaylistEditor>
+    <harmonyremote>
+      <zero>Queue</zero>
+    </harmonyremote>
+  </MyMusicPlaylistEditor>
+  
+  <MyMusicFiles>
+     <harmonyremote>
+    </harmonyremote>
+  </MyMusicFiles>
+
+  <MyMusicLibrary>
+     <harmonyremote>
+      <red>XBMC.PlayerControl(partymode(music))</red>
+      <F10>XBMC.PlayerControl(partymode(music))</F10>
+    </harmonyremote>
+  </MyMusicLibrary>
+
+  <FullscreenVideo>
+    <harmonyremote>
+      <left>StepBack</left>
+      <right>StepForward</right>
+      <up>BigStepForward</up>
+      <down>BigStepBack</down>
+      <prev>SmallStepBack</prev>
+      <menu>OSD</menu>
+      <info>Info</info>
+      <F6>ShowSubtitles</F6>
+      <F7>NextSubtitle</F7>
+      <zero>Number0</zero>
+      <one>Number1</one>
+      <two>Number2</two>
+      <three>Number3</three>
+      <four>Number4</four>
+      <five>Number5</five>
+      <six>Number6</six>
+      <seven>Number7</seven>
+      <eight>Number8</eight>
+      <nine>Number9</nine>
+   </harmonyremote>
+  </FullscreenVideo>
+
+  <FullscreenInfo>
+    <harmonyremote>
+      <info>Close</info>
+   </harmonyremote>
+  </FullscreenInfo>
+
+  <PlayerControls>
+    <harmonyremote>
+      <menu>Close</menu>
+    </harmonyremote>
+  </PlayerControls>
+
+  <Visualisation>
+    <harmonyremote>
+      <left>PreviousPreset</left>
+      <right>NextPreset</right>
+      <up>IncreaseRating</up>
+      <down>DecreaseRating</down>
+      <prev>LockPreset</prev>
+      <menu>XBMC.ActivateWindow(MusicOSD)</menu>
+      <info>Info</info>
+      <exit>Fullscreen</exit>
+      <F8>XBMC.ActivateWindow(VisualisationPresetList)</F8>
+      <F9>XBMC.ActivateWindow(VisualisationSettings)</F9>
+    </harmonyremote>
+  </Visualisation>
+
+  <MusicOSD>
+    <harmonyremote>
+      <menu>Close</menu>
+      <exit>Close</exit>
+      <info>CodecInfo</info>
+    </harmonyremote>
+  </MusicOSD>
+
+  <VisualisationSettings>
+    <harmonyremote>
+      <menu>Close</menu>
+      <exit>Close</exit>
+    </harmonyremote>
+  </VisualisationSettings>
+
+  <VisualisationPresetList>
+    <harmonyremote>
+      <menu>Close</menu>
+      <exit>Close</exit>
+    </harmonyremote>
+  </VisualisationPresetList>
+
+  <SlideShow>
+    <harmonyremote>
+      <zero>ZoomNormal</zero>
+      <one>ZoomLevel1</one>
+      <two>ZoomLevel2</two>
+      <three>ZoomLevel3</three>
+      <four>ZoomLevel4</four>
+      <five>ZoomLevel5</five>
+      <six>ZoomLevel6</six>
+      <seven>ZoomLevel7</seven>
+      <eight>ZoomLevel8</eight>
+      <nine>ZoomLevel9</nine>
+      <skip>NextPicture</skip>
+      <replay>PreviousPicture</replay>
+      <info>Info</info>
+      <ok>Rotate</ok>
+      <prev>PreviousMenu</prev>
+    </harmonyremote>
+  </SlideShow>
+
+  <ScreenCalibration>
+    <harmonyremote>
+      <ok>NextCalibration</ok>
+      <enter>NextCalibration</enter>
+      <zero>ResetCalibration</zero>
+      <guide>NextResolution</guide>
+    </harmonyremote>
+  </ScreenCalibration>
+
+  <GUICalibration>
+    <harmonyremote>
+      <ok>NextCalibration</ok>
+      <enter>NextCalibration</enter>
+      <zero>ResetCalibration</zero>
+    </harmonyremote>
+  </GUICalibration>
+
+  <SelectDialog>
+    <harmonyremote>
+      <prev>Close</prev>
+      <exit>Close</exit>      
+    </harmonyremote>
+  </SelectDialog>
+  
+  <VideoOSD>
+    <harmonyremote>
+      <prev>PreviousMenu</prev>
+      <menu>Close</menu>
+      <exit>Close</exit>
+    </harmonyremote>
+  </VideoOSD>
+
+  <VideoMenu>
+    <harmonyremote>
+      <menu>OSD</menu>
+      <prev>PreviousMenu</prev>
+      <info>Info</info>
+    </harmonyremote>
+  </VideoMenu>
+
+  <OSDVideoSettings>
+    <harmonyremote>
+      <prev>Close</prev>
+      <menu>Close</menu>
+    </harmonyremote>
+  </OSDVideoSettings>
+
+  <OSDAudioSettings>
+    <harmonyremote>
+      <prev>Close</prev>
+      <menu>Close</menu>
+      <exit>Close</exit>      
+    </harmonyremote>
+  </OSDAudioSettings>
+
+  <VideoBookmarks>
+    <harmonyremote>
+      <prev>Close</prev>
+      <menu>Close</menu>
+      <exit>Close</exit>      
+      <clear>Delete</clear>
+    </harmonyremote>
+  </VideoBookmarks>
+
+  <MyVideoLibrary>
+    <harmonyremote>
+      <clear>Delete</clear>
+      <enter>ToggleWatched</enter>
+    </harmonyremote>
+  </MyVideoLibrary>
+
+  <MyVideoFiles>
+    <harmonyremote>
+    <clear>Delete</clear>
+    </harmonyremote>
+  </MyVideoFiles>
+
+  <MyVideoPlaylist>
+    <harmonyremote>
+      <prev>Playlist</prev> <!-- Close playlist -->
+      <clear>Delete</clear>
+      <channelplus>MoveItemUp</channelplus>
+      <channelminus>MoveItemDown</channelminus>
+    </harmonyremote>
+  </MyVideoPlaylist>
+
+  <VirtualKeyboard>
+    <harmonyremote>
+      <prev>BackSpace</prev>
+      <clear>Shift</clear>
+      <enter>Symbols</enter>
+      <zero>Number0</zero>
+      <one>Number1</one>
+      <two>Number2</two>
+      <three>Number3</three>
+      <four>Number4</four>
+      <five>Number5</five>
+      <six>Number6</six>
+      <seven>Number7</seven>
+      <eight>Number8</eight>
+      <nine>Number9</nine>
+      <rewind>CursorLeft</rewind>
+      <forward>CursorRight</forward>
+    </harmonyremote>
+</VirtualKeyboard>
+
+  <MyPictures>
+  </MyPictures>
+
+  <ContextMenu>
+    <harmonyremote>
+      <prev>Close</prev>
+    </harmonyremote>
+  </ContextMenu>
+
+  <FileStackingDialog>
+    <harmonyremote>
+      <prev>Close</prev>
+    </harmonyremote>
+  </FileStackingDialog>
+
+  <Scripts>
+    <harmonyremote>
+      <info>XBMC.ActivateWindow(ScriptsDebugInfo)</info>
+    </harmonyremote>
+  </Scripts>
+
+  <ScriptsDebugInfo>
+    <harmonyremote>
+      <info>Info</info> <!-- clears debug python info -->
+    </harmonyremote>
+  </ScriptsDebugInfo>
+
+  <NumericInput>
+    <harmonyremote>
+      <zero>Number0</zero>
+      <one>Number1</one>
+      <two>Number2</two>
+      <three>Number3</three>
+      <four>Number4</four>
+      <five>Number5</five>
+      <six>Number6</six>
+      <seven>Number7</seven>
+      <eight>Number8</eight>
+      <nine>Number9</nine>
+      <prev>BackSpace</prev>
+    </harmonyremote>
+  </NumericInput>
+
+  <Weather>
+    <harmonyremote>
+      <prev>PreviousMenu</prev>
+    </harmonyremote>
+  </Weather>
+
+  <Settings>
+    <harmonyremote>
+      <prev>PreviousMenu</prev>
+    </harmonyremote>
+  </Settings>
+
+  <MyPicturesSettings>
+    <harmonyremote>
+      <prev>PreviousMenu</prev>
+    </harmonyremote>
+  </MyPicturesSettings>
+
+  <MyProgramsSettings>
+    <harmonyremote>
+      <prev>PreviousMenu</prev>
+    </harmonyremote>
+  </MyProgramsSettings>
+
+  <MyWeatherSettings>
+    <harmonyremote>
+      <prev>PreviousMenu</prev>
+    </harmonyremote>
+  </MyWeatherSettings>
+
+  <MyMusicSettings>
+    <harmonyremote>
+      <prev>PreviousMenu</prev>
+    </harmonyremote>
+  </MyMusicSettings>
+
+  <SystemSettings>
+    <harmonyremote>
+      <prev>PreviousMenu</prev>
+    </harmonyremote>
+  </SystemSettings>
+
+  <MyVideosSettings>
+    <harmonyremote>
+      <prev>PreviousMenu</prev>
+    </harmonyremote>
+  </MyVideosSettings>
+
+  <NetworkSettings>
+    <harmonyremote>
+      <prev>PreviousMenu</prev>
+    </harmonyremote>
+  </NetworkSettings>
+
+  <AppearanceSettings>
+    <harmonyremote>
+      <prev>PreviousMenu</prev>
+    </harmonyremote>
+</AppearanceSettings>
+
+  <Profiles>
+    <harmonyremote>
+      <prev>PreviousMenu</prev>
+    </harmonyremote>
+  </Profiles>
+
+  <systeminfo>
+    <harmonyremote>
+      <prev>PreviousMenu</prev>
+    </harmonyremote>
+  </systeminfo>
+
+  <shutdownmenu>
+    <harmonyremote>
+      <prev>PreviousMenu</prev>
+    </harmonyremote>
+  </shutdownmenu>
+
+  <submenu>
+    <harmonyremote>
+      <prev>PreviousMenu</prev>
+    </harmonyremote>
+  </submenu>
+
+  <MusicInformation>
+    <harmonyremote>
+      <prev>Close</prev>
+    </harmonyremote>
+  </MusicInformation>
+
+  <MovieInformation>
+    <harmonyremote>
+      <prev>Close</prev>
+    </harmonyremote>
+  </MovieInformation>
+
+  <LockSettings>
+    <harmonyremote>
+      <menu>Close</menu>
+      <prev>PreviousMenu</prev>
+    </harmonyremote>
+  </LockSettings>
+
+  <ProfileSettings>
+    <harmonyremote>
+      <menu>Close</menu>
+      <prev>PreviousMenu</prev>
+    </harmonyremote>
+</ProfileSettings>
+  
+  <PictureInfo>
+    <harmonyremote>
+      <skip>NextPicture</skip>
+      <replay>PreviousPicture</replay>
+      <info>Close</info>
+	  <prev>Close</prev>
+    </harmonyremote>
+  </PictureInfo>
+</keymap>

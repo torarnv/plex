@@ -68,7 +68,6 @@ CFileItem::CFileItem(const CSong& song)
   m_lStartOffset = song.iStartOffset;
   m_lEndOffset = song.iEndOffset;
   m_strThumbnailImage = _P(song.strThumb);
-  m_bIsPopupMenuItem = false;
 }
 
 CFileItem::CFileItem(const CStdString &path, const CAlbum& album)
@@ -80,7 +79,6 @@ CFileItem::CFileItem(const CStdString &path, const CAlbum& album)
   SetLabel(album.strAlbum);
   m_strPath = _P(path);
   m_bIsFolder = true;
-  m_bIsSearchDir = false;
   m_strLabel2 = album.strArtist;
   CUtil::AddSlashAtEnd(m_strPath);
   GetMusicInfoTag()->SetAlbum(album);
@@ -97,8 +95,6 @@ CFileItem::CFileItem(const CStdString &path, const CAlbum& album)
   SetProperty("label", album.strLabel);
   if (album.iRating > 0)
     SetProperty("rating", album.iRating);
-  
-  m_bIsPopupMenuItem = false;
 }
 
 CFileItem::CFileItem(const CVideoInfoTag& movie)
@@ -106,7 +102,6 @@ CFileItem::CFileItem(const CVideoInfoTag& movie)
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
   m_pictureInfoTag = NULL;
-  m_bIsSearchDir = false;
   Reset();
   SetLabel(movie.m_strTitle);
   if (movie.m_strFileNameAndPath.IsEmpty())
@@ -161,8 +156,6 @@ CFileItem::CFileItem(const CGenre& genre)
   SetLabel(genre.strGenre);
   m_strPath = _P(genre.strGenre);
   m_bIsFolder = true;
-  m_bIsSearchDir = false;
-  m_strSearchPrompt = "";
   CUtil::AddSlashAtEnd(m_strPath);
   GetMusicInfoTag()->SetGenre(genre.strGenre);
 }
@@ -172,7 +165,7 @@ CFileItem::CFileItem(const CFileItem& item)
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
   m_pictureInfoTag = NULL;
-  m_bIsSearchDir = false;
+  Reset();
   *this = item;
 }
 
@@ -235,7 +228,6 @@ CFileItem::CFileItem(const CMediaSource& share)
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
   m_pictureInfoTag = NULL;
-  m_bIsSearchDir = false;
   Reset();
   m_bIsFolder = true;
   m_bIsShareOrDrive = true;
@@ -345,6 +337,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   m_extrainfo = item.m_extrainfo;
   m_strFanartUrl = item.m_strFanartUrl;
   m_bIsPopupMenuItem = item.m_bIsPopupMenuItem;
+  m_bIsSettingsDir = item.m_bIsSettingsDir;
   m_bIsSearchDir = item.m_bIsSearchDir;
   m_strSearchPrompt = item.m_strSearchPrompt;
   
@@ -389,9 +382,13 @@ void CFileItem::Reset()
   m_pictureInfoTag=NULL;
   m_extrainfo.Empty();
   m_strFanartUrl.Empty();
+  
   m_bIsPopupMenuItem = false;
+  m_bIsSettingsDir = false;
   m_bIsSearchDir = false;
   m_strSearchPrompt = "";
+  m_displayMessageTitle = "";
+  m_displayMessageContents = "";
   
   SetInvalid();
 }
@@ -802,6 +799,30 @@ bool CFileItem::IsPlexMediaServer() const
   return CUtil::IsPlexMediaServer(m_strPath);
 }
 
+bool CFileItem::IsPlexMediaServerMusic() const
+{
+  if (IsPlexMediaServer() == false)
+    return false;
+  
+  // Look for plex://xxx/music.
+  CStdString str = m_strPath;
+  int firstSlash = str.Find('/');
+  firstSlash = str.Find('/', firstSlash + 2);
+  if (firstSlash > 0)
+  {
+    str = str.substr(firstSlash);
+    if (str.Find("/music/") == 0)
+      return true;
+  }
+
+  return false;
+}
+
+bool CFileItem::IsWebKit() const
+{
+  return CUtil::IsWebKit(m_strPath);
+}
+
 bool CFileItem::IsTuxBox() const
 {
   return CUtil::IsTuxBox(m_strPath);
@@ -1092,6 +1113,12 @@ const CStdString& CFileItem::GetContentType() const
     {
       CFileCurl::GetContent(GetAsUrl(), m_ref);
 
+      // try to get content type again but with an NSPlayer User-Agent
+      // in order for server to provide correct content-type.  Allows us
+      // to properly detect an MMS stream
+      if (m_ref.Left(11).Equals("video/x-ms-"))
+        CFileCurl::GetContent(GetAsUrl(), m_ref, "NSPlayer/11.00.6001.7000");            
+
       // make sure there are no options set in content type
       // content type can look like "video/x-ms-asf ; charset=utf8"
       int i = m_ref.Find(';');
@@ -1105,6 +1132,13 @@ const CStdString& CFileItem::GetContentType() const
       m_ref = "application/octet-stream";
   }
 
+  // change protocol to mms for the following content-type.  Allows us to create proper FileMMS.
+  if( m_contenttype.Left(32).Equals("application/vnd.ms.wms-hdr.asfv1") || m_contenttype.Left(24).Equals("application/x-mms-framed") )
+  {
+    CStdString& m_path = (CStdString&)m_strPath;
+    m_path.Replace("http:", "mms:");
+  }
+  
   return m_contenttype;
 }
 
@@ -2506,9 +2540,14 @@ CStdString CFileItem::GetUserVideoThumb() const
   // 2. if a folder, check for folder.jpg
   if (m_bIsFolder)
   {
-    CStdString folderThumb(PTH_IC(GetFolderThumb()));
-    if (CFile::Exists(folderThumb))
-      return folderThumb;
+    CStdStringArray thumbs;
+    StringUtils::SplitString(g_advancedSettings.m_dvdThumbs, "|", thumbs);
+    for (unsigned int i = 0; i < thumbs.size(); ++i)
+    {
+      CStdString folderThumb(PTH_IC(GetFolderThumb(thumbs[i])));
+      if (CFile::Exists(folderThumb))
+        return folderThumb;
+    }
   }
   // No thumb found
   return "";
@@ -2563,6 +2602,10 @@ CStdString CFileItem::CacheFanart(bool probe) const
     {
       CPicture pic;
       pic.CacheImage(m_strFanartUrl, localFanart);
+      return localFanart;
+    }
+    else
+    {
       return localFanart;
     }
   }
@@ -2964,7 +3007,6 @@ void CFileItem::SetQuickFanart(const CStdString& fanartURL)
   m_strFanartUrl = fanartURL;
   
   // See if it's already cached.
-  CacheFanart(fanartURL);
   if (CFile::Exists(GetCachedProgramFanart()))
     SetProperty("fanart_image", GetCachedProgramFanart());
 }

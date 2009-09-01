@@ -31,9 +31,8 @@
 #define MAX_THREAD_COUNT 5
 #endif
 
-CBackgroundInfoLoader::CBackgroundInfoLoader(int nThreads)
+CBackgroundInfoLoader::CBackgroundInfoLoader(int nThreads, int pauseBetweenLoadsInMS)
 {
-  m_bRunning = false;
   m_bStop = true;
   m_pObserver=NULL;
   m_pProgressCallback=NULL;
@@ -41,6 +40,7 @@ CBackgroundInfoLoader::CBackgroundInfoLoader(int nThreads)
   m_nRequestedThreads = nThreads;
   m_bStartCalled = false;
   m_nActiveThreads = 0;
+  m_pauseBetweenLoadsInMS = pauseBetweenLoadsInMS;
 }
 
 CBackgroundInfoLoader::~CBackgroundInfoLoader()
@@ -67,7 +67,7 @@ void CBackgroundInfoLoader::Run()
           m_bStartCalled = true;
         }
       }
-
+      
       while (!m_bStop)
       {
         CSingleLock lock(m_lock);
@@ -83,14 +83,19 @@ void CBackgroundInfoLoader::Run()
           break;
 
         // Ask the callback if we should abort
-        if (m_pProgressCallback && m_pProgressCallback->Abort())
-          m_bStop=true;
+        if (m_pProgressCallback && m_pProgressCallback->Abort() || m_bStop)
+          break;
 
         lock.Leave();
         try
         {
-          if (!m_bStop && LoadItem(pItem.get()) && m_pObserver)
+          // Load an item.
+          if (LoadItem(pItem.get()) && m_pObserver)
             m_pObserver->OnItemLoaded(pItem.get());
+          
+          // Pause if it was requested.
+          if (m_pauseBetweenLoadsInMS > 0)
+            ::usleep(m_pauseBetweenLoadsInMS*1000);
         }
         catch (...)
         {
@@ -125,7 +130,6 @@ void CBackgroundInfoLoader::Load(CFileItemList& items)
     m_vecItems.push_back(items[nItem]);
 
   m_pVecItems = &items;
-  m_bRunning = true;
   m_bStop = false;
   m_bStartCalled = false;
 
@@ -151,12 +155,15 @@ void CBackgroundInfoLoader::Load(CFileItemList& items)
   LeaveCriticalSection(m_lock);
 }
 
-void CBackgroundInfoLoader::StopThread()
+void CBackgroundInfoLoader::StopAsync()
 {
   m_bStop = true;
-  EnterCriticalSection(m_lock);
-  m_vecItems.clear();
-  LeaveCriticalSection(m_lock);
+}
+
+
+void CBackgroundInfoLoader::StopThread()
+{
+  StopAsync();
 
   for (int i=0; i<(int)m_workers.size(); i++)
   {
@@ -165,9 +172,8 @@ void CBackgroundInfoLoader::StopThread()
   }
 
   m_workers.clear();
-
+  m_vecItems.clear();
   m_pVecItems = NULL;
-  m_bRunning = false;
   m_nActiveThreads = 0;
 }
 

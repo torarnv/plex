@@ -47,6 +47,7 @@ public:
   virtual void RegisterAudioCallback(IAudioCallback* pCallback) {}
   virtual void UnRegisterAudioCallback()                        {}
   virtual bool OpenFile(const CFileItem& file, const CPlayerOptions &options);
+  virtual bool OnAction(const CAction &action);
   virtual bool CloseFile();
   virtual bool IsPlaying() const;
   virtual void Pause();
@@ -92,11 +93,14 @@ public:
   
   virtual CStdString GetPlayerState() { return ""; }
   virtual bool SetPlayerState(CStdString state) { return true; }
+
+  static void RequireServerRestart() { g_needToRestartMediaServer = true; }
+  static bool IsRestartRequired() { return g_needToRestartMediaServer; }
   
 private:
 
   void OnFrameMap(const string& args);
-  void OnPlaybackEnded();
+  void OnPlaybackEnded(const string& args);
   void OnPlaybackStarted();
   void OnNewFrame(); 
   void OnPaused();
@@ -123,6 +127,8 @@ private:
   CHTTP      m_http;
   
   int m_frameCount;
+  
+  static bool g_needToRestartMediaServer;
   
   ipc::named_mutex     m_frameMutex;
   ipc::named_condition m_frameCond;

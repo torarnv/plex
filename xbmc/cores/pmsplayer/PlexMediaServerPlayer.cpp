@@ -25,9 +25,13 @@
 #include <boost/date_time/posix_time/posix_time_types.hpp>
  
 #include "stdafx.h"
+#include "CocoaUtils.h"
 #include "PlexMediaServerPlayer.h"
+#include "PlexMediaServerHelper.h"
 #include "FileItem.h"
 #include "GUIFontManager.h"
+#include "GUIWindowManager.h"
+#include "GUIDialogOK.h"
 #include "GUITextLayout.h"
 #include "Application.h"
 #include "Settings.h"
@@ -40,6 +44,8 @@
 
 #include <vector>
 #include <set>
+
+bool CPlexMediaServerPlayer::g_needToRestartMediaServer = false;
 
 CPlexMediaServerPlayer::CPlexMediaServerPlayer(IPlayerCallback& callback)
     : IPlayer(callback)
@@ -75,6 +81,17 @@ CPlexMediaServerPlayer::~CPlexMediaServerPlayer()
 
 bool CPlexMediaServerPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 {
+  bool didWeRestart = false;
+  
+  // See if we need to restart the media server.
+  if (g_needToRestartMediaServer == true)
+  {
+    printf("Restarting media server because of 5.1 CoreAudio issue.\n");
+    PlexMediaServerHelper::Get().Restart();
+    g_needToRestartMediaServer = false;
+    didWeRestart = true;
+  }
+  
   // Initialize the renderer, so it doesn't try to render too soon.
   g_renderManager.PreInit();
   
@@ -88,9 +105,18 @@ bool CPlexMediaServerPlayer::OpenFile(const CFileItem& file, const CPlayerOption
   url.SetPort(32400);
 
   printf("Opening [%s] => [%s]\n", file.m_strPath.c_str(), url.GetURL().c_str());
-  int status = m_http.Open(url.GetURL(), "GET", 0);
+  
+retry:  
+  int status = m_http.Open(url.GetURL(), "GET", 0, true);
   if (status != 200)
   {
+    // If we just restarted we might not be up quite yet.
+    if ((status == 0 || status == 503) && didWeRestart && m_bStop == false)
+    {
+      usleep(100);
+      goto retry;
+    }
+    
     printf("ERROR: this didn't work [%d]\n", status);
     return false;
   }
@@ -187,13 +213,17 @@ void CPlexMediaServerPlayer::Process()
       else if (line.find("TITLE") == 0 && m_pDlgCache)
         m_pDlgCache->SetMessage(line.substr(6));
       else if (line.find("END") == 0)
-        OnPlaybackEnded();      
+        OnPlaybackEnded(line.substr(3));      
       else if (line.find("FRAME") == 0)
         OnNewFrame();
       else if (line.find("PAUSED") == 0)
         OnPaused();
       else if (line.find("PROGRESS") == 0)
         OnProgress(boost::lexical_cast<int>(line.substr(9)));
+      else if (line == "ACTIVATE")
+        Cocoa_ActivateWindow();
+      else
+        printf("Unknown command: [%s]\n", line.c_str());
     }
   }
 
@@ -228,6 +258,30 @@ bool CPlexMediaServerPlayer::HasAudio() const
 bool CPlexMediaServerPlayer::CanSeek()
 {
   return true;
+}
+
+bool CPlexMediaServerPlayer::OnAction(const CAction &action)
+{
+  switch (action.wID)
+  {
+    case ACTION_NEXT_ITEM:
+    case ACTION_PAGE_UP:
+    {
+      m_http.WriteLine("CHAPTER+");
+      return true;
+    }
+    break;
+  
+    case ACTION_PREV_ITEM:
+    case ACTION_PAGE_DOWN:
+    {
+      m_http.WriteLine("CHAPTER-");
+      return true;
+    }
+    break;
+  }
+  
+  return false;
 }
 
 void CPlexMediaServerPlayer::Seek(bool bPlus, bool bLargeStep)
@@ -337,8 +391,20 @@ void CPlexMediaServerPlayer::Render()
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void CPlexMediaServerPlayer::OnPlaybackEnded()
+void CPlexMediaServerPlayer::OnPlaybackEnded(const string& args)
 {
+  if (args.size() > 0)
+  {
+    CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+    pDialog->SetHeading(257);
+    pDialog->SetLine(0, args.substr(1) + ".");
+    pDialog->SetLine(1, "");
+    pDialog->SetLine(2, "");
+
+    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, m_gWindowManager.GetActiveWindow()};
+    g_application.getApplicationMessenger().SendMessage(tMsg, false);
+  }
+  
   if (m_pDlgCache)
     m_pDlgCache->Close();
   m_pDlgCache = NULL; 

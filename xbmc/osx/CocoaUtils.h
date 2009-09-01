@@ -38,6 +38,7 @@ extern "C"
   int  Cocoa_GetDisplay(int screen);
   int Cocoa_GetCurrentDisplay();
   void  Cocoa_MoveWindowToDisplay(int display);
+  void Cocoa_ActivateWindow();
   
   //
   // Open GL.
@@ -171,7 +172,12 @@ extern "C"
 	//
 	void Cocoa_ExecAppleScriptFile(const char* filePath);
 	void Cocoa_ExecAppleScript(const char* scriptSource);
-
+  
+  //
+  // Cocoa GUI
+  //
+  bool Cocoa_IsGUIShowing();
+  
 #ifdef __cplusplus
 }
 #endif

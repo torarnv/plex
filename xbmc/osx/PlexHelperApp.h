@@ -26,19 +26,20 @@ class PlexHelperApp
   bool ErrorStarting()    { return m_errorStarting; }
   int  GetMode() const    { return m_mode; }
 
-  /// Fill-ins for subclasses.
-  virtual string GetHelperBinaryName() const = 0;
-  virtual string GetPlistName() = 0;
-  
-  virtual bool   DoConfigure(int& mode, bool& alwaysRunning, bool& errorStarting) = 0;
-  virtual string GetConfigString() = 0;
-  
   static int GetProcessPid(const string& processName);
   static string ReadFile(const string& fileName);
   static void WriteFile(const string& fileName, const string& data);
   
  protected:
 
+  /// Fill-ins for subclasses.
+  virtual void   DoPreStart() {}
+  virtual string GetHelperBinaryName() const = 0;
+  virtual string GetPlistName() = 0;
+   
+  virtual bool   DoConfigure(int& mode, bool& alwaysRunning, bool& errorStarting) = 0;
+  virtual string GetConfigString() = 0;
+   
   /// Constructor/destructor.
   PlexHelperApp();
   virtual ~PlexHelperApp() {}

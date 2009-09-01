@@ -1,0 +1,293 @@
+<keymap>
+  <global>
+   <joystick name="Apple Remote">
+      <button id="1">Up</button>                                        <!--- Up --->
+      <button id="2">Down</button>                                      <!--- Down --->
+      <button id="3">Left</button>                                      <!--- Left --->
+      <button id="4">Right</button>                                     <!--- Right --->
+      <button id="5">Select</button>                                    <!--- Play --->
+      <button id="6">PreviousMenu</button>                              <!--- Menu --->
+      <button id="9">Left</button>                                      <!--- Hold Left --->
+      <button id="10">Right</button>                                    <!--- Hold Right --->
+      <button id="11">ContextMenu</button>                              <!--- Hold Menu --->
+      <button id="12">Info</button>                                     <!--- Hold Info --->
+    </joystick>
+  </global>
+
+  <Home>
+    <joystick name="Apple Remote">
+      <button id="6">ActivateWindow(shutdownmenu)</button>              <!--- Menu --->
+      <button id="11">FullScreen</button>                               <!--- Hold Menu --->
+    </joystick>
+  </Home>
+  
+  <MyFiles>
+   <joystick name="Apple Remote">
+      <button id="6">ParentDir</button>                                 <!--- Menu --->
+   </joystick>
+  </MyFiles>
+  
+  <MyMusicPlaylist>
+     <joystick name="Apple Remote">
+      <button id="6">Playlist</button>                                  <!--- Menu --->
+      <button id="9">MoveItemUp</button>                                <!--- Hold Left --->
+      <button id="10">MoveItemDown</button>                             <!--- Hold Right --->
+      <button id="11">Delete</button>                                   <!--- Hold Menu --->
+      <button id="12">XBMC.ActivateWindow(Visualisation)</button>       <!--- Hold Play --->
+     </joystick>
+  </MyMusicPlaylist>
+
+  <MyMusicPlaylistEditor>
+    <joystick name="Apple Remote">
+      <button id="6">Playlist</button>                                  <!--- Menu --->
+      <button id="9">MoveItemUp</button>                                <!--- Hold Left --->
+      <button id="10">MoveItemDown</button>                             <!--- Hold Right --->
+      <button id="11">Delete</button>                                   <!--- Hold Menu --->
+      <button id="12">XBMC.ActivateWindow(Visualisation)</button>       <!--- Hold Play --->
+   </joystick>
+ </MyMusicPlaylistEditor>
+  
+  <MyMusicFiles>
+	<joystick name="Apple Remote">
+      <button id="6">ParentDir</button>                                 <!--- Menu --->
+      <button id="10">Queue</button>                                    <!--- Hold Right --->
+      <button id="12">XBMC.ActivateWindow(PlayerControls)</button>      <!--- Hold Play --->
+    </joystick>
+  </MyMusicFiles>
+
+  <MyMusicLibrary>
+    <joystick name="Apple Remote">
+      <button id="6">ParentDir</button>                                 <!--- Menu --->
+      <button id="10">Queue</button>                                    <!--- Hold Right --->
+      <button id="12">XBMC.ActivateWindow(PlayerControls)</button>      <!--- Hold Play --->
+	</joystick>
+  </MyMusicLibrary>
+
+  <FullscreenVideo>
+    <joystick name="Apple Remote">
+      <button id="1">VolumeUp</button>                                  <!--- Up --->
+      <button id="2">VolumeDown</button>                                <!--- Down --->
+      <button id="3">StepBack</button>                                  <!--- Left --->
+      <button id="4">StepForward</button>                               <!--- Right --->
+      <button id="5">Pause</button>                                     <!--- Play --->
+      <button id="6">OSD</button>                                       <!--- Menu --->
+      <button id="9">BigStepBack</button>                               <!--- Hold Left --->
+      <button id="10">BigStepForward</button>                           <!--- Hold Right --->
+      <button id="11">Stop</button>                                     <!--- Hold Menu --->
+      <button id="12">Info</button>                                     <!--- Hold Play --->
+    </joystick>
+  </FullscreenVideo>
+
+  <FullscreenInfo>
+  </FullscreenInfo>
+
+  <PlayerControls>
+  </PlayerControls>
+
+  <Visualisation>
+    <joystick name="Apple Remote">
+      <button id="1">VolumeUp</button>                                  <!--- Up --->
+      <button id="2">VolumeDown</button>                                <!--- Down --->
+      <button id="3">SkipPrevious</button>                              <!--- Left --->
+      <button id="4">SkipNext</button>                                  <!--- Right --->
+      <button id="5">pause</button>                                     <!--- Play --->
+      <button id="6">XBMC.ActivateWindow(MusicOSD)</button>             <!--- Menu --->
+      <button id="9">Rewind</button>                                    <!--- Hold Left --->
+      <button id="10">FastForward</button>                              <!--- Hold Right --->
+      <button id="11">FullScreen</button>                               <!--- Hold Menu --->
+      <button id="12">Info</button>                                     <!--- Hold Play --->
+    </joystick>
+  </Visualisation>
+
+  <MusicOSD>
+    <joystick name="Apple Remote">
+    	<button id="11">stop</button>                                   <!--- Hold Menu --->
+    </joystick>
+  </MusicOSD>
+
+  <VisualisationSettings>
+    <joystick name="Apple Remote">
+      	<button id="11">stop</button>                                   <!--- Hold Menu --->
+    </joystick>
+  </VisualisationSettings>
+
+  <VisualisationPresetList>
+    <joystick name="Apple Remote">
+      	<button id="11">stop</button>                                   <!--- Hold Menu --->
+   	</joystick>
+  </VisualisationPresetList>
+
+  <SlideShow>
+    <joystick name="Apple Remote">
+			<button id="6">Info</button>                                      <!--- Menu --->
+      <button id="5">Pause</button>                                     <!--- Play --->
+			<button id="9">ZoomOut</button>                                   <!--- Hold Left --->
+      <button id="10">ZoomIn</button>                                   <!--- Hold Right --->
+      <button id="11">PreviousMenu</button>                             <!--- Hold Menu --->
+      <button id="12">CodecInfo</button>                                <!--- Hold Play --->
+    </joystick>
+  </SlideShow>
+
+  <ScreenCalibration>
+     <joystick name="Apple Remote">
+      <button id="5">NextCalibration</button>                           <!--- Play --->
+      <button id="10">NextResolution</button>                           <!--- Hold Right --->
+     </joystick>
+  </ScreenCalibration>
+
+  <GUICalibration>
+  <joystick name="Apple Remote">
+      <button id="5">NextCalibration</button>                           <!--- Play --->
+    </joystick>
+  </GUICalibration>
+
+  <SelectDialog>
+  </SelectDialog>
+  
+  <VideoOSD>
+  </VideoOSD>
+
+  <VideoMenu>
+    <joystick name="Apple Remote">
+      <button id="6">OSD</button>                                       <!--- Left --->
+      <button id="3">Left</button>                                      <!--- Left --->
+      <button id="4">Right</button>                                     <!--- Left --->
+      <button id="1">Up</button>                                        <!--- Left --->
+      <button id="2">Down</button>                                      <!--- Left --->
+      <button id="11">Stop</button>                                     <!--- Left --->
+      <button id="6">PreviousMenu</button>                              <!--- Left --->
+    </joystick>
+  </VideoMenu>
+
+  <OSDVideoSettings>
+  </OSDVideoSettings>
+
+  <OSDAudioSettings>
+  </OSDAudioSettings>
+
+  <VideoBookmarks>
+  </VideoBookmarks>
+
+  <MyVideoLibrary>
+    <joystick name="Apple Remote">
+      <button id="6">ParentDir</button>                                 <!--- Menu --->
+    </joystick>
+  </MyVideoLibrary>
+
+  <MyVideoFiles>
+    <joystick name="Apple Remote">
+      <button id="6">ParentDir</button>                                 <!--- Menu --->
+      <button id="10">Queue</button>                                    <!--- Hold Right --->
+    </joystick>
+  </MyVideoFiles>
+
+  <MyVideoPlaylist>
+    <joystick name="Apple Remote">
+      <button id="6">Playlist</button>                                  <!--- Menu -->
+      <button id="9">MoveItemUp</button>                                <!--- Hold Left --->
+      <button id="10">MoveItemDown</button>                             <!--- Hold Right --->
+      <button id="11">Delete</button>                                   <!--- Hold Menu --->
+    </joystick>
+  </MyVideoPlaylist>
+
+  <VirtualKeyboard>
+  </VirtualKeyboard>
+
+  <MyPictures>
+   <joystick name="Apple Remote">
+     <button id="6">ParentDir</button>                                  <!--- Menu --->
+   </joystick>
+  </MyPictures>
+
+ <MyPrograms>
+   <joystick name="Apple Remote">
+     <button id="6">ParentDir</button>                                 <!--- Menu --->
+   </joystick>
+ </MyPrograms>
+
+  <ContextMenu>
+  </ContextMenu>
+
+  <FileStackingDialog>
+  </FileStackingDialog>
+
+  <Scripts>
+  </Scripts>
+
+  <ScriptsDebugInfo>
+  </ScriptsDebugInfo>
+
+  <NumericInput>
+  </NumericInput>
+
+  <Weather>
+  </Weather>
+
+  <Settings>
+  </Settings>
+
+  <MyPicturesSettings>
+  </MyPicturesSettings>
+
+  <MyProgramsSettings>
+  </MyProgramsSettings>
+
+  <MyWeatherSettings>
+  </MyWeatherSettings>
+
+  <MyMusicSettings>
+  </MyMusicSettings>
+
+  <SystemSettings>
+  </SystemSettings>
+
+  <MyVideosSettings>
+  </MyVideosSettings>
+
+  <NetworkSettings>
+  </NetworkSettings>
+
+  <AppearanceSettings>
+  </AppearanceSettings>
+
+  <Profiles>
+  </Profiles>
+
+  <systeminfo>
+  </systeminfo>
+
+  <shutdownmenu>
+  </shutdownmenu>
+
+  <submenu>
+  </submenu>
+
+  <MusicInformation>
+  </MusicInformation>
+
+  <MovieInformation>
+  </MovieInformation>
+
+  <LockSettings>
+  </LockSettings>
+
+  <ProfileSettings>
+  </ProfileSettings>
+  
+  <PictureInfo>
+  </PictureInfo>
+
+  <NowPlaying>
+    <joystick name="Apple Remote">
+      <button id="1">VolumeUp</button>                                  <!--- Up --->
+      <button id="2">VolumeDown</button>                                <!--- Down --->
+      <button id="3">SkipPrevious</button>                              <!--- Left --->
+      <button id="4">SkipNext</button>                                  <!--- Right --->
+      <button id="5">Pause</button>                                     <!--- Play --->
+      <button id="6">PreviousMenu</button>                              <!--- Menu --->
+      <button id="9">Rewind</button>                                    <!--- Hold Left --->
+      <button id="10">FastForward</button>                              <!--- Hold Right --->
+      <button id="11">Stop</button>                                     <!--- Hold Menu --->
+    </joystick>
+  </NowPlaying>
+</keymap>

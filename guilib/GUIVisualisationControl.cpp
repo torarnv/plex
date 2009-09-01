@@ -247,7 +247,8 @@ void CGUIVisualisationControl::Render()
   {
     // check if we need to unload
     if (!g_application.IsPlayingAudio())
-    { // deinit
+    { 
+      // deinit
       FreeVisualisation();
       
       if (m_pVisualisation && m_pVisualisation->HandlesOwnDisplay() == false)
@@ -256,16 +257,32 @@ void CGUIVisualisationControl::Render()
       return;
     }
     else if (!m_currentVis.Equals(g_guiSettings.GetString("mymusic.visualisation")))
-    { // vis changed - reload
-      LoadVisualisation();
-
+    { 
+      if (g_guiSettings.GetString("mymusic.visualisation") == "Now Playing.vis")
+      {
+        FreeVisualisation();
+        
+        if (m_pVisualisation && m_pVisualisation->HandlesOwnDisplay() == false)
+          CGUIControl::Render();
+        
+        // This will load the correct window.
+        g_application.ActivateVisualizer();
+        
+        return;
+      }
+      else
+      {
+        // vis changed - reload
+        LoadVisualisation();
+  
 #ifdef HAS_KARAOKE
-    if(g_application.m_pCdgParser && g_guiSettings.GetBool("karaoke.enabled"))
-      g_application.m_pCdgParser->Render();
+        if(g_application.m_pCdgParser && g_guiSettings.GetBool("karaoke.enabled"))
+          g_application.m_pCdgParser->Render();
 #endif
-
-      if (m_pVisualisation && m_pVisualisation->HandlesOwnDisplay() == false)
-        CGUIControl::Render();
+  
+        if (m_pVisualisation && m_pVisualisation->HandlesOwnDisplay() == false)
+          CGUIControl::Render();
+      }
       
       return;
     }

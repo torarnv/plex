@@ -32,7 +32,7 @@
 #include "Audio/DVDAudioCodecLiba52.h"
 #include "Audio/DVDAudioCodecLibDts.h"
 #include "Audio/DVDAudioCodecLibMad.h"
-#include "Audio/DVDAudioCodecLibFaad.h"
+//#include "Audio/DVDAudioCodecLibFaad.h"
 #include "Audio/DVDAudioCodecPcm.h"
 #include "Audio/DVDAudioCodecLPcm.h"
 #include "Audio/DVDAudioCodecPassthrough.h"
@@ -179,9 +179,10 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec( CDVDStreamInfo &hint )
       break;
     }
   case CODEC_ID_AAC:
-  //case CODEC_ID_MPEG4AAC:
+  case CODEC_ID_AAC_LATM:
     {
-      pCodec = OpenCodec( new CDVDAudioCodecLibFaad(), hint, options );
+//      pCodec = OpenCodec( new CDVDAudioCodecLibFaad(), hint, options );
+		pCodec = OpenCodec(new CDVDAudioCodecFFmpeg, hint, options);
       if( pCodec ) return pCodec;
       break;
     }

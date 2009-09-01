@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <language>
   <charsets>
-    <gui unicodefont="true">CP1254</gui>
+    <gui unicodefont="false">CP1254</gui>
     <subtitle>CP1254</subtitle>
   </charsets>
 

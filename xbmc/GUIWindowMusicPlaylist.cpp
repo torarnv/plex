@@ -531,6 +531,8 @@ void CGUIWindowMusicPlayList::GetContextButtons(int itemNumber, CContextButtons 
     }
     else
     { // aren't in a move
+      if (g_application.IsPlayingAudio())
+        buttons.Add(CONTEXT_BUTTON_NOW_PLAYING, 13350);
       if (!item->IsLastFM() && !item->IsShoutCast())
         buttons.Add(CONTEXT_BUTTON_SONG_INFO, 658); // Song Info
       if (CFavourites::IsFavourite(item.get(), GetID()))
@@ -559,6 +561,9 @@ bool CGUIWindowMusicPlayList::OnContextButton(int itemNumber, CONTEXT_BUTTON but
 {
   switch (button)
   {
+  case CONTEXT_BUTTON_NOW_PLAYING:
+    m_gWindowManager.ActivateWindow(WINDOW_NOW_PLAYING);
+    return true;
   case CONTEXT_BUTTON_MOVE_ITEM:
     m_movingFrom = itemNumber;
     return true;

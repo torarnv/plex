@@ -85,6 +85,8 @@ enum CONTEXT_BUTTON { CONTEXT_BUTTON_CANCELLED = 0,
                       CONTEXT_BUTTON_SET_ARTIST_THUMB,
                       CONTEXT_BUTTON_SET_SEASON_THUMB,
                       CONTEXT_BUTTON_NOW_PLAYING,
+                      CONTEXT_BUTTON_PLAYLIST,
+                      CONTEXT_BUTTON_SHUFFLE,
                       CONTEXT_BUTTON_CANCEL_PARTYMODE,
                       CONTEXT_BUTTON_MARK_WATCHED,
                       CONTEXT_BUTTON_MARK_UNWATCHED,
@@ -132,7 +134,7 @@ public:
   virtual void DoModal(int iWindowID = WINDOW_INVALID, const CStdString &param = "");
   virtual void OnWindowLoaded();
   virtual void OnWindowUnload();
-  virtual void SetPosition(float posX, float posY);
+  virtual void SetPosition(float posX, float posY, bool center = true);
   void ClearButtons();
   int AddButton(int iLabel);
   int AddButton(const CStdString &strButton);

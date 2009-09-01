@@ -1,5 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--$Revision$-->
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
   <string id="0">プログラム</string>
   <string id="1">画像</string>
@@ -407,7 +406,7 @@
   <string id="479">Skin and Language</string>
   <string id="480">User Interface</string>
   <string id="481">Audio Options</string>
-  <string id="482">About XBMC</string>
+  <string id="482">About Plex</string>
   <string id="483">Album</string>
   <string id="484">Artist</string>
   <string id="485">Delete album</string>

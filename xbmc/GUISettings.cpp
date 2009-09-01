@@ -38,9 +38,12 @@
 #include "LinuxTimezone.h"
 #endif
 #include "utils/Network.h"
+#include "LangInfo.h"
+#include "Weather.h"
 
 #ifdef __APPLE__
 #include "CocoaUtils.h"
+#include "CocoaUtilsPlus.h"
 #include "CoreAudioPlexSupport.h"
 #include "PlexMediaServerHelper.h"
 #endif
@@ -246,20 +249,11 @@ CGUISettings::CGUISettings(void)
   AddString(6, "xlinkkai.server", 14042, "", BUTTON_CONTROL_IP_INPUT);
 #endif
 
-  // My Weather settings
-  AddGroup(2, 8);
-  AddCategory(2, "weather", 16000);
-  AddString(1, "weather.areacode1", 14019, "USCA0987 - San Francisco, CA", BUTTON_CONTROL_STANDARD);
-  AddString(2, "weather.areacode2", 14020, "UKXX0085 - London, United Kingdom", BUTTON_CONTROL_STANDARD);
-  AddString(3, "weather.areacode3", 14021, "NZXX0049 - Wellington, New Zealand", BUTTON_CONTROL_STANDARD);
-  AddSeparator(4, "weather.sep1");
-  AddString(5, "weather.jumptoregion", 20026, "", BUTTON_CONTROL_STANDARD);
-
   // My Music Settings
   AddGroup(3, 2);
   AddCategory(3, "mymusic", 16000);
 #ifdef __APPLE__
-  AddString(1, "mymusic.visualisation", 250, "ProjectM.vis", SPIN_CONTROL_TEXT);
+  AddString(1, "mymusic.visualisation", 250, "Now Playing.vis", SPIN_CONTROL_TEXT);
 #elif defined(_WIN32PC)
   AddString(1, "mymusic.visualisation", 250, "opengl_spectrum_win32.vis", SPIN_CONTROL_TEXT);
 #else
@@ -465,6 +459,7 @@ CGUISettings::CGUISettings(void)
 #ifdef __APPLE__
   AddInt(1, "plexmediaserver.mode", 13631, PlexMediaServerHelper::MODE_ENABLED, PlexMediaServerHelper::MODE_DISABLED, 1, PlexMediaServerHelper::MODE_ENABLED, SPIN_CONTROL_TEXT);
   AddBool(2, "plexmediaserver.alwayson", 13632, false);
+  AddBool(3, "plexmediaserver.scrobble", 13635, false);
 #endif
   
 //  AddCategory(4, "autorun", 447);
@@ -584,10 +579,11 @@ CGUISettings::CGUISettings(void)
 
   AddSeparator(7, "videoplayer.sep1.5");
   AddInt(10, "videoplayer.highqualityupscaling", 13112, SOFTWARE_UPSCALING_DISABLED, SOFTWARE_UPSCALING_DISABLED, 1, SOFTWARE_UPSCALING_ALWAYS, SPIN_CONTROL_TEXT);
-  AddInt(11, "videoplayer.upscalingalgorithm", 13116, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, 1, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, SPIN_CONTROL_TEXT);
-  
+  AddInt(0, "videoplayer.upscalingalgorithm", 13116, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, 1, VS_SCALINGMETHOD_LANCZOS_SOFTWARE, SPIN_CONTROL_TEXT);
   AddSeparator(12, "videoplayer.sep1.8");  
   AddInt(13, "videoplayer.skiploopfilter", 13134, VS_SKIPLOOP_DISABLED, VS_SKIPLOOP_DISABLED, 1, VS_SKIPLOOP_FULL, SPIN_CONTROL_TEXT);
+  AddBool(14, "videoplayer.autoselectaudiostream", 13138, true);
+  
   AddInt(0, "videoplayer.dvdplayerregion", 21372, 0, 0, 1, 8, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
   AddBool(0, "videoplayer.dvdautomenu", 21882, true);
   AddBool(0, "videoplayer.editdecision", 22003, false);
@@ -602,6 +598,7 @@ CGUISettings::CGUISettings(void)
   AddBool(0, "subtitles.searchrars", 13249, true);
   AddSeparator(10,"subtitles.sep2");
   AddString(11, "subtitles.custompath", 21366, "", BUTTON_CONTROL_PATH_INPUT, false, 657);
+  AddBool(12, "subtitles.autoselectsubtitlestream", 13139, true);
 
   // Don't add the category - makes them hidden in the GUI
   //AddCategory(5, "postprocessing", 14041);
@@ -686,6 +683,45 @@ CGUISettings::CGUISettings(void)
   AddBool(2, "upnp.renderer", 21881, false);
   AddSeparator(3,"upnp.sep1");
 
+  string location = "USCA0987 - San Francisco, CA";
+  
+#ifdef __APPLE__
+#if 0
+  // Find reasonable default for weather.
+  string zip = Cocoa_GetMyZip();
+  string country = Cocoa_GetMyCountry();
+  string city = Cocoa_GetMyCity();
+  string state = Cocoa_GetMyState();
+
+  string addressToken;
+  if (Cocoa_GetCountryCode() == "US")
+  {
+    if (zip.size() > 0)
+      addressToken = zip;
+    else if (city.size() > 0 && state.size() > 0)
+      addressToken = city + "," + state;
+  }
+  else if (city.size() > 0)
+  {
+    addressToken = city;
+  }
+  
+  // Now look up the location.
+  if (addressToken.size() > 0)
+  {
+    string result = CWeather::GetTopSearchResult(addressToken);
+    if (result.size() > 0)
+      location = result;
+  }
+#endif
+#endif
+
+  // My Weather settings
+  AddGroup(2, 8);
+  AddCategory(2, "weather", 16000);
+  AddString(1, "weather.areacode1", 14019, location.c_str(), BUTTON_CONTROL_STANDARD);
+  AddString(2, "weather.areacode2", 14020, "UKXX0085 - London, United Kingdom", BUTTON_CONTROL_STANDARD);
+  AddString(3, "weather.areacode3", 14021, "NZXX0049 - Wellington, New Zealand", BUTTON_CONTROL_STANDARD);
 
   // remote events settings
 #ifdef HAS_EVENT_SERVER
@@ -715,13 +751,13 @@ CGUISettings::CGUISettings(void)
   // appearance settings
   AddGroup(7, 480);
 	
-	
- AddCategory(7,"lookandfeel", 14037);
+  AddCategory(7,"lookandfeel", 14037);
   AddBool(0,"lookandfeel.soundsduringplayback",21370,false);
   AddString(1, "lookandfeel.skin",166,"MediaStream", SPIN_CONTROL_TEXT);
   AddString(2, "lookandfeel.skintheme",15111,"SKINDEFAULT", SPIN_CONTROL_TEXT);
   AddString(3, "lookandfeel.skincolors",14078, "SKINDEFAULT", SPIN_CONTROL_TEXT);
   AddString(4, "lookandfeel.font",13303,"Default", SPIN_CONTROL_TEXT);
+  AddBool(0, "lookandfeel.lastLoadRequiredUnicode", 0, false);
   AddInt(0, "lookandfeel.skinzoom",20109, 0, -20, 2, 20, SPIN_CONTROL_INT, MASK_PERCENT);
   AddInt(6, "lookandfeel.startupwindow",512,1, WINDOW_HOME, 1, WINDOW_PYTHON_END, SPIN_CONTROL_TEXT);
   AddSeparator(7, "lookandfeel.sep1");
@@ -729,11 +765,9 @@ CGUISettings::CGUISettings(void)
   AddSeparator(10, "lookandfeel.sep2");
 
 	AddCategory(7,"region", 20026);
-	AddString(1, "region.country", 20026, "USA", SPIN_CONTROL_TEXT);
-	AddString(2, "region.language",248,"english", SPIN_CONTROL_TEXT);
 	AddString(3, "region.charset",735,"DEFAULT", SPIN_CONTROL_TEXT); // charset is set by the language file
 	
-//  AddCategory(7, "filelists", 14018);
+	//  AddCategory(7, "filelists", 14018);
   AddBool(1, "filelists.hideparentdiritems", 13306, true);
   AddBool(2, "filelists.hideextensions", 497, false);
   AddBool(3, "filelists.ignorethewhensorting", 13399, true);

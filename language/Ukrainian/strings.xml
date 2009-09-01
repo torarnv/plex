@@ -1,8 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 06/07/2008-->
-<!--$Revision$-->
-<!--Based on english strings version 13245-->
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
   <string id="0">Програми</string>
   <string id="1">Фотографії</string>
@@ -397,7 +393,7 @@
   <string id="479">Позиція екранного меню</string>
   <string id="480">Оформлення</string>
   <string id="481">Опції аудіо</string>
-  <string id="482">Про XBMC</string>
+  <string id="482">Про Plex</string>
   <string id="483">Альбом</string>
   <string id="484">Виконавець</string>
   <string id="485">Видалити альбом</string>
@@ -555,7 +551,7 @@
   <string id="999">Мережева гра</string>
   <string id="1000">Подивитися заставку</string>
   <string id="1001">Неможливо підключитися</string>
-  <string id="1002">XBMC неспроможна підключитися до мережі.</string>
+  <string id="1002">Plex неспроможна підключитися до мережі.</string>
   <string id="1003">Можливо, мережа не підключена.</string>
   <string id="1004">Додати у разі?</string>
   <string id="1005">Запровадьте назву для цього ресурса</string>
@@ -870,7 +866,7 @@
   <string id="13306">Приховати значок переходу на верхній рівень</string>
   <string id="13307">Формат імені файла</string>
   <string id="13308">Хочете перезавантажити Ваш XBOX</string>
-  <string id="13309">замість перезапуску XBMC?</string>
+  <string id="13309">замість перезапуску Plex?</string>
   <string id="13310">Ефект збільшення</string>
   <string id="13311">Ефект ковзання</string>
   <string id="13312">Зменшення чорних смуг</string>
@@ -990,7 +986,7 @@
   <string id="14037">Зовнішній вид</string>
   <string id="14038">Настройки локальної мережі змінені.</string>
   <string id="14039">Для вступу змін з силу, потрібно</string>
-  <string id="14040">перезавантаження XBMC. Перезагружаем?</string>
+  <string id="14040">перезавантаження Plex. Перезагружаем?</string>
   <string id="14041">Постобробка</string>
   <string id="14042">IP адресу комп'ютера з Kai Engine</string>
   <string id="14043">- Вимикати під час програвання</string>
@@ -1061,9 +1057,9 @@
   <string id="15034">тільки що ввійшов</string>
   <string id="15035">ініціював голосової чат</string>
   <string id="15036">послав Вам запрошення</string>
-  <string id="15037">XBMC не підтверджує доступність вашої мережі.</string>
+  <string id="15037">Plex не підтверджує доступність вашої мережі.</string>
   <string id="15038">Можливо виникатимуть проблеми з грою через мережу</string>
-  <string id="15039">XBMC не зміг знайти гру.</string>
+  <string id="15039">Plex не зміг знайти гру.</string>
   <string id="15040">Вставте диск з грою або натисніть 'A' для скасування</string>
   <string id="15041">і запустіть гру самостійно.</string>
   <string id="15042">Доступ закритий</string>
@@ -1103,7 +1099,7 @@
   <string id="15202">Ім'я користувача для Last.FM</string>
   <string id="15203">Пароль для Last.FM</string>
   <string id="15204">Не зміг зв'язаться: засинаю...</string>
-  <string id="15205">Будь ласка, обновіть XBMC</string>
+  <string id="15205">Будь ласка, обновіть Plex</string>
   <string id="15206">Невірна авторизація.</string>
   <string id="15207">Підключений</string>
   <string id="15208">Не підключений</string>
@@ -1210,7 +1206,7 @@
   <string id="20006">Папка плейлистов</string>
   <string id="20007">Записи</string>
   <string id="20008">Скріншоти</string>
-  <string id="20009">Вик. XBMC</string>
+  <string id="20009">Вик. Plex</string>
   <string id="20010">Фото виконавця</string>
   <string id="20011">Музичний плейлист</string>
   <string id="20012">Відео плейлист</string>
@@ -1396,7 +1392,7 @@
   <string id="20303">Обчислення швидкості ЦПУ</string>
   <string id="20304">Виявлення дати виробництва</string>
   <string id="20305">Виявлення подкюченных юнітів***</string>
-  <string id="20306">Невідомо. Додайте сигнатуру MD5 з xbmc.log в BiosIDs.ini</string>
+  <string id="20306">Невідомо. Додайте сигнатуру MD5 з Plex.log в BiosIDs.ini</string>
   <string id="20307">Вторинний DNS</string>
   <string id="20308">Сервер DHCP:</string>
   <string id="20309">Створити папку</string>

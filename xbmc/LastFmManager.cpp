@@ -1026,7 +1026,7 @@ bool CLastFmManager::CanBan()
 bool CLastFmManager::CanScrobble(const CFileItem &fileitem)
 {
   return (
-    (!fileitem.IsInternetStream() && g_guiSettings.GetBool("lastfm.enable")) || 
+    ((!fileitem.IsInternetStream() || fileitem.IsPlexMediaServerMusic()) && g_guiSettings.GetBool("lastfm.enable")) ||  
     (fileitem.IsLastFM() && g_guiSettings.GetBool("lastfm.recordtoprofile"))
   );
 }

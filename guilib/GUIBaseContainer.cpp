@@ -353,15 +353,17 @@ void CGUIBaseContainer::OnJumpSMS(int letter)
     return;
 
   const CStdString letters = letterMap[letter - 2];
+  
   // find where we currently are
   int offset = CorrectOffset(m_offset, m_cursor);
   unsigned int currentLetter = 0;
   while (currentLetter + 1 < m_letterOffsets.size() && m_letterOffsets[currentLetter + 1].first <= offset)
     currentLetter++;
-
+  
   // now switch to the next letter
   CStdString current = m_letterOffsets[currentLetter].second;
-  int startPos = (letters.Find(current) + 1) % letters.size();
+  int startPos = (letters.Find(current.ToUpper()) + 1) % letters.size();
+  
   // now jump to letters[startPos], or another one in the same range if possible
   int pos = startPos;
   while (true)
@@ -369,7 +371,7 @@ void CGUIBaseContainer::OnJumpSMS(int letter)
     // check if we can jump to this letter
     for (unsigned int i = 0; i < m_letterOffsets.size(); i++)
     {
-      if (m_letterOffsets[i].second == letters.Mid(pos, 1))
+      if (m_letterOffsets[i].second.ToLower() == letters.Mid(pos, 1).ToLower())
       {
         SelectItem(m_letterOffsets[i].first);
         return;

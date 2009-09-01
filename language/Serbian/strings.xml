@@ -1,6 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!-- By Kobazz & Rigor|Mortis http://www.minimal-art.com -->
-<!--$Revision$-->
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
   <string id="0">Programi</string>
   <string id="1">Slike</string>
@@ -398,7 +396,7 @@
   <string id="479">Koza i Jezik</string>
   <string id="480">Korisnicki Interfejs</string>
   <string id="481">Audio Podesavanja</string>
-  <string id="482">O XBMC-u</string>
+  <string id="482">O Plex-u</string>
   <string id="483">Album</string>
   <string id="484">Izvodjac</string>
   <string id="485">Izbrsi album</string>

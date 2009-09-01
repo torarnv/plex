@@ -1,10 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Language file translated with Team XBMC Translator-->
-<!--Translator: Tang YiZhi-->
-<!--Email: Kazuyuki@163.com-->
-<!--Date of translation: 10/08/2008-->
-<!--$Revision$-->
-<!--Based on english strings version 15826-->
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -12,10 +6,10 @@
   <string id="3">视频</string>
   <string id="4">电视导游</string>
   <string id="5">系统设置</string>
-  <string id="6">XBMC Media Center SVN</string>
+  <string id="6">Plex Media Center SVN</string>
   <string id="7">文件管理</string>
   <string id="8">天气</string>
-  <string id="9">xbmc 媒体中心</string>
+  <string id="9">Plex 媒体中心</string>
   <string id="11">星期一</string>
   <string id="12">星期二</string>
   <string id="13">星期三</string>
@@ -385,7 +379,7 @@
   <string id="479">皮肤和语言</string>
   <string id="480">用户界面</string>
   <string id="481">音频设置</string>
-  <string id="482">关于 XBMC</string>
+  <string id="482">关于 Plex</string>
   <string id="485">删除专辑</string>
   <string id="486">重复</string>
   <string id="487">重复单首</string>
@@ -626,7 +620,7 @@
   <string id="797">最大客户数</string>
   <string id="1000">屏幕保护预览</string>
   <string id="1001">无法连接</string>
-  <string id="1002">XBMC 无法连接到该网上邻居！</string>
+  <string id="1002">Plex 无法连接到该网上邻居！</string>
   <string id="1003">这可能是由于网络没有连接。</string>
   <string id="1004">可以用其他方式来添加它吗？</string>
   <string id="1006">IP 地址</string>
@@ -905,10 +899,10 @@
   <string id="13132">空白显示</string>
   <string id="13140">检测到活动连接！</string>
   <string id="13141">如果你处理，你将不再能控制你的</string>
-  <string id="13142">XBMC，你是否确认要停止远程控制？</string>
+  <string id="13142">Plex，你是否确认要停止远程控制？</string>
   <string id="13144">改变 Apple 遥控器的模式？</string>
   <string id="13145">如果你现在正在使用 Apple 遥控器</string>
-  <string id="13146">控制 XBMC，修改这些设置将影响对</string>
+  <string id="13146">控制 Plex，修改这些设置将影响对</string>
   <string id="13147">系统的控制。你确认要处理吗？</string>
   <string id="13150">硬盘密匙：</string>
   <string id="13151">硬盘温度：</string>
@@ -987,7 +981,7 @@
   <string id="13306">隐藏上层目录图标</string>
   <string id="13307">音轨命名参数</string>
   <string id="13308">你想重新启动系统</string>
-  <string id="13309">以重新启动 XBMC 吗？</string>
+  <string id="13309">以重新启动 Plex 吗？</string>
   <string id="13310">放缩效果</string>
   <string id="13311">漂浮效果</string>
   <string id="13312">缩小黑边</string>
@@ -1128,7 +1122,7 @@
   <string id="14036">服务</string>
   <string id="14037">外观设置</string>
   <string id="14038">网络设置已改变</string>
-  <string id="14039">XBMC 需要重启改变你的网络设置。</string>
+  <string id="14039">Plex 需要重启改变你的网络设置。</string>
   <string id="14040">你想现在就重启吗？</string>
   <string id="14041">后置处理</string>
   <string id="14043">- 播放时关机</string>
@@ -1188,7 +1182,7 @@
   <string id="15202">Last.FM 用户名</string>
   <string id="15203">Last.FM 密码</string>
   <string id="15204">无法连接：休眠中…</string>
-  <string id="15205">请升级 XBMC</string>
+  <string id="15205">请升级 Plex</string>
   <string id="15206">无法通过认证：检查帐号和密码</string>
   <string id="15207">连接</string>
   <string id="15208">无法连接</string>
@@ -1325,7 +1319,7 @@
   <string id="20006">播放列表目录</string>
   <string id="20007">录音</string>
   <string id="20008">屏幕抓图</string>
-  <string id="20009">使用 XBMC</string>
+  <string id="20009">使用 Plex</string>
   <string id="20011">音乐播放列表</string>
   <string id="20012">视频播放列表</string>
   <string id="20013">你要执行该游戏？</string>
@@ -1502,7 +1496,7 @@
   <string id="20250">舞会模式！(视频)</string>
   <string id="20251">混合饮料(视频)</string>
   <string id="20252">填入玻璃(视频)</string>
-  <string id="20306">未知 BIOS，请把 xbmc.log 中 MD5 部分加到 BiosIDs.ini</string>
+  <string id="20306">未知 BIOS，请把 Plex.log 中 MD5 部分加到 BiosIDs.ini</string>
   <string id="20307">备用 DNS 服务器地址</string>
   <string id="20308">DHCP 服务器:</string>
   <string id="20309">新建文件夹</string>

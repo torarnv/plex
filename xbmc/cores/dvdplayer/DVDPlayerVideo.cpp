@@ -295,10 +295,7 @@ void CDVDPlayerVideo::Process()
     {
       if (m_speed != DVD_PLAYSPEED_PAUSE)
       {
-        double timeout = static_cast<CDVDMsgDouble*>(pMsg)->m_value;
-
-        CLog::Log(LOGDEBUG, "CDVDPlayerVideo - CDVDMsg::GENERAL_DELAY(%f)", timeout);
-
+        double timeout  = static_cast<CDVDMsgDouble*>(pMsg)->m_value;
         timeout *= (double)DVD_PLAYSPEED_NORMAL / abs(m_speed);
         timeout += CDVDClock::GetAbsoluteClock();
 
@@ -659,9 +656,9 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
     if(pOverlay->iPTSStartTime <= pts2 && (pOverlay->iPTSStopTime >= pts2 || pOverlay->iPTSStopTime == 0LL) || pts == 0)
     {
       if (bHasSpecialOverlay && m_pTempOverlayPicture) 
-        CDVDOverlayRenderer::Render(m_pTempOverlayPicture, pOverlay, pts);
+        CDVDOverlayRenderer::Render(m_pTempOverlayPicture, pOverlay, pts2);
       else 
-        CDVDOverlayRenderer::Render(pDest, pOverlay, pts);
+        CDVDOverlayRenderer::Render(pDest, pOverlay, pts2);
     }
   }
   
@@ -805,7 +802,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
 #ifdef HAS_VIDEO_PLAYBACK
 
   float maxfps = g_renderManager.GetMaximumFPS();
-  if( m_fFrameRate * abs(m_speed) / DVD_PLAYSPEED_NORMAL >  maxfps )
+  if( m_speed != DVD_PLAYSPEED_NORMAL && m_fFrameRate * abs(m_speed) / DVD_PLAYSPEED_NORMAL >  maxfps)
   {
     // calculate frame dropping pattern to render at this speed
     // we do that by deciding if this or next frame is closest
@@ -820,8 +817,8 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
       return result | EOS_DROPPED;
 #endif
 
-    while(m_dropbase < m_droptime)             m_dropbase += frametime;
-    while(m_dropbase - frametime > m_droptime) m_dropbase -= frametime;
+    while(!m_bStop && m_dropbase < m_droptime)             m_dropbase += frametime;
+    while(!m_bStop && m_dropbase - frametime > m_droptime) m_dropbase -= frametime;
   } 
   else
   {

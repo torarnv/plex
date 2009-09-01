@@ -34,6 +34,9 @@
 
 #include <vector>
 #include <map>
+#include <string>
+
+using namespace std;
 
 #define CACHE_AUDIO 0
 #define CACHE_VIDEO 1
@@ -246,11 +249,22 @@ public:
     
     int m_secondsToVisualizer;
     bool m_bVisualizerOnPlay;
+    
+    bool m_bAutoShuffle;
+    bool m_bUseAnamorphicZoom;
+    
+    CStdString m_language;
+    CStdString m_units;
   };
 
   struct stSettings
   {
 public:
+    stSettings()
+      : m_viewStateVideoNavEpisodes(65590, SORT_METHOD_EPISODE, SORT_ORDER_ASC)
+      , m_viewStateVideoNavSeasons(65536, SORT_METHOD_LABEL, SORT_ORDER_ASC)
+      {}
+  
     CStdString m_pictureExtensions;
     CStdString m_musicExtensions;
     CStdString m_videoExtensions;
@@ -433,6 +447,14 @@ protected:
   void LoadUserFolderLayout();
 
   void LoadRSSFeeds();
+  
+ public:
+  
+   string GetLanguage();
+  
+ private:
+   
+   map<string, string> m_languageMap;
 };
 
 extern class CSettings g_settings;

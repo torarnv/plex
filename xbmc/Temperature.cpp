@@ -454,12 +454,15 @@ CStdString CTemperature::ToString() const
   case CLangInfo::TEMP_UNIT_FAHRENHEIT:
     value=ToFahrenheit();
     break;
+#if 0
   case CLangInfo::TEMP_UNIT_KELVIN:
     value=ToKelvin();
     break;
+#endif
   case CLangInfo::TEMP_UNIT_CELSIUS:
     value=ToCelsius();
     break;
+#if 0
   case CLangInfo::TEMP_UNIT_REAUMUR:
     value=ToReaumur();
     break;
@@ -475,6 +478,7 @@ CStdString CTemperature::ToString() const
   case CLangInfo::TEMP_UNIT_NEWTON:
     value=ToNewton();
     break;
+#endif
   default:
     ASSERT(false);
     break;

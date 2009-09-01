@@ -30,8 +30,8 @@ enum CodecID;
 #else
 #ifdef __APPLE__
 extern "C" {
-#include "libffmpeg-OSX/log.h"
-#include "libffmpeg-OSX/avcodec.h"
+#include "cores/ffmpeg/log.h"
+#include "cores/ffmpeg/avcodec.h"
 }
 #else
 #include "ffmpeg/avcodec.h"
@@ -56,9 +56,9 @@ public:
   bool IsValidFormat(const DVDAudioFrame &audioframe);
   void Destroy();
   DWORD AddPackets(const DVDAudioFrame &audioframe);
-  void DoWork();
   double GetDelay(); // returns the time it takes to play a packet if we add one at this time
   void Flush();
+  void Finish();
   void Drain();
 
   void SetSpeed(int iSpeed);

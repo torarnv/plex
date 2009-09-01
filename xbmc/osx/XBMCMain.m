@@ -10,7 +10,7 @@
 #import "AppleRemote.h"
 
 #define PLEX_SERVICE_PORT 32401
-#define PLEX_SERVICE_TYPE @"_plexmediaserver._tcp"
+#define PLEX_SERVICE_TYPE @"_plexmediasvr._tcp"
 
 @implementation XBMCMain
 
@@ -38,6 +38,13 @@ static XBMCMain *_o_sharedMainInstance = nil;
 
   // Let the system stablize a bit before we start searching for media servers
   [self performSelector:@selector(searchForPlexMediaServers) withObject:nil afterDelay:0.1];
+	
+  // broadcast launch notification
+	CFNotificationCenterPostNotification( CFNotificationCenterGetDistributedCenter (),
+										 CFSTR("PlexGUIInit"), 
+										 CFSTR("PlexTVServer"), 
+										 /*userInfo*/ NULL, 
+										 TRUE );
 
   // Start listening in exclusive mode.
   //[o_remote startListening: self];

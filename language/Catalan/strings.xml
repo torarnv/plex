@@ -1,10 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Language file translated with Team XBMC Translator-->
-<!--Translator: BucLabs-->
-<!--Email: buclabs@gmail.com-->
-<!--Date of translation: 08/28/2006-->
-<!--$Revision$-->
-<!--Based on english strings version 1.332-->
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
   <string id="0">Programes</string>
   <string id="1">Imatges</string>
@@ -400,7 +394,7 @@
   <string id="479">Llengua i Pell (Skin)</string>
   <string id="480">Interfície d'Usuari</string>
   <string id="481">Opcions Àudio</string>
-  <string id="482">En quant a XBMC</string>
+  <string id="482">En quant a Plex</string>
   <string id="483">Àlbum</string>
   <string id="484">Artista</string>
   <string id="485">Borrar Àlbum</string>
@@ -558,7 +552,7 @@
   <string id="999">Joc Online</string>
   <string id="1000">Previsualitza Salvapantalles</string>
   <string id="1001">Impossible connectar</string>
-  <string id="1002">XBMC no pot connectarse a la localització de la xarxa</string>
+  <string id="1002">Plex no pot connectarse a la localització de la xarxa</string>
   <string id="1003">Això pot ser degut a que la xarxa no está connectada</string>
   <string id="1004">Vols afegir-ho igualment?</string>
   <string id="1005">Entra un nom per aquest recurs</string>
@@ -872,7 +866,7 @@
   <string id="13306">Ocultar la icona de pujar la carpeta</string>
   <string id="13307">Ocultar números de pista</string>
   <string id="13308">Desitja reiniciar la xbox</string>
-  <string id="13309">en lloc del XBMC?</string>
+  <string id="13309">en lloc del Plex?</string>
   <string id="13310">Efecte de zoom</string>
   <string id="13311">Efecte flotant</string>
   <string id="13312">Reducció de les barres negres</string>
@@ -993,7 +987,7 @@ per aquesta visulització</string>
   <string id="14036">Servidors</string>
   <string id="14037">Aparença</string>
   <string id="14038">Configuració de Xarxa canviada</string>
-  <string id="14039">XBMC requereix reiniciar-se per a poder canviar la seva</string>
+  <string id="14039">Plex requereix reiniciar-se per a poder canviar la seva</string>
   <string id="14040">configuració de xarxa.  Desitja reiniciar ara?</string>
   <string id="14041">Postprocesat</string>
   <string id="14042">Adreça IP del motor</string>
@@ -1065,9 +1059,9 @@ per aquesta visulització</string>
   <string id="15034">ha entrat</string>
   <string id="15035">ha iniciat un xat de veu</string>
   <string id="15036">t'ha enviat una invitació</string>
-  <string id="15037">XBMC no es capaç de confirmar si la xarxa està disponible</string>
+  <string id="15037">Plex no es capaç de confirmar si la xarxa està disponible</string>
   <string id="15038">Pots experimentar dificultats unin-te o fent de servidor de jocs.</string>
-  <string id="15039">XBMC es incapaç de localitzar el joc automaticament.</string>
+  <string id="15039">Plex es incapaç de localitzar el joc automaticament.</string>
   <string id="15040">Inserta el DVD del joc a l'XBOX o prem 'A' per cancel·lar</string>
   <string id="15041">i llença el joc manualment.</string>
   <string id="15042">Accès denegat</string>
@@ -1107,7 +1101,7 @@ per aquesta visulització</string>
   <string id="15202">Nom usuari Last.FM</string>
   <string id="15203">Contrasenya Last.FM</string>
   <string id="15204">Imposible negociar: dormint...</string>
-  <string id="15205">Si us plau, actualitza XBMC</string>
+  <string id="15205">Si us plau, actualitza Plex</string>
   <string id="15206">Mala autorització: Comprova nom d'usuari i contrasenya</string>
   <string id="15207">Connectat</string>
   <string id="15208">No Connectat</string>
@@ -1207,7 +1201,7 @@ per aquesta visulització</string>
   <string id="20006">Directori de Llistes</string>
   <string id="20007">Grabacions</string>
   <string id="20008">Captures</string>
-  <string id="20009">Utilitza XBMC</string>
+  <string id="20009">Utilitza Plex</string>
   <string id="20010">Imatges d'artistes</string>
   <string id="20011">Llistes de Música</string>
   <string id="20012">Llistes de Vídeo</string>

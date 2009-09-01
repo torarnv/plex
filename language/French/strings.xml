@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Based on english strings version 15704-->
 <strings>
   <string id="0">Programmes</string>
   <string id="1">Images</string>
@@ -7,10 +6,10 @@
   <string id="3">Vidéos</string>
   <string id="4">Guide TV</string>
   <string id="5">Paramètres</string>
-  <string id="6">XBMC SVN</string>
+  <string id="6">Plex SVN</string>
   <string id="7">Fichiers</string>
   <string id="8">Météo</string>
-  <string id="9">xbmc media center</string>
+  <string id="9">Plex media center</string>
   
   <string id="11">Lundi</string>
   <string id="12">Mardi</string>
@@ -402,7 +401,7 @@
   <string id="479">Thème et langue</string>
   <string id="480">Interface</string>
   <string id="481">Options Audio</string>
-  <string id="482">À propos de XBMC</string>
+  <string id="482">À propos de Plex</string>
   <string id="483"></string>
   <string id="484"></string>
   <string id="485">Supprimer l'album</string>
@@ -543,7 +542,7 @@
   <string id="642">Amplification Fichiers non Replay Gain</string>
   <string id="643">Eviter les coupures sur les fichiers Replay Gain</string>
   <string id="644">Couper les barres noires</string>
-  <string id="645">XBMC doit mettre en cache un fichier de taille importante.&#10;Continuer ?</string>
+  <string id="645">Plex doit mettre en cache un fichier de taille importante.&#10;Continuer ?</string>
   <string id="646">Retirer de la bibliothèque</string>
   <string id="647">Exporter la bibliothèque vidéos</string>
   <string id="648">Importer une bibliothèque vidéos</string>
@@ -663,7 +662,7 @@
   <string id="999"></string>
   <string id="1000">Prévisualiser l'écran de veille</string>
   <string id="1001">Impossible de se connecter</string>
-  <string id="1002">XBMC ne peut pas se connecter au chemin réseau.</string>
+  <string id="1002">Plex ne peut pas se connecter au chemin réseau.</string>
   <string id="1003">Vérifiez votre chemin ou votre installation réseau.</string>
   <string id="1004">Desirez-vous tout de même l'ajouter ?</string>
   <string id="1005">Saisissez un nom pour ce partage</string>
@@ -913,7 +912,7 @@
   <string id="12356">Changer la sécurité</string>
   <string id="12357">Sécurité Sources</string>
   <string id="12358">Le mot de passe rentré est vide. Essayez encore.</string>
-  <string id="12360">Sécurités XBMC</string>
+  <string id="12360">Sécurités Plex</string>
   <string id="12362">Eteindre après trop de tentatives</string>
   <string id="12367">Le code Maitre n'est pas valide!</string>
   <string id="12368">Merci de rentrer un code Maitre valide!</string>
@@ -978,12 +977,12 @@
   <string id="13132">Activer Blanking</string>
  
   <string id="13140">Connexions active détectées !</string>
-  <string id="13141">Si vous continuez vous ne serez plus en mesure de contrôler XBMC</string>
+  <string id="13141">Si vous continuez vous ne serez plus en mesure de contrôler Plex</string>
   <string id="13142">par la suite. Etes-vous sur de stopper le serveur Event ?</string>
 
   <string id="13144">Changer le mode Apple Remote ?</string>
   <string id="13145">Si vous utilisez actuellement la télécommande Apple pour contrôler</string>
-  <string id="13146">XBMC, le changement de ce paramètre peut affecter l'abilité</string>
+  <string id="13146">Plex, le changement de ce paramètre peut affecter l'abilité</string>
   <string id="13147">de continuer à contrôler celui-ci. Effectuer la modification ?</string>
  
   <string id="13150">HDD Clé:</string>
@@ -1217,7 +1216,7 @@
   <string id="14037">Apparences</string>
   <string id="14038">Les paramètres réseaux ont été changés</string>
   <string id="14039">Vous venez de modifier les paramètres réseaux</string>
-  <string id="14040">Redémarrer XBMC pour appliquer les changements ?</string>
+  <string id="14040">Redémarrer Plex pour appliquer les changements ?</string>
   <string id="14041">Post Traitement</string>
   <string id="14042"></string>
   <string id="14043">- Eteindre pendant la lecture</string>
@@ -1339,7 +1338,7 @@
   <string id="15202">Compte Last.FM</string>
   <string id="15203">Mot de passe Last.FM</string>
   <string id="15204">Impossible de contacter le serveur: En attente...</string>
-  <string id="15205">Vous devez mettre à jour XBMC</string>
+  <string id="15205">Vous devez mettre à jour Plex</string>
   <string id="15206">Autorisation refusée.</string>
   <string id="15207">Connecté(e)</string>
   <string id="15208">Non Connecté(e)</string>
@@ -1488,7 +1487,7 @@
   <string id="20006">Dossier des Playlists</string>
   <string id="20007">Enregistrements</string>
   <string id="20008">Capture d'écran</string>
-  <string id="20009">Utiliser XBMC</string>
+  <string id="20009">Utiliser Plex</string>
   <string id="20010"></string>
   <string id="20011">Sélection musicale</string>
   <string id="20012">Sélection vidéo</string>
@@ -1685,7 +1684,7 @@
   <string id="20304"></string>
   <string id="20305"></string>
 
-  <string id="20306">Inconnu. Merci d'ajouter le MD5 depuis xbmc.log à BiosIDs.ini.</string>
+  <string id="20306">Inconnu. Merci d'ajouter le MD5 depuis Plex.log à BiosIDs.ini.</string>
   <string id="20307">DNS secondaire</string>
   <string id="20308">Serveur DHCP</string>
   <string id="20309">Créer un nouveau dossier</string>

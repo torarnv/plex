@@ -697,9 +697,9 @@ void CLinuxRendererGL::InitializeSoftwareUpscaling()
   m_imScaled.stride[0] = ALIGN((m_upscalingWidth)   , 16);
   m_imScaled.stride[1] = ALIGN((m_upscalingWidth>>1), 16);
   m_imScaled.stride[2] = ALIGN((m_upscalingWidth>>1), 16);
-  m_imScaled.plane[0] = new BYTE[m_imScaled.stride[0] * ALIGN((m_upscalingHeight)   , 16)];
-  m_imScaled.plane[1] = new BYTE[m_imScaled.stride[1] * ALIGN((m_upscalingHeight>>1), 16)];
-  m_imScaled.plane[2] = new BYTE[m_imScaled.stride[2] * ALIGN((m_upscalingHeight>>1), 16)];
+  m_imScaled.plane[0] = new BYTE[m_imScaled.stride[0] * ALIGN(((m_upscalingHeight+1))   , 16)];
+  m_imScaled.plane[1] = new BYTE[m_imScaled.stride[1] * ALIGN(((m_upscalingHeight+2)>>1), 16)];
+  m_imScaled.plane[2] = new BYTE[m_imScaled.stride[2] * ALIGN(((m_upscalingHeight+2)>>1), 16)];
   
   for (int i=0; i<3; i++)
     if (((long)m_imScaled.plane[i]) % 16 != 0)
@@ -1591,17 +1591,35 @@ void CLinuxRendererGL::SetViewMode(int iViewMode)
     }
   }
   else if (g_stSettings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_STRETCH_16x9)
-  { // stretch image to 16:9 ratio
-    g_stSettings.m_fZoomAmount = 1.0;
-    if (m_iResolution == PAL_4x3 || m_iResolution == PAL60_4x3 || m_iResolution == NTSC_4x3 || m_iResolution == HDTV_480p_4x3)
-    { // now we need to set g_stSettings.m_fPixelRatio so that
-      // fOutputFrameRatio = 16:9.
-      g_stSettings.m_fPixelRatio = (16.0f / 9.0f) / fSourceFrameRatio;
+  { 
+    if (g_advancedSettings.m_bUseAnamorphicZoom == false)
+    {
+      // stretch image to 16:9 ratio
+      g_stSettings.m_fZoomAmount = 1.0;
+      if (m_iResolution == PAL_4x3 || m_iResolution == PAL60_4x3 || m_iResolution == NTSC_4x3 || m_iResolution == HDTV_480p_4x3)
+      { // now we need to set g_stSettings.m_fPixelRatio so that
+        // fOutputFrameRatio = 16:9.
+        g_stSettings.m_fPixelRatio = (16.0f / 9.0f) / fSourceFrameRatio;
+      }
+      else
+      { // stretch to the limits of the 16:9 screen.
+        // incorrect behaviour, but it's what the users want, so...
+        g_stSettings.m_fPixelRatio = (fScreenWidth / fScreenHeight) * g_settings.m_ResInfo[m_iResolution].fPixelRatio / fSourceFrameRatio;
+      }
     }
     else
-    { // stretch to the limits of the 16:9 screen.
-      // incorrect behaviour, but it's what the users want, so...
-      g_stSettings.m_fPixelRatio = (fScreenWidth / fScreenHeight) * g_settings.m_ResInfo[m_iResolution].fPixelRatio / fSourceFrameRatio;
+    {
+      /* Cinemascope output
+          - Stretches or compresses the image by a constant factor (vertical stretch @2.35:1, else compress)
+          - The effect is reversed by an optical Element in front of the Projector (Anamorphic Lens)
+          - Good explanation, see: http://en.wikipedia.org/wiki/Anamorphic
+          - Example for a cheap Lens (and explanation): http://www.zuggsoft.com/theater/prism.htm
+      */
+      g_stSettings.m_fZoomAmount = 1.0;
+      
+      // we need simulated non-foursquare pixels here, they need to be shown rectangular on the display, so that the lens can make them foursquare again
+      // tried to calc it up, but it's always 0.75 for Cinemascope, which we do here
+      g_stSettings.m_fPixelRatio = 0.75f;
     }
   }
   else // if (g_stSettings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_ORIGINAL)

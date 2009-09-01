@@ -834,6 +834,7 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("appearancesettings")) wWindowID = WINDOW_SETTINGS_APPEARANCE;
   else if (strWindow.Equals("scripts")) wWindowID = WINDOW_SCRIPTS;
   else if (strWindow.Equals("profiles")) wWindowID = WINDOW_SETTINGS_PROFILES;
+  else if (strWindow.Equals("nowplaying")) wWindowID = WINDOW_NOW_PLAYING;
   else if (strWindow.Equals("yesnodialog")) wWindowID = WINDOW_DIALOG_YES_NO;
   else if (strWindow.Equals("progressdialog")) wWindowID = WINDOW_DIALOG_PROGRESS;
   else if (strWindow.Equals("virtualkeyboard")) wWindowID = WINDOW_DIALOG_KEYBOARD;

@@ -42,7 +42,7 @@ struct SScraperInfo;
  CGUIWindowMusicBase is the base class for
  all music windows.
  */
-class CGUIWindowMusicBase : public CGUIMediaWindow
+class CGUIWindowMusicBase : public CGUIMediaWindow, public IBackgroundLoaderObserver
 {
 public:
   CGUIWindowMusicBase(DWORD dwID, const CStdString &xmlFile);
@@ -80,6 +80,7 @@ protected:
   void OnInfo(int iItem, bool bShowInfo = true);
   void OnInfoAll(int iItem, bool bCurrent=false);
   virtual void OnQueueItem(int iItem);
+  virtual void OnShuffleItem(int iItem);
   enum ALLOW_SELECTION { SELECTION_ALLOWED = 0, SELECTION_AUTO, SELECTION_FORCED };
   bool FindAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist, MUSIC_GRABBER::CMusicAlbumInfo& album, const SScraperInfo& info, ALLOW_SELECTION allowSelection);
   bool FindArtistInfo(const CStdString& strArtist, MUSIC_GRABBER::CMusicArtistInfo& artist, const SScraperInfo& info, ALLOW_SELECTION allowSelection);

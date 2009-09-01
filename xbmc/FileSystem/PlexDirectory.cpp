@@ -9,6 +9,8 @@
 
 #include "stdafx.h"
 #include "Album.h"
+#include "CocoaUtilsPlus.h"
+#include "CocoaUtils.h"
 #include "PlexDirectory.h"
 #include "DirectoryCache.h"
 #include "Util.h"
@@ -30,9 +32,11 @@ using namespace DIRECTORY;
 #define MASTER_PLEX_MEDIA_SERVER "http://localhost:32400"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-CPlexDirectory::CPlexDirectory()
+CPlexDirectory::CPlexDirectory(bool parseResults)
   : m_bStop(false)
   , m_bSuccess(true)
+  , m_bParseResults(parseResults)
+  , m_dirCacheType(DIR_CACHE_ALWAYS)
 {
   m_timeout = 300;
 }
@@ -100,15 +104,18 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   if (m_bSuccess == false)
     return false;
   
+  // See if we're supposed to parse the results or not.
+  if (m_bParseResults == false)
+    return true;
+  
   // Parse returned xml.
   TiXmlDocument doc;
   doc.Parse(m_data.c_str());
 
   TiXmlElement* root = doc.RootElement();
-  if(root == 0)
+  if (root == 0)
   {
-    CLog::Log(LOGERROR, "%s - Unable to parse xml\n%s", __FUNCTION__, m_data.c_str());
-    
+    CLog::Log(LOGERROR, "%s - Unable to parse XML\n%s", __FUNCTION__, m_data.c_str());
     return false;
   }
   
@@ -124,7 +131,6 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   string strSecondDirLabel = "%Y";
   
   Parse(m_url, root, items, strFileLabel, strDirLabel, strSecondDirLabel);
-  items.AddSortMethod(SORT_METHOD_NONE, 552, LABEL_MASKS(strFileLabel, "%D", strDirLabel, strSecondDirLabel));
   
   // Set the window titles
   const char* title1 = root->Attribute("title1");
@@ -135,12 +141,12 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   if (title2 && strlen(title2) > 0)
     items.SetSecondTitle(title2);
 
-  // Set fanart on items.
+  // Set fanart on items if they don't have their own.
   for (int i=0; i<items.Size(); i++)
   {
     CFileItemPtr pItem = items[i];
     
-    if (strFanart.size() > 0)
+    if (strFanart.size() > 0 && pItem->GetQuickFanart().size() == 0)
       pItem->SetQuickFanart(strFanart);
       
     // Make sure sort label is lower case.
@@ -161,6 +167,18 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     viewState->SaveViewAsControl(atoi(viewmode));
   }
   
+  // Override labels.
+  const char* fileLabel = root->Attribute("filelabel");
+  if (fileLabel && strlen(fileLabel) > 0)
+    strFileLabel = fileLabel;
+
+  const char* dirLabel = root->Attribute("dirlabel");
+  if (dirLabel && strlen(dirLabel) > 0)
+    strDirLabel = dirLabel;
+
+  // Add the sort method.
+  items.AddSortMethod(SORT_METHOD_NONE, 552, LABEL_MASKS(strFileLabel, "%D", strDirLabel, strSecondDirLabel));
+  
   // Set the content label.
   const char* content = root->Attribute("content");
   if (content && strlen(content) > 0)
@@ -179,7 +197,10 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     
     items.m_displayMessage = true; 
     items.m_displayMessageTitle = header; 
-    items.m_displayMessageContents = root->Attribute("message"); 
+    items.m_displayMessageContents = root->Attribute("message");
+    
+    // Don't cache these.
+    m_dirCacheType = DIR_CACHE_NEVER;
   }
   
   // See if this directory replaces the parent.
@@ -192,6 +213,11 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     if (noHistory && strcmp(noHistory, "1") == 0)
       items.SetSaveInHistory(false);
   
+  // See if we're not supposed to cache this directory.
+  const char* noCache = root->Attribute("nocache");
+  if (noCache && strcmp(noCache, "1") == 0)
+    m_dirCacheType = DIR_CACHE_NEVER;
+    
   return true;
 }
 
@@ -206,7 +232,7 @@ class PlexMediaNode
      pItem->m_bIsFolder = true;
      
      const char* key = el.Attribute("key");
-     if (key == 0)
+     if (key == 0 || strlen(key) == 0)
        return CFileItemPtr();
        
      string src = key;
@@ -269,14 +295,30 @@ class PlexMediaNode
      else if (strPath.find("/Decades/") != -1 || strPath.find("/Recently%20Added") != -1 || strPath.find("/Most%20Played") != -1 || strPath.find("/Recently%20Played/") != -1 || strPath.find("/Genre/") != -1)
        strDirLabel = "%A - %B";
    }
+   
+   string GetLabel(const TiXmlElement& el)
+   {
+     // FIXME: We weren't consistent, so no we need to accept multiple ones until 
+     // we release this and update the framework.
+     //
+     if (el.Attribute("title"))
+       return el.Attribute("title");
+     else if (el.Attribute("label"))
+       return el.Attribute("label");
+     else if (el.Attribute("name"))
+       return el.Attribute("name");
+     else if (el.Attribute("track"))
+       return el.Attribute("track");
+     
+     return "";
+   }
 };
 
 class PlexMediaDirectory : public PlexMediaNode
 {
   virtual void DoBuildFileItem(CFileItemPtr& pItem, const string& parentPath, TiXmlElement& el)
   {
-    pItem->SetLabel(el.Attribute("name"));
-    
+    pItem->SetLabel(GetLabel(el));
     CVideoInfoTag tag;
     tag.m_strTitle = pItem->GetLabel();
     
@@ -294,10 +336,12 @@ class PlexMediaDirectory : public PlexMediaNode
     newItem->SetProperty("description", pItem->GetProperty("description"));
     pItem = newItem;
     
-    // Check for search directories
+    // Check for special directories.
     const char* search = el.Attribute("search");
     const char* prompt = el.Attribute("prompt");
+    const char* settings = el.Attribute("settings");
     
+    // Check for search directory.
     if (search && strlen(search) > 0 && prompt)
     {
       string strSearch = search;
@@ -308,13 +352,21 @@ class PlexMediaDirectory : public PlexMediaNode
       }
     }
     
-    // Check for popup menus
+    // Check for popup menus.
     const char* popup = el.Attribute("popup");
     if (popup && strlen(popup) > 0)
     {
       string strPopup = popup;
       if (strPopup == "1")
         pItem->m_bIsPopupMenuItem = true;
+    }
+    
+    // Check for preferences.
+    if (settings && strlen(settings) > 0)
+    {
+      string strSettings = settings;
+      if (strSettings == "1")
+        pItem->m_bIsSettingsDir = true;
     }
   }
 };
@@ -338,7 +390,7 @@ class PlexMediaAlbum : public PlexMediaNode
   {
     CAlbum album;
     
-    album.strLabel = el.Attribute("label");
+    album.strLabel = GetLabel(el);
     album.idAlbum = boost::lexical_cast<int>(el.Attribute("key"));
     album.strAlbum = el.Attribute("album");
     album.strArtist = el.Attribute("artist");
@@ -395,13 +447,18 @@ class PlexMediaVideo : public PlexMediaNode
     videoInfo.m_strTitle = el.Attribute("title");
     videoInfo.m_strPlot = videoInfo.m_strPlotOutline = el.Attribute("summary");
     
+    const char* rating = el.Attribute("rating");
+    if (rating && strlen(rating) > 0)
+      videoInfo.m_fRating = atof(rating);
+    
     const char* year = el.Attribute("year");
     if (year)
-        videoInfo.m_iYear = boost::lexical_cast<int>(year);
+      videoInfo.m_iYear = boost::lexical_cast<int>(year);
       
-    string duration = el.Attribute("duration");
-    if (duration.size() > 0)
+    const char* pDuration = el.Attribute("duration");
+    if (pDuration && strlen(pDuration) > 0)
     {
+      string duration = pDuration;
       int seconds = boost::lexical_cast<int>(duration)/1000;
       int hours = seconds/3600;
       int minutes = (seconds / 60) % 60;
@@ -466,15 +523,21 @@ class PlexMediaTrack : public PlexMediaNode
     pItem->m_bIsFolder = false;
     
     CSong song;
-    song.strTitle = (el.Attribute("track"));
+    song.strTitle = GetLabel(el);
     song.strArtist = el.Attribute("artist");
     song.strAlbum = el.Attribute("album");
     song.strFileName = pItem->m_strPath;
 
+    // Old-school.
     const char* totalTime = el.Attribute("totalTime");
     if (totalTime && strlen(totalTime) > 0)
       song.iDuration = boost::lexical_cast<int>(totalTime)/1000;
     
+    // Standard.
+    totalTime = el.Attribute("duration");
+    if (totalTime && strlen(totalTime) > 0)
+      song.iDuration = boost::lexical_cast<int>(totalTime)/1000;
+      
     const char* trackNumber = el.Attribute("index");
     if (trackNumber && strlen(trackNumber) > 0)
       song.iTrack = boost::lexical_cast<int>(trackNumber);
@@ -518,7 +581,7 @@ class PlexMediaRoll : public PlexMediaNode
 {
   virtual void DoBuildFileItem(CFileItemPtr& pItem, const string& parentPath, TiXmlElement& el)
   {
-    pItem->SetLabel(el.Attribute("label"));
+    pItem->SetLabel(GetLabel(el));
   }
 };
 
@@ -526,7 +589,7 @@ class PlexMediaPhotoAlbum : public PlexMediaNode
 {
   virtual void DoBuildFileItem(CFileItemPtr& pItem, const string& parentPath, TiXmlElement& el)
   {
-    pItem->SetLabel(el.Attribute("label"));
+    pItem->SetLabel(GetLabel(el));
   }
 };
 
@@ -534,7 +597,7 @@ class PlexMediaPhotoKeyword : public PlexMediaNode
 {
   virtual void DoBuildFileItem(CFileItemPtr& pItem, const string& parentPath, TiXmlElement& el)
   {
-    pItem->SetLabel(el.Attribute("label"));
+    pItem->SetLabel(GetLabel(el));
   }
 };
 
@@ -543,12 +606,7 @@ class PlexMediaPhoto : public PlexMediaNode
   virtual void DoBuildFileItem(CFileItemPtr& pItem, const string& parentPath, TiXmlElement& el)
   {
     pItem->m_bIsFolder = false;
-    
-    // FIXME: Shouldn't have two ways to get this.
-    if (el.Attribute("title"))
-      pItem->SetLabel(el.Attribute("title"));
-    else
-      pItem->SetLabel(el.Attribute("label"));
+    pItem->SetLabel(GetLabel(el));
     
     // Summary.
     const char* summary = el.Attribute("summary");
@@ -602,9 +660,12 @@ void CPlexDirectory::Parse(const CURL& url, TiXmlElement* root, CFileItemList &i
   for (TiXmlElement* element = root->FirstChildElement(); element; element=element->NextSiblingElement())
   {
     mediaNode = PlexMediaNode::Create(element->Value());
-    CFileItemPtr item = mediaNode->BuildFileItem(url, *element);
-    if (item)
-      items.Add(item);
+    if (mediaNode != 0)
+    {
+      CFileItemPtr item = mediaNode->BuildFileItem(url, *element);
+      if (item)
+        items.Add(item);
+    }
   }
   
   if (mediaNode != 0)
@@ -623,6 +684,10 @@ void CPlexDirectory::Process()
   url.SetProtocol("http");
   url.SetPort(32400);  
 
+  // Set request headers.
+  m_http.SetRequestHeader("X-Plex-Version", Cocoa_GetAppVersion());
+  m_http.SetRequestHeader("X-Plex-Language", Cocoa_GetLanguage());
+  
   m_http.SetTimeout(m_timeout);
   if (m_http.Open(url, false) == false) 
   {

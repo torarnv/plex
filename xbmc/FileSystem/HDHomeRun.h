@@ -44,7 +44,11 @@ public:
 
 class DllHdHomeRun : public DllDynamic, public DllHdHomeRunInterface
 {
+#ifdef __APPLE__
+  DECLARE_DLL_WRAPPER(DllHdHomeRun, Q:\\system\\hdhomerun-osx.so)
+#else
   DECLARE_DLL_WRAPPER(DllHdHomeRun, DLL_PATH_LIBHDHOMERUN)
+#endif
   DEFINE_METHOD5(int, discover_find_devices_custom, (uint32_t p1, uint32_t p2, uint32_t p3, struct hdhomerun_discover_device_t p4[], int p5))
   DEFINE_METHOD1(struct hdhomerun_device_t*, device_create_from_str, (const char* p1))
   DEFINE_METHOD1(void, device_destroy, (struct hdhomerun_device_t* p1))

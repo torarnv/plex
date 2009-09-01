@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="windows-1250" standalone="yes"?>
-<!--$Revision$-->
 <strings>
   <string id="0">Programi</string>
   <string id="1">Slike</string>
@@ -9,7 +8,7 @@
   <string id="5">Nastavitve</string>
   <string id="7">Moje datoteke</string>
   <string id="8">Vreme</string>
-  <string id="9">XBMC Media Center</string>
+  <string id="9">Plex Media Center</string>
  
   <string id="11">Ponedeljek</string>
   <string id="12">Torek</string>
@@ -400,7 +399,7 @@
   <string id="479">Izgled ter jezik</string>
   <string id="480">Izgled</string>
   <string id="481">Audio opcije</string>
-  <string id="482">Vse o XBMC</string>
+  <string id="482">Vse o Plex</string>
   <string id="483">album 2</string>
   <string id="484">Izvajalec</string>
   <string id="485">Izbriši album</string>
@@ -632,7 +631,7 @@
   <string id="999">Igranje preko interneta</string>
   <string id="1000">Predogled ohranjevalnika </string>
   <string id="1001">Povezava ni mogoča</string>
-  <string id="1002">XBMC se ni mogel povezat na omrežno lokacijo</string>
+  <string id="1002">Plex se ni mogel povezat na omrežno lokacijo</string>
   <string id="1003">Problem je lahko nastal zaradi nepovezanosti z omrežjem</string>
   <string id="1004">Bi želeli dodati vseeno?</string>
   <string id="1005">Vnesi ime za ta skupno rabo</string>
@@ -997,7 +996,7 @@
   <string id="13306">Skrij ostale datoteke v mapi</string>
   <string id="13307">Način poimenovanja pesmi</string>
   <string id="13308">Želiš ponovno zagnati XBOX</string>
-  <string id="13309">namesto samo XBMC?</string>
+  <string id="13309">namesto samo Plex?</string>
   <string id="13310">Zoom efekt</string>
   <string id="13311">Efekt lebdenja</string>
   <string id="13312">Odprava črnih robov</string>
@@ -1121,7 +1120,7 @@
   <string id="14036">Strežniki</string>
   <string id="14037">Izgled in počutje</string>
   <string id="14038">Omrežne nastavitve spremenjene</string>
-  <string id="14039">XBMC zahteva ponovni zagon, da spremeni vaše</string>
+  <string id="14039">Plex zahteva ponovni zagon, da spremeni vaše</string>
   <string id="14040">mrežne nastavitve. Ali želiš ponovno zagnati program?</string>
   <string id="14041">Post Procesiranje</string>
   <string id="14042">Strojni IP naslov</string>
@@ -1199,9 +1198,9 @@
   <string id="15034">se je ravno prijavil</string>
   <string id="15035">ti je poslal vabilo za pogovor</string>
   <string id="15036">je poslal vabilo </string>
-  <string id="15037">XBMC ni v stanju  potrdila, da je omrežje dosegljivo</string>
+  <string id="15037">Plex ni v stanju  potrdila, da je omrežje dosegljivo</string>
   <string id="15038">Lahko pričakujete težave pri povezovanju ali gostiteljstvu iger </string>
-  <string id="15039">XBMC ni uspel locirati igre samodejno</string>
+  <string id="15039">Plex ni uspel locirati igre samodejno</string>
   <string id="15040">Vstavi igralni plošček v konzolo ali pritisni "A" za izhod</string>
   <string id="15041">in zaženi igro ročno.</string>
   <string id="15042">Dostop zavrnjen</string>
@@ -1242,7 +1241,7 @@
   <string id="15202">Last.FM Uporabniško ime</string>
   <string id="15203">Last.FM Geslo</string>
   <string id="15204">Povezava ni mogoča: Spim.....</string>
-  <string id="15205">Prosimo posodobite XBMC</string>
+  <string id="15205">Prosimo posodobite Plex</string>
   <string id="15206">Nepravilna avtorizacija: Preveri uporabniško ime in geslo</string>
   <string id="15207">Povezan</string>
   <string id="15208">Brez povezave</string>
@@ -1376,7 +1375,7 @@
   <string id="20006">Mapa za predvajalno listo </string>
   <string id="20007">Posnetki</string>
   <string id="20008">Namizni posnetki</string>
-  <string id="20009">Uporabi XBMC</string>
+  <string id="20009">Uporabi Plex</string>
   <string id="20010">Slika umetnika</string>
   <string id="20011">Glasbena predvajalna lista</string>
   <string id="20012">Video predvajalna lista</string>
@@ -1573,7 +1572,7 @@
   <string id="20304"></string>
   <string id="20305"></string>
 
-  <string id="20306">Neznano. Prosim dodaj MD5 iz xbmc.log v BiosIDs.ini.</string>
+  <string id="20306">Neznano. Prosim dodaj MD5 iz Plex.log v BiosIDs.ini.</string>
   <string id="20307">Sekundarni DNS</string>
   <string id="20308">DHCP Strežnik:</string>
   <string id="20309">Ustvari novo mapo</string>

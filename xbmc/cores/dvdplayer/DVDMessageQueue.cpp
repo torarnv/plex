@@ -225,7 +225,7 @@ MsgQueueReturnCode CDVDMessageQueue::Get(CDVDMsg** pMsg, unsigned int iTimeoutIn
         if(m_iDataSize == 0)
         {
           if(!m_bEmptied)
-            CLog::Log(LOGWARNING, "CDVDMessageQueue(%s)::Get - retrived last data packet of queue", m_owner.c_str());
+            CLog::Log(LOGWARNING, "CDVDMessageQueue(%s)::Get - retrieved last data packet of queue", m_owner.c_str());
           m_bEmptied = true;
         }
         else
@@ -289,7 +289,7 @@ unsigned CDVDMessageQueue::GetPacketCount(CDVDMsg::Message type)
 void CDVDMessageQueue::WaitUntilEmpty()
 {
     CLog::Log(LOGNOTICE, "CDVDMessageQueue(%s)::WaitUntilEmpty", m_owner.c_str());
-    CDVDMsgGeneralSynchronize* msg = new CDVDMsgGeneralSynchronize(40000, 0);
+    CDVDMsgGeneralSynchronize* msg = new CDVDMsgGeneralSynchronize(0, 40000);
     msg->Acquire();
     Put(msg);
     msg->Wait(&m_bAbortRequest, 0);

@@ -63,14 +63,9 @@ bool CDirectoryCache::GetDirectory(const CStdString& strPath, CFileItemList &ite
   for (civecCache i = m_vecCache.begin(); i != m_vecCache.end(); i++)
   {
     const CDir* dir = *i;
-    if (dir->m_strPath == storedPath && dir->m_cacheType == CFileItemList::CACHE_ALWAYS)
+    if (dir->m_strPath == storedPath && dir->m_cacheType == DIR_CACHE_ALWAYS)
     {
-      // make a copy of each item (see SetDirectory())
-      for (int i = 0; i < dir->m_Items->Size(); i++)
-      {
-        CFileItemPtr newItem(new CFileItem(*dir->m_Items->Get(i)));
-        items.Add(newItem);
-      }
+      items.Assign(*dir->m_Items);
       return true;
     }
   }
@@ -101,12 +96,7 @@ void CDirectoryCache::SetDirectory(const CStdString& strPath, const CFileItemLis
   CUtil::RemoveSlashAtEnd(storedPath);
 
   CDir* dir = new CDir(storedPath, cacheType);
-  // make a copy of each item
-  for (int i = 0; i < items.Size(); i++)
-  {
-    CFileItemPtr newItem(new CFileItem(*items[i]));
-    dir->m_Items->Add(newItem);
-  }
+  dir->m_Items->Assign(items);
   m_vecCache.push_back(dir);
 }
 
@@ -137,16 +127,31 @@ void CDirectoryCache::ClearSubPaths(const CStdString& strPath)
   CUtil::RemoveSlashAtEnd(storedPath);
 
   ivecCache i = m_vecCache.begin();
-  while (i != m_vecCache.end())
+  for (bool found=false; i != m_vecCache.end(); )
   {
     CDir* dir = *i;
-    if (strncmp(dir->m_strPath.c_str(), storedPath.c_str(), storedPath.GetLength()) == 0)
+    printf("Comparing %s to %s (%d characters)\n", 
+        dir->m_strPath.c_str(), 
+        storedPath.c_str(), storedPath.GetLength());
+    
+    if (found)
+    {
+      delete dir;
+      i = m_vecCache.erase(i);
+    }
+    else if (strncmp(dir->m_strPath.c_str(), storedPath.c_str(), storedPath.GetLength()) == 0 &&
+             dir->m_strPath.size() > storedPath.size())
     {
       delete dir;
       i = m_vecCache.erase(i);
     }
     else
+    {
       i++;
+    }
+    
+    if (storedPath == dir->m_strPath)
+      found = true;
   }
 }
 

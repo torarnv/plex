@@ -84,7 +84,7 @@ bool PlexHelperApp::EnsureLatestHelperInstalled()
     if (CFile::IsDir(m_helperFile))
     {
       // Use rsync to copy, it's efficient and easy.
-      string rsync = "/usr/bin/rsync -a \"" + m_helperFile + "/\" \"" + m_helperInstalledFile + "\"";
+      string rsync = "/usr/bin/rsync --delete -a \"" + m_helperFile + "/\" \"" + m_helperInstalledFile + "\"";
       system(rsync.c_str());
     }
     else
@@ -117,7 +117,7 @@ void PlexHelperApp::Restart()
     {
       // Make *sure* the process has exited.
       pid_t  wpid = waitpid(pid, &status, WUNTRACED);
-      while (GetProcessPid(GetHelperBinaryName()) != -1)
+      for(int i=0; GetProcessPid(GetHelperBinaryName()) != -1 && i<10000; i++)
         usleep(10);
     }
     
@@ -132,6 +132,9 @@ void PlexHelperApp::Restart()
 /////////////////////////////////////////////////////////////////////////////
 void PlexHelperApp::Start()
 {
+  // Let the subclass do anything it needs to.
+  DoPreStart();
+  
   int pid = GetProcessPid(GetHelperBinaryName());
   if (pid == -1)
   {
@@ -197,6 +200,10 @@ void PlexHelperApp::Configure()
     // Make sure we reinstall/start if needed.
     oldMode = MODE_DISABLED;
     oldAlwaysOn = false;
+    
+    // Make sure it's stopped.
+    for(int i=0; GetProcessPid(GetHelperBinaryName()) != -1 && i<10000; i++)
+      usleep(10);
   }
 
   // Turning off?

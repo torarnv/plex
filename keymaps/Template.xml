@@ -1,0 +1,166 @@
+<keymap>
+  <global>
+  </global>
+
+  <Home>
+  </Home>
+  
+  <MyFiles>
+  </MyFiles>
+  
+  <MyMusicPlaylist>
+  </MyMusicPlaylist>
+
+  <MyMusicPlaylistEditor>
+  </MyMusicPlaylistEditor>
+  
+  <MyMusicFiles>
+  </MyMusicFiles>
+
+  <MyMusicLibrary>
+  </MyMusicLibrary>
+
+  <FullscreenVideo>
+  </FullscreenVideo>
+
+  <FullscreenInfo>
+  </FullscreenInfo>
+
+  <PlayerControls>
+  </PlayerControls>
+
+  <Visualisation>
+  </Visualisation>
+
+  <MusicOSD>
+  </MusicOSD>
+
+  <VisualisationSettings>
+  </VisualisationSettings>
+
+  <VisualisationPresetList>
+  </VisualisationPresetList>
+
+  <SlideShow>
+  </SlideShow>
+
+  <ScreenCalibration>
+  </ScreenCalibration>
+
+  <GUICalibration>
+  </GUICalibration>
+
+  <SelectDialog>
+  </SelectDialog>
+  
+  <VideoOSD>
+  </VideoOSD>
+
+  <VideoMenu>
+  </VideoMenu>
+
+  <OSDVideoSettings>
+  </OSDVideoSettings>
+
+  <OSDAudioSettings>
+  </OSDAudioSettings>
+
+  <VideoBookmarks>
+  </VideoBookmarks>
+
+  <MyVideoLibrary>
+  </MyVideoLibrary>
+
+  <MyVideoFiles>
+  </MyVideoFiles>
+
+  <MyVideoPlaylist>
+  </MyVideoPlaylist>
+
+  <VirtualKeyboard>
+  </VirtualKeyboard>
+
+  <MyPictures>
+  </MyPictures>
+
+  <XlinkKai>
+  </XlinkKai>
+
+  <ContextMenu>
+  </ContextMenu>
+
+  <FileStackingDialog>
+  </FileStackingDialog>
+
+  <Scripts>
+  </Scripts>
+
+  <ScriptsDebugInfo>
+  </ScriptsDebugInfo>
+
+  <NumericInput>
+  </NumericInput>
+
+  <GamepadInput>
+  </GamepadInput>
+
+  <Weather>
+  </Weather>
+
+  <Settings>
+  </Settings>
+
+  <MyPicturesSettings>
+  </MyPicturesSettings>
+
+  <MyProgramsSettings>
+  </MyProgramsSettings>
+
+  <MyWeatherSettings>
+  </MyWeatherSettings>
+
+  <MyMusicSettings>
+  </MyMusicSettings>
+
+  <SystemSettings>
+  </SystemSettings>
+
+  <MyVideosSettings>
+  </MyVideosSettings>
+
+  <NetworkSettings>
+  </NetworkSettings>
+
+  <AppearanceSettings>
+  </AppearanceSettings>
+
+  <Profiles>
+  </Profiles>
+
+  <systeminfo>
+  </systeminfo>
+
+  <shutdownmenu>
+  </shutdownmenu>
+
+  <submenu>
+  </submenu>
+
+  <MusicInformation>
+  </MusicInformation>
+
+  <MovieInformation>
+  </MovieInformation>
+
+  <LockSettings>
+  </LockSettings>
+
+  <ProfileSettings>
+  </ProfileSettings>
+  
+  <TrainerSettings>
+  </TrainerSettings>
+  
+  <PictureInfo>
+  </PictureInfo>
+</keymap>

@@ -20,6 +20,8 @@
  */
 
 #include "stdafx.h"
+#include <iostream>
+#include <fstream>
 #include "Application.h"
 #include "KeyboardLayoutConfiguration.h"
 #ifdef HAS_XBOX_HARDWARE
@@ -157,6 +159,7 @@
 #include "GUIWindowSystemInfo.h"
 #include "GUIWindowScreensaver.h"
 #include "GUIWindowSlideShow.h"
+#include "GUIWindowNowPlaying.h"
 #ifdef HAS_KAI
 #include "GUIWindowBuddies.h"
 #endif
@@ -235,8 +238,9 @@
 #ifdef __APPLE__
 #include "CocoaUtils.h"
 #include "PlexRemoteHelper.h"
-#include "CoreAudioPlexSupport.h"
 #include "PlexMediaServerHelper.h"
+#include "PlexMediaServerPlayer.h"
+#include "PlexMediaServerScrobbler.h"
 #include "QTPlayer.h"
 #include "GUIDialogUtils.h"
 #include "CoreAudioAUHAL.h"
@@ -265,86 +269,8 @@ using namespace EVENTSERVER;
 // Atm this saves you 7 mb of memory
 #define USE_RELEASE_LIBS
 
-#ifdef HAS_LCD
-#ifdef _XBOX
-#pragma comment (lib,"xbmc/lib/libXenium/XeniumSPIg.lib")
-#endif
-#endif
-#ifdef HAS_KAI_VOICE
-#pragma comment (lib,"xbmc/lib/libSpeex/libSpeex.lib")
-#endif
-
-#if defined(_DEBUG) && !defined(USE_RELEASE_LIBS)
- #ifdef _XBOX
-  #ifdef HAS_FILESYSTEM
-    #pragma comment (lib,"xbmc/lib/libXBMS/libXBMSd.lib")    // SECTIONNAME=LIBXBMS
-    #pragma comment (lib,"xbmc/lib/libsmb/libsmbd.lib")      // SECTIONNAME=LIBSMB
-    #pragma comment (lib,"xbmc/lib/libxdaap/libxdaapd.lib") // SECTIONNAME=LIBXDAAP
-    #pragma comment (lib,"xbmc/lib/libRTV/libRTVd.lib")    // SECTIONNAME=LIBRTV
-  #endif
-  #pragma comment (lib,"xbmc/lib/libGoAhead/goaheadd.lib") // SECTIONNAME=LIBHTTP
-  #pragma comment (lib,"xbmc/lib/sqLite/libSQLite3d.lib")
-  #pragma comment (lib,"xbmc/lib/libshout/libshoutd.lib" )
-  #pragma comment (lib,"xbmc/lib/libcdio/libcdiod.lib" )
-  #pragma comment (lib,"xbmc/lib/libiconv/libiconvd.lib")
-  #pragma comment (lib,"xbmc/lib/libfribidi/libfribidid.lib")
-  #pragma comment (lib,"xbmc/lib/libpcre/libpcred.lib")
- #else
-  #if defined(HAS_FILESYSTEM) && !defined(_LINUX)
-    #pragma comment (lib,"../../xbmc/lib/libXBMS/libXBMSd.lib")    // SECTIONNAME=LIBXBMS
-    #pragma comment (lib,"../../xbmc/lib/libsmb/libsmbd.lib")      // SECTIONNAME=LIBSMB
-    #pragma comment (lib,"../../xbmc/lib/libxdaap/libxdaapd.lib") // SECTIONNAME=LIBXDAAP
-    #pragma comment (lib,"../../xbmc/lib/libRTV/libRTVd_win32.lib")
-  #endif
-  #pragma comment (lib,"../../xbmc/lib/libGoAhead/goahead_win32d.lib") // SECTIONNAME=LIBHTTP
-  #pragma comment (lib,"../../xbmc/lib/sqLite/libSQLite3_win32d.lib")
-  #pragma comment (lib,"../../xbmc/lib/libshout/libshout_win32d.lib" )
-  #pragma comment (lib,"../../xbmc/lib/libcdio/libcdio_win32d.lib" )
-  #pragma comment (lib,"../../xbmc/lib/libiconv/libiconvd.lib")
-  #pragma comment (lib,"../../xbmc/lib/libfribidi/libfribidid.lib")
-  #pragma comment (lib,"../../xbmc/lib/libpcre/libpcred.lib")
- #endif
- #ifdef HAS_MIKMOD
-  #pragma comment (lib,"xbmc/lib/mikxbox/mikxboxd.lib")  // SECTIONNAME=MOD_RW,MOD_RX
- #endif
-#else
- #if defined (HAS_FILESYSTEM) && !defined (_LINUX)
-
- #endif
- #ifdef _XBOX
-  #ifdef HAS_FILESYSTEM
-    #pragma comment (lib,"xbmc/lib/libXBMS/libXBMS.lib")
-    #pragma comment (lib,"xbmc/lib/libsmb/libsmb.lib")
-    #pragma comment (lib,"xbmc/lib/libxdaap/libxdaap.lib") // SECTIONNAME=LIBXDAAP
-    #pragma comment (lib,"xbmc/lib/libRTV/libRTV.lib")    // SECTIONNAME=LIBRTV
-  #endif
-  #pragma comment (lib,"xbmc/lib/libGoAhead/goahead.lib")
-  #pragma comment (lib,"xbmc/lib/sqLite/libSQLite3.lib")
-  #pragma comment (lib,"xbmc/lib/libcdio/libcdio.lib")
-  #pragma comment (lib,"xbmc/lib/libshout/libshout.lib")
-  #pragma comment (lib,"xbmc/lib/libiconv/libiconv.lib")
-  #pragma comment (lib,"xbmc/lib/libfribidi/libfribidi.lib")
- #elif !defined(_LINUX)
-  #ifdef HAS_FILESYSTEM
-    #pragma comment (lib,"../../xbmc/lib/libXBMS/libXBMS.lib")
-    #pragma comment (lib,"../../xbmc/lib/libsmb/libsmb.lib")
-    #pragma comment (lib,"../../xbmc/lib/libxdaap/libxdaap.lib")
-    #pragma comment (lib,"../../xbmc/lib/libRTV/libRTV_win32.lib")
-  #endif
-  #pragma comment (lib,"../../xbmc/lib/libGoAhead/goahead_win32.lib")
-  #pragma comment (lib,"../../xbmc/lib/sqLite/libSQLite3_win32.lib")
-  #pragma comment (lib,"../../xbmc/lib/libshout/libshout_win32.lib" )
-  #pragma comment (lib,"../../xbmc/lib/libcdio/libcdio_win32.lib" )
-  #pragma comment (lib,"../../xbmc/lib/libiconv/libiconv.lib")
-  #pragma comment (lib,"../../xbmc/lib/libfribidi/libfribidi.lib")
-  #pragma comment (lib,"../../xbmc/lib/libpcre/libpcre.lib")
- #endif
- #ifdef HAS_MIKMOD
-  #pragma comment (lib,"xbmc/lib/mikxbox/mikxbox.lib")
- #endif
-#endif
-
 #define MAX_FFWD_SPEED 5
+#define CRASH_DETECTION_FILE _P("U:/CleanlyExited")
 
 CStdString g_LoadErrorStr;
 
@@ -632,21 +558,6 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
   }
   ++iLine;
 
-#ifdef HAS_XBOX_HARDWARE
-  if (MapDrives)
-  {
-    // map in default drives
-    CIoSupport::RemapDriveLetter('C',"Harddisk0\\Partition2");
-    CIoSupport::RemapDriveLetter('D',"Cdrom0");
-    CIoSupport::RemapDriveLetter('E',"Harddisk0\\Partition1");
-
-    //Add. also Drive F/G
-    if (CIoSupport::PartitionExists(6))
-      CIoSupport::RemapDriveLetter('F',"Harddisk0\\Partition6");
-    if (CIoSupport::PartitionExists(7))
-      CIoSupport::RemapDriveLetter('G',"Harddisk0\\Partition7");
-  }
-#endif
   bool Pal = g_graphicsContext.GetVideoResolution() == PAL_4x3;
 
   if (HaveGamepad)
@@ -655,134 +566,6 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
 
 #ifndef HAS_XBOX_NETWORK
   bool NetworkUp = m_network.IsAvailable();
-#endif
-
-#ifdef HAS_XBOX_NETWORK
-  bool NetworkUp = false;
-
-  // Boot up the network for FTP
-  if (InitNetwork)
-  {
-    std::vector<int> netorder;
-    if (m_bXboxMediacenterLoaded)
-    {
-      if (g_guiSettings.GetInt("network.assignment") == NETWORK_DHCP)
-      {
-        netorder.push_back(NETWORK_DHCP);
-        netorder.push_back(NETWORK_STATIC);
-      }
-      else if (g_guiSettings.GetInt("network.assignment") == NETWORK_STATIC)
-      {
-        netorder.push_back(NETWORK_STATIC);
-        netorder.push_back(NETWORK_DHCP);
-      }
-      else
-      {
-        netorder.push_back(NETWORK_DASH);
-        netorder.push_back(NETWORK_DHCP);
-        netorder.push_back(NETWORK_STATIC);
-      }
-    }
-    else
-    {
-      netorder.push_back(NETWORK_DASH);
-      netorder.push_back(NETWORK_DHCP);
-      netorder.push_back(NETWORK_STATIC);
-    }
-
-    while(1)
-    {
-      std::vector<int>::iterator it;
-      for( it = netorder.begin();it != netorder.end(); it++)
-      {
-        m_network.Deinitialize();
-
-        if (!(XNetGetEthernetLinkStatus() & XNET_ETHERNET_LINK_ACTIVE))
-        {
-          FEH_TextOut(pFont, iLine, L"Network cable unplugged");
-          break;
-        }
-
-        switch( (*it) )
-        {
-          case NETWORK_DASH:
-            FEH_TextOut(pFont, iLine, L"Init network using dash settings...");
-            m_network.Initialize(NETWORK_DASH, "","","","");
-            break;
-          case NETWORK_DHCP:
-            FEH_TextOut(pFont, iLine, L"Init network using DHCP...");
-            m_network.Initialize(NETWORK_DHCP, "","","","");
-            break;
-          default:
-            FEH_TextOut(pFont, iLine, L"Init network using static ip...");
-            if( m_bXboxMediacenterLoaded )
-            {
-              m_network.Initialize(NETWORK_STATIC,
-                    g_guiSettings.GetString("network.ipaddress").c_str(),
-                    g_guiSettings.GetString("network.subnet").c_str(),
-                    g_guiSettings.GetString("network.gateway").c_str(),
-                    g_guiSettings.GetString("network.dns").c_str() );
-            }
-            else
-            {
-              m_network.Initialize(NETWORK_STATIC,
-                    "192.168.0.42",
-                    "255.255.255.0",
-                    "192.168.0.1",
-                    "192.168.0.1" );
-            }
-            break;
-        }
-
-        int count = 0;
-
-        DWORD dwState = XNET_GET_XNADDR_PENDING;
-
-        while(dwState == XNET_GET_XNADDR_PENDING)
-        {
-          dwState = m_network.UpdateState();
-
-          if( dwState != XNET_GET_XNADDR_PENDING )
-            break;
-
-          if (HaveGamepad && AnyButtonDown())
-            m_applicationMessenger.Restart();
-
-
-          Sleep(50);
-          ++count;
-        }
-
-        if( dwState != XNET_GET_XNADDR_PENDING && dwState != XNET_GET_XNADDR_NONE )
-        {
-          /* yay, we got network */
-          NetworkUp = true;
-          break;
-        }
-        /* increment line before next attempt */
-        ++iLine;
-      }
-
-      /* break out of the continous loop if we have network*/
-      if( NetworkUp )
-        break;
-      else
-      {
-        int n = 10;
-        while (n)
-        {
-          FEH_TextOut(pFont, (iLine + 1) | 0x8000, L"Unable to init network, retrying in %d seconds", n--);
-          for (int i = 0; i < 20; ++i)
-          {
-            Sleep(50);
-
-            if (HaveGamepad && AnyButtonDown())
-              m_applicationMessenger.Restart();
-          }
-        }
-      }
-    }
-  }
 #endif
 
   if( NetworkUp )
@@ -1170,6 +953,19 @@ HRESULT CApplication::Create(HWND hWnd)
   PlexRemoteHelper::Get().Configure();
   PlexMediaServerHelper::Get().Configure();
   
+  // See if we crashed the last time.
+  if (CFile::Exists(CRASH_DETECTION_FILE))
+  {
+    // Oops, make sure we restart the media server just in case.
+    if (g_guiSettings.GetBool("plexmediaserver.alwayson"))
+      PlexMediaServerHelper::Get().Restart();
+  }
+  else
+  {
+    // Create the file so we know if we crashed on exit.
+    ofstream out(CRASH_DETECTION_FILE);
+  }
+  
   // Note that the screensaver should turn off.
   Cocoa_UpdateSystemActivity();
   Cocoa_TurnOffScreenSaver();
@@ -1183,9 +979,20 @@ HRESULT CApplication::Create(HWND hWnd)
       g_guiSettings.SetString("audiooutput.audiodevice", device->getName().c_str());
   }
   
+  // Reset the device.
+  if (device)
+    device->reset();
+  
   // Set the correct audio device.
   if (device && g_guiSettings.GetBool("audiooutput.systemoutputfollows"))
+  {
+    // Save the default so we can restore it.
+    m_defaultSystemDevice = PlexAudioDevices::FindDefault();
+    printf("Saving old default of %s\n", m_defaultSystemDevice->getName().c_str());
+    
+    // Set the one in the preferences.
     device->setDefault();
+  }
   
   // Start background music playing
   m_bBackgroundMusicEnabled = g_guiSettings.GetBool("backgroundmusic.bgmusicenabled");
@@ -1237,7 +1044,8 @@ HRESULT CApplication::Create(HWND hWnd)
   g_charsetConverter.reset();
 
   // Load the langinfo to have user charset <-> utf-8 conversion
-  CStdString strLanguage = g_guiSettings.GetString("region.language");
+  CStdString strLanguage = g_settings.GetLanguage();
+  
   strLanguage[0] = toupper(strLanguage[0]);
 
   CStdString strLangInfoPath;
@@ -1706,6 +1514,7 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIWindowLoginScreen);            // window id = 29
   m_gWindowManager.Add(new CGUIWindowSettingsProfile);          // window id = 34
   m_gWindowManager.Add(new CGUIWindowGameSaves);               // window id = 35
+  m_gWindowManager.Add(new CGUIWindowNowPlaying);         // window id = 50
   m_gWindowManager.Add(new CGUIDialogYesNo);              // window id = 100
   m_gWindowManager.Add(new CGUIDialogProgress);           // window id = 101
 #ifdef HAS_KAI
@@ -2481,11 +2290,25 @@ void CApplication::LoadSkin(const CStdString& strSkin)
     {
       CLog::Log(LOGINFO, "    new font is '%s'", strFontSet.c_str());
       g_guiSettings.SetString("lookandfeel.font", strFontSet);
+      g_guiSettings.SetBool("lookandfeel.lastLoadRequiredUnicode", true);
       g_settings.Save();
     }
     else
-      CLog::Log(LOGERROR, "    no ttf font found, but needed for the language %s.", g_guiSettings.GetString("region.language").c_str());
+      CLog::Log(LOGERROR, "    no ttf font found, but needed for the language %s.", g_settings.GetLanguage().c_str());
   }
+  
+  if (g_langInfo.ForceUnicodeFont())
+  {
+    // Remember that we forced Unicode.
+    g_guiSettings.SetBool("lookandfeel.lastLoadRequiredUnicode", true);
+  }
+  else if (g_langInfo.ForceUnicodeFont() == false && g_guiSettings.GetBool("lookandfeel.lastLoadRequiredUnicode") == true)
+  {
+    // Reset to default.
+    g_guiSettings.SetString("lookandfeel.font", "Default");
+    g_guiSettings.SetBool("lookandfeel.lastLoadRequiredUnicode", false);
+  }
+  
   g_colorManager.Load(g_guiSettings.GetString("lookandfeel.skincolors"));
 
   g_fontManager.LoadFonts(g_guiSettings.GetString("lookandfeel.font"));
@@ -2493,7 +2316,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   // load in the skin strings
   CStdString skinPath, skinEnglishPath;
   CUtil::AddFileToFolder(strSkinPath, "language", skinPath);
-  CUtil::AddFileToFolder(skinPath, g_guiSettings.GetString("region.language"), skinPath);
+  CUtil::AddFileToFolder(skinPath, g_settings.GetLanguage(), skinPath);
   CUtil::AddFileToFolder(skinPath, "strings.xml", skinPath);
 
   CUtil::AddFileToFolder(strSkinPath, "language", skinEnglishPath);
@@ -3086,7 +2909,8 @@ bool CApplication::OnKey(CKey& key)
   if (g_Keyboard.GetAlt()  == true  ||
       g_Keyboard.GetApple() == true ||
       g_Keyboard.GetCtrl() == true  ||
-      g_Keyboard.GetRAlt()  == true)
+      g_Keyboard.GetRAlt()  == true ||
+      Cocoa_IsGUIShowing())
   {
       g_Keyboard.Reset();
       return false;
@@ -4364,6 +4188,7 @@ HRESULT CApplication::Cleanup()
 #endif
     CScrobbler::RemoveInstance();
     CLastFmManager::RemoveInstance();
+    CPlexMediaServerScrobbler::Shutdown();
 #ifdef HAS_EVENT_SERVER
     CEventServer::RemoveInstance();
 #endif
@@ -4393,6 +4218,20 @@ void CApplication::Stop()
 {
   try
   {
+#ifdef __APPLE__
+    
+    // We've exited cleanly, so we can delete the crash file.
+    CFile::Delete(CRASH_DETECTION_FILE);
+    
+    // Also, if we were supposed to restart the Plex Media Server, do so now.
+    if (CPlexMediaServerPlayer::IsRestartRequired() == true &&
+        g_guiSettings.GetBool("plexmediaserver.alwayson"))
+    {
+      PlexMediaServerHelper::Get().Restart();
+    }
+    
+#endif
+
     CLog::Log(LOGNOTICE, "Storing total System Uptime");
     g_stSettings.m_iSystemTimeTotalUp = g_stSettings.m_iSystemTimeTotalUp + (int)(timeGetTime() / 60000);
 
@@ -4481,6 +4320,15 @@ void CApplication::Stop()
   //Both xbox and linux don't finish the run cycle but exit immediately after a call to g_application.Stop()
   //so they never get to Destroy() in CXBApplicationEx::Run(), we call it here.
   Destroy();
+#endif
+
+#ifdef __APPLE__
+  // Restore system default audio device.
+  if (m_defaultSystemDevice)
+  {
+    printf("Restoring system default of %s\n", m_defaultSystemDevice->getName().c_str());
+    m_defaultSystemDevice->setDefault();
+  }
 #endif
 }
 
@@ -4834,9 +4682,8 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     // Suspend the updater
     Cocoa_SetUpdateSuspended(true);
 
-    // Stop the background music (if enabled)
-    m_bBackgroundMusicEnabled = Cocoa_IsBackgroundMusicEnabled();
-    Cocoa_SetBackgroundMusicEnabled(false);
+    // Stop the background music
+    Cocoa_StopBackgroundMusic(true);
 #endif
     
     bResult = m_pPlayer->OpenFile(item, options);
@@ -4964,7 +4811,7 @@ void CApplication::OnQueueNextItem()
 
 void CApplication::OnPlayBackStopped()
 {
-  // Re-enable sounds. 
+  // Re-enable sounds.
   g_audioManager.Enable(true);
 
   // Reset FPS to the display FPS. 
@@ -5051,7 +4898,7 @@ void CApplication::StopPlaying()
 #endif
 
     // turn off visualisation window when stopping
-    if (iWin == WINDOW_VISUALISATION)
+    if (IsVisualizerActive())
       m_gWindowManager.PreviousWindow();
 
     // TODO: Add saving of watched status in here
@@ -5267,8 +5114,13 @@ bool CApplication::ResetScreenSaverWindow()
 
 void CApplication::CheckActive()
 {
-  if ((IsPlayingVideo() && !IsPaused()) || m_gWindowManager.IsWindowActive(WINDOW_SCREENSAVER) || (m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION & !IsPaused()) || m_gWindowManager.IsWindowActive(WINDOW_DIALOG_PROGRESS))
+  if ((IsPlayingVideo() && !IsPaused()) || 
+      m_gWindowManager.IsWindowActive(WINDOW_SCREENSAVER) || 
+      (IsVisualizerActive() && !IsPaused()) || 
+      m_gWindowManager.IsWindowActive(WINDOW_DIALOG_PROGRESS))
+  {
     m_bInactive = false;
+  }
   else if (!m_bInactive)
   {
     // Start the timer going ...
@@ -5277,13 +5129,21 @@ void CApplication::CheckActive()
   }
 }
 
+bool CApplication::IsVisualizerActive()
+{
+  return (m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION || 
+          m_gWindowManager.GetActiveWindow() == WINDOW_NOW_PLAYING);
+}
+
 void CApplication::CheckScreenSaver()
 {
   if (!m_bInactive || m_bScreenSave || m_gWindowManager.IsWindowActive(WINDOW_SCREENSAVER) || g_guiSettings.GetString("screensaver.mode") == "None" || g_guiSettings.GetInt("screensaver.time") <= 0)
     return;
 
+  
   // How long to screensaver? The setting, unless we're playing music, in which case much quicker.
   long timeToScreenSaver = g_guiSettings.GetInt("screensaver.time")*60*1000L;
+  
   if (IsPlayingAudio())
     timeToScreenSaver = MIN(g_advancedSettings.m_secondsToVisualizer*1000L, timeToScreenSaver);
   
@@ -5294,8 +5154,12 @@ void CApplication::CheckScreenSaver()
 void CApplication::ActivateVisualizer()
 {
   m_screenSaverMode = "Visualisation";
-  m_gWindowManager.ActivateWindow(WINDOW_VISUALISATION);
-  return;
+  
+  // See which visualizer to activate.
+  if (g_guiSettings.GetString("mymusic.visualisation") == "Now Playing.vis")
+    m_gWindowManager.ActivateWindow(WINDOW_NOW_PLAYING);
+  else
+    m_gWindowManager.ActivateWindow(WINDOW_VISUALISATION);
 }
 
 // activate the screensaver.
@@ -5320,8 +5184,7 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
     // Check if we are Playing Audio and Vis instead Screensaver!
     else if (IsPlayingAudio() && g_guiSettings.GetBool("screensaver.usemusicvisinstead") && g_guiSettings.GetString("mymusic.visualisation") != "None")
     { // activate the visualisation
-      m_screenSaverMode = "Visualisation";
-      m_gWindowManager.ActivateWindow(WINDOW_VISUALISATION);
+      ActivateVisualizer();
       return;
     }
   }
@@ -5693,6 +5556,10 @@ bool CApplication::OnMessage(CGUIMessage& message)
         }
         else
           CScrobbler::GetInstance()->SetSubmitSong(false);
+        
+#ifdef __APPLE__
+        CPlexMediaServerScrobbler::Get()->AllowPlay();
+#endif
       }
       return true;
     }
@@ -5724,19 +5591,19 @@ bool CApplication::OnMessage(CGUIMessage& message)
   case GUI_MSG_PLAYBACK_ENDED:
   case GUI_MSG_PLAYLISTPLAYER_STOPPED:
     {
+      // Re-enable sounds.
+      g_audioManager.Enable(true);
+      
 #ifdef __APPLE__
       // Restart the updater
       Cocoa_SetUpdateSuspended(false);
       
-      // Start the background music (if enabled)
-      Cocoa_SetBackgroundMusicEnabled(m_bBackgroundMusicEnabled);
-      Cocoa_StartBackgroundMusic();
-      
-      // Restart the Plex Media Server if we just played a 5.1 surround file. This sucks, but no way around it
-      // for now, as it seems to screw up a WebKit process, and even reloading the WebKit plug-in doesn't help.
+      // Require a server restart of the Plex Media Server if we just played a 5.1 surround file. 
+      // This sucks, but no way around it for now, as it seems to screw up a WebKit process, and 
+      // even reloading the WebKit plug-in doesn't help.
       //
       if (CoreAudioAUHAL::LastOpenWasSpdif())
-        PlexMediaServerHelper::Get().Restart();
+        CPlexMediaServerPlayer::RequireServerRestart();
 #endif
 
       // first check if we still have items in the stack to play
@@ -5803,8 +5670,10 @@ bool CApplication::OnMessage(CGUIMessage& message)
       {
         m_gWindowManager.PreviousWindow();
       }
-
-      if (!IsPlayingAudio() && g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_NONE && m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION)
+      
+      if (!IsPlayingAudio() && 
+          g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_NONE && 
+          IsVisualizerActive())
       {
         g_settings.Save();  // save vis settings
         ResetScreenSaverWindow();
@@ -5820,13 +5689,22 @@ bool CApplication::OnMessage(CGUIMessage& message)
       }
 
       // DVD ejected while playing in vis ?
-      if (!IsPlayingAudio() && (m_itemCurrentFile->IsCDDA() || m_itemCurrentFile->IsOnDVD()) && !CDetectDVDMedia::IsDiscInDrive() && m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION)
+      if (!IsPlayingAudio() && (m_itemCurrentFile->IsCDDA() || m_itemCurrentFile->IsOnDVD()) && 
+          !CDetectDVDMedia::IsDiscInDrive() && 
+          IsVisualizerActive())
       {
         // yes, disable vis
         g_settings.Save();    // save vis settings
         ResetScreenSaverWindow();
         m_gWindowManager.PreviousWindow();
       }
+      
+      // Start the background music (if enabled)
+      if (!IsPlayingVideo() && !IsPlayingAudio() && (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_NONE))
+      {
+        Cocoa_StartBackgroundMusic();
+      }
+      
       return true;
     }
     break;
@@ -6406,9 +6284,10 @@ bool CApplication::SwitchToFullScreen()
     return true;
   }
   // special case for switching between GUI & visualisation mode. (only if we're playing an audio song)
-  if (IsPlayingAudio() && m_gWindowManager.GetActiveWindow() != WINDOW_VISUALISATION)
-  { // then switch to visualisation
-    m_gWindowManager.ActivateWindow(WINDOW_VISUALISATION);
+  if (IsPlayingAudio() && IsVisualizerActive() == false) 
+  { 
+    // then switch to visualisation
+    ActivateVisualizer();
     g_TextureManager.Flush();
     return true;
   }
@@ -6489,17 +6368,26 @@ void CApplication::CheckPlayingProgress()
 
 void CApplication::CheckAudioScrobblerStatus()
 {
-  if (IsPlayingAudio() && CLastFmManager::GetInstance()->CanScrobble(*m_itemCurrentFile) &&
-      !CScrobbler::GetInstance()->ShouldSubmit() && GetTime()==0.0)
+  if (IsPlayingAudio() && GetTime()==0.0)
   {
-    //  We seeked to the beginning of the file
-    //  reinit audio scrobbler
-    CScrobbler::GetInstance()->SetSongStartTime();
-    CScrobbler::GetInstance()->SetSubmitSong(true);
+    if (CLastFmManager::GetInstance()->CanScrobble(*m_itemCurrentFile) &&
+        !CScrobbler::GetInstance()->ShouldSubmit())
+    {
+      //  We seeked to the beginning of the file
+      //  reinit audio scrobbler
+      CScrobbler::GetInstance()->SetSongStartTime();
+      CScrobbler::GetInstance()->SetSubmitSong(true);
+    }
+    
+#ifdef __APPLE__
+    if (g_guiSettings.GetBool("plexmediaserver.scrobble"))
+      CPlexMediaServerScrobbler::Get()->AllowPlay();
+#endif
+    
     return;
   }
 
-  if (!IsPlayingAudio() || !CScrobbler::GetInstance()->ShouldSubmit())
+  if (!IsPlayingAudio())
     return;
 
   //  Don't submit songs to audioscrobber when the user seeks.
@@ -6523,6 +6411,7 @@ void CApplication::CheckAudioScrobblerStatus()
     CScrobbler::GetInstance()->SetSubmitSong(false);
     return;
   }
+  
   if ((dLength)>240.0f)
     dLength=240.0f;
   int iTimeTillSubmit=(int)(dLength-dTime);
@@ -6530,8 +6419,17 @@ void CApplication::CheckAudioScrobblerStatus()
 
   if (dTime>dLength)
   {
-    CScrobbler::GetInstance()->AddSong(*tag);
-    CScrobbler::GetInstance()->SetSubmitSong(false);
+    if (CScrobbler::GetInstance()->ShouldSubmit())
+    {
+      CScrobbler::GetInstance()->AddSong(*tag);
+      CScrobbler::GetInstance()->SetSubmitSong(false);
+    }
+    
+#ifdef __APPLE__
+    // Submit to Plex Media Server.
+    if (g_guiSettings.GetBool("plexmediaserver.scrobble"))
+      CPlexMediaServerScrobbler::Get()->AddPlay(tag->GetURL());
+#endif
   }
 }
 

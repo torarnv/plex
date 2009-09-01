@@ -55,8 +55,10 @@
 #include "FileSystem/SMBDirectory.h"
 #ifdef __APPLE__
 #include "CocoaUtils.h"
+#include "CocoaUtilsPlus.h"
 #endif
 
+#include <map>
 
 using namespace std;
 using namespace XFILE;
@@ -71,6 +73,46 @@ extern CStdString g_LoadErrorStr;
 
 CSettings::CSettings(void)
 {
+  // Map from the ISO languages to the deprecated XBMC ones.
+  m_languageMap["ca"] = "Catalan";
+  m_languageMap["zh-Hans"] = "Chinese (Simple)";
+  m_languageMap["zh-Hant"] = "Chinese (Traditional)";
+  m_languageMap["hr"] = "Croatian";
+  m_languageMap["cs"] = "Czech";
+  m_languageMap["da"] = "Danish";
+  m_languageMap["nl"] = "Dutch";
+  m_languageMap["en"] = "English (US)";
+  m_languageMap["en-GB"] = "English";
+  m_languageMap["en-AU"] = "English";
+  m_languageMap["en-CA"] = "English";
+  m_languageMap["eo"] = "Esperanto";
+  m_languageMap["fi"] = "Finnish";
+  m_languageMap["fr"] = "French";
+  m_languageMap["de"] = "German";
+  m_languageMap["de-AT"] = "German (Austria)";
+  m_languageMap["el"] = "Greek";
+  m_languageMap["he"] = "Hebrew";
+  m_languageMap["hu"] = "Hungarian";
+  m_languageMap["is"] = "Icelandic";
+  m_languageMap["id"] = "Indonesian";
+  m_languageMap["it"] = "Italian";
+  m_languageMap["ja"] = "Japanese";
+  m_languageMap["ko"] = "Korean";
+  m_languageMap["mt"] = "Maltese";
+  m_languageMap["no"] = "Norwegian";
+  m_languageMap["pl"] = "Polish";
+  m_languageMap["pt"] = "Portuguese";
+  m_languageMap["pt-BR"] = "Portuguese (Brazil)";
+  m_languageMap["ro"] = "Romanian";
+  m_languageMap["ru"] = "Russian";
+  m_languageMap["sr"] = "Serbian";
+  m_languageMap["sk"] = "Slovak";
+  m_languageMap["sl"] = "Slovenian";
+  m_languageMap["es"] = "Spanish";
+  m_languageMap["sv"] = "Swedish";
+  m_languageMap["tr"] = "Turkish";
+  m_languageMap["uk"] = "Ukrainian";
+  
   for (int i = HDTV_1080i; i <= PAL60_16x9; i++)
   {
     ZeroMemory(&m_ResInfo[i], sizeof(RESOLUTION));
@@ -233,7 +275,7 @@ CSettings::CSettings(void)
   g_advancedSettings.m_sambastatfiles = true;
 
   g_advancedSettings.m_musicThumbs = "folder.jpg|Folder.jpg|folder.JPG|Folder.JPG|cover.jpg|Cover.jpg|cover.jpeg";
-  g_advancedSettings.m_dvdThumbs = "folder.jpg|Folder.jpg|folder.JPG|Folder.JPG";
+  g_advancedSettings.m_dvdThumbs = "preview.jpg|Preview.jpg|preview.JPG|Preview.JPG|folder.jpg|Folder.jpg|folder.JPG|Folder.JPG";
 
   g_advancedSettings.m_bMusicLibraryHideAllItems = false;
   g_advancedSettings.m_bMusicLibraryAllItemsOnBottom = false;
@@ -274,6 +316,9 @@ CSettings::CSettings(void)
   
   g_advancedSettings.m_secondsToVisualizer = 10;
   g_advancedSettings.m_bVisualizerOnPlay = true;
+  
+  g_advancedSettings.m_bAutoShuffle = true;
+  g_advancedSettings.m_bUseAnamorphicZoom = false;
 }
 
 CSettings::~CSettings(void)
@@ -1284,7 +1329,13 @@ void CSettings::LoadAdvancedSettings()
   
   GetInteger(pRootElement, "secondstovisualizer", g_advancedSettings.m_secondsToVisualizer, 10, 0, 6000);
   XMLUtils::GetBoolean(pRootElement, "visualizeronplay", g_advancedSettings.m_bVisualizerOnPlay);
+  
+  XMLUtils::GetBoolean(pRootElement, "autoshuffle", g_advancedSettings.m_bAutoShuffle);
+  XMLUtils::GetBoolean(pRootElement, "anamorphiczoom", g_advancedSettings.m_bUseAnamorphicZoom);
 
+  GetString(pRootElement, "language", g_advancedSettings.m_language);
+  GetString(pRootElement, "units", g_advancedSettings.m_units);
+  
   //Tuxbox
   pElement = pRootElement->FirstChildElement("tuxbox");
   if (pElement)
@@ -1731,7 +1782,7 @@ bool CSettings::LoadProfile(int index)
     g_charsetConverter.reset();
 
     // Load the langinfo to have user charset <-> utf-8 conversion
-    CStdString strLanguage = g_guiSettings.GetString("region.language");
+    CStdString strLanguage = g_settings.GetLanguage();
     strLanguage[0] = toupper(strLanguage[0]);
 
     CStdString strLangInfoPath;
@@ -2843,4 +2894,35 @@ void CSettings::CreateProfileFolders()
     CUtil::AddFileToFolder(GetVideoThumbFolder(), strHex, strThumbLoc);
     CreateDirectory(strThumbLoc.c_str(),NULL);
   }
+}
+
+string CSettings::GetLanguage()
+{
+  string ret = "English";
+  
+#ifdef __APPLE__
+  
+  // Get the system language.
+  string systemLang = Cocoa_GetLanguage();
+  
+  if (m_languageMap.find(systemLang) != m_languageMap.end())
+  {
+    // Great match.
+    ret = m_languageMap[systemLang];
+  }
+  else
+  {
+    // See if we can just get the language.
+    int dash = systemLang.find("-");
+    if (dash != -1)
+    {
+      systemLang = systemLang.substr(0, dash);
+      if (m_languageMap.find(systemLang) != m_languageMap.end())
+        ret = m_languageMap[systemLang];
+    }
+  }
+  
+#endif
+  
+  return ret;
 }

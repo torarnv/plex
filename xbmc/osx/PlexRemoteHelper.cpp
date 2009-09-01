@@ -3,6 +3,7 @@
  *      Author: Elan Feingold
  */
 #include <mach-o/dyld.h>
+#include <signal.h>
  
 #include "PlexRemoteHelper.h"
 #include "PlatformDefs.h"
@@ -13,6 +14,18 @@
 #define SOFA_CONTROL_PROGRAM "Sofa Control"
 
 PlexRemoteHelper* PlexRemoteHelper::_theInstance = 0;
+
+/////////////////////////////////////////////////////////////////////////////
+void PlexRemoteHelper::DoPreStart()
+{
+  int pid = GetProcessPid("boxeeservice");
+  if (pid != -1)
+    kill(pid, SIGKILL);
+  
+  pid = GetProcessPid("XBMCHelper");
+  if (pid != -1)
+    kill(pid, SIGKILL);
+}
 
 /////////////////////////////////////////////////////////////////////////////
 bool PlexRemoteHelper::DoConfigure(int& mode, bool& alwaysRunning, bool& errorStarting)

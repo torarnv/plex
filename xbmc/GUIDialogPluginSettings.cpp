@@ -29,7 +29,8 @@
 #include "MediaManager.h"
 #include "GUIRadioButtonControl.h"
 #include "GUISpinControlEx.h"
-#include "FileSystem/HDDirectory.h"
+#include "GUIImage.h"
+#include "FileSystem/Directory.h"
 #include "VideoInfoScanner.h"
 #include "ScraperSettings.h"
 #include "GUIWindowManager.h"
@@ -38,20 +39,23 @@
 #include "FileItem.h"
 
 using namespace std;
+using namespace DIRECTORY;
 
-#define CONTROL_AREA                  2
-#define CONTROL_DEFAULT_BUTTON        3
-#define CONTROL_DEFAULT_RADIOBUTTON   4
-#define CONTROL_DEFAULT_SPIN          5
-#define CONTROL_DEFAULT_SEPARATOR     6
-#define ID_BUTTON_OK                  10
-#define ID_BUTTON_CANCEL              11
-#define ID_BUTTON_DEFAULT             12
-#define CONTROL_HEADING_LABEL         20
-#define CONTROL_START_CONTROL         100
+#define CONTROL_AREA                    2
+#define CONTROL_DEFAULT_BUTTON          3
+#define CONTROL_DEFAULT_RADIOBUTTON     4
+#define CONTROL_DEFAULT_SPIN            5
+#define CONTROL_DEFAULT_SEPARATOR       6
+#define CONTROL_DEFAULT_LABEL_SEPARATOR 7
+#define ID_BUTTON_OK                    10
+#define ID_BUTTON_CANCEL                11
+#define ID_BUTTON_DEFAULT               12
+#define CONTROL_HEADING_LABEL           20
+#define CONTROL_START_CONTROL           100
 
 CGUIDialogPluginSettings::CGUIDialogPluginSettings()
    : CGUIDialogBoxBase(WINDOW_DIALOG_PLUGIN_SETTINGS, "DialogPluginSettings.xml")
+   , m_okSelected(false)
 {}
 
 CGUIDialogPluginSettings::~CGUIDialogPluginSettings(void)
@@ -75,7 +79,10 @@ bool CGUIDialogPluginSettings::OnMessage(CGUIMessage& message)
       bool bCloseDialog = false;
 
       if (iControl == ID_BUTTON_OK)
+      {
+        m_okSelected = true;
         SaveSettings();
+      }
       else if (iControl == ID_BUTTON_DEFAULT)
         SetDefaults();
       else
@@ -91,6 +98,41 @@ bool CGUIDialogPluginSettings::OnMessage(CGUIMessage& message)
     break;
   }
   return CGUIDialogBoxBase::OnMessage(message);
+}
+
+// \brief Show CGUIDialogOK dialog, then wait for user to dismiss it.
+void CGUIDialogPluginSettings::ShowAndGetInput(const CStdString& path, const CStdString& compositeXml)
+{
+  // Parse the settings XML.
+  TiXmlDocument doc;
+  doc.Parse(compositeXml.c_str());
+  
+  // Get the root element.
+  TiXmlElement* root = doc.RootElement();
+  if (root == 0)
+    return;
+  
+  // Create the dialog.
+  CGUIDialogPluginSettings* pDialog = (CGUIDialogPluginSettings*) m_gWindowManager.GetWindow(WINDOW_DIALOG_PLUGIN_SETTINGS);
+
+  // Set the title.
+  pDialog->m_strHeading = "";
+  const char* title = root->Attribute("title");
+  if (title)
+    pDialog->m_strHeading = title;
+
+  // Load the settings.
+  CPluginSettings settings;
+  settings.LoadFromPlexMediaServer(root);
+  pDialog->m_settings = settings;
+
+  pDialog->DoModal();
+  
+  if (pDialog->m_okSelected)
+  {
+    settings = pDialog->m_settings;
+    settings.SaveToPlexMediaServer(path);
+  }
 }
 
 // \brief Show CGUIDialogOK dialog, then wait for user to dismiss it.
@@ -116,9 +158,6 @@ void CGUIDialogPluginSettings::ShowAndGetInput(CURL& url)
 
   settings = pDialog->m_settings;
   settings.Save();
-
-  // Unload temporary language strings
-  DIRECTORY::CPluginDirectory::ClearPluginStrings();
 
   return;
 }
@@ -175,7 +214,7 @@ bool CGUIDialogPluginSettings::ShowVirtualKeyboard(int iControl)
           ((CGUIButtonControl*) control)->SetLabel2(value);
         }
         else if (strcmpi(type, "video") == 0 || strcmpi(type, "music") == 0 ||
-          strcmpi(type, "pictures") == 0 || strcmpi(type, "programs") == 0 || 
+          strcmpi(type, "pictures") == 0 || strcmpi(type, "programs") == 0 ||
           strcmpi(type, "folder") == 0 || strcmpi(type, "files") == 0)
         {
           // setup the shares
@@ -194,7 +233,7 @@ bool CGUIDialogPluginSettings::ShowVirtualKeyboard(int iControl)
             localShares.insert(localShares.end(), networkShares.begin(), networkShares.end());
             shares = &localShares;
           }
-          
+
           if (strcmpi(type, "folder") == 0)
           {
             // get any options
@@ -274,28 +313,32 @@ bool CGUIDialogPluginSettings::SaveSettings(void)
     if (setting->Attribute("id"))
       id = setting->Attribute("id");
     const char *type = setting->Attribute("type");
-    const CGUIControl* control = GetControl(controlId);
 
-    CStdString value;
-    switch (control->GetControlType())
+    // skip type "lsep", it is not a required control
+    if (strcmpi(type, "lsep") != 0)
     {
-      case CGUIControl::GUICONTROL_BUTTON:
-        value = ((CGUIButtonControl*) control)->GetLabel2();
-        break;
-      case CGUIControl::GUICONTROL_RADIO:
-        value = ((CGUIRadioButtonControl*) control)->IsSelected() ? "true" : "false";
-        break;
-      case CGUIControl::GUICONTROL_SPINEX:
-        if (strcmpi(type, "fileenum") == 0 || strcmpi(type, "labelenum") == 0)
-          value = ((CGUISpinControlEx*) control)->GetLabel();
-        else
-          value.Format("%i", ((CGUISpinControlEx*) control)->GetValue());
-        break;
-      default:
-        break;
-    }
-    m_settings.Set(id, value);
+      const CGUIControl* control = GetControl(controlId);
 
+      CStdString value;
+      switch (control->GetControlType())
+      {
+        case CGUIControl::GUICONTROL_BUTTON:
+          value = ((CGUIButtonControl*) control)->GetLabel2();
+          break;
+        case CGUIControl::GUICONTROL_RADIO:
+          value = ((CGUIRadioButtonControl*) control)->IsSelected() ? "true" : "false";
+          break;
+        case CGUIControl::GUICONTROL_SPINEX:
+          if (strcmpi(type, "fileenum") == 0 || strcmpi(type, "labelenum") == 0)
+            value = ((CGUISpinControlEx*) control)->GetLabel();
+          else
+            value.Format("%i", ((CGUISpinControlEx*) control)->GetValue());
+          break;
+        default:
+          break;
+      }
+      m_settings.Set(id, value);
+    }
     setting = setting->NextSiblingElement("setting");
     controlId++;
   }
@@ -319,6 +362,7 @@ void CGUIDialogPluginSettings::CreateControls()
   CGUIRadioButtonControl *pOriginalRadioButton = (CGUIRadioButtonControl *)GetControl(CONTROL_DEFAULT_RADIOBUTTON);
   CGUIButtonControl *pOriginalButton = (CGUIButtonControl *)GetControl(CONTROL_DEFAULT_BUTTON);
   CGUIImage *pOriginalImage = (CGUIImage *)GetControl(CONTROL_DEFAULT_SEPARATOR);
+  CGUILabelControl *pOriginalLabel = (CGUILabelControl *)GetControl(CONTROL_DEFAULT_LABEL_SEPARATOR);
 
   if (!pOriginalSpin || !pOriginalRadioButton || !pOriginalButton || !pOriginalImage)
     return;
@@ -327,6 +371,8 @@ void CGUIDialogPluginSettings::CreateControls()
   pOriginalRadioButton->SetVisible(false);
   pOriginalButton->SetVisible(false);
   pOriginalImage->SetVisible(false);
+  if (pOriginalLabel)
+    pOriginalLabel->SetVisible(false);
 
   // clear the category group
   CGUIControlGroupList *group = (CGUIControlGroupList *)GetControl(CONTROL_AREA);
@@ -340,8 +386,6 @@ void CGUIDialogPluginSettings::CreateControls()
   CStdString basepath = "Q:\\plugins\\";
   CUtil::AddFileToFolder(basepath, m_url.GetHostName(), basepath);
   CUtil::AddFileToFolder(basepath, m_url.GetFileName(), basepath);
-  // Replace the / at end, GetFileName() leaves a / at the end
-  basepath.Replace("/", "\\");
 
   CGUIControl* pControl = NULL;
   int controlId = CONTROL_START_CONTROL;
@@ -349,6 +393,7 @@ void CGUIDialogPluginSettings::CreateControls()
   while (setting)
   {
     const char *type = setting->Attribute("type");
+    const char *option = setting->Attribute("option");
     const char *id = setting->Attribute("id");
     CStdString values;
     if (setting->Attribute("values"))
@@ -365,97 +410,109 @@ void CGUIDialogPluginSettings::CreateControls()
     else
       label = setting->Attribute("label");
 
-    if (strcmpi(type, "text") == 0 || strcmpi(type, "ipaddress") == 0 ||
-      strcmpi(type, "integer") == 0 || strcmpi(type, "video") == 0 ||
-      strcmpi(type, "music") == 0 || strcmpi(type, "pictures") == 0 ||
-      strcmpi(type, "folder") == 0 || strcmpi(type, "programs") == 0 ||
-      strcmpi(type, "files") == 0 || strcmpi(type, "action") == 0)
+    if (type)
     {
-      pControl = new CGUIButtonControl(*pOriginalButton);
-      if (!pControl) return;
-      ((CGUIButtonControl *)pControl)->SettingsCategorySetTextAlign(XBFONT_CENTER_Y);
-      ((CGUIButtonControl *)pControl)->SetLabel(label);
-      if (id)
-        ((CGUIButtonControl *)pControl)->SetLabel2(m_settings.Get(id));
-    }
-    else if (strcmpi(type, "bool") == 0)
-    {
-      pControl = new CGUIRadioButtonControl(*pOriginalRadioButton);
-      if (!pControl) return;
-      ((CGUIRadioButtonControl *)pControl)->SetLabel(label);
-      ((CGUIRadioButtonControl *)pControl)->SetSelected(m_settings.Get(id) == "true");
-    }
-    else if (strcmpi(type, "enum") == 0 || strcmpi(type, "labelenum") == 0)
-    {
-      vector<CStdString> valuesVec;
-      vector<CStdString> entryVec;
-
-      pControl = new CGUISpinControlEx(*pOriginalSpin);
-      if (!pControl) return;
-      ((CGUISpinControlEx *)pControl)->SetText(label);
-
-      if (!lvalues.IsEmpty())
-        CUtil::Tokenize(lvalues, valuesVec, "|");
-      else
-        CUtil::Tokenize(values, valuesVec, "|");
-      if (!entries.IsEmpty())
-        CUtil::Tokenize(entries, entryVec, "|");
-      for (unsigned int i = 0; i < valuesVec.size(); i++)
+      if (strcmpi(type, "text") == 0 || strcmpi(type, "ipaddress") == 0 ||
+        strcmpi(type, "integer") == 0 || strcmpi(type, "video") == 0 ||
+        strcmpi(type, "music") == 0 || strcmpi(type, "pictures") == 0 ||
+        strcmpi(type, "folder") == 0 || strcmpi(type, "programs") == 0 ||
+        strcmpi(type, "files") == 0 || strcmpi(type, "action") == 0)
       {
-        int iAdd = i;
-        if (entryVec.size() > i)
-          iAdd = atoi(entryVec[i]);
+        pControl = new CGUIButtonControl(*pOriginalButton);
+        if (!pControl) return;
+        ((CGUIButtonControl *)pControl)->SettingsCategorySetTextAlign(XBFONT_CENTER_Y);
+        ((CGUIButtonControl *)pControl)->SetLabel(label);
+        if (id)
+          ((CGUIButtonControl *)pControl)->SetLabel2(m_settings.Get(id));
+        
+        if (option && strcmpi(option, "hidden") == 0)
+          ((CGUIButtonControl *)pControl)->SetHidden(true);
+      }
+      else if (strcmpi(type, "bool") == 0)
+      {
+        pControl = new CGUIRadioButtonControl(*pOriginalRadioButton);
+        if (!pControl) return;
+        ((CGUIRadioButtonControl *)pControl)->SetLabel(label);
+        ((CGUIRadioButtonControl *)pControl)->SetSelected(m_settings.Get(id) == "true");
+      }
+      else if (strcmpi(type, "enum") == 0 || strcmpi(type, "labelenum") == 0)
+      {
+        vector<CStdString> valuesVec;
+        vector<CStdString> entryVec;
+
+        pControl = new CGUISpinControlEx(*pOriginalSpin);
+        if (!pControl) return;
+        ((CGUISpinControlEx *)pControl)->SetText(label);
+
         if (!lvalues.IsEmpty())
+          CUtil::Tokenize(lvalues, valuesVec, "|");
+        else
+          CUtil::Tokenize(values, valuesVec, "|");
+        if (!entries.IsEmpty())
+          CUtil::Tokenize(entries, entryVec, "|");
+        for (unsigned int i = 0; i < valuesVec.size(); i++)
         {
-          CStdString replace = g_localizeStringsTemp.Get(atoi(valuesVec[i]));
-          if (replace.IsEmpty())
-            replace = g_localizeStrings.Get(atoi(valuesVec[i]));
-          ((CGUISpinControlEx *)pControl)->AddLabel(replace, iAdd);
+          int iAdd = i;
+          if (entryVec.size() > i)
+            iAdd = atoi(entryVec[i]);
+          if (!lvalues.IsEmpty())
+          {
+            CStdString replace = g_localizeStringsTemp.Get(atoi(valuesVec[i]));
+            if (replace.IsEmpty())
+              replace = g_localizeStrings.Get(atoi(valuesVec[i]));
+            ((CGUISpinControlEx *)pControl)->AddLabel(replace, iAdd);
+          }
+          else
+            ((CGUISpinControlEx *)pControl)->AddLabel(valuesVec[i], iAdd);
+        }
+        if (strcmpi(type, "labelenum") == 0)
+        { // need to run through all our settings and find the one that matches
+          ((CGUISpinControlEx*) pControl)->SetValueFromLabel(m_settings.Get(id));
         }
         else
-          ((CGUISpinControlEx *)pControl)->AddLabel(valuesVec[i], iAdd);
+          ((CGUISpinControlEx*) pControl)->SetValue(atoi(m_settings.Get(id)));
+
       }
-      if (strcmpi(type, "labelenum") == 0)
-      { // need to run through all our settings and find the one that matches
-        ((CGUISpinControlEx*) pControl)->SetValueFromLabel(m_settings.Get(id));
-      }
-      else
-        ((CGUISpinControlEx*) pControl)->SetValue(atoi(m_settings.Get(id)));
-
-    }
-    else if (strcmpi(type, "fileenum") == 0)
-    {
-      pControl = new CGUISpinControlEx(*pOriginalSpin);
-      if (!pControl) return;
-      ((CGUISpinControlEx *)pControl)->SetText(label);
-
-      //find Folders...
-      DIRECTORY::CHDDirectory directory;
-      CFileItemList items;
-      CStdString enumpath;
-      CUtil::AddFileToFolder(basepath, values, enumpath);
-      CStdString mask;
-      if (setting->Attribute("mask"))
-        mask = setting->Attribute("mask");
-      if (!mask.IsEmpty())
-        directory.SetMask(mask);
-      directory.GetDirectory(enumpath, items);
-
-      int iItem = 0;
-      for (int i = 0; i < items.Size(); ++i)
+      else if (strcmpi(type, "fileenum") == 0)
       {
-        CFileItemPtr pItem = items[i];
-        if ((mask.Equals("/") && pItem->m_bIsFolder) || !pItem->m_bIsFolder)
+        pControl = new CGUISpinControlEx(*pOriginalSpin);
+        if (!pControl) return;
+        ((CGUISpinControlEx *)pControl)->SetText(label);
+
+        //find Folders...
+        CFileItemList items;
+        CStdString enumpath;
+        CUtil::AddFileToFolder(basepath, values, enumpath);
+        CStdString mask;
+        if (setting->Attribute("mask"))
+          mask = setting->Attribute("mask");
+        if (!mask.IsEmpty())
+          CDirectory::GetDirectory(enumpath, items, mask);
+        else
+          CDirectory::GetDirectory(enumpath, items);
+
+        int iItem = 0;
+        for (int i = 0; i < items.Size(); ++i)
         {
-          ((CGUISpinControlEx *)pControl)->AddLabel(pItem->GetLabel(), iItem);
-          if (pItem->GetLabel().Equals(m_settings.Get(id)))
-            ((CGUISpinControlEx *)pControl)->SetValue(iItem);
-          iItem++;
+          CFileItemPtr pItem = items[i];
+          if ((mask.Equals("/") && pItem->m_bIsFolder) || !pItem->m_bIsFolder)
+          {
+            ((CGUISpinControlEx *)pControl)->AddLabel(pItem->GetLabel(), iItem);
+            if (pItem->GetLabel().Equals(m_settings.Get(id)))
+              ((CGUISpinControlEx *)pControl)->SetValue(iItem);
+            iItem++;
+          }
         }
       }
+      else if (strcmpi(type, "lsep") == 0 && pOriginalLabel)
+      {
+        pControl = new CGUILabelControl(*pOriginalLabel);
+        if (pControl)
+          ((CGUILabelControl *)pControl)->SetLabel(label);
+      }
+      else if ((strcmpi(type, "sep") == 0 || strcmpi(type, "lsep") == 0) && pOriginalImage)
+        pControl = new CGUIImage(*pOriginalImage);
     }
-    else if (strcmpi(type, "sep") == 0 && pOriginalImage)
-      pControl = new CGUIImage(*pOriginalImage);
 
     if (pControl)
     {
@@ -503,11 +560,18 @@ bool CGUIDialogPluginSettings::GetCondition(const CStdString &condition, const i
 {
   if (condition.IsEmpty()) return true;
 
-  vector<CStdString> conditionVec;
-  CUtil::Tokenize(condition, conditionVec, "+");
-  
   bool bCondition = true;
-  
+  bool bCompare = true;
+  vector<CStdString> conditionVec;
+  if (condition.Find("+") >= 0)
+    CUtil::Tokenize(condition, conditionVec, "+");
+  else
+  {
+    bCondition = false;
+    bCompare = false;
+    CUtil::Tokenize(condition, conditionVec, "|");
+  }
+
   for (unsigned int i = 0; i < conditionVec.size(); i++)
   {
     vector<CStdString> condVec;
@@ -530,14 +594,35 @@ bool CGUIDialogPluginSettings::GetCondition(const CStdString &condition, const i
       default:
         break;
     }
+
     if (condVec[0].Equals("eq"))
-      bCondition &= value.Equals(condVec[2]);
+    {
+      if (bCompare)
+        bCondition &= value.Equals(condVec[2]);
+      else
+        bCondition |= value.Equals(condVec[2]);
+    }
     else if (condVec[0].Equals("!eq"))
-      bCondition &= !value.Equals(condVec[2]);
+    {
+      if (bCompare)
+        bCondition &= !value.Equals(condVec[2]);
+      else
+        bCondition |= !value.Equals(condVec[2]);
+    }
     else if (condVec[0].Equals("gt"))
-      bCondition &= (atoi(value) > atoi(condVec[2]));
+    {
+      if (bCompare)
+        bCondition &= (atoi(value) > atoi(condVec[2]));
+      else
+        bCondition |= (atoi(value) > atoi(condVec[2]));
+    }
     else if (condVec[0].Equals("lt"))
-      bCondition &= (atoi(value) < atoi(condVec[2]));
+    {
+      if (bCompare)
+        bCondition &= (atoi(value) < atoi(condVec[2]));
+      else
+        bCondition |= (atoi(value) < atoi(condVec[2]));
+    }
   }
   return bCondition;
 }

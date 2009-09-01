@@ -38,6 +38,7 @@ using namespace DIRECTORY;
 
 #define MAX_ZOOM_FACTOR                     10
 #define MAX_PICTURE_SIZE             2048*2048
+#define DESCRIPTION_DISPLAY_TIME            10
 
 #define IMMEDIATE_TRANSISTION_TIME          20
 
@@ -148,6 +149,7 @@ void CGUIWindowSlideShow::Reset()
 {
   g_infoManager.SetShowCodec(false);
   m_bSlideShow = false;
+  m_bScreensaver = false;
   m_bPause = false;
   m_bErrorMessage = false;
   m_bReloadImage = false;
@@ -158,6 +160,7 @@ void CGUIWindowSlideShow::Reset()
   m_iCurrentSlide = 0;
   m_iNextSlide = 1;
   m_iCurrentPic = 0;
+  CSingleLock lock(m_slideSection);
   m_slides->Clear();
   m_Resolution = INVALID;
 }
@@ -222,10 +225,13 @@ void CGUIWindowSlideShow::Select(const CStdString& strPicture)
     const CFileItemPtr item = m_slides->Get(i);
     if (item->m_strPath == strPicture)
     {
+      // If the picture has a description, show it!
+      g_infoManager.SetSlideshowShowDescription(item->GetProperty("description") != "");
       m_iCurrentSlide = i;
       m_iNextSlide = m_iCurrentSlide + 1;
       if (m_iNextSlide >= m_slides->Size())
         m_iNextSlide = 0;
+      UpdateDescription();
       return ;
     }
   }
@@ -256,6 +262,15 @@ void CGUIWindowSlideShow::StartSlideShow(bool screensaver)
 
 void CGUIWindowSlideShow::Render()
 {
+  if (stopwatch.IsRunning())
+  {
+    if ((int)stopwatch.GetElapsedSeconds() == DESCRIPTION_DISPLAY_TIME)
+    {
+      stopwatch.Stop();
+      if (g_infoManager.GetSlideshowShowDescription() == true)
+        g_infoManager.SetSlideshowShowDescription(false);
+    }
+  }
   // reset the screensaver if we're in a slideshow
   if (m_bSlideShow) g_application.ResetScreenSaver();
   int iSlides = m_slides->Size();
@@ -418,6 +433,7 @@ void CGUIWindowSlideShow::Render()
     if (m_Image[1 - m_iCurrentPic].IsLoaded())
       m_iCurrentPic = 1 - m_iCurrentPic;
     m_iCurrentSlide = m_iNextSlide;
+    UpdateDescription();
     if (bSlideShow)
     {
       m_iNextSlide++;
@@ -455,6 +471,18 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
       {
         // no need to set the picture here, it's done in Render()
         pictureInfo->DoModal();
+      }
+    }
+    break;
+  case ACTION_SHOW_INFO:
+    {
+      // If the item has a description, allow toggling
+      CFileItemPtr fileItem = m_slides->Get(m_iCurrentSlide);
+      if (fileItem->GetProperty("description") != "")
+      {
+        g_infoManager.SetSlideshowShowDescription(!g_infoManager.GetSlideshowShowDescription());
+        if (stopwatch.IsRunning())
+          stopwatch.Stop();
       }
     }
     break;
@@ -696,6 +724,16 @@ void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, SDL_Surface* pTe
   if (pTexture)
   {
     // set the pic's texture + size etc.
+    CSingleLock lock(m_slideSection);
+    if (iSlideNumber >= m_slides->Size())
+    { // throw this away - we must have cleared the slideshow while we were still loading
+#ifndef HAS_SDL
+      pTexture->Release();
+#else
+      SDL_FreeSurface(pTexture);
+#endif
+      return;
+    }
     CLog::Log(LOGDEBUG, "Finished background loading %s", m_slides->Get(iSlideNumber)->m_strPath.c_str());
     if (m_bReloadImage)
     {
@@ -823,6 +861,18 @@ void CGUIWindowSlideShow::GetCheckedSize(float width, float height, int &maxWidt
   maxWidth = g_graphicsContext.GetMaxTextureSize();
   maxHeight = g_graphicsContext.GetMaxTextureSize();
 #endif
+}
+
+void CGUIWindowSlideShow::UpdateDescription()
+{
+  if (stopwatch.IsRunning())
+    stopwatch.Stop();
+  CFileItemPtr fileItem = m_slides->Get(m_iCurrentSlide);
+  if (fileItem->GetProperty("description") != "")
+  {
+    stopwatch.StartZero();
+    g_infoManager.SetSlideshowShowDescription(true);
+  }
 }
 
 CFileItemPtr CGUIWindowSlideShow::GetCurrentListItem(int offset)

@@ -63,7 +63,7 @@ public:
   void Reset();
   void ClearPlaylist(int iPlaylist);
   void Clear();
-  void SetShuffle(int iPlaylist, bool bYesNo);
+  void SetShuffle(int iPlaylist, bool bYesNo, bool bTemporary = false);
   bool IsShuffled(int iPlaylist) const;
   bool HasPlayedFirstFile() const;
 
@@ -86,6 +86,8 @@ protected:
   DWORD m_failedSongsStart;
   int m_iCurrentSong;
   int m_iCurrentPlayList;
+  bool m_bPreviousMusicShuffle;
+  bool m_bTemporaryShuffle;
   CPlayList* m_PlaylistMusic;
   CPlayList* m_PlaylistVideo;
   CPlayList* m_PlaylistEmpty;

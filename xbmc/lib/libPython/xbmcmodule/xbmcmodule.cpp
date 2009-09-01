@@ -345,7 +345,7 @@ namespace PYXBMC
 
   PyObject* XBMC_GetLanguage(PyObject *self, PyObject *args)
   {
-    return PyString_FromString(g_guiSettings.GetString("region.language"));
+    return PyString_FromString(g_settings.GetLanguage().c_str());
   }
 
   // getIPAddress() method

@@ -53,13 +53,13 @@ public:
   typedef enum _TEMP_UNIT
   {
     TEMP_UNIT_FAHRENHEIT=0,
-    TEMP_UNIT_KELVIN,
+    //TEMP_UNIT_KELVIN,
     TEMP_UNIT_CELSIUS,
-    TEMP_UNIT_REAUMUR,
-    TEMP_UNIT_RANKINE,
-    TEMP_UNIT_ROMER,
-    TEMP_UNIT_DELISLE,
-    TEMP_UNIT_NEWTON
+    //TEMP_UNIT_REAUMUR,
+    //TEMP_UNIT_RANKINE,
+    //TEMP_UNIT_ROMER,
+    //TEMP_UNIT_DELISLE,
+    //TEMP_UNIT_NEWTON
   } TEMP_UNIT;
 
   const CStdString& GetTempUnitString();
@@ -68,18 +68,18 @@ public:
 
   typedef enum _SPEED_UNIT
   {
-    SPEED_UNIT_KMH=0, // kilemetre per hour
-    SPEED_UNIT_MPMIN, // metres per minute
-    SPEED_UNIT_MPS, // metres per second
-    SPEED_UNIT_FTH, // feet per hour
-    SPEED_UNIT_FTMIN, // feet per minute
-    SPEED_UNIT_FTS, // feet per second
-    SPEED_UNIT_MPH, // miles per hour
-    SPEED_UNIT_KTS, // knots
-    SPEED_UNIT_BEAUFORT, // beaufort
-    SPEED_UNIT_INCHPS, // inch per second
-    SPEED_UNIT_YARDPS, // yard per second
-    SPEED_UNIT_FPF // Furlong per Fortnight
+    SPEED_UNIT_KMH=0, // kilemetre per hour  *
+    //SPEED_UNIT_MPMIN, // metres per minute  
+    SPEED_UNIT_MPS, // metres per second     *
+    //SPEED_UNIT_FTH, // feet per hour
+    //SPEED_UNIT_FTMIN, // feet per minute
+    //SPEED_UNIT_FTS, // feet per second
+    SPEED_UNIT_MPH, // miles per hour        *
+    //SPEED_UNIT_KTS, // knots
+    SPEED_UNIT_BEAUFORT, // beaufort         *
+    //SPEED_UNIT_INCHPS, // inch per second
+    //SPEED_UNIT_YARDPS, // yard per second
+    //SPEED_UNIT_FPF // Furlong per Fortnight
   } SPEED_UNIT;
 
   const CStdString& GetSpeedUnitString();
@@ -116,9 +116,6 @@ protected:
     CStdString m_strTimeFormat;
     CStdString m_strMeridiemSymbols[MERIDIEM_SYMBOL_MAX];
     CStdString m_strTimeZone;
-
-    TEMP_UNIT m_tempUnit;
-    SPEED_UNIT m_speedUnit;
   };
 
 

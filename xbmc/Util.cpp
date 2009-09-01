@@ -360,7 +360,7 @@ const BOOL CUtil::HostInExceptionList(CStdString hostname, std::vector<CStdStrin
     exceptionItem = (*it);
     if (hostIpAddresses.size() > 0 && ipAndSubnetMaskReg.RegFind(exceptionItem) > -1)
     {
-      CStdString ipAddressStr = exceptionItem.substr(ipAndSubnetMaskReg.GetSubStart(1),  ipAndSubnetMaskReg.GetSublength(1));
+      CStdString ipAddressStr = exceptionItem.substr(ipAndSubnetMaskReg.GetSubStart(1),  ipAndSubnetMaskReg.GetSubLength(1));
 
       int pos, dots;
       for (pos = -1, dots = 0; dots < 3 &&  ((pos = ipAddressStr.Find(".", pos)) > -1); dots++, pos++)
@@ -370,7 +370,7 @@ const BOOL CUtil::HostInExceptionList(CStdString hostname, std::vector<CStdStrin
         ipAddressStr.AppendFormat(".0");
 
       in_addr_t ipAddress = inet_addr(ipAddressStr.c_str());
-      unsigned int shift = atoi(exceptionItem.substr(ipAndSubnetMaskReg.GetSubStart(2),  ipAndSubnetMaskReg.GetSublength(2)).c_str());
+      unsigned int shift = atoi(exceptionItem.substr(ipAndSubnetMaskReg.GetSubStart(2),  ipAndSubnetMaskReg.GetSubLength(2)).c_str());
       in_addr_t subnetMask = htonl(0xFFFFFFFF << 32 - shift);
       vector<in_addr_t>::iterator ip_it;
       for (ip_it = hostIpAddresses.begin(); ip_it != hostIpAddresses.end(); ip_it++)
@@ -419,13 +419,10 @@ void CUtil::AutodetectPlexSources(CStdString strPlexPath, VECSOURCES& dstSources
     CFileItemList* fileItems = new CFileItemList();
     CPlexDirectory plexDir;
     plexDir.SetTimeout(2);
-    printf("Set up directory\n");
     
     CUtil::AddSlashAtEnd(strPlexPath);
-    printf("Added slash\n");
     if (plexDir.GetDirectory(strPlexPath, *fileItems))
     {
-      printf("Got directory\n"); 
       if (fileItems->Size() == 0) return;
       
       // Make sure all items in the PlexDirectory are added as sources
@@ -436,6 +433,7 @@ void CUtil::AutodetectPlexSources(CStdString strPlexPath, VECSOURCES& dstSources
         share.strName = item->GetLabel();
         share.strPath = item->m_strPath;
         share.m_strFanartUrl = item->GetQuickFanart();
+        share.m_ignore = true;
         
         // Download thumbnail if needed.
         CStdString cachedThumb(item->GetCachedProgramThumb());
@@ -466,10 +464,7 @@ void CUtil::AutodetectPlexSources(CStdString strPlexPath, VECSOURCES& dstSources
         
         pmsSources.push_back(share);
         if (CUtil::GetMatchingSource(share.strName, dstSources, bIsSourceName) < 0)
-        {
-          printf("%s not found in source list - adding %s\n", share.strName.c_str(), share.strPath.c_str());
           dstSources.push_back(share);
-        }
       }
       delete fileItems;
       
@@ -480,10 +475,7 @@ void CUtil::AutodetectPlexSources(CStdString strPlexPath, VECSOURCES& dstSources
         if ((share.strPath.find(strPlexPath) != string::npos) && (share.strPath.find("/", strPlexPath.length()) == share.strPath.length()-1))
         {
           if (CUtil::GetMatchingSource(dstSources.at(i).strName, pmsSources, bIsSourceName) < 0)
-          {
-            printf("%s not found in PMS directory list - removing\n", dstSources.at(i).strPath.c_str());
             dstSources.erase(dstSources.begin()+i);
-          }
         }
       }
       
@@ -499,10 +491,7 @@ void CUtil::AutodetectPlexSources(CStdString strPlexPath, VECSOURCES& dstSources
     {
       CMediaSource share = dstSources.at(i);
       if ((share.strPath.find(strPlexPath) != string::npos) && (share.strPath.find("/", strPlexPath.length()) == share.strPath.length()-1))
-      {
-        printf("PMS unavailable - removing %s\n", dstSources.at(i).strPath.c_str());
         dstSources.erase(dstSources.begin()+i);
-      }
     }
   }
 }
@@ -697,15 +686,15 @@ bool CUtil::GetVolumeFromFileName(const CStdString& strFileName, CStdString& str
       else if( iCount > 1 )
       {
         //Second Sub value contains the stacking
-        strVolumeNumber = strFileName.Mid(iFoundToken + reg.GetSubStart(2), reg.GetSublength(2));
+        strVolumeNumber = strFileName.Mid(iFoundToken + reg.GetSubStart(2), reg.GetSubLength(2));
 
         strFileTitle = strFileName.Left(iFoundToken);
 
         //First Sub value contains prefix
-        strFileTitle += strFileName.Mid(iFoundToken + reg.GetSubStart(1), reg.GetSublength(1));
+        strFileTitle += strFileName.Mid(iFoundToken + reg.GetSubStart(1), reg.GetSubLength(1));
 
         //Third Sub value contains suffix
-        strFileTitle += strFileName.Mid(iFoundToken + reg.GetSubStart(3), reg.GetSublength(3));
+        strFileTitle += strFileName.Mid(iFoundToken + reg.GetSubStart(3), reg.GetSubLength(3));
         strFileTitle += strFileNameTemp.Mid(iFoundToken + iRegLength);
         //CLog::Log(LOGNOTICE, "GetVolumeFromFileName : 4 : " + strFileName + " : " + strVolumeNumber + " : " + strFileTitle);
         return true;
@@ -1967,7 +1956,7 @@ bool CUtil::IsOnLAN(const CStdString& strPath)
     return false;
 
   CStdString host = url.GetHostName();
-  if(host.length() == 0)
+  if(host.length() == 0 || host.substr(0, 1) == "/")
     return false;
 
   unsigned long address = ntohl(inet_addr(host.c_str()));
@@ -2082,6 +2071,11 @@ bool CUtil::IsPlexMediaServer(const CStdString& strFile)
     return true;
   
   return false;
+}
+
+bool CUtil::IsWebKit(const CStdString& strFile)
+{
+  return strFile.Find("/:/webkit") != -1;
 }
 
 bool CUtil::IsCDDA(const CStdString& strFile)
@@ -3807,6 +3801,9 @@ const BUILT_IN commands[] = {
   { "Control.Move",               true,   "Tells the specified control to 'move' to another entry specified by offset" },
   { "SendClick",                  true,   "Send a click message from the given control to the given window" },
   { "CheckForUpdates",            false,  "Check for software updates" },
+  { "MoveToNextScreen",           false,  "Move to the next screen" },
+  { "MoveToPrevScreen",           false,  "Move to the previous screen" },
+  { "ToggleDisplayBlanking",      false,  "Toggle display blanking" },
 };
 
 bool CUtil::IsBuiltIn(const CStdString& execString)
@@ -3863,7 +3860,6 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   CStdString strParameterCaseIntact = parameter;
   parameter.ToLower();
   execute.ToLower();
-
   if (execute.Equals("reboot") || execute.Equals("restart"))  //Will reboot the xbox, aka cold reboot
   {
     g_application.getApplicationMessenger().Restart();
@@ -4801,6 +4797,24 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       action.fAmount1 = 1.0f;
       g_application.OnAction(action);
     }
+  }
+  else if (execute.Equals("movetoprevscreen"))
+  {
+    g_application.getApplicationMessenger().MoveToPrevScreen();
+  }
+  else if (execute.Equals("movetonextscreen"))
+  {
+    g_application.getApplicationMessenger().MoveToNextScreen();
+  }
+  else if (execute.Equals("toggledisplayblanking"))
+  {
+    int setting = g_guiSettings.GetInt("videoscreen.displayblanking");
+    setting++;
+    if (setting > BLANKING_ALL_DISPLAYS)
+      setting = BLANKING_DISABLED;
+    g_guiSettings.SetInt("videoscreen.displayblanking", setting);
+
+    UpdateDisplayBlanking();
   }
   else
     return -1;
@@ -6199,6 +6213,15 @@ CStdString CUtil::TranslatePathConvertCase(const CStdString& path)
 #else
    return translatedPath;
 #endif
+}
+
+void CUtil::UpdateDisplayBlanking()
+{
+  int value = g_guiSettings.GetInt("videoscreen.displayblanking");
+  if (value == BLANKING_ALL_DISPLAYS && g_advancedSettings.m_fullScreen == true)
+    Cocoa_GL_BlankOtherDisplays(g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].iScreen);
+  else
+    Cocoa_GL_UnblankOtherDisplays(g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].iScreen); 
 }
 
 #ifdef _LINUX

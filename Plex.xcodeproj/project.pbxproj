@@ -14,6 +14,14 @@
 		1A2C5DE90E7EF479002F23FA /* relaunch.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A2C5DE80E7EF479002F23FA /* relaunch.m */; };
 		1A2C5DEC0E7EF4BD002F23FA /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A2C5DEB0E7EF4BD002F23FA /* AppKit.framework */; };
 		1A2C5DF70E7EF598002F23FA /* relaunch in Copy Relaunch */ = {isa = PBXBuildFile; fileRef = 1A2C5DE30E7EF410002F23FA /* relaunch */; };
+		1A448E920F8059C1006E71B2 /* AdvancedSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A448E910F8059C1006E71B2 /* AdvancedSettingsController.m */; };
+		1A448EB90F8066BB006E71B2 /* Library.icns in Resources */ = {isa = PBXBuildFile; fileRef = 1A448EB50F8066BB006E71B2 /* Library.icns */; };
+		1A448EBA0F8066BB006E71B2 /* Movies.icns in Resources */ = {isa = PBXBuildFile; fileRef = 1A448EB60F8066BB006E71B2 /* Movies.icns */; };
+		1A448EBB0F8066BB006E71B2 /* Music.icns in Resources */ = {isa = PBXBuildFile; fileRef = 1A448EB70F8066BB006E71B2 /* Music.icns */; };
+		1A448EBC0F8066BB006E71B2 /* System.icns in Resources */ = {isa = PBXBuildFile; fileRef = 1A448EB80F8066BB006E71B2 /* System.icns */; };
+		1A448EBE0F806887006E71B2 /* RSS.png in Resources */ = {isa = PBXBuildFile; fileRef = 1A448EBD0F806887006E71B2 /* RSS.png */; };
+		1A448EDA0F813112006E71B2 /* BWToolkitFramework.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1A448ED90F813112006E71B2 /* BWToolkitFramework.framework */; };
+		1A448F130F813714006E71B2 /* BWToolkitFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A448ED90F813112006E71B2 /* BWToolkitFramework.framework */; };
 		1A53C11A0EAC0020009A10F3 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A53C1190EAC0020009A10F3 /* SystemConfiguration.framework */; };
 		1A53C7490EB00AD1009A10F3 /* frontrowlauncher.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A53C7480EB00AD1009A10F3 /* frontrowlauncher.m */; };
 		1A53C7FC0EB00B43009A10F3 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A2C5DEB0E7EF4BD002F23FA /* AppKit.framework */; };
@@ -22,15 +30,23 @@
 		1A5535900E86AA9E005AF349 /* AppleHardwareInfo.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1A55358F0E86AA9E005AF349 /* AppleHardwareInfo.mm */; };
 		1A5535E50E86B02F005AF349 /* ModelsWithBattery.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1A5535E40E86B02F005AF349 /* ModelsWithBattery.plist */; };
 		1A5536300E86CCD4005AF349 /* GUIDialogUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A55362F0E86CCD4005AF349 /* GUIDialogUtils.cpp */; };
+		1A57382F0F8EC940001943A9 /* GUIWindowNowPlaying.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A57382E0F8EC940001943A9 /* GUIWindowNowPlaying.cpp */; };
 		1A6927FB0EAAB06100A01B8A /* SUPlexBackgroundUpdateDialogDriver.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A6927FA0EAAB06100A01B8A /* SUPlexBackgroundUpdateDialogDriver.m */; };
 		1AA456B70E7EA3DD004CC8D2 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AA456B60E7EA3DD004CC8D2 /* Security.framework */; };
 		1AD99BDD0E9EF07200503917 /* QTPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1AD99BDC0E9EF07200503917 /* QTPlayer.cpp */; };
 		1AD99C750E9FB54200503917 /* QuickTimeWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1AD99C740E9FB54200503917 /* QuickTimeWrapper.cpp */; };
 		1AF6A79C0E994BFB00D96BD7 /* ModelNames.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1AF6A79B0E994BFB00D96BD7 /* ModelNames.plist */; };
 		9421E33A0ED6A99E00A26254 /* CoreAudioRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 943BC2870ED3F1E500B7CB45 /* CoreAudioRenderer.cpp */; };
+		949384630F591AE6004DFC17 /* FileEyeTVSocket.mm in Sources */ = {isa = PBXBuildFile; fileRef = 949384620F591AE6004DFC17 /* FileEyeTVSocket.mm */; };
 		94B1852B0EB48264008C38FA /* CoreAudioAUHAL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 94B185280EB48264008C38FA /* CoreAudioAUHAL.cpp */; };
 		94B1852C0EB48264008C38FA /* CoreAudioPlexSupport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 94B1852A0EB48264008C38FA /* CoreAudioPlexSupport.cpp */; };
 		94B185540EB48568008C38FA /* pa_ringbuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 94B185520EB48568008C38FA /* pa_ringbuffer.c */; };
+		94DEBCE20F647401003FF0E9 /* libavcodec-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 94DEBCDD0F647401003FF0E9 /* libavcodec-osx.a */; };
+		94DEBCE30F647401003FF0E9 /* libavformat-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 94DEBCDE0F647401003FF0E9 /* libavformat-osx.a */; };
+		94DEBCE40F647401003FF0E9 /* libavutil-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 94DEBCDF0F647401003FF0E9 /* libavutil-osx.a */; };
+		94DEBCE50F647401003FF0E9 /* libpostproc-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 94DEBCE00F647401003FF0E9 /* libpostproc-osx.a */; };
+		94DEBCE60F647401003FF0E9 /* libswscale-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 94DEBCE10F647401003FF0E9 /* libswscale-osx.a */; };
+		94DEBE2B0F64B949003FF0E9 /* libfaad.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 94DEBE2A0F64B949003FF0E9 /* libfaad.a */; };
 		E31312180EC647FB00629994 /* PlexRemoteHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E31312160EC647FB00629994 /* PlexRemoteHelper.cpp */; };
 		E31312190EC647FB00629994 /* PlexHelperApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E31312170EC647FB00629994 /* PlexHelperApp.cpp */; };
 		E313121E0EC64B7300629994 /* PlexMediaServerHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E313121C0EC64B7300629994 /* PlexMediaServerHelper.cpp */; };
@@ -191,7 +207,6 @@
 		E371C2960E2F2D5400FBF841 /* DVDAudioCodecFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15070D25F9F900618676 /* DVDAudioCodecFFmpeg.cpp */; };
 		E371C2970E2F2D5400FBF841 /* DVDAudioCodecLiba52.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15090D25F9F900618676 /* DVDAudioCodecLiba52.cpp */; };
 		E371C2980E2F2D5400FBF841 /* DVDAudioCodecLibDts.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E150B0D25F9F900618676 /* DVDAudioCodecLibDts.cpp */; };
-		E371C2990E2F2D5400FBF841 /* DVDAudioCodecLibFaad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E150D0D25F9F900618676 /* DVDAudioCodecLibFaad.cpp */; };
 		E371C29A0E2F2D5400FBF841 /* DVDAudioCodecLibMad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E150F0D25F9F900618676 /* DVDAudioCodecLibMad.cpp */; };
 		E371C29B0E2F2D5400FBF841 /* DVDAudioCodecLPcm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15110D25F9F900618676 /* DVDAudioCodecLPcm.cpp */; };
 		E371C29C0E2F2D5400FBF841 /* DVDAudioCodecPassthrough.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15130D25F9F900618676 /* DVDAudioCodecPassthrough.cpp */; };
@@ -825,9 +840,6 @@
 		E371C5170E2F2DF500FBF841 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E33466A50D2E5103005A65EC /* IOKit.framework */; };
 		E371C5180E2F2DF500FBF841 /* libaften_pcm.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E3B578950E0E3CDB002B3B3E /* libaften_pcm.a */; };
 		E371C5190E2F2DF500FBF841 /* libaften_static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E3B578960E0E3CDB002B3B3E /* libaften_static.a */; };
-		E371C51A0E2F2DF500FBF841 /* libavcodec-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E3FFF0040D46FD1D003D79C3 /* libavcodec-osx.a */; };
-		E371C51B0E2F2DF500FBF841 /* libavformat-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E3FFF02E0D470BD8003D79C3 /* libavformat-osx.a */; };
-		E371C51C0E2F2DF500FBF841 /* libavutil-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E3FFF0020D46FD1D003D79C3 /* libavutil-osx.a */; };
 		E371C51D0E2F2DF500FBF841 /* libbz2.1.0.4.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B1A921F30DF6D14F0024CC4F /* libbz2.1.0.4.dylib */; };
 		E371C51E0E2F2DF500FBF841 /* libcdio-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 88ECB6670DE01550003396A7 /* libcdio-osx.a */; };
 		E371C51F0E2F2DF500FBF841 /* libfontconfig.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 88ECB6E60DE07BA6003396A7 /* libfontconfig.a */; };
@@ -842,13 +854,11 @@
 		E371C5280E2F2DF500FBF841 /* libogg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 88ECB6E90DE07BEE003396A7 /* libogg.a */; };
 		E371C5290E2F2DF500FBF841 /* libpcre.0.0.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3BBB7A10D7EA8B200CAAFD3 /* libpcre.0.0.1.dylib */; };
 		E371C52A0E2F2DF500FBF841 /* libportaudio-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E38F12E70D2A178F0035C331 /* libportaudio-osx.a */; };
-		E371C52B0E2F2DF500FBF841 /* libpostproc-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E34486740D4DD18B0020377B /* libpostproc-osx.a */; };
 		E371C52C0E2F2DF500FBF841 /* librtv-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E256C0D263A1C00618676 /* librtv-osx.a */; };
 		E371C5300E2F2DF500FBF841 /* libShout-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E30B3E8E0D5D59290030A311 /* libShout-osx.a */; };
 		E371C5310E2F2DF500FBF841 /* libsmbclient.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3D547950D723EFD00F36320 /* libsmbclient.dylib */; };
 		E371C5320E2F2DF500FBF841 /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E33979920D62FC46004ECDDA /* libsqlite3.0.dylib */; };
 		E371C5330E2F2DF500FBF841 /* libstdc++.6.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E25410D2636F300618676 /* libstdc++.6.dylib */; };
-		E371C5340E2F2DF500FBF841 /* libswscale-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E34486730D4DD18B0020377B /* libswscale-osx.a */; };
 		E371C5350E2F2DF500FBF841 /* libvorbis.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3EB8F050D5D5C0300FFF489 /* libvorbis.dylib */; };
 		E371C5360E2F2DF500FBF841 /* libXBMS-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E38CB6B90DF7E5B2002B36E1 /* libXBMS-osx.a */; };
 		E371C5370E2F2DF500FBF841 /* libxdaap-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E25680D2639F100618676 /* libxdaap-osx.a */; };
@@ -868,6 +878,8 @@
 		E38AABC00E5D46AE00C1B750 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E38AABBF0E5D46AE00C1B750 /* libz.dylib */; };
 		E38AABC90E5D482900C1B750 /* CrashReporter in Copy CrashReporter */ = {isa = PBXBuildFile; fileRef = E38AAB430E5D438B00C1B750 /* CrashReporter */; };
 		E38AABCD0E5D489100C1B750 /* PlexHelper in Copy PlexHelper */ = {isa = PBXBuildFile; fileRef = E371CBF20E32927F00FBF841 /* PlexHelper */; };
+		E3A0E2E40FB195E1005CABFE /* PlexMediaServerScrobbler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3A0E2E30FB195E1005CABFE /* PlexMediaServerScrobbler.cpp */; };
+		E3A1DF910FB1A5C4007E6585 /* libboost_regex-mt.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E3A1DF900FB1A5C4007E6585 /* libboost_regex-mt.a */; };
 		E3AC01F50E39E0ED00DD298E /* libSDL-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E3AC01F40E39E0ED00DD298E /* libSDL-osx.a */; };
 		E3AC01F80E39E16B00DD298E /* libSDL_image-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E3AC01F60E39E16B00DD298E /* libSDL_image-osx.a */; };
 		E3AC01F90E39E16B00DD298E /* libSDL_mixer-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E3AC01F70E39E16B00DD298E /* libSDL_mixer-osx.a */; };
@@ -884,6 +896,7 @@
 		E3C1A65D0E7126F400CE0104 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3C1A65C0E7126F400CE0104 /* Sparkle.framework */; };
 		E3C1A6610E71275B00CE0104 /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = E3C1A65C0E7126F400CE0104 /* Sparkle.framework */; };
 		E3C1A6AA0E74E85C00CE0104 /* AsyncFileCopy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3C1A6A90E74E85C00CE0104 /* AsyncFileCopy.cpp */; };
+		E3C56E530F86011E0021BE13 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3C56E520F86011E0021BE13 /* AddressBook.framework */; };
 		E3F471BB0EAC481F004BB122 /* utf8tolatin1.c in Sources */ = {isa = PBXBuildFile; fileRef = E3F471B90EAC481F004BB122 /* utf8tolatin1.c */; };
 		E3F471BD0EAC4BBE004BB122 /* NptPosixFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3F471BC0EAC4BBE004BB122 /* NptPosixFile.cpp */; };
 		E3F471BF0EAC4BF9004BB122 /* NptStdcEnvironment.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3F471BE0EAC4BF9004BB122 /* NptStdcEnvironment.cpp */; };
@@ -968,6 +981,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				1A448EDA0F813112006E71B2 /* BWToolkitFramework.framework in CopyFiles */,
 				E3C1A6610E71275B00CE0104 /* Sparkle.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -990,6 +1004,14 @@
 		1A2C5DE30E7EF410002F23FA /* relaunch */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = relaunch; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A2C5DE80E7EF479002F23FA /* relaunch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = relaunch.m; sourceTree = "<group>"; };
 		1A2C5DEB0E7EF4BD002F23FA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		1A448E900F8059C1006E71B2 /* AdvancedSettingsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AdvancedSettingsController.h; sourceTree = "<group>"; };
+		1A448E910F8059C1006E71B2 /* AdvancedSettingsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AdvancedSettingsController.m; sourceTree = "<group>"; };
+		1A448EB50F8066BB006E71B2 /* Library.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = Library.icns; path = guiresources/Library.icns; sourceTree = "<group>"; };
+		1A448EB60F8066BB006E71B2 /* Movies.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = Movies.icns; path = guiresources/Movies.icns; sourceTree = "<group>"; };
+		1A448EB70F8066BB006E71B2 /* Music.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = Music.icns; path = guiresources/Music.icns; sourceTree = "<group>"; };
+		1A448EB80F8066BB006E71B2 /* System.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = System.icns; path = guiresources/System.icns; sourceTree = "<group>"; };
+		1A448EBD0F806887006E71B2 /* RSS.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = RSS.png; path = guiresources/RSS.png; sourceTree = "<group>"; };
+		1A448ED90F813112006E71B2 /* BWToolkitFramework.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = BWToolkitFramework.framework; sourceTree = "<group>"; };
 		1A53C1190EAC0020009A10F3 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = /System/Library/Frameworks/SystemConfiguration.framework; sourceTree = "<absolute>"; };
 		1A53C7400EB00A52009A10F3 /* frontrowlauncher */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = frontrowlauncher; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A53C7480EB00AD1009A10F3 /* frontrowlauncher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = frontrowlauncher.m; sourceTree = "<group>"; };
@@ -1002,6 +1024,8 @@
 		1A5535E40E86B02F005AF349 /* ModelsWithBattery.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = ModelsWithBattery.plist; path = plex/ModelsWithBattery.plist; sourceTree = "<group>"; };
 		1A55362E0E86CCD4005AF349 /* GUIDialogUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogUtils.h; sourceTree = "<group>"; };
 		1A55362F0E86CCD4005AF349 /* GUIDialogUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogUtils.cpp; sourceTree = "<group>"; };
+		1A57382D0F8EC940001943A9 /* GUIWindowNowPlaying.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowNowPlaying.h; sourceTree = "<group>"; };
+		1A57382E0F8EC940001943A9 /* GUIWindowNowPlaying.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowNowPlaying.cpp; sourceTree = "<group>"; };
 		1A6927F90EAAB06100A01B8A /* SUPlexBackgroundUpdateDialogDriver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUPlexBackgroundUpdateDialogDriver.h; sourceTree = "<group>"; };
 		1A6927FA0EAAB06100A01B8A /* SUPlexBackgroundUpdateDialogDriver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SUPlexBackgroundUpdateDialogDriver.m; sourceTree = "<group>"; };
 		1AA456B20E7EA2E7004CC8D2 /* SUConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUConstants.h; sourceTree = "<group>"; };
@@ -1092,6 +1116,8 @@
 		9409C1EB0E01D696001626C3 /* aften.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = aften.h; path = ../../lib/libaften/aften.h; sourceTree = "<group>"; };
 		943BC2860ED3F1E500B7CB45 /* CoreAudioRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreAudioRenderer.h; sourceTree = "<group>"; };
 		943BC2870ED3F1E500B7CB45 /* CoreAudioRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CoreAudioRenderer.cpp; sourceTree = "<group>"; };
+		949384610F591AE6004DFC17 /* FileEyeTVSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileEyeTVSocket.h; sourceTree = "<group>"; };
+		949384620F591AE6004DFC17 /* FileEyeTVSocket.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FileEyeTVSocket.mm; sourceTree = "<group>"; };
 		94B185280EB48264008C38FA /* CoreAudioAUHAL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CoreAudioAUHAL.cpp; sourceTree = "<group>"; };
 		94B185290EB48264008C38FA /* CoreAudioAUHAL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreAudioAUHAL.h; sourceTree = "<group>"; };
 		94B1852A0EB48264008C38FA /* CoreAudioPlexSupport.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CoreAudioPlexSupport.cpp; sourceTree = "<group>"; };
@@ -1099,6 +1125,12 @@
 		94B185510EB48568008C38FA /* pa_memorybarrier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pa_memorybarrier.h; path = AC3Encoder/pa_memorybarrier.h; sourceTree = "<group>"; };
 		94B185520EB48568008C38FA /* pa_ringbuffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pa_ringbuffer.c; path = AC3Encoder/pa_ringbuffer.c; sourceTree = "<group>"; };
 		94B185530EB48568008C38FA /* pa_ringbuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pa_ringbuffer.h; path = AC3Encoder/pa_ringbuffer.h; sourceTree = "<group>"; };
+		94DEBCDD0F647401003FF0E9 /* libavcodec-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libavcodec-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libavcodec-osx.a"; sourceTree = "<group>"; };
+		94DEBCDE0F647401003FF0E9 /* libavformat-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libavformat-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libavformat-osx.a"; sourceTree = "<group>"; };
+		94DEBCDF0F647401003FF0E9 /* libavutil-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libavutil-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libavutil-osx.a"; sourceTree = "<group>"; };
+		94DEBCE00F647401003FF0E9 /* libpostproc-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libpostproc-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libpostproc-osx.a"; sourceTree = "<group>"; };
+		94DEBCE10F647401003FF0E9 /* libswscale-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libswscale-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libswscale-osx.a"; sourceTree = "<group>"; };
+		94DEBE2A0F64B949003FF0E9 /* libfaad.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfaad.a; path = xbmc/lib/libfaad2/libfaad.a; sourceTree = "<group>"; };
 		B1A921F30DF6D14F0024CC4F /* libbz2.1.0.4.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libbz2.1.0.4.dylib; path = /opt/local/lib/libbz2.1.0.4.dylib; sourceTree = "<absolute>"; };
 		E30B3E8E0D5D59290030A311 /* libShout-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libShout-osx.a"; path = "xbmc/lib/libshout/libShout-osx.a"; sourceTree = "<group>"; };
 		E31312160EC647FB00629994 /* PlexRemoteHelper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PlexRemoteHelper.cpp; sourceTree = "<group>"; };
@@ -1126,8 +1158,6 @@
 		E33979920D62FC46004ECDDA /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = /usr/lib/libsqlite3.0.dylib; sourceTree = "<absolute>"; };
 		E33979940D62FD47004ECDDA /* DVDInputStreamTV.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDInputStreamTV.cpp; sourceTree = "<group>"; };
 		E33979950D62FD47004ECDDA /* DVDInputStreamTV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDInputStreamTV.h; sourceTree = "<group>"; };
-		E34486730D4DD18B0020377B /* libswscale-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libswscale-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libswscale-osx.a"; sourceTree = "<group>"; };
-		E34486740D4DD18B0020377B /* libpostproc-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libpostproc-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libpostproc-osx.a"; sourceTree = "<group>"; };
 		E354EF030D99EDC900B55311 /* controlradiobutton.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = controlradiobutton.cpp; sourceTree = "<group>"; };
 		E35EF2540D380C3D00DB5CD5 /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
 		E35EF3230D380E1E00DB5CD5 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
@@ -1479,8 +1509,6 @@
 		E38E150A0D25F9F900618676 /* DVDAudioCodecLiba52.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDAudioCodecLiba52.h; sourceTree = "<group>"; };
 		E38E150B0D25F9F900618676 /* DVDAudioCodecLibDts.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDAudioCodecLibDts.cpp; sourceTree = "<group>"; };
 		E38E150C0D25F9F900618676 /* DVDAudioCodecLibDts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDAudioCodecLibDts.h; sourceTree = "<group>"; };
-		E38E150D0D25F9F900618676 /* DVDAudioCodecLibFaad.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDAudioCodecLibFaad.cpp; sourceTree = "<group>"; };
-		E38E150E0D25F9F900618676 /* DVDAudioCodecLibFaad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDAudioCodecLibFaad.h; sourceTree = "<group>"; };
 		E38E150F0D25F9F900618676 /* DVDAudioCodecLibMad.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDAudioCodecLibMad.cpp; sourceTree = "<group>"; };
 		E38E15100D25F9F900618676 /* DVDAudioCodecLibMad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDAudioCodecLibMad.h; sourceTree = "<group>"; };
 		E38E15110D25F9F900618676 /* DVDAudioCodecLPcm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDAudioCodecLPcm.cpp; sourceTree = "<group>"; };
@@ -3016,6 +3044,8 @@
 		E38F12C10D29FF200035C331 /* FileShoutcast.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileShoutcast.cpp; sourceTree = "<group>"; };
 		E38F12E70D2A178F0035C331 /* libportaudio-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libportaudio-osx.a"; path = "xbmc/lib/libportaudio/libportaudio-osx.a"; sourceTree = "<group>"; };
 		E38F12E90D2A17B30035C331 /* libGoAhead-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libGoAhead-osx.a"; path = "xbmc/lib/libGoAhead/libGoAhead-osx.a"; sourceTree = "<group>"; };
+		E3A0E2E30FB195E1005CABFE /* PlexMediaServerScrobbler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PlexMediaServerScrobbler.cpp; sourceTree = "<group>"; };
+		E3A1DF900FB1A5C4007E6585 /* libboost_regex-mt.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_regex-mt.a"; path = "../../../../../../opt/local/lib/libboost_regex-mt.a"; sourceTree = SOURCE_ROOT; };
 		E3A478090D29029A00F3C3A6 /* dlgcache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dlgcache.cpp; sourceTree = "<group>"; };
 		E3A478150D29030100F3C3A6 /* GUIMultiSelectText.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIMultiSelectText.cpp; sourceTree = "<group>"; };
 		E3A478190D29032C00F3C3A6 /* GUIDialogAccessPoints.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogAccessPoints.cpp; sourceTree = "<group>"; };
@@ -3052,6 +3082,7 @@
 		E3C1A65C0E7126F400CE0104 /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Sparkle.framework; path = plex/Frameworks/Sparkle.framework; sourceTree = "<group>"; };
 		E3C1A6A80E74E85C00CE0104 /* AsyncFileCopy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AsyncFileCopy.h; sourceTree = "<group>"; };
 		E3C1A6A90E74E85C00CE0104 /* AsyncFileCopy.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AsyncFileCopy.cpp; sourceTree = "<group>"; };
+		E3C56E520F86011E0021BE13 /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
 		E3D4B9950DF7E39B0092A179 /* FileShoutcast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileShoutcast.h; sourceTree = "<group>"; };
 		E3D4B9960DF7E39B0092A179 /* FileXBMSP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileXBMSP.cpp; sourceTree = "<group>"; };
 		E3D4B9970DF7E39B0092A179 /* FileXBMSP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileXBMSP.h; sourceTree = "<group>"; };
@@ -3081,9 +3112,6 @@
 		E3FD41920EF459C100C6172C /* PlayListURL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayListURL.h; sourceTree = "<group>"; };
 		E3FD41930EF459C100C6172C /* PlayListURL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PlayListURL.cpp; sourceTree = "<group>"; };
 		E3FD41A50EF46E4100C6172C /* NptWin32Debug.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptWin32Debug.cpp; sourceTree = "<group>"; };
-		E3FFF0020D46FD1D003D79C3 /* libavutil-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libavutil-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libavutil-osx.a"; sourceTree = "<group>"; };
-		E3FFF0040D46FD1D003D79C3 /* libavcodec-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libavcodec-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libavcodec-osx.a"; sourceTree = "<group>"; };
-		E3FFF02E0D470BD8003D79C3 /* libavformat-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libavformat-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libavformat-osx.a"; sourceTree = "<group>"; };
 		EF5D57790EB4833200B16174 /* CocoaUtilsPlus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CocoaUtilsPlus.h; sourceTree = "<group>"; };
 		EF5D577A0EB4833200B16174 /* CocoaUtilsPlus.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CocoaUtilsPlus.mm; sourceTree = "<group>"; };
 		EFF082090E106C00004114E6 /* SmartCrashReportsAPI.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; name = SmartCrashReportsAPI.o; path = xbmc/lib/libSmartCrashReports/SmartCrashReportsAPI.o; sourceTree = "<group>"; };
@@ -3113,6 +3141,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1A448F130F813714006E71B2 /* BWToolkitFramework.framework in Frameworks */,
 				E371C50C0E2F2DF500FBF841 /* AppKit.framework in Frameworks */,
 				E371C50D0E2F2DF500FBF841 /* ApplicationServices.framework in Frameworks */,
 				E371C50E0E2F2DF500FBF841 /* AudioToolbox.framework in Frameworks */,
@@ -3127,9 +3156,6 @@
 				E371C5170E2F2DF500FBF841 /* IOKit.framework in Frameworks */,
 				E371C5180E2F2DF500FBF841 /* libaften_pcm.a in Frameworks */,
 				E371C5190E2F2DF500FBF841 /* libaften_static.a in Frameworks */,
-				E371C51A0E2F2DF500FBF841 /* libavcodec-osx.a in Frameworks */,
-				E371C51B0E2F2DF500FBF841 /* libavformat-osx.a in Frameworks */,
-				E371C51C0E2F2DF500FBF841 /* libavutil-osx.a in Frameworks */,
 				E371C51D0E2F2DF500FBF841 /* libbz2.1.0.4.dylib in Frameworks */,
 				E371C51E0E2F2DF500FBF841 /* libcdio-osx.a in Frameworks */,
 				E371C51F0E2F2DF500FBF841 /* libfontconfig.a in Frameworks */,
@@ -3144,13 +3170,11 @@
 				E371C5280E2F2DF500FBF841 /* libogg.a in Frameworks */,
 				E371C5290E2F2DF500FBF841 /* libpcre.0.0.1.dylib in Frameworks */,
 				E371C52A0E2F2DF500FBF841 /* libportaudio-osx.a in Frameworks */,
-				E371C52B0E2F2DF500FBF841 /* libpostproc-osx.a in Frameworks */,
 				E371C52C0E2F2DF500FBF841 /* librtv-osx.a in Frameworks */,
 				E371C5300E2F2DF500FBF841 /* libShout-osx.a in Frameworks */,
 				E371C5310E2F2DF500FBF841 /* libsmbclient.dylib in Frameworks */,
 				E371C5320E2F2DF500FBF841 /* libsqlite3.0.dylib in Frameworks */,
 				E371C5330E2F2DF500FBF841 /* libstdc++.6.dylib in Frameworks */,
-				E371C5340E2F2DF500FBF841 /* libswscale-osx.a in Frameworks */,
 				E371C5350E2F2DF500FBF841 /* libvorbis.dylib in Frameworks */,
 				E371C5360E2F2DF500FBF841 /* libXBMS-osx.a in Frameworks */,
 				E371C5370E2F2DF500FBF841 /* libxdaap-osx.a in Frameworks */,
@@ -3167,6 +3191,14 @@
 				E3ADDD140EAA68DC003921C8 /* QTKit.framework in Frameworks */,
 				1AA456B70E7EA3DD004CC8D2 /* Security.framework in Frameworks */,
 				1A53C11A0EAC0020009A10F3 /* SystemConfiguration.framework in Frameworks */,
+				94DEBCE20F647401003FF0E9 /* libavcodec-osx.a in Frameworks */,
+				94DEBCE30F647401003FF0E9 /* libavformat-osx.a in Frameworks */,
+				94DEBCE40F647401003FF0E9 /* libavutil-osx.a in Frameworks */,
+				94DEBCE50F647401003FF0E9 /* libpostproc-osx.a in Frameworks */,
+				94DEBCE60F647401003FF0E9 /* libswscale-osx.a in Frameworks */,
+				94DEBE2B0F64B949003FF0E9 /* libfaad.a in Frameworks */,
+				E3C56E530F86011E0021BE13 /* AddressBook.framework in Frameworks */,
+				E3A1DF910FB1A5C4007E6585 /* libboost_regex-mt.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3205,17 +3237,14 @@
 				E371CC190E33473A00FBF841 /* AppleRemote.cpp */,
 				E371CBB00E3044D900FBF841 /* Plex.icns */,
 				08FB7795FE84155DC02AAC07 /* Source */,
+				1A448EAB0F8066A5006E71B2 /* GUI Resources */,
 				C6859E96029091FE04C91782 /* Documentation */,
 				08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */,
 				19C28FBDFE9D53C911CA2CBB /* Products */,
 				E371C1160E2F130900FBF841 /* Plex.xib */,
 				E371C1E10E2F2AC300FBF841 /* Plex-Info.plist */,
-				E38AAB580E5D444500C1B750 /* Carbon.framework */,
-				E38AABBF0E5D46AE00C1B750 /* libz.dylib */,
-				E3ADDD130EAA68DC003921C8 /* QTKit.framework */,
 				1A5535E40E86B02F005AF349 /* ModelsWithBattery.plist */,
 				1AF6A79B0E994BFB00D96BD7 /* ModelNames.plist */,
-				1A2C5DEB0E7EF4BD002F23FA /* AppKit.framework */,
 			);
 			name = XBMC;
 			sourceTree = "<group>";
@@ -3233,6 +3262,18 @@
 		08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				E3A1DF900FB1A5C4007E6585 /* libboost_regex-mt.a */,
+				E38AAB580E5D444500C1B750 /* Carbon.framework */,
+				E38AABBF0E5D46AE00C1B750 /* libz.dylib */,
+				E3ADDD130EAA68DC003921C8 /* QTKit.framework */,
+				1A2C5DEB0E7EF4BD002F23FA /* AppKit.framework */,
+				E3C56E520F86011E0021BE13 /* AddressBook.framework */,
+				1A448ED90F813112006E71B2 /* BWToolkitFramework.framework */,
+				94DEBCDD0F647401003FF0E9 /* libavcodec-osx.a */,
+				94DEBCDE0F647401003FF0E9 /* libavformat-osx.a */,
+				94DEBCDF0F647401003FF0E9 /* libavutil-osx.a */,
+				94DEBCE00F647401003FF0E9 /* libpostproc-osx.a */,
+				94DEBCE10F647401003FF0E9 /* libswscale-osx.a */,
 				1A53C1190EAC0020009A10F3 /* SystemConfiguration.framework */,
 				1AA456B60E7EA3DD004CC8D2 /* Security.framework */,
 				E336F09B0E62D1FD00270758 /* libmms-osx.a */,
@@ -3258,11 +3299,6 @@
 				E3EB8F030D5D5C0300FFF489 /* libmad.0.2.1.dylib */,
 				E3EB8F050D5D5C0300FFF489 /* libvorbis.dylib */,
 				E30B3E8E0D5D59290030A311 /* libShout-osx.a */,
-				E34486730D4DD18B0020377B /* libswscale-osx.a */,
-				E34486740D4DD18B0020377B /* libpostproc-osx.a */,
-				E3FFF02E0D470BD8003D79C3 /* libavformat-osx.a */,
-				E3FFF0020D46FD1D003D79C3 /* libavutil-osx.a */,
-				E3FFF0040D46FD1D003D79C3 /* libavcodec-osx.a */,
 				E35EF3230D380E1E00DB5CD5 /* Carbon.framework */,
 				E35EF2540D380C3D00DB5CD5 /* QuickTime.framework */,
 				E33466A50D2E5103005A65EC /* IOKit.framework */,
@@ -3279,6 +3315,7 @@
 				E38E24260D26317D00618676 /* libiconv.dylib */,
 				E38E24270D26317D00618676 /* liblzo.dylib */,
 				E38E24290D26317D00618676 /* libz.dylib */,
+				94DEBE2A0F64B949003FF0E9 /* libfaad.a */,
 				E38E238B0D2626E600618676 /* AudioToolbox.framework */,
 				E38E238C0D2626E600618676 /* AudioUnit.framework */,
 				E38E238D0D2626E600618676 /* Cocoa.framework */,
@@ -3328,6 +3365,18 @@
 				1A01F0FE0E7D37AA00DC186E /* SUUpdateDriver.h */,
 			);
 			name = Sparkle;
+			sourceTree = "<group>";
+		};
+		1A448EAB0F8066A5006E71B2 /* GUI Resources */ = {
+			isa = PBXGroup;
+			children = (
+				1A448EB50F8066BB006E71B2 /* Library.icns */,
+				1A448EB60F8066BB006E71B2 /* Movies.icns */,
+				1A448EB70F8066BB006E71B2 /* Music.icns */,
+				1A448EB80F8066BB006E71B2 /* System.icns */,
+				1A448EBD0F806887006E71B2 /* RSS.png */,
+			);
+			name = "GUI Resources";
 			sourceTree = "<group>";
 		};
 		1AA457080E7EBD50004CC8D2 /* Headers */ = {
@@ -3473,6 +3522,8 @@
 				1A5484540E79EA340025CA32 /* BackgroundMusicPlayer.mm */,
 				EF5D57790EB4833200B16174 /* CocoaUtilsPlus.h */,
 				EF5D577A0EB4833200B16174 /* CocoaUtilsPlus.mm */,
+				1A448E900F8059C1006E71B2 /* AdvancedSettingsController.h */,
+				1A448E910F8059C1006E71B2 /* AdvancedSettingsController.m */,
 			);
 			path = osx;
 			sourceTree = "<group>";
@@ -3731,11 +3782,14 @@
 		E38E14610D25F9F900618676 /* xbmc */ = {
 			isa = PBXGroup;
 			children = (
+				E3A0E2E30FB195E1005CABFE /* PlexMediaServerScrobbler.cpp */,
 				E3FD41920EF459C100C6172C /* PlayListURL.h */,
 				E3FD41930EF459C100C6172C /* PlayListURL.cpp */,
 				E37D5CB40D3023BB0081D327 /* osx */,
 				E336EF4A0E602A8B00270758 /* GUIDialogFullScreenInfo.cpp */,
 				E336EF4B0E602A8B00270758 /* GUIDialogFullScreenInfo.h */,
+				1A57382D0F8EC940001943A9 /* GUIWindowNowPlaying.h */,
+				1A57382E0F8EC940001943A9 /* GUIWindowNowPlaying.cpp */,
 				E336EF000E60250700270758 /* GUIViewStatePictures.cpp */,
 				E336EF010E60250700270758 /* GUIViewStatePictures.h */,
 				E336EF020E60250700270758 /* GUIViewStatePrograms.cpp */,
@@ -4384,8 +4438,6 @@
 				E38E150A0D25F9F900618676 /* DVDAudioCodecLiba52.h */,
 				E38E150B0D25F9F900618676 /* DVDAudioCodecLibDts.cpp */,
 				E38E150C0D25F9F900618676 /* DVDAudioCodecLibDts.h */,
-				E38E150D0D25F9F900618676 /* DVDAudioCodecLibFaad.cpp */,
-				E38E150E0D25F9F900618676 /* DVDAudioCodecLibFaad.h */,
 				E38E150F0D25F9F900618676 /* DVDAudioCodecLibMad.cpp */,
 				E38E15100D25F9F900618676 /* DVDAudioCodecLibMad.h */,
 				E38E15110D25F9F900618676 /* DVDAudioCodecLPcm.cpp */,
@@ -4793,6 +4845,8 @@
 		E38E16940D25F9FA00618676 /* FileSystem */ = {
 			isa = PBXGroup;
 			children = (
+				949384610F591AE6004DFC17 /* FileEyeTVSocket.h */,
+				949384620F591AE6004DFC17 /* FileEyeTVSocket.mm */,
 				E3FD28780E9951B500EE77C3 /* FilePlex.cpp */,
 				E3FD28790E9951B500EE77C3 /* FilePlex.h */,
 				E3FD287A0E9951B500EE77C3 /* PlexDirectory.cpp */,
@@ -6598,6 +6652,11 @@
 				1A5535E50E86B02F005AF349 /* ModelsWithBattery.plist in Resources */,
 				1AF6A79C0E994BFB00D96BD7 /* ModelNames.plist in Resources */,
 				1A01F0530E7D2F3400DC186E /* plex in Resources */,
+				1A448EB90F8066BB006E71B2 /* Library.icns in Resources */,
+				1A448EBA0F8066BB006E71B2 /* Movies.icns in Resources */,
+				1A448EBB0F8066BB006E71B2 /* Music.icns in Resources */,
+				1A448EBC0F8066BB006E71B2 /* System.icns in Resources */,
+				1A448EBE0F806887006E71B2 /* RSS.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6792,7 +6851,6 @@
 				E371C2960E2F2D5400FBF841 /* DVDAudioCodecFFmpeg.cpp in Sources */,
 				E371C2970E2F2D5400FBF841 /* DVDAudioCodecLiba52.cpp in Sources */,
 				E371C2980E2F2D5400FBF841 /* DVDAudioCodecLibDts.cpp in Sources */,
-				E371C2990E2F2D5400FBF841 /* DVDAudioCodecLibFaad.cpp in Sources */,
 				E371C29A0E2F2D5400FBF841 /* DVDAudioCodecLibMad.cpp in Sources */,
 				E371C29B0E2F2D5400FBF841 /* DVDAudioCodecLPcm.cpp in Sources */,
 				E371C29C0E2F2D5400FBF841 /* DVDAudioCodecPassthrough.cpp in Sources */,
@@ -7453,6 +7511,10 @@
 				E3AF20810F0C4DF600C5259C /* PlexMediaServerPlayer.cpp in Sources */,
 				E3F766080F346CC300667633 /* md5.cpp in Sources */,
 				E3F766230F3471D300667633 /* DVDInputStreamStack.cpp in Sources */,
+				949384630F591AE6004DFC17 /* FileEyeTVSocket.mm in Sources */,
+				1A448E920F8059C1006E71B2 /* AdvancedSettingsController.m in Sources */,
+				1A57382F0F8EC940001943A9 /* GUIWindowNowPlaying.cpp in Sources */,
+				E3A0E2E40FB195E1005CABFE /* PlexMediaServerScrobbler.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7577,7 +7639,7 @@
 		1DEB924C08733DCA0010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APPLICATION_VERSION = 0.5.18;
+				APPLICATION_VERSION = 0.7.13.5;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					_DEBUG,
 					_LINUX,
@@ -7615,7 +7677,7 @@
 		1DEB924D08733DCA0010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APPLICATION_VERSION = "0.5-RC2";
+				APPLICATION_VERSION = 0.7.13.5;
 				ARCHS = i386;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					_DEBUG,
@@ -7654,12 +7716,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				APPLICATION_VERSION = 0.7.13;
+				APPLICATION_VERSION = 0.8.0;
 				CODE_SIGN_IDENTITY = "";
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/plex/Frameworks\"",
+					"\"$(SRCROOT)\"",
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
@@ -7701,6 +7764,7 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/xbmc/lib/libfaad2\"",
 					"\"$(SRCROOT)/guilib/freetype2\"",
 					"\"$(SRCROOT)/xbmc/lib/filezilla\"",
 					"\"$(SRCROOT)/xbmc/lib/libcdio\"",
@@ -7736,6 +7800,7 @@
 					"\"$(SRCROOT)/xbmc/lib/libSDL-OSX\"",
 					"\"$(SRCROOT)/../../../../../../opt/local/lib\"",
 					"\"$(SRCROOT)/xbmc/lib/libmms\"",
+					"\"$(SRCROOT)/../xbmc-sources-fork/dvdplayer/libfaad2/libfaad/.libs\"",
 				);
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-header-pad_max_install_names";
@@ -7749,13 +7814,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				APPLICATION_VERSION = 0.7.13;
+				APPLICATION_VERSION = 0.8.0;
 				CODE_SIGN_IDENTITY = Plex;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/plex/Frameworks\"",
+					"\"$(SRCROOT)\"",
 				);
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
@@ -7795,6 +7861,7 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/xbmc/lib/libfaad2\"",
 					"\"$(SRCROOT)/guilib/freetype2\"",
 					"\"$(SRCROOT)/xbmc/lib/filezilla\"",
 					"\"$(SRCROOT)/xbmc/lib/libcdio\"",
@@ -7830,6 +7897,7 @@
 					"\"$(SRCROOT)/xbmc/lib/libSDL-OSX\"",
 					"\"$(SRCROOT)/../../../../../../opt/local/lib\"",
 					"\"$(SRCROOT)/xbmc/lib/libmms\"",
+					"\"$(SRCROOT)/../xbmc-sources-fork/dvdplayer/libfaad2/libfaad/.libs\"",
 				);
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (

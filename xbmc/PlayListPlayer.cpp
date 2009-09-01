@@ -46,6 +46,8 @@ CPlayListPlayer::CPlayListPlayer(void)
     m_repeatState[i] = REPEAT_NONE;
   m_iFailedSongs = 0;
   m_failedSongsStart = 0;
+  m_bPreviousMusicShuffle = false;
+  m_bTemporaryShuffle = false;
 }
 
 CPlayListPlayer::~CPlayListPlayer(void)
@@ -369,6 +371,12 @@ void CPlayListPlayer::ClearPlaylist(int iPlaylist)
   // its likely that the playlist changed
   CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
   m_gWindowManager.SendMessage(msg);
+  
+  if (m_bTemporaryShuffle && (iPlaylist == PLAYLIST_MUSIC))
+  {
+    Reset();
+    SetShuffle(PLAYLIST_MUSIC, m_bPreviousMusicShuffle, false);
+  }
 }
 
 /// \brief Get the playlist object specified in \e nPlayList
@@ -458,7 +466,7 @@ bool CPlayListPlayer::RepeatedOne(int iPlaylist) const
 
 /// \brief Shuffle play the current playlist
 /// \param bYesNo To Enable shuffle play, set to \e true
-void CPlayListPlayer::SetShuffle(int iPlaylist, bool bYesNo)
+void CPlayListPlayer::SetShuffle(int iPlaylist, bool bYesNo, bool bTemporary)
 {
   if (iPlaylist < PLAYLIST_MUSIC || iPlaylist > PLAYLIST_VIDEO)
     return;
@@ -467,6 +475,14 @@ void CPlayListPlayer::SetShuffle(int iPlaylist, bool bYesNo)
   if (g_partyModeManager.IsEnabled() && iPlaylist == PLAYLIST_MUSIC)
     return;
 
+  
+  if (iPlaylist == PLAYLIST_MUSIC)
+  {
+    m_bTemporaryShuffle = bTemporary;
+    if (bTemporary)
+      m_bPreviousMusicShuffle = IsShuffled(PLAYLIST_MUSIC);
+  }
+  
   // do we even need to do anything?
   if (bYesNo != IsShuffled(iPlaylist))
   {
@@ -591,6 +607,8 @@ void CPlayListPlayer::Clear()
   if (m_PlaylistMusic)
   {
     m_PlaylistMusic->Clear();
+    if (m_bTemporaryShuffle)
+      SetShuffle(PLAYLIST_MUSIC, m_bPreviousMusicShuffle, false);
   }
   if (m_PlaylistVideo)
   {

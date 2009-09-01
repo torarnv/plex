@@ -1,10 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Language file translated with Team XBMC Translator-->
-<!--Translator: smuto-->
-<!--Email: smuto.promyk@gmail.com-->
-<!--Date of translation: 09/19/2008-->
-<!--$Revision$-->
-<!--Based on english strings version 15536-->
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
   <string id="0">Programy</string>
   <string id="1">Zdjęcia</string>
@@ -383,7 +377,7 @@
   <string id="479">Skóry i język</string>
   <string id="480">Interfejs</string>
   <string id="481">Opcje dźwięku</string>
-  <string id="482">O XBMC...</string>
+  <string id="482">O Plex...</string>
   <string id="485">Kasuj Album</string>
   <string id="486">Powtarzaj</string>
   <string id="487">Powtórz raz</string>
@@ -617,7 +611,7 @@
   <string id="797">Maksymalna liczba klientów</string>
   <string id="1000">Podgląd wygaszacza</string>
   <string id="1001">Nie można połączyć</string>
-  <string id="1002">XBMC nie mógł nawiązać połączenia sieciowego.</string>
+  <string id="1002">Plex nie mógł nawiązać połączenia sieciowego.</string>
   <string id="1003">Może to być spowodowane brakiem dostępu do sieci.</string>
   <string id="1004">Czy chcesz mimo to kontynuować?</string>
   <string id="1006">Adres IP</string>
@@ -964,7 +958,7 @@ naciśnij  Back, aby anulować</string>
   <string id="13306">Ukryj symbol folderu nadrzędnego (..)</string>
   <string id="13307">Szablon wyświetlania nazwy</string>
   <string id="13308">Czy chcesz wykonać restart systemu</string>
-  <string id="13309">zamiast ponownego uruchomienia XBMC?</string>
+  <string id="13309">zamiast ponownego uruchomienia Plex?</string>
   <string id="13310">Efekt powiększenia</string>
   <string id="13311">Efekt unoszenia</string>
   <string id="13312">Redukcja czarnego paska</string>
@@ -1099,7 +1093,7 @@ dla tej wizualizacji</string>
   <string id="14037">Wygląd</string>
   <string id="14038">Zmieniono ustawienia sieci</string>
   <string id="14039">Wprowadzone zmiany wymagają ponownego uruchomienia.</string>
-  <string id="14040">Chcesz teraz ponownie uruchomić XBMC?</string>
+  <string id="14040">Chcesz teraz ponownie uruchomić Plex?</string>
   <string id="14041">Przetwarzanie</string>
   <string id="14043">- Wyłącz w trakcie odtwarzania</string>
   <string id="14044">%i min</string>
@@ -1158,7 +1152,7 @@ dla tej wizualizacji</string>
   <string id="15202">Użytkownik</string>
   <string id="15203">Hasło</string>
   <string id="15204">Stan czuwania...</string>
-  <string id="15205">Proszę uaktualnić XBMC</string>
+  <string id="15205">Proszę uaktualnić Plex</string>
   <string id="15206">Błąd autoryzacji: sprawdź użytkownika i hasło</string>
   <string id="15207">Połączony</string>
   <string id="15208">Niepołączony</string>
@@ -1286,7 +1280,7 @@ dla tej wizualizacji</string>
   <string id="20006">Katalog z listami odtwarzania</string>
   <string id="20007">Nagrania</string>
   <string id="20008">Zrzuty ekranu</string>
-  <string id="20009">Użyj XBMC</string>
+  <string id="20009">Użyj Plex</string>
   <string id="20011">Playlisty - Muzyka</string>
   <string id="20012">Playlisty - Wideo</string>
   <string id="20013">Uruchomić grę?</string>
@@ -1465,7 +1459,7 @@ dla tej wizualizacji</string>
   <string id="20250">Party on! (wideo)</string>
   <string id="20251">Mixing drinks (wideo)</string>
   <string id="20252">Filling glasses (wideo)</string>
-  <string id="20306">Nieznany. Dodaj MD5 z loga xbmc do pliku BiosIDs</string>
+  <string id="20306">Nieznany. Dodaj MD5 z loga Plex do pliku BiosIDs</string>
   <string id="20307">Dodatkowe DNS</string>
   <string id="20308">Serwer DHCP</string>
   <string id="20309">Nowy folder</string>
@@ -1627,7 +1621,7 @@ dla tej wizualizacji</string>
   <string id="21392">niskie zużycie</string>
   <string id="21393">działanie natychmiastowe</string>
   <string id="21394">działanie z opóźnieniem</string>
-  <string id="21395">Pliki większe niż 4 gb  - xbmc ma problem z pamięcią podręczną</string>
+  <string id="21395">Pliki większe niż 4 gb  - Plex ma problem z pamięcią podręczną</string>
   <string id="21396">Rozdział</string>
   <string id="21397">High Quality Pixel Shader V2</string>
   <string id="21398">Odtwarzaj playlistę na starcie</string>

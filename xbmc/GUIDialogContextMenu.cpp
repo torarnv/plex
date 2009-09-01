@@ -111,15 +111,21 @@ int CGUIDialogContextMenu::AddButton(int iLabel)
   return AddButton(g_localizeStrings.Get(iLabel));
 }
 
-void CGUIDialogContextMenu::SetPosition(float posX, float posY)
+void CGUIDialogContextMenu::SetPosition(float posX, float posY, bool center)
 {
-  if (posY + GetHeight() > g_settings.m_ResInfo[m_coordsRes].iHeight)
-    posY = g_settings.m_ResInfo[m_coordsRes].iHeight - GetHeight();
-  if (posY < 0) posY = 0;
-  if (posX + GetWidth() > g_settings.m_ResInfo[m_coordsRes].iWidth)
-    posX = g_settings.m_ResInfo[m_coordsRes].iWidth - GetWidth();
-  if (posX < 0) posX = 0;
-  CGUIDialog::SetPosition(posX, posY);
+  if (center)
+    CenterWindow();
+  else
+  {
+    if (posY + GetHeight() > g_settings.m_ResInfo[m_coordsRes].iHeight)
+      posY = g_settings.m_ResInfo[m_coordsRes].iHeight - GetHeight();
+    if (posY < 0) posY = 0;
+    if (posX + GetWidth() > g_settings.m_ResInfo[m_coordsRes].iWidth)
+      posX = g_settings.m_ResInfo[m_coordsRes].iWidth - GetWidth();
+    if (posX < 0) posX = 0;
+    
+    CGUIDialog::SetPosition(posX, posY);
+  }
 }
 
 int CGUIDialogContextMenu::AddButton(const CStdString &strLabel)
@@ -259,13 +265,15 @@ void CGUIDialogContextMenu::GetContextButtons(const CStdString &type, CMediaSour
       // Don't allow certain actions for OS X app or workflow bundles added as sources
       BOOL isAppBundle = false;
 			BOOL isWorkflow = false;
+      BOOL isPlexMediaServer = false;
       if (share->vecPaths.size() > 0)
-			{
+      {
         isAppBundle = Cocoa_IsAppBundle(share->vecPaths[0].c_str());
-				isWorkflow = Cocoa_IsWflowBundle(share->vecPaths[0].c_str());
-			}
+        isWorkflow = Cocoa_IsWflowBundle(share->vecPaths[0].c_str());
+      }
+      isPlexMediaServer = CUtil::IsPlexMediaServer(share->strPath);
 			
-      if (!(isAppBundle || isWorkflow))
+      if (!(isAppBundle || isWorkflow || isPlexMediaServer))
       {
         if (!share->m_ignore)
           buttons.Add(CONTEXT_BUTTON_EDIT_SOURCE, 1027); // Edit Source
@@ -282,7 +290,7 @@ void CGUIDialogContextMenu::GetContextButtons(const CStdString &type, CMediaSour
       }
 
 
-      if (!isAppBundle)
+      if (!(isAppBundle || isWorkflow || isPlexMediaServer))
       {
         buttons.Add(CONTEXT_BUTTON_SET_THUMB, 20019);
         if (share->m_strThumbnailImage != "")

@@ -53,6 +53,9 @@ class CFileItemList;
 #ifdef _LINUX
 #include "linux/LinuxResourceCounter.h"
 #endif
+#ifdef __APPLE__
+#include "CoreAudioPlexSupport.h"
+#endif
 
 class CWebServer;
 class CXBFileZilla;
@@ -225,6 +228,7 @@ public:
   bool m_bSpinDown;
   bool m_bNetworkSpinDown;
   DWORD m_dwSpinDownTime;
+	bool m_bStandalone;
 
   inline bool IsInScreenSaver() { return m_bScreenSave; };
   int m_iScreenSaveLock; // spiff: are we checking for a lock? if so, ignore the screensaver state, if -1 we have failed to input locks
@@ -326,6 +330,7 @@ protected:
   float NavigationIdleTime();
   void CheckForTitleChange();
   void CheckActive();
+  bool IsVisualizerActive();
 
   void SaveCurrentFileSettings();
 
@@ -349,6 +354,10 @@ protected:
   
 #ifdef HAS_EVENT_SERVER
   std::map<std::string, std::map<int, float> > m_lastAxisMap;
+#endif
+  
+#ifdef __APPLE__
+  PlexAudioDevicePtr m_defaultSystemDevice;
 #endif
 };
 

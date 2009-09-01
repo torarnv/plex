@@ -538,9 +538,9 @@
   <string id="632">Stretch 4:3</string>
   <string id="633">Stretch 14:9</string>
   <string id="634">Stretch 16:9</string>
-  <string id="635">Original Size</string>
-  <string id="636">Custom</string>
-  <string id="637">Replay Gain</string>
+	<string id="635">Original Size</string>
+	<string id="636">Custom</string>
+	<string id="637">Replay Gain</string>
   <string id="638">Replay Gain Mode</string>
   <string id="639">Use Track Levels</string>
   <string id="640">Use Album Levels</string>
@@ -599,7 +599,7 @@
   <string id="732">Save &amp; Apply</string>
   <string id="733">- Web Server Password</string>
   <string id="734">No Pass</string>
-  <string id="735">- Charset</string>
+  <string id="735">Charset</string>
   <string id="736">- Style</string>
   <string id="737">- Colour</string>
   <string id="738">Normal</string>
@@ -609,8 +609,8 @@
   <string id="742">White</string>
   <string id="743">Yellow</string>
   <string id="744">Files</string>
-  <string id="745">No scanned information for this view</string>
-  <string id="746">Switch to the Files view</string>
+  <string id="745">Sorry, No items have been added yet. Please check the Help section </string>
+  <string id="746">for information on adding Movies and/or TV shows to Plex.</string>
   <string id="747">Error loading image</string>
   <string id="748">Edit Path</string>
   <string id="749"></string>
@@ -951,7 +951,7 @@
   <string id="13002">Video Only</string>
   <string id="13003">- Delay</string>
   <string id="13004">- Minimum File Duration</string>
-  <string id="13005">Shutdown</string>
+  <string id="13005">Quit</string>
   <string id="13006">Dashboard</string>
   <string id="13007">Use Custom Dashboard Path</string>
   <string id="13008">Default Shutdown mode</string> 
@@ -990,6 +990,9 @@
   <string id="13135">Disabled</string>
   <string id="13136">Medium</string>
   <string id="13137">High</string>
+  
+  <string id="13138">Automatically Select Audio Stream</string>
+  <string id="13139">Automatically Select Subtitle Stream</string>
 
   <string id="13140">Active Connections Detected!</string>
   <string id="13141">If you proceed, you might not be able to control Plex</string>
@@ -1208,6 +1211,8 @@
 
   <string id="13633">Disabled</string>
   <string id="13634">Enabled</string>
+
+  <string id="13635">Enable Scrobbling</string>
 
   <string id="14000">Stack</string>
   <string id="14001">Unstack</string>
@@ -1504,9 +1509,9 @@
   <string id="16305">Lanczos3</string>
   <string id="16306">Sinc8</string>
   
-  <string id="16307">Bicubic (software)</string>
-  <string id="16308">Lanczos (software)</string>  
-  <string id="16309">Sinc (software)</string>
+  <string id="16307">Bicubic</string>
+  <string id="16308">Lanczos</string>  
+  <string id="16309">Sinc</string>
 
   <string id="17500">Sleep Display When Inactive For</string>
   <string id="17501">Display Brightness</string>
@@ -2057,6 +2062,8 @@
 
   <!-- strings 30000 thru 30999 reserved for plugins and plugin settings -->
   <!-- strings 31000 thru 31999 reserved for skins -->
+
+
   <!-- strings 32000 thru 32999 reserved for scripts -->
   
   <string id="40000">Software Update</string>
@@ -2096,11 +2103,14 @@
   <string id="40104">RSS</string>
   <string id="40105">Energy Saver</string>
   <string id="40106">Remove Workflow</string>
+  
+  <string id="40150">Now Playing</string>
 
   <string id="40200">Unsupported path</string>
   <string id="40201">Plex Media Server paths can't be added to multipath</string>
   <string id="40202">sources.</string>
   <string id="40203">Plex Media Server</string>
   <string id="40204">Waiting for response...</string>
+
 </strings>
 

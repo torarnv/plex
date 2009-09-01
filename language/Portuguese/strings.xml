@@ -1,8 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 09/21/2008-->
-<!--$Revision$-->
-<!--Based on english strings version 15555-->
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
   <string id="0">Programas</string>
   <string id="1">Imagens</string>
@@ -13,7 +9,7 @@
   <string id="6">Xbox Media Center SVN</string>
   <string id="7">Gestor de Ficheiros</string>
   <string id="8">Meteorologia</string>
-  <string id="9">XBMC Media Center</string>
+  <string id="9">Plex Media Center</string>
   <string id="11">Segunda</string>
   <string id="12">Terça</string>
   <string id="13">Quarta</string>
@@ -400,7 +396,7 @@
   <string id="479">Skin e Linguagem</string>
   <string id="480">Aspecto Visual</string>
   <string id="481">Opções de Áudio</string>
-  <string id="482">Créditos do XBMC</string>
+  <string id="482">Créditos do Plex</string>
   <string id="483">Álbum</string>
   <string id="484">Artista</string>
   <string id="485">Apagar Álbum</string>
@@ -640,7 +636,7 @@
   <string id="999">Jogo Online</string>
   <string id="1000">Pré-visualização de Protector de Ecrã</string>
   <string id="1001">Incapaz de ligar</string>
-  <string id="1002">XBMC não foi capaz de ligar a local de rede.</string>
+  <string id="1002">Plex não foi capaz de ligar a local de rede.</string>
   <string id="1003">Isto pode dever-se à rede que não estar ligada.</string>
   <string id="1004">Deseja adicionar de qualquer modo?</string>
   <string id="1005">introduzir o nome para esta partilha</string>
@@ -1000,7 +996,7 @@
   <string id="13306">Esconder itens das Pastas Filhas</string>
   <string id="13307">Modelo para nome da Faixa</string>
   <string id="13308">quer reiniciar a Xbox</string>
-  <string id="13309">em vez do XBMC?</string>
+  <string id="13309">em vez do Plex?</string>
   <string id="13310">Efeito de Ampliação</string>
   <string id="13311">Efeito Flutuante</string>
   <string id="13312">Redução da Barra Preta</string>
@@ -1140,7 +1136,7 @@ para esta visualização</string>
   <string id="14036">Servidores</string>
   <string id="14037">Aspecto e Comportamento</string>
   <string id="14038">Configuração de rede alterada</string>
-  <string id="14039">XBMC necessita reiniciar para alterar a sua</string>
+  <string id="14039">Plex necessita reiniciar para alterar a sua</string>
   <string id="14040">configuração de rede. Deseja reiniciar agora?</string>
   <string id="14041">Pós Processamento</string>
   <string id="14042">Engenho Endereço IP</string>
@@ -1217,7 +1213,7 @@ para esta visualização</string>
   <string id="15034">apenas assinou em</string>
   <string id="15035">foi iniciado chat de voz</string>
   <string id="15036">foi-lhe enviado um convite</string>
-  <string id="15037">XBMC é incapaz de confirmar a sua rede é inatingível.</string>
+  <string id="15037">Plex é incapaz de confirmar a sua rede é inatingível.</string>
   <string id="15038">Pode ter dificuldades em juntar-se ou alojar jogos.</string>
   <string id="15039">Incapaz de localizar automaticamente jogos.</string>
   <string id="15040">Introduza o disco do jogo na Xbox ou carregue "A" para cancelar</string>
@@ -1259,7 +1255,7 @@ para esta visualização</string>
   <string id="15202">Utilizador Last.FM</string>
   <string id="15203">Palavra Passe Last.FM</string>
   <string id="15204">Incapaz de realizar handshaking: adormecido ...</string>
-  <string id="15205">Por favor Actualize XBMC</string>
+  <string id="15205">Por favor Actualize Plex</string>
   <string id="15206">Autorização errada. Verifique o utilizador e a palavra passe</string>
   <string id="15207">Ligado</string>
   <string id="15208">Não Ligado</string>
@@ -1385,7 +1381,7 @@ para esta visualização</string>
   <string id="20006">Pasta de Listas de Reprodução</string>
   <string id="20007">Gravações</string>
   <string id="20008">Capturas de Ecrã</string>
-  <string id="20009">Utilizar XBMC</string>
+  <string id="20009">Utilizar Plex</string>
   <string id="20010">
   </string>
   <string id="20011">Lista de Reprodução de Música</string>
@@ -1582,7 +1578,7 @@ para esta visualização</string>
   </string>
   <string id="20305">
   </string>
-  <string id="20306">Desconhecido. Por favor adicione o MD5 do xbmc.log ao BiosIDs.ini</string>
+  <string id="20306">Desconhecido. Por favor adicione o MD5 do Plex.log ao BiosIDs.ini</string>
   <string id="20307">DNS Secundário</string>
   <string id="20308">Servidor DHCP:</string>
   <string id="20309">Criar Nova Pasta</string>

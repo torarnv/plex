@@ -104,7 +104,9 @@ CoreAudioAUHAL::CoreAudioAUHAL(const CStdString& strName, const char *strCodec, 
 	{
 		// Enable AC3 passthrough for digital devices
 		int mpeg_remapping = 0;
-		if (strCodec == "AAC" || strCodec == "DTS") mpeg_remapping = 1; // DTS uses MPEG channel mapping
+		if (strCodec == "AAC" /*|| strCodec == "DTS"*/) 
+		  mpeg_remapping = 1; // DTS uses MPEG channel mapping
+		
 		if (ac3encoderInit(&deviceParameters->m_ac3encoder, channels, sampleRate, bitsPerSample, mpeg_remapping) == -1)
 		{
 			m_bIsInitialized = false;
@@ -414,7 +416,7 @@ int CoreAudioAUHAL::OpenPCM(struct CoreAudioDeviceParameters *deviceParameters, 
 
     if( err != noErr ) return false;
     else CLog::Log(LOGINFO, STREAM_FORMAT_MSG("current format is: ", deviceParameters->sfmt_revert) );
-
+    
     /* Set up the format to be used */
     DeviceFormat.mSampleRate = sampleRate;
     DeviceFormat.mFormatID = kAudioFormatLinearPCM;

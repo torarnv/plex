@@ -229,6 +229,7 @@ int CWeather::ConvertSpeed(int curSpeed)
   case CLangInfo::SPEED_UNIT_MPH:
     curSpeed=(int)(curSpeed / (8.0 / 5.0));
     break;
+#if 0
   case CLangInfo::SPEED_UNIT_MPMIN:
     curSpeed=(int)(curSpeed * (1000.0 / 3600.0) + 0.5*60);
     break;
@@ -253,6 +254,7 @@ int CWeather::ConvertSpeed(int curSpeed)
   case CLangInfo::SPEED_UNIT_FPF:
     curSpeed=(int)(curSpeed * 1670.25f);
     break;
+#endif
   case CLangInfo::SPEED_UNIT_BEAUFORT:
     {
       float knot=(float)curSpeed * 0.5399568f; // to kts first
@@ -515,6 +517,37 @@ void CWeather::LoadLocalizedToken()
     }
     pChild = pChild->NextSiblingElement();
   }
+}
+
+CStdString CWeather::GetTopSearchResult(const CStdString& strSearch)
+{
+  // Do the download.
+  CStdString strURL;
+  CStdString strXML;
+  CHTTP httpUtil;
+
+  strURL.Format("http://xoap.weather.com/search/search?where=%s", strSearch);
+  if (!httpUtil.Get(strURL, strXML))
+    return "";
+
+  // Parse the XML.
+  TiXmlDocument xmlDoc;
+  xmlDoc.Parse(strXML.c_str());
+  if (xmlDoc.Error())
+    return "";
+
+  TiXmlElement *pRootElement = xmlDoc.RootElement();
+  TiXmlElement *pElement = pRootElement->FirstChildElement("loc");
+  CStdString strItemTmp;
+  while (pElement)
+  {
+    if (!pElement->NoChildren())
+      return pElement->Attribute("id");
+
+    pElement = pElement->NextSiblingElement("loc");
+  }
+  
+  return "";
 }
 
 bool CWeather::GetSearchResults(const CStdString &strSearch, CStdString &strResult)

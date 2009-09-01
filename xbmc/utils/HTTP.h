@@ -58,7 +58,7 @@ public:
   std::string m_redirectedURL;
   bool IsInternet(bool checkDNS = true);
   static bool BreakURL(const std::string& strURL, std::string& strHostName, std::string &strUsername, std::string &strPassword, int& iPort, std::string& Page);
-  int Open(const std::string& strURL, const char* verb, const char* pData);
+  int Open(const std::string& strURL, const char* verb, const char* pData, bool keepAlive=false);
   void Close();
 
   void Reset();

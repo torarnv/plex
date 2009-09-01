@@ -112,6 +112,8 @@ public:
   bool IsSmb() const;
   bool IsDAAP() const;
   bool IsPlexMediaServer() const;
+  bool IsPlexMediaServerMusic() const;
+  bool IsWebKit() const;
   bool IsStack() const;
   bool IsMultiPath() const;
   bool IsMusicDb() const;
@@ -254,11 +256,12 @@ public:
   CStdString m_strLockCode;
   int m_iHasLock; // 0 - no lock 1 - lock, but unlocked 2 - locked
   int m_iBadPwdCount;
+  
   bool m_bIsPopupMenuItem;
   bool m_bIsSearchDir;            // whether to show keyboard & append input as query
   CStdString m_strSearchPrompt;   // text to show as keyboard header
-  bool m_wasListingCancelled;
-  
+  bool m_bIsSettingsDir;
+  bool m_wasListingCancelled;  
   bool m_displayMessage;
   CStdString m_displayMessageTitle;
   CStdString m_displayMessageContents;

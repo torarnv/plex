@@ -1,10 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Language file translated with Team XBMC Translator-->
-<!--Translator: NFA (necipfazil)-->
-<!--Email: necipfazil@gmail.com-->
-<!--Date of translation: 06/07/2006-->
-<!--$Revision$-->
-<!--Based on english strings version 1.329-->
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
   <string id="0">Programlarım</string>
   <string id="1">Resimlerim</string>
@@ -415,7 +409,7 @@
   <string id="479">Arayüz lisanı</string>
   <string id="480">Kullanıcı Önyüzü</string>
   <string id="481">Ses Ayarları</string>
-  <string id="482">XBMC Hakkında</string>
+  <string id="482">Plex Hakkında</string>
   <string id="483">Albüm</string>
   <string id="484">Sanatçı</string>
   <string id="485">Albümü Sil</string>
@@ -579,7 +573,7 @@
   <string id="999">Online Oynamak</string>
   <string id="1000">Ekran Koruyucu Önizleme</string>
   <string id="1001">Bağlanamıyor</string>
-  <string id="1002">XBMC Ağda belirtilen klasöre bağlanamıyor.</string>
+  <string id="1002">Plex Ağda belirtilen klasöre bağlanamıyor.</string>
   <string id="1003">Bu olay ağın bağlı olmamasından kaynaklanabilir.</string>
   <string id="1004">Yine de eklemek istiyor musunuz?</string>
   <string id="1005">Bu paylaşım için bir isim belirleyin</string>
@@ -759,7 +753,7 @@
   <string id="12320">C</string>
   <string id="12321">Ok</string>
   <string id="12322">*</string>
-  <string id="12324">XBMC Kullanıcı Şifresi</string>
+  <string id="12324">Plex Kullanıcı Şifresi</string>
   <string id="12325">Kilitli! Şifreyi Girin...</string>
   <string id="12326">Şifreyi Girin</string>
   <string id="12327">Kullanıcı Şifresini Girin</string>
@@ -803,7 +797,7 @@
   <string id="12366">Kullanıcı şifresi değişti. Yeni şifre:</string>
   <string id="12367">Geçersiz kullanıcı şifresi!</string>
   <string id="12368">Lütfen doğru şifreyi girin!</string>
-  <string id="12369">XBMC Açılış Şifresi</string>
+  <string id="12369">Plex Açılış Şifresi</string>
   <string id="12370">Kullanıcı şifre modu değişti, kullanıcı şifresi ayarlanmadı!</string>
   <string id="12371">Lütfen yeni bir kullanıcı şifresi girin!</string>
   <string id="12372">Ayarları Kilitle &amp; Dosyalarımı</string>
@@ -917,7 +911,7 @@
   <string id="13306">Geri Gitme Simgesini Sakla</string>
   <string id="13307">Şarkı İsim Kalıbı</string>
   <string id="13308">Xbox' ı yeniden başlatmak istiyor musunuz?</string>
-  <string id="13309">sadece XBMC' ın yerine mi?</string>
+  <string id="13309">sadece Plex' ın yerine mi?</string>
   <string id="13310">Zoom Efekti</string>
   <string id="13311">Kaydırma Efekti</string>
   <string id="13312">Siyah Yerleri Kapat</string>
@@ -1052,7 +1046,7 @@
   <string id="14037">Görünüm ve Kullanım</string>
   <string id="14038">Ağ Ayarları Değişti</string>
   <string id="14039">Ayarların etkili olabilmesi için yeniden başlatmak gerekli.</string>
-  <string id="14040">XBMC' ı yeniden başlatmak istiyor musunuz?</string>
+  <string id="14040">Plex' ı yeniden başlatmak istiyor musunuz?</string>
   <string id="14041">Post Processing</string>
   <string id="14042">Makinanın IP Adresi</string>
   <string id="14043">- Medya Oynatılıyor Olsa Bile Kapat</string>
@@ -1087,7 +1081,7 @@
   <string id="14072">XLink Kai Etkinleştir</string>
   <string id="14073">XLink Kai aktif değil.</string>
   <string id="15000">XLink Kai</string>
-  <string id="15001">Bağlantı yok. XBMC Media Center ile</string>
+  <string id="15001">Bağlantı yok. Plex Media Center ile</string>
   <string id="15002">tekrar deneyip bağlanmak istiyor musunuz?</string>
   <string id="15003">Mesajınızı yazın</string>
   <string id="15004">%s. oyununa davet edildiniz</string>
@@ -1123,9 +1117,9 @@
   <string id="15034">Giriş Yapıldı</string>
   <string id="15035">sesli sohbet kabul edildi</string>
   <string id="15036">size bir davetiye yolladı</string>
-  <string id="15037">XBMC ağ ayarlarınızı kontrol edemiyor.</string>
+  <string id="15037">Plex ağ ayarlarınızı kontrol edemiyor.</string>
   <string id="15038">Host olurken veya katılırken deneyim sahibi olmalısınız.</string>
-  <string id="15039">XBMC Media Center otomatik olarak oyunu başlatamıyor.</string>
+  <string id="15039">Plex Media Center otomatik olarak oyunu başlatamıyor.</string>
   <string id="15040">Xbox' a bir oyun diski yerleştirin veya çıkmak için "A"' ya basın</string>
   <string id="15041">ve oyuna kendiniz girin.</string>
   <string id="15042">Reddedildi</string>
@@ -1167,7 +1161,7 @@
   <string id="15202">LastFM Kullanıcı Adı</string>
   <string id="15203">LastFM Şifresi</string>
   <string id="15204">Bağlanamıyor: uyku moduna alınıyor...</string>
-  <string id="15205">Lütfen XBMC' ı güncelleyin</string>
+  <string id="15205">Lütfen Plex' ı güncelleyin</string>
   <string id="15206">Gönderme başarısız: Yetkiniz yok.</string>
   <string id="15207">Bağlandı</string>
   <string id="15208">Bağlanamadı</string>

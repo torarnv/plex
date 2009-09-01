@@ -312,6 +312,7 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement)
 
     pChild = pChild->NextSiblingElement();
   }
+  LoadAdditionalTags(pRootElement);
 
   m_windowLoaded = true;
   OnWindowLoaded();

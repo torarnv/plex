@@ -1,10 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Language file translated with Team XBMC Translator-->
-<!--Translator: Kaiserex-->
-<!--Email: playernipon@gmail.com-->
-<!--Date of translation: 01/15/2008-->
-<!--$Revision$-->
-<!--Based on english strings version 11214-->
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
   <string id="0">Programi</string>
   <string id="1">Slike</string>
@@ -14,7 +8,7 @@
   <string id="5">Postavke</string>
   <string id="7">Upravitelj Dat.</string>
   <string id="8">Vrijeme</string>
-  <string id="9">xbmc media centar</string>
+  <string id="9">Plex media centar</string>
   <string id="11">Ponedjeljak</string>
   <string id="12">Utorak</string>
   <string id="13">Srijeda</string>
@@ -407,7 +401,7 @@
   <string id="479">Koža i jezik</string>
   <string id="480">Izgled</string>
   <string id="481">Audio Opcije</string>
-  <string id="482">O XBMC</string>
+  <string id="482">O Plex</string>
   <string id="483">Album</string>
   <string id="484">Izvođač</string>
   <string id="485">Izbriši album</string>
@@ -637,7 +631,7 @@
   <string id="999">Online Igranje</string>
   <string id="1000">Pregled Čuvara Zaslona</string>
   <string id="1001">Nemogu se spojiti</string>
-  <string id="1002">XBMC se nije mogao spojiti na lokaciju mreže.</string>
+  <string id="1002">Plex se nije mogao spojiti na lokaciju mreže.</string>
   <string id="1003">Može biti da mreža nije spojena.</string>
   <string id="1004">Želiš li ju dodati?</string>
   <string id="1005">
@@ -991,7 +985,7 @@
   <string id="13306">Sakrij stvari Roditeljske Mape</string>
   <string id="13307">Imenovanje Uzorka Stvari</string>
   <string id="13308">Dali želiš ponovo pokrenuti Xbox</string>
-  <string id="13309">umjesto XBMC?</string>
+  <string id="13309">umjesto Plex?</string>
   <string id="13310">Zoom Efekt</string>
   <string id="13311">Plutajući Efekt</string>
   <string id="13312">Redukcija Crnih Traka</string>
@@ -1116,7 +1110,7 @@ za ovu vizualizaciju</string>
   <string id="14036">Serveri</string>
   <string id="14037">Gledaj i Osjećaj</string>
   <string id="14038">Mrežne postavke izmjenjne</string>
-  <string id="14039">XBMC traži ponovno pokretanje zbog promjene</string>
+  <string id="14039">Plex traži ponovno pokretanje zbog promjene</string>
   <string id="14040">mrežnih postavki. Želiš li to učiniti sad?</string>
   <string id="14041">Post Procesuiranje</string>
   <string id="14042">IP Addresa Enginea</string>
@@ -1193,7 +1187,7 @@ za ovu vizualizaciju</string>
   <string id="15034">je upravo ušao</string>
   <string id="15035">je inicirao glasovno čavrljanje</string>
   <string id="15036">ti je poslao pozivnicu</string>
-  <string id="15037">XBMC nemože potvrditi da je tvoja mreža dostupna.</string>
+  <string id="15037">Plex nemože potvrditi da je tvoja mreža dostupna.</string>
   <string id="15038">Možeš iskusiti poteškoće pri prijavi i stvaranju igara.</string>
   <string id="15039">Nemogu locirati igru automatski.</string>
   <string id="15040">Ubaci Disk Igre u Xbox ili stisni 'A' za prekid</string>
@@ -1235,7 +1229,7 @@ za ovu vizualizaciju</string>
   <string id="15202">Last.FM Korisničko Ime</string>
   <string id="15203">Last.FM Zaporka</string>
   <string id="15204">Nemogu se rukovati: spavam...</string>
-  <string id="15205">Molim te Obnovi XBMC</string>
+  <string id="15205">Molim te Obnovi Plex</string>
   <string id="15206">Loša autorizacija: Provjeri korisničko ime i zaporku</string>
   <string id="15207">Spojen</string>
   <string id="15208">Nije Spojen</string>
@@ -1360,7 +1354,7 @@ za ovu vizualizaciju</string>
   <string id="20006">Mapa Playliste</string>
   <string id="20007">Snimke</string>
   <string id="20008">Screenshots</string>
-  <string id="20009">Koristi XBMC</string>
+  <string id="20009">Koristi Plex</string>
   <string id="20010">
   </string>
   <string id="20011">Playliste Glazbe</string>
@@ -1567,7 +1561,7 @@ za ovu vizualizaciju</string>
   </string>
   <string id="20305">
   </string>
-  <string id="20306">Nepoznato. Molim te dodaj MD5 sa xbmc.log u BiosIDs.ini</string>
+  <string id="20306">Nepoznato. Molim te dodaj MD5 sa Plex.log u BiosIDs.ini</string>
   <string id="20307">Sekundarni DNS</string>
   <string id="20308">DHCP Server:</string>
   <string id="20309">Napravi Novu Mapu</string>

@@ -52,16 +52,6 @@ class CStreamInfo;
 #define DVDSTATE_STILL            0x00000002 // currently displaying a still frame
 #define DVDSTATE_WAIT             0x00000003 // waiting for demuxer read error
 
-typedef struct DVDInfo
-{
-  int state;                // current dvdstate
-  DWORD iDVDStillTime;      // total time in ticks we should display the still before continuing
-  DWORD iDVDStillStartTime; // time in ticks when we started the still
-  int iSelectedSPUStream;   // mpeg stream id, or -1 if disabled
-  int iSelectedAudioStream; // mpeg stream id, or -1 if disabled
-}
-DVDInfo;
-
 class CCurrentStream
 {
 public:
@@ -98,15 +88,23 @@ public:
   }
 };
 
-typedef struct 
+struct SelectionStream 
 {
+  SelectionStream()
+    : numChannels(0)
+    , codec(CODEC_ID_NONE) {}
+  
   StreamType   type;
   std::string  filename;
   std::string  language;
   std::string  name;
   int          source;
-  int          id;  
-} SelectionStream;
+  int          id;
+  
+  int          numChannels;
+  CodecID      codec;
+  
+};
 
 class CSelectionStreams
 {
@@ -197,7 +195,6 @@ public:
   virtual __int64 GetTime();
   virtual int GetTotalTime();
   virtual void ToFFRW(int iSpeed);
-  virtual void DoAudioWork()                                    { m_dvdPlayerAudio.DoWork(); }
   virtual bool OnAction(const CAction &action);
   virtual bool HasMenu();
   virtual int GetAudioBitrate();
@@ -211,7 +208,7 @@ public:
   virtual CStdString GetPlayerState();
   virtual bool SetPlayerState(CStdString state);
 
-  virtual bool IsCaching() const { return m_caching; } 
+  virtual bool IsCaching() const { return m_caching; }
   virtual int GetCacheLevel() const ; 
 
   static int GetCacheSize();
@@ -255,9 +252,10 @@ protected:
 
   void SyncronizePlayers(DWORD sources, double pts = DVD_NOPTS_VALUE);
   void SyncronizeDemuxer(DWORD timeout);
-  void CheckContinuity(DemuxPacket* pPacket, unsigned int source);
-  bool CheckSceneSkip(CCurrentStream& current, unsigned int source);
+  void CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket);
+  bool CheckSceneSkip(CCurrentStream& current);
   bool CheckPlayerInit(CCurrentStream& current, unsigned int source);
+  bool CheckStartCaching(CCurrentStream& current);
   void SendPlayerMessage(CDVDMsg* pMsg, unsigned int target);
 
   bool ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream);
@@ -266,6 +264,7 @@ protected:
 
   bool OpenInputStream();
   bool OpenDemuxStream();
+  void OpenDefaultStreams();
 
   void UpdateApplication(double timeout);
   void UpdatePlayState(double timeout);
@@ -307,7 +306,24 @@ protected:
   CDVDInputStream* m_pInputStream;  // input stream for current playing file
   CDVDDemux* m_pDemuxer;            // demuxer for current playing file
   CDVDDemux* m_pSubtitleDemuxer;
-  DVDInfo m_dvd;
+
+  struct SDVDInfo
+  {
+    void Clear()
+    {
+      state                =  DVDSTATE_NORMAL;
+      iSelectedSPUStream   = -1;
+      iSelectedAudioStream = -1;
+      iDVDStillTime        =  0;
+      iDVDStillStartTime   =  0;
+    }
+
+    int state;                // current dvdstate
+    DWORD iDVDStillTime;      // total time in ticks we should display the still before continuing
+    DWORD iDVDStillStartTime; // time in ticks when we started the still
+    int iSelectedSPUStream;   // mpeg stream id, or -1 if disabled
+    int iSelectedAudioStream; // mpeg stream id, or -1 if disabled
+  } m_dvd;
 
   CDlgCache *m_pDlgCache;  
 

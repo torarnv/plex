@@ -61,6 +61,7 @@ public:
   CWeather(void);
   virtual ~CWeather(void);
   static bool GetSearchResults(const CStdString &strSearch, CStdString &strResult);
+  static CStdString GetTopSearchResult(const CStdString& strSearch);
   bool LoadWeather(const CStdString& strWeatherFile); //parse strWeatherFile
 
   char *GetLocation(int iLocation);

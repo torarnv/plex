@@ -23,6 +23,7 @@
 #include "FileItem.h"
 #include "DVDInputStreamRTMP.h"
 #include "VideoInfoTag.h"
+#include "FileSystem/IFile.h"
 
 #ifdef _LINUX
   #include <sys/types.h>
@@ -41,8 +42,6 @@ using namespace XFILE;
 CDVDInputStreamRTMP::CDVDInputStreamRTMP() : CDVDInputStream(DVDSTREAM_TYPE_RTMP)
 {
   m_eof = true;
-  m_videoTS = 0;
-  m_audioTS = 0;
   m_prevTagSize = 0;
   m_bSentHeader = false;
   m_leftOver = NULL;
@@ -62,7 +61,7 @@ bool CDVDInputStreamRTMP::IsEOF()
 
 bool CDVDInputStreamRTMP::Open(const char* strFile, const std::string& content)
 {
-  if (!CDVDInputStream::Open(strFile, content)) return false;
+  if (!CDVDInputStream::Open(strFile, "video/x-flv")) return false;
 
   m_rtmp.SetPlayer(m_item.GetProperty("SWFPlayer")); 
   m_rtmp.SetPageUrl(m_item.GetProperty("PageURL")); 
@@ -162,19 +161,8 @@ int CDVDInputStreamRTMP::Read(BYTE* buf, int buf_size)
       ptr++;
       ptr += RTMP_LIB::CRTMP::EncodeInt24(ptr, packet.m_nBodySize);
       
-      unsigned int nTimeStamp = 0;
-      if (packet.m_packetType == 0x08){ // audio
-        nTimeStamp = m_audioTS;
-        m_audioTS += packet.m_nInfoField1;
-      }
-      else if (packet.m_packetType == 0x09){ // video
-        nTimeStamp = m_videoTS;
-        m_videoTS += packet.m_nInfoField1;
-      }
-      
-      ptr += RTMP_LIB::CRTMP::EncodeInt24(ptr, nTimeStamp);
-
-      *ptr = (char)((nTimeStamp & 0xFF000000) >> 24);
+      ptr += RTMP_LIB::CRTMP::EncodeInt24(ptr, packet.m_nInfoField1);
+      *ptr = (char)((packet.m_nInfoField1 & 0xFF000000) >> 24);
       ptr++;
 
       ptr += RTMP_LIB::CRTMP::EncodeInt24(ptr, 0);
@@ -223,16 +211,15 @@ int CDVDInputStreamRTMP::Read(BYTE* buf, int buf_size)
 
 __int64 CDVDInputStreamRTMP::Seek(__int64 offset, int whence)
 {
-  int ret = 0;
-  /* if we succeed, we are not eof anymore */
-  if( ret >= 0 ) m_eof = false;
-
-  return ret;
+  if(whence == SEEK_POSSIBLE)
+    return 0;
+  else
+    return -1;
 }
 
 __int64 CDVDInputStreamRTMP::GetLength()
 {
-  return 0;
+  return -1;
 }
 
 bool CDVDInputStreamRTMP::NextStream()

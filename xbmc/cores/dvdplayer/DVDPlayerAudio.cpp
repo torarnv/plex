@@ -271,7 +271,7 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
       if (dts != DVD_NOPTS_VALUE)
         m_audioClock = dts;
 
-      int len = m_pAudioCodec->Decode(m_decode.data, m_decode.size);
+		int len = m_pAudioCodec->Decode(m_decode.data, m_decode.size);
       m_audioStats.AddSampleBytes(m_decode.size);
       if (len < 0)
       {
@@ -396,6 +396,11 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
         m_pAudioCodec->Reset();
 
       m_decode.Release();
+    }
+    else if (pMsg->IsType(CDVDMsg::GENERAL_EOF))
+    {
+      CLog::Log(LOGDEBUG, "CDVDPlayerAudio - CDVDMsg::GENERAL_EOF");
+      m_dvdAudio.Finish();
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_DELAY))
     {

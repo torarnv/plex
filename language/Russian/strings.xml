@@ -1,10 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Language file translated with Team XBMC Translator-->
-<!--Translator: Que_-->
-<!--Email: que_@users.sourceforge.net-->
-<!--Date of translation: 10/04/2006-->
-<!--$Revision$-->
-<!--Based on english strings version 1.343-->
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
   <string id="0">Программы</string>
   <string id="1">Фотографии</string>
@@ -398,7 +392,7 @@
   <string id="479">Позиция экранного меню</string>
   <string id="480">Оформление</string>
   <string id="481">Опции аудио</string>
-  <string id="482">Об XBMC</string>
+  <string id="482">Об Plex</string>
   <string id="483">Альбом</string>
   <string id="484">Исполнитель</string>
   <string id="485">Удалить альбом</string>
@@ -556,7 +550,7 @@
   <string id="999">Сетевая игра</string>
   <string id="1000">Посмотреть заставку</string>
   <string id="1001">Невозможно подключиться</string>
-  <string id="1002">XBMC не может подключиться к сети.</string>
+  <string id="1002">Plex не может подключиться к сети.</string>
   <string id="1003">Возможно, сеть не подключена.</string>
   <string id="1004">Добавить в любом случае?</string>
   <string id="1005">Введите название для этого ресурса</string>
@@ -871,7 +865,7 @@
   <string id="13306">Скрыть значок перехода на верхний уровень</string>
   <string id="13307">Формат имени файла</string>
   <string id="13308">Хотите перезагрузить Ваш XBOX</string>
-  <string id="13309">вместо перезапуска XBMC?</string>
+  <string id="13309">вместо перезапуска Plex?</string>
   <string id="13310">Эффект увеличения</string>
   <string id="13311">Эффект скольжения</string>
   <string id="13312">Уменьшение черных полос</string>
@@ -993,7 +987,7 @@
   <string id="14037">Внешний вид</string>
   <string id="14038">Настройки локальной сети изменены.</string>
   <string id="14039">Для вступления изменений с силу, требуется</string>
-  <string id="14040">перезагрузка XBMC. Перезагружаем?</string>
+  <string id="14040">перезагрузка Plex. Перезагружаем?</string>
   <string id="14041">Постобработка</string>
   <string id="14042">IP адрес компьютера с Kai Engine</string>
   <string id="14043">- Выключать во время проигрывания</string>
@@ -1064,9 +1058,9 @@
   <string id="15034">только что вошел</string>
   <string id="15035">инициировал голосовой чат</string>
   <string id="15036">послал Вам приглашение</string>
-  <string id="15037">XBMC не подтверждает доступность вашей сети.</string>
+  <string id="15037">Plex не подтверждает доступность вашей сети.</string>
   <string id="15038">Возможно будут проблемы с игрой по сети</string>
-  <string id="15039">XBMC не смог найти игру.</string>
+  <string id="15039">Plex не смог найти игру.</string>
   <string id="15040">Вставьте диск с игрой или нажмите 'A' для отмены</string>
   <string id="15041">и запустите игру самостоятельно.</string>
   <string id="15042">Доступ закрыт</string>
@@ -1106,7 +1100,7 @@
   <string id="15202">Имя пользователя для Last.FM</string>
   <string id="15203">Пароль для Last.FM</string>
   <string id="15204">Не смог связяться: засыпаю...</string>
-  <string id="15205">Пожалуйста, обновите XBMC</string>
+  <string id="15205">Пожалуйста, обновите Plex</string>
   <string id="15206">Неверная авторизация.</string>
   <string id="15207">Подключен</string>
   <string id="15208">Не подключен</string>
@@ -1213,13 +1207,13 @@
   <string id="20006">Папка плейлистов</string>
   <string id="20007">Записи</string>
   <string id="20008">Скриншоты</string>
-  <string id="20009">Исп. XBMC</string>
+  <string id="20009">Исп. Plex</string>
   <string id="20010">Фото исполнителя</string>
   <string id="20011">Музыкальный плейлист</string>
   <string id="20012">Видео плейлист</string>
   <string id="20013">Запустить игру?</string>
   <string id="20014">Сорт.по: Плейлисту</string>
-  <string id="20015">Иконrа IMDB</string>
+  <string id="20015">Иконка IMDB</string>
   <string id="20016">Текущая иконка</string>
   <string id="20017">Локальная иконка</string>
   <string id="20018">Нет иконки</string>
@@ -1398,8 +1392,8 @@
   <string id="20302">Обнаружение BIOS</string>
   <string id="20303">Вычисление скорости ЦПУ</string>
   <string id="20304">Обнаружение даты производства</string>
-  <string id="20305">Обнаружение подкюченных юнитов***</string>
-  <string id="20306">Неизвестно. Добавьте сигнатуру MD5 из xbmc.log в BiosIDs.ini</string>
+  <string id="20305">Обнаружение подключенных юнитов***</string>
+  <string id="20306">Неизвестно. Добавьте сигнатуру MD5 из Plex.log в BiosIDs.ini</string>
   <string id="20307">Вторичный DNS</string>
   <string id="20308">Сервер DHCP:</string>
   <string id="20309">Создать папку</string>

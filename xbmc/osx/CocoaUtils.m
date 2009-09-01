@@ -32,6 +32,8 @@
 #import "AppleHardwareInfo.h"
 #import "SUPlexUpdater.h"
 
+#import "AdvancedSettingsController.h"
+
 extern int GetProcessPid(const char* processName);
 extern void CocoaPlus_Initialize();
 
@@ -55,6 +57,11 @@ void Cocoa_Initialize(void* pApplication)
   }
 
   CocoaPlus_Initialize();
+}
+
+void Cocoa_ActivateWindow()
+{
+  [[NSApplication sharedApplication] activateIgnoringOtherApps:YES];
 }
 
 void Cocoa_DisplayError(const char* strError)
@@ -705,11 +712,9 @@ void Cocoa_UpdateSystemActivity()
 
 void Cocoa_TurnOffScreenSaver()
 {
-  if (GetProcessPid("ScreenSaverEngin") != -1)
-  {
-    NSAppleScript* stopScript = [[NSAppleScript alloc] initWithSource:@"tell application \"/System/Library/Frameworks/ScreenSaver.framework/Versions/A/Resources/ScreenSaverEngine.app\" to quit"];
-    [stopScript executeAndReturnError:nil];
-  }
+  int pid = GetProcessPid("ScreenSaverEngin");
+  if (pid != -1)
+    kill(pid, SIGKILL);
 }
                    
 int Cocoa_SleepSystem()
@@ -1210,4 +1215,9 @@ void Cocoa_ExecAppleScript(const char* scriptSource)
 	NSAppleScript* appleScript = [[NSAppleScript alloc] initWithSource:[NSString stringWithUTF8String:scriptSource]];
 	[appleScript executeAndReturnError:nil];
 	[appleScript release];
+}
+
+bool Cocoa_IsGUIShowing()
+{
+  return [[AdvancedSettingsController sharedInstance] windowIsVisible];
 }
