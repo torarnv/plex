@@ -34,7 +34,7 @@ CAlarmClock::~CAlarmClock()
 {
 }
 
-void CAlarmClock::start(const CStdString& strName, float n_secs, const CStdString& strCommand)
+void CAlarmClock::start(const CStdString& strName, float n_secs, const CStdString& strCommand, bool notify /* = true */)
 {
   // make lower case so that lookups are case-insensitive
   CStdString lowerName(strName);
@@ -63,16 +63,18 @@ void CAlarmClock::start(const CStdString& strName, float n_secs, const CStdStrin
     strStarted = g_localizeStrings.Get(13210);
   }
 
-  CStdString strMessage;
-
-  strMessage.Format(strStarted.c_str(),static_cast<int>(event.m_fSecs)/60);
-  g_application.m_guiDialogKaiToast.QueueNotification(strAlarmClock,strMessage);
+  if (notify)
+  {
+    CStdString strMessage;
+    strMessage.Format(strStarted.c_str(),static_cast<int>(event.m_fSecs)/60);
+    g_application.m_guiDialogKaiToast.QueueNotification(strAlarmClock,strMessage);
+  }
   event.watch.StartZero();
   m_event.insert(std::make_pair<CStdString,SAlarmClockEvent>(lowerName,event));
   CLog::Log(LOGDEBUG,"started alarm with name: %s",lowerName.c_str());
 }
 
-void CAlarmClock::stop(const CStdString& strName)
+void CAlarmClock::stop(const CStdString& strName, bool notify /* = true */)
 {
   CStdString lowerName(strName);
   lowerName.ToLower();          // lookup as lowercase only
@@ -99,7 +101,10 @@ void CAlarmClock::stop(const CStdString& strName)
     strMessage.Format(strStarted.c_str(),static_cast<int>(remaining)/60,static_cast<int>(remaining)%60);
   }
   if (iter->second.m_strCommand.IsEmpty() || iter->second.m_fSecs > iter->second.watch.GetElapsedSeconds())
-    g_application.m_guiDialogKaiToast.QueueNotification(strAlarmClock,strMessage);
+  {
+    if (notify)
+      g_application.m_guiDialogKaiToast.QueueNotification(strAlarmClock,strMessage);
+  }
   else
     CUtil::ExecBuiltIn(iter->second.m_strCommand);
 

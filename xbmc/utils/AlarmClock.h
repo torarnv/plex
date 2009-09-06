@@ -36,7 +36,7 @@ class CAlarmClock : public CThread
 public:
   CAlarmClock();
   ~CAlarmClock();
-  void start(const CStdString& strName, float n_secs, const CStdString& strCommand);
+  void start(const CStdString& strName, float n_secs, const CStdString& strCommand, bool notify = true);
   inline bool isRunning()
   {
     return m_bIsRunning;
@@ -62,7 +62,7 @@ public:
     return 0.f;
   }
 
-  void stop(const CStdString& strName);
+  void stop(const CStdString& strName, bool notify = true);
   virtual void Process();
 private:
   std::map<CStdString,SAlarmClockEvent> m_event;
