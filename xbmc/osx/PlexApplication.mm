@@ -83,6 +83,7 @@ BOOL gCalledAppMainline = FALSE;
 
 - (IBAction)fullScreenToggle:(id)sender
 {
+  [[PlexApplication sharedInstance] activateIgnoringOtherApps:YES];
   // Post an toggle full-screen event to the application thread.
   SDL_Event event;
   memset(&event, 0, sizeof(event));
