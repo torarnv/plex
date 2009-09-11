@@ -1160,6 +1160,26 @@ const CStdString& CFileItem::GetContentType() const
       {
         m_ref = "audio/unknown";
       }
+      else if (IsPlayList())
+      {
+        CStdString extension = CUtil::GetExtension(m_strPath);
+        extension.MakeLower();
+        
+        if (extension == ".m3u" || extension == ".strm")
+         m_ref = "audio/mpegurl";
+        
+        if (extension == ".pls")
+         m_ref = "audio/scpls";
+        
+        if (extension == ".wpl")
+         m_ref = "application/vnd.ms-wpl";
+        
+        if (extension == ".asx")
+         m_ref = "video/x-ms-asf";
+        
+        if (extension == ".ram")
+         m_ref = "audio/x-pn-realaudio";
+      }
       else
       {
         // Last chance, slow...
