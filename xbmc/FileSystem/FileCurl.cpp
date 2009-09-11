@@ -439,6 +439,10 @@ void CFileCurl::SetCommonOptions(CReadState* state)
     CStdString cookies = g_application.CurrentFileItem().GetProperty("httpCookies");
     if (cookies.size() > 0)
       g_curlInterface.easy_setopt(h, CURLOPT_COOKIE, cookies.c_str());
+    
+    CStdString userAgent = g_application.CurrentFileItem().GetProperty("userAgent");
+    if (userAgent.size() > 0)
+      g_curlInterface.easy_setopt(h, CURLOPT_USERAGENT, userAgent.c_str());
   }
 }
 

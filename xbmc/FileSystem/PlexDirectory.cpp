@@ -168,6 +168,7 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     items.SetSecondTitle(title2);
 
   const char* httpCookies = root->Attribute("httpCookies");
+  const char* userAgent = root->Attribute("userAgent");
   
   // Set fanart on items if they don't have their own, or if individual item fanart is disabled
   for (int i=0; i<items.Size(); i++)
@@ -185,6 +186,9 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     // See if there's a cookie property to set.
     if (httpCookies)
       pItem->SetProperty("httpCookies", httpCookies);
+    
+    if (userAgent)
+      pItem->SetProperty("userAgent", userAgent);
   }
   
   // Set fanart on directory.
