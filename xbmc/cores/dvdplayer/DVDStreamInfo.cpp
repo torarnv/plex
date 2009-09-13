@@ -61,7 +61,6 @@ void CDVDStreamInfo::Clear()
   samplerate = 0;
   blockalign = 0;
   bitrate = 0;
-  forcelibdts = false;
   forPreview = false;
 
   identifier = 0;
@@ -168,8 +167,6 @@ void CDVDStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
     samplerate = stream->iSampleRate;
     blockalign = stream->iBlockAlign;
     bitrate = stream->iBitRate;
-	forcelibdts = stream->forcelibdts;
-
   }
   else if(  right.type == STREAM_VIDEO )
   {
