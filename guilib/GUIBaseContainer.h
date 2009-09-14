@@ -80,6 +80,7 @@ public:
   virtual CStdString GetDescription() const;
   virtual void SaveStates(std::vector<CControlState> &states);
   virtual int GetSelectedItem() const;
+  virtual int GetSelectedItemID() const;
 
   virtual void DoRender(DWORD currentTime);
   void LoadLayout(TiXmlElement *layout);

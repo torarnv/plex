@@ -26,6 +26,7 @@
 #include "XMLUtils.h"
 #include "SkinInfo.h"
 #include "FileItem.h"
+#include <boost/shared_ptr.hpp>
 
 using namespace std;
 
@@ -419,6 +420,13 @@ void CGUIBaseContainer::Scroll(int amount)
 int CGUIBaseContainer::GetSelectedItem() const
 {
   return CorrectOffset(m_offset, m_cursor);
+}
+
+int CGUIBaseContainer::GetSelectedItemID() const
+{
+  if (!m_items.size()) return -1;
+  CFileItemPtr item = boost::static_pointer_cast<CFileItem>(m_items[GetSelectedItem()]);
+  return item->m_iprogramCount;
 }
 
 CGUIListItemPtr CGUIBaseContainer::GetListItem(int offset, unsigned int flag) const
