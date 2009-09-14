@@ -115,6 +115,7 @@ NSString* GetPowerInfoStringForKey(const char* key)
   batteryCapacityWarning = BATTERY_CAPACITY_WARNING;
   keyboardBacklightEnabled = YES;
   keyboardBacklightTimer = nil;
+  keyboardBacklightControlEnabled = NO;
 
   id pool = [[NSAutoreleasePool alloc] init];
   
@@ -261,6 +262,8 @@ NSString* GetPowerInfoStringForKey(const char* key)
 
 - (void)setKeyboardBacklightEnabled:(BOOL)enabled
 { 
+  if (!keyboardBacklightControlEnabled) return;
+  
   if (enabled == keyboardBacklightEnabled) return;
   
   kern_return_t   kr;
@@ -298,6 +301,11 @@ NSString* GetPowerInfoStringForKey(const char* key)
   kr = IOConnectMethodScalarIScalarO(dataPort, kSetLEDFadeID, setInputCount, outputCount, in_unknown, in_brightness, in_time_ms, &out_brightness);
   keyboardBacklightEnabled = enabled;
 
+}
+
+- (void)setKeyboardBacklightControlEnabled:(BOOL)enabled;
+{
+  keyboardBacklightControlEnabled = enabled;
 }
 
 @end

@@ -1272,3 +1272,8 @@ bool Cocoa_IsGUIShowing()
 {
   return ([[AdvancedSettingsController sharedInstance] windowIsVisible] || [[PlexApplication sharedInstance] isAboutWindowVisible]);
 }
+
+void Cocoa_SetKeyboardBacklightControlEnabled(bool enabled)
+{
+  [[AppleHardwareInfo sharedInstance] setKeyboardBacklightControlEnabled:enabled];
+}

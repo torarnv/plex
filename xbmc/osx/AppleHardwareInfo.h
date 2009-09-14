@@ -23,6 +23,8 @@
   BOOL keyboardBacklightEnabled;
   SInt32 oldKeyboardBacklightBrightness;
   
+  BOOL keyboardBacklightControlEnabled;
+  
 }
 
 @property (assign) int batteryTimeWarning;
@@ -44,5 +46,6 @@
 - (void)checkBatteryCapacity;
 
 - (void)setKeyboardBacklightEnabled:(BOOL)enabled;
+- (void)setKeyboardBacklightControlEnabled:(BOOL)enabled;
 
 @end

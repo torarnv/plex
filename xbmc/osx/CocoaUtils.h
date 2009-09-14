@@ -180,6 +180,8 @@ extern "C"
   //
   bool Cocoa_IsGUIShowing();
   
+  void Cocoa_SetKeyboardBacklightControlEnabled(bool enabled);
+  
 #ifdef __cplusplus
 }
 #endif

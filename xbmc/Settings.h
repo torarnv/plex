@@ -256,6 +256,7 @@ public:
     bool m_bUseAnamorphicZoom;
     
     bool m_bEnableViewRestrictions;
+    bool m_bEnableKeyboardBacklightControl;
     
     
     CStdString m_language;

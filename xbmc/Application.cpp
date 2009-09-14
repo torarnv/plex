@@ -1003,6 +1003,8 @@ HRESULT CApplication::Create(HWND hWnd)
   Cocoa_SetBackgroundMusicThemeDownloadsEnabled(g_guiSettings.GetBool("backgroundmusic.themedownloadsenabled"));
   Cocoa_SetBackgroundMusicVolume((float)(g_guiSettings.GetInt("backgroundmusic.bgmusicvolume")/100.0f));
   Cocoa_StartBackgroundMusic();
+  
+  Cocoa_SetKeyboardBacklightControlEnabled(g_advancedSettings.m_bEnableKeyboardBacklightControl);
 #endif
 
   CStdString strHomePath = "Q:";
