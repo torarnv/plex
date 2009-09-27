@@ -245,35 +245,10 @@ HRESULT CoreAudioAUHAL::Deinitialize()
             CLog::Log(LOGERROR, "AudioDeviceRemoveIOProc failed: [%4.4s]", (char *)&err );
         }
 		
-        if( deviceParameters->b_changed_mixing && deviceParameters->sfmt_revert.mFormatID != kAudioFormat60958AC3 )
-        {
-            int b_mix;
-            Boolean b_writeable = false;
-            /* Revert mixable to true if we are allowed to */
-			propertyAOPA.mSelector = kAudioDevicePropertySupportsMixing;
-			
-			if (AudioObjectHasProperty(deviceParameters->device_id, &propertyAOPA))
-			{
-				err = AudioObjectGetPropertyDataSize(deviceParameters->device_id, &propertyAOPA, 0, NULL, &i_param_size);
-				err = AudioObjectGetPropertyData(deviceParameters->device_id, &propertyAOPA, 0, NULL, &i_param_size, &b_writeable);
-			}
-			
-            if( !err && b_writeable )
-            {
-                CLog::Log(LOGDEBUG, "mixable is: %d", b_mix );
-                b_mix = 1;
-				err = AudioObjectSetPropertyData(deviceParameters->device_id, &propertyAOPA, 0, NULL, i_param_size, &b_mix);
-            }
-			
-            if( err != noErr )
-            {
-                CLog::Log(LOGERROR, "failed to set mixmode: [%4.4s]", (char *)&err );
-            }
-        }
-    }
-#warning fix listener
+        #warning fix listener
     //err = AudioHardwareRemovePropertyListener( kAudioHardwarePropertyDevices,
 	//										  HardwareListener );
+	}
 	
     if( err != noErr )
     {
@@ -632,6 +607,7 @@ int CoreAudioAUHAL::OpenSPDIF(struct CoreAudioDeviceParameters *deviceParameters
 	int numStreams = propertySize / sizeof(AudioStreamID);
 	
 	// iterate through streams and find digital outs
+	propertyAOPA.mScope = kAudioObjectPropertyScopeGlobal; // streams only have global scope
 	propertyAOPA.mSelector = kAudioStreamPropertyAvailablePhysicalFormats;
 	
 	for (int i=0; i<numStreams; i++)
@@ -666,13 +642,11 @@ int CoreAudioAUHAL::OpenSPDIF(struct CoreAudioDeviceParameters *deviceParameters
 					  currentASRD.mSampleRateRange.mMinimum <= 48000 && 
 					  currentASRD.mSampleRateRange.mMaximum >= 48000)))
 				{
-					CLog::Log(LOGERROR, "Found digital interface at stream ID 0x%0x for device 0x%0x", currentStreamID, deviceParameters->device_id);
-					AudioStreamBasicDescription spdifASBD;
-					memcpy(&spdifASBD, &currentASRD.mFormat, sizeof(AudioStreamBasicDescription));
-					if (spdifASBD.mSampleRate == kAudioStreamAnyRate) spdifASBD.mSampleRate = 48000;
+					CLog::Log(LOGINFO, "Found digital interface at stream ID 0x%0x for device 0x%0x", currentStreamID, deviceParameters->device_id);
+					memcpy(&deviceParameters->stream_format, &currentASRD.mFormat, sizeof(AudioStreamBasicDescription));
+					if (deviceParameters->stream_format.mSampleRate == kAudioStreamAnyRate) deviceParameters->stream_format.mSampleRate = 48000;
 					deviceParameters->i_stream_id = currentStreamID;
-					deviceParameters->i_stream_index = j;
-					deviceParameters->stream_format = spdifASBD;
+					deviceParameters->i_stream_index = i;
 					break;
 				}
 			}
@@ -686,10 +660,16 @@ int CoreAudioAUHAL::OpenSPDIF(struct CoreAudioDeviceParameters *deviceParameters
 	}
 	free(pStreams);
 	
+	// store current format
+	propertySize = sizeof(AudioStreamBasicDescription);
+	propertyAOPA.mSelector = kAudioStreamPropertyPhysicalFormat;
+	err = AudioObjectGetPropertyData(deviceParameters->i_stream_id, &propertyAOPA, 0, NULL, &propertySize, &deviceParameters->sfmt_revert);
+	
 	CLog::Log(LOGINFO, STREAM_FORMAT_MSG("original stream format: ", deviceParameters->sfmt_revert ) );
 
     if( !AudioStreamChangeFormat(deviceParameters, deviceParameters->i_stream_id, deviceParameters->stream_format))
         return false;
+	deviceParameters->b_revert = true;
 
 	// Get device hardware buffer size
 
@@ -765,7 +745,7 @@ int CoreAudioAUHAL::AudioStreamChangeFormat(CoreAudioDeviceParameters *devicePar
 {
     OSStatus            status = noErr;
 	AudioObjectPropertyAddress propertyAOPA;
-	propertyAOPA.mScope = kAudioDevicePropertyScopeOutput;
+	propertyAOPA.mScope = kAudioObjectPropertyScopeGlobal;
 	propertyAOPA.mElement = kAudioObjectPropertyElementMaster;	
 	propertyAOPA.mSelector = kAudioStreamPropertyPhysicalFormat;
 	UInt32 propertySize = sizeof(AudioStreamBasicDescription);
@@ -776,7 +756,6 @@ int CoreAudioAUHAL::AudioStreamChangeFormat(CoreAudioDeviceParameters *devicePar
 	CSingleLock lock(m_cs); // acquire lock
 
     /* change the format */
-	
 	status = AudioObjectSetPropertyData(deviceParameters->i_stream_id, &propertyAOPA, 0, NULL, propertySize, &change_format);
 	
     if(status != noErr)
@@ -800,12 +779,12 @@ int CoreAudioAUHAL::AudioStreamChangeFormat(CoreAudioDeviceParameters *devicePar
 		   actual_format.mFramesPerPacket == change_format.mFramesPerPacket )
         {
             /* The right format is now active */
-            break;
+            return true;
         }
         /* We need to check again */
     }
 	
-    return true;
+    return false;
 }
 
 /*****************************************************************************
