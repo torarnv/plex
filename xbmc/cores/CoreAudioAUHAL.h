@@ -83,10 +83,10 @@ class CoreAudioAUHAL
 											AudioBufferList * outOutputData,
 											const AudioTimeStamp * inOutputTime,
 											void * threadGlobals );
-		static OSStatus StreamListener( AudioStreamID inStream,
-									   UInt32 inChannel,
-									   AudioDevicePropertyID inPropertyID,
-									   void * inClientData );
+		static OSStatus HardwareStreamListener(AudioObjectID inObjectID,
+										UInt32        inNumberAddresses,
+										const AudioObjectPropertyAddress inAddresses[],
+										void* inClientData);
 		
 		static PlexAudioDevicesPtr GetDeviceArray(); // could make this public interface to current device
 		
