@@ -194,20 +194,24 @@ error:
 
 HRESULT CoreAudioAUHAL::Deinitialize()
 {
-  // Don't allow double deinitialization.
-  if (m_bIsInitialized == false)
-    return S_OK;
-  
+	// Don't allow double deinitialization.
+	if (m_bIsInitialized == false)
+		return S_OK;
+	
 	CLog::Log(LOGDEBUG,"CoreAudioAUHAL::Deinitialize");
 	
 	OSStatus            err = noErr;
-    	
+    UInt32              i_param_size = 0;
+	AudioObjectPropertyAddress propertyAOPA;
+	propertyAOPA.mScope = kAudioDevicePropertyScopeOutput;
+	propertyAOPA.mElement = kAudioObjectPropertyElementMaster;
+	
     if(deviceParameters->au_unit)
     {
         AudioOutputUnitStop( deviceParameters->au_unit );
         AudioUnitUninitialize( deviceParameters->au_unit);
 		CloseComponent( deviceParameters->au_unit );
-
+		
         deviceParameters->au_unit = NULL;
     }
 	
@@ -216,12 +220,10 @@ HRESULT CoreAudioAUHAL::Deinitialize()
 		ac3encoderFinalise(&deviceParameters->m_ac3encoder);
 	}
 	
-	
-	
     if( deviceParameters->b_digital )
     {
-      printf("Stopping CoreAudio device.\n");
-      
+		printf("Stopping Core Audio device.\n");
+		
         /* Stop device */
         err = AudioDeviceStop( deviceParameters->device_id,
 							  (AudioDeviceIOProc)RenderCallbackSPDIF );
@@ -230,16 +232,6 @@ HRESULT CoreAudioAUHAL::Deinitialize()
 			CLog::Log(LOGERROR, "AudioDeviceStop failed: [%4.4s]", (char *)&err );
         }
 		
-		// Remove stream listener              
-		AudioObjectPropertyAddress propertyAOPA;
-		propertyAOPA.mScope = kAudioObjectPropertyScopeGlobal;
-		propertyAOPA.mElement = kAudioObjectPropertyElementMaster;
-		propertyAOPA.mSelector = kAudioStreamPropertyPhysicalFormat;
-		
-		err = AudioObjectRemovePropertyListener(deviceParameters->i_stream_id, 
-												&propertyAOPA, 
-												HardwareStreamListener, 
-												deviceParameters);
         /* Remove IOProc callback */
 		err = AudioDeviceDestroyIOProcID(deviceParameters->device_id, deviceParameters->sInputIOProcID);
 		
@@ -248,86 +240,62 @@ HRESULT CoreAudioAUHAL::Deinitialize()
             CLog::Log(LOGERROR, "AudioDeviceRemoveIOProc failed: [%4.4s]", (char *)&err );
         }
 		
-        #warning fix listener
-<<<<<<< HEAD
-=======
-		//err = AudioHardwareRemovePropertyListener( kAudioHardwarePropertyDevices,
-	//										  HardwareListener );
+        err = AudioObjectRemovePropertyListener(deviceParameters->device_id, &propertyAOPA, HardwareStreamListener, deviceParameters);
 		if( err != noErr )
 		{
 			CLog::Log(LOGERROR, "AudioHardwareRemovePropertyListener failed: [%4.4s]", (char *)&err );
 		}
->>>>>>> Start reworking deinitialise code
-	}
-	
-    
-	
-<<<<<<< HEAD
-    // Revert the stream format *after* we've set all the parameters, as doing it before seems to 
-    // result in a hang under some circumstances, an apparent deadlock in CoreAudio between handing
-    // the stream format change and setting parameters. 
-    //
-    if (deviceParameters->b_digital && deviceParameters->b_revert)
-    {
-      printf("Reverting CoreAudio stream mode\n");
-      AudioStreamChangeFormat(deviceParameters, deviceParameters->i_stream_id, deviceParameters->sfmt_revert);
-=======
-    	
-    if (deviceParameters->b_digital && deviceParameters->b_revert)
-    {
-		CLog::Log(LOGDEBUG, "Reverting CoreAudio stream mode\n");
-		AudioStreamChangeFormat(deviceParameters, deviceParameters->i_stream_id, deviceParameters->sfmt_revert);
 		
-		CLog::Log(LOGDEBUG, "Reverting CoreAudio mix mode\n");
-		UInt32 mixable = 1;
-		i_param_size = sizeof(UInt32);
-		/* Set mixable to true */
-		propertyAOPA.mSelector = kAudioDevicePropertySupportsMixing;
-		
-		if (AudioObjectHasProperty(deviceParameters->device_id, &propertyAOPA))
+		if (deviceParameters->b_revert)
 		{
-			err = AudioObjectGetPropertyData(deviceParameters->device_id, &propertyAOPA, 0, NULL, &i_param_size, &mixable);
-		}
-		
-		if( err != noErr )
-		{
-			CLog::Log(LOGERROR, "failed to set mixmode: [%4.4s]", (char *)&err );
-		}
-		
-		CLog::Log(LOGINFO, "Reverting CoreAudio hog mode\n");
-		propertyAOPA.mSelector = kAudioDevicePropertyHogMode;
-		pid_t currentHogMode;
-		i_param_size = sizeof(pid_t);
-		
-		if (AudioObjectHasProperty(deviceParameters->device_id, &propertyAOPA))
-		{
-			err = AudioObjectGetPropertyData(deviceParameters->device_id, &propertyAOPA, 0, NULL, &i_param_size, &currentHogMode);
+			CLog::Log(LOGDEBUG, "Reverting CoreAudio stream mode\n");
+			AudioStreamChangeFormat(deviceParameters, deviceParameters->i_stream_id, deviceParameters->sfmt_revert);
 			
-			if (err != noErr) CLog::Log(LOGERROR, "Could not read hogmode: [%4.4s]", (char *)&err);
-			if (currentHogMode == getpid())
+			CLog::Log(LOGDEBUG, "Reverting CoreAudio mix mode\n");
+			UInt32 mixable = 1;
+			i_param_size = sizeof(UInt32);
+			/* Set mixable to true */
+			propertyAOPA.mSelector = kAudioDevicePropertySupportsMixing;
+			
+			if (AudioObjectHasProperty(deviceParameters->device_id, &propertyAOPA))
 			{
-				err = AudioObjectSetPropertyData(deviceParameters->device_id, &propertyAOPA, 0, NULL, i_param_size, &currentHogMode);
-				if( err != noErr ) CLog::Log(LOGERROR, "Could not release hogmode: [%4.4s]", (char *)&err );
+				err = AudioObjectGetPropertyData(deviceParameters->device_id, &propertyAOPA, 0, NULL, &i_param_size, &mixable);
+			}
+			
+			if( err != noErr )
+			{
+				CLog::Log(LOGERROR, "failed to set mixmode: [%4.4s]", (char *)&err );
+			}
+			
+			CLog::Log(LOGINFO, "Reverting CoreAudio hog mode\n");
+			propertyAOPA.mSelector = kAudioDevicePropertyHogMode;
+			pid_t currentHogMode;
+			i_param_size = sizeof(pid_t);
+			
+			if (AudioObjectHasProperty(deviceParameters->device_id, &propertyAOPA))
+			{
+				err = AudioObjectGetPropertyData(deviceParameters->device_id, &propertyAOPA, 0, NULL, &i_param_size, &currentHogMode);
+				
+				if (err != noErr) CLog::Log(LOGERROR, "Could not read hogmode: [%4.4s]", (char *)&err);
+				if (currentHogMode == getpid())
+				{
+					err = AudioObjectSetPropertyData(deviceParameters->device_id, &propertyAOPA, 0, NULL, i_param_size, &currentHogMode);
+					if( err != noErr ) CLog::Log(LOGERROR, "Could not release hogmode: [%4.4s]", (char *)&err );
+				}
 			}
 		}
+	}
 		
-		if( deviceParameters->i_hog_pid == getpid() )
-		{
-			deviceParameters->i_hog_pid = -1;
-			i_param_size = sizeof( deviceParameters->i_hog_pid );
-			propertyAOPA.mSelector = kAudioDevicePropertyHogMode;
-		}
-
->>>>>>> Start reworking deinitialise code
-    }
-	
 	free(deviceParameters->outputBuffer);
 	free(deviceParameters->outputBufferData);
 	
-  m_bIsInitialized = false;
+	m_bIsInitialized = false;
 	return S_OK;
 }
+												
 
+	
+	
 DWORD CoreAudioAUHAL::GetSpace()
 {
 	DWORD fakeCeiling, bufferDataSize = PaUtil_GetRingBufferReadAvailable(deviceParameters->outputBuffer);
