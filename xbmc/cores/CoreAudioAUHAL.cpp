@@ -189,11 +189,8 @@ CoreAudioAUHAL::CoreAudioAUHAL(const CStdString& strName, const char *strCodec, 
 	}
 
 error:
-  /* If we reach this, this aout has failed */
-  //var_Destroy( p_aout, "audio-device" );
   free(deviceParameters);
-	m_bIsInitialized = false;
-  //return VLC_EGENERIC;
+  m_bIsInitialized = false;
   return;
 }
 
@@ -224,6 +221,8 @@ HRESULT CoreAudioAUHAL::Deinitialize()
 	{
 		ac3encoderFinalise(&deviceParameters->m_ac3encoder);
 	}
+	
+	
 	
     if( deviceParameters->b_digital )
     {
@@ -273,7 +272,10 @@ HRESULT CoreAudioAUHAL::Deinitialize()
       printf("Reverting CoreAudio stream mode\n");
       AudioStreamChangeFormat(deviceParameters, deviceParameters->i_stream_id, deviceParameters->sfmt_revert);
     }
-   
+	
+	free(deviceParameters->outputBuffer);
+	free(deviceParameters->outputBufferData);
+	
   m_bIsInitialized = false;
 	return S_OK;
 }
