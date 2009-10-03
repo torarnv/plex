@@ -249,13 +249,20 @@ HRESULT CoreAudioAUHAL::Deinitialize()
         }
 		
         #warning fix listener
+<<<<<<< HEAD
+=======
+		//err = AudioHardwareRemovePropertyListener( kAudioHardwarePropertyDevices,
+	//										  HardwareListener );
+		if( err != noErr )
+		{
+			CLog::Log(LOGERROR, "AudioHardwareRemovePropertyListener failed: [%4.4s]", (char *)&err );
+		}
+>>>>>>> Start reworking deinitialise code
 	}
 	
-    if( err != noErr )
-    {
-		CLog::Log(LOGERROR, "AudioHardwareRemovePropertyListener failed: [%4.4s]", (char *)&err );
-    }
+    
 	
+<<<<<<< HEAD
     // Revert the stream format *after* we've set all the parameters, as doing it before seems to 
     // result in a hang under some circumstances, an apparent deadlock in CoreAudio between handing
     // the stream format change and setting parameters. 
@@ -264,6 +271,54 @@ HRESULT CoreAudioAUHAL::Deinitialize()
     {
       printf("Reverting CoreAudio stream mode\n");
       AudioStreamChangeFormat(deviceParameters, deviceParameters->i_stream_id, deviceParameters->sfmt_revert);
+=======
+    	
+    if (deviceParameters->b_digital && deviceParameters->b_revert)
+    {
+		CLog::Log(LOGDEBUG, "Reverting CoreAudio stream mode\n");
+		AudioStreamChangeFormat(deviceParameters, deviceParameters->i_stream_id, deviceParameters->sfmt_revert);
+		
+		CLog::Log(LOGDEBUG, "Reverting CoreAudio mix mode\n");
+		UInt32 mixable = 1;
+		i_param_size = sizeof(UInt32);
+		/* Set mixable to true */
+		propertyAOPA.mSelector = kAudioDevicePropertySupportsMixing;
+		
+		if (AudioObjectHasProperty(deviceParameters->device_id, &propertyAOPA))
+		{
+			err = AudioObjectGetPropertyData(deviceParameters->device_id, &propertyAOPA, 0, NULL, &i_param_size, &mixable);
+		}
+		
+		if( err != noErr )
+		{
+			CLog::Log(LOGERROR, "failed to set mixmode: [%4.4s]", (char *)&err );
+		}
+		
+		CLog::Log(LOGINFO, "Reverting CoreAudio hog mode\n");
+		propertyAOPA.mSelector = kAudioDevicePropertyHogMode;
+		pid_t currentHogMode;
+		i_param_size = sizeof(pid_t);
+		
+		if (AudioObjectHasProperty(deviceParameters->device_id, &propertyAOPA))
+		{
+			err = AudioObjectGetPropertyData(deviceParameters->device_id, &propertyAOPA, 0, NULL, &i_param_size, &currentHogMode);
+			
+			if (err != noErr) CLog::Log(LOGERROR, "Could not read hogmode: [%4.4s]", (char *)&err);
+			if (currentHogMode == getpid())
+			{
+				err = AudioObjectSetPropertyData(deviceParameters->device_id, &propertyAOPA, 0, NULL, i_param_size, &currentHogMode);
+				if( err != noErr ) CLog::Log(LOGERROR, "Could not release hogmode: [%4.4s]", (char *)&err );
+			}
+		}
+		
+		if( deviceParameters->i_hog_pid == getpid() )
+		{
+			deviceParameters->i_hog_pid = -1;
+			i_param_size = sizeof( deviceParameters->i_hog_pid );
+			propertyAOPA.mSelector = kAudioDevicePropertyHogMode;
+		}
+
+>>>>>>> Start reworking deinitialise code
     }
 	
 	free(deviceParameters->outputBuffer);
