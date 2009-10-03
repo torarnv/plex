@@ -341,7 +341,13 @@ int CoreAudioAUHAL::WriteStream(uint8_t *sampleBuffer, uint32_t samplesToWrite)
 	{
 		return 0;
 	}
-	return PaUtil_WriteRingBuffer(deviceParameters->outputBuffer, sampleBuffer, samplesToWrite);
+	
+	// dump frames unless the stream is active
+	if (!deviceParameters->b_digital || deviceParameters->hardwareReady)
+	{
+		return PaUtil_WriteRingBuffer(deviceParameters->outputBuffer, sampleBuffer, samplesToWrite);
+	}
+	else return samplesToWrite;
 }
 
 void CoreAudioAUHAL::Flush()
@@ -710,7 +716,6 @@ int CoreAudioAUHAL::OpenSPDIF(struct CoreAudioDeviceParameters *deviceParameters
 		framecount <<= 1;
 	}
 
-#warning free
 	deviceParameters->outputBuffer = (PaUtilRingBuffer *)malloc(sizeof(PaUtilRingBuffer));
 	deviceParameters->outputBufferData = calloc(1, framecount * channels * bitsPerSample/8); // use uncompressed size if encoding ac3
 
@@ -746,7 +751,6 @@ int CoreAudioAUHAL::AudioStreamChangeFormat(CoreAudioDeviceParameters *devicePar
 	propertyAOPA.mElement = kAudioObjectPropertyElementMaster;	
 	propertyAOPA.mSelector = kAudioStreamPropertyPhysicalFormat;
 	UInt32 propertySize = sizeof(AudioStreamBasicDescription);
-    int i;
 
     CLog::Log(LOGINFO, STREAM_FORMAT_MSG( "setting stream format: ", change_format ));
 	
