@@ -841,7 +841,7 @@
 		E371C5170E2F2DF500FBF841 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E33466A50D2E5103005A65EC /* IOKit.framework */; };
 		E371C5180E2F2DF500FBF841 /* libaften_pcm.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E3B578950E0E3CDB002B3B3E /* libaften_pcm.a */; };
 		E371C5190E2F2DF500FBF841 /* libaften_static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E3B578960E0E3CDB002B3B3E /* libaften_static.a */; };
-		E371C51D0E2F2DF500FBF841 /* libbz2.1.0.4.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B1A921F30DF6D14F0024CC4F /* libbz2.1.0.4.dylib */; };
+		E371C51D0E2F2DF500FBF841 /* libbz2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B1A921F30DF6D14F0024CC4F /* libbz2.dylib */; };
 		E371C51E0E2F2DF500FBF841 /* libcdio-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 88ECB6670DE01550003396A7 /* libcdio-osx.a */; };
 		E371C51F0E2F2DF500FBF841 /* libfontconfig.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 88ECB6E60DE07BA6003396A7 /* libfontconfig.a */; };
 		E371C5200E2F2DF500FBF841 /* libfreetype.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E24230D26317D00618676 /* libfreetype.dylib */; };
@@ -1132,7 +1132,7 @@
 		94DEBCE00F647401003FF0E9 /* libpostproc-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libpostproc-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libpostproc-osx.a"; sourceTree = "<group>"; };
 		94DEBCE10F647401003FF0E9 /* libswscale-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libswscale-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libswscale-osx.a"; sourceTree = "<group>"; };
 		94DEBE2A0F64B949003FF0E9 /* libfaad.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfaad.a; path = xbmc/lib/libfaad2/libfaad.a; sourceTree = "<group>"; };
-		B1A921F30DF6D14F0024CC4F /* libbz2.1.0.4.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libbz2.1.0.4.dylib; path = /opt/local/lib/libbz2.1.0.4.dylib; sourceTree = "<absolute>"; };
+		B1A921F30DF6D14F0024CC4F /* libbz2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libbz2.dylib; path = /usr/lib/libbz2.dylib; sourceTree = "<absolute>"; };
 		E3065EA110182FEB004555EF /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		E30B3E8E0D5D59290030A311 /* libShout-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libShout-osx.a"; path = "xbmc/lib/libshout/libShout-osx.a"; sourceTree = "<group>"; };
 		E31312160EC647FB00629994 /* PlexRemoteHelper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PlexRemoteHelper.cpp; sourceTree = "<group>"; };
@@ -3158,7 +3158,7 @@
 				E371C5170E2F2DF500FBF841 /* IOKit.framework in Frameworks */,
 				E371C5180E2F2DF500FBF841 /* libaften_pcm.a in Frameworks */,
 				E371C5190E2F2DF500FBF841 /* libaften_static.a in Frameworks */,
-				E371C51D0E2F2DF500FBF841 /* libbz2.1.0.4.dylib in Frameworks */,
+				E371C51D0E2F2DF500FBF841 /* libbz2.dylib in Frameworks */,
 				E371C51E0E2F2DF500FBF841 /* libcdio-osx.a in Frameworks */,
 				E371C51F0E2F2DF500FBF841 /* libfontconfig.a in Frameworks */,
 				E371C5200E2F2DF500FBF841 /* libfreetype.dylib in Frameworks */,
@@ -3291,7 +3291,7 @@
 				E3B578950E0E3CDB002B3B3E /* libaften_pcm.a */,
 				E3B578960E0E3CDB002B3B3E /* libaften_static.a */,
 				E38CB6B90DF7E5B2002B36E1 /* libXBMS-osx.a */,
-				B1A921F30DF6D14F0024CC4F /* libbz2.1.0.4.dylib */,
+				B1A921F30DF6D14F0024CC4F /* libbz2.dylib */,
 				88ECB6EB0DE07C56003396A7 /* libmysqlclient.a */,
 				88ECB6E90DE07BEE003396A7 /* libogg.a */,
 				88ECB6E60DE07BA6003396A7 /* libfontconfig.a */,

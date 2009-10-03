@@ -362,4 +362,3 @@ PlexAudioDevicePtr PlexAudioDevices::FindDefault()
 
   return PlexAudioDevicePtr(ret);
 }
-
