@@ -897,6 +897,15 @@ int CDVDDemuxFFmpeg::GetStreamBitrate()
       missingStreamInfo = true;
   }
 
+  if (overallBitrate == 0 && aggregateBitrate == 0 && m_pFormatContext->file_size > 0 && m_pFormatContext->duration != (uint32_t)AV_NOPTS_VALUE) 
+  {
+    int64_t seconds = m_pFormatContext->duration / AV_TIME_BASE;
+    int bitsPerSecond = (int)(m_pFormatContext->file_size / seconds * 8);
+    
+    printf("Using file computed bitrate = %d\n", bitsPerSecond);
+    return (int)bitsPerSecond;
+  }
+  
   printf("Aggregate bitrate = %d, file bitrate = %d.\n", aggregateBitrate, overallBitrate);
   
   if (missingStreamInfo)
