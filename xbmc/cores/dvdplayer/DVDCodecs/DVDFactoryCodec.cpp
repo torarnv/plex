@@ -147,7 +147,7 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec( CDVDStreamInfo &hint )
   CDVDAudioCodec* pCodec = NULL;
   CDVDCodecOptions options;
 
-  if (!hint.forcelibdts) pCodec = OpenCodec( new CDVDAudioCodecPassthrough(), hint, options );
+  pCodec = OpenCodec( new CDVDAudioCodecPassthrough(), hint, options );
   if( pCodec ) return pCodec;
 
   switch (hint.codec)
@@ -160,14 +160,7 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec( CDVDStreamInfo &hint )
     }
   case CODEC_ID_DTS:
     {
-		if (hint.forcelibdts)
-		{
-			pCodec = OpenCodec( new CDVDAudioCodecLibDts(), hint, options );
-		}
-		else
-		{
-			pCodec = OpenCodec(new CDVDAudioCodecFFmpeg, hint, options);
-		}
+		pCodec = OpenCodec( new CDVDAudioCodecLibDts(), hint, options );
       if( pCodec ) return pCodec;
       break;
     }

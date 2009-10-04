@@ -76,7 +76,6 @@ public:
     ExtraSize = 0;
     language[0] = 0;
     disabled = false;
-    forcelibdts = false;
     iBitRate = 0;
   }
 
@@ -97,7 +96,6 @@ public:
   CodecID codec;
   StreamType type;
   int source;
-  bool forcelibdts;
 
   int iDuration; // in mseconds
   void* pPrivate; // private pointer for the demuxer
