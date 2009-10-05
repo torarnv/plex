@@ -8,10 +8,10 @@
 /* #undef HAVE_DOPRNT */
 
 /* use enca */
-#define HAVE_ENCA 1
+/* #undef HAVE_ENCA */
 
 /* Define to 1 if you have the <enca.h> header file. */
-#define HAVE_ENCA_H 1
+/* #undef HAVE_ENCA_H */
 
 /* found fontconfig via pkg-config */
 #define HAVE_FONTCONFIG 1

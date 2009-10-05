@@ -31,8 +31,8 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-build_triplet = i386-apple-darwin9.6.0
-host_triplet = i386-apple-darwin9.6.0
+build_triplet = i386-apple-darwin10.0.0
+host_triplet = i386-apple-darwin10.0.0
 subdir = libass
 DIST_COMMON = $(dist_assheaders_HEADERS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in
@@ -60,7 +60,7 @@ libass_la_OBJECTS = $(am_libass_la_OBJECTS)
 libass_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(libass_la_LDFLAGS) $(LDFLAGS) -o $@
-DEFAULT_INCLUDES = -I. -I../../libenca -I$(top_builddir)
+DEFAULT_INCLUDES = -I. -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
@@ -88,7 +88,7 @@ AUTOMAKE = ${SHELL} /Users/elan/Code/C++/Eclipse/Plex/xbmc/lib/libass/missing --
 AWK = gawk
 CC = gcc
 CCDEPMODE = depmode=gcc3
-CFLAGS = -g -O2 -I/opt/local/include   -I/opt/local/include/freetype2 -I/opt/local/include  
+CFLAGS = -mmacosx-version-min=10.5 -I/opt/local/include   -I/opt/local/include/freetype2 -I/opt/local/include  
 CPP = gcc -E
 CPPFLAGS = 
 CXX = g++
@@ -117,7 +117,7 @@ INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_PROGRAM = ${INSTALL}
 INSTALL_SCRIPT = ${INSTALL}
 INSTALL_STRIP_PROGRAM = $(install_sh) -c -s
-LDFLAGS = 
+LDFLAGS = -mmacosx-version-min=10.5
 LIBOBJS =  ${LIBOBJDIR}lstat$U.o
 LIBS = -liconv  -L/opt/local/lib -lfontconfig -lexpat -lfreetype -lz   -L/opt/local/lib -lfreetype -lz  
 LIBTOOL = $(SHELL) $(top_builddir)/libtool
@@ -155,10 +155,10 @@ am__quote =
 am__tar = ${AMTAR} chof - "$$tardir"
 am__untar = ${AMTAR} xf -
 bindir = ${exec_prefix}/bin
-build = i386-apple-darwin9.6.0
+build = i386-apple-darwin10.0.0
 build_alias = 
 build_cpu = i386
-build_os = darwin9.6.0
+build_os = darwin10.0.0
 build_vendor = apple
 builddir = .
 datadir = ${datarootdir}
@@ -166,10 +166,10 @@ datarootdir = ${prefix}/share
 docdir = ${datarootdir}/doc/${PACKAGE_TARNAME}
 dvidir = ${docdir}
 exec_prefix = ${prefix}
-host = i386-apple-darwin9.6.0
+host = i386-apple-darwin10.0.0
 host_alias = 
 host_cpu = i386
-host_os = darwin9.6.0
+host_os = darwin10.0.0
 host_vendor = apple
 htmldir = ${docdir}
 includedir = ${prefix}/include

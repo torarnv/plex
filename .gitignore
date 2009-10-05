@@ -17,3 +17,7 @@ xbmc/cores/dvdplayer/Codecs/ffmpeg/ffserver_g
 *.pyc
 xbmc/cores/dvdplayer/Codecs/ffmpeg/config.h
 xbmc/cores/dvdplayer/Codecs/ffmpeg/version.h
+xbmc/lib/libass/config.log
+xbmc/lib/libass/config.status
+xbmc/lib/libass/libtool
+xbmc/lib/libass/stamp-h1
