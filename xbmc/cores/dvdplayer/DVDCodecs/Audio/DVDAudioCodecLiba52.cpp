@@ -23,6 +23,9 @@
 #include "AudioContext.h"
 #include "DVDAudioCodecLiba52.h"
 #include "DVDStreamInfo.h"
+#include "GUISettings.h"
+
+#include "Compressors.h"
 
 #ifndef _LINUX
 typedef __int16 int16_t;
@@ -31,14 +34,25 @@ typedef __int32 int32_t;
 
 #define HEADER_SIZE 7
 
-static inline int16_t convert(int32_t i)
+static inline int16_t convert(int32_t i, unsigned short* compressor)
 {
 #ifdef LIBA52_FIXED
     i >>= 15;
 #else
     i -= 0x43c00000;
 #endif
-    return (i > 32767) ? 32767 : ((i < -32768) ? -32768 : i);
+    
+    // Clip.
+    if (i > 32767)
+      i = 32767;
+    else if (i < -32768)
+      i = -32768;
+    
+    // Apply compression.
+    if (compressor)
+      i = (i < 0) ? -compressor[-i] : compressor[i];
+    
+    return i;
 }
 
 /**
@@ -47,7 +61,7 @@ static inline int16_t convert(int32_t i)
  * \param in the input buffer containing the planar samples.
  * \param out the output buffer where the interleaved result is stored.
  */
-static int resample_int16(sample_t * in, int16_t *out, int32_t channel_map)
+static int resample_int16(sample_t * in, int16_t *out, int32_t channel_map, unsigned short* compressor)
 {
     unsigned long i;
     int16_t *p = out;
@@ -58,7 +72,7 @@ static int resample_int16(sample_t * in, int16_t *out, int32_t channel_map)
 	    if (ch == 15)
 		*p = 0;
 	    else
-		*p = convert( ((int32_t*)in)[i + ((ch-1)<<8)] );
+		*p = convert( ((int32_t*)in)[i + ((ch-1)<<8)], compressor );
 	    p++;
 	} while ((map >>= 4));
     }
@@ -268,6 +282,30 @@ int CDVDAudioCodecLiba52::ParseFrame(BYTE* data, int size, BYTE** frame, int* fr
   return data - orig;
 }
 
+/***********************************************************************
+ * dynrng_call
+ ***********************************************************************
+ * Boosts soft audio -- taken from gbooker's work in A52Decoder, comment and all..
+ * (And Plex recursively stole this from HandBrake.)
+ * 
+ * Two cases
+ * 1) The user requested a compression of 1 or less, return the typical power rule
+ * 2) The user requested a compression of more than 1 (decompression):
+ *    If the stream's requested compression is less than 1.0 (loud sound), return the normal compression
+ *    If the stream's requested compression is more than 1.0 (soft sound), use power rule (which will make
+ *   it louder in this case).
+ *
+ **********************************************************************/
+sample_t dynrng_call (sample_t c, void *data)
+{
+  float *level = (float *)data;
+  float levelToUse = (float)*level;
+  if(c > 1.0 || levelToUse <= 1.0)
+    return powf(c, levelToUse);
+  else
+    return c;
+}
+
 int CDVDAudioCodecLiba52::Decode(BYTE* pData, int iSize)
 {
   int len, framesize;
@@ -279,14 +317,17 @@ int CDVDAudioCodecLiba52::Decode(BYTE* pData, int iSize)
   if(!frame)
     return len;
 
-  level_t level = 1.0f;
+  // The bias is set to 384 so as it makes it faster to convert the
+  // samples to integer format, using a trick based on the IEEE
+  // floating-point format.
+  //
+  level_t level = 1;
   sample_t bias = 384;
   int     flags = m_iOutputFlags;
 
   m_dll.a52_frame(m_pState, frame, &flags, &level, bias);
-
-  //m_dll.a52_dynrng(m_pState, NULL, NULL);
-  
+  m_dll.a52_dynrng(m_pState, 0, 0);
+    
   for (int i = 0; i < 6; i++)
   {
     if (m_dll.a52_block(m_pState) != 0)
@@ -294,7 +335,7 @@ int CDVDAudioCodecLiba52::Decode(BYTE* pData, int iSize)
       CLog::Log(LOGERROR, "CDVDAudioCodecLiba52::Decode - a52_block failed");
       break;
     }
-    m_decodedSize += 2*resample_int16(m_fSamples, (int16_t*)(m_decodedData + m_decodedSize), m_iOutputMapping);
+    m_decodedSize += 2*resample_int16(m_fSamples, (int16_t*)(m_decodedData + m_decodedSize), m_iOutputMapping, m_compressor);
   }
   return len;
 }
@@ -317,6 +358,15 @@ void CDVDAudioCodecLiba52::SetDefault()
   m_iOutputFlags = 0;
   m_decodedSize = 0;
   m_inputSize = 0;
+  m_iBoostFactor = g_guiSettings.GetInt("audiooutput.boostmixdown");
+  m_compressor = 0;
+  
+  if (m_iBoostFactor == BOOST_NORMAL)
+    m_compressor = gainCurveNormal;
+  else if (m_iBoostFactor == BOOST_LARGE)
+    m_compressor = gainCurveMedium;
+  else if (m_iBoostFactor == BOOST_HUGE)
+    m_compressor = gainCurveLarge;
 }
 
 void CDVDAudioCodecLiba52::Reset()

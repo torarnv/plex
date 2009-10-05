@@ -23,20 +23,34 @@
 #include "DVDAudioCodecLibDts.h"
 #include "AudioContext.h"
 #include "DVDStreamInfo.h"
+#include "GUISettings.h"
+
+#include "Compressors.h"
 
 #define HEADER_SIZE 14
 
-static inline int16_t convert(int32_t i)
+int16_t CDVDAudioCodecLibDts::convert(int32_t i, unsigned short* compressor)
 {
 #ifdef LIBDTS_FIXED
     i >>= 15;
 #else
     i -= 0x43c00000;
 #endif
-    return (i > 32767) ? 32767 : ((i < -32768) ? -32768 : i);
+    
+    // Clip.
+    if (i > 32767)
+      i = 32767;
+    else if (i < -32768)
+      i = -32768;
+    
+    // Apply compression.
+    if (compressor)
+      i = (i < 0) ? -compressor[-i] : compressor[i];  
+
+    return i;
 }
 
-void CDVDAudioCodecLibDts::convert2s16_multi(convert_t * _f, int16_t * s16, int flags)
+void CDVDAudioCodecLibDts::convert2s16_multi(convert_t * _f, int16_t * s16, int flags, unsigned short* compressor)
 {
   register int i;
   register int32_t * f = (int32_t *) _f;
@@ -55,8 +69,8 @@ void CDVDAudioCodecLibDts::convert2s16_multi(convert_t * _f, int16_t * s16, int 
     case DTS_DOLBY:
       for (i = 0; i < 256; i++)
       {
-        s16[2*i  ] = convert (f[i]);
-        s16[2*i+1] = convert (f[i+256]);
+        s16[2*i  ] = convert (f[i], compressor);
+        s16[2*i+1] = convert (f[i+256], compressor);
       }
       break;
     case DTS_3F:
@@ -207,7 +221,10 @@ void CDVDAudioCodecLibDts::SetupChannels(int flags)
   if (m_iOutputChannels == 1) 
     m_iOutputFlags = DTS_MONO;
   else if (m_iOutputChannels == 2)
+  {
     m_iOutputFlags = DTS_STEREO;
+    m_iOutputFlags |=DTS_ADJUST_LEVEL;
+  }
   else
   {
     m_iOutputFlags  = m_iSourceFlags;
@@ -302,6 +319,8 @@ int CDVDAudioCodecLibDts::ParseFrame(BYTE* data, int size, BYTE** frame, int* fr
   return data - orig;
 }
 
+extern sample_t dynrng_call (sample_t c, void *data);
+
 int CDVDAudioCodecLibDts::Decode(BYTE* pData, int iSize)
 {
   int len, framesize;
@@ -316,11 +335,10 @@ int CDVDAudioCodecLibDts::Decode(BYTE* pData, int iSize)
   level_t  level = 1.0f;
   sample_t bias  = 384;
   int      flags = m_iOutputFlags;
-  
-  m_dll.dts_frame(m_pState, frame, &flags, &level, bias);
 
-  //m_dll.dts_dynrng(m_pState, NULL, NULL);
-        
+  m_dll.dts_frame(m_pState, frame, &flags, &level, bias);
+  m_dll.dts_dynrng(m_pState, 0, 0);
+  
   int blocks = m_dll.dts_blocks_num(m_pState);
   for (int i = 0; i < blocks; i++)
   {
@@ -329,7 +347,7 @@ int CDVDAudioCodecLibDts::Decode(BYTE* pData, int iSize)
       CLog::Log(LOGERROR, "CDVDAudioCodecLibDts::Decode : dts_block != 0");
       break;
     }
-    convert2s16_multi(m_fSamples, (int16_t*)(m_decodedData + m_decodedSize), flags & (DTS_CHANNEL_MASK | DTS_LFE));
+    convert2s16_multi(m_fSamples, (int16_t*)(m_decodedData + m_decodedSize), flags & (DTS_CHANNEL_MASK | DTS_LFE), m_compressor);
     m_decodedSize += 2 * 256 * m_iOutputChannels;
   }
         
@@ -353,6 +371,16 @@ void CDVDAudioCodecLibDts::SetDefault()
   m_iOutputFlags = 0;
   m_decodedSize = 0;
   m_inputSize = 0;
+  
+  m_iBoostFactor = g_guiSettings.GetInt("audiooutput.boostmixdown");
+  m_compressor = 0;
+  
+  if (m_iBoostFactor == BOOST_NORMAL)
+    m_compressor = gainCurveNormal;
+  else if (m_iBoostFactor == BOOST_LARGE)
+    m_compressor = gainCurveMedium;
+  else if (m_iBoostFactor == BOOST_HUGE)
+    m_compressor = gainCurveLarge;
 }
 
 void CDVDAudioCodecLibDts::Reset()

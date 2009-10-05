@@ -55,6 +55,12 @@
 
 #endif
 
+// Mixdown volume boost.
+#define BOOST_DISABLED   0
+#define BOOST_NORMAL     1
+#define BOOST_LARGE      2
+#define BOOST_HUGE       3
+
 // Subtitle colours
 
 #define SUBTITLE_COLOR_START  0

@@ -66,6 +66,9 @@ protected:
   int m_iOutputChannels;
   unsigned int m_iOutputMapping;
 
+  int m_iBoostFactor;
+  unsigned short* m_compressor;
+  
   DllLiba52 m_dll;
 
   BYTE m_decodedData[131072] XBMC_ALIGN_INT; // could be a bit to big

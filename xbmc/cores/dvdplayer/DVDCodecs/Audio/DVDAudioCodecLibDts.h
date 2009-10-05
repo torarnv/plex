@@ -47,7 +47,8 @@ protected:
   int ParseFrame(BYTE* data, int size, BYTE** frame, int* framesize);
   
   // taken from the libdts project
-  static void convert2s16_multi(convert_t * _f, int16_t * s16, int flags);
+  static void convert2s16_multi(convert_t * _f, int16_t * s16, int flags, unsigned short* compressor=0);
+  static int16_t convert(int32_t i, unsigned short* compressor=0);
 
   dts_state_t* m_pState;
   
@@ -61,6 +62,9 @@ protected:
 
   int m_iOutputFlags;
   int m_iOutputChannels;
+  
+  int m_iBoostFactor;
+  unsigned short* m_compressor;
 
   DllLibDts m_dll;
 

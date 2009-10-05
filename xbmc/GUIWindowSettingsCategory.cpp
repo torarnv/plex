@@ -457,6 +457,16 @@ void CGUIWindowSettingsCategory::CreateSettings()
 		pControl->SetValue(pSettingInt->GetData());
     }
 #endif
+    else if (strSetting.Equals("audiooutput.boostmixdown"))
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->AddLabel(g_localizeStrings.Get(13641), BOOST_DISABLED);
+      pControl->AddLabel(g_localizeStrings.Get(13642), BOOST_NORMAL);
+      pControl->AddLabel(g_localizeStrings.Get(13643), BOOST_LARGE);
+      pControl->AddLabel(g_localizeStrings.Get(13644), BOOST_HUGE);
+      pControl->SetValue(pSettingInt->GetData());
+    }
     else if (strSetting.Equals("videooutput.aspect"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;

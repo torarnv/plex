@@ -549,7 +549,7 @@ bool CDVDPlayer::OpenDemuxStream()
   
   if (file.m_iBitrate > 0)
     bitrate = file.m_iBitrate * 1000;
-   
+  
   // Set the cache size based on the bitrate.
   if (bitrate > 0)
   {

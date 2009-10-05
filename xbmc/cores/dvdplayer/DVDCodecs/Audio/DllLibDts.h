@@ -31,9 +31,9 @@ typedef __int32          int32_t;
 typedef __int16          int16_t;
 #endif
 
-#include "libdts/dts.h"
+#include "libdca/dts.h"
 
-#ifdef LIBDTS_DOUBLE
+#ifdef LIBDCA_DOUBLE
 typedef float convert_t;
 #else
 typedef sample_t convert_t;
@@ -72,13 +72,13 @@ class DllLibDts : public DllDynamic, DllLibDtsInterface
   DEFINE_METHOD1(sample_t *, dts_samples, (dts_state_t * p1))
   DEFINE_METHOD1(void, dts_free, (dts_state_t * p1))
   BEGIN_METHOD_RESOLVE()
-    RESOLVE_METHOD(dts_init)
-    RESOLVE_METHOD(dts_syncinfo)
-    RESOLVE_METHOD(dts_frame )
-    RESOLVE_METHOD(dts_dynrng)
-    RESOLVE_METHOD(dts_blocks_num)
-    RESOLVE_METHOD(dts_block)
-    RESOLVE_METHOD(dts_samples)
-    RESOLVE_METHOD(dts_free)
+    RESOLVE_METHOD(dca_init)
+    RESOLVE_METHOD(dca_syncinfo)
+    RESOLVE_METHOD(dca_frame )
+    RESOLVE_METHOD(dca_dynrng)
+    RESOLVE_METHOD(dca_blocks_num)
+    RESOLVE_METHOD(dca_block)
+    RESOLVE_METHOD(dca_samples)
+    RESOLVE_METHOD(dca_free)
   END_METHOD_RESOLVE()
 };

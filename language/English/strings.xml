@@ -488,6 +488,7 @@
   <string id="570">Date Added</string>
   <string id="571">Default</string>
   <string id="572">Studio</string>
+  
   <string id="574">Digital Output Support</string>
   <string id="575">Autodetect</string>
   <string id="576">Force Digital</string>
@@ -1214,6 +1215,12 @@
   <string id="13634">Enabled</string>
 
   <string id="13635">Enable Scrobbling</string>
+  
+  <string id="13640">Mixdown Volume Boost</string>
+  <string id="13641">Disabled</string>
+  <string id="13642">Normal</string>
+  <string id="13643">Large</string>
+  <string id="13644">Huge</string>
 
   <string id="14000">Stack</string>
   <string id="14001">Unstack</string>

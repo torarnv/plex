@@ -441,9 +441,10 @@ CGUISettings::CGUISettings(void)
 #endif
   AddBool(6, "audiooutput.ac3passthrough", 364, true);
   AddBool(7, "audiooutput.dtspassthrough", 254, true);
-  AddBool(8, "audiooutput.normalisevolume", 577, false);
-  AddBool(8, "audiooutput.systemoutputfollows", 578, true);
-  AddBool(8, "audiooutput.systemvolumefollows", 579, true);
+  AddInt(8, "audiooutput.boostmixdown", 13640, BOOST_DISABLED, BOOST_DISABLED, 1, BOOST_HUGE, SPIN_CONTROL_TEXT);
+  AddBool(9, "audiooutput.normalisevolume", 577, false);
+  AddBool(10, "audiooutput.systemoutputfollows", 578, true);
+  AddBool(11, "audiooutput.systemvolumefollows", 579, true);
   
   // Controllers.
   AddCategory(4, "appleremote", 13600);
