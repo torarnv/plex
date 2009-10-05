@@ -2569,7 +2569,7 @@ CStdString CFileItem::GetCachedMusicThumb() const
 CStdString CFileItem::GetCachedVideoThumb() const
 {
   // get the locally cached thumb
-  CStdString root;
+  CStdString root = g_settings.GetVideoThumbFolder();
   Crc32 crc;
   if (IsStack())
   {
@@ -2587,7 +2587,6 @@ CStdString CFileItem::GetCachedVideoThumb() const
     else
     {
       crc.ComputeFromLowerCase(m_strPath);
-      root = g_settings.GetVideoThumbFolder();
     }
   }
 
