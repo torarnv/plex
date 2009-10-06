@@ -28,6 +28,7 @@
 #include "GUIDialogContextMenu.h"
 
 class CFileItemList;
+class MediaRefresher;
 
 // base class for all media windows
 class CGUIMediaWindow : public CGUIWindow
@@ -97,6 +98,8 @@ protected:
   int m_iLastControl;
   int m_iSelectedItem;
   
+  MediaRefresher* m_mediaRefresher;
   bool m_wasDirectoryListingCancelled;
   CStopWatch m_refreshTimer;
+  bool m_isRefreshing;
 };

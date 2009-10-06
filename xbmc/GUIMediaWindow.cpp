@@ -62,6 +62,42 @@
 using namespace std;
 using namespace DIRECTORY;
 
+class MediaRefresher : public CThread
+{
+ public:
+  
+  MediaRefresher(const string& path)
+    : m_path(path)
+    , m_doneLoading(false)
+    , m_canDie(false)
+  {
+    Create(true);
+  }
+  
+  virtual void Process()
+  {
+    // Execute the request.
+    CPlexDirectory plexDir(true, false);
+    plexDir.GetDirectory(m_path, m_itemList);
+    m_doneLoading = true;
+    
+    // Wait until I can die.
+    while (m_canDie == false)
+      Sleep(100);
+  }
+  
+  bool            isDone() const { return m_doneLoading; }
+  CFileItemList&  getItemList()  { return m_itemList;    }
+  void            die()          { m_canDie = true;      }
+  
+ private:
+  
+  string        m_path;
+  CFileItemList m_itemList;
+  volatile bool m_doneLoading;
+  volatile bool m_canDie;
+};
+
 CGUIMediaWindow::CGUIMediaWindow(DWORD id, const char *xmlFile)
     : CGUIWindow(id, xmlFile)
 {
@@ -70,12 +106,17 @@ CGUIMediaWindow::CGUIMediaWindow(DWORD id, const char *xmlFile)
   m_iLastControl = -1;
   m_iSelectedItem = -1;
   m_wasDirectoryListingCancelled = false;
+  m_isRefreshing = false;
+  m_mediaRefresher = 0;
 
   m_guiState.reset(CGUIViewState::GetViewState(GetID(), *m_vecItems));
 }
 
 CGUIMediaWindow::~CGUIMediaWindow()
 {
+  if (m_mediaRefresher)
+    m_mediaRefresher->die();
+  
   delete m_vecItems;
 }
 
@@ -199,10 +240,16 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
     {
       m_iSelectedItem = m_viewControl.GetSelectedItem();
       m_iLastControl = GetFocusedControlID();
+      
       if (m_refreshTimer.IsRunning())
-      {
         m_refreshTimer.Stop();
+      
+      if (m_mediaRefresher)
+      {
+        m_mediaRefresher->die();
+        m_mediaRefresher = 0;
       }
+      
       CGUIWindow::OnMessage(message);
       // Call ClearFileItems() after our window has finished doing any WindowClose
       // animations
@@ -771,16 +818,12 @@ void CGUIMediaWindow::OnFinalizeFileItems(CFileItemList &items)
   if (m_vecItems->m_autoRefresh > 0)
   {
     if (!m_refreshTimer.IsRunning())
-    {
       m_refreshTimer.StartZero();
-    }
   }
   else
   {
     if (m_refreshTimer.IsRunning())
-    {
       m_refreshTimer.Stop();
-    }    
   }
 }
 
@@ -1510,10 +1553,25 @@ void CGUIMediaWindow::Render()
 {
   if (m_refreshTimer.IsRunning() && m_vecItems->m_autoRefresh > 0 && m_refreshTimer.GetElapsedSeconds() >= m_vecItems->m_autoRefresh)
   {
-    int selectedItem = m_viewControl.GetSelectedItem();
-    Update(m_vecItems->m_strPath);
-    m_viewControl.SetSelectedItem(selectedItem);
-    m_refreshTimer.Reset();
+    if (m_mediaRefresher == 0)
+    {
+      // Start the directory auto-refreshing.
+      m_mediaRefresher = new MediaRefresher(m_vecItems->m_strPath);
+    }
+    else if (m_mediaRefresher->isDone())
+    {
+      // Assign the new stuff over.
+      m_vecItems->ClearItems();
+      m_vecItems->Append(m_mediaRefresher->getItemList());
+      m_vecItems->m_autoRefresh = m_mediaRefresher->getItemList().m_autoRefresh;
+      m_viewControl.SetItems(*m_vecItems);
+      
+      // Whack the timer.
+      m_refreshTimer.Reset();
+      m_mediaRefresher->die();
+      m_mediaRefresher = 0;
+    }
   }
+  
   CGUIWindow::Render();
 }
