@@ -23,7 +23,7 @@ class CPlexDirectory : public IDirectory,
                        public CThread
 {
  public:
-  CPlexDirectory(bool parseResults=true);
+  CPlexDirectory(bool parseResults=true, bool displayDialog=true);
   virtual ~CPlexDirectory();
   
   virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);

@@ -35,13 +35,16 @@ using namespace DIRECTORY;
 #define MAX_FANART_AGE    (3600*24*7)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-CPlexDirectory::CPlexDirectory(bool parseResults)
+CPlexDirectory::CPlexDirectory(bool parseResults, bool displayDialog)
   : m_bStop(false)
   , m_bSuccess(true)
   , m_bParseResults(parseResults)
   , m_dirCacheType(DIR_CACHE_ALWAYS)
 {
   m_timeout = 300;
+  
+  if (displayDialog == false)
+    m_allowPrompting = false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
