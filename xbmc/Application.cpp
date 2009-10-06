@@ -5710,7 +5710,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
         m_pCdgParser->Free();
 #endif
 
-      if (!IsPlayingVideo() && m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
+      if (!IsPlayingVideo() && m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO && m_bPlaybackStarting == false)
       {
         m_gWindowManager.PreviousWindow();
       }
@@ -6025,8 +6025,6 @@ void CApplication::CheckDelayedPlayerRestart()
 
 void CApplication::RestartWithNewPlayer(CDlgCache* cacheDlg, const CStdString& newURL)
 {
-  printf("Asked to restart with new player, URL = %s\n", newURL.c_str());
-  
   CFileItem newFile(newURL, false);
   newFile.SetLabel(m_itemCurrentFile->GetLabel());
   *m_itemCurrentFile = newFile;
