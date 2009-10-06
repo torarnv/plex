@@ -492,6 +492,7 @@
   <string id="576">Forcer le numérique</string>
   <string id="577">Normaliser le volume du film</string>
   <string id="578">Lier la Sortie Système</string>
+  <string id="579">Lier le Volume Système</string>
 
   <string id="580">Direction du tri</string>
   <string id="581">Méthode du tri</string>
@@ -608,8 +609,8 @@
   <string id="742">Blanc</string>
   <string id="743">Jaune</string>
   <string id="744">Fichiers</string>
-  <string id="745">Aucune information trouvée pour cet affichage</string>
-  <string id="746">Passer à l'affichage "Fichiers"</string>
+  <string id="745">Désolé, aucun item n'a été encore ajouté. Veuillez vous référer à la section Aide</string>
+  <string id="746">pour avoir des informations à propos de l'ajout de films et/ou séries dans Plex.</string>
   <string id="747">Mémoire insuffisante au chargement de l'image</string>
   <string id="748">Éditer le chemin</string>
   <string id="749"></string>
@@ -1235,6 +1236,7 @@
   <string id="14026">Cache Vidéo - DVDRom</string>
   <string id="14027">- Réseau Local</string>
   <string id="14028">- Internet</string>
+  <string id="14029">Taille du cache</string>
   <string id="14030">Cache Audio - DVDRom</string>
   <string id="14031">- Réseau Local</string>
   <string id="14032">- Internet</string>
@@ -2077,7 +2079,7 @@
   <string id="40021">Demander l'installation</string>
   <string id="40022">Voulez vous vérfier les mises à jour automatiquement ?</string>
   <string id="40023">Voulez vous que Plex vous alerte si une mise à jour </string>
-  <string id="40024">est disponible ?</string>
+  <string id="40024">est disponible ? (Veuillez utiliser le clavier ou l'Apple remote)</string>
   <string id="40025">- Vérifier les mises à jour</string>
   <string id="40026">toutes les heures</string>
   <string id="40027">tous les jours</string>
@@ -2098,5 +2100,15 @@
   <string id="40202">sources.</string>
   <string id="40203">Plex Media Server</string>
   <string id="40204">En attente d'une réponse...</string>
+  
+  <string id="42000">Lecture impossible du flux</string>
+  <string id="42001">Le format du flux n'a pas été reconnnu</string>
+  <string id="42002">L'en-tête du fichier est illisible</string>
+  <string id="42003">Format inconnu</string>
+  <string id="42004">Lecture des données du fichier impossible</string>
+  <string id="42005">Mémoire insuffisante pour ouvrir le fichier</string>
+  <string id="42006">Fichier introuvable</string>
+  <string id="42007">Le protocole réseau n'est pas supporté</string>
+  <string id="42008">L'ouverture du fichier à crée une erreur</string>
 
 </strings>
