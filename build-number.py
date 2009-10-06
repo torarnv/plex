@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python2.5
 import os, sys, re
 
 version = os.popen4("/opt/local/bin/git rev-parse HEAD")[1].read().strip()
