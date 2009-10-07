@@ -52,7 +52,6 @@
 #include <IOKit/hid/IOHIDLib.h>
 #include <IOKit/hid/IOHIDKeys.h>
 #include <IOKit/hid/IOHIDUsageTables.h>
-#include <IOKit/hid/IOHIDDevicePlugin.h>
 
 #include <CoreFoundation/CoreFoundation.h>
 #include <Carbon/Carbon.h>
@@ -300,16 +299,14 @@ class ReactorAppleRemote : public Reactor
 ReactorAppleRemote theReactor;
 
 void            usage();
-inline          void print_errmsg_if_io_err(int expr, const char *msg);
+inline          void print_errmsg_if_io_err(int expr, char *msg);
 inline          void print_errmsg_if_err(int expr, char *msg);
-void QueueCallbackFunction(void		*context, 
-						   IOReturn result, 
-						   void		*sender);
+void            QueueCallbackFunction(void *target, IOReturn result, void *refcon, void *sender);
 bool            addQueueCallbacks(IOHIDQueueInterface **hqi);
-void            processQueue(IOHIDDeviceDeviceInterface **hidDeviceInterface, CFMutableArrayRef cookies);
-void            doRun(IOHIDDeviceDeviceInterface **hidDeviceInterface, CFMutableArrayRef cookies);
-CFMutableArrayRef getHIDCookies(IOHIDDeviceDeviceInterface **handle);
-void            createHIDDeviceInterface(io_object_t hidDevice, IOHIDDeviceDeviceInterface ***hdi, IOHIDDeviceQueueInterface ***queue);
+void            processQueue(IOHIDDeviceInterface **hidDeviceInterface, CFMutableArrayRef cookies);
+void            doRun(IOHIDDeviceInterface **hidDeviceInterface, CFMutableArrayRef cookies);
+CFMutableArrayRef getHIDCookies(IOHIDDeviceInterface122 **handle);
+void            createHIDDeviceInterface(io_object_t hidDevice, IOHIDDeviceInterface ***hdi);
 void            setupAndRun();
 
 void usage()
@@ -327,7 +324,7 @@ void usage()
     printf("  -a, --appLocation <path> The location of the application.\n");
 }
 
-inline void print_errmsg_if_io_err(int expr, const char *msg)
+inline void print_errmsg_if_io_err(int expr, char *msg)
 {
     IOReturn err = (expr);
 
@@ -410,40 +407,35 @@ void startXBMC()
 	system(strCmd.c_str());
 }
 
-/*! @typedef IOHIDCallback
- @param target void * pointer to your data, often a pointer to an object.
- @param result Completion result of desired operation.
- @param sender Interface instance sending the completion routine.
- */							  
-void QueueCallbackFunction(void		*context, 
-						   IOReturn result, 
-						   void		*sender)
+void QueueCallbackFunction(void *target, IOReturn result, void *refcon, void *sender)
 {
-  IOReturn		ret = 0;
-  IOHIDValueRef value;
+  HRESULT               ret = 0;
+  AbsoluteTime          zeroTime = {0,0};
+  IOHIDQueueInterface **hqi;
+  IOHIDEventStruct event;
   SInt32 sumOfValues = 0;
   string cookieString;
-  IOHIDDeviceQueueInterface **hqi = (IOHIDDeviceQueueInterface **)sender;
+
   while (!ret) 
   {
-    ret = (*hqi)->copyNextValue(hqi, & value, /* timeout in ms */ 0, /* options */ 0);
+    hqi = (IOHIDQueueInterface **)sender;
+    ret = (*hqi)->getNextEvent(hqi, &event, zeroTime, 0);
 
     if (ret != kIOReturnSuccess)
       continue;
-	  
-	  IOHIDElementRef element = IOHIDValueGetElement(value);
 
-    if ((int)IOHIDElementGetCookie(element) == REMOTE_SWITCH_COOKIE)
+    if ((int)event.elementCookie == REMOTE_SWITCH_COOKIE)
     {
-      remoteID = IOHIDValueGetIntegerValue(value);
+      remoteID = (int)event.value;
 
-    } else if (((int)IOHIDElementGetCookie(element) != IGNORE_CODE) &&
-               ((int)IOHIDElementGetCookie(element) != 5)) 
+    } else if (((int)event.elementCookie != IGNORE_CODE) &&
+               ((int)event.elementCookie != 5)) 
     {
-      sumOfValues += IOHIDValueGetIntegerValue(value);
+      sumOfValues += event.value;
 
       char str[32];
-      sprintf(str, "%d_", (int)IOHIDElementGetCookie(element));
+      sprintf(str, "%d_", (int)
+      event.elementCookie);
       cookieString += str;
 	
 	  // If the system is busy, multiple events can be sent simultaneously.
@@ -460,68 +452,74 @@ void QueueCallbackFunction(void		*context,
   }
 }
 
+// Register for the queue's event callout
+bool addQueueCallbacks(IOHIDQueueInterface **hqi)
+{
+    IOReturn               ret;
+    CFRunLoopSourceRef     eventSource;
+    IOHIDQueueInterface ***privateData;
+
+    privateData = (IOHIDQueueInterface*** )malloc(sizeof(*privateData));
+    *privateData = hqi;
+
+    ret = (*hqi)->createAsyncEventSource(hqi, &eventSource);
+    if (ret != kIOReturnSuccess)
+        return false;
+
+    ret = (*hqi)->setEventCallout(hqi, QueueCallbackFunction, NULL, &privateData);
+    if (ret != kIOReturnSuccess)
+        return false;
+
+    CFRunLoopAddSource(CFRunLoopGetCurrent(), eventSource, kCFRunLoopDefaultMode);
+
+    return true;
+}
+
 // Open an hid device and add an array of cookies to its queue.
-void prepareQueue(IOHIDDeviceDeviceInterface **hidDeviceInterface, IOHIDDeviceQueueInterface **hidQueueInterface)
+IOHIDQueueInterface **prepareQueue(IOHIDDeviceInterface **hidDeviceInterface, CFMutableArrayRef cookies)
 {
 	HRESULT               result;
+	IOHIDQueueInterface **queue;
 	IOReturn			  ioReturnValue;
 
 	ioReturnValue = (*hidDeviceInterface)->open(hidDeviceInterface, kIOHIDOptionsTypeSeizeDevice);
 	if (ioReturnValue == KERN_SUCCESS)
-	{		
-		IOReturn               ret;
-
-		// Add all the cookies to the queue.
-		CFMutableArrayRef cookies = getHIDCookies(hidDeviceInterface);
+	{
+		queue = (*hidDeviceInterface)->allocQueue(hidDeviceInterface);
+		if (!queue) 
+		{
+			printf("Failed to allocate event queue.\n");
+			return NULL;
+		}
 		
+		(void)(*queue)->create(queue, 0, 12);
+		
+		// Add all the cookies to the queue.
 		int i;
 		printf("Adding %d Apple Remote cookies.\n", (int)CFArrayGetCount(cookies));
 		for (i=0; i<CFArrayGetCount(cookies); i++)
-			(*hidQueueInterface)->addElement(hidQueueInterface, (IOHIDElementRef)CFArrayGetValueAtIndex(cookies, i), 0);
-
-		CFRelease(cookies); cookies = NULL;
+			(void)(*queue)->addElement(queue, (void* )CFArrayGetValueAtIndex(cookies, i), 0);
 		
-		// QueueCallbackFunction should be called when the queue transitions to non-empty
-		ret = (*hidQueueInterface)->setValueAvailableCallback(hidQueueInterface,
-															  QueueCallbackFunction,
-															  &hidQueueInterface);
-		if (ret != kIOReturnSuccess)
-		{
-			printf("Error in setValueAvailableCallback().\n");	
-			return;
-		}
-
-		CFTypeRef     eventSource;
+		addQueueCallbacks(queue);
 		
-		ret = (*hidQueueInterface)->getAsyncEventSource(hidQueueInterface, &eventSource);
-		if (ret != kIOReturnSuccess)
-		{
-			printf("Error in getAsyncEventSource().\n");	
-			return;
-		}
+		result = (*queue)->start(queue);
 
-		CFRunLoopAddSource(CFRunLoopGetCurrent(), (CFRunLoopSourceRef)eventSource, kCFRunLoopDefaultMode);
-		
-		result = (*hidQueueInterface)->start(hidQueueInterface, 0);
-		if (ret != kIOReturnSuccess)
-		{
-			printf("Error in start().\n");	
-			return;
-		}		
+		return queue;
 	}
 	else
 	{
 	    printf("Error opening HID device.\n");	
 	}
 	
-	return;
+	return NULL;
 }
 
-void stopAndDisposeQueue(IOHIDDeviceQueueInterface **queue)
+void stopAndDisposeQueue(IOHIDQueueInterface **queue)
 {
 	HRESULT               result;
 
-	result = (*queue)->stop(queue, /* options */ 0);
+	result = (*queue)->stop(queue);
+	result = (*queue)->dispose(queue);
 	
 	(*queue)->Release(queue);
 }
@@ -538,47 +536,40 @@ void doRun()
     }	
 }
 
-CFMutableArrayRef getHIDCookies(IOHIDDeviceDeviceInterface **handle)
+CFMutableArrayRef getHIDCookies(IOHIDDeviceInterface122 **handle)
 {
   IOHIDElementCookie cookie;
   CFTypeRef          object;
-	/*
   long               number;
   long               usage;
   long               usagePage;
-	 */
   CFArrayRef         elements;
-  IOHIDElementRef    element;
+  CFDictionaryRef    element;
   IOReturn           result;
 
-  // Create the list of cookies.
-  CFMutableArrayRef cookieList = CFArrayCreateMutable(NULL, 0, 0);
+	// Create the list of cookies.
+	CFMutableArrayRef cookieList = CFArrayCreateMutable(NULL, 0, 0);
 
   if (!handle || !(*handle))
       return NULL;
 
-  result = (*handle)->copyMatchingElements(handle, NULL, &elements, 0);
+  result = (*handle)->copyMatchingElements(handle, NULL, &elements);
 
   if (result != kIOReturnSuccess) 
   {
-	  print_errmsg_if_io_err(result, "Failed to copy cookies.");
+      fprintf(stderr, "Failed to copy cookies.\n");
       exit(1);
   }
 
   CFIndex i;
   for (i = 0; i < CFArrayGetCount(elements); i++) 
   {
-      element = (IOHIDElementRef)CFArrayGetValueAtIndex(elements, i);
-	  object = IOHIDElementGetCookie(element);
-
-	  /*
+      element = (CFDictionaryRef)CFArrayGetValueAtIndex(elements, i);
       object = (CFDictionaryGetValue(element, CFSTR(kIOHIDElementCookieKey)));
       if (object == 0 || CFGetTypeID(object) != CFNumberGetTypeID()) continue;
       if(!CFNumberGetValue((CFNumberRef) object, kCFNumberLongType, &number)) continue;
-*/
-      cookie = (IOHIDElementCookie)object;
-	  
-	  /*
+
+      cookie = (IOHIDElementCookie)number;
       object = CFDictionaryGetValue(element, CFSTR(kIOHIDElementUsageKey));
       if (object == 0 || CFGetTypeID(object) != CFNumberGetTypeID()) continue;
       if (!CFNumberGetValue((CFNumberRef)object, kCFNumberLongType, &number)) continue;
@@ -588,15 +579,14 @@ CFMutableArrayRef getHIDCookies(IOHIDDeviceDeviceInterface **handle)
       if (object == 0 || CFGetTypeID(object) != CFNumberGetTypeID()) continue;
       if (!CFNumberGetValue((CFNumberRef)object, kCFNumberLongType, &number)) continue;
       usagePage = number;
-	   */
-	  
-	  CFArrayAppendValue(cookieList, cookie);
+
+		CFArrayAppendValue(cookieList, cookie);
   }
 
   return cookieList;
 }
 
-void createHIDDeviceInterface(io_object_t hidDevice, IOHIDDeviceDeviceInterface ***hdi, IOHIDDeviceQueueInterface ***queue)
+void createHIDDeviceInterface(io_object_t hidDevice, IOHIDDeviceInterface ***hdi)
 {
     io_name_t             className;
     IOCFPlugInInterface **plugInInterface = NULL;
@@ -616,7 +606,7 @@ void createHIDDeviceInterface(io_object_t hidDevice, IOHIDDeviceDeviceInterface 
 
     ioReturnValue = IOCreatePlugInInterfaceForService(
                         hidDevice,
-                        kIOHIDDeviceTypeID,
+                        kIOHIDDeviceUserClientTypeID,
                         kIOCFPlugInInterfaceID,
                         &plugInInterface,
                         &score);
@@ -629,25 +619,18 @@ void createHIDDeviceInterface(io_object_t hidDevice, IOHIDDeviceDeviceInterface 
 
     plugInResult = (*plugInInterface)->QueryInterface(
                         plugInInterface,
-                        CFUUIDGetUUIDBytes(kIOHIDDeviceDeviceInterfaceID),
+                        CFUUIDGetUUIDBytes(kIOHIDDeviceInterfaceID),
                         (LPVOID*)hdi);
     print_errmsg_if_err(plugInResult != S_OK, (char* )"Failed to create device interface.\n");
 
-	plugInResult = (*plugInInterface)->QueryInterface(
-						plugInInterface,
-						CFUUIDGetUUIDBytes(kIOHIDDeviceQueueInterfaceID),
-						(LPVOID*)queue);
-    print_errmsg_if_err(plugInResult != S_OK, (char* )"Failed to create device queue.\n");
-	
-	
     (*plugInInterface)->Release(plugInInterface);
 }
 
-IOHIDDeviceDeviceInterface **gAppleHidDeviceInterface = 0;
-IOHIDDeviceDeviceInterface **gEmuHidDeviceInterface = 0;
+IOHIDDeviceInterface **gAppleHidDeviceInterface = 0;
+IOHIDDeviceInterface **gEmuHidDeviceInterface = 0;
 
-IOHIDDeviceQueueInterface  **gAppleHidQueueInterfece = 0;
-IOHIDDeviceQueueInterface  **gEmuHidQueueInterfece = 0;
+IOHIDQueueInterface  **gAppleHidQueueInterfece = 0;
+IOHIDQueueInterface  **gEmuHidQueueInterfece = 0;
 
 void setupAndRun()
 {
@@ -655,7 +638,9 @@ void setupAndRun()
     CFMutableDictionaryRef hidMatchDictionary = NULL;
     io_service_t           hidService = (io_service_t)0;
     io_object_t            hidDevice = (io_object_t)0;
+    IOHIDDeviceInterface **hidDeviceInterface = NULL;
     IOReturn               ioReturnValue = kIOReturnSuccess;
+    CFMutableArrayRef      cookies;
     bool				   validRemoteFound = FALSE;
 
     // Add the event queue for the hardware Apple Remote
@@ -664,49 +649,45 @@ void setupAndRun()
 
     if (hidService) 
     {
-	  IOHIDDeviceDeviceInterface **hidDeviceInterface = NULL;
-	  IOHIDDeviceQueueInterface  **hidQueueInterface = NULL;
-	
       hidDevice = (io_object_t)hidService;
 
-      createHIDDeviceInterface(hidDevice, &hidDeviceInterface, &hidQueueInterface);
+      createHIDDeviceInterface(hidDevice, &hidDeviceInterface);
       gAppleHidDeviceInterface = hidDeviceInterface;
-	  gAppleHidQueueInterfece = hidQueueInterface;
+      cookies = getHIDCookies((IOHIDDeviceInterface122 **)hidDeviceInterface);
+      ioReturnValue = IOObjectRelease(hidDevice);
+      print_errmsg_if_io_err(ioReturnValue, (char* )"Failed to release HID.");
 
-      if (hidDeviceInterface && hidQueueInterface)  {
-		  prepareQueue(hidDeviceInterface, hidQueueInterface);
-	  }
+      if (hidDeviceInterface)  
+        gAppleHidQueueInterfece = prepareQueue(hidDeviceInterface, cookies);
+      else
+        printf("ERROR: No hidDeviceInterface.\n");
 		
-	  ioReturnValue = IOObjectRelease(hidDevice);
-	  print_errmsg_if_io_err(ioReturnValue, (char* )"Failed to release HID.");
-		
-	  validRemoteFound = TRUE;
-	}
+      validRemoteFound = TRUE;
+    }
+    else
+    {
+      printf("ERROR: No hidService.\n");
+    }
 
     // Add an event queue for IRKeyboardEmu, which allows Apple Remote emulation
     hidMatchDictionary = IOServiceMatching("IRKeyboardEmu");
     hidService = IOServiceGetMatchingService(kIOMasterPortDefault, hidMatchDictionary);
-
+	
     if (hidService) 
     {
-		IOHIDDeviceDeviceInterface **hidDeviceInterface = NULL;
-		IOHIDDeviceQueueInterface  **hidQueueInterface = NULL;
-
-		hidDevice = (io_object_t)hidService;
+      hidDevice = (io_object_t)hidService;
 		
-		createHIDDeviceInterface(hidDevice, &hidDeviceInterface, &hidQueueInterface);
-		gEmuHidDeviceInterface = hidDeviceInterface;
-		gEmuHidQueueInterfece = hidQueueInterface;
-
-		if (hidDeviceInterface && hidQueueInterface)  {
-			prepareQueue(hidDeviceInterface, hidQueueInterface);
-		}
-
-		ioReturnValue = IOObjectRelease(hidDevice);
-		print_errmsg_if_io_err(ioReturnValue, (char* )"Failed to release HID.");
+      createHIDDeviceInterface(hidDevice, &hidDeviceInterface);
+      gEmuHidDeviceInterface = hidDeviceInterface;
+      cookies = getHIDCookies((IOHIDDeviceInterface122 **)hidDeviceInterface);
+      ioReturnValue = IOObjectRelease(hidDevice);
+      print_errmsg_if_io_err(ioReturnValue, (char* )"Failed to release HID.");
+      
+      if (hidDeviceInterface)
+        gEmuHidQueueInterfece  = prepareQueue(hidDeviceInterface, cookies);
 		
-		validRemoteFound = TRUE;
-	}
+      validRemoteFound = TRUE;
+    }
 	
 	if (validRemoteFound)
 	{
@@ -719,7 +700,7 @@ void setupAndRun()
 	  // Now shut down the devices we opened previously and dispose of their queues
 	  if (gAppleHidDeviceInterface)
 	  {
-		  ioReturnValue = (*gAppleHidDeviceInterface)->close(gAppleHidDeviceInterface, 0);
+		  ioReturnValue = (*gAppleHidDeviceInterface)->close(gAppleHidDeviceInterface);
 		  
 		  (*gAppleHidDeviceInterface)->Release(gAppleHidDeviceInterface);
 		  gAppleHidDeviceInterface = 0;
@@ -733,7 +714,7 @@ void setupAndRun()
 		
 	  if (gEmuHidDeviceInterface)
 	  {
-		  ioReturnValue = (*gEmuHidDeviceInterface)->close(gEmuHidDeviceInterface, 0);
+		  ioReturnValue = (*gEmuHidDeviceInterface)->close(gEmuHidDeviceInterface);
 		  
 		  (*gEmuHidDeviceInterface)->Release(gEmuHidDeviceInterface);
 		  gEmuHidDeviceInterface = 0;
@@ -759,24 +740,22 @@ pascal OSStatus switchEventsHandler(EventHandlerCallRef nextHandler,
   if (verbose)
     printf("New app is frontmost, reopening Apple Remote\n");
 
-  IOReturn err;
   if (gAppleHidDeviceInterface)
   {
-	  if ((err = (*gAppleHidDeviceInterface)->close(gAppleHidDeviceInterface, 0)) != KERN_SUCCESS)
-		  print_errmsg_if_io_err(err, "ERROR closing Apple Remote device");
-	  /* #define kIOReturnNotOpen         iokit_common_err(0x2cd) // device not open  */
-
-	  if ((err = (*gAppleHidDeviceInterface)->open(gAppleHidDeviceInterface, kIOHIDOptionsTypeSeizeDevice)) != KERN_SUCCESS)
-		  print_errmsg_if_io_err(err, "ERROR opening Apple Remote device");
+	  if ((*gAppleHidDeviceInterface)->close(gAppleHidDeviceInterface) != KERN_SUCCESS)
+		  printf("ERROR closing Apple Remote device\n");
+	  
+	  if ((*gAppleHidDeviceInterface)->open(gAppleHidDeviceInterface, kIOHIDOptionsTypeSeizeDevice) != KERN_SUCCESS)
+		  printf("ERROR opening Apple Remote device\n");
   }
 
   if (gEmuHidDeviceInterface)
   {
-	  if ((err = (*gEmuHidDeviceInterface)->close(gEmuHidDeviceInterface, 0)) != KERN_SUCCESS)
-		  print_errmsg_if_io_err(err, "ERROR closing Apple Remote emulation device");
+	  if ((*gEmuHidDeviceInterface)->close(gEmuHidDeviceInterface) != KERN_SUCCESS)
+		  printf("ERROR closing Apple Remote emulation device\n");
 	  
-	  if ((err = (* gEmuHidDeviceInterface)->open(gEmuHidDeviceInterface, kIOHIDOptionsTypeSeizeDevice)) != KERN_SUCCESS)
-		  print_errmsg_if_io_err(err, "ERROR opening Apple Remote emulation device");
+	  if ((*gEmuHidDeviceInterface)->open(gEmuHidDeviceInterface, kIOHIDOptionsTypeSeizeDevice) != KERN_SUCCESS)
+		  printf("ERROR opening Apple Remote emulation device\n");	  
   }
   
   if (verbose)

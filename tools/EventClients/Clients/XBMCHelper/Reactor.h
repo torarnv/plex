@@ -77,7 +77,7 @@ class Reactor
     if (::write(_itsTicklePipe[1], &theCmd, 1) == -1 ||
         ::write(_itsTicklePipe[1], &data,   4) == -1)
     {
-      printf("Error tickling: %d.\n", errno);
+      printf("Error tickling: %d.\n");
     }
   }
 
