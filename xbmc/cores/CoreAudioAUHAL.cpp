@@ -41,31 +41,49 @@
 #include "AudioDecoder.h"
 #include "ac3encoder.h"
 
+#define SAFE(expr) {  \
+    err = expr;       \
+    if (err != noErr) \
+      CLog::Log(LOGERROR, "CoreAudio Error (%s) [%4.4s]", #expr, (char *)&err); }
+
+#define SAFE_WARN(expr) {  \
+    err = expr;            \
+    if (err != noErr)      \
+      CLog::Log(LOGWARNING, "CoreAudio Warning (%s) [%4.4s]", #expr, (char *)&err); }
+
+#define SAFE_RETURN(expr) {  \
+    err = expr;              \
+    if (err != noErr)        \
+    {                        \
+      CLog::Log(LOGERROR, "CoreAudio Error (%s) [%4.4s]", #expr, (char *)&err); \
+      return false;          \
+    } }
+
 bool CoreAudioAUHAL::s_lastPlayWasSpdif = false;
 
 struct CoreAudioDeviceParameters
 {
-  /* AUHAL specific */
+  // AUHAL specific.
 	AudioDeviceID				device_id;
-    Component                   au_component;   /* The Audiocomponent we use */
-	AudioUnit                   au_unit;        /* The AudioUnit we use */
-	PaUtilRingBuffer*			outputBuffer;
-	void*						outputBufferData;
-	int							hardwareFrameLatency;
-	bool						b_digital;      /* Are we running in digital mode? */
+	Component           au_component;   /* The Audio component we use */
+	AudioUnit           au_unit;        /* The AudioUnit we use */
+	PaUtilRingBuffer*		outputBuffer;
+	void*						    outputBufferData;
+	int							    hardwareFrameLatency;
+	bool						    b_digital;      /* Are we running in digital mode? */
 
 	/* CoreAudio SPDIF mode specific */
-  AudioDeviceIOProcID			sInputIOProcID;
+  AudioDeviceIOProcID			    sInputIOProcID;
   AudioStreamID               i_stream_id;    /* The StreamID that has a cac3 streamformat */
   int                         i_stream_index; /* The index of i_stream_id in an AudioBufferList */
   AudioStreamBasicDescription stream_format;  /* The format we changed the stream to */
   AudioStreamBasicDescription sfmt_revert;    /* The original format of the stream */
-  bool                  b_revert;       /* Wether we need to revert the stream format */
-  bool					hardwareReady; // set once the hardware stream format is set
+  bool                        b_revert;       /* Whether we need to revert the stream format */
+  bool					              hardwareReady; // set once the hardware stream format is set
   	
   // AC3 Encoder 	
   bool					m_bEncodeAC3;
-  AC3Encoder			m_ac3encoder;
+  AC3Encoder		m_ac3encoder;
 	uint8_t				rawSampleBuffer[AC3_SAMPLES_PER_FRAME * SPDIF_SAMPLESIZE/8 * 6]; // 6 channels = 12 bytes/sample
 
 	volatile bool m_bInitializationComplete;
@@ -127,11 +145,10 @@ CoreAudioAUHAL::CoreAudioAUHAL(const CStdString& strName, const char *strCodec, 
 
 	// Build a list of devices.
 	deviceArray = PlexAudioDevices::FindAll();
-
 	if (!deviceArray->getSelectedDevice())
 	{
-	  CLog::Log(LOGERROR, "There is no selected device, very strange, there are %d available ones.", deviceArray->getDevices().size());
-	  //return;
+	  CLog::Log(LOGERROR, "There is no selected device, very strange, there are %ld available ones.", deviceArray->getDevices().size());
+	  return;
 	}
 	
 	deviceParameters->device_id = deviceArray->getSelectedDevice()->getDeviceID();
@@ -142,24 +159,17 @@ CoreAudioAUHAL::CoreAudioAUHAL(const CStdString& strName, const char *strCodec, 
 	propertyAOPA.mElement = kAudioObjectPropertyElementMaster;	
 	propertyAOPA.mSelector = kAudioDevicePropertyHogMode;
 	
-	pid_t currentHogMode;
+	pid_t currentHogMode = -1;
 	if (AudioObjectHasProperty(deviceParameters->device_id, &propertyAOPA))
-	{
-		err = AudioObjectGetPropertyData(deviceParameters->device_id, &propertyAOPA, 0, NULL, &i_param_size, &currentHogMode);
-		if (err != noErr)
-		{
-			// This is not a fatal error. Some drivers simply don't support this property.
-			CLog::Log(LOGINFO, "Could not check whether device is hogged: %4.4s", (char *)&err );
-		}
-	}
+		SAFE_WARN(AudioObjectGetPropertyData(deviceParameters->device_id, &propertyAOPA, 0, NULL, &i_param_size, &currentHogMode));
 		
-	if(currentHogMode != -1 && currentHogMode != getpid())
+	if (currentHogMode != -1 && currentHogMode != getpid())
 	{
 		CLog::Log(LOGERROR, "Selected audio device is exclusively in use by another program.");
 		return;
 	}
 
-	/* Check for Digital mode or Analog output mode */
+	// Check for Digital mode or Analog output mode.
 	if (deviceParameters->b_digital)
 	{
 	  if (OpenSPDIF(deviceParameters, strName, channels, sampleRate, bitsPerSample, packetSize))
@@ -200,17 +210,16 @@ HRESULT CoreAudioAUHAL::Deinitialize()
 	
 	CLog::Log(LOGDEBUG,"CoreAudioAUHAL::Deinitialize");
 	
-	OSStatus            err = noErr;
-	UInt32              i_param_size = 0;
+	OSStatus err = noErr;
 	AudioObjectPropertyAddress propertyAOPA;
 	propertyAOPA.mScope = kAudioDevicePropertyScopeOutput;
 	propertyAOPA.mElement = kAudioObjectPropertyElementMaster;
 	
 	if(deviceParameters->au_unit)
 	{
-	  AudioOutputUnitStop(deviceParameters->au_unit);
-	  AudioUnitUninitialize(deviceParameters->au_unit);
-		CloseComponent(deviceParameters->au_unit);
+	  SAFE(AudioOutputUnitStop(deviceParameters->au_unit));
+	  SAFE(AudioUnitUninitialize(deviceParameters->au_unit));
+		SAFE(CloseComponent(deviceParameters->au_unit));
       
 		deviceParameters->au_unit = NULL;
 	}
@@ -220,14 +229,10 @@ HRESULT CoreAudioAUHAL::Deinitialize()
 	  CLog::Log(LOGINFO, "Stopping Core Audio device.");
 		
 	  // Stop device.
-	  err = AudioDeviceStop(deviceParameters->device_id, (AudioDeviceIOProc)RenderCallbackSPDIF);
-	  if (err != noErr)
-	    CLog::Log(LOGERROR, "AudioDeviceStop failed: [%4.4s]", (char *)&err );
+	  SAFE(AudioDeviceStop(deviceParameters->device_id, (AudioDeviceIOProc)RenderCallbackSPDIF));
 		
 	  // Remove IOProc callback.
-		err = AudioDeviceDestroyIOProcID(deviceParameters->device_id, deviceParameters->sInputIOProcID);
-		if (err != noErr)
-		  CLog::Log(LOGERROR, "AudioDeviceRemoveIOProc failed: [%4.4s]", (char *)&err );
+		SAFE(AudioDeviceDestroyIOProcID(deviceParameters->device_id, deviceParameters->sInputIOProcID));
 
 		if (deviceParameters->b_revert)
 		{
@@ -255,27 +260,19 @@ DWORD CoreAudioAUHAL::GetSpace()
 	DWORD fakeCeiling, bufferDataSize = PaUtil_GetRingBufferReadAvailable(deviceParameters->outputBuffer);
 	
 	if (m_bIsMusic)
-	{
 		fakeCeiling = PACKET_SIZE / deviceParameters->stream_format.mChannelsPerFrame;
-	}
 	else
-	{
 		fakeCeiling = deviceParameters->stream_format.mSampleRate * CA_BUFFER_FACTOR;
-	}
 	
 	if (bufferDataSize < fakeCeiling)
-	{
 		return fakeCeiling - bufferDataSize;
-	}
 	else
-	{
 		return 0;
-	}
 }
 
 float CoreAudioAUHAL::GetHardwareLatency()
 {
-	float latency = /*CA_BUFFER_FACTOR +*/ ((float)deviceParameters->hardwareFrameLatency / deviceParameters->stream_format.mSampleRate);
+	float latency = ((float)deviceParameters->hardwareFrameLatency / deviceParameters->stream_format.mSampleRate);
 	if (deviceParameters->b_digital)
 		latency += 0.032;
 	//if (m_bEncodeAC3)
@@ -287,21 +284,18 @@ float CoreAudioAUHAL::GetHardwareLatency()
 AudioStreamBasicDescription* CoreAudioAUHAL::GetStreamDescription()
 {
 	return &deviceParameters->stream_format;
-};
+}
 
 int CoreAudioAUHAL::WriteStream(uint8_t *sampleBuffer, uint32_t samplesToWrite)
 {
 	if (sampleBuffer == NULL || samplesToWrite == 0)
-	{
 		return 0;
-	}
 	
 	// dump frames unless the stream is active
 	if (!deviceParameters->b_digital || deviceParameters->hardwareReady)
-	{
 		return PaUtil_WriteRingBuffer(deviceParameters->outputBuffer, sampleBuffer, samplesToWrite);
-	}
-	else return samplesToWrite;
+	else 
+	  return samplesToWrite;
 }
 
 void CoreAudioAUHAL::Flush()
@@ -322,162 +316,98 @@ void CoreAudioAUHAL::Flush()
  *****************************************************************************/
 int CoreAudioAUHAL::OpenPCM(struct CoreAudioDeviceParameters *deviceParameters, const CStdString& strName, int channels, float sampleRate, int bitsPerSample, int packetSize)
 {
-    OSStatus                    err = noErr;
-    UInt32                      i_param_size = 0;
-    AudioStreamBasicDescription DeviceFormat;
-    AURenderCallbackStruct      input;
+  OSStatus                    err = noErr;
+  UInt32                      i_param_size = 0;
+  AudioStreamBasicDescription DeviceFormat;
+  AURenderCallbackStruct      input;
 
-    // We're non-digital.
-    s_lastPlayWasSpdif = false;
+  // We're non-digital.
+  s_lastPlayWasSpdif = false;
 	
-	/* Lets go find our Component */
-	ComponentDescription        desc;
+	// Lets go find our Component.
+	ComponentDescription desc;
 	desc.componentType = kAudioUnitType_Output;
 	desc.componentSubType = kAudioUnitSubType_HALOutput;
 	desc.componentManufacturer = kAudioUnitManufacturer_Apple;
 	desc.componentFlags = 0;
 	desc.componentFlagsMask = 0;
 	
-	deviceParameters->au_component = FindNextComponent( NULL, &desc );
-	if(deviceParameters->au_component == NULL)
+	deviceParameters->au_component = FindNextComponent(NULL, &desc);
+	if (deviceParameters->au_component == NULL)
 	{
 		CLog::Log(LOGERROR, "we cannot find our HAL component");
 		return false;
 	}
 	
-	err = OpenAComponent( deviceParameters->au_component, &deviceParameters->au_unit );
-	if( err != noErr )
-	{
-		CLog::Log(LOGERROR, "we cannot open our HAL component");
-		return false;
-	}
+	SAFE_RETURN(OpenAComponent(deviceParameters->au_component, &deviceParameters->au_unit));
+	AudioDeviceID selectedDeviceID = deviceArray->getSelectedDevice()->getDeviceID();
     
-    AudioDeviceID selectedDeviceID = deviceArray->getSelectedDevice()->getDeviceID();
+	// Set the device we will use for this output unit.
+  SAFE_RETURN(AudioUnitSetProperty(deviceParameters->au_unit, kAudioOutputUnitProperty_CurrentDevice, kAudioUnitScope_Input, 0, &selectedDeviceID, sizeof(AudioDeviceID)));
+
+  // Get the current format.
+  i_param_size = sizeof(AudioStreamBasicDescription);
+  SAFE_RETURN(AudioUnitGetProperty(deviceParameters->au_unit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Input, 0, &deviceParameters->sfmt_revert, &i_param_size));
+  CLog::Log(LOGINFO, STREAM_FORMAT_MSG("Current format is: ", deviceParameters->sfmt_revert));
     
-    /* Set the device we will use for this output unit */
-    err = AudioUnitSetProperty(deviceParameters->au_unit,
-							   kAudioOutputUnitProperty_CurrentDevice,
-							   kAudioUnitScope_Input,
-							   0,
-							   &selectedDeviceID,
-							   sizeof(AudioDeviceID));
+  // Set up the format to be used.
+  DeviceFormat.mSampleRate = sampleRate;
+  DeviceFormat.mFormatID = kAudioFormatLinearPCM;
+  DeviceFormat.mFormatFlags = (bitsPerSample == 32 ? kLinearPCMFormatFlagIsFloat : kLinearPCMFormatFlagIsSignedInteger);
+  DeviceFormat.mBitsPerChannel = bitsPerSample;
+  DeviceFormat.mChannelsPerFrame = channels;
 
-    if( err != noErr )
-    {
-		CLog::Log(LOGERROR, "we cannot select the audio device");
-        return false;
-    }
+  // Calculate frame sizes and stuff.
+  DeviceFormat.mFramesPerPacket = 1;
+  DeviceFormat.mBytesPerFrame = DeviceFormat.mBitsPerChannel/8 * DeviceFormat.mChannelsPerFrame;
+  DeviceFormat.mBytesPerPacket = DeviceFormat.mBytesPerFrame * DeviceFormat.mFramesPerPacket;
 
-    /* Get the current format */
-    i_param_size = sizeof(AudioStreamBasicDescription);
+  // Set the desired format.
+  i_param_size = sizeof(AudioStreamBasicDescription);
+  SAFE_RETURN(AudioUnitSetProperty(deviceParameters->au_unit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Input, 0, &DeviceFormat, i_param_size));
+	CLog::Log(LOGINFO, STREAM_FORMAT_MSG("We set the AU format: ", DeviceFormat));
 
-    err = AudioUnitGetProperty(deviceParameters->au_unit,
-							   kAudioUnitProperty_StreamFormat,
-							   kAudioUnitScope_Input,
-							   0,
-							   &deviceParameters->sfmt_revert,
-							   &i_param_size );
+  // Retrieve actual format.
+	SAFE_RETURN(AudioUnitGetProperty(deviceParameters->au_unit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Input, 0, &deviceParameters->stream_format, &i_param_size));
+	CLog::Log(LOGINFO, STREAM_FORMAT_MSG("The actual set AU format is ", DeviceFormat));
 
-    if( err != noErr ) return false;
-    else CLog::Log(LOGINFO, STREAM_FORMAT_MSG("current format is: ", deviceParameters->sfmt_revert) );
-    
-    /* Set up the format to be used */
-    DeviceFormat.mSampleRate = sampleRate;
-    DeviceFormat.mFormatID = kAudioFormatLinearPCM;
-    DeviceFormat.mFormatFlags = (bitsPerSample == 32 ? kLinearPCMFormatFlagIsFloat : kLinearPCMFormatFlagIsSignedInteger);
-    DeviceFormat.mBitsPerChannel = bitsPerSample;
-    DeviceFormat.mChannelsPerFrame = channels;
-
-    /* Calculate framesizes and stuff */
-    DeviceFormat.mFramesPerPacket = 1;
-    DeviceFormat.mBytesPerFrame = DeviceFormat.mBitsPerChannel/8 * DeviceFormat.mChannelsPerFrame;
-    DeviceFormat.mBytesPerPacket = DeviceFormat.mBytesPerFrame * DeviceFormat.mFramesPerPacket;
-
-    /* Set the desired format */
-    i_param_size = sizeof(AudioStreamBasicDescription);
-    err = AudioUnitSetProperty(deviceParameters->au_unit,
-									   kAudioUnitProperty_StreamFormat,
-									   kAudioUnitScope_Input,
-									   0,
-									   &DeviceFormat,
-									   i_param_size );
-	if( err != noErr ) return false;
-
-	CLog::Log(LOGINFO, STREAM_FORMAT_MSG( "we set the AU format: " , DeviceFormat ) );
-
-    /* Retrieve actual format */
-    err = AudioUnitGetProperty(deviceParameters->au_unit,
-									   kAudioUnitProperty_StreamFormat,
-									   kAudioUnitScope_Input,
-									   0,
-									   &deviceParameters->stream_format,
-									   &i_param_size );
-	if( err != noErr ) return false;
-
-	CLog::Log(LOGINFO, STREAM_FORMAT_MSG( "the actual set AU format is " , DeviceFormat ) );
-
-    /* set the IOproc callback */
+  // set the IOproc callback.
 	input.inputProc = (AURenderCallback) RenderCallbackAnalog;
 	input.inputProcRefCon = deviceParameters;
 
-    err = AudioUnitSetProperty(deviceParameters->au_unit,
-									   kAudioUnitProperty_SetRenderCallback,
-									   kAudioUnitScope_Global,
-									   0, &input, sizeof(input));
-	if( err != noErr ) return false;
+	SAFE_RETURN(AudioUnitSetProperty(deviceParameters->au_unit, kAudioUnitProperty_SetRenderCallback, kAudioUnitScope_Global, 0, &input, sizeof(input)));
 
-
-    /* AU initialize */
-    err = AudioUnitInitialize(deviceParameters->au_unit);
-	if( err != noErr ) return false;
+	// AU initialize.
+  SAFE_RETURN(AudioUnitInitialize(deviceParameters->au_unit));
 
 	// Get AU hardware buffer size
+	uint32_t audioDeviceLatency = 0;
+	uint32_t audioDeviceBufferFrameSize = 0;
+	uint32_t audioDeviceSafetyOffset = 0;
 
-	uint32_t audioDeviceLatency, audioDeviceBufferFrameSize, audioDeviceSafetyOffset;
+	// Get the latency.
 	deviceParameters->hardwareFrameLatency = 0;
-	
 	i_param_size = sizeof(uint32_t);
-
-	err = AudioUnitGetProperty(deviceParameters->au_unit,
-									   kAudioDevicePropertyLatency,
-									   kAudioUnitScope_Global,
-									   0,
-									   &audioDeviceLatency,
-							   &i_param_size );
-	if( err != noErr ) return false;
-
+	SAFE_RETURN(AudioUnitGetProperty(deviceParameters->au_unit, kAudioDevicePropertyLatency, kAudioUnitScope_Global, 0, &audioDeviceLatency, &i_param_size));
 	deviceParameters->hardwareFrameLatency += audioDeviceLatency;
 
-	err = AudioUnitGetProperty(deviceParameters->au_unit,
-									   kAudioDevicePropertyBufferFrameSize,
-									   kAudioUnitScope_Global,
-									   0,
-									   &audioDeviceBufferFrameSize,
-									   &i_param_size );
-	if( err != noErr ) return false;
-
+	// Get the buffer frame size.
+	SAFE_RETURN(AudioUnitGetProperty(deviceParameters->au_unit, kAudioDevicePropertyBufferFrameSize, kAudioUnitScope_Global, 0, &audioDeviceBufferFrameSize, &i_param_size));
 	deviceParameters->hardwareFrameLatency += audioDeviceBufferFrameSize;
 
-	err = AudioUnitGetProperty(deviceParameters->au_unit,
-									   kAudioDevicePropertySafetyOffset,
-									   kAudioUnitScope_Global,
-									   0,
-									   &audioDeviceSafetyOffset,
-									   &i_param_size );
-	if( err != noErr ) return false;
-	
+	// Get the safety offset.
+	SAFE_RETURN(AudioUnitGetProperty(deviceParameters->au_unit, kAudioDevicePropertySafetyOffset, kAudioUnitScope_Global, 0, &audioDeviceSafetyOffset, &i_param_size));
 	deviceParameters->hardwareFrameLatency += audioDeviceSafetyOffset;
 
 	CLog::Log(LOGINFO, "Hardware latency: %i frames (%.2f msec @ %.0fHz)", deviceParameters->hardwareFrameLatency,
 			  (float)deviceParameters->hardwareFrameLatency / deviceParameters->stream_format.mSampleRate * 1000,
 			  deviceParameters->stream_format.mSampleRate);
 
-	// initialise the CoreAudio sink buffer
+	// Initialise the CoreAudio sink buffer
 	uint32_t framecount = 1;
 	while(framecount <= deviceParameters->stream_format.mSampleRate) // ensure power of 2
-	{
 		framecount <<= 1;
-	}
+	
 	deviceParameters->outputBuffer = (PaUtilRingBuffer *)malloc(sizeof(PaUtilRingBuffer));
 	deviceParameters->outputBufferData = malloc(framecount * deviceParameters->stream_format.mBytesPerFrame);
 
@@ -485,11 +415,10 @@ int CoreAudioAUHAL::OpenPCM(struct CoreAudioDeviceParameters *deviceParameters, 
 								deviceParameters->stream_format.mBytesPerFrame,
 								framecount, deviceParameters->outputBufferData);
 
+	// Start the AU.
+	SAFE_RETURN(AudioOutputUnitStart(deviceParameters->au_unit));
 
-    /* Start the AU */
-    err = AudioOutputUnitStart(deviceParameters->au_unit);
-	if( err != noErr ) return false;
-    return true;
+	return true;
 }
 
 /*****************************************************************************
@@ -505,27 +434,24 @@ OSStatus CoreAudioAUHAL::RenderCallbackAnalog(struct CoreAudioDeviceParameters *
 									  unsigned int inNumberFrames,
 									  AudioBufferList *ioData )
 {
-    // initial calc
+  // initial calc
 	int framesToWrite = inNumberFrames;
 	int framesAvailable = PaUtil_GetRingBufferReadAvailable(deviceParameters->outputBuffer);
 	
 	if (framesToWrite > framesAvailable)
-	{
 		framesToWrite = framesAvailable;
-	}
 	
 	int currentPos = framesToWrite * deviceParameters->stream_format.mBytesPerFrame;
 	int underrunLength = (inNumberFrames - framesToWrite) * deviceParameters->stream_format.mBytesPerFrame;
 
 	// write as many frames as possible from buffer
 	PaUtil_ReadRingBuffer(deviceParameters->outputBuffer, ioData->mBuffers[0].mData, framesToWrite);
+
 	// write silence to any remainder
 	if (underrunLength > 0)
-	{
 		memset((void *)((uint8_t *)(ioData->mBuffers[0].mData)+currentPos), 0, underrunLength);
-	}
 
-    return( noErr );
+	return noErr;
 }
 
 #pragma mark Digital (SPDIF)
@@ -551,20 +477,20 @@ int CoreAudioAUHAL::OpenSPDIF(struct CoreAudioDeviceParameters *deviceParameters
 	propertyAOPA.mSelector = kAudioDevicePropertyStreams;
 	if (!AudioObjectHasProperty(deviceParameters->device_id, &propertyAOPA))
 	{
-		CLog::Log(LOGERROR, "Device 0x%0x does not support streams", deviceParameters->device_id);
+		CLog::Log(LOGERROR, "Device 0x%lx does not support streams", deviceParameters->device_id);
 		return false;
 	}
 
-	err = AudioObjectGetPropertyDataSize(deviceParameters->device_id, &propertyAOPA, 0, NULL, &propertySize);
-	if (err || !propertySize)
+	SAFE_RETURN(AudioObjectGetPropertyDataSize(deviceParameters->device_id, &propertyAOPA, 0, NULL, &propertySize));
+	if (propertySize == 0)
 	{
-		CLog::Log(LOGERROR, "Device 0x%0x has no output stream", deviceParameters->device_id);
+		CLog::Log(LOGERROR, "Device 0x%lx has no output stream", deviceParameters->device_id);
 		return false;
 	}
 	
 	AudioStreamID* pStreams = (AudioStreamID *)malloc(propertySize);
 	
-	err = AudioObjectGetPropertyData(deviceParameters->device_id, &propertyAOPA, 0, NULL, &propertySize, pStreams);
+	SAFE_RETURN(AudioObjectGetPropertyData(deviceParameters->device_id, &propertyAOPA, 0, NULL, &propertySize, pStreams));
 	int numStreams = propertySize / sizeof(AudioStreamID);
 	CLog::Log(LOGINFO, "There are %d output streams.", numStreams);
 	
@@ -577,20 +503,20 @@ int CoreAudioAUHAL::OpenSPDIF(struct CoreAudioDeviceParameters *deviceParameters
 		AudioStreamID currentStreamID = pStreams[i];
 		if (AudioObjectHasProperty(currentStreamID, &propertyAOPA))
 		{
-			err = AudioObjectGetPropertyDataSize(currentStreamID, &propertyAOPA, 0, NULL, &propertySize);
+			SAFE(AudioObjectGetPropertyDataSize(currentStreamID, &propertyAOPA, 0, NULL, &propertySize));
 			if (err || propertySize == 0)
 			{
-				CLog::Log(LOGERROR, "Unable to read output streams for device 0x%0x", deviceParameters->device_id);
+				CLog::Log(LOGERROR, "Unable to read output streams for device 0x%lx", deviceParameters->device_id);
 				break;
 			}
 			
 			AudioStreamRangedDescription *pASRDs = (AudioStreamRangedDescription *)malloc(propertySize);
 			int streamDescriptionCount = propertySize / sizeof(AudioStreamRangedDescription);
 			
-			err = AudioObjectGetPropertyData(currentStreamID, &propertyAOPA, 0, NULL, &propertySize, pASRDs);
+			SAFE(AudioObjectGetPropertyData(currentStreamID, &propertyAOPA, 0, NULL, &propertySize, pASRDs));
 			if (err)
 			{
-				CLog::Log(LOGERROR, "Unable to read output streams for 0x%0x", deviceParameters->device_id);
+				CLog::Log(LOGERROR, "Unable to read output streams for 0x%lx", deviceParameters->device_id);
 				break;
 			}
 			
@@ -603,7 +529,7 @@ int CoreAudioAUHAL::OpenSPDIF(struct CoreAudioDeviceParameters *deviceParameters
 					  currentASRD.mSampleRateRange.mMinimum <= 48000 && 
 					  currentASRD.mSampleRateRange.mMaximum >= 48000)))
 				{
-					CLog::Log(LOGINFO, "Found digital interface at stream ID 0x%0x for device 0x%0x", currentStreamID, deviceParameters->device_id);
+					CLog::Log(LOGINFO, "Found digital interface at stream ID 0x%lx for device 0x%lx", currentStreamID, deviceParameters->device_id);
 					memcpy(&deviceParameters->stream_format, &currentASRD.mFormat, sizeof(AudioStreamBasicDescription));
 					
 					if (deviceParameters->stream_format.mSampleRate == kAudioStreamAnyRate) 
@@ -622,7 +548,7 @@ int CoreAudioAUHAL::OpenSPDIF(struct CoreAudioDeviceParameters *deviceParameters
 	
 	if (deviceParameters->i_stream_id == 0)
 	{
-		CLog::Log(LOGERROR, "Device 0x%0x has no digital interfaces", deviceParameters->device_id);
+		CLog::Log(LOGERROR, "Device 0x%lx has no digital interfaces", deviceParameters->device_id);
 		return false;
 	}
 	
@@ -631,31 +557,20 @@ int CoreAudioAUHAL::OpenSPDIF(struct CoreAudioDeviceParameters *deviceParameters
 	propertyAOPA.mScope = kAudioDevicePropertyScopeOutput;
 	propertyAOPA.mSelector = kAudioStreamPropertyPhysicalFormat;
 
-	err = AudioObjectGetPropertyData(deviceParameters->i_stream_id, &propertyAOPA, 0, NULL, &propertySize, &deviceParameters->sfmt_revert);
-	if (err != noErr)
-	  CLog::Log(LOGERROR, "Get original format failed: [%4.4s]", (char *)&err);
-	
+	SAFE(AudioObjectGetPropertyData(deviceParameters->i_stream_id, &propertyAOPA, 0, NULL, &propertySize, &deviceParameters->sfmt_revert));
 	CLog::Log(LOGINFO, STREAM_FORMAT_MSG("original stream format: ", deviceParameters->sfmt_revert ) );
 	
 	// Add stream listener.
 	propertyAOPA.mScope = kAudioObjectPropertyScopeGlobal;
 	propertyAOPA.mSelector = kAudioStreamPropertyPhysicalFormat;
-	err = AudioObjectAddPropertyListener(deviceParameters->i_stream_id, &propertyAOPA, HardwareStreamListener, deviceParameters);
-	if (err != noErr)
-	{
-	  CLog::Log(LOGERROR, "AddPropertyListener failed: [%4.4s]", (char *)&err);
-	  return false;
-	}
+	SAFE_RETURN(AudioObjectAddPropertyListener(deviceParameters->i_stream_id, &propertyAOPA, HardwareStreamListener, deviceParameters));
 
 	if (!AudioStreamChangeFormat(deviceParameters, deviceParameters->i_stream_id, deviceParameters->stream_format))
 	  return false;
 
   // We need to wait for this to complete.
   for (int i=0; i<40 && deviceParameters->m_bInitializationComplete == false; i++)
-  {
-    printf("Waiting...\n");
     Sleep(50);
-  }
 	
 	deviceParameters->b_revert = true;
 
@@ -666,20 +581,20 @@ int CoreAudioAUHAL::OpenSPDIF(struct CoreAudioDeviceParameters *deviceParameters
 
 	propertyAOPA.mScope = kAudioDevicePropertyScopeOutput;
 	propertyAOPA.mSelector = kAudioDevicePropertyLatency;
-	err = AudioObjectGetPropertyData(deviceParameters->device_id, &propertyAOPA, 0, NULL, &propertySize, &audioDeviceLatency);
+	SAFE(AudioObjectGetPropertyData(deviceParameters->device_id, &propertyAOPA, 0, NULL, &propertySize, &audioDeviceLatency));
 	if (err == noErr) deviceParameters->hardwareFrameLatency += audioDeviceLatency;
 	
 	propertyAOPA.mSelector = kAudioDevicePropertyBufferFrameSize;
-	err = AudioObjectGetPropertyData(deviceParameters->device_id, &propertyAOPA, 0, NULL, &propertySize, &audioDeviceBufferFrameSize);
+	SAFE(AudioObjectGetPropertyData(deviceParameters->device_id, &propertyAOPA, 0, NULL, &propertySize, &audioDeviceBufferFrameSize));
 	if (err == noErr) deviceParameters->hardwareFrameLatency += audioDeviceBufferFrameSize;
 	
 	propertyAOPA.mSelector = kAudioDevicePropertySafetyOffset;
-	err = AudioObjectGetPropertyData(deviceParameters->device_id, &propertyAOPA, 0, NULL, &propertySize, &audioDeviceSafetyOffset);
+	SAFE(AudioObjectGetPropertyData(deviceParameters->device_id, &propertyAOPA, 0, NULL, &propertySize, &audioDeviceSafetyOffset));
 	if (err == noErr) deviceParameters->hardwareFrameLatency += audioDeviceSafetyOffset;
 	
 	propertyAOPA.mScope = kAudioObjectPropertyScopeGlobal; // streams only have global scope
 	propertyAOPA.mSelector = kAudioStreamPropertyLatency;
-	err = AudioObjectGetPropertyData(deviceParameters->i_stream_id, &propertyAOPA, 0, NULL, &propertySize, &audioStreamLatency);
+	SAFE(AudioObjectGetPropertyData(deviceParameters->i_stream_id, &propertyAOPA, 0, NULL, &propertySize, &audioStreamLatency));
 	if (err == noErr) deviceParameters->hardwareFrameLatency += audioStreamLatency;
 	
 	CLog::Log(LOGINFO, "Hardware latency: %i frames (%.2f msec @ %.0fHz)", deviceParameters->hardwareFrameLatency,
@@ -689,9 +604,7 @@ int CoreAudioAUHAL::OpenSPDIF(struct CoreAudioDeviceParameters *deviceParameters
 	// Initialise the CoreAudio sink buffer.
 	uint32_t framecount = 1;
 	while(framecount <= deviceParameters->stream_format.mSampleRate) // ensure power of 2
-	{
 		framecount <<= 1;
-	}
 
 	deviceParameters->outputBuffer = (PaUtilRingBuffer *)malloc(sizeof(PaUtilRingBuffer));
 	deviceParameters->outputBufferData = calloc(1, framecount * channels * bitsPerSample/8); // use uncompressed size if encoding ac3
@@ -699,28 +612,14 @@ int CoreAudioAUHAL::OpenSPDIF(struct CoreAudioDeviceParameters *deviceParameters
 	PaUtil_InitializeRingBuffer(deviceParameters->outputBuffer, channels * bitsPerSample/8, framecount, deviceParameters->outputBufferData);
 	
 	// Add IOProc callback.
-	err = AudioDeviceCreateIOProcID(deviceParameters->device_id,
-									(AudioDeviceIOProc)RenderCallbackSPDIF,
-									deviceParameters,
-									&deviceParameters->sInputIOProcID);
-	if (err != noErr)
-	{
-	  CLog::Log(LOGERROR, "AudioDeviceAddIOProcID failed: [%4.4s]", (char *)&err );
-	  return false;
-	}
+	SAFE_RETURN(AudioDeviceCreateIOProcID(deviceParameters->device_id, (AudioDeviceIOProc)RenderCallbackSPDIF, deviceParameters, &deviceParameters->sInputIOProcID));
 	
   // Start device.
 	deviceParameters->hardwareReady = true;
 
-  err = AudioDeviceStart(deviceParameters->device_id, (AudioDeviceIOProc)RenderCallbackSPDIF);
+  SAFE(AudioDeviceStart(deviceParameters->device_id, (AudioDeviceIOProc)RenderCallbackSPDIF));
   if (err != noErr)
-  {
-    CLog::Log(LOGERROR, "AudioDeviceStart failed for device ID %p: [%4.4s]", deviceParameters->device_id, (char *)&err);
-     
-    err = AudioDeviceDestroyIOProcID(deviceParameters->device_id, (AudioDeviceIOProc)RenderCallbackSPDIF);
-    if (err != noErr)
-      CLog::Log(LOGERROR, "AudioDeviceRemoveIOProc failed: [%4.4s]", (char *)&err);
-  }
+    SAFE(AudioDeviceDestroyIOProcID(deviceParameters->device_id, (AudioDeviceIOProc)RenderCallbackSPDIF));
 
 	return true;
 }
@@ -730,7 +629,7 @@ int CoreAudioAUHAL::OpenSPDIF(struct CoreAudioDeviceParameters *deviceParameters
  *****************************************************************************/
 int CoreAudioAUHAL::AudioStreamChangeFormat(CoreAudioDeviceParameters *deviceParameters, AudioStreamID i_stream_id, AudioStreamBasicDescription change_format)
 {
-  OSStatus            status = noErr;
+  OSStatus err = noErr;
 	AudioObjectPropertyAddress propertyAOPA;
 	propertyAOPA.mScope = kAudioObjectPropertyScopeGlobal;
 	propertyAOPA.mElement = kAudioObjectPropertyElementMaster;	
@@ -742,12 +641,7 @@ int CoreAudioAUHAL::AudioStreamChangeFormat(CoreAudioDeviceParameters *devicePar
 	CSingleLock lock(m_cs); // acquire lock
 
 	// change the format.
-	status = AudioObjectSetPropertyData(deviceParameters->i_stream_id, &propertyAOPA, 0, NULL, propertySize, &change_format);
-	if (status != noErr)
-	{
-	  CLog::Log(LOGERROR, "AudioStreamChangeFormat: could not change the stream format: [%4.4s]", (char *)&status);
-	  return false;
-	}
+	SAFE_RETURN(AudioObjectSetPropertyData(deviceParameters->i_stream_id, &propertyAOPA, 0, NULL, propertySize, &change_format));
 	
 	return true;
 }
@@ -763,7 +657,7 @@ OSStatus CoreAudioAUHAL::RenderCallbackSPDIF(AudioDeviceID inDevice,
                                     const AudioTimeStamp * inOutputTime,
                                     void * threadGlobals )
 {
-    CoreAudioDeviceParameters *deviceParameters = (CoreAudioDeviceParameters *)threadGlobals;
+  CoreAudioDeviceParameters *deviceParameters = (CoreAudioDeviceParameters *)threadGlobals;
 
 #define BUFFER outOutputData->mBuffers[deviceParameters->i_stream_index]
     
@@ -798,6 +692,7 @@ OSStatus CoreAudioAUHAL::HardwareStreamListener(AudioObjectID inObjectID,
 										void* inClientData)
 {	
 	CoreAudioDeviceParameters* deviceParameters = (CoreAudioDeviceParameters* )inClientData;
+	OSStatus err = noErr;
 	
 	for (int i=0; i<inNumberAddresses; i++)
 	{
@@ -806,7 +701,7 @@ OSStatus CoreAudioAUHAL::HardwareStreamListener(AudioObjectID inObjectID,
 			// Hardware physical format has changed.
 			AudioStreamBasicDescription actual_format;
 			UInt32 propertySize = sizeof(AudioStreamBasicDescription);
-			OSStatus status = AudioObjectGetPropertyData(deviceParameters->i_stream_id, &inAddresses[i], 0, NULL, &propertySize, &actual_format);
+			SAFE(AudioObjectGetPropertyData(deviceParameters->i_stream_id, &inAddresses[i], 0, NULL, &propertySize, &actual_format));
 			
 			CLog::Log(LOGINFO, STREAM_FORMAT_MSG("HardwareStreamListener: Hardware format changed to ", actual_format));
 			
@@ -818,18 +713,14 @@ OSStatus CoreAudioAUHAL::HardwareStreamListener(AudioObjectID inObjectID,
 			else if (deviceParameters->hardwareReady == true && deviceParameters->b_revert == true)
 			{
         deviceParameters->hardwareReady = false;
-        OSStatus err = noErr;
         CLog::Log(LOGDEBUG, "Reverting CoreAudio mix mode");
-
+        
+        // Remove the listener.
 			  AudioObjectPropertyAddress propertyAOPA;
 			  propertyAOPA.mElement = kAudioObjectPropertyElementMaster;  
-			          
-			  // Remove the listener.
 			  propertyAOPA.mScope = kAudioObjectPropertyScopeGlobal;
 			  propertyAOPA.mSelector = kAudioStreamPropertyPhysicalFormat;
-			  err = AudioObjectRemovePropertyListener(deviceParameters->i_stream_id, &propertyAOPA, HardwareStreamListener, deviceParameters);
-			  if (err != noErr)
-			    CLog::Log(LOGERROR, "AudioHardwareRemovePropertyListener failed: [%4.4s]", (char *)&err );
+			  SAFE(AudioObjectRemovePropertyListener(deviceParameters->i_stream_id, &propertyAOPA, HardwareStreamListener, deviceParameters));
 			    
         UInt32 mixable = 1;
         UInt32 i_param_size = sizeof(UInt32);
@@ -838,11 +729,7 @@ OSStatus CoreAudioAUHAL::HardwareStreamListener(AudioObjectID inObjectID,
         propertyAOPA.mScope = kAudioDevicePropertyScopeOutput;
         propertyAOPA.mSelector = kAudioDevicePropertySupportsMixing;
         if (AudioObjectHasProperty(deviceParameters->device_id, &propertyAOPA))
-        {
-          err = AudioObjectSetPropertyData(deviceParameters->device_id, &propertyAOPA, 0, NULL, i_param_size, &mixable);
-          if (err != noErr)
-            CLog::Log(LOGERROR, "Error resetting mix mode: [%4.4s]", (char *)&err);
-        }
+          SAFE(AudioObjectSetPropertyData(deviceParameters->device_id, &propertyAOPA, 0, NULL, i_param_size, &mixable));
 
         // Revert hog mode.
         CLog::Log(LOGINFO, "Reverting CoreAudio hog mode\n");
@@ -852,16 +739,10 @@ OSStatus CoreAudioAUHAL::HardwareStreamListener(AudioObjectID inObjectID,
         
         if (AudioObjectHasProperty(deviceParameters->device_id, &propertyAOPA))
         {
-          err = AudioObjectGetPropertyData(deviceParameters->device_id, &propertyAOPA, 0, NULL, &i_param_size, &currentHogMode);
-          if (err != noErr) 
-            CLog::Log(LOGERROR, "Could not read hogmode: [%4.4s]", (char *)&err);
+          SAFE(AudioObjectGetPropertyData(deviceParameters->device_id, &propertyAOPA, 0, NULL, &i_param_size, &currentHogMode));
           
           if (currentHogMode == getpid())
-          {
-            err = AudioObjectSetPropertyData(deviceParameters->device_id, &propertyAOPA, 0, NULL, i_param_size, &currentHogMode);
-            if (err != noErr) 
-              CLog::Log(LOGERROR, "Could not release hogmode: [%4.4s]", (char *)&err);
-          }
+            SAFE(AudioObjectSetPropertyData(deviceParameters->device_id, &propertyAOPA, 0, NULL, i_param_size, &currentHogMode));
         }
       
         // Mark us as having deinitialized.
