@@ -214,12 +214,7 @@ HRESULT CoreAudioAUHAL::Deinitialize()
       
 		deviceParameters->au_unit = NULL;
 	}
-	
-	if (deviceParameters->m_bEncodeAC3)
-	{
-		ac3encoderFinalise(&deviceParameters->m_ac3encoder);
-	}
-	
+		
 	if (deviceParameters->b_digital)
 	{
 	  CLog::Log(LOGINFO, "Stopping Core Audio device.");
@@ -244,6 +239,9 @@ HRESULT CoreAudioAUHAL::Deinitialize()
 			  Sleep(50);
 		}
 	}
+	
+	 if (deviceParameters->m_bEncodeAC3)
+	    ac3encoderFinalise(&deviceParameters->m_ac3encoder);
 		
 	free(deviceParameters->outputBuffer);
 	free(deviceParameters->outputBufferData);
@@ -768,31 +766,30 @@ OSStatus CoreAudioAUHAL::RenderCallbackSPDIF(AudioDeviceID inDevice,
     CoreAudioDeviceParameters *deviceParameters = (CoreAudioDeviceParameters *)threadGlobals;
 
 #define BUFFER outOutputData->mBuffers[deviceParameters->i_stream_index]
+    
 	int framesToWrite = BUFFER.mDataByteSize / (deviceParameters->stream_format.mChannelsPerFrame * deviceParameters->stream_format.mBitsPerChannel/8);
-	//fprintf(stderr, "Frames requested: %i (%i bit, %i channels in, %i channels out)\n", 
-	//		framesToWrite, 
-	//		deviceParameters->stream_format.mBitsPerChannel,
-	//		deviceParameters->m_ac3encoder.m_aftenContext.channels,
-	//		deviceParameters->stream_format.mChannelsPerFrame);
-
 	if (framesToWrite > PaUtil_GetRingBufferReadAvailable(deviceParameters->outputBuffer))
 	{
 		// we can't write a frame, send null frame
-        memset(BUFFER.mData, 0, BUFFER.mDataByteSize);
-    }
+	  memset(BUFFER.mData, 0, BUFFER.mDataByteSize);
+	}
 	else
 	{
 		// write a frame
 		if (deviceParameters->m_bEncodeAC3)
 		{
 			PaUtil_ReadRingBuffer(deviceParameters->outputBuffer, deviceParameters->rawSampleBuffer, framesToWrite);
-			/*fprintf(stderr, "Got %i frames from encoder\n", */ac3encoderEncodePCM(&deviceParameters->m_ac3encoder, (uint8_t *)&deviceParameters->rawSampleBuffer, (uint8_t *)BUFFER.mData, framesToWrite)/*)*/;
-
+			ac3encoderEncodePCM(&deviceParameters->m_ac3encoder, (uint8_t *)&deviceParameters->rawSampleBuffer, (uint8_t *)BUFFER.mData, framesToWrite)/*)*/;
 		}
-		else PaUtil_ReadRingBuffer(deviceParameters->outputBuffer, BUFFER.mData, framesToWrite);
+		else
+		{
+		  PaUtil_ReadRingBuffer(deviceParameters->outputBuffer, BUFFER.mData, framesToWrite);
+		}
 	}
+	
 #undef BUFFER
-    return( noErr );
+	
+	return noErr;
 }
 
 OSStatus CoreAudioAUHAL::HardwareStreamListener(AudioObjectID inObjectID,
