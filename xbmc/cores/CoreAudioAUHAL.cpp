@@ -103,7 +103,6 @@ CoreAudioAUHAL::CoreAudioAUHAL(const CStdString& strName, const char *strCodec, 
 		{
 			deviceParameters->m_bEncodeAC3 = true;
 		}
-		
 	}
 	else
 	{
@@ -167,14 +166,6 @@ CoreAudioAUHAL::CoreAudioAUHAL(const CStdString& strName, const char *strCodec, 
 	  {
 	    m_dwPacketSize = AC3_SPDIF_FRAME_SIZE;
 	    m_bIsInitialized = true;
-	    
-	    // We need to wait for this to complete.
-	    for (int i=0; i<100 && deviceParameters->m_bInitializationComplete == false; i++)
-	    {
-	      printf("Waiting...\n");
-	      Sleep(50);
-	    }
-	    
 	    return;
 	  }
 	}
@@ -249,11 +240,8 @@ HRESULT CoreAudioAUHAL::Deinitialize()
 			AudioStreamChangeFormat(deviceParameters, deviceParameters->i_stream_id, deviceParameters->sfmt_revert);
 			
 			// Now we have to wait for it to finish deinitializing.
-			for (int i=0; i<100 && deviceParameters->m_bInitializationComplete == true; i++)
-			{
-			  printf("Waiting...\n");
+			for (int i=0; i<40 && deviceParameters->m_bInitializationComplete == true; i++)
 			  Sleep(50);
-			}
 		}
 	}
 		
@@ -264,9 +252,6 @@ HRESULT CoreAudioAUHAL::Deinitialize()
 	return S_OK;
 }
 												
-
-	
-	
 DWORD CoreAudioAUHAL::GetSpace()
 {
 	DWORD fakeCeiling, bufferDataSize = PaUtil_GetRingBufferReadAvailable(deviceParameters->outputBuffer);
@@ -551,7 +536,6 @@ OSStatus CoreAudioAUHAL::RenderCallbackAnalog(struct CoreAudioDeviceParameters *
  * Setup a encoded digital stream (SPDIF)
  *****************************************************************************/
 int CoreAudioAUHAL::OpenSPDIF(struct CoreAudioDeviceParameters *deviceParameters, const CStdString& strName, int channels, float sampleRate, int bitsPerSample, int packetSize)
-
 {
 	OSStatus                err = noErr;
 	UInt32                  propertySize = 0;
@@ -667,6 +651,13 @@ int CoreAudioAUHAL::OpenSPDIF(struct CoreAudioDeviceParameters *deviceParameters
 
 	if (!AudioStreamChangeFormat(deviceParameters, deviceParameters->i_stream_id, deviceParameters->stream_format))
 	  return false;
+
+  // We need to wait for this to complete.
+  for (int i=0; i<40 && deviceParameters->m_bInitializationComplete == false; i++)
+  {
+    printf("Waiting...\n");
+    Sleep(50);
+  }
 	
 	deviceParameters->b_revert = true;
 
@@ -719,6 +710,19 @@ int CoreAudioAUHAL::OpenSPDIF(struct CoreAudioDeviceParameters *deviceParameters
 	  CLog::Log(LOGERROR, "AudioDeviceAddIOProcID failed: [%4.4s]", (char *)&err );
 	  return false;
 	}
+	
+  // Start device.
+	deviceParameters->hardwareReady = true;
+
+  err = AudioDeviceStart(deviceParameters->device_id, (AudioDeviceIOProc)RenderCallbackSPDIF);
+  if (err != noErr)
+  {
+    CLog::Log(LOGERROR, "AudioDeviceStart failed for device ID %p: [%4.4s]", deviceParameters->device_id, (char *)&err);
+     
+    err = AudioDeviceDestroyIOProcID(deviceParameters->device_id, (AudioDeviceIOProc)RenderCallbackSPDIF);
+    if (err != noErr)
+      CLog::Log(LOGERROR, "AudioDeviceRemoveIOProc failed: [%4.4s]", (char *)&err);
+  }
 
 	return true;
 }
@@ -811,24 +815,6 @@ OSStatus CoreAudioAUHAL::HardwareStreamListener(AudioObjectID inObjectID,
 			
 			if (deviceParameters->hardwareReady == false)
 			{
-				// Start device.
-				deviceParameters->hardwareReady = true;
-
-				if (actual_format.mFormatID == deviceParameters->stream_format.mFormatID &&
-				    actual_format.mSampleRate == deviceParameters->stream_format.mSampleRate &&
-				    actual_format.mBytesPerFrame == deviceParameters->stream_format.mBytesPerFrame)
-				{
-          status = AudioDeviceStart(deviceParameters->device_id, (AudioDeviceIOProc)RenderCallbackSPDIF);
-          if (status != noErr)
-          {
-            CLog::Log(LOGERROR, "AudioDeviceStart failed for device ID %p: [%4.4s]", deviceParameters->device_id, (char *)&status);
-            
-            status = AudioDeviceDestroyIOProcID(deviceParameters->device_id, (AudioDeviceIOProc)RenderCallbackSPDIF);
-            if (status != noErr)
-              CLog::Log(LOGERROR, "AudioDeviceRemoveIOProc failed: [%4.4s]", (char *)&status);
-          }
-				}
-				
 				// Mark us as having initialized.
 				deviceParameters->m_bInitializationComplete = true;
 			}
