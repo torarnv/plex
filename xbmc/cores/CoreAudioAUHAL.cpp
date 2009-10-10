@@ -259,7 +259,7 @@ HRESULT CoreAudioAUHAL::Deinitialize()
 			
 			if (AudioObjectHasProperty(deviceParameters->device_id, &propertyAOPA))
 			{
-				err = AudioObjectGetPropertyData(deviceParameters->device_id, &propertyAOPA, 0, NULL, &i_param_size, &mixable);
+				err = AudioObjectSetPropertyData(deviceParameters->device_id, &propertyAOPA, 0, NULL, i_param_size, &mixable);
 			}
 			
 			if( err != noErr )
@@ -677,9 +677,16 @@ int CoreAudioAUHAL::OpenSPDIF(struct CoreAudioDeviceParameters *deviceParameters
 	err = AudioObjectGetPropertyData(deviceParameters->i_stream_id, &propertyAOPA, 0, NULL, &propertySize, &deviceParameters->sfmt_revert);
 	
 	CLog::Log(LOGINFO, STREAM_FORMAT_MSG("original stream format: ", deviceParameters->sfmt_revert ) );
+	
+	// Add stream listener
+	propertyAOPA.mScope = kAudioObjectPropertyScopeGlobal;
+	propertyAOPA.mSelector = kAudioStreamPropertyPhysicalFormat;
+	
+	err = AudioObjectAddPropertyListener(deviceParameters->i_stream_id, &propertyAOPA, HardwareStreamListener, deviceParameters);
 
     if( !AudioStreamChangeFormat(deviceParameters, deviceParameters->i_stream_id, deviceParameters->stream_format))
         return false;
+	
 	deviceParameters->b_revert = true;
 
 	// Get device hardware buffer size
@@ -688,6 +695,7 @@ int CoreAudioAUHAL::OpenSPDIF(struct CoreAudioDeviceParameters *deviceParameters
 	deviceParameters->hardwareFrameLatency = 0;
 	propertySize = sizeof(uint32_t);
 
+	propertyAOPA.mScope = kAudioDevicePropertyScopeOutput;
 	propertyAOPA.mSelector = kAudioDevicePropertyLatency;
 	err = AudioObjectGetPropertyData(deviceParameters->device_id, &propertyAOPA, 0, NULL, &propertySize, &audioDeviceLatency);
 	if (err == noErr) deviceParameters->hardwareFrameLatency += audioDeviceLatency;
@@ -720,11 +728,6 @@ int CoreAudioAUHAL::OpenSPDIF(struct CoreAudioDeviceParameters *deviceParameters
 	deviceParameters->outputBufferData = calloc(1, framecount * channels * bitsPerSample/8); // use uncompressed size if encoding ac3
 
 	PaUtil_InitializeRingBuffer(deviceParameters->outputBuffer, channels * bitsPerSample/8, framecount, deviceParameters->outputBufferData);
-	
-	// Add stream listener
-	propertyAOPA.mSelector = kAudioStreamPropertyPhysicalFormat;
-	
-	err = AudioObjectAddPropertyListener(deviceParameters->i_stream_id, &propertyAOPA, HardwareStreamListener, deviceParameters);
 	
 	/* Add IOProc callback */
 	err = AudioDeviceCreateIOProcID(deviceParameters->device_id,
