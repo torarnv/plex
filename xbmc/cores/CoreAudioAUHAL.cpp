@@ -259,7 +259,7 @@ HRESULT CoreAudioAUHAL::Deinitialize()
 			
 			if (AudioObjectHasProperty(deviceParameters->device_id, &propertyAOPA))
 			{
-				err = AudioObjectGetPropertyData(deviceParameters->device_id, &propertyAOPA, 0, NULL, &i_param_size, &mixable);
+				err = AudioObjectSetPropertyData(deviceParameters->device_id, &propertyAOPA, 0, NULL, i_param_size, &mixable);
 			}
 			
 			if( err != noErr )
