@@ -679,6 +679,7 @@ int CoreAudioAUHAL::OpenSPDIF(struct CoreAudioDeviceParameters *deviceParameters
 	CLog::Log(LOGINFO, STREAM_FORMAT_MSG("original stream format: ", deviceParameters->sfmt_revert ) );
 	
 	// Add stream listener
+	propertyAOPA.mScope = kAudioObjectPropertyScopeGlobal;
 	propertyAOPA.mSelector = kAudioStreamPropertyPhysicalFormat;
 	
 	err = AudioObjectAddPropertyListener(deviceParameters->i_stream_id, &propertyAOPA, HardwareStreamListener, deviceParameters);
@@ -694,6 +695,7 @@ int CoreAudioAUHAL::OpenSPDIF(struct CoreAudioDeviceParameters *deviceParameters
 	deviceParameters->hardwareFrameLatency = 0;
 	propertySize = sizeof(uint32_t);
 
+	propertyAOPA.mScope = kAudioDevicePropertyScopeOutput;
 	propertyAOPA.mSelector = kAudioDevicePropertyLatency;
 	err = AudioObjectGetPropertyData(deviceParameters->device_id, &propertyAOPA, 0, NULL, &propertySize, &audioDeviceLatency);
 	if (err == noErr) deviceParameters->hardwareFrameLatency += audioDeviceLatency;
