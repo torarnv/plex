@@ -287,8 +287,14 @@ void CThread::StopThread()
   {
     WaitForThreadExit(INFINITE);
     CloseHandle(m_ThreadHandle);
-    m_ThreadHandle = NULL;
+    m_ThreadHandle = 0;
   }
+}
+
+void CThread::StopThreadAsync()
+{
+  m_bStop = true;
+  SetEvent(m_StopEvent);
 }
 
 DWORD CThread::ThreadId() const
@@ -377,7 +383,7 @@ HANDLE CThread::ThreadHandle()
 void CThread::Process()
 {
   if(m_pRunnable)
-    m_pRunnable->Run(); 
+    m_pRunnable->Run();  
 }
 
 float CThread::GetRelativeUsage()

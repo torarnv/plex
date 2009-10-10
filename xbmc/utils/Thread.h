@@ -72,6 +72,7 @@ public:
   operator const HANDLE() const;
   bool IsAutoDelete() const;
   virtual void StopThread();
+  virtual void StopThreadAsync();
 
   // returns the relative cpu usage of this thread since last call
   float GetRelativeUsage();

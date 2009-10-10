@@ -170,6 +170,8 @@ protected:
   double  m_droptime;
   bool    m_stalled;
   bool    m_started;
+  volatile bool m_waitForBuffers;
+  volatile bool m_cleanShutdown;
   CRITICAL_SECTION m_critCodecSection;
 };
 

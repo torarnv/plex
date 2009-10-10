@@ -409,7 +409,11 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
     case TMSG_MEDIA_OPEN_COMPLETE:
       g_application.FinishPlayingFile(pMsg->dwParam1, pMsg->strParam);
       break;
-      
+    
+    case TMSG_MEDIA_CLOSE_COMPLETE:
+      g_application.FinishStopPlaying();
+      break;
+
     case TMSG_SWITCHTOFULLSCREEN:
       if( m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO )
         g_application.SwitchToFullScreen();
@@ -674,6 +678,12 @@ void CApplicationMessenger::MediaOpenComplete(bool bStatus, const CStdString& st
   ThreadMessage tMsg = {TMSG_MEDIA_OPEN_COMPLETE};
   tMsg.dwParam1 = bStatus;
   tMsg.strParam = strErrorMsg;
+  SendMessage(tMsg, false);
+}
+
+void CApplicationMessenger::MediaCloseComplete()
+{
+  ThreadMessage tMsg = {TMSG_MEDIA_CLOSE_COMPLETE};
   SendMessage(tMsg, false);
 }
 

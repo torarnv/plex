@@ -125,6 +125,8 @@ CDVDPlayerAudio::CDVDPlayerAudio(CDVDClock* pClock)
 : CThread()
 , m_messageQueue("audio")
 , m_dvdAudio((bool&)m_bStop)
+, m_waitForBuffers(false)
+, m_cleanShutdown(false)
 {
   m_pClock = pClock;
   m_pAudioCodec = NULL;  
@@ -132,7 +134,6 @@ CDVDPlayerAudio::CDVDPlayerAudio(CDVDClock* pClock)
   m_droptime = 0;
   m_speed = DVD_PLAYSPEED_NORMAL;
   m_stalled = false;
-  m_started = false;
 
   InitializeCriticalSection(&m_critCodecSection);
   m_messageQueue.SetMaxDataSize(3 * 1024 * 1024);
@@ -185,31 +186,9 @@ void CDVDPlayerAudio::CloseStream(bool bWaitForBuffers)
   CLog::Log(LOGNOTICE, "Waiting for audio thread to exit");
 
   // shut down the adio_decode thread and wait for it
+  m_waitForBuffers = bWaitForBuffers;
+  m_cleanShutdown = true;
   StopThread(); // will set this->m_bStop to true
-
-  // destroy audio device
-  CLog::Log(LOGNOTICE, "Closing audio device");
-  if (bWaitForBuffers && m_speed > 0)
-  {
-    m_bStop = false;
-    m_dvdAudio.Drain();
-    m_bStop = true;
-  }
-  m_dvdAudio.Destroy();
-
-  // uninit queue
-  m_messageQueue.End();
-
-  CLog::Log(LOGNOTICE, "Deleting audio codec");
-  if (m_pAudioCodec)
-  {
-    m_pAudioCodec->Dispose();
-    delete m_pAudioCodec;
-    m_pAudioCodec = NULL;
-  }
-
-  // flush any remaining pts values
-  m_ptsOutput.Flush();
 }
 
 bool CDVDPlayerAudio::OpenDecoder(CDVDStreamInfo &hints, BYTE* buffer /* = NULL*/, unsigned int size /* = 0*/)
@@ -496,7 +475,7 @@ void CDVDPlayerAudio::Process()
       if(!m_dvdAudio.Create(audioframe, m_streaminfo.codec))
         CLog::Log(LOGERROR, "%s - failed to create audio renderer", __FUNCTION__);
     }
-
+    
     if( result & DECODE_FLAG_DROP )
     {
       //frame should be dropped. Don't let audio move ahead of the current time thou
@@ -540,6 +519,33 @@ void CDVDPlayerAudio::Process()
       if(m_speed == DVD_PLAYSPEED_NORMAL)
         CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Discontinuty - was:%f, should be:%f, error:%f", clock, clock+error, error);
     }
+  }
+  
+  if (m_cleanShutdown)
+  {
+    // destroy audio device
+    CLog::Log(LOGNOTICE, "Closing audio device");
+    if (m_waitForBuffers && m_speed > 0)
+    {
+      m_bStop = false;
+      m_dvdAudio.Drain();
+      m_bStop = true;
+    }
+    m_dvdAudio.Destroy();
+  
+    // uninit queue
+    m_messageQueue.End();
+  
+    CLog::Log(LOGNOTICE, "Deleting audio codec");
+    if (m_pAudioCodec)
+    {
+      m_pAudioCodec->Dispose();
+      delete m_pAudioCodec;
+      m_pAudioCodec = NULL;
+    }
+  
+    // flush any remaining pts values
+    m_ptsOutput.Flush();
   }
 }
 

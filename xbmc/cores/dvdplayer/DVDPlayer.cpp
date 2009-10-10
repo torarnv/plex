@@ -412,7 +412,10 @@ bool CDVDPlayer::CloseFile()
   // wait for the main thread to finish up
   // since this main thread cleans up all other resources and threads
   // we are done after the StopThread call
-  StopThread();
+  //StopThread();
+  
+  // Tell the thread to stop, but don't fucking block.
+  StopThreadAsync();
 
   m_Edl.Reset();
 
@@ -1251,6 +1254,11 @@ void CDVDPlayer::Process()
     m_pDlgCache->Close();
     m_pDlgCache = NULL;
   }
+  
+  // Notify the application.
+  m_dvdPlayerVideo.CloseStream(true);
+  m_dvdPlayerAudio.CloseStream(true);
+  g_application.getApplicationMessenger().MediaCloseComplete();
 }
 
 void CDVDPlayer::ProcessPacket(CDemuxStream* pStream, DemuxPacket* pPacket)

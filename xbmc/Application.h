@@ -141,6 +141,7 @@ public:
   void FinishPlayingFile(bool bResult, const CStdString& error="");
   
   void StopPlaying();
+  void FinishStopPlaying();
   void Restart(bool bSamePosition = true);
   void RestartWithNewPlayer(CDlgCache* cacheDlg, const CStdString& newURL);
   void DelayedPlayerRestart();
