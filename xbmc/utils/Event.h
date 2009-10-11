@@ -47,7 +47,7 @@ public:
   void Reset();
   void Set();
   void Wait();
-  CEvent();
+  CEvent(bool manual=false);
   virtual ~CEvent();
 
 protected:

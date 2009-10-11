@@ -26,9 +26,9 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CEvent::CEvent()
+CEvent::CEvent(bool manual)
 {
-  m_hEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
+  m_hEvent = CreateEvent(NULL, manual, FALSE, NULL);
 }
 
 
