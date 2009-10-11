@@ -39,7 +39,8 @@ class PlexHelperApp
    
   virtual bool   DoConfigure(int& mode, bool& alwaysRunning, bool& errorStarting) = 0;
   virtual string GetConfigString() = 0;
-   
+  virtual void   InstallLatestVersion(const string& dstDir) {}
+  
   /// Constructor/destructor.
   PlexHelperApp();
   virtual ~PlexHelperApp() {}

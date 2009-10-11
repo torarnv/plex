@@ -334,7 +334,7 @@ void CPlexMediaServerPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
 
 void CPlexMediaServerPlayer::SetVolume(long nVolume) 
 {
-  int nPct = (int)fabs(((float)(nVolume - VOLUME_MINIMUM) / (float)(VOLUME_MAXIMUM - VOLUME_MINIMUM)) * 100.0);
+  //int nPct = (int)fabs(((float)(nVolume - VOLUME_MINIMUM) / (float)(VOLUME_MAXIMUM - VOLUME_MINIMUM)) * 100.0);
   //m_dll.FlashSetVolume(m_handle, nPct);
 }
 
@@ -491,7 +491,7 @@ void CPlexMediaServerPlayer::OnFrameMap(const string& args)
     
     // Map the whole file in this process.
     m_mappedRegion = new ipc::mapped_region(fileMapping, ipc::read_write);
-    printf("Mapped region is %d bytes.\n", m_mappedRegion->get_size());
+    printf("Mapped region is %ld bytes.\n", m_mappedRegion->get_size());
     
     // Note that playback has started.
     OnPlaybackStarted();

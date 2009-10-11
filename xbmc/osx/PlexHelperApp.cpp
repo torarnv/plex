@@ -94,6 +94,11 @@ bool PlexHelperApp::EnsureLatestHelperInstalled()
       chmod(m_helperInstalledFile.c_str(), S_IRWXU | S_IRGRP | S_IROTH);
     }
 
+    // Let the subclass do its work as well.
+    string dst = getenv("HOME");
+    dst += RESOURCES_DIR;
+    InstallLatestVersion(dst);
+    
     // Write version file.
     WriteFile(m_helperInstalledVersionFile.c_str(), appVersion);
     return true;
