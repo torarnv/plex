@@ -95,7 +95,7 @@ class CoreAudioAUHAL
 		
 		bool m_bIsMusic;
 		bool m_bIsInitialized;
-		CCriticalSection    m_cs;
+		CCriticalSection m_cs;
 		
 		int m_uiChannels;
 		int m_uiBitsPerSample;
@@ -105,6 +105,7 @@ class CoreAudioAUHAL
 		
 		bool m_bEncodeAC3;
 		AC3Encoder m_ac3encoder;
+		
 		static bool s_lastPlayWasSpdif;
 	};
 		

@@ -43,9 +43,9 @@ struct AC3Encoder
 
 	// encoder flags
 	int last_frame;
-    int got_fs_once;
-    int iAC3FrameSize;
-    int irawSampleBytesRead;
+  int got_fs_once;
+  int iAC3FrameSize;
+  int irawSampleBytesRead;
 	int remap;
 };
 

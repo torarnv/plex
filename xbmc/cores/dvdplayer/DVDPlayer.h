@@ -376,7 +376,7 @@ protected:
   CRITICAL_SECTION m_critStreamSection; // need to have this lock when switching streams (audio / video)
 
   CEdl m_Edl;
-  volatile bool m_bThreadDead;
+  CEvent m_deathEvent;
     
   CPlayerOptions m_PlayerOptions;
 };

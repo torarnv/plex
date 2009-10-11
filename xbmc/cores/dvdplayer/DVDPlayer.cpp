@@ -263,7 +263,7 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
       m_dvdPlayerSubtitle(&m_overlayContainer),
       m_messenger("player"),
       m_bFileOpenComplete(false),
-      m_bThreadDead(true)
+      m_deathEvent(true)
 {
   m_pDemuxer = NULL;
   m_pSubtitleDemuxer = NULL;
@@ -290,15 +290,16 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
 #ifdef DVDDEBUG_MESSAGE_TRACKER
   g_dvdMessageTracker.Init();
 #endif
+  
+  m_deathEvent.Set();
 }
 
 CDVDPlayer::~CDVDPlayer()
 {
   CloseFile();
 
-  // We need the thread to be completely dead before we can safely delete things.
-  for (int i=0; i<200 && m_bThreadDead == false; i++)
-    Sleep(50);
+  // We need the thread to be completely dead before we can safely be deleted.
+  m_deathEvent.WaitMSec(10000);
 
   CloseHandle(m_hReadyEvent);
   DeleteCriticalSection(&m_critStreamSection);
@@ -346,7 +347,7 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
     m_filename = file.m_strPath;
 
     ResetEvent(m_hReadyEvent);
-    m_bThreadDead = false;
+    m_deathEvent.Reset();
     Create();
   }
   catch(...)
@@ -1261,13 +1262,8 @@ void CDVDPlayer::Process()
     m_pDlgCache = NULL;
   }
   
-  // Notify the application.
   m_dvdPlayerVideo.CloseStream(true);
   m_dvdPlayerAudio.CloseStream(true);
-  g_application.getApplicationMessenger().MediaCloseComplete();
-  
-  // Now, and only now, can we declare it dead.
-  m_bThreadDead = true;
 }
 
 void CDVDPlayer::ProcessPacket(CDemuxStream* pStream, DemuxPacket* pPacket)
@@ -1800,6 +1796,12 @@ void CDVDPlayer::OnExit()
     else
       m_callback.OnPlayBackEnded();
   }
+  
+  // Notify the application.
+  g_application.getApplicationMessenger().MediaCloseComplete();
+  
+  // Now, and only now, can we declare it dead.
+  m_deathEvent.Set();
 }
 
 void CDVDPlayer::HandleMessages()
