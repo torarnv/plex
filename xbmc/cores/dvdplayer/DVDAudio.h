@@ -60,6 +60,7 @@ public:
   void Flush();
   void Finish();
   void Drain();
+  void Stop() { m_bStop = true; }
 
   void SetSpeed(int iSpeed);
 

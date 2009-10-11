@@ -4767,8 +4767,6 @@ void CApplication::FinishPlayingFile(bool bResult, const CStdString& error)
 
 void CApplication::OnPlayBackEnded()
 {
-  printf("On playback ended\n");
-  
   //playback ended
   SetPlaySpeed(1);
 
@@ -4981,8 +4979,6 @@ void CApplication::StopPlaying()
 
 void CApplication::FinishStopPlaying()
 {
-  printf("Finish stop playing\n");
-
   // OK, we're really done closing the file. 
   g_partyModeManager.Disable();
   OnPlayBackStopped();

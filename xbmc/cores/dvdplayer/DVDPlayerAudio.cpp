@@ -142,6 +142,7 @@ CDVDPlayerAudio::CDVDPlayerAudio(CDVDClock* pClock)
 
 CDVDPlayerAudio::~CDVDPlayerAudio()
 {
+  m_dvdAudio.Stop();
   StopThread();
   g_dvdPerformanceCounter.DisableAudioQueue();
 
@@ -185,7 +186,7 @@ void CDVDPlayerAudio::CloseStream(bool bWaitForBuffers)
 
   CLog::Log(LOGNOTICE, "Waiting for audio thread to exit");
 
-  // shut down the adio_decode thread and wait for it
+  // shut down the audio_decode thread and wait for it
   m_waitForBuffers = bWaitForBuffers;
   m_cleanShutdown = true;
   StopThread(); // will set this->m_bStop to true
@@ -541,7 +542,7 @@ void CDVDPlayerAudio::Process()
     {
       m_pAudioCodec->Dispose();
       delete m_pAudioCodec;
-      m_pAudioCodec = NULL;
+      m_pAudioCodec = 0;
     }
   
     // flush any remaining pts values

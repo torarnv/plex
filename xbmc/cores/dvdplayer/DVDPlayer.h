@@ -273,7 +273,7 @@ protected:
   void UpdatePlayState(double timeout);
   double m_UpdateApplication;
 
-  bool m_bAbortRequest;
+  volatile bool m_bAbortRequest;
   bool m_bFileOpenComplete;
   std::string m_strError;
 
@@ -376,7 +376,8 @@ protected:
   CRITICAL_SECTION m_critStreamSection; // need to have this lock when switching streams (audio / video)
 
   CEdl m_Edl;
-
+  volatile bool m_bThreadDead;
+    
   CPlayerOptions m_PlayerOptions;
 };
 

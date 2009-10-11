@@ -146,10 +146,12 @@ void CDVDAudio::Destroy()
     delete m_pAudioDecoder;
   }
 
-  if (m_pBuffer) delete[] m_pBuffer;
-  m_pBuffer = NULL;
+  if (m_pBuffer) 
+    delete[] m_pBuffer;
+  
+  m_pBuffer = 0;
   m_dwPacketSize = 0;
-  m_pAudioDecoder = NULL;
+  m_pAudioDecoder = 0;
   m_iBufferSize = 0;
   m_iChannels = 0;
   m_iBitrate = 0;
