@@ -45,15 +45,6 @@
 using namespace std;
 
 
-
-// our free type library (debug)
-#if defined(_DEBUG) && !defined(USE_RELEASE_LIBS)
-  #pragma comment (lib,"../../guilib/freetype2/freetype239ST_D.lib")
-#elif !defined(__GNUC__)
-  #pragma comment (lib,"../../guilib/freetype2/freetype239ST.lib")
-#endif
-
-
 #define CHARS_PER_TEXTURE_LINE 20 // number of characters to cache per texture line
 #define CHAR_CHUNK    64      // 64 chars allocated at a time (1024 bytes)
 
@@ -344,6 +335,9 @@ void CGUIFontTTFBase::DrawTextInternal(float x, float y, const vecColors &colors
   }
   float cursorX = 0; // current position along the line
 
+  Character* previousCh = NULL;
+  FT_Vector delta;
+
   for (vecText::const_iterator pos = text.begin(); pos != text.end(); pos++)
   {
     // If starting text on a new line, determine justification effects
@@ -379,6 +373,13 @@ void CGUIFontTTFBase::DrawTextInternal(float x, float y, const vecColors &colors
     else if (maxPixelWidth > 0 && cursorX > maxPixelWidth)
       break;  // exceeded max allowed width - stop rendering
 
+    if (previousCh)
+    {
+      FT_Get_Kerning(m_face, previousCh->glyphIndex, ch->glyphIndex, 
+          FT_KERNING_DEFAULT, &delta);
+      cursorX += (float) (delta.x / 64);
+    }
+
     RenderCharacter(startX + cursorX, startY, ch, color, !scrolling);
     if ( alignment & XBFONT_JUSTIFIED )
     {
@@ -389,6 +390,8 @@ void CGUIFontTTFBase::DrawTextInternal(float x, float y, const vecColors &colors
     }
     else
       cursorX += ch->advance;
+
+    previousCh = ch;
   }
 
   End();
@@ -586,6 +589,7 @@ bool CGUIFontTTFBase::CacheCharacter(wchar_t letter, uint32_t style, Character *
   ch->right = ch->left + bitmap.width;
   ch->bottom = ch->top + bitmap.rows;
   ch->advance = (float)MathUtils::round_int( (float)m_face->glyph->advance.x / 64 );
+  ch->glyphIndex = glyph_index;
 
   // we need only render if we actually have some pixels
   if (bitmap.width * bitmap.rows)

@@ -46,7 +46,7 @@
 				InlineFunctionExpansion="0"
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;..\..\xbmc\lib\libPython\Python\PC;&quot;..\..\xbmc\lib\libSDL-WIN32\include&quot;;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib"
+				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;..\..\xbmc\lib\libPython\Python\PC;&quot;..\..\lib\libSDL-WIN32\include&quot;;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\lib\freetype\include"
 				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;NDEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;NOMINMAX;_USE_32BIT_TIME_T;HAS_GL"
 				StringPooling="false"
 				MinimalRebuild="false"
@@ -55,11 +55,14 @@
 				BufferSecurityCheck="false"
 				EnableFunctionLevelLinking="false"
 				EnableEnhancedInstructionSet="1"
-				UsePrecompiledHeader="0"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="pch.h"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="0"
 				DisableSpecificWarnings="4996"
+				ForcedIncludeFiles="pch.h"
+				ShowIncludes="false"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -77,7 +80,7 @@
 				AdditionalDependencies="SDL.lib opengl32.lib DSound.lib glew32.lib glu32.lib winmm.lib ws2_32.lib Mpr.lib Iphlpapi.lib PowrProf.lib setupapi.lib"
 				OutputFile="$(OutDir)\XBMC.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;..\..\xbmc\lib\libSDL-WIN32\lib&quot;"
+				AdditionalLibraryDirectories="&quot;..\..\lib\libSDL-WIN32\lib&quot;"
 				IgnoreDefaultLibraryNames="libc;msvcrt;libci"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\XBMC.pdb"
@@ -138,17 +141,20 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/EHa"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;&quot;..\..\xbmc\lib\libSDL-WIN32\include&quot;;..\..\xbmc\lib\libPython\Python\PC;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib"
+				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;&quot;..\..\lib\libSDL-WIN32\include&quot;;..\..\xbmc\lib\libPython\Python\PC;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\lib\freetype\include"
 				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;_DEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;NOMINMAX;_USE_32BIT_TIME_T;HAS_DX"
 				MinimalRebuild="true"
 				ExceptionHandling="0"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="1"
-				UsePrecompiledHeader="0"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="pch.h"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="4"
 				DisableSpecificWarnings="4996"
+				ForcedIncludeFiles="pch.h"
+				ShowIncludes="false"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -165,7 +171,7 @@
 				AdditionalDependencies="SDL.lib D3D9.lib D3dx9.lib DInput8.lib DSound.lib winmm.lib ws2_32.lib Mpr.lib Iphlpapi.lib PowrProf.lib setupapi.lib"
 				OutputFile="$(OutDir)\XBMC.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;..\..\xbmc\lib\libSDL-WIN32\lib&quot;"
+				AdditionalLibraryDirectories="&quot;..\..\lib\libSDL-WIN32\lib&quot;"
 				IgnoreDefaultLibraryNames="libc;msvcrt;libcmt"
 				ModuleDefinitionFile=""
 				GenerateDebugInformation="true"
@@ -229,7 +235,7 @@
 				InlineFunctionExpansion="0"
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;&quot;..\..\xbmc\lib\libSDL-WIN32\include&quot;;..\..\xbmc\lib\libPython\Python\PC;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib"
+				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum;..\..\xbmc\lib\libUPnP\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;&quot;..\..\lib\libSDL-WIN32\include&quot;;..\..\xbmc\lib\libPython\Python\PC;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\lib\freetype\include"
 				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;NDEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;NOMINMAX;_USE_32BIT_TIME_T;HAS_DX"
 				StringPooling="false"
 				MinimalRebuild="false"
@@ -238,11 +244,14 @@
 				BufferSecurityCheck="false"
 				EnableFunctionLevelLinking="false"
 				EnableEnhancedInstructionSet="1"
-				UsePrecompiledHeader="0"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="pch.h"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="0"
 				DisableSpecificWarnings="4996"
+				ForcedIncludeFiles="pch.h"
+				ShowIncludes="false"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -260,7 +269,7 @@
 				AdditionalDependencies="SDL.lib D3D9.lib D3dx9.lib DInput8.lib DSound.lib winmm.lib ws2_32.lib Mpr.lib Iphlpapi.lib PowrProf.lib setupapi.lib"
 				OutputFile="$(OutDir)\XBMC.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\xbmc\lib\libSDL-WIN32\lib"
+				AdditionalLibraryDirectories="..\..\lib\libSDL-WIN32\lib"
 				IgnoreDefaultLibraryNames="libc;msvcrt;libci"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\XBMC.pdb"
@@ -321,18 +330,21 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/EHa"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;..\..\xbmc\lib\libPython\Python\PC;&quot;..\..\xbmc\lib\libSDL-WIN32\include&quot;;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\xbmc\lib\libglew"
+				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;..\..\xbmc\lib\libPython\Python\PC;&quot;..\..\lib\libSDL-WIN32\include&quot;;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\xbmc\lib\libglew;..\..\lib\freetype\include"
 				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;_DEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;NOMINMAX;_USE_32BIT_TIME_T;HAS_GL"
 				MinimalRebuild="true"
 				ExceptionHandling="0"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="1"
-				UsePrecompiledHeader="0"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="pch.h"
 				ProgramDataBaseFileName="$(IntDir)\XBMC.pdb"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="4"
 				DisableSpecificWarnings="4996"
+				ForcedIncludeFiles="pch.h"
+				ShowIncludes="false"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -349,7 +361,7 @@
 				AdditionalDependencies="SDL.lib D3D9.lib D3dx9.lib DInput8.lib DSound.lib winmm.lib ws2_32.lib Mpr.lib Iphlpapi.lib PowrProf.lib setupapi.lib"
 				OutputFile="$(OutDir)\XBMC.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;..\..\xbmc\lib\libSDL-WIN32\lib&quot;"
+				AdditionalLibraryDirectories="&quot;..\..\lib\libSDL-WIN32\lib&quot;"
 				IgnoreDefaultLibraryNames="libc;msvcrt;libcmt"
 				ModuleDefinitionFile=""
 				GenerateDebugInformation="true"
@@ -399,6 +411,46 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\xbmc\win32\pch.cpp"
+				>
+				<FileConfiguration
+					Name="Release (OpenGL)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug (DirectX)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (DirectX)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug (OpenGL)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\win32\pch.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\xbmc\win32\PlatformDefs.h"
 				>
 			</File>
@@ -412,6 +464,14 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\win32\Win32PowerSyscall.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\win32\Win32StorageProvider.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\win32\Win32StorageProvider.h"
 				>
 			</File>
 			<File
@@ -496,22 +556,6 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\cores\IPlayer.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\cores\PlayerCoreFactory.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\cores\PlayerCoreFactory.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\cores\PlayerSelectionRule.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\cores\PlayerSelectionRule.h"
 				>
 			</File>
 			<File
@@ -602,10 +646,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\cores\dvdplayer\DVDOverlay.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\cores\dvdplayer\DVDOverlayContainer.cpp"
 					>
 				</File>
@@ -662,6 +702,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\cores\dvdplayer\DVDPlayerTeletext.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\dvdplayer\DVDPlayerTeletext.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\cores\dvdplayer\DVDPlayerVideo.cpp"
 					>
 				</File>
@@ -686,16 +734,20 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\cores\dvdplayer\Edl.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\dvdplayer\Edl.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\cores\dvdplayer\IDVDPlayer.h"
 					>
 				</File>
 				<Filter
 					Name="DVDCodecs"
 					>
-					<File
-						RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\DllAvCodec.h"
-						>
-					</File>
 					<File
 						RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\DVDCodecs.h"
 						>
@@ -812,10 +864,6 @@
 							>
 						</File>
 						<File
-							RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DllPostProc.h"
-							>
-						</File>
-						<File
 							RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DVDVideoCodec.h"
 							>
 						</File>
@@ -914,7 +962,7 @@
 									>
 									<Tool
 										Name="VCCLCompilerTool"
-										UsePrecompiledHeader="0"
+										CompileAs="2"
 									/>
 								</FileConfiguration>
 								<FileConfiguration
@@ -922,7 +970,7 @@
 									>
 									<Tool
 										Name="VCCLCompilerTool"
-										UsePrecompiledHeader="0"
+										CompileAs="2"
 									/>
 								</FileConfiguration>
 								<FileConfiguration
@@ -930,7 +978,7 @@
 									>
 									<Tool
 										Name="VCCLCompilerTool"
-										UsePrecompiledHeader="0"
+										CompileAs="2"
 									/>
 								</FileConfiguration>
 								<FileConfiguration
@@ -938,23 +986,7 @@
 									>
 									<Tool
 										Name="VCCLCompilerTool"
-										UsePrecompiledHeader="0"
-									/>
-								</FileConfiguration>
-								<FileConfiguration
-									Name="Debug|Win32"
-									>
-									<Tool
-										Name="VCCLCompilerTool"
-										UsePrecompiledHeader="0"
-									/>
-								</FileConfiguration>
-								<FileConfiguration
-									Name="Release|Win32"
-									>
-									<Tool
-										Name="VCCLCompilerTool"
-										UsePrecompiledHeader="0"
+										CompileAs="2"
 									/>
 								</FileConfiguration>
 							</File>
@@ -968,10 +1000,6 @@
 				<Filter
 					Name="DVDDemuxers"
 					>
-					<File
-						RelativePath="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DllAvFormat.h"
-						>
-					</File>
 					<File
 						RelativePath="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemux.cpp"
 						>
@@ -1129,23 +1157,35 @@
 					Name="DVDHeaders"
 					>
 					<File
-						RelativePath="..\..\xbmc\cores\dvdplayer\ffmpeg\avcodec.h"
+						RelativePath="..\..\xbmc\cores\ffmpeg\avcodec.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\cores\dvdplayer\ffmpeg\avformat.h"
+						RelativePath="..\..\xbmc\cores\ffmpeg\avformat.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\cores\dvdplayer\ffmpeg\avio.h"
+						RelativePath="..\..\xbmc\cores\ffmpeg\avio.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\cores\dvdplayer\ffmpeg\common.h"
+						RelativePath="..\..\xbmc\cores\ffmpeg\common.h"
 						>
 					</File>
 					<File
 						RelativePath="..\..\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\decoder.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\ffmpeg\DllAvCodec.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\ffmpeg\DllAvFormat.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\ffmpeg\DllPostProc.h"
 						>
 					</File>
 					<File
@@ -1165,10 +1205,6 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\cores\dvdplayer\ffmpeg\ffmpeg.h"
-						>
-					</File>
-					<File
 						RelativePath="..\..\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\ifo_types.h"
 						>
 					</File>
@@ -1177,23 +1213,7 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\cores\dvdplayer\ffmpeg\rational.h"
-						>
-					</File>
-					<File
 						RelativePath="..\..\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\remap.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\dvdplayer\ffmpeg\rtp.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\dvdplayer\ffmpeg\rtsp.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\dvdplayer\ffmpeg\rtspcodes.h"
 						>
 					</File>
 					<File
@@ -1297,7 +1317,15 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\tools\win32\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleStream.h"
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleStream.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDSubtitles\SamiTagConvertor.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDSubtitles\SamiTagConvertor.h"
 						>
 					</File>
 				</Filter>
@@ -1305,14 +1333,6 @@
 			<Filter
 				Name="paplayer"
 				>
-				<File
-					RelativePath="..\..\xbmc\cores\paplayer\AACcodec.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\paplayer\AACcodec.h"
-					>
-				</File>
 				<File
 					RelativePath="..\..\xbmc\cores\paplayer\AC3CDDACodec.cpp"
 					>
@@ -1394,14 +1414,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\cores\paplayer\dec_if.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\paplayer\DllAACCodec.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\cores\paplayer\DllAc3codec.h"
 					>
 				</File>
@@ -1415,10 +1427,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\cores\paplayer\DllASAP.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\paplayer\DllCube.h"
 					>
 				</File>
 				<File
@@ -1443,14 +1451,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\cores\paplayer\DllMACDll.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\paplayer\DllMadCodec.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\paplayer\DllMpcCodec.h"
 					>
 				</File>
 				<File
@@ -1542,19 +1542,19 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\cores\paplayer\MPCcodec.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\paplayer\MPCcodec.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\cores\paplayer\NSFCodec.cpp"
 					>
 				</File>
 				<File
 					RelativePath="..\..\xbmc\cores\paplayer\NSFCodec.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\paplayer\OggCallback.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\paplayer\OggCallback.h"
 					>
 				</File>
 				<File
@@ -1786,14 +1786,110 @@
 						<File
 							RelativePath="..\..\xbmc\cores\DllLoader\exports\emu_socket\inet_aton.c"
 							>
+							<FileConfiguration
+								Name="Release (OpenGL)|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="2"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Debug (DirectX)|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="2"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release (DirectX)|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="2"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Debug (OpenGL)|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="2"
+								/>
+							</FileConfiguration>
 						</File>
 						<File
 							RelativePath="..\..\xbmc\cores\DllLoader\exports\emu_socket\inet_ntop.c"
 							>
+							<FileConfiguration
+								Name="Release (OpenGL)|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="2"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Debug (DirectX)|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="2"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release (DirectX)|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="2"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Debug (OpenGL)|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="2"
+								/>
+							</FileConfiguration>
 						</File>
 						<File
 							RelativePath="..\..\xbmc\cores\DllLoader\exports\emu_socket\inet_pton.c"
 							>
+							<FileConfiguration
+								Name="Release (OpenGL)|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="2"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Debug (DirectX)|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="2"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release (DirectX)|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="2"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Debug (OpenGL)|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="2"
+								/>
+							</FileConfiguration>
 						</File>
 					</Filter>
 					<Filter
@@ -1845,6 +1941,14 @@
 			<Filter
 				Name="VideoRenderers"
 				>
+				<File
+					RelativePath="..\..\xbmc\cores\VideoRenderers\BaseRenderer.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\VideoRenderers\BaseRenderer.h"
+					>
+				</File>
 				<File
 					RelativePath="..\..\xbmc\cores\VideoRenderers\LinuxRenderer.cpp"
 					>
@@ -1991,6 +2095,30 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\cores\ExternalPlayer\ExternalPlayer.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="PlayerCoreFactory"
+				>
+				<File
+					RelativePath="..\..\xbmc\cores\playercorefactory\PlayerCoreConfig.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\playercorefactory\PlayerCoreFactory.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\playercorefactory\PlayerCoreFactory.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\playercorefactory\PlayerSelectionRule.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\playercorefactory\PlayerSelectionRule.h"
 					>
 				</File>
 			</Filter>
@@ -2678,14 +2806,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\Edl.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\Edl.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\utils\Event.cpp"
 					>
 				</File>
@@ -2719,6 +2839,14 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\utils\Fanart.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\fastmemcpy.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\fastmemcpy.h"
 					>
 				</File>
 				<File
@@ -2763,6 +2891,18 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\utils\InfoLoader.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\Job.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\JobManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\JobManager.h"
 					>
 				</File>
 				<File
@@ -3006,6 +3146,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\utils\Teletext.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\Teletext.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\Temperature.cpp"
 					>
 				</File>
@@ -3015,6 +3163,14 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\ThumbnailCache.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\TimeUtils.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\TimeUtils.h"
 					>
 				</File>
 				<File
@@ -3343,6 +3499,14 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIDialogSubMenu.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogTeletext.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogTeletext.h"
 					>
 				</File>
 				<File
@@ -5139,10 +5303,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\xbmc\utils\DllHTMLScraper.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\xbmc\DllImageLib.h"
 				>
 			</File>
@@ -5204,14 +5364,6 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\GUIDialogGamepad.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\GUIDialogHost.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\GUIDialogInvite.h"
 				>
 			</File>
 			<File
@@ -5599,6 +5751,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\xbmc\utils\TeletextDefines.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\xbmc\Temperature.h"
 				>
 			</File>
@@ -5640,10 +5796,6 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\XBAudioConfig.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\XBTimeZone.h"
 				>
 			</File>
 			<File

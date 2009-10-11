@@ -31,6 +31,7 @@
 #include "Settings.h"
 #include "MusicInfoTag.h"
 #include "../AudioRenderers/AudioRendererFactory.h"
+#include "../../utils/TimeUtils.h"
 
 #ifdef _LINUX
 #define XBMC_SAMPLE_RATE 44100
@@ -232,7 +233,7 @@ bool PAPlayer::QueueNextFile(const CFileItem &file, bool checkCrossFading)
 
   // check if we can handle this file at all
   int decoder = 1 - m_currentDecoder;
-  __int64 seekOffset = (file.m_lStartOffset * 1000) / 75;
+  int64_t seekOffset = (file.m_lStartOffset * 1000) / 75;
   if (!m_decoder[decoder].Create(file, seekOffset, m_crossFading))
   {
     m_bQueueFailed = true;
@@ -430,7 +431,8 @@ void PAPlayer::Pause()
 
 void PAPlayer::SetVolume(long nVolume)
 {
-  m_pAudioDecoder[m_currentStream]->SetCurrentVolume(nVolume);
+  if (m_pAudioDecoder[m_currentStream])
+    m_pAudioDecoder[m_currentStream]->SetCurrentVolume(nVolume);
 }
 
 void PAPlayer::SetDynamicRangeCompression(long drc)
@@ -478,13 +480,13 @@ void PAPlayer::ToFFRW(int iSpeed)
 void PAPlayer::UpdateCacheLevel()
 {
   //check cachelevel every .5 seconds
-  if (m_LastCacheLevelCheck + 500 < GetTickCount())
+  if (m_LastCacheLevelCheck + 500 < CTimeUtils::GetTimeMS())
   {
     ICodec* codec = m_decoder[m_currentDecoder].GetCodec();
     if (codec)
     {
       m_CacheLevel = codec->GetCacheLevel();
-      m_LastCacheLevelCheck = GetTickCount();
+      m_LastCacheLevelCheck = CTimeUtils::GetTimeMS();
       //CLog::Log(LOGDEBUG,"Cachelevel: %i%%", m_CacheLevel);
     }
   }
@@ -876,9 +878,9 @@ void PAPlayer::HandleSeeking()
 {
   if (m_SeekTime != -1)
   {
-    DWORD time = timeGetTime();
+    DWORD time = CTimeUtils::GetTimeMS();
     m_timeOffset = m_decoder[m_currentDecoder].Seek(m_SeekTime);
-    CLog::Log(LOGDEBUG, "Seek to time %f took %i ms", 0.001f * m_SeekTime, timeGetTime() - time);
+    CLog::Log(LOGDEBUG, "Seek to time %f took %i ms", 0.001f * m_SeekTime, CTimeUtils::GetTimeMS() - time);
     FlushStreams();
     m_SeekTime = -1;
   }

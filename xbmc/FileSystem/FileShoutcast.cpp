@@ -31,13 +31,18 @@
 #include "GUIDialogProgress.h"
 #include "GUIWindowManager.h"
 #include "URL.h"
+#include "utils/TimeUtils.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
+// prevent inclusion of config.h from libshout
+#define __SRCONFIG_H__
 #include "lib/libshout/rip_manager.h"
 #include "lib/libshout/filelib.h"
+#undef __SRCONFIG_H__
+
 #include "RingBuffer.h"
 #include "ShoutcastRipFile.h"
 #include "utils/GUIInfoManager.h"
@@ -194,12 +199,12 @@ void CFileShoutcast::StopRecording()
 }
 
 
-__int64 CFileShoutcast::GetPosition()
+int64_t CFileShoutcast::GetPosition()
 {
   return 0;
 }
 
-__int64 CFileShoutcast::GetLength()
+int64_t CFileShoutcast::GetLength()
 {
   return 0;
 }
@@ -207,7 +212,7 @@ __int64 CFileShoutcast::GetLength()
 
 bool CFileShoutcast::Open(const CURL& url)
 {
-  m_dwLastTime = timeGetTime();
+  m_lastTime = CTimeUtils::GetTimeMS();
   int ret;
 
   CGUIDialogProgress* dlgProgress = NULL;
@@ -215,7 +220,7 @@ bool CFileShoutcast::Open(const CURL& url)
   // dvdplayer can deadlock with progress dialog so check first
   if (g_application.GetCurrentPlayer() == EPC_PAPLAYER)
   {
-    dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+    dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
   }
 
   set_rip_manager_options_defaults(&m_opt);
@@ -364,7 +369,7 @@ bool CFileShoutcast::Open(const CURL& url)
   return true;
 }
 
-unsigned int CFileShoutcast::Read(void* lpBuf, __int64 uiBufSize)
+unsigned int CFileShoutcast::Read(void* lpBuf, int64_t uiBufSize)
 {
   if (m_fileState.bRipDone)
   {
@@ -376,9 +381,9 @@ unsigned int CFileShoutcast::Read(void* lpBuf, __int64 uiBufSize)
   if (iRead > uiBufSize) iRead = (int)uiBufSize;
   m_ringbuf.ReadBinary((char*)lpBuf, iRead);
 
-  if (timeGetTime() - m_dwLastTime > 500)
+  if (CTimeUtils::GetTimeMS() - m_lastTime > 500)
   {
-    m_dwLastTime = timeGetTime();
+    m_lastTime = CTimeUtils::GetTimeMS();
     CMusicInfoTag tag;
     GetMusicInfoTag(tag);
     g_infoManager.SetCurrentSongTag(tag);
@@ -394,7 +399,7 @@ void CFileShoutcast::outputTimeoutMessage(const char* message)
   Sleep(1500);
 }
 
-__int64 CFileShoutcast::Seek(__int64 iFilePosition, int iWhence)
+int64_t CFileShoutcast::Seek(int64_t iFilePosition, int iWhence)
 {
   return -1;
 }

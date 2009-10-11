@@ -56,7 +56,7 @@
 #define LOCALIZED_TOKEN_FIRSTID      370
 #define LOCALIZED_TOKEN_LASTID       395
 
-DWORD timeToCallPlugin = 1000;
+unsigned int timeToCallPlugin = 1000;
 /*
 FIXME'S
 >strings are not centered
@@ -80,7 +80,7 @@ bool CGUIWindowWeather::OnAction(const CAction &action)
 {
   if (action.id == ACTION_PREVIOUS_MENU)
   {
-    m_gWindowManager.PreviousWindow();
+    g_windowManager.PreviousWindow();
     return true;
   }
   return CGUIWindow::OnAction(action);
@@ -104,7 +104,7 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
           m_pluginTimer.Stop();
 
         CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),CONTROL_SELECTLOCATION);
-        m_gWindowManager.SendMessage(msg);
+        g_windowManager.SendMessage(msg);
         m_iCurWeather = msg.GetParam1();
 
         CStdString strLabel=g_weatherManager.GetLocation(m_iCurWeather);
@@ -130,7 +130,7 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
     {
       UpdateLocations();
       SetProperties();
-      if (m_gWindowManager.GetActiveWindow() == WINDOW_WEATHER)
+      if (g_windowManager.GetActiveWindow() == WINDOW_WEATHER)
       {
         if (!g_guiSettings.GetString("weather.plugin").IsEmpty())
           m_pluginTimer.StartZero();
@@ -157,15 +157,13 @@ void CGUIWindowWeather::UpdateLocations()
   if (!IsActive()) return;
 
   CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),CONTROL_SELECTLOCATION);
-  g_graphicsContext.SendMessage(msg);
+  g_windowManager.SendMessage(msg);
   CGUIMessage msg2(GUI_MSG_LABEL_ADD,GetID(),CONTROL_SELECTLOCATION);
 
   for (unsigned int i = 0; i < MAX_LOCATION; i++)
   {
-    char *szLocation = g_weatherManager.GetLocation(i);
-    if (!szLocation) continue;
-    CStdString strLabel(szLocation);
-    if (strlen(szLocation) > 1) //got the location string yet?
+    CStdString strLabel = g_weatherManager.GetLocation(i);
+    if (strLabel.size() > 1) //got the location string yet?
     {
       int iPos = strLabel.ReverseFind(", ");
       if (iPos)
@@ -175,7 +173,7 @@ void CGUIWindowWeather::UpdateLocations()
       }
       msg2.SetParam1(i);
       msg2.SetLabel(strLabel);
-      g_graphicsContext.SendMessage(msg2);
+      g_windowManager.SendMessage(msg2);
     }
     else
     {
@@ -183,7 +181,7 @@ void CGUIWindowWeather::UpdateLocations()
 
       msg2.SetLabel(strLabel);
       msg2.SetParam1(i);
-      g_graphicsContext.SendMessage(msg2);
+      g_windowManager.SendMessage(msg2);
     }
     if (i==m_iCurWeather)
       SET_CONTROL_LABEL(CONTROL_SELECTLOCATION,strLabel);
@@ -230,12 +228,12 @@ void CGUIWindowWeather::UpdateButtons()
 
   for (int i = 0; i < NUM_DAYS; i++)
   {
-    SET_CONTROL_LABEL(CONTROL_LABELD0DAY + (i*10), g_weatherManager.m_dfForcast[i].m_szDay);
-    SET_CONTROL_LABEL(CONTROL_LABELD0HI + (i*10), g_weatherManager.m_dfForcast[i].m_szHigh + g_langInfo.GetTempUnitString());
-    SET_CONTROL_LABEL(CONTROL_LABELD0LOW + (i*10), g_weatherManager.m_dfForcast[i].m_szLow + g_langInfo.GetTempUnitString());
-    SET_CONTROL_LABEL(CONTROL_LABELD0GEN + (i*10), g_weatherManager.m_dfForcast[i].m_szOverview);
+    SET_CONTROL_LABEL(CONTROL_LABELD0DAY + (i*10), g_weatherManager.m_dfForcast[i].m_day);
+    SET_CONTROL_LABEL(CONTROL_LABELD0HI + (i*10), g_weatherManager.m_dfForcast[i].m_high + g_langInfo.GetTempUnitString());
+    SET_CONTROL_LABEL(CONTROL_LABELD0LOW + (i*10), g_weatherManager.m_dfForcast[i].m_low + g_langInfo.GetTempUnitString());
+    SET_CONTROL_LABEL(CONTROL_LABELD0GEN + (i*10), g_weatherManager.m_dfForcast[i].m_overview);
     pImage = (CGUIImage *)GetControl(CONTROL_IMAGED0IMG + (i * 10));
-    if (pImage) pImage->SetFileName(g_weatherManager.m_dfForcast[i].m_szIcon);
+    if (pImage) pImage->SetFileName(g_weatherManager.m_dfForcast[i].m_icon);
   }
 }
 
@@ -291,12 +289,12 @@ void CGUIWindowWeather::SetProperties()
   for (int i = 0; i < NUM_DAYS; i++)
   {
     day.Format("Day%i.", i);
-    SetProperty(day + "Title", g_weatherManager.m_dfForcast[i].m_szDay);
-    SetProperty(day + "HighTemp", g_weatherManager.m_dfForcast[i].m_szHigh);
-    SetProperty(day + "LowTemp", g_weatherManager.m_dfForcast[i].m_szLow);
-    SetProperty(day + "Outlook", g_weatherManager.m_dfForcast[i].m_szOverview);
-    SetProperty(day + "OutlookIcon", g_weatherManager.m_dfForcast[i].m_szIcon);
-    fanartcode = CUtil::GetFileName(g_weatherManager.m_dfForcast[i].m_szIcon);
+    SetProperty(day + "Title", g_weatherManager.m_dfForcast[i].m_day);
+    SetProperty(day + "HighTemp", g_weatherManager.m_dfForcast[i].m_high);
+    SetProperty(day + "LowTemp", g_weatherManager.m_dfForcast[i].m_low);
+    SetProperty(day + "Outlook", g_weatherManager.m_dfForcast[i].m_overview);
+    SetProperty(day + "OutlookIcon", g_weatherManager.m_dfForcast[i].m_icon);
+    fanartcode = CUtil::GetFileName(g_weatherManager.m_dfForcast[i].m_icon);
     CUtil::RemoveExtension(fanartcode);
     SetProperty(day + "FanartCode", fanartcode);
   }
@@ -316,7 +314,7 @@ void CGUIWindowWeather::CallPlugin()
     argv[0] = (char*)plugin.c_str();
 
     // if plugin is running we wait for another timeout only when in weather window
-    if (m_gWindowManager.GetActiveWindow() == WINDOW_WEATHER)
+    if (g_windowManager.GetActiveWindow() == WINDOW_WEATHER)
     {
       int id = g_pythonParser.getScriptId(argv[0]);
       if (id != -1 && g_pythonParser.isRunning(id))

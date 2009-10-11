@@ -31,6 +31,7 @@
 #include "FileItem.h"
 #include "GUISettings.h"
 #include "LocalizeStrings.h"
+#include "LangCodeExpander.h"
 
 #define CONTROL_CONTENT_TYPE        3
 #define CONTROL_SCRAPER_LIST        4
@@ -87,7 +88,7 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
     if (iControl == CONTROL_CONTENT_TYPE)
     {
       CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),CONTROL_CONTENT_TYPE);
-      m_gWindowManager.SendMessage(msg);
+      g_windowManager.SendMessage(msg);
       int iSelected = msg.GetParam1();
 
       m_bNeedSave = true;
@@ -126,7 +127,7 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
     if (iControl == CONTROL_SCRAPER_LIST)
     {
       CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),CONTROL_SCRAPER_LIST);
-      m_gWindowManager.SendMessage(msg);
+      g_windowManager.SendMessage(msg);
       int iSelected = msg.GetParam1();
 
       m_info = m_scrapers[m_info.strContent][iSelected];
@@ -169,50 +170,39 @@ void CGUIDialogContentSettings::OnWindowLoaded()
 
   for (int i=0;i<items.Size();++i)
   {
-    if (!items[i]->m_bIsFolder)
+    CScraperParser parser;
+    if (parser.Load(items[i]->m_strPath))
     {
-      TiXmlDocument doc;
-      doc.LoadFile(items[i]->m_strPath);
-      if (doc.RootElement())
+      bool IsDefaultScraper = false;
+
+      SScraperInfo info;
+      info.strTitle = parser.GetName();
+      info.strPath = CUtil::GetFileName(items[i]->m_strPath);
+      info.strThumb = parser.GetThumb();
+      info.strContent = parser.GetContent();
+      info.strLanguage = parser.GetLanguage();
+      info.settings = m_scraperSettings;
+
+      if ( info.strPath == g_guiSettings.GetString("musiclibrary.defaultscraper")
+        || info.strPath == g_guiSettings.GetString("scrapers.moviedefault")
+        || info.strPath == g_guiSettings.GetString("scrapers.tvshowdefault")
+        || info.strPath == g_guiSettings.GetString("scrapers.musicvideodefault"))
       {
-        bool IsDefaultScraper = false;
-        const char* content = doc.RootElement()->Attribute("content");
-        const char* name = doc.RootElement()->Attribute("name");
-        const char* thumb = doc.RootElement()->Attribute("thumb");
-        if (content && name)
-        {
-          SScraperInfo info;
-          info.strTitle = name;
-          info.strPath = CUtil::GetFileName(items[i]->m_strPath);
-          if (thumb)
-            info.strThumb = thumb;
-          info.strContent = content;
-          info.settings = m_scraperSettings;
-
-          if ( info.strPath == g_guiSettings.GetString("musiclibrary.defaultscraper")
-            || info.strPath == g_guiSettings.GetString("scrapers.moviedefault")
-            || info.strPath == g_guiSettings.GetString("scrapers.tvshowdefault")
-            || info.strPath == g_guiSettings.GetString("scrapers.musicvideodefault"))
-          {
-             IsDefaultScraper = true;
-          }
-
-          map<CStdString,vector<SScraperInfo> >::iterator iter=m_scrapers.find(content);
-          if (iter != m_scrapers.end())
-          {
-            if (IsDefaultScraper)
-              iter->second.insert(iter->second.begin(),info);
-            else
-              iter->second.push_back(info);
-          }
-          else
-          {
-            vector<SScraperInfo> vec;
-            vec.push_back(info);
-            m_scrapers.insert(make_pair(content,vec));
-          }
-        }
+         IsDefaultScraper = true;
       }
+
+      map<CStdString,vector<SScraperInfo> >::iterator iter=m_scrapers.find(info.strContent);
+      if (iter != m_scrapers.end())
+      {
+        if (IsDefaultScraper)
+          iter->second.insert(iter->second.begin(),info);
+        else
+          iter->second.push_back(info);
+      }
+
+      vector<SScraperInfo> vec;
+      vec.push_back(info);
+      m_scrapers.insert(make_pair(info.strContent,vec));
     }
   }
 
@@ -232,15 +222,6 @@ void CGUIDialogContentSettings::OnWindowLoaded()
       }
     }
   }
-
-  CScraperParser parser;
-  CStdString strPath = GetScraperDirectory(m_info);
-
-  if (!m_info.strContent.IsEmpty() && !strPath.IsEmpty() &&
-      parser.Load(strPath + m_info.strPath) && parser.HasFunction("GetSettings"))
-    CONTROL_ENABLE(CONTROL_SCRAPER_SETTINGS);
-  else
-    CONTROL_DISABLE(CONTROL_SCRAPER_SETTINGS);
 }
 
 void CGUIDialogContentSettings::SetupPage()
@@ -248,21 +229,21 @@ void CGUIDialogContentSettings::SetupPage()
   CGUIDialogSettings::SetupPage();
 
   CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),CONTROL_CONTENT_TYPE);
-  g_graphicsContext.SendMessage(msg);
+  g_windowManager.SendMessage(msg);
   CGUIMessage msg2(GUI_MSG_LABEL_ADD,GetID(),CONTROL_CONTENT_TYPE);
 
   if (!m_info.strContent.Equals("albums")) // none does not apply to music
   {
     msg2.SetLabel("<"+g_localizeStrings.Get(231)+">");
     msg2.SetParam1(0);
-    g_graphicsContext.SendMessage(msg2);
+    g_windowManager.SendMessage(msg2);
   }
 
   if (m_scrapers.find("movies") != m_scrapers.end())
   {
     msg2.SetLabel(g_localizeStrings.Get(20342));
     msg2.SetParam1(1);
-    g_graphicsContext.SendMessage(msg2);
+    g_windowManager.SendMessage(msg2);
     if (m_info.strContent.Equals("movies"))
     {
       SET_CONTROL_LABEL(CONTROL_CONTENT_TYPE,g_localizeStrings.Get(20342));
@@ -274,7 +255,7 @@ void CGUIDialogContentSettings::SetupPage()
   {
     msg2.SetLabel(g_localizeStrings.Get(20343));
     msg2.SetParam1(2);
-    g_graphicsContext.SendMessage(msg2);
+    g_windowManager.SendMessage(msg2);
     if (m_info.strContent.Equals("tvshows"))
     {
       CONTROL_SELECT_ITEM(CONTROL_CONTENT_TYPE, 2);
@@ -284,7 +265,7 @@ void CGUIDialogContentSettings::SetupPage()
   {
     msg2.SetLabel(g_localizeStrings.Get(20389));
     msg2.SetParam1(3);
-    g_graphicsContext.SendMessage(msg2);
+    g_windowManager.SendMessage(msg2);
     if (m_info.strContent.Equals("musicvideos"))
     {
       SET_CONTROL_LABEL(CONTROL_CONTENT_TYPE,g_localizeStrings.Get(20389));
@@ -295,7 +276,7 @@ void CGUIDialogContentSettings::SetupPage()
   {
     msg2.SetLabel(m_strContentType);
     msg2.SetParam1(4);
-    g_graphicsContext.SendMessage(msg2);
+    g_windowManager.SendMessage(msg2);
     if (m_info.strContent.Equals("albums"))
     {
       SET_CONTROL_LABEL(CONTROL_CONTENT_TYPE,m_strContentType);
@@ -357,7 +338,9 @@ void CGUIDialogContentSettings::CreateSettings()
 void CGUIDialogContentSettings::OnSettingChanged(unsigned int num)
 {
   // setting has changed - update anything that needs it
-  if (num >= m_settings.size()) return;
+  if (num >= m_settings.size())
+    return;
+
   SettingInfo &setting = m_settings.at(num);
   OnSettingChanged(setting);
 }
@@ -401,9 +384,19 @@ void CGUIDialogContentSettings::FillListControl()
   {
     CFileItemPtr item(new CFileItem(iter->strTitle));
     item->m_strPath = iter->strPath;
-     CStdString baseDir = GetScraperDirectory(*iter);
-     if (!baseDir.IsEmpty())
-       item->SetThumbnailImage(baseDir + iter->strThumb);
+
+    CStdString strLanguage;
+
+    if (iter->strLanguage.Equals("multi"))
+      strLanguage = g_localizeStrings.Get(21418);
+    else
+      g_LangCodeExpander.Lookup(strLanguage, iter->strLanguage); 
+
+    item->SetLabel(iter->strTitle + " (" + strLanguage + ")");
+
+    CStdString baseDir = GetScraperDirectory(*iter);
+    if (!baseDir.IsEmpty())
+      item->SetThumbnailImage(baseDir + iter->strThumb);
 
     if (iter->strPath.Equals(m_info.strPath))
     {
@@ -431,7 +424,10 @@ CFileItemPtr CGUIDialogContentSettings::GetCurrentListItem(int offset)
       break;
     }
   }
-  if (currentItem == -1) return CFileItemPtr();
+
+  if (currentItem == -1)
+    return CFileItemPtr();
+
   int item = (currentItem + offset) % m_vecItems->Size();
   if (item < 0) item += m_vecItems->Size();
   return m_vecItems->Get(item);
@@ -462,8 +458,9 @@ bool CGUIDialogContentSettings::Show(SScraperInfo& scraper, bool& bRunScan, int 
 
 bool CGUIDialogContentSettings::Show(SScraperInfo& scraper, VIDEO::SScanSettings& settings, bool& bRunScan, int iLabel)
 {
-  CGUIDialogContentSettings *dialog = (CGUIDialogContentSettings *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTENT_SETTINGS);
-  if (!dialog) return false;
+  CGUIDialogContentSettings *dialog = (CGUIDialogContentSettings *)g_windowManager.GetWindow(WINDOW_DIALOG_CONTENT_SETTINGS);
+  if (!dialog)
+    return false;
 
   dialog->m_info = scraper;
   if (iLabel != -1) // to switch between albums and artists

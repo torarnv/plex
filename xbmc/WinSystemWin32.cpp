@@ -65,6 +65,37 @@ bool CWinSystemWin32::DestroyWindowSystem()
   return true;
 }
 
+bool CWinSystemWin32::IsSystemScreenSaverEnabled()
+{
+  // Check if system screen saver is enabled
+  // We are checking registry due to bug with SPI_GETSCREENSAVEACTIVE
+  HKEY hKeyScreenSaver = NULL;
+  long lReturn = NULL;
+  long lScreenSaver = NULL;
+  DWORD dwData = NULL;
+  bool result = false;
+
+  lReturn = RegOpenKeyEx(HKEY_CURRENT_USER, TEXT("Control Panel\\Desktop"),0,KEY_QUERY_VALUE,&hKeyScreenSaver);
+  if(lReturn == ERROR_SUCCESS)
+  {
+    lScreenSaver = RegQueryValueEx(hKeyScreenSaver,TEXT("SCRNSAVE.EXE"),NULL,NULL,NULL,&dwData);
+
+    // ScreenSaver is active
+    if(lScreenSaver == ERROR_SUCCESS)
+       result = true;
+  }
+  RegCloseKey(hKeyScreenSaver);
+  
+  return result;
+}
+
+void CWinSystemWin32::EnableSystemScreenSaver(bool bEnable) 
+{
+  SystemParametersInfo(SPI_SETSCREENSAVEACTIVE,bEnable,0,0);
+  if(!bEnable)
+    SetThreadExecutionState(ES_DISPLAY_REQUIRED|ES_CONTINUOUS);
+}
+
 bool CWinSystemWin32::CreateNewWindow(const CStdString& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction)
 {
   m_hInstance = ( HINSTANCE )GetModuleHandle( NULL );
@@ -290,8 +321,10 @@ bool CWinSystemWin32::ResizeInternal()
   {
     SetWindowRgn(m_hWnd, 0, false);
     SetWindowLong(m_hWnd, GWL_STYLE, dwStyle);
-
-    SetWindowPos(m_hWnd, windowAfter, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, SWP_SHOWWINDOW);
+    
+    // The SWP_DRAWFRAME is here because, perversely, without it win7 draws a
+    // white frame plus titlebar around the xbmc splash
+    SetWindowPos(m_hWnd, windowAfter, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, SWP_SHOWWINDOW|SWP_DRAWFRAME);
     if (bFromFullScreen)
       ValidateRect(NULL, NULL); //validate desktop if we're switching from fullscreen to window
   }
@@ -450,5 +483,41 @@ bool CWinSystemWin32::UpdateResolutionsInternal()
   return 0;
 }
 
+
+bool CWinSystemWin32::Minimize()
+{
+  ShowWindow(m_hWnd, SW_MINIMIZE);
+  return true;
+}
+bool CWinSystemWin32::Restore()
+{
+  ShowWindow(m_hWnd, SW_RESTORE);
+  return true;
+}
+bool CWinSystemWin32::Hide()
+{
+  ShowWindow(m_hWnd, SW_HIDE);
+  return true;
+}
+bool CWinSystemWin32::Show(bool raise)
+{
+  HWND windowAfter = HWND_BOTTOM;
+  if (raise)
+  {
+    if (m_bFullScreen)
+      windowAfter = HWND_TOP;
+    else
+      windowAfter = g_advancedSettings.m_alwaysOnTop ? HWND_TOPMOST : HWND_NOTOPMOST;
+  }
+
+  SetWindowPos(m_hWnd, windowAfter, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE|SWP_SHOWWINDOW);
+  UpdateWindow(m_hWnd);
+  if (raise)
+  {
+    SetForegroundWindow(g_hWnd);
+    SetFocus(g_hWnd);
+  }
+  return true;
+}
 
 #endif

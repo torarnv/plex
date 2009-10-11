@@ -29,6 +29,7 @@
 #include <sys/times.h>
 
 #ifdef __APPLE__
+#include <mach/mach_time.h>
 #include <CoreVideo/CVHostTime.h>
 #endif
 
@@ -41,11 +42,6 @@
 #define IsLeapYear(y) ((!(y % 4)) ? (((!(y % 400)) && (y % 100)) ? 1 : 0) : 0)
 
 #ifdef _LINUX
-
-DWORD timeGetTime(void)
-{
-  return GetTickCount();
-}
 
 void WINAPI Sleep(DWORD dwMilliSeconds)
 {
@@ -74,44 +70,6 @@ VOID GetLocalTime(LPSYSTEMTIME sysTime)
   sysTime->wMilliseconds = 0;
   // NOTE: localtime_r() is not required to set this, but we Assume that it's set here.
   g_timezone.m_IsDST = now.tm_isdst;
-}
-
-DWORD GetTickCount(void)
-{
-  return SDL_GetTicks();
-}
-
-BOOL QueryPerformanceCounter(LARGE_INTEGER *lpPerformanceCount) {
-  if (lpPerformanceCount == NULL)
-    return false;
-
-#ifdef __APPLE__
-  lpPerformanceCount->QuadPart = CVGetCurrentHostTime();
-#else
-  struct timespec now;
-  if (clock_gettime(CLOCK_MONOTONIC, &now) != 0) {
-    CLog::Log(LOGERROR,"%s - error %d getting timer", __FUNCTION__, errno);
-    return false;
-  }
-
-  lpPerformanceCount->QuadPart = ((__int64)now.tv_sec * 1000000000L) + now.tv_nsec;
-#endif
-
-  return true;
-}
-
-BOOL QueryPerformanceFrequency(LARGE_INTEGER *lpFrequency) {
-
-  if (lpFrequency == NULL)
-    return false;
-
-#ifdef __APPLE__
-  // needed for 10.5.8 on ppc
-  lpFrequency->QuadPart = CVGetHostClockFrequency();
-#else
-  lpFrequency->QuadPart = 1000000000L;
-#endif
-  return true;
 }
 
 BOOL FileTimeToLocalFileTime(const FILETIME* lpFileTime, LPFILETIME lpLocalFileTime)

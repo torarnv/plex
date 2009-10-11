@@ -48,6 +48,7 @@
 #include "LocalizeStrings.h"
 #include "utils/SingleLock.h"
 #include "utils/log.h"
+#include "utils/TimeUtils.h"
 
 #include <stdio.h>
 
@@ -141,7 +142,7 @@ CGUIWindowFullScreen::~CGUIWindowFullScreen(void)
 
 void CGUIWindowFullScreen::PreloadDialog(unsigned int windowID)
 {
-  CGUIWindow *pWindow = m_gWindowManager.GetWindow(windowID);
+  CGUIWindow *pWindow = g_windowManager.GetWindow(windowID);
   if (pWindow)
   {
     pWindow->Initialize();
@@ -152,7 +153,7 @@ void CGUIWindowFullScreen::PreloadDialog(unsigned int windowID)
 
 void CGUIWindowFullScreen::UnloadDialog(unsigned int windowID)
 {
-  CGUIWindow *pWindow = m_gWindowManager.GetWindow(windowID);
+  CGUIWindow *pWindow = g_windowManager.GetWindow(windowID);
   if (pWindow) {
     pWindow->FreeResources(pWindow->GetLoadOnDemand());
   }
@@ -197,7 +198,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     {
       // switch back to the menu
       OutputDebugString("Switching to GUI\n");
-      m_gWindowManager.PreviousWindow();
+      g_windowManager.PreviousWindow();
       OutputDebugString("Now in GUI\n");
       return true;
     }
@@ -245,14 +246,20 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 
   case ACTION_SHOW_SUBTITLES:
     {
-      g_application.m_pPlayer->SetSubtitleVisible(!g_application.m_pPlayer->GetSubtitleVisible());
+      g_stSettings.m_currentVideoSettings.m_SubtitleOn = !g_stSettings.m_currentVideoSettings.m_SubtitleOn;
+      g_application.m_pPlayer->SetSubtitleVisible(g_stSettings.m_currentVideoSettings.m_SubtitleOn);
+      if (!g_stSettings.m_currentVideoSettings.m_SubtitleCached && g_stSettings.m_currentVideoSettings.m_SubtitleOn)
+      {
+        g_application.Restart(true); // cache subtitles
+        Close();
+      }
     }
     return true;
     break;
 
   case ACTION_SHOW_INFO:
     {
-      CGUIDialogFullScreenInfo* pDialog = (CGUIDialogFullScreenInfo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_FULLSCREEN_INFO);
+      CGUIDialogFullScreenInfo* pDialog = (CGUIDialogFullScreenInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_FULLSCREEN_INFO);
       if (pDialog)
       {
         pDialog->DoModal();
@@ -391,7 +398,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 #endif
       }
       m_bShowViewModeInfo = true;
-      m_dwShowViewModeTimeout = timeGetTime();
+      m_dwShowViewModeTimeout = CTimeUtils::GetTimeMS();
     }
     return true;
     break;
@@ -452,7 +459,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       // stopped playing videos
       if (message.GetParam1() == WINDOW_INVALID && !g_application.IsPlayingVideo())
       { // why are we here if nothing is playing???
-        m_gWindowManager.PreviousWindow();
+        g_windowManager.PreviousWindow();
         return true;
       }
       m_bLastRender = false;
@@ -502,11 +509,13 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
     {
       CGUIWindow::OnMessage(message);
 
-      CGUIDialogSlider *slider = (CGUIDialogSlider *)m_gWindowManager.GetWindow(WINDOW_DIALOG_SLIDER);
-      if (slider) slider->Close(true);
-      CGUIDialog *pDialog = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_OSD);
+      CGUIDialog *pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_OSD_TELETEXT);
       if (pDialog) pDialog->Close(true);
-      pDialog = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_DIALOG_FULLSCREEN_INFO);
+      CGUIDialogSlider *slider = (CGUIDialogSlider *)g_windowManager.GetWindow(WINDOW_DIALOG_SLIDER);
+      if (slider) slider->Close(true);
+      pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_OSD);
+      if (pDialog) pDialog->Close(true);
+      pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_FULLSCREEN_INFO);
       if (pDialog) pDialog->Close(true);
 
       FreeResources(true);
@@ -529,8 +538,6 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
         m_subsLayout = NULL;
       }
 
-      if (g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
-        g_audioManager.Enable(true);
       return true;
     }
   case GUI_MSG_SETFOCUS:
@@ -559,7 +566,7 @@ bool CGUIWindowFullScreen::OnMouse(const CPoint &point)
   }
   if (g_Mouse.HasMoved())
   { // movement - toggle the OSD
-    CGUIWindowOSD *pOSD = (CGUIWindowOSD *)m_gWindowManager.GetWindow(WINDOW_OSD);
+    CGUIWindowOSD *pOSD = (CGUIWindowOSD *)g_windowManager.GetWindow(WINDOW_OSD);
     if (pOSD)
     {
       pOSD->SetAutoClose(3000);
@@ -689,7 +696,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
   //----------------------
   // ViewMode Information
   //----------------------
-  if (m_bShowViewModeInfo && timeGetTime() - m_dwShowViewModeTimeout > 2500)
+  if (m_bShowViewModeInfo && CTimeUtils::GetTimeMS() - m_dwShowViewModeTimeout > 2500)
   {
     m_bShowViewModeInfo = false;
   }
@@ -706,15 +713,15 @@ void CGUIWindowFullScreen::RenderFullScreen()
       OnMessage(msg);
     }
     // show sizing information
-    RECT SrcRect, DestRect;
+    CRect SrcRect, DestRect;
     float fAR;
     g_application.m_pPlayer->GetVideoRect(SrcRect, DestRect);
     g_application.m_pPlayer->GetVideoAspectRatio(fAR);
     {
       CStdString strSizing;
       strSizing.Format("Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1)",
-                       SrcRect.right - SrcRect.left, SrcRect.bottom - SrcRect.top,
-                       DestRect.right - DestRect.left, DestRect.bottom - DestRect.top, g_stSettings.m_fZoomAmount, fAR*g_stSettings.m_fPixelRatio, g_stSettings.m_fPixelRatio);
+                       (int)SrcRect.Width(), (int)SrcRect.Height(),
+                       (int)DestRect.Width(), (int)DestRect.Height(), g_stSettings.m_fZoomAmount, fAR*g_stSettings.m_fPixelRatio, g_stSettings.m_fPixelRatio);
       CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW2);
       msg.SetLabel(strSizing);
       OnMessage(msg);
@@ -737,7 +744,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
 
   if (m_timeCodeShow && m_timeCodePosition != 0)
   {
-    if ( (timeGetTime() - m_timeCodeTimeout) >= 2500)
+    if ( (CTimeUtils::GetTimeMS() - m_timeCodeTimeout) >= 2500)
     {
       m_timeCodeShow = false;
       m_timeCodePosition = 0;
@@ -835,7 +842,7 @@ void CGUIWindowFullScreen::ChangetheTimeCode(int remote)
   if (remote >= 58 && remote <= 67) //Make sure it's only for the remote
   {
     m_timeCodeShow = true;
-    m_timeCodeTimeout = timeGetTime();
+    m_timeCodeTimeout = CTimeUtils::GetTimeMS();
     int itime = remote - 58;
     if (m_timeCodePosition <= 4 && m_timeCodePosition != 2)
     {

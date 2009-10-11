@@ -19,10 +19,12 @@
  *
  */
 
+#include "system.h" // needed prior to Util.h due to include order issues
 #include "Util.h"
 #include "URL.h"
 #include "FileItem.h"
 #include "HDHomeRun.h"
+#include "utils/TimeUtils.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -174,7 +176,7 @@ bool CFileHomeRun::Exists(const CURL& url)
   return(status);
 }
 
-__int64 CFileHomeRun::Seek(__int64 iFilePosition, int iWhence)
+int64_t CFileHomeRun::Seek(int64_t iFilePosition, int iWhence)
 { 
   return -1;
 }
@@ -184,12 +186,12 @@ int CFileHomeRun::Stat(const CURL& url, struct __stat64* buffer)
   return 0;
 }
 
-__int64 CFileHomeRun::GetPosition()
+int64_t CFileHomeRun::GetPosition()
 {
   return 0;
 }
 
-__int64 CFileHomeRun::GetLength()
+int64_t CFileHomeRun::GetLength()
 {
   return 0;
 }
@@ -221,14 +223,14 @@ bool CFileHomeRun::Open(const CURL &url)
   return true;
 }
 
-unsigned int CFileHomeRun::Read(void* lpBuf, __int64 uiBufSize)
+unsigned int CFileHomeRun::Read(void* lpBuf, int64_t uiBufSize)
 {
   unsigned int datasize;
   // for now, let it it time out after 5 seconds,
   // neither of the players can be forced to
   // continue even if read return 0 as can happen
   // on live streams.
-  DWORD timestamp = GetTickCount() + 5000;
+  unsigned int timestamp = CTimeUtils::GetTimeMS() + 5000;
   while(1)
   {
     datasize = (unsigned int)min((unsigned int) uiBufSize,UINT_MAX);
@@ -239,7 +241,7 @@ unsigned int CFileHomeRun::Read(void* lpBuf, __int64 uiBufSize)
       return datasize;
     }
 
-    if(GetTickCount() > timestamp)
+    if(CTimeUtils::GetTimeMS() > timestamp)
       return 0;
 
     Sleep(64);

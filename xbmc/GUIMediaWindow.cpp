@@ -39,8 +39,6 @@
 #include "AdvancedSettings.h"
 #include "GUISettings.h"
 
-#include "GUIImage.h"
-#include "GUIMultiImage.h"
 #include "GUIDialogSmartPlaylistEditor.h"
 #include "GUIDialogPluginSettings.h"
 #include "PluginSettings.h"
@@ -51,6 +49,7 @@
 #include "Settings.h"
 #include "StringUtils.h"
 #include "LocalizeStrings.h"
+#include "utils/TimeUtils.h"
 
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
@@ -140,7 +139,7 @@ bool CGUIMediaWindow::OnAction(const CAction &action)
   if (action.id == ACTION_PARENT_DIR)
   {
     if (m_vecItems->IsVirtualDirectoryRoot() && g_advancedSettings.m_bUseEvilB)
-      m_gWindowManager.PreviousWindow();
+      g_windowManager.PreviousWindow();
     else
       GoParentFolder();
     return true;
@@ -148,7 +147,7 @@ bool CGUIMediaWindow::OnAction(const CAction &action)
 
   if (action.id == ACTION_PREVIOUS_MENU)
   {
-    m_gWindowManager.PreviousWindow();
+    g_windowManager.PreviousWindow();
     return true;
   }
 
@@ -159,6 +158,9 @@ bool CGUIMediaWindow::OnAction(const CAction &action)
     return true;
   }
 
+  if (CGUIWindow::OnAction(action))
+    return true;
+  
   // live filtering
   if (action.id == ACTION_FILTER_CLEAR)
   {
@@ -184,8 +186,8 @@ bool CGUIMediaWindow::OnAction(const CAction &action)
     OnMessage(message);
     return true;
   }
-
-  return CGUIWindow::OnAction(action);
+  
+  return false;
 }
 
 bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
@@ -424,12 +426,12 @@ void CGUIMediaWindow::UpdateButtons()
       if (m_guiState->GetDisplaySortOrder()==SORT_ORDER_ASC)
       {
         CGUIMessage msg(GUI_MSG_DESELECTED, GetID(), CONTROL_BTNSORTASC);
-        g_graphicsContext.SendMessage(msg);
+        g_windowManager.SendMessage(msg);
       }
       else
       {
         CGUIMessage msg(GUI_MSG_SELECTED, GetID(), CONTROL_BTNSORTASC);
-        g_graphicsContext.SendMessage(msg);
+        g_windowManager.SendMessage(msg);
       }
     }
 
@@ -537,13 +539,13 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
   }
   else
   {
-    DWORD time = timeGetTime();
+    unsigned int time = CTimeUtils::GetTimeMS();
 
     if (!m_rootDir.GetDirectory(strDirectory, items))
       return false;
 
     // took over a second, and not normally cached, so cache it
-    if (time + 1000 < timeGetTime() && items.CacheToDiscIfSlow())
+    if (time + 1000 < CTimeUtils::GetTimeMS() && items.CacheToDiscIfSlow())
       items.Save();
 
     // if these items should replace the current listing, then pop it off the top
@@ -780,7 +782,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
     if (pItem->m_strPath == "newplaylist://")
     {
       m_vecItems->RemoveDiscCache();
-      m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST_EDITOR,"newplaylist://");
+      g_windowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST_EDITOR,"newplaylist://");
       return true;
     }
     else if (pItem->m_strPath.Left(19).Equals("newsmartplaylist://"))
@@ -932,9 +934,6 @@ void CGUIMediaWindow::GoParentFolder()
   CStdString strOldPath(m_vecItems->m_strPath);
   strParent = m_history.RemoveParentPath();
   Update(strParent);
-
-  if (!g_guiSettings.GetBool("filelists.fulldirectoryhistory"))
-    m_history.RemoveSelectedItem(strOldPath); //Delete current path
 }
 
 // \brief Override the function to change the default behavior on how
@@ -1183,7 +1182,7 @@ bool CGUIMediaWindow::OnPopupMenu(int iItem)
     if (iItem >= 0 && iItem < m_vecItems->Size())
       m_vecItems->Get(iItem)->Select(true);
 
-    CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
+    CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)g_windowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
     if (!pMenu) return false;
     // load our menu
     pMenu->Initialize();
@@ -1307,7 +1306,7 @@ bool CGUIMediaWindow::WaitForNetwork() const
   if (g_application.getNetwork().IsAvailable())
     return true;
 
-  CGUIDialogProgress *progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  CGUIDialogProgress *progress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
   if (!progress)
     return true;
 
@@ -1330,5 +1329,6 @@ bool CGUIMediaWindow::WaitForNetwork() const
   progress->Close();
   return true;
 }
+
 
 

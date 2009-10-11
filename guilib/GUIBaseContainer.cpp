@@ -21,10 +21,11 @@
 
 #include "GUIBaseContainer.h"
 #include "GUIControlFactory.h"
+#include "GUIWindowManager.h"
 #include "utils/CharsetConverter.h"
 #include "utils/GUIInfoManager.h"
+#include "utils/TimeUtils.h"
 #include "utils/log.h"
-#include "GUILabelControl.h"
 #include "XMLUtils.h"
 #include "SkinInfo.h"
 #include "StringUtils.h"
@@ -33,8 +34,8 @@
 
 using namespace std;
 
-#define HOLD_TIME_START 1000
-#define HOLD_TIME_END   4000
+#define HOLD_TIME_START 100
+#define HOLD_TIME_END   3000
 
 CGUIBaseContainer::CGUIBaseContainer(int parentID, int controlID, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime, int preloadItems)
     : CGUIControl(parentID, controlID, posX, posY, width, height)
@@ -217,8 +218,8 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
         float speed = std::min(1.0f, (float)(action.holdTime - HOLD_TIME_START) / (HOLD_TIME_END - HOLD_TIME_START));
         unsigned int itemsPerFrame = 1;
         if (m_lastHoldTime) // number of rows/10 items/second max speed
-          itemsPerFrame = std::max((unsigned int)1, (unsigned int)(speed * 0.0001f * GetRows() * (timeGetTime() - m_lastHoldTime)));
-        m_lastHoldTime = timeGetTime();
+          itemsPerFrame = std::max((unsigned int)1, (unsigned int)(speed * 0.0001f * GetRows() * (CTimeUtils::GetFrameTime() - m_lastHoldTime)));
+        m_lastHoldTime = CTimeUtils::GetFrameTime();
         if (action.id == ACTION_MOVE_LEFT || action.id == ACTION_MOVE_UP)
           while (itemsPerFrame--) MoveUp(false);
         else
@@ -622,7 +623,7 @@ bool CGUIBaseContainer::OnClick(int actionID)
           action.Replace(",,", ",");
           CGUIMessage message(GUI_MSG_EXECUTE, GetID(), GetParentID());
           message.SetStringParam(action);
-          g_graphicsContext.SendMessage(message);
+          g_windowManager.SendMessage(message);
         }
       }
       return true;
@@ -682,7 +683,7 @@ void CGUIBaseContainer::ValidateOffset()
 {
 }
 
-void CGUIBaseContainer::DoRender(DWORD currentTime)
+void CGUIBaseContainer::DoRender(unsigned int currentTime)
 {
   m_renderTime = currentTime;
   CGUIControl::DoRender(currentTime);
@@ -761,10 +762,10 @@ void CGUIBaseContainer::UpdateVisibility(const CGUIListItem *item)
     Reset();
     bool updateItems = false;
     if (!m_staticUpdateTime)
-      m_staticUpdateTime = timeGetTime();
-    if (timeGetTime() - m_staticUpdateTime > 1000)
+      m_staticUpdateTime = CTimeUtils::GetFrameTime();
+    if (CTimeUtils::GetFrameTime() - m_staticUpdateTime > 1000)
     {
-      m_staticUpdateTime = timeGetTime();
+      m_staticUpdateTime = CTimeUtils::GetFrameTime();
       updateItems = true;
     }
     for (unsigned int i = 0; i < m_staticItems.size(); ++i)

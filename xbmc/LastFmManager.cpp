@@ -46,6 +46,7 @@
 #include "StringUtils.h"
 #include "LocalizeStrings.h"
 #include "tinyXML/tinyxml.h"
+#include "utils/TimeUtils.h"
 
 #include <sstream>
 
@@ -168,7 +169,7 @@ void CLastFmManager::InitProgressDialog(const CStdString& strUrl)
 {
   if (m_RadioSession.IsEmpty())
   {
-    dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+    dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     if (dlgProgress)
     {
       dlgProgress->SetHeading(15200);
@@ -211,7 +212,7 @@ void CLastFmManager::CloseProgressDialog()
 
 bool CLastFmManager::ChangeStation(const CURL& stationUrl)
 {
-  DWORD start = timeGetTime();
+  unsigned int start = CTimeUtils::GetTimeMS();
 
   CStdString strUrl;
   stationUrl.GetURL(strUrl);
@@ -265,7 +266,7 @@ bool CLastFmManager::ChangeStation(const CURL& stationUrl)
     g_application.m_strPlayListFile = strUrl; //needed to highlight the playing item
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
     g_playlistPlayer.Play(0);
-    CLog::Log(LOGDEBUG, "%s: Done (time: %i ms)", __FUNCTION__, (int)(timeGetTime() - start));
+    CLog::Log(LOGDEBUG, "%s: Done (time: %i ms)", __FUNCTION__, (int)(CTimeUtils::GetTimeMS() - start));
     CloseProgressDialog();
     return true;
   }
@@ -275,7 +276,7 @@ bool CLastFmManager::ChangeStation(const CURL& stationUrl)
 
 bool CLastFmManager::RequestRadioTracks()
 {
-  DWORD start = timeGetTime();
+  unsigned int start = CTimeUtils::GetTimeMS();
   CStdString url;
   CStdString html;
   url.Format("http://" + m_RadioBaseUrl + m_RadioBasePath + "/xspf.php?sk=%s&discovery=0&desktop=", m_RadioSession);
@@ -415,16 +416,15 @@ bool CLastFmManager::RequestRadioTracks()
   //end parse
   CSingleLock lock(m_lockCache);
   int iNrCachedTracks = m_RadioTrackQueue->size();
-  CLog::Log(LOGDEBUG, "%s: Done (time: %i ms)", __FUNCTION__, (int)(timeGetTime() - start));
+  CLog::Log(LOGDEBUG, "%s: Done (time: %i ms)", __FUNCTION__, (int)(CTimeUtils::GetTimeMS() - start));
   return iNrCachedTracks > 0;
 }
 
 void CLastFmManager::CacheTrackThumb(const int nrInitialTracksToAdd)
 {
-  DWORD start = timeGetTime();
+  unsigned int start = CTimeUtils::GetTimeMS();
   CSingleLock lock(m_lockCache);
   int iNrCachedTracks = m_RadioTrackQueue->size();
-  CPicture pic;
   CFileCurl http;
   for (int i = 0; i < nrInitialTracksToAdd && i < iNrCachedTracks; i++)
   {
@@ -448,7 +448,7 @@ void CLastFmManager::CacheTrackThumb(const int nrInitialTracksToAdd)
         try
         {
           //download to temp, then make a thumb
-          if (CFile::Exists(thumbFile) || (http.Download(coverUrl, cachedFile) && pic.DoCreateThumbnail(cachedFile, thumbFile)))
+          if (CFile::Exists(thumbFile) || (http.Download(coverUrl, cachedFile) && CPicture::CreateThumbnail(cachedFile, thumbFile)))
           {
             if (CFile::Exists(cachedFile))
               CFile::Delete(cachedFile);
@@ -467,7 +467,7 @@ void CLastFmManager::CacheTrackThumb(const int nrInitialTracksToAdd)
       item->GetMusicInfoTag()->SetLoaded();
     }
   }
-  CLog::Log(LOGDEBUG, "%s: Done (time: %i ms)", __FUNCTION__, (int)(timeGetTime() - start));
+  CLog::Log(LOGDEBUG, "%s: Done (time: %i ms)", __FUNCTION__, (int)(CTimeUtils::GetTimeMS() - start));
 }
 
 void CLastFmManager::AddToPlaylist(const int nrTracks)
@@ -505,13 +505,13 @@ void CLastFmManager::OnSongChange(CFileItem& newSong)
     }
     else
     { 
-      DWORD start = timeGetTime();
+      unsigned int start = CTimeUtils::GetTimeMS();
       ReapSongs();
       MovePlaying();
       Update();
       SendUpdateMessage();
 
-      CLog::Log(LOGDEBUG, "%s: Done (time: %i ms)", __FUNCTION__, (int)(timeGetTime() - start));
+      CLog::Log(LOGDEBUG, "%s: Done (time: %i ms)", __FUNCTION__, (int)(CTimeUtils::GetTimeMS() - start));
     }
   }
   m_CurrentSong.IsLoved = false;
@@ -594,7 +594,7 @@ bool CLastFmManager::MovePlaying()
 void CLastFmManager::SendUpdateMessage()
 {
   CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
-  m_gWindowManager.SendThreadMessage(msg);
+  g_windowManager.SendThreadMessage(msg);
 }
 
 void CLastFmManager::OnStartup()

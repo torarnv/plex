@@ -39,6 +39,9 @@ typedef unsigned long ThreadIdentifier;
 #define snprintf _snprintf
 #define ftello64 _ftelli64
 #define fseeko64 _fseeki64
+#ifndef strcasecmp
+#define strcasecmp strcmpi
+#endif
 
 #ifndef PRIdS
 #define PRIdS "Id"
@@ -60,11 +63,6 @@ typedef unsigned long ThreadIdentifier;
 #define GMASK 0x00ff0000
 #define BMASK 0xff000000
 
-// so we can use endian neutral PIX_FMT_BGRA in place of 
-// little endian PIX_FMT_RGB32 when setting up ffmpeg 
-#ifndef WORDS_BIGENDIAN
-#define WORDS_BIGENDIAN 1
-#endif
 #else
 #define PIXEL_ASHIFT 24
 #define PIXEL_RSHIFT 16
@@ -85,6 +83,7 @@ typedef unsigned long ThreadIdentifier;
 #define llrint(x) ((x) >= 0 ? ((__int64)((x) + 0.5)) : ((__int64)((x) - 0.5)))
 
 extern "C" char * strptime(const char *buf, const char *fmt, struct tm *tm);
+
 #endif // _WIN32
 
 #endif //__PLATFORM_DEFS_H__

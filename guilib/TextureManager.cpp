@@ -26,6 +26,10 @@
 #include "utils/SingleLock.h"
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
+#include "utils/log.h"
+#ifdef _DEBUG
+#include "utils/TimeUtils.h"
+#endif
 #include "../xbmc/Util.h"
 #include "../xbmc/FileSystem/File.h"
 #include "../xbmc/FileSystem/Directory.h"
@@ -43,6 +47,7 @@ CTextureArray::CTextureArray(int width, int height, int loops,  bool texCoordsAr
   m_width = width;
   m_height = height;
   m_loops = loops;
+  m_orientation = 0;
   m_texWidth = 0;
   m_texHeight = 0;
   m_texCoordsArePixels = false;
@@ -71,6 +76,7 @@ void CTextureArray::Reset()
   m_width = 0;
   m_height = 0;
   m_loops = 0;
+  m_orientation = 0;
   m_texWidth = 0;
   m_texHeight = 0;
   m_texCoordsArePixels = false;
@@ -94,6 +100,7 @@ void CTextureArray::Set(CBaseTexture *texture, int width, int height)
   assert(!m_textures.size()); // don't try and set a texture if we already have one!
   m_width = width;
   m_height = height;
+  m_orientation = texture ? texture->GetOrientation() : 0;
   Add(texture, 100);
 }
 
@@ -172,7 +179,7 @@ void CTextureMap::Dump() const
   OutputDebugString(strLog.c_str());
 }
 
-DWORD CTextureMap::GetMemoryUsage() const
+unsigned int CTextureMap::GetMemoryUsage() const
 {
   return m_memUsage;
 }
@@ -231,9 +238,6 @@ const CTextureArray& CGUITextureManager::GetTexture(const CStdString& strTexture
   }
   return emptyTexture;
 }
-
-
-
 
 /************************************************************************/
 /*                                                                      */
@@ -306,8 +310,8 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
   CSingleLock lock(g_graphicsContext);
 
 #ifdef _DEBUG
-  LARGE_INTEGER start;
-  QueryPerformanceCounter(&start);
+  int64_t start;
+  start = CurrentHostCounter();
 #endif
 
   if (strPath.Right(4).ToLower() == ".gif")
@@ -365,18 +369,18 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
         if (glTexture)
         {
           CAnimatedGif* pImage = AnimatedGifSet.m_vecimg[iImage];
-          glTexture->LoadPaletted(pImage->Width, pImage->Height, pImage->BytesPerRow, (unsigned char *)pImage->Raster, palette);
+          glTexture->LoadPaletted(pImage->Width, pImage->Height, pImage->BytesPerRow, XB_FMT_A8R8G8B8, (unsigned char *)pImage->Raster, palette);
           pMap->Add(glTexture, pImage->Delay);
         }
       } // of for (int iImage=0; iImage < iImages; iImage++)
     }
 
 #ifdef _DEBUG
-    LARGE_INTEGER end, freq;
-    QueryPerformanceCounter(&end);
-    QueryPerformanceFrequency(&freq);
+    int64_t end, freq;
+    end = CurrentHostCounter();
+    freq = CurrentHostFrequency();
     char temp[200];
-    sprintf(temp, "Load %s: %.1fms%s\n", strPath.c_str(), 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart, (bundle >= 0) ? " (bundled)" : "");
+    sprintf(temp, "Load %s: %.1fms%s\n", strPath.c_str(), 1000.f * (end - start) / freq, (bundle >= 0) ? " (bundled)" : "");
     OutputDebugString(temp);
 #endif
 
@@ -402,7 +406,8 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
     g_charsetConverter.utf8ToStringCharset(strPath, texturePath);
 
     pTexture = new CTexture();
-    pTexture->LoadFromFile(texturePath);
+    if(!pTexture->LoadFromFile(texturePath))
+      return 0;
     width = pTexture->GetWidth();
     height = pTexture->GetHeight();
   }
@@ -414,11 +419,11 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
   m_vecTextures.push_back(pMap);
 
 #ifdef _DEBUG_TEXTURES
-  LARGE_INTEGER end, freq;
-  QueryPerformanceCounter(&end);
-  QueryPerformanceFrequency(&freq);
+  int64_t end, freq;
+  end = CurrentHostCounter();
+  freq = CurrentHostFrequency();
   char temp[200];
-  sprintf(temp, "Load %s: %.1fms%s\n", strPath.c_str(), 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart, (bundle >= 0) ? " (bundled)" : "");
+  sprintf(temp, "Load %s: %.1fms%s\n", strPath.c_str(), 1000.f * (end - start) / freq, (bundle >= 0) ? " (bundled)" : "");
   OutputDebugString(temp);
 #endif
 
@@ -512,9 +517,9 @@ void CGUITextureManager::Flush()
   }
 }
 
-DWORD CGUITextureManager::GetMemoryUsage() const
+unsigned int CGUITextureManager::GetMemoryUsage() const
 {
-  DWORD memUsage = 0;
+  unsigned int memUsage = 0;
   for (int i = 0; i < (int)m_vecTextures.size(); ++i)
   {
     memUsage += m_vecTextures[i]->GetMemoryUsage();

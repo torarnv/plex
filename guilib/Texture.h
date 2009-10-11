@@ -29,6 +29,7 @@
 
 #include "gui3d.h"
 #include "StdString.h"
+#include "XBTF.h"
 
 #pragma pack(1)
 struct COLOR {unsigned char b,g,r,x;};	// Windows GDI expects 4bytes per color
@@ -48,41 +49,49 @@ class CBaseTexture
 {
 
 public:
-  CBaseTexture(unsigned int width = 0, unsigned int height = 0, unsigned int BPP = 0);
+  CBaseTexture(unsigned int width = 0, unsigned int height = 0, unsigned int format = XB_FMT_A8R8G8B8);
   virtual ~CBaseTexture();
 
-  // TODO: Clean up this interface once things have settled down (none of these need to be virtual)
-  virtual bool LoadFromFile(const CStdString& texturePath);
-  virtual bool LoadFromMemory(unsigned int width, unsigned int height, unsigned int pitch, unsigned int BPP, unsigned char* pPixels);
-  bool LoadPaletted(unsigned int width, unsigned int height, unsigned int pitch, const unsigned char *pixels, const COLOR *palette);
+  bool LoadFromFile(const CStdString& texturePath, unsigned int maxHeight = 0, unsigned int maxWidth = 0,
+                    bool autoRotate = false, unsigned int *originalWidth = NULL, unsigned int *originalHeight = NULL);
+  bool LoadFromMemory(unsigned int width, unsigned int height, unsigned int pitch, unsigned int format, unsigned char* pixels);
+  bool LoadPaletted(unsigned int width, unsigned int height, unsigned int pitch, unsigned int format, const unsigned char *pixels, const COLOR *palette);
 
   virtual void CreateTextureObject() = 0;
   virtual void DestroyTextureObject() = 0;
   virtual void LoadToGPU() = 0;
 
-  XBMC::TexturePtr GetTextureObject() const { return m_pTexture; }
-  virtual unsigned char* GetPixels() const { return m_pPixels; }
-  virtual unsigned int GetPitch() const { return m_nTextureWidth * (m_nBPP / 8); }
-  virtual unsigned int GetTextureWidth() const { return m_nTextureWidth; };
-  virtual unsigned int GetTextureHeight() const { return m_nTextureHeight; };
+  XBMC::TexturePtr GetTextureObject() const { return m_texture; }
+  unsigned char* GetPixels() const { return m_pixels; }
+  unsigned int GetPitch() const { return GetPitch(m_textureWidth); }
+  unsigned int GetRows() const { return GetRows(m_textureHeight); }
+  unsigned int GetTextureWidth() const { return m_textureWidth; }
+  unsigned int GetTextureHeight() const { return m_textureHeight; }
   unsigned int GetWidth() const { return m_imageWidth; }
   unsigned int GetHeight() const { return m_imageHeight; }
-  unsigned int GetBPP() const { return m_nBPP; }
+  int GetOrientation() const { return m_orientation; }
 
-  void Update(int w, int h, int pitch, const unsigned char *pixels, bool loadToGPU);
-  void Allocate(unsigned int width, unsigned int height, unsigned int BPP);
+  void Update(unsigned int width, unsigned int height, unsigned int pitch, unsigned int format, const unsigned char *pixels, bool loadToGPU);
+  void Allocate(unsigned int width, unsigned int height, unsigned int format);
+  void ClampToEdge();
 
-  static DWORD PadPow2(DWORD x);
+  static unsigned int PadPow2(unsigned int x);
 
 protected:
+  // helpers for computation of texture parameters for compressed textures
+  unsigned int GetPitch(unsigned int width) const;
+  unsigned int GetRows(unsigned int height) const;
+  unsigned int GetBlockSize() const;
+
   unsigned int m_imageWidth;
   unsigned int m_imageHeight;
-  unsigned int m_nTextureWidth;
-  unsigned int m_nTextureHeight;
-  unsigned int m_nBPP;
-  XBMC::TexturePtr m_pTexture;
-  unsigned char* m_pPixels;
+  unsigned int m_textureWidth;
+  unsigned int m_textureHeight;
+  XBMC::TexturePtr m_texture;
+  unsigned char* m_pixels;
   bool m_loadedToGPU;
+  unsigned int m_format;
+  int m_orientation;
 };
 
 #if defined(HAS_GL) || defined(HAS_GLES)

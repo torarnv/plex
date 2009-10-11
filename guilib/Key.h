@@ -276,6 +276,11 @@
 #define ACTION_RELOAD_KEYMAPS         203 // reloads CButtonTranslator's keymaps
 #define ACTION_GUIPROFILE_BEGIN       204 // start the GUIControlProfiler running
 
+#define ACTION_TELETEXT_RED           215 // Teletext Color buttons to control TopText
+#define ACTION_TELETEXT_GREEN         216 //    "       "      "    "     "       "
+#define ACTION_TELETEXT_YELLOW        217 //    "       "      "    "     "       "
+#define ACTION_TELETEXT_BLUE          218 //    "       "      "    "     "       "
+
 // Window ID defines to make the code a bit more readable
 #define WINDOW_INVALID                     9999
 #define WINDOW_HOME                       10000
@@ -354,6 +359,8 @@
 #define WINDOW_MUSIC_NAV                  10502
 #define WINDOW_MUSIC_PLAYLIST_EDITOR      10503
 
+#define WINDOW_DIALOG_OSD_TELETEXT        10600
+
 //#define WINDOW_VIRTUAL_KEYBOARD           11000
 #define WINDOW_DIALOG_SELECT              12000
 #define WINDOW_MUSIC_INFO                 12001
@@ -428,7 +435,7 @@ public:
   virtual ~CKey(void);
   const CKey& operator=(const CKey& key);
   uint32_t GetButtonCode() const; // for backwards compatibility only
-  uint32_t GetUnicode() const; // http api does not really support unicode till now. It only simulates unicode when ascii codes are available:
+  wchar_t GetUnicode() const; // http api does not really support unicode till now. It only simulates unicode when ascii codes are available:
   uint8_t GetLeftTrigger() const;
   uint8_t GetRightTrigger() const;
   float GetLeftThumbX() const;

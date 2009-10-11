@@ -50,7 +50,17 @@ public:
   virtual bool MoveWindow(int topLeft, int topRight){return false;}
   virtual bool CenterWindow(){return false;}
   virtual bool IsCreated(){ return m_bWindowCreated; }
-  virtual void NotifyAppFocusChange(bool bGaining) {};
+  virtual void NotifyAppFocusChange(bool bGaining) {}
+  virtual void NotifyAppActiveChange(bool bActivated) {}
+
+  virtual bool Minimize() { return false; }
+  virtual bool Restore() { return false; }
+  virtual bool Hide() { return false; }
+  virtual bool Show(bool raise = true) { return false; }
+
+  // OS System screensaver
+  virtual void EnableSystemScreenSaver(bool bEnable) {};
+  virtual bool IsSystemScreenSaverEnabled() {return false;}
 
   // resolution interfaces
   unsigned int GetWidth() { return m_nWidth; }
@@ -58,6 +68,7 @@ public:
   bool IsFullScreen() { return m_bFullScreen; } 
 
   virtual void UpdateResolutions();
+  void SetWindowResolution(int width, int height);
   
 protected:
   void UpdateDesktopResolution(RESOLUTION_INFO& newRes, int screen, int width, int height, float refreshRate);

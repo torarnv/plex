@@ -39,17 +39,14 @@ public:
   virtual bool BeginRender();
   virtual bool EndRender();
   virtual bool PresentRender();
-  virtual bool ClearBuffers(DWORD color);
+  virtual bool ClearBuffers(color_t color);
   virtual bool ClearBuffers(float r, float g, float b, float a);
   virtual bool IsExtSupported(const char* extension);
 
   virtual void SetVSync(bool vsync);
-  virtual bool GetVSync() { return m_bVSync; }
 
   virtual void SetViewPort(CRect& viewPort);
   virtual void GetViewPort(CRect& viewPort);
-  
-  virtual bool NeedPower2Texture() { return m_NeedPower2Texture; }
 
   virtual void CaptureStateBlock();
   virtual void ApplyStateBlock();
@@ -59,7 +56,7 @@ public:
   virtual void ApplyHardwareTransform(const TransformMatrix &matrix);
   virtual void RestoreHardwareTransform();
 
-  HRESULT GetDeviceStatus() { return S_OK; }
+  bool IsDeviceReady() const { return true; };
   
   virtual bool TestRender();
   
@@ -70,12 +67,14 @@ protected:
   
   int        m_iVSyncMode;
   int        m_iVSyncErrors;
-  __int64    m_iSwapStamp;
-  __int64    m_iSwapRate;
-  __int64    m_iSwapTime;
+  int64_t    m_iSwapStamp;
+  int64_t    m_iSwapRate;
+  int64_t    m_iSwapTime;
   bool       m_bVsyncInit;
   int        m_width;
   int        m_height;
+
+  CStdString m_RenderExtensions;
 };
 
 #endif // RENDER_SYSTEM_H

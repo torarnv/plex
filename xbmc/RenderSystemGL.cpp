@@ -28,6 +28,7 @@
 #include "AdvancedSettings.h"
 #include "RenderSystemGL.h"
 #include "utils/log.h"
+#include "utils/TimeUtils.h"
 
 
 CRenderSystemGL::CRenderSystemGL() : CRenderSystemBase()
@@ -49,6 +50,7 @@ bool CRenderSystemGL::InitRenderSystem()
   m_iSwapRate = 0;
   m_bVsyncInit = false;
   m_maxTextureSize = 2048;
+  m_renderCaps = 0;
   
   // init glew library
   GLenum err = glewInit();
@@ -59,22 +61,32 @@ bool CRenderSystemGL::InitRenderSystem()
   }
  
   // Get the GL version number 
-  m_RenderVerdenVersionMajor = 0;
-  m_RenderVerdenVersionMinor = 0;
+  m_RenderVersionMajor = 0;
+  m_RenderVersionMinor = 0;
 
   const char* ver = (const char*)glGetString(GL_VERSION);
   if (ver != 0)
-    sscanf(ver, "%d.%d", &m_RenderVerdenVersionMajor, &m_RenderVerdenVersionMinor);
-  
-  // Check if we need DPOT  
-  m_NeedPower2Texture = true;
-  if (m_RenderVerdenVersionMajor >= 2 && GLEW_ARB_texture_non_power_of_two)
-    m_NeedPower2Texture = false;
+    sscanf(ver, "%d.%d", &m_RenderVersionMajor, &m_RenderVersionMinor);
   
   // Get our driver vendor and renderer
   m_RenderVendor = (const char*) glGetString(GL_VENDOR);
   m_RenderRenderer = (const char*) glGetString(GL_RENDERER);
   
+  // grab our capabilities
+  if (glewIsSupported("GL_EXT_texture_compression_s3tc"))
+    m_renderCaps |= RENDER_CAPS_DXT;
+
+  if (GLEW_ARB_texture_non_power_of_two || m_RenderVersionMajor >= 2)
+  {
+    m_renderCaps |= RENDER_CAPS_NPOT;
+    if (m_renderCaps & RENDER_CAPS_DXT)    // This may not be correct on all hardware
+      m_renderCaps |= RENDER_CAPS_DXT_NPOT;
+  }
+
+  m_RenderExtensions  = " ";
+  m_RenderExtensions += (const char*) glGetString(GL_EXTENSIONS);
+  m_RenderExtensions += " ";
+
   LogGraphicsInfo();
   
   m_bRenderCreated = true;
@@ -135,7 +147,7 @@ bool CRenderSystemGL::EndRender()
   return true;
 }
 
-bool CRenderSystemGL::ClearBuffers(DWORD color)
+bool CRenderSystemGL::ClearBuffers(color_t color)
 {
   if (!m_bRenderCreated)
     return false;
@@ -158,10 +170,15 @@ bool CRenderSystemGL::ClearBuffers(float r, float g, float b, float a)
 
 bool CRenderSystemGL::IsExtSupported(const char* extension)
 {
-  return false;
+  CStdString name;
+  name  = " ";
+  name += extension;
+  name += " ";
+
+  return m_RenderExtensions.find(name) != std::string::npos;;
 }
 
-static __int64 abs(__int64 a)
+static int64_t abs(int64_t a)
 {
   if(a < 0)
     return -a;
@@ -175,9 +192,9 @@ bool CRenderSystemGL::PresentRender()
 
   if (m_iVSyncMode != 0 && m_iSwapRate != 0) 
   {
-    __int64 curr, diff, freq;
-    QueryPerformanceCounter((LARGE_INTEGER*)&curr);
-    QueryPerformanceFrequency((LARGE_INTEGER*)&freq);
+    int64_t curr, diff, freq;
+    curr = CurrentHostCounter();
+    freq = CurrentHostFrequency();
 
     if(m_iSwapStamp == 0)
       m_iSwapStamp = curr;
@@ -199,8 +216,8 @@ bool CRenderSystemGL::PresentRender()
   
   if (m_iVSyncMode && m_iSwapRate != 0)
   {
-    __int64 curr, diff;
-    QueryPerformanceCounter((LARGE_INTEGER*)&curr);
+    int64_t curr, diff;
+    curr = CurrentHostCounter();
 
     diff = curr - m_iSwapStamp;
     m_iSwapStamp = curr;
@@ -247,10 +264,10 @@ void CRenderSystemGL::SetVSync(bool enable)
     }
     else
     {
-      __int64 freq;
-      QueryPerformanceFrequency((LARGE_INTEGER*)&freq);
-      m_iSwapRate   = (__int64)((double)freq / rate);
-      m_iSwapTime   = (__int64)(0.001 * g_advancedSettings.m_ForcedSwapTime * freq);
+      int64_t freq;
+      freq = CurrentHostFrequency();
+      m_iSwapRate   = (int64_t)((double)freq / rate);
+      m_iSwapTime   = (int64_t)(0.001 * g_advancedSettings.m_ForcedSwapTime * freq);
       m_iSwapStamp  = 0;
       CLog::Log(LOGINFO, "GL: Using artificial vsync sleep with rate %f", rate);
       if(!m_iVSyncMode)

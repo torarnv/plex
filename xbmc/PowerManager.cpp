@@ -28,6 +28,7 @@
 #include "KeyboardStat.h"
 #include "MouseStat.h"
 #include "GUISettings.h"
+#include "WindowingFactory.h"
 
 #ifdef HAS_LCD
 #include "utils/LCDFactory.h"
@@ -35,14 +36,19 @@
 
 #ifdef __APPLE__
 #include "osx/CocoaPowerSyscall.h"
+#elif defined(_LINUX) && defined(HAS_DBUS) && defined(HAS_HAL)
+#include "linux/HALPowerSyscall.h"
 #elif defined(_LINUX) && defined(HAS_DBUS)
-#include "linux/DBusPowerSyscall.h"
+#include "linux/ConsoleDeviceKitPowerSyscall.h"
 #elif defined(_WIN32)
 #include "win32/Win32PowerSyscall.h"
 #endif
 
 #ifdef HAS_LIRC
 #include "common/LIRC.h"
+#endif
+#ifdef HAS_IRSERVERSUITE
+  #include "common/IRServerSuite/IRServerSuite.h"
 #endif
 
 CPowerManager g_powerManager;
@@ -53,8 +59,10 @@ CPowerManager::CPowerManager()
 
 #ifdef __APPLE__
   m_instance = new CCocoaPowerSyscall();
+#elif defined(_LINUX) && defined(HAS_DBUS) && defined(HAS_HAL)
+  m_instance = new CHALPowerSyscall();
 #elif defined(_LINUX) && defined(HAS_DBUS)
-  m_instance = new CDBusPowerSyscall();
+  m_instance = new CConsoleDeviceKitPowerSyscall();
 #elif defined(_WIN32)
   m_instance = new CWin32PowerSyscall();
 #endif
@@ -150,11 +158,19 @@ void CPowerManager::Resume()
 {
   CLog::Log(LOGNOTICE, "%s: Running resume jobs", __FUNCTION__);
 
-  g_Mouse.Acquire();
+#ifdef HAS_SDL
+  // Hack to reclaim focus, thus rehiding system mouse pointer.
+  // Surely there's a better way?
+  if (g_Windowing.IsFullScreen())
+  {
+    g_graphicsContext.ToggleFullScreenRoot();
+    g_graphicsContext.ToggleFullScreenRoot();
+  }
   g_application.ResetScreenSaver();
+#endif
 
   // restart lirc
-#ifdef HAS_LIRC
+#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   CLog::Log(LOGNOTICE, "%s: Restarting lirc", __FUNCTION__);
   g_RemoteControl.Disconnect();
   g_RemoteControl.Initialize();
@@ -172,25 +188,7 @@ void CPowerManager::Resume()
   g_lcd->Initialize();
 #endif
 
-  // update video library
-  if (g_guiSettings.GetBool("videolibrary.updateonstartup"))
-  {
-    CLog::Log(LOGNOTICE, "%s: Updating video library on resume", __FUNCTION__);
-    CGUIDialogVideoScan *scanner = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-    SScraperInfo info;
-    VIDEO::SScanSettings settings;
-    if (scanner && !scanner->IsScanning())
-      scanner->StartScanning("",info,settings,false);
-  }
-
-  // update music library
-  if (g_guiSettings.GetBool("musiclibrary.updateonstartup"))
-  {
-    CLog::Log(LOGNOTICE, "%s: Updating music library on resume", __FUNCTION__);
-    CGUIDialogMusicScan *scanner = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-    if (scanner && !scanner->IsScanning())
-      scanner->StartScanning("");
-  }
+  g_application.UpdateLibraries();
 
   // reset
   g_application.m_bRunResumeJobs = false;

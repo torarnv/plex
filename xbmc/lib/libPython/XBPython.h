@@ -22,7 +22,6 @@
  */
 
 #include "XBPyThread.h"
-#include "IMsgSenderCallback.h"
 #include "cores/IPlayer.h"
 #include "utils/CriticalSection.h"
 
@@ -41,12 +40,11 @@ typedef std::vector<PyElem> PyList;
 typedef std::vector<PVOID> PlayerCallbackList;
 typedef std::vector<LibraryLoader*> PythonExtensionLibraries;
 
-class XBPython : public IMsgSenderCallback, public IPlayerCallback
+class XBPython : public IPlayerCallback
 {
 public:
   XBPython();
   virtual ~XBPython();
-  virtual bool SendMessage(CGUIMessage& message);
   virtual void OnPlayBackEnded();
   virtual void OnPlayBackStarted();
   virtual void OnPlayBackStopped();
@@ -59,7 +57,7 @@ public:
   void	Process();
 
   void PulseGlobalEvent();
-  void WaitForEvent(HANDLE hEvent, DWORD timeout);
+  void WaitForEvent(HANDLE hEvent, unsigned int timeout);
 
   int	ScriptsSize();
   int	GetPythonScriptId(int scriptPosition);
@@ -93,24 +91,24 @@ public:
 
   PyThreadState *getMainThreadState();
 
-  bool bStartup;
-  bool bLogin;
+  bool m_bStartup;
+  bool m_bLogin;
 private:
   bool              FileExist(const char* strFile);
 
-  int               nextid;
-  PyThreadState*    mainThreadState;
-  ThreadIdentifier  dThreadId;
+  int               m_nextid;
+  PyThreadState*    m_mainThreadState;
+  ThreadIdentifier  m_ThreadId;
   bool              m_bInitialized;
   HANDLE            m_hEvent;
   int               m_iDllScriptCounter; // to keep track of the total scripts running that need the dll
   HMODULE           m_hModule;
 
   //Vector with list of threads used for running scripts
-  PyList vecPyList;
-  PlayerCallbackList vecPlayerCallbackList;
-  CCriticalSection	m_critSection;
-  LibraryLoader*    m_pDll;
+  PyList              m_vecPyList;
+  PlayerCallbackList  m_vecPlayerCallbackList;
+  CCriticalSection    m_critSection;
+  LibraryLoader*      m_pDll;
 
   // any global events that scripts should be using
   HANDLE m_globalEvent;

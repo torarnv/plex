@@ -560,9 +560,6 @@ void CGUIDialogFileBrowser::GoParentFolder()
     if (strPath[1] == ':')
       CUtil::AddSlashAtEnd(strPath);
   Update(strPath);
-
-  if (!g_guiSettings.GetBool("filelists.fulldirectoryhistory"))
-    m_history.RemoveSelectedItem(strOldPath); //Delete current path
 }
 
 void CGUIDialogFileBrowser::OnWindowLoaded()
@@ -586,7 +583,7 @@ bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList &items, VECSOURC
   CGUIDialogFileBrowser *browser = new CGUIDialogFileBrowser();
   if (!browser)
     return false;
-  m_gWindowManager.AddUniqueInstance(browser);
+  g_windowManager.AddUniqueInstance(browser);
 
   browser->m_browsingForImages = true;
   browser->m_singleList = true;
@@ -608,7 +605,7 @@ bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList &items, VECSOURC
     result = browser->m_selectedPath;
     if (result == "image://Browse")
     { // "Browse for thumb"
-      m_gWindowManager.Remove(browser->GetID());
+      g_windowManager.Remove(browser->GetID());
       delete browser;
       return ShowAndGetImage(shares, g_localizeStrings.Get(21371), result);
     }
@@ -617,7 +614,7 @@ bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList &items, VECSOURC
   if (flip)
     *flip = browser->m_bFlip != 0;
 
-  m_gWindowManager.Remove(browser->GetID());
+  g_windowManager.Remove(browser->GetID());
   delete browser;
 
   return confirmed;
@@ -651,7 +648,7 @@ bool CGUIDialogFileBrowser::ShowAndGetFile(const VECSOURCES &shares, const CStdS
   CGUIDialogFileBrowser *browser = new CGUIDialogFileBrowser();
   if (!browser)
     return false;
-  m_gWindowManager.AddUniqueInstance(browser);
+  g_windowManager.AddUniqueInstance(browser);
 
   browser->m_useFileDirectories = useFileDirectories;
 
@@ -677,7 +674,7 @@ bool CGUIDialogFileBrowser::ShowAndGetFile(const VECSOURCES &shares, const CStdS
   bool confirmed(browser->IsConfirmed());
   if (confirmed)
     path = browser->m_selectedPath;
-  m_gWindowManager.Remove(browser->GetID());
+  g_windowManager.Remove(browser->GetID());
   delete browser;
   return confirmed;
 }
@@ -688,7 +685,7 @@ bool CGUIDialogFileBrowser::ShowAndGetFile(const CStdString &directory, const CS
   CGUIDialogFileBrowser *browser = new CGUIDialogFileBrowser();
   if (!browser)
     return false;
-  m_gWindowManager.AddUniqueInstance(browser);
+  g_windowManager.AddUniqueInstance(browser);
 
   browser->m_useFileDirectories = useFileDirectories;
 
@@ -720,7 +717,7 @@ bool CGUIDialogFileBrowser::ShowAndGetFile(const CStdString &directory, const CS
   bool confirmed(browser->IsConfirmed());
   if (confirmed)
     path = browser->m_selectedPath;
-  m_gWindowManager.Remove(browser->GetID());
+  g_windowManager.Remove(browser->GetID());
   delete browser;
   return confirmed;
 }
@@ -752,7 +749,7 @@ bool CGUIDialogFileBrowser::ShowAndGetSource(CStdString &path, bool allowNetwork
   if (!browser) return false;
 
   // Add it to our window manager
-  m_gWindowManager.AddUniqueInstance(browser);
+  g_windowManager.AddUniqueInstance(browser);
 
   VECSOURCES shares;
   if (!strType.IsEmpty())
@@ -797,7 +794,7 @@ bool CGUIDialogFileBrowser::ShowAndGetSource(CStdString &path, bool allowNetwork
   if (confirmed)
     path = browser->m_selectedPath;
 
-  m_gWindowManager.Remove(browser->GetID());
+  g_windowManager.Remove(browser->GetID());
   delete browser;
   return confirmed;
 }
@@ -853,7 +850,7 @@ void CGUIDialogFileBrowser::OnEditMediaSource(CFileItem* pItem)
 
 bool CGUIDialogFileBrowser::OnPopupMenu(int iItem)
 {
-  CGUIDialogContextMenu* pMenu = (CGUIDialogContextMenu*)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
+  CGUIDialogContextMenu* pMenu = (CGUIDialogContextMenu*)g_windowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
   if (!pMenu)
     return false;
 

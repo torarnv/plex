@@ -20,7 +20,10 @@
  */
 
 #include "GUIDialogVisualisationSettings.h"
+#include "GUIWindowManager.h"
 #include "GUIWindowSettingsCategory.h"
+#include "GUISpinControlEx.h"
+#include "GUIRadioButtonControl.h"
 #include "GUIControlGroupList.h"
 #include "GUIUserMessages.h"
 #include "utils/GUIInfoManager.h"
@@ -211,7 +214,7 @@ void CGUIDialogVisualisationSettings::OnInitWindow()
 {
   // set our visualisation
   CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
-  g_graphicsContext.SendMessage(msg);
+  g_windowManager.SendMessage(msg);
   SetVisualisation((CVisualisation *)msg.GetPointer());
 
   SetupPage();

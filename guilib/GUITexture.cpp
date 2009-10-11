@@ -27,6 +27,28 @@
 
 using namespace std;
 
+CTextureInfo::CTextureInfo()
+{
+  orientation = 0;
+  useLarge = false;
+}
+
+CTextureInfo::CTextureInfo(const CStdString &file)
+{
+  orientation = 0;
+  useLarge = false;
+  filename = file;
+}
+
+void CTextureInfo::operator=(const CTextureInfo &right)
+{
+  border = right.border;
+  orientation = right.orientation;
+  diffuse = right.diffuse;
+  filename = right.filename;
+  useLarge = right.useLarge;
+}
+
 CGUITextureBase::CGUITextureBase(float posX, float posY, float width, float height, const CTextureInfo& texture)
 {
   m_posX = posX;
@@ -51,11 +73,10 @@ CGUITextureBase::CGUITextureBase(float posX, float posY, float width, float heig
   m_diffuseV = 1.0f;
   m_diffuseScaleU = 1.0f;
   m_diffuseScaleV = 1.0f;
-  m_largeOrientation = 0;
 
   // anim gifs
   m_currentFrame = 0;
-  m_frameCounter = (DWORD) -1;
+  m_frameCounter = (unsigned int) -1;
   m_currentLoop = 0;
 
   m_allocateDynamically = false;
@@ -91,10 +112,8 @@ CGUITextureBase::CGUITextureBase(const CGUITextureBase &right)
   m_diffuseScaleU = 1.0f;
   m_diffuseScaleV = 1.0f;
 
-  m_largeOrientation = 0;
-
   m_currentFrame = 0;
-  m_frameCounter = (DWORD) -1;
+  m_frameCounter = (unsigned int) -1;
   m_currentLoop = 0;
 
   m_isAllocated = NO;
@@ -149,11 +168,11 @@ void CGUITextureBase::Render()
 
   // compute the texture coordinates
   float u1, u2, u3, v1, v2, v3;
-  u1 = m_info.border.left;
-  u2 = m_frameWidth - m_info.border.right;
+  u1 = m_info.border.x1;
+  u2 = m_frameWidth - m_info.border.x2;
   u3 = m_frameWidth;
-  v1 = m_info.border.top;
-  v2 = m_frameHeight - m_info.border.bottom;
+  v1 = m_info.border.y1;
+  v2 = m_frameHeight - m_info.border.y2;
   v3 = m_frameHeight;
 
   if (!m_texture.m_texCoordsArePixels)
@@ -171,28 +190,28 @@ void CGUITextureBase::Render()
   //       for flipping
 
   // left segment (0,0,u1,v3)
-  if (m_info.border.left)
+  if (m_info.border.x1)
   {
-    if (m_info.border.top)
-      Render(m_vertex.x1, m_vertex.y1, m_vertex.x1 + m_info.border.left, m_vertex.y1 + m_info.border.top, 0, 0, u1, v1, u3, v3);
-    Render(m_vertex.x1, m_vertex.y1 + m_info.border.top, m_vertex.x1 + m_info.border.left, m_vertex.y2 - m_info.border.bottom, 0, v1, u1, v2, u3, v3);
-    if (m_info.border.bottom)
-      Render(m_vertex.x1, m_vertex.y2 - m_info.border.bottom, m_vertex.x1 + m_info.border.left, m_vertex.y2, 0, v2, u1, v3, u3, v3); 
+    if (m_info.border.y1)
+      Render(m_vertex.x1, m_vertex.y1, m_vertex.x1 + m_info.border.x1, m_vertex.y1 + m_info.border.y1, 0, 0, u1, v1, u3, v3);
+    Render(m_vertex.x1, m_vertex.y1 + m_info.border.y1, m_vertex.x1 + m_info.border.x1, m_vertex.y2 - m_info.border.y2, 0, v1, u1, v2, u3, v3);
+    if (m_info.border.y2)
+      Render(m_vertex.x1, m_vertex.y2 - m_info.border.y2, m_vertex.x1 + m_info.border.x1, m_vertex.y2, 0, v2, u1, v3, u3, v3); 
   }
   // middle segment (u1,0,u2,v3)
-  if (m_info.border.top)
-    Render(m_vertex.x1 + m_info.border.left, m_vertex.y1, m_vertex.x2 - m_info.border.right, m_vertex.y1 + m_info.border.top, u1, 0, u2, v1, u3, v3);
-  Render(m_vertex.x1 + m_info.border.left, m_vertex.y1 + m_info.border.top, m_vertex.x2 - m_info.border.right, m_vertex.y2 - m_info.border.bottom, u1, v1, u2, v2, u3, v3);
-  if (m_info.border.bottom)
-    Render(m_vertex.x1 + m_info.border.left, m_vertex.y2 - m_info.border.bottom, m_vertex.x2 - m_info.border.right, m_vertex.y2, u1, v2, u2, v3, u3, v3); 
+  if (m_info.border.y1)
+    Render(m_vertex.x1 + m_info.border.x1, m_vertex.y1, m_vertex.x2 - m_info.border.x2, m_vertex.y1 + m_info.border.y1, u1, 0, u2, v1, u3, v3);
+  Render(m_vertex.x1 + m_info.border.x1, m_vertex.y1 + m_info.border.y1, m_vertex.x2 - m_info.border.x2, m_vertex.y2 - m_info.border.y2, u1, v1, u2, v2, u3, v3);
+  if (m_info.border.y2)
+    Render(m_vertex.x1 + m_info.border.x1, m_vertex.y2 - m_info.border.y2, m_vertex.x2 - m_info.border.x2, m_vertex.y2, u1, v2, u2, v3, u3, v3); 
   // right segment
-  if (m_info.border.right)
+  if (m_info.border.x2)
   { // have a left border
-    if (m_info.border.top)
-      Render(m_vertex.x2 - m_info.border.right, m_vertex.y1, m_vertex.x2, m_vertex.y1 + m_info.border.top, u2, 0, u3, v1, u3, v3);
-    Render(m_vertex.x2 - m_info.border.right, m_vertex.y1 + m_info.border.top, m_vertex.x2, m_vertex.y2 - m_info.border.bottom, u2, v1, u3, v2, u3, v3);
-    if (m_info.border.bottom)
-      Render(m_vertex.x2 - m_info.border.right, m_vertex.y2 - m_info.border.bottom, m_vertex.x2, m_vertex.y2, u2, v2, u3, v3, u3, v3); 
+    if (m_info.border.y1)
+      Render(m_vertex.x2 - m_info.border.x2, m_vertex.y1, m_vertex.x2, m_vertex.y1 + m_info.border.y1, u2, 0, u3, v1, u3, v3);
+    Render(m_vertex.x2 - m_info.border.x2, m_vertex.y1 + m_info.border.y1, m_vertex.x2, m_vertex.y2 - m_info.border.y2, u2, v1, u3, v2, u3, v3);
+    if (m_info.border.y2)
+      Render(m_vertex.x2 - m_info.border.x2, m_vertex.y2 - m_info.border.y2, m_vertex.x2, m_vertex.y2, u2, v2, u3, v3, u3, v3); 
   } 
 
   // close off our renderer
@@ -281,7 +300,7 @@ void CGUITextureBase::AllocResources()
     if (m_isAllocated != NORMAL)
     { // use our large image background loader
       CTextureArray texture;
-      if (g_largeTextureManager.GetImage(m_info.filename, texture, m_largeOrientation, !IsAllocated()))
+      if (g_largeTextureManager.GetImage(m_info.filename, texture, !IsAllocated()))
       {
         m_isAllocated = LARGE;
         
@@ -431,7 +450,6 @@ void CGUITextureBase::FreeResources(bool immediately /* = false */)
   m_currentLoop = 0;
   m_texCoordsScaleU = 1.0f;
   m_texCoordsScaleV = 1.0f;
-  m_largeOrientation = 0;
 
   // call our implementation
   Free();
@@ -447,7 +465,7 @@ void CGUITextureBase::DynamicResourceAlloc(bool allocateDynamically)
 void CGUITextureBase::UpdateAnimFrame()
 {
   m_frameCounter++;
-  DWORD delay = m_texture.m_delays[m_currentFrame];
+  unsigned int delay = m_texture.m_delays[m_currentFrame];
   if (!delay) delay = 100;
   if (m_frameCounter * 40 >= delay)
   {
@@ -534,8 +552,8 @@ void CGUITextureBase::OrientateTexture(CRect &rect, float width, float height, i
 
 void CGUITextureBase::SetWidth(float width)
 {
-  if (width < m_info.border.left + m_info.border.right)
-    width = m_info.border.left + m_info.border.right;
+  if (width < m_info.border.x1 + m_info.border.x2)
+    width = m_info.border.x1 + m_info.border.x2;
   if (m_width != width)
   {
     m_width = width;
@@ -545,8 +563,8 @@ void CGUITextureBase::SetWidth(float width)
 
 void CGUITextureBase::SetHeight(float height)
 {
-  if (height < m_info.border.top + m_info.border.bottom)
-    height = m_info.border.top + m_info.border.bottom;
+  if (height < m_info.border.y1 + m_info.border.y2)
+    height = m_info.border.y1 + m_info.border.y2;
   if (m_height != height)
   {
     m_height = height;
@@ -596,5 +614,5 @@ int CGUITextureBase::GetOrientation() const
                                  5, 6, 7, 4, 1, 2, 3, 0,
                                  6, 5, 4, 7, 2, 1, 0, 3,
                                  7, 4, 5, 6, 3, 0, 1, 2 };
-  return (int)orient_table[8 * m_info.orientation + m_largeOrientation];
+  return (int)orient_table[8 * m_info.orientation + m_texture.m_orientation];
 }

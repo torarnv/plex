@@ -2,14 +2,23 @@
   #include "config.h"
 #endif
 
-#if !defined(_POWERPC) && !defined(_POWERPC64)
-
 #ifndef __APPLE__
+#if defined(__PPC__)
+#define FUNCTION(name)				\
+	.globl name;				\
+	.type name, @function;			\
+	name:					\
+		lis 11,(p_##name)@ha;		\
+		lwz 12,(p_##name)@l(11);	\
+		mtctr 12;			\
+		bctr 
+#else
 #define FUNCTION(name)			\
 	.globl name;			\
 	.type name, @function;		\
 	name:				\
 		jmp *(p_##name)
+#endif
 #elif defined(__POWERPC__)
 #define FUNCTION(name)				\
 	.globl _##name				@\
@@ -76,7 +85,7 @@
 #if (defined USE_EXTERNAL_PYTHON) && (!defined HAVE_LIBPYTHON2_4)
   /* Upstream Python rename Py_InitModule4 for 64-bit systems, for Python
    versions higher than 2.4 */
-  #if SIZEOF_SIZE_T != SIZEOF_INT
+  #if SIZEOF_SIZE_T != SIZEOF_INT 
   FUNCTION(Py_InitModule4_64)
   #else
   FUNCTION(Py_InitModule4)
@@ -103,8 +112,6 @@
   FUNCTION(PySys_SetArgv)
   FUNCTION(PyObject_RichCompare)
   FUNCTION(PyFloat_FromDouble)
-
-#endif
 
 #if defined(__linux__) && defined(__ELF__)
 .section .note.GNU-stack,"",%progbits

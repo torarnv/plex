@@ -38,6 +38,7 @@
 #include "GUISettings.h"
 #include "utils/SingleLock.h"
 #include "utils/log.h"
+#include "utils/TimeUtils.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -188,7 +189,7 @@ void CSMB::Init()
     }
   }
 #ifdef _LINUX
-  m_LastActive = timeGetTime();
+  m_LastActive = CTimeUtils::GetTimeMS();
 #endif
 }
 
@@ -274,13 +275,8 @@ CStdString CSMB::URLEncode(const CURL &url)
 
 CStdString CSMB::URLEncode(const CStdString &value)
 {
-  int buffer_len = value.length()*3+1;
-  char* buffer = (char*)malloc(buffer_len);
-
-  smbc_urlencode(buffer, (char*)value.c_str(), buffer_len);
-
-  CStdString encoded = buffer;
-  free(buffer);
+  CStdString encoded(value);
+  CUtil::URLEncode(encoded);
   return encoded;
 }
 
@@ -305,7 +301,7 @@ void CSMB::CheckIfIdle()
   if (m_OpenConnections == 0)
   { /* I've set the the maxiumum IDLE time to be 1 min and 30 sec. */
     CSingleLock lock(*this);
-    if (m_OpenConnections == 0 /* check again - when locked */ && m_context != NULL && (timeGetTime() - m_LastActive) > 90000)
+    if (m_OpenConnections == 0 /* check again - when locked */ && m_context != NULL && (CTimeUtils::GetTimeMS() - m_LastActive) > 90000)
     {
       CLog::Log(LOGNOTICE, "Samba is idle. Closing the remaining connections");
       smb.Deinit();
@@ -315,7 +311,7 @@ void CSMB::CheckIfIdle()
 
 void CSMB::SetActivityTime()
 {
-  m_LastActive = timeGetTime();
+  m_LastActive = CTimeUtils::GetTimeMS();
 }
 
 /* The following two function is used to keep track on how many Opened files/directories there are.
@@ -331,7 +327,7 @@ void CSMB::AddIdleConnection()
   m_OpenConnections--;
   /* If we close a file we reset the idle timer so that we don't have any wierd behaviours if a user
      leaves the movie paused for a long while and then press stop */
-  m_LastActive = timeGetTime();
+  m_LastActive = CTimeUtils::GetTimeMS();
 }
 #endif
 
@@ -354,18 +350,18 @@ CFileSMB::~CFileSMB()
 #endif
 }
 
-__int64 CFileSMB::GetPosition()
+int64_t CFileSMB::GetPosition()
 {
   if (m_fd == -1) return 0;
   smb.Init();
   CSingleLock lock(smb);
-  __int64 pos = smbc_lseek(m_fd, 0, SEEK_CUR);
+  int64_t pos = smbc_lseek(m_fd, 0, SEEK_CUR);
   if ( pos < 0 )
     return 0;
   return pos;
 }
 
-__int64 CFileSMB::GetLength()
+int64_t CFileSMB::GetLength()
 {
   if (m_fd == -1) return 0;
   return m_fileSize;
@@ -419,7 +415,7 @@ bool CFileSMB::Open(const CURL& url)
 
   m_fileSize = tmpBuffer.st_size;
 
-  __int64 ret = smbc_lseek(m_fd, 0, SEEK_SET);
+  int64_t ret = smbc_lseek(m_fd, 0, SEEK_SET);
   if ( ret < 0 )
   {
     smbc_close(m_fd);
@@ -589,7 +585,7 @@ int CFileSMB::Stat(const CURL& url, struct __stat64* buffer)
   return iResult;
 }
 
-unsigned int CFileSMB::Read(void *lpBuf, __int64 uiBufSize)
+unsigned int CFileSMB::Read(void *lpBuf, int64_t uiBufSize)
 {
   if (m_fd == -1) return 0;
   CSingleLock lock(smb); // Init not called since it has to be "inited" by now
@@ -621,7 +617,7 @@ unsigned int CFileSMB::Read(void *lpBuf, __int64 uiBufSize)
   return (unsigned int)bytesRead;
 }
 
-__int64 CFileSMB::Seek(__int64 iFilePosition, int iWhence)
+int64_t CFileSMB::Seek(int64_t iFilePosition, int iWhence)
 {
   if (m_fd == -1) return -1;
   if(iWhence == SEEK_POSSIBLE)
@@ -643,7 +639,7 @@ __int64 CFileSMB::Seek(__int64 iFilePosition, int iWhence)
     return -1;
   }
 
-  return (__int64)pos;
+  return (int64_t)pos;
 }
 
 void CFileSMB::Close()
@@ -657,7 +653,7 @@ void CFileSMB::Close()
   m_fd = -1;
 }
 
-int CFileSMB::Write(const void* lpBuf, __int64 uiBufSize)
+int CFileSMB::Write(const void* lpBuf, int64_t uiBufSize)
 {
   if (m_fd == -1) return -1;
   DWORD dwNumberOfBytesWritten = 0;

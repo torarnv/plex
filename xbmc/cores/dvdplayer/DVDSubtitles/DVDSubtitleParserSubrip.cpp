@@ -23,6 +23,7 @@
 #include "DVDCodecs/Overlay/DVDOverlayText.h"
 #include "DVDClock.h"
 #include "StdString.h"
+#include "SamiTagConvertor.h"
 
 using namespace std;
 
@@ -39,6 +40,10 @@ CDVDSubtitleParserSubrip::~CDVDSubtitleParserSubrip()
 bool CDVDSubtitleParserSubrip::Open(CDVDStreamInfo &hints)
 {
   if (!CDVDSubtitleParserText::Open())
+    return false;
+
+  SamiTagConvertor TagConv;
+  if (!TagConv.Init())
     return false;
 
   char line[1024];
@@ -84,10 +89,9 @@ bool CDVDSubtitleParserSubrip::Open(CDVDStreamInfo &hints)
           // empty line, next subtitle is about to start
           if (strlen(pLineStart) <= 0) break;
 
-          // add a new text element to our container
-          pOverlay->AddElement(new CDVDOverlayText::CElementText(line));
+          TagConv.ConvertLine(pOverlay, line, strlen(line));
         }
-
+        TagConv.CloseTag(pOverlay);
         m_collection.Add(pOverlay);
       }
     }

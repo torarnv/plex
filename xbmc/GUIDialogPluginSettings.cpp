@@ -26,6 +26,7 @@
 #include "GUIControlGroupList.h"
 #include "Util.h"
 #include "MediaManager.h"
+#include "GUILabelControl.h"
 #include "GUIRadioButtonControl.h"
 #include "GUISpinControlEx.h"
 #include "GUIImage.h"
@@ -67,14 +68,6 @@ bool CGUIDialogPluginSettings::OnMessage(CGUIMessage& message)
 {
   switch (message.GetMessage())
   {
-    case GUI_MSG_WINDOW_INIT:
-    {
-      CGUIDialogBoxBase::OnMessage(message);
-      FreeControls();
-      CreateControls();
-      return true;
-    }
-
     case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
@@ -99,6 +92,13 @@ bool CGUIDialogPluginSettings::OnMessage(CGUIMessage& message)
   return CGUIDialogBoxBase::OnMessage(message);
 }
 
+void CGUIDialogPluginSettings::OnInitWindow()
+{
+  FreeControls();
+  CreateControls();
+  CGUIDialogBoxBase::OnInitWindow();
+}
+
 // \brief Show CGUIDialogOK dialog, then wait for user to dismiss it.
 void CGUIDialogPluginSettings::ShowAndGetInput(CURL& url)
 {
@@ -108,7 +108,7 @@ void CGUIDialogPluginSettings::ShowAndGetInput(CURL& url)
   DIRECTORY::CPluginDirectory::LoadPluginStrings(url);
 
   // Create the dialog
-  CGUIDialogPluginSettings* pDialog = (CGUIDialogPluginSettings*) m_gWindowManager.GetWindow(WINDOW_DIALOG_PLUGIN_SETTINGS);
+  CGUIDialogPluginSettings* pDialog = (CGUIDialogPluginSettings*) g_windowManager.GetWindow(WINDOW_DIALOG_PLUGIN_SETTINGS);
 
   pDialog->m_strHeading = m_url.GetFileName();
   CUtil::RemoveSlashAtEnd(pDialog->m_strHeading);
@@ -130,7 +130,7 @@ void CGUIDialogPluginSettings::ShowAndGetInput(CURL& url)
 void CGUIDialogPluginSettings::ShowAndGetInput(SScraperInfo& info)
 {
   // Create the dialog
-  CGUIDialogPluginSettings* pDialog = (CGUIDialogPluginSettings*) m_gWindowManager.GetWindow(WINDOW_DIALOG_PLUGIN_SETTINGS);
+  CGUIDialogPluginSettings* pDialog = (CGUIDialogPluginSettings*) g_windowManager.GetWindow(WINDOW_DIALOG_PLUGIN_SETTINGS);
 
   pDialog->m_settings = info.settings;
   pDialog->m_strHeading.Format("$LOCALIZE[20407] - %s", info.strTitle.c_str());
@@ -163,7 +163,7 @@ void CGUIDialogPluginSettings::ShowAndGetInput(CStdString& path)
   g_localizeStringsTemp.Load(pathToLanguageFile, pathToFallbackLanguageFile);
 
   // Create the dialog
-  CGUIDialogPluginSettings* pDialog = (CGUIDialogPluginSettings*) m_gWindowManager.GetWindow(WINDOW_DIALOG_PLUGIN_SETTINGS);
+  CGUIDialogPluginSettings* pDialog = (CGUIDialogPluginSettings*) g_windowManager.GetWindow(WINDOW_DIALOG_PLUGIN_SETTINGS);
 
   pDialog->m_strHeading = CUtil::GetFileName(path);
   pDialog->m_strHeading.Format("$LOCALIZE[1049] - %s", pDialog->m_strHeading.c_str());

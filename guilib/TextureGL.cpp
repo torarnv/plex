@@ -31,14 +31,9 @@ using namespace std;
 /************************************************************************/
 /*    CGLTexture                                                       */
 /************************************************************************/
-CGLTexture::CGLTexture(unsigned int width, unsigned int height, unsigned int BPP)
-: CBaseTexture(width, height, BPP)
+CGLTexture::CGLTexture(unsigned int width, unsigned int height, unsigned int format)
+: CBaseTexture(width, height, format)
 {
-  m_nTextureWidth = 0;
-  m_nTextureHeight = 0;
-
-  if(m_imageWidth != 0 && m_imageHeight != 0)
-    Allocate(m_imageWidth, m_imageHeight, m_nBPP);
 }
 
 CGLTexture::~CGLTexture()
@@ -48,24 +43,24 @@ CGLTexture::~CGLTexture()
 
 void CGLTexture::CreateTextureObject()
 {
-  glGenTextures(1, (GLuint*) &m_pTexture);
+  glGenTextures(1, (GLuint*) &m_texture);
 }
 
 void CGLTexture::DestroyTextureObject()
 {
-  if (m_pTexture)
-    glDeleteTextures(1, (GLuint*) &m_pTexture);
+  if (m_texture)
+    glDeleteTextures(1, (GLuint*) &m_texture);
 }
 
 void CGLTexture::LoadToGPU()
 {
-  if (!m_pPixels)
+  if (!m_pixels)
   {
     // nothing to load - probably same image (no change)
     return;
   }
 
-  if (m_pTexture == 0)
+  if (m_texture == 0)
   {
     // Have OpenGL generate a texture object handle for us
     // this happens only one time - the first time the texture is loaded
@@ -73,7 +68,7 @@ void CGLTexture::LoadToGPU()
   }
 
   // Bind the texture object
-  glBindTexture(GL_TEXTURE_2D, m_pTexture);
+  glBindTexture(GL_TEXTURE_2D, m_texture);
 
   // Set the texture's stretching properties
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -82,35 +77,63 @@ void CGLTexture::LoadToGPU()
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
   unsigned int maxSize = g_Windowing.GetMaxTextureSize();
-  if (m_nTextureHeight > maxSize)
+  if (m_textureHeight > maxSize)
   {
-    CLog::Log(LOGERROR, "GL: Image height %d too big to fit into single texture unit, truncating to %u", m_nTextureHeight, maxSize);
-    m_nTextureHeight = maxSize;
+    CLog::Log(LOGERROR, "GL: Image height %d too big to fit into single texture unit, truncating to %u", m_textureHeight, maxSize);
+    m_textureHeight = maxSize;
   }
-  if (m_nTextureWidth > maxSize)
+  if (m_textureWidth > maxSize)
   {
-    CLog::Log(LOGERROR, "GL: Image width %d too big to fit into single texture unit, truncating to %u", m_nTextureWidth, maxSize);
+    CLog::Log(LOGERROR, "GL: Image width %d too big to fit into single texture unit, truncating to %u", m_textureWidth, maxSize);
 #ifndef HAS_GLES
-    glPixelStorei(GL_UNPACK_ROW_LENGTH, m_nTextureWidth);
+    glPixelStorei(GL_UNPACK_ROW_LENGTH, m_textureWidth);
 #endif
-    m_nTextureWidth = maxSize;
+    m_textureWidth = maxSize;
   }
 
+  GLenum format;
+
+  switch (m_format)
+  {
+  case XB_FMT_DXT1: 
+    format = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
+    break; 
+  case XB_FMT_DXT3: 
+    format = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
+    break;     
+  case XB_FMT_DXT5: 
+  case XB_FMT_DXT5_YCoCg:
+    format = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
+    break; 
+  case XB_FMT_A8R8G8B8: 
+  default:
 #ifdef HAS_GL
-  GLenum format = GL_BGRA;
+    format = GL_BGRA;
 #elif HAS_GLES
-  GLenum format = GL_BGRA_EXT;
+    format = GL_BGRA_EXT;
 #endif
-  glTexImage2D(GL_TEXTURE_2D, 0, 4, m_nTextureWidth, m_nTextureHeight, 0,
-    format, GL_UNSIGNED_BYTE, m_pPixels);
+    break;
+  }
+
+  if ((m_format & XB_FMT_DXT_MASK) == 0)
+  {
+    glTexImage2D(GL_TEXTURE_2D, 0, 4, m_textureWidth, m_textureHeight, 0,
+      format, GL_UNSIGNED_BYTE, m_pixels);
+  }
+  else
+  {
+    glCompressedTexImage2D(GL_TEXTURE_2D, 0, format, 
+      m_textureWidth, m_textureHeight, 0, GetPitch() * GetRows(), m_pixels);
+  }
+
 #ifndef HAS_GLES
   glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
 #endif
   VerifyGLState();
 
-  delete [] m_pPixels;
-  m_pPixels = NULL;
+  delete [] m_pixels;
+  m_pixels = NULL;
 
-  m_loadedToGPU = true;   
+  m_loadedToGPU = true;
 }
 #endif // HAS_GL

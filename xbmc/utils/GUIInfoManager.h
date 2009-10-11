@@ -245,6 +245,7 @@ class CDateTime;
 #define VIDEOPLAYER_AUDIO_CODEC       288
 #define VIDEOPLAYER_AUDIO_CHANNELS    289
 #define VIDEOPLAYER_VIDEO_ASPECT      290
+#define VIDEOPLAYER_HASTELETEXT       291
 
 #define AUDIOSCROBBLER_ENABLED      300
 #define AUDIOSCROBBLER_CONN_STATE   301
@@ -310,6 +311,7 @@ class CDateTime;
 #define STRING_IS_EMPTY             410
 #define STRING_COMPARE              411
 #define STRING_STR                  412
+#define INTEGER_GREATER_THAN        413
 
 #define SKIN_HAS_THEME_START        500
 #define SKIN_HAS_THEME_END          599 // allow for max 100 themes
@@ -416,11 +418,7 @@ class CDateTime;
 #define CONTROL_HAS_FOCUS           30000
 #define BUTTON_SCROLLER_HAS_ICON    30001
 
-#ifdef SVN_REV
-#define VERSION_STRING "pre-9.10 r"SVN_REV
-#else
 #define VERSION_STRING "pre-9.10"
-#endif
 
 #define LISTITEM_START              35000
 #define LISTITEM_THUMB              (LISTITEM_START)
@@ -581,7 +579,7 @@ public:
   CStdString GetBuild();
 
   bool GetDisplayAfterSeek() const;
-  void SetDisplayAfterSeek(DWORD TimeOut = 2500);
+  void SetDisplayAfterSeek(unsigned int timeOut = 2500);
   void SetSeeking(bool seeking) { m_playerSeeking = seeking; };
   void SetShowTime(bool showtime) { m_playerShowTime = showtime; };
   void SetShowCodec(bool showcodec) { m_playerShowCodec = showcodec; };
@@ -653,13 +651,13 @@ protected:
   CFileItem* m_currentSlide;
 
   // fan stuff
-  DWORD m_lastSysHeatInfoTime;
+  unsigned int m_lastSysHeatInfoTime;
   int m_fanSpeed;
   CTemperature m_gpuTemp;
   CTemperature m_cpuTemp;
 
   //Fullscreen OSD Stuff
-  DWORD m_AfterSeekTimeout;
+  unsigned int m_AfterSeekTimeout;
   bool m_playerSeeking;
   bool m_playerShowTime;
   bool m_playerShowCodec;
@@ -710,6 +708,7 @@ protected:
  */
 extern CGUIInfoManager g_infoManager;
 #endif
+
 
 
 

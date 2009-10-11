@@ -262,9 +262,9 @@ int CMusicInfoTagLoaderMP4::GetILSTOffset( const char* pBuffer, int bufferSize )
 //
 // I hope to make this particular function more readable/structured when time permits.
 
-int CMusicInfoTagLoaderMP4::ParseAtom( __int64 startOffset, __int64 stopOffset, CMusicInfoTag& tag )
+int CMusicInfoTagLoaderMP4::ParseAtom( int64_t startOffset, int64_t stopOffset, CMusicInfoTag& tag )
 {
-  __int64       currentOffset;
+  int64_t       currentOffset;
   int           atomSize;
   unsigned int  atomName;
   char          atomHeader[ 10 ];
@@ -384,8 +384,7 @@ bool CMusicInfoTagLoaderMP4::Load(const CStdString& strFileName, CMusicInfoTag& 
         strCoverArt = CUtil::GetCachedMusicThumb(tag.GetURL());
       if (!CUtil::ThumbExists(strCoverArt))
       {
-        CPicture pic;
-        if (pic.CreateThumbnailFromMemory( m_thumbData, m_thumbSize, "", strCoverArt ) )
+        if (CPicture::CreateThumbnailFromMemory( m_thumbData, m_thumbSize, "", strCoverArt ) )
         {
           CUtil::ThumbCacheAdd( strCoverArt, true );
         }

@@ -106,7 +106,7 @@ bool CWinSystemX11::CreateNewWindow(const CStdString& name, bool fullScreen, RES
   CTexture iconTexture;
   iconTexture.LoadFromFile("special://xbmc/media/icon.png");
     
-  SDL_WM_SetIcon(SDL_CreateRGBSurfaceFrom(iconTexture.GetPixels(), iconTexture.GetWidth(), iconTexture.GetHeight(), iconTexture.GetBPP(), iconTexture.GetPitch(), 0xff0000, 0x00ff00, 0x0000ff, 0xff000000L), NULL);
+  SDL_WM_SetIcon(SDL_CreateRGBSurfaceFrom(iconTexture.GetPixels(), iconTexture.GetWidth(), iconTexture.GetHeight(), 32, iconTexture.GetPitch(), 0xff0000, 0x00ff00, 0x0000ff, 0xff000000L), NULL);
   SDL_WM_SetCaption("XBMC Media Center", NULL);
 
   m_bWindowCreated = true;
@@ -276,6 +276,7 @@ bool CWinSystemX11::RefreshGlxContext()
   XVisualInfo *vInfo      = NULL;
   int availableFBs        = 0;
   m_glWindow = info.info.x11.window;
+  m_wmWindow = info.info.x11.wmwindow;
 
   // query compatible framebuffers based on double buffered attributes
   if (!(fbConfigs = glXChooseFBConfig(m_dpy, DefaultScreen(m_dpy), doubleVisAttributes, &availableFBs)))
@@ -322,4 +323,35 @@ bool CWinSystemX11::RefreshGlxContext()
   return retVal;
 }
 
+
+void CWinSystemX11::NotifyAppActiveChange(bool bActivated)
+{
+  if (bActivated && m_bWasFullScreenBeforeMinimize && !g_graphicsContext.IsFullScreenRoot())
+    g_graphicsContext.ToggleFullScreenRoot();
+}
+bool CWinSystemX11::Minimize()
+{
+  m_bWasFullScreenBeforeMinimize = g_graphicsContext.IsFullScreenRoot();
+  if (m_bWasFullScreenBeforeMinimize)
+    g_graphicsContext.ToggleFullScreenRoot();
+
+  SDL_WM_IconifyWindow();
+  return true;
+}
+bool CWinSystemX11::Restore()
+{
+  return false;
+}
+bool CWinSystemX11::Hide()
+{
+  XUnmapWindow(m_dpy, m_wmWindow);
+  XSync(m_dpy, False);
+  return true;
+}
+bool CWinSystemX11::Show(bool raise)
+{
+  XMapWindow(m_dpy, m_wmWindow);
+  XSync(m_dpy, False);
+  return true;
+}
 #endif

@@ -89,7 +89,7 @@ bool CProgramDatabase::UpdateOldVersion(int version)
   return true;
 }
 
-DWORD CProgramDatabase::GetTitleId(const CStdString& strFilenameAndPath)
+uint32_t CProgramDatabase::GetTitleId(const CStdString& strFilenameAndPath)
 {
   if (NULL == m_pDB.get()) return 0;
   if (NULL == m_pDS.get()) return 0;
@@ -106,7 +106,7 @@ DWORD CProgramDatabase::GetTitleId(const CStdString& strFilenameAndPath)
       m_pDS->close();
       return 0;
     }
-    DWORD dwTitleId = m_pDS->fv("files.TitleId").get_asLong();
+    uint32_t dwTitleId = m_pDS->fv("files.TitleId").get_asInt();
     m_pDS->close();
     return dwTitleId;
   }
@@ -117,7 +117,7 @@ DWORD CProgramDatabase::GetTitleId(const CStdString& strFilenameAndPath)
   return 0;
 }
 
-bool CProgramDatabase::SetTitleId(const CStdString& strFileName, DWORD dwTitleId)
+bool CProgramDatabase::SetTitleId(const CStdString& strFileName, uint32_t dwTitleId)
 {
   try
   {
@@ -132,7 +132,7 @@ bool CProgramDatabase::SetTitleId(const CStdString& strFileName, DWORD dwTitleId
       m_pDS->close();
       return false;
     }
-    int idFile = m_pDS->fv("files.idFile").get_asLong();
+    int idFile = m_pDS->fv("files.idFile").get_asInt();
     m_pDS->close();
 
     CLog::Log(LOGDEBUG, "CProgramDatabase::SetTitle(%s), idFile=%i, region=%u",
@@ -151,7 +151,7 @@ bool CProgramDatabase::SetTitleId(const CStdString& strFileName, DWORD dwTitleId
   return false;
 }
 
-bool CProgramDatabase::GetXBEPathByTitleId(const DWORD titleId, CStdString& strPathAndFilename)
+bool CProgramDatabase::GetXBEPathByTitleId(const uint32_t titleId, CStdString& strPathAndFilename)
 {
   try
   {
@@ -178,9 +178,9 @@ bool CProgramDatabase::GetXBEPathByTitleId(const DWORD titleId, CStdString& strP
   return false;
 }
 
-DWORD CProgramDatabase::GetProgramInfo(CFileItem *item)
+uint32_t CProgramDatabase::GetProgramInfo(CFileItem *item)
 {
-  DWORD titleID = 0;
+  uint32_t titleID = 0;
   try
   {
     if (NULL == m_pDB.get()) return false;
@@ -192,16 +192,16 @@ DWORD CProgramDatabase::GetProgramInfo(CFileItem *item)
     { // get info - only set the label if not preformatted
       if (!item->IsLabelPreformated())
         item->SetLabel(m_pDS->fv("xbedescription").get_asString());
-      item->m_iprogramCount = m_pDS->fv("iTimesPlayed").get_asLong();
+      item->m_iprogramCount = m_pDS->fv("iTimesPlayed").get_asInt();
       item->m_strTitle = item->GetLabel();  // is this needed?
       item->m_dateTime = TimeStampToLocalTime(_atoi64(m_pDS->fv("lastAccessed").get_asString().c_str()));
       item->m_dwSize = _atoi64(m_pDS->fv("iSize").get_asString().c_str());
-      titleID = m_pDS->fv("titleId").get_asLong();
+      titleID = m_pDS->fv("titleId").get_asInt();
       if (item->m_dwSize == -1)
       {
         CStdString strPath;
         CUtil::GetDirectory(item->m_strPath,strPath);
-        __int64 iSize = CGUIWindowFileManager::CalculateFolderSize(strPath);
+        int64_t iSize = CGUIWindowFileManager::CalculateFolderSize(strPath);
         CStdString strSQL=FormatSQL("update files set iSize=%I64u where strFileName like '%s'",iSize,item->m_strPath.c_str());
         m_pDS->exec(strSQL.c_str());
       }
@@ -240,7 +240,7 @@ bool CProgramDatabase::AddProgramInfo(CFileItem *item, unsigned int titleID)
     // special case - programs in root of sources
     bool bIsShare=false;
     CUtil::GetMatchingSource(strPath,g_settings.m_programSources,bIsShare);
-    __int64 iSize=0;
+    int64_t iSize=0;
     if (bIsShare || !item->IsDefaultXBE())
     {
       struct __stat64 stat;
@@ -262,7 +262,7 @@ bool CProgramDatabase::AddProgramInfo(CFileItem *item, unsigned int titleID)
   return true;
 }
 
-FILETIME CProgramDatabase::TimeStampToLocalTime( unsigned __int64 timeStamp )
+FILETIME CProgramDatabase::TimeStampToLocalTime(uint64_t timeStamp )
 {
   FILETIME fileTime;
   ::FileTimeToLocalFileTime( (const FILETIME *)&timeStamp, &fileTime);
@@ -284,8 +284,8 @@ bool CProgramDatabase::IncTimesPlayed(const CStdString& strFileName)
       m_pDS->close();
       return false;
     }
-    int idFile = m_pDS->fv("files.idFile").get_asLong();
-    int iTimesPlayed = m_pDS->fv("files.iTimesPlayed").get_asLong();
+    int idFile = m_pDS->fv("files.idFile").get_asInt();
+    int iTimesPlayed = m_pDS->fv("files.iTimesPlayed").get_asInt();
     m_pDS->close();
 
     CLog::Log(LOGDEBUG, "CProgramDatabase::IncTimesPlayed(%s), idFile=%i, iTimesPlayed=%i",
@@ -319,7 +319,7 @@ bool CProgramDatabase::SetDescription(const CStdString& strFileName, const CStdS
       m_pDS->close();
       return false;
     }
-    int idFile = m_pDS->fv("files.idFile").get_asLong();
+    int idFile = m_pDS->fv("files.idFile").get_asInt();
     m_pDS->close();
 
     CLog::Log(LOGDEBUG, "CProgramDatabase::SetDescription(%s), idFile=%i, description=%s",

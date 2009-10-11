@@ -26,6 +26,10 @@
 #include "Util.h"
 #include "utils/log.h"
 #include "utils/SingleLock.h"
+#include "utils/TimeUtils.h"
+#ifdef _WIN32
+#include "PlatformDefs.h" //for PRIdS, PRId64
+#endif
 
 namespace XFILE {
 
@@ -148,14 +152,14 @@ int CSimpleFileCache::WriteToCache(const char *pBuffer, size_t iSize)
   return iWritten;
 }
 
-__int64 CSimpleFileCache::GetAvailableRead()
+int64_t CSimpleFileCache::GetAvailableRead()
 {
   return m_nWritePosition - m_nReadPosition;
 }
 
 int CSimpleFileCache::ReadFromCache(char *pBuffer, size_t iMaxSize)
 {
-  __int64 iAvailable = GetAvailableRead();
+  int64_t iAvailable = GetAvailableRead();
   if ( iAvailable <= 0 ) {
     return m_bEndOfInput?CACHE_RC_EOF : CACHE_RC_WOULD_BLOCK;
   }
@@ -172,21 +176,21 @@ int CSimpleFileCache::ReadFromCache(char *pBuffer, size_t iMaxSize)
   return iRead;
 }
 
-__int64 CSimpleFileCache::WaitForData(unsigned int iMinAvail, unsigned int iMillis)
+int64_t CSimpleFileCache::WaitForData(unsigned int iMinAvail, unsigned int iMillis)
 {
   if( iMillis == 0 || IsEndOfInput() )
     return GetAvailableRead();
 
-  DWORD dwTimeout = GetTickCount() + iMillis;
-  DWORD dwTime;
-  while ( !IsEndOfInput() && (dwTime = GetTickCount()) < dwTimeout )
+  unsigned int timeout = CTimeUtils::GetTimeMS() + iMillis;
+  unsigned int time;
+  while ( !IsEndOfInput() && (time = CTimeUtils::GetTimeMS()) < timeout )
   {
-    __int64 iAvail = GetAvailableRead();
+    int64_t iAvail = GetAvailableRead();
     if (iAvail >= iMinAvail)
       return iAvail;
 
     // busy look (sleep max 1 sec each round)
-    DWORD dwRc = WaitForSingleObject(m_hDataAvailEvent, (dwTimeout - dwTime)>1000?(dwTimeout - dwTime):1000 );
+    DWORD dwRc = WaitForSingleObject(m_hDataAvailEvent, (timeout - time)>1000?(timeout - time):1000 );
     if (dwRc == WAIT_FAILED || dwRc == WAIT_ABANDONED)
       return CACHE_RC_ERROR;
   }
@@ -197,12 +201,12 @@ __int64 CSimpleFileCache::WaitForData(unsigned int iMinAvail, unsigned int iMill
   return CACHE_RC_TIMEOUT;
 }
 
-__int64 CSimpleFileCache::Seek(__int64 iFilePosition, int iWhence)
+int64_t CSimpleFileCache::Seek(int64_t iFilePosition, int iWhence)
 {
 
   CLog::Log(LOGDEBUG,"CSimpleFileCache::Seek, seeking to %"PRId64, iFilePosition);
 
-  __int64 iTarget = iFilePosition - m_nStartPosition;
+  int64_t iTarget = iFilePosition - m_nStartPosition;
   if (SEEK_END == iWhence)
   {
     CLog::Log(LOGERROR,"%s, cant seek relative to end", __FUNCTION__);
@@ -217,7 +221,7 @@ __int64 CSimpleFileCache::Seek(__int64 iFilePosition, int iWhence)
     return CACHE_RC_ERROR;
   }
 
-  __int64 nDiff = iTarget - m_nWritePosition;
+  int64_t nDiff = iTarget - m_nWritePosition;
   if ( nDiff > 500000 || (nDiff > 0 && WaitForData((unsigned int)nDiff, 5000) == CACHE_RC_TIMEOUT)  ) {
     CLog::Log(LOGWARNING,"%s - attempt to seek pass read data (seek to %"PRId64". max: %"PRId64". reset read pointer. (%"PRId64":%d)", __FUNCTION__, iTarget, m_nWritePosition, iFilePosition, iWhence);
     return  CACHE_RC_ERROR;
@@ -234,7 +238,7 @@ __int64 CSimpleFileCache::Seek(__int64 iFilePosition, int iWhence)
   return pos.QuadPart;
 }
 
-void CSimpleFileCache::Reset(__int64 iSourcePosition)
+void CSimpleFileCache::Reset(int64_t iSourcePosition)
 {
   LARGE_INTEGER pos;
   pos.QuadPart = 0;

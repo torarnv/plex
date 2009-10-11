@@ -165,7 +165,7 @@ bool CGUIWindowFileManager::OnAction(const CAction &action)
     if (action.id == ACTION_PARENT_DIR)
     {
       if (m_vecItems[list]->IsVirtualDirectoryRoot())
-        m_gWindowManager.PreviousWindow();
+        g_windowManager.PreviousWindow();
       else
         GoParentFolder(list);
       return true;
@@ -180,7 +180,7 @@ bool CGUIWindowFileManager::OnAction(const CAction &action)
   }
   if (action.id == ACTION_PREVIOUS_MENU)
   {
-    m_gWindowManager.PreviousWindow();
+    g_windowManager.PreviousWindow();
     return true;
   }
   return CGUIWindow::OnAction(action);
@@ -273,7 +273,7 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
           {
             //move to next item
             CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), iControl, iItem + 1);
-            g_graphicsContext.SendMessage(msg);
+            g_windowManager.SendMessage(msg);
           }
         }
         else if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_DOUBLE_CLICK)
@@ -333,7 +333,7 @@ void CGUIWindowFileManager::OnSort(int iList)
 void CGUIWindowFileManager::ClearFileItems(int iList)
 {
   CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), iList + CONTROL_LEFT_LIST);
-  g_graphicsContext.SendMessage(msg);
+  g_windowManager.SendMessage(msg);
 
   m_vecItems[iList]->Clear(); // will clean up everything
 }
@@ -362,12 +362,12 @@ void CGUIWindowFileManager::UpdateButtons()
    if (bSortOrder)
     {
       CGUIMessage msg(GUI_MSG_DESELECTED,GetID(), CONTROL_BTNSORTASC);
-      g_graphicsContext.SendMessage(msg);
+      g_windowManager.SendMessage(msg);
     }
     else
     {
       CGUIMessage msg(GUI_MSG_SELECTED,GetID(), CONTROL_BTNSORTASC);
-      g_graphicsContext.SendMessage(msg);
+      g_windowManager.SendMessage(msg);
     }
 
   */
@@ -402,8 +402,8 @@ void CGUIWindowFileManager::UpdateItemCounts()
   {
     unsigned int selectedCount = 0;
     unsigned int totalCount = 0;
-    __int64 selectedSize = 0;
-    __int64 totalSize = 0;
+    int64_t selectedSize = 0;
+    int64_t totalSize = 0;
     for (int j = 0; j < m_vecItems[i]->Size(); j++)
     {
       CFileItemPtr item = m_vecItems[i]->Get(j);
@@ -603,7 +603,7 @@ void CGUIWindowFileManager::OnStart(CFileItem *pItem)
     CUtil::RunShortcut(pItem->m_strPath);
   if (pItem->IsPicture())
   {
-    CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
+    CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
     if (!pSlideShow)
       return ;
     if (g_application.IsPlayingVideo())
@@ -613,7 +613,7 @@ void CGUIWindowFileManager::OnStart(CFileItem *pItem)
     pSlideShow->Add(pItem);
     pSlideShow->Select(pItem->m_strPath);
 
-    m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
+    g_windowManager.ActivateWindow(WINDOW_SLIDESHOW);
   }
 }
 
@@ -648,7 +648,7 @@ bool CGUIWindowFileManager::HaveDiscOrConnection( CStdString& strPath, int iDriv
 void CGUIWindowFileManager::UpdateControl(int iList, int item)
 {
   CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), iList + CONTROL_LEFT_LIST, item, 0, m_vecItems[iList]);
-  g_graphicsContext.SendMessage(msg);
+  g_windowManager.SendMessage(msg);
 }
 
 void CGUIWindowFileManager::OnMark(int iList, int iItem)
@@ -1056,9 +1056,6 @@ void CGUIWindowFileManager::GoParentFolder(int iList)
 
   CStdString strPath(m_strParentPath[iList]), strOldPath(m_Directory[iList]->m_strPath);
   Update(iList, strPath);
-
-  if (!g_guiSettings.GetBool("filelists.fulldirectoryhistory"))
-    m_history[iList].RemoveSelectedItem(strOldPath); //Delete current path
 }
 
 void CGUIWindowFileManager::Render()
@@ -1271,7 +1268,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
     return ;
   }
   // popup the context menu
-  CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
+  CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)g_windowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
   if (pMenu)
   {
     bool showEntry = false;
@@ -1350,7 +1347,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
     if (btnid == btn_Size)
     {
       // setup the progress dialog, and show it
-      CGUIDialogProgress *progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+      CGUIDialogProgress *progress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
       if (progress)
       {
         progress->SetHeading(13394);
@@ -1365,7 +1362,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
         CFileItemPtr pItem2=m_vecItems[list]->Get(i);
         if (pItem2->m_bIsFolder && pItem2->IsSelected())
         {
-          __int64 folderSize = CalculateFolderSize(pItem2->m_strPath, progress);
+          int64_t folderSize = CalculateFolderSize(pItem2->m_strPath, progress);
           if (folderSize >= 0)
           {
             pItem2->m_dwSize = folderSize;
@@ -1381,7 +1378,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
     }
     if (btnid == btn_Settings)
     {
-      m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MENU);
+      g_windowManager.ActivateWindow(WINDOW_SETTINGS_MENU);
       return;
     }
     if (btnid == btn_GoToRoot)
@@ -1419,7 +1416,7 @@ bool CGUIWindowFileManager::SelectItem(int list, int &item)
 }
 
 // recursively calculates the selected folder size
-__int64 CGUIWindowFileManager::CalculateFolderSize(const CStdString &strDirectory, CGUIDialogProgress *pProgress)
+int64_t CGUIWindowFileManager::CalculateFolderSize(const CStdString &strDirectory, CGUIDialogProgress *pProgress)
 {
   if (pProgress)
   { // update our progress control
@@ -1429,7 +1426,7 @@ __int64 CGUIWindowFileManager::CalculateFolderSize(const CStdString &strDirector
       return -1;
   }
   // start by calculating the size of the files in this folder...
-  __int64 totalSize = 0;
+  int64_t totalSize = 0;
   CFileItemList items;
   CVirtualDirectory rootDir;
   rootDir.SetSources(g_settings.m_fileSources);
@@ -1438,7 +1435,7 @@ __int64 CGUIWindowFileManager::CalculateFolderSize(const CStdString &strDirector
   {
     if (items[i]->m_bIsFolder && !items[i]->IsParentFolder()) // folder
     {
-      __int64 folderSize = CalculateFolderSize(items[i]->m_strPath, pProgress);
+      int64_t folderSize = CalculateFolderSize(items[i]->m_strPath, pProgress);
       if (folderSize < 0) return -1;
       totalSize += folderSize;
     }
@@ -1454,7 +1451,7 @@ bool CGUIWindowFileManager::DeleteItem(const CFileItem *pItem)
   CLog::Log(LOGDEBUG,"FileManager::DeleteItem: %s",pItem->GetLabel().c_str());
 
   // prompt user for confirmation of file/folder deletion
-  CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+  CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
   if (pDialog)
   {
     pDialog->SetHeading(122);
@@ -1473,10 +1470,10 @@ bool CGUIWindowFileManager::DeleteItem(const CFileItem *pItem)
 
   // grab the real filemanager window, set up the progress bar,
   // and process the delete action
-  CGUIWindowFileManager *pFileManager = (CGUIWindowFileManager *)m_gWindowManager.GetWindow(WINDOW_FILES);
+  CGUIWindowFileManager *pFileManager = (CGUIWindowFileManager *)g_windowManager.GetWindow(WINDOW_FILES);
   if (pFileManager)
   {
-    pFileManager->m_dlgProgress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+    pFileManager->m_dlgProgress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     pFileManager->ResetProgressBar(false);
     pFileManager->DoProcess(ACTION_DELETE, items, "");
     if (pFileManager->m_dlgProgress) pFileManager->m_dlgProgress->Close();
@@ -1511,7 +1508,7 @@ bool CGUIWindowFileManager::CopyItem(const CFileItem *pItem, const CStdString& s
   }
 
   bool bAllocated = false;
-  CGUIWindowFileManager *pFileManager = (CGUIWindowFileManager *)m_gWindowManager.GetWindow(WINDOW_FILES);
+  CGUIWindowFileManager *pFileManager = (CGUIWindowFileManager *)g_windowManager.GetWindow(WINDOW_FILES);
   if (!pFileManager)
   {
     pFileManager = new CGUIWindowFileManager();
@@ -1554,7 +1551,7 @@ void CGUIWindowFileManager::ShowShareErrorMessage(CFileItem* pItem)
 
 void CGUIWindowFileManager::OnInitWindow()
 {
-  m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  m_dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
   if (m_dlgProgress) m_dlgProgress->SetHeading(126);
 
   for (int i = 0; i < 2; i++)
@@ -1677,7 +1674,7 @@ bool CGUIWindowFileManager::MoveItem(const CFileItem *pItem, const CStdString& s
   }
 
   bool bAllocated = false;
-  CGUIWindowFileManager *pFileManager = (CGUIWindowFileManager *)m_gWindowManager.GetWindow(WINDOW_FILES);
+  CGUIWindowFileManager *pFileManager = (CGUIWindowFileManager *)g_windowManager.GetWindow(WINDOW_FILES);
   if (!pFileManager)
   {
     pFileManager = new CGUIWindowFileManager();

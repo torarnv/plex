@@ -43,17 +43,18 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="&quot;..\..\xbmc\lib\libSDL-WIN32\include&quot;;..\..\xbmc\Win32;..\..\xbmc\;..\..\guilib\freetype2\include;..\..\xbmc\lib\boost;..\..\guilib;..\..\xbmc\utils;..\..\guilib\common\;..\..\xbmc\lib\libglew\"
+				AdditionalIncludeDirectories="&quot;..\..\lib\libSDL-WIN32\include&quot;;..\..\xbmc\Win32;..\..\xbmc\;..\..\lib\freetype\include;..\..\lib\freetype\include\freetype2;..\..\xbmc\lib\boost;..\..\guilib;..\..\xbmc\utils;..\..\guilib\common\;..\..\xbmc\lib\libglew\"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_MSVC;NOMINMAX;_USE_32BIT_TIME_T;HAS_GL"
 				MinimalRebuild="false"
 				RuntimeLibrary="0"
 				EnableEnhancedInstructionSet="1"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderThrough=""
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="pch.h"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="0"
 				DisableSpecificWarnings="4996"
+				ForcedIncludeFiles="pch.h"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -115,7 +116,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/EHa"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;..\..\xbmc\lib\libSDL-WIN32\include&quot;;..\..\xbmc\Win32;..\..\xbmc\;..\..\guilib\freetype2\include;..\..\xbmc\lib\boost;..\..\guilib;..\..\xbmc\utils;..\..\guilib\common\"
+				AdditionalIncludeDirectories="&quot;..\..\lib\libSDL-WIN32\include&quot;;..\..\xbmc\Win32;..\..\xbmc\;..\..\lib\freetype\include\freetype2;..\..\lib\freetype\include;..\..\xbmc\lib\boost;..\..\guilib;..\..\xbmc\utils;..\..\guilib\common\"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_MSVC;NOMINMAX;_USE_32BIT_TIME_T;HAS_DX"
 				StringPooling="false"
 				MinimalRebuild="true"
@@ -123,12 +124,13 @@
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
 				EnableEnhancedInstructionSet="0"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderThrough=""
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="pch.h"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="4"
 				DisableSpecificWarnings="4996"
+				ForcedIncludeFiles="pch.h"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -187,17 +189,18 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="&quot;..\..\xbmc\lib\libSDL-WIN32\include&quot;;..\..\xbmc\Win32;..\..\xbmc\;..\..\guilib\freetype2\include;..\..\xbmc\lib\boost;..\..\guilib;..\..\xbmc\utils;..\..\guilib\common\"
+				AdditionalIncludeDirectories="&quot;..\..\lib\libSDL-WIN32\include&quot;;..\..\xbmc\Win32;..\..\xbmc\;..\..\lib\freetype\include;..\..\lib\freetype\include\freetype2;..\..\xbmc\lib\boost;..\..\guilib;..\..\xbmc\utils;..\..\guilib\common\"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_MSVC;NOMINMAX;_USE_32BIT_TIME_T;HAS_DX"
 				MinimalRebuild="false"
 				RuntimeLibrary="0"
 				EnableEnhancedInstructionSet="1"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderThrough=""
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="pch.h"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="0"
 				DisableSpecificWarnings="4996"
+				ForcedIncludeFiles="pch.h"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -259,7 +262,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/EHa"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;..\..\xbmc\lib\libSDL-WIN32\include&quot;;..\..\xbmc\Win32;..\..\xbmc\;..\..\guilib\freetype2\include;..\..\xbmc\lib\boost;..\..\guilib;..\..\xbmc\utils;..\..\guilib\common\;..\..\xbmc\lib\libglew\"
+				AdditionalIncludeDirectories="&quot;..\..\lib\libSDL-WIN32\include&quot;;..\..\xbmc\Win32;..\..\xbmc\;..\..\lib\freetype\include;..\..\lib\freetype\include\freetype2;..\..\xbmc\lib\boost;..\..\guilib;..\..\xbmc\utils;..\..\guilib\common\;..\..\xbmc\lib\libglew\"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_MSVC;NOMINMAX;_USE_32BIT_TIME_T;HAS_GL"
 				StringPooling="false"
 				MinimalRebuild="true"
@@ -267,12 +270,13 @@
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
 				EnableEnhancedInstructionSet="0"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderThrough=""
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="pch.h"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="4"
 				DisableSpecificWarnings="4996"
+				ForcedIncludeFiles="pch.h"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -322,6 +326,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\guilib\DDSImage.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\guilib\DirectXGraphics.cpp"
 				>
 			</File>
@@ -362,7 +370,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\guilib\GuiControlFactory.cpp"
+				RelativePath="..\..\guilib\GUIControlFactory.cpp"
 				>
 			</File>
 			<File
@@ -402,7 +410,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\guilib\guiImage.cpp"
+				RelativePath="..\..\guilib\GUIImage.cpp"
 				>
 			</File>
 			<File
@@ -410,7 +418,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\guilib\GUIInfoColor.cpp"
+				RelativePath="..\..\guilib\GUIInfoTypes.cpp"
 				>
 			</File>
 			<File
@@ -550,6 +558,42 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\xbmc\win32\pch.cpp"
+				>
+				<FileConfiguration
+					Name="Release (OpenGL)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug (DirectX)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (DirectX)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug (OpenGL)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath="..\..\guilib\Shader.cpp"
 				>
 			</File>
@@ -559,6 +603,22 @@
 			</File>
 			<File
 				RelativePath="..\..\guilib\TextureBundle.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\guilib\TextureBundleXBT.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\guilib\TextureBundleXBT.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\guilib\TextureBundleXPR.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\guilib\TextureBundleXPR.h"
 				>
 			</File>
 			<File
@@ -618,6 +678,22 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\guilib\XBTF.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\guilib\XBTF.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\guilib\XBTFReader.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\guilib\XBTFReader.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\guilib\XMLUtils.cpp"
 				>
 			</File>
@@ -633,6 +709,10 @@
 			</File>
 			<File
 				RelativePath="..\..\guilib\AudioContext.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\guilib\DDSImage.h"
 				>
 			</File>
 			<File
@@ -688,7 +768,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\guilib\GuiControlFactory.h"
+				RelativePath="..\..\guilib\GUIControlFactory.h"
 				>
 			</File>
 			<File
@@ -728,7 +808,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\guilib\guiImage.h"
+				RelativePath="..\..\guilib\GUIImage.h"
 				>
 			</File>
 			<File
@@ -736,7 +816,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\guilib\GUIInfoColor.h"
+				RelativePath="..\..\guilib\GUIInfoTypes.h"
 				>
 			</File>
 			<File
@@ -868,10 +948,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\guilib\IMsgSenderCallback.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\guilib\IMsgTargetCallback.h"
 				>
 			</File>
@@ -888,6 +964,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\xbmc\win32\pch.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\xbmc\win32\PlatformInclude.h"
 				>
 				<FileConfiguration
@@ -895,7 +975,7 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="update_svn_rev.bat"
+						CommandLine="update_svn_rev.bat&#x0D;&#x0A;"
 						AdditionalDependencies="..\..\svn\entries"
 						Outputs="..\..\xbmc\win32\svn_rev.h"
 					/>
@@ -1244,18 +1324,6 @@
 				</File>
 				<File
 					RelativePath="..\..\guilib\TextureGL.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="SDL"
-				>
-				<File
-					RelativePath="..\..\guilib\GUITextureSDL.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\guilib\GUITextureSDL.h"
 					>
 				</File>
 			</Filter>

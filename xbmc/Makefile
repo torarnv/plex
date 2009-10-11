@@ -1,11 +1,12 @@
-INCLUDES+=-I. -Ilinux -Icores -I../guilib -Iutils -IFileSystem
+INCLUDES+=-I. -Ilinux -Icores -I../guilib -Iutils -IFileSystem -I/usr/include/freetype2 -Icores/dvdplayer -Icores/ffmpeg
 
-INCLUDES+=-Ilib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core \
-          -Ilib/libUPnP/Platinum/Source/Core \
+INCLUDES+=-Ilib/libUPnP/Platinum/Source/Core \
+          -Ilib/libUPnP/Platinum/Source/Platinum \
           -Ilib/libUPnP/Platinum/Source/Devices/MediaServer \
-          -Ilib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/Posix \
           -Ilib/libUPnP/Platinum/Source/Devices/MediaConnect \
           -Ilib/libUPnP/Platinum/Source/Devices/MediaRenderer \
+          -Ilib/libUPnP/Neptune/Source/System/Posix \
+          -Ilib/libUPnP/Neptune/Source/Core
 
 INCLUDES+=-Ilib/libcdio/libcdio/include
 
@@ -133,6 +134,7 @@ SRCS=Application.cpp \
      GUIDialogSelect.cpp \
      GUIDialogSettings.cpp \
      GUIDialogSubMenu.cpp \
+     GUIDialogTeletext.cpp \
      GUIDialogVideoBookmarks.cpp \
      GUIDialogVideoSettings.cpp \
      GUIDialogVisualisationPresetList.cpp \
@@ -181,7 +183,6 @@ SRCS=Application.cpp \
      GUILargeTextureManager.cpp \
      GUIDialogKaiToast.cpp \
      KeyboardLayoutConfiguration.cpp \
-     Edl.cpp \
      GUIDialogPluginSettings.cpp \
      PluginSettings.cpp \
      GUIDialogAccessPoints.cpp \
@@ -207,8 +208,6 @@ SRCS=Application.cpp \
      KeyboardStat.cpp \
      MouseStat.cpp \
      WinSystem.cpp \
-     WinSystemOSX.cpp \
-     WinSystemOSXGL.cpp \
      WinSystemX11.cpp \
      WinSystemX11GL.cpp \
      WinEventsSDL.cpp \

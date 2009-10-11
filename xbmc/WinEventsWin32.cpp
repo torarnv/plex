@@ -22,10 +22,12 @@
 #include "utils/log.h"
 #include "Windowsx.h"
 #include "WinEvents.h"
+#include "WIN32Util.h"
 #include "Application.h"
 #include "XBMC_vkeys.h"
 #include "MouseStat.h"
 #include "MediaManager.h"
+#include "WindowingFactory.h"
 #include <dbt.h>
 #include "LocalizeStrings.h"
 
@@ -40,7 +42,7 @@ static XBMCKey VK_keymap[XBMCK_LAST];
 static HKL hLayoutUS = NULL;
 static XBMCKey Arrows_keymap[4];
 
-UINT g_uQueryCancelAutoPlay = 0;
+uint32_t g_uQueryCancelAutoPlay = 0;
 
 int XBMC_TranslateUNICODE = 1;
 
@@ -248,8 +250,8 @@ static XBMC_keysym *TranslateKey(WPARAM vkey, UINT scancode, XBMC_keysym *keysym
 
   if ( pressed && XBMC_TranslateUNICODE ) {
 
-    BYTE	keystate[256];
-    Uint16	wchars[2];
+    uint8_t   keystate[256];
+    uint16_t  wchars[2];
 
     GetKeyboardState(keystate);
     /* Numlock isn't taken into account in ToUnicode,
@@ -306,32 +308,52 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       m_pEventFunc(newEvent);
       break;
     case WM_SHOWWINDOW:
-      g_application.m_AppActive = wParam != 0;
-      CLog::Log(LOGDEBUG, __FUNCTION__"Window is %s", g_application.m_AppActive ? "shown" : "hidden");
+      {
+        bool active = g_application.m_AppActive;
+        g_application.m_AppActive = wParam != 0;
+        if (g_application.m_AppActive != active)
+          g_Windowing.NotifyAppActiveChange(g_application.m_AppActive);
+        CLog::Log(LOGDEBUG, __FUNCTION__"Window is %s", g_application.m_AppActive ? "shown" : "hidden");
+      }
       break;
     case WM_ACTIVATE:
-      if (HIWORD(wParam))
       {
-        g_application.m_AppActive = false;
-      }
-      else
-      {
-        WINDOWPLACEMENT lpwndpl;
-        lpwndpl.length = sizeof(lpwndpl);
-        if (LOWORD(wParam) != WA_INACTIVE && GetWindowPlacement(hWnd, &lpwndpl))
+        bool active = g_application.m_AppActive;
+        if (HIWORD(wParam))
         {
-          g_application.m_AppActive = lpwndpl.showCmd != SW_HIDE;
+          g_application.m_AppActive = false;
         }
+        else
+        {
+          WINDOWPLACEMENT lpwndpl;
+          lpwndpl.length = sizeof(lpwndpl);
+          if (LOWORD(wParam) != WA_INACTIVE && GetWindowPlacement(hWnd, &lpwndpl))
+          {
+            g_application.m_AppActive = lpwndpl.showCmd != SW_HIDE;
+          }
+        }
+        if (g_application.m_AppActive != active)
+          g_Windowing.NotifyAppActiveChange(g_application.m_AppActive);
+        CLog::Log(LOGDEBUG, __FUNCTION__"Window is %s", g_application.m_AppActive ? "active" : "inactive");
       }
-      CLog::Log(LOGDEBUG, __FUNCTION__"Window is %s", g_application.m_AppActive ? "active" : "inactive");
       break;
     case WM_SETFOCUS:
     case WM_KILLFOCUS:
       g_application.m_AppFocused = uMsg == WM_SETFOCUS;
       CLog::Log(LOGDEBUG, __FUNCTION__"Window %s focus", g_application.m_AppFocused ? "gained" : "lost");
-      g_graphicsContext.NotifyAppFocusChange(g_application.m_AppFocused);
+      g_Windowing.NotifyAppFocusChange(g_application.m_AppFocused);
       break;
     case WM_SYSKEYDOWN:
+      switch (wParam) 
+      {
+        case VK_F4: //alt-f4, default event quit.
+          return(DefWindowProc(hWnd, uMsg, wParam, lParam));
+        case VK_RETURN: //alt-return
+          if ((lParam & REPEATED_KEYMASK) == 0)
+            g_graphicsContext.ToggleFullScreenRoot();
+          return 0;
+      }
+      //deliberate fallthrough
     case WM_KEYDOWN: 
     {
       switch (wParam) 
@@ -354,10 +376,6 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
             wParam = VK_RMENU;
           else
             wParam = VK_LMENU;
-          break;
-        case VK_F4:
-          if (GetKeyState(VK_MENU) & 0x8000) //alt-f4, default event quit.
-            return(DefWindowProc(hWnd, uMsg, wParam, lParam));
           break;
       }
       XBMC_keysym keysym;
@@ -401,11 +419,18 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       XBMC_keysym keysym;
       TranslateKey(wParam, HIWORD(lParam), &keysym, 1);
 
-      newEvent.type = XBMC_KEYUP;
+      if (wParam == VK_SNAPSHOT)
+        newEvent.type = XBMC_KEYDOWN;
+      else
+        newEvent.type = XBMC_KEYUP;
       newEvent.key.keysym = keysym;
       m_pEventFunc(newEvent);
     }
     return(0);
+    case WM_SYSCHAR:
+      if (wParam == VK_RETURN) //stop system beep on alt-return
+        return 0;
+      break;
     case WM_MOUSEMOVE:
       newEvent.type = XBMC_MOUSEMOTION;
       newEvent.motion.x = GET_X_LPARAM(lParam);
@@ -451,8 +476,8 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
         point.x = GET_X_LPARAM(lParam);
         point.y = GET_Y_LPARAM(lParam);
         WindowFromScreenCoords(hWnd, &point);
-        newEvent.button.x = (Uint16)point.x;
-        newEvent.button.y = (Uint16)point.y;
+        newEvent.button.x = (uint16_t)point.x;
+        newEvent.button.y = (uint16_t)point.y;
         newEvent.button.button = GET_Y_LPARAM(wParam) > 0 ? XBMC_BUTTON_WHEELUP : XBMC_BUTTON_WHEELDOWN;
         m_pEventFunc(newEvent);
         newEvent.type = XBMC_MOUSEBUTTONUP;
@@ -545,42 +570,5 @@ void CWinEventsWin32::WindowFromScreenCoords(HWND hWnd, POINT *point)
   point->x -= windowPos.x;
   point->y -= windowPos.y;
 }
-
-/*
- * elis
- * need to implement for windows in new event model
- * 
-bool CXBApplicationEx::ProcessWin32Shortcuts(SDL_Event& event)
-{
-  static bool alt = false;
-  static CAction action;
-
-  alt = !!(SDL_GetModState() & (XBMCXBMCKMOD_LALT | XBMCXBMCKMOD_RALT));
-
-  if (event.key.type == SDL_KEYDOWN)
-  {
-    if(alt)
-    {
-      switch(event.key.keysym.sym)
-      {
-      case SDLK_F4:  // alt-F4 to quit
-        if (!g_application.m_bStop)
-          g_application.getApplicationMessenger().Quit();
-      case SDLK_RETURN:  // alt-Return to toggle fullscreen
-        {
-          action.id = ACTION_TOGGLE_FULLSCREEN;
-          g_application.OnAction(action);
-          return true;
-        }
-        return false;
-      default:
-        return false;
-      }
-    }
-  }
-  return false;
-}
-
-*/
 
 #endif

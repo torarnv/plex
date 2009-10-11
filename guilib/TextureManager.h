@@ -54,6 +54,7 @@ public:
   std::vector<int> m_delays;
   int m_width;
   int m_height;
+  int m_orientation;
   int m_loops;
   int m_texWidth;
   int m_texHeight;
@@ -80,7 +81,7 @@ public:
   const CStdString& GetName() const;
   const CTextureArray& GetTexture();
   void Dump() const;
-  DWORD GetMemoryUsage() const;
+  uint32_t GetMemoryUsage() const;
   void Flush();
   bool IsEmpty() const;
 protected:
@@ -89,7 +90,7 @@ protected:
   CStdString m_textureName;
   CTextureArray m_texture;
   unsigned int m_referenceCount;
-  DWORD m_memUsage;
+  uint32_t m_memUsage;
 };
 
 /*!
@@ -112,7 +113,7 @@ public:
   void ReleaseTexture(const CStdString& strTextureName);
   void Cleanup();
   void Dump() const;
-  DWORD GetMemoryUsage() const;
+  uint32_t GetMemoryUsage() const;
   void Flush();
   CStdString GetTexturePath(const CStdString& textureName, bool directory = false);
   void GetBundledTexturesFromPath(const CStdString& texturePath, std::vector<CStdString> &items);

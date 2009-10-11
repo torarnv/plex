@@ -42,6 +42,9 @@
 #include <fcntl.h>
 #include <time.h>
 #include <signal.h>
+#ifdef _LINUX
+#include "PlatformDefs.h" // for __stat64
+#endif
 #include "Util.h"
 #include "FileSystem/IDirectory.h"
 #include "FileSystem/FactoryDirectory.h"
@@ -998,7 +1001,7 @@ extern "C"
     {
       // it might be something else than a file, or the file is not emulated
       // let the operating system handle it
-#if __APPLE__
+#if defined(__APPLE__)
       return fseek(stream, offset, origin);
 #else
       return fseeko64(stream, offset, origin);

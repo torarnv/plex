@@ -25,6 +25,7 @@
 #include "Settings.h"
 #include "RenderSystemDX.h"
 #include "utils/log.h"
+#include "utils/TimeUtils.h"
 
 using namespace std;
 
@@ -55,7 +56,8 @@ bool CRenderSystemDX::InitRenderSystem()
 {
   m_bVSync = true;
   m_iVSyncMode = 0;
-  m_maxTextureSize = 8192;
+  m_renderCaps = 0;
+  D3DADAPTER_IDENTIFIER9 AIdentifier;
 
   m_pD3D = NULL;
 
@@ -64,7 +66,33 @@ bool CRenderSystemDX::InitRenderSystem()
     return false;
 
   CreateResources();
-  
+
+  if(m_pD3D->GetAdapterIdentifier(0, 0, &AIdentifier) == D3D_OK)
+    m_RenderRenderer = (const char*)AIdentifier.Description;
+
+  // get our render capabilities
+  D3DCAPS9 caps;
+  m_pD3DDevice->GetDeviceCaps(&caps);
+
+  if (SUCCEEDED(m_pD3D->CheckDeviceFormat( D3DADAPTER_DEFAULT,
+                                           D3DDEVTYPE_HAL,
+                                           D3DFMT_X8R8G8B8,
+                                           0,
+                                           D3DRTYPE_TEXTURE,
+                                           D3DFMT_DXT5 )))
+    m_renderCaps |= RENDER_CAPS_DXT;
+
+  if ((caps.TextureCaps & D3DPTEXTURECAPS_POW2) == 0)
+  { // we're allowed NPOT textures
+    m_renderCaps |= RENDER_CAPS_NPOT;
+    m_renderCaps |= RENDER_CAPS_DXT_NPOT;
+  }
+  else if ((caps.TextureCaps & D3DPTEXTURECAPS_NONPOW2CONDITIONAL))
+  { // we're allowed _some_ NPOT textures (namely non-DXT and only with D3DTADDRESS_CLAMP and no wrapping)
+    m_renderCaps |= RENDER_CAPS_NPOT;
+  }
+  m_maxTextureSize = min(caps.MaxTextureWidth, caps.MaxTextureHeight);
+
   return true;
 }
 
@@ -157,7 +185,7 @@ bool CRenderSystemDX::CreateDevice()
   m_D3DPP.hDeviceWindow			= m_hDeviceWnd;
   m_D3DPP.BackBufferWidth			= m_nBackBufferWidth;
   m_D3DPP.BackBufferHeight			= m_nBackBufferHeight;
-
+  m_D3DPP.Flags   =   D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
   if (m_bVSync)
   {
     m_D3DPP.PresentationInterval = D3DPRESENT_INTERVAL_ONE;
@@ -274,7 +302,7 @@ bool CRenderSystemDX::BeginRender()
       OnDeviceReset();
       if( FAILED(m_nDeviceStatus ) )
       {
-        CLog::Log(LOGINFO, "m_pD3DDevice->Reset falied");
+        CLog::Log(LOGINFO, "m_pD3DDevice->Reset failed");
         return false;
       }
     }
@@ -282,7 +310,7 @@ bool CRenderSystemDX::BeginRender()
 
   if(FAILED (m_pD3DDevice->BeginScene()))
   {
-    CLog::Log(LOGINFO, "m_pD3DDevice->EndScene() failed");
+    CLog::Log(LOGERROR, "m_pD3DDevice->BeginScene() failed");
     return false;
   }
 
@@ -299,14 +327,14 @@ bool CRenderSystemDX::EndRender()
 
   if(FAILED (m_pD3DDevice->EndScene()))
   {
-    CLog::Log(LOGINFO, "m_pD3DDevice->EndScene() falied");
+    CLog::Log(LOGERROR, "m_pD3DDevice->EndScene() failed");
     return false;
   }
 
   return true;
 }
 
-bool CRenderSystemDX::ClearBuffers(DWORD color)
+bool CRenderSystemDX::ClearBuffers(color_t color)
 {
    HRESULT hr;
 
@@ -412,7 +440,7 @@ bool CRenderSystemDX::TestRender()
   static DWORD lastTime = 0;
   static float delta = 0;
 
-  DWORD thisTime = timeGetTime();
+  DWORD thisTime = CTimeUtils::GetTimeMS();
 
   if(thisTime - lastTime > 10)
   {

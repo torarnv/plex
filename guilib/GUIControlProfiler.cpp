@@ -21,11 +21,12 @@
 
 #include "GUIControlProfiler.h"
 #include "tinyXML/tinyxml.h"
+#include "utils/TimeUtils.h"
 
 bool CGUIControlProfiler::m_bIsRunning = false;
 
 CGUIControlProfilerItem::CGUIControlProfilerItem(CGUIControlProfiler *pProfiler, CGUIControlProfilerItem *pParent, CGUIControl *pControl)
-: m_pProfiler(pProfiler), m_pParent(pParent), m_pControl(pControl), m_dwVisTime(0), m_dwRenderTime(0)
+: m_pProfiler(pProfiler), m_pParent(pParent), m_pControl(pControl), m_visTime(0), m_renderTime(0)
 {
   if (m_pControl)
   {
@@ -51,8 +52,8 @@ void CGUIControlProfilerItem::Reset(CGUIControlProfiler *pProfiler)
   m_ControlType = CGUIControl::GUICONTROL_UNKNOWN;
   m_pControl = NULL;
 
-  m_dwVisTime = 0;
-  m_dwRenderTime = 0;
+  m_visTime = 0;
+  m_renderTime = 0;
   const unsigned int dwSize = m_vecChildren.size();
   for (unsigned int i=0; i<dwSize; ++i)
     delete m_vecChildren[i];
@@ -63,26 +64,22 @@ void CGUIControlProfilerItem::Reset(CGUIControlProfiler *pProfiler)
 
 void CGUIControlProfilerItem::BeginVisibility(void)
 {
-  QueryPerformanceCounter(&m_i64VisStart);
+  m_i64VisStart = CurrentHostCounter();
 }
 
 void CGUIControlProfilerItem::EndVisibility(void)
 {
-  LARGE_INTEGER t2;
-  QueryPerformanceCounter(&t2);
-  m_dwVisTime += (DWORD)(m_pProfiler->m_fPerfScale * (t2.QuadPart - m_i64VisStart.QuadPart));
+  m_visTime += (unsigned int)(m_pProfiler->m_fPerfScale * (CurrentHostCounter() - m_i64VisStart));
 }
 
 void CGUIControlProfilerItem::BeginRender(void)
 { 
-  QueryPerformanceCounter(&m_i64RenderStart); 
+  m_i64RenderStart = CurrentHostCounter();
 }
 
 void CGUIControlProfilerItem::EndRender(void)
 {
-  LARGE_INTEGER t2;
-  QueryPerformanceCounter(&t2);
-  m_dwRenderTime += (DWORD)(m_pProfiler->m_fPerfScale * (t2.QuadPart - m_i64RenderStart.QuadPart));
+  m_renderTime += (unsigned int)(m_pProfiler->m_fPerfScale * (CurrentHostCounter() - m_i64RenderStart));
 }
 
 void CGUIControlProfilerItem::SaveToXML(TiXmlElement *parent)
@@ -196,20 +193,20 @@ void CGUIControlProfilerItem::SaveToXML(TiXmlElement *parent)
   }
 
   // Note time is stored in 1/100 milliseconds but reported in ms
-  DWORD dwVis = m_dwVisTime / 100;
-  DWORD dwRend = m_dwRenderTime / 100;
-  if (dwVis || dwRend)
+  unsigned int vis = m_visTime / 100;
+  unsigned int rend = m_renderTime / 100;
+  if (vis || rend)
   {
     CStdString val;
     TiXmlElement *elem = new TiXmlElement("rendertime");
     xmlControl->LinkEndChild(elem);
-    val.Format("%u", dwRend);
+    val.Format("%u", rend);
     TiXmlText *text = new TiXmlText(val.c_str());
     elem->LinkEndChild(text);
     
     elem = new TiXmlElement("visibletime");
     xmlControl->LinkEndChild(elem);
-    val.Format("%u", dwVis);
+    val.Format("%u", vis);
     text = new TiXmlText(val.c_str());
     elem->LinkEndChild(text);
   }
@@ -252,9 +249,7 @@ CGUIControlProfiler::CGUIControlProfiler(void)
 : m_ItemHead(NULL, NULL, NULL), m_pLastItem(NULL), m_iMaxFrameCount(200)
 // m_bIsRunning(false), no isRunning because it is static
 {
-  LARGE_INTEGER i64PerfFreq;
-  QueryPerformanceFrequency(&i64PerfFreq);
-  m_fPerfScale = 100000.0f / i64PerfFreq.QuadPart;
+  m_fPerfScale = 100000.0f / CurrentHostFrequency();
 }
 
 CGUIControlProfiler &CGUIControlProfiler::Instance(void)
@@ -337,8 +332,8 @@ void CGUIControlProfiler::EndFrame(void)
     for (unsigned int i=0; i<dwSize; ++i)
     {
       CGUIControlProfilerItem *p = m_ItemHead.m_vecChildren[i];
-      m_ItemHead.m_dwVisTime += p->m_dwVisTime;
-      m_ItemHead.m_dwRenderTime += p->m_dwRenderTime;
+      m_ItemHead.m_visTime += p->m_visTime;
+      m_ItemHead.m_renderTime += p->m_renderTime;
     }
 
     m_bIsRunning = false;

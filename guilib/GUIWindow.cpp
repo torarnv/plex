@@ -36,6 +36,7 @@
 #include "utils/GUIInfoManager.h"
 #include "utils/log.h"
 #include "utils/SingleLock.h"
+#include "utils/TimeUtils.h"
 #include "ButtonTranslator.h"
 #include "XMLUtils.h"
 #include "MouseStat.h"
@@ -78,8 +79,8 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
   if (m_windowLoaded)
     return true;      // no point loading if it's already there
 
-  LARGE_INTEGER start;
-  QueryPerformanceCounter(&start);
+  int64_t start;
+  start = CurrentHostCounter();
 
   RESOLUTION resToUse = RES_INVALID;
   CLog::Log(LOGINFO, "Loading skin file: %s", strFileName.c_str());
@@ -101,10 +102,10 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
 
   bool ret = LoadXML(strPath.c_str(), strLowerPath.c_str());
 
-  LARGE_INTEGER end, freq;
-  QueryPerformanceCounter(&end);
-  QueryPerformanceFrequency(&freq);
-  CLog::Log(LOGDEBUG,"Load %s: %.2fms", m_xmlFile.c_str(), 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart);
+  int64_t end, freq;
+  end = CurrentHostCounter();
+  freq = CurrentHostFrequency();
+  CLog::Log(LOGDEBUG,"Load %s: %.2fms", m_xmlFile.c_str(), 1000.f * (end - start) / freq);
 
   return ret;
 }
@@ -172,7 +173,7 @@ bool CGUIWindow::Load(TiXmlDocument &xmlDoc)
     }
     else if (strValue == "animation" && pChild->FirstChild())
     {
-      FRECT rect = { 0, 0, (float)g_settings.m_ResInfo[m_coordsRes].iWidth, (float)g_settings.m_ResInfo[m_coordsRes].iHeight };
+      CRect rect(0, 0, (float)g_settings.m_ResInfo[m_coordsRes].iWidth, (float)g_settings.m_ResInfo[m_coordsRes].iHeight);
       CAnimation anim;
       anim.Create(pChild, rect);
       m_animations.push_back(anim);
@@ -249,13 +250,13 @@ void CGUIWindow::LoadControl(TiXmlElement* pControl, CGUIControlGroup *pGroup)
   // get control type
   CGUIControlFactory factory;
 
-  FRECT rect = { 0, 0, (float)g_settings.m_ResInfo[m_coordsRes].iWidth, (float)g_settings.m_ResInfo[m_coordsRes].iHeight };
+  CRect rect(0, 0, (float)g_settings.m_ResInfo[m_coordsRes].iWidth, (float)g_settings.m_ResInfo[m_coordsRes].iHeight);
   if (pGroup)
   {
-    rect.left = pGroup->GetXPosition();
-    rect.top = pGroup->GetYPosition();
-    rect.right = rect.left + pGroup->GetWidth();
-    rect.bottom = rect.top + pGroup->GetHeight();
+    rect.x1 = pGroup->GetXPosition();
+    rect.y1 = pGroup->GetYPosition();
+    rect.x2 = rect.x1 + pGroup->GetWidth();
+    rect.y2 = rect.y1 + pGroup->GetHeight();
   }
   CGUIControl* pGUIControl = factory.Create(GetID(), rect, pControl);
   if (pGUIControl)
@@ -328,7 +329,7 @@ void CGUIWindow::Render()
   if (m_hasCamera)
     g_graphicsContext.SetCameraPosition(m_camera);
 
-  DWORD currentTime = timeGetTime();
+  unsigned int currentTime = CTimeUtils::GetFrameTime();
   // render our window animation - returns false if it needs to stop rendering
   if (!RenderAnimation(currentTime))
     return;
@@ -503,7 +504,7 @@ void CGUIWindow::OnInitWindow()
   RestoreControlStates();
   SetInitialVisibility();
   QueueAnimation(ANIM_TYPE_WINDOW_OPEN);
-  m_gWindowManager.ShowOverlay(m_overlayState);
+  g_windowManager.ShowOverlay(m_overlayState);
   
   if (!m_manualRunActions)
   {
@@ -531,7 +532,7 @@ void CGUIWindow::OnDeinitWindow(int nextWindowID)
       QueueAnimation(ANIM_TYPE_WINDOW_CLOSE);
       while (IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
       {
-        m_gWindowManager.Process(true);
+        g_windowManager.Process(true);
       }
     }
   }
@@ -665,8 +666,8 @@ void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
 {
   CSingleLock lock(g_graphicsContext);
 
-  LARGE_INTEGER start;
-  QueryPerformanceCounter(&start);
+  int64_t start;
+  start = CurrentHostCounter();
 
   // load skin xml file
   bool bHasPath=false;
@@ -675,16 +676,16 @@ void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
   if (m_xmlFile.size() && (forceLoad || m_loadOnDemand || !m_windowLoaded))
     Load(m_xmlFile,bHasPath);
 
-  LARGE_INTEGER slend;
-  QueryPerformanceCounter(&slend);
+  int64_t slend;
+  slend = CurrentHostCounter();
 
   // and now allocate resources
   CGUIControlGroup::AllocResources();
 
-  LARGE_INTEGER end, freq;
-  QueryPerformanceCounter(&end);
-  QueryPerformanceFrequency(&freq);
-  CLog::Log(LOGDEBUG,"Alloc resources: %.2fms (%.2f ms skin load)", 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart, 1000.f * (slend.QuadPart - start.QuadPart) / freq.QuadPart);
+  int64_t end, freq;
+  end = CurrentHostCounter();
+  freq = CurrentHostFrequency();
+  CLog::Log(LOGDEBUG,"Alloc resources: %.2fms (%.2f ms skin load)", 1000.f * (end - start) / freq, 1000.f * (slend - start) / freq);
 
   m_bAllocated = true;
 }
@@ -726,7 +727,7 @@ void CGUIWindow::SetInitialVisibility()
 
 bool CGUIWindow::IsActive() const
 {
-  return m_gWindowManager.IsWindowActive(GetID());
+  return g_windowManager.IsWindowActive(GetID());
 }
 
 bool CGUIWindow::CheckAnimation(ANIMATION_TYPE animType)
@@ -750,7 +751,7 @@ bool CGUIWindow::IsAnimating(ANIMATION_TYPE animType)
   return CGUIControlGroup::IsAnimating(animType);
 }
 
-bool CGUIWindow::RenderAnimation(DWORD time)
+bool CGUIWindow::RenderAnimation(unsigned int time)
 {
   g_graphicsContext.ResetWindowTransform();
   if (m_animationsEnabled)
@@ -867,14 +868,14 @@ void CGUIWindow::SetDefaults()
   m_animationsEnabled = true;
 }
 
-FRECT CGUIWindow::GetScaledBounds() const
+CRect CGUIWindow::GetScaledBounds() const
 {
   CSingleLock lock(g_graphicsContext);
   g_graphicsContext.SetScalingResolution(m_coordsRes, m_posX, m_posY, m_needsScaling);
-  FRECT rect = {0, 0, m_width, m_height};
+  CRect rect(0, 0, m_width, m_height);
   float z = 0;
-  g_graphicsContext.ScaleFinalCoords(rect.left, rect.top, z);
-  g_graphicsContext.ScaleFinalCoords(rect.right, rect.bottom, z);
+  g_graphicsContext.ScaleFinalCoords(rect.x1, rect.y1, z);
+  g_graphicsContext.ScaleFinalCoords(rect.x2, rect.y2, z);
   return rect;
 }
 
@@ -1002,7 +1003,7 @@ void CGUIWindow::RunActions(std::vector<CGUIActionDescriptor>& actions)
   {
     CGUIMessage message(GUI_MSG_EXECUTE, 0, GetID());
     message.SetAction(tempActions[i]);
-    g_graphicsContext.SendMessage(message);
+    g_windowManager.SendMessage(message);
   }
 }
 

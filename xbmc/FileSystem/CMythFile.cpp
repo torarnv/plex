@@ -25,6 +25,7 @@
 #include "URL.h"
 #include "utils/SingleLock.h"
 #include "utils/log.h"
+#include "utils/TimeUtils.h"
 
 extern "C" {
 #include "lib/libcmyth/cmyth.h"
@@ -233,7 +234,7 @@ bool CCMythFile::SetupLiveTV(const CURL& url)
   }
 
   m_program = m_dll->recorder_get_cur_proginfo(m_recorder);
-  m_timestamp = GetTickCount();
+  m_timestamp = CTimeUtils::GetTimeMS();
   if(m_program)
     m_starttime = m_dll->proginfo_rec_start(m_program);
 
@@ -422,7 +423,7 @@ bool CCMythFile::Delete(const CURL& url)
   return false;
 }
 
-__int64 CCMythFile::Seek(__int64 pos, int whence)
+int64_t CCMythFile::Seek(int64_t pos, int whence)
 {
   CLog::Log(LOGDEBUG, "%s - seek to pos %"PRId64", whence %d", __FUNCTION__, pos, whence);
 
@@ -434,7 +435,7 @@ __int64 CCMythFile::Seek(__int64 pos, int whence)
       return 1;
   }
 
-  __int64 result;
+  int64_t result;
   if(m_recorder)
     result = -1; //m_dll->livetv_seek(m_recorder, pos, whence);
   else if(m_file)
@@ -445,7 +446,7 @@ __int64 CCMythFile::Seek(__int64 pos, int whence)
   return result;
 }
 
-__int64 CCMythFile::GetPosition()
+int64_t CCMythFile::GetPosition()
 {
   if(m_recorder)
     return m_dll->livetv_seek(m_recorder, 0, SEEK_CUR);
@@ -454,14 +455,14 @@ __int64 CCMythFile::GetPosition()
   return -1;
 }
 
-__int64 CCMythFile::GetLength()
+int64_t CCMythFile::GetLength()
 {
   if(m_file)
     return m_dll->file_length(m_file);
   return -1;
 }
 
-unsigned int CCMythFile::Read(void* buffer, __int64 size)
+unsigned int CCMythFile::Read(void* buffer, int64_t size)
 {
   /* check for any events */
   HandleEvents();
@@ -503,9 +504,9 @@ bool CCMythFile::UpdateItem(CFileItem& item)
 
 int CCMythFile::GetTotalTime()
 {
-  if(m_recorder && m_timestamp + 5000 < GetTickCount())
+  if(m_recorder && m_timestamp + 5000 < CTimeUtils::GetTimeMS())
   {
-    m_timestamp = GetTickCount();
+    m_timestamp = CTimeUtils::GetTimeMS();
     if(m_program)
       m_dll->ref_release(m_program);
     m_program = m_dll->recorder_get_cur_proginfo(m_recorder);

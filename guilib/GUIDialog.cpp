@@ -24,6 +24,7 @@
 #include "GUILabelControl.h"
 #include "GUIAudioManager.h"
 #include "utils/SingleLock.h"
+#include "utils/TimeUtils.h"
 #include "Application.h"
 
 CGUIDialog::CGUIDialog(int id, const CStdString &xmlFile)
@@ -81,15 +82,15 @@ bool CGUIDialog::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_DEINIT:
     {
-      CGUIWindow *pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+      CGUIWindow *pWindow = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
       if (pWindow)
-        m_gWindowManager.ShowOverlay(pWindow->GetOverlayState());
+        g_windowManager.ShowOverlay(pWindow->GetOverlayState());
 
       CGUIWindow::OnMessage(message);
       // if we were running, make sure we remove ourselves from the window manager
       if (m_bRunning)
       {
-        m_gWindowManager.RemoveDialog(GetID());
+        g_windowManager.RemoveDialog(GetID());
         m_bRunning = false;
         m_dialogClosing = false;
         m_autoClosing = false;
@@ -99,7 +100,7 @@ bool CGUIDialog::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       CGUIWindow::OnMessage(message);
-      m_showStartTime = timeGetTime();
+      m_showStartTime = CTimeUtils::GetFrameTime();
       return true;
     }
   }
@@ -147,7 +148,7 @@ void CGUIDialog::DoModal_Internal(int iWindowID /*= WINDOW_INVALID */, const CSt
   // the main rendering thread (this should really be handled via
   // a thread message though IMO)
   m_bRunning = true;
-  m_gWindowManager.RouteToWindow(this);
+  g_windowManager.RouteToWindow(this);
 
   //  Play the window specific init sound
   g_audioManager.PlayWindowSound(GetID(), SOUND_INIT);
@@ -166,7 +167,7 @@ void CGUIDialog::DoModal_Internal(int iWindowID /*= WINDOW_INVALID */, const CSt
 
   while (m_bRunning && !g_application.m_bStop)
   {
-    m_gWindowManager.Process();
+    g_windowManager.Process();
   }
 }
 
@@ -186,7 +187,7 @@ void CGUIDialog::Show_Internal()
   // a thread message though IMO)
   m_bRunning = true;
   m_dialogClosing = false;
-  m_gWindowManager.AddModeless(this);
+  g_windowManager.AddModeless(this);
 
   //  Play the window specific init sound
   g_audioManager.PlayWindowSound(GetID(), SOUND_INIT);
@@ -208,7 +209,7 @@ void CGUIDialog::Show()
   g_application.getApplicationMessenger().Show(this);
 }
 
-bool CGUIDialog::RenderAnimation(DWORD time)
+bool CGUIDialog::RenderAnimation(unsigned int time)
 {
   CGUIWindow::RenderAnimation(time);
   return m_bRunning;
@@ -226,7 +227,7 @@ void CGUIDialog::Render()
     Close(true);
   }
 
-  if (m_autoClosing && m_showStartTime + m_showDuration < timeGetTime() && !m_dialogClosing)
+  if (m_autoClosing && m_showStartTime + m_showDuration < CTimeUtils::GetFrameTime() && !m_dialogClosing)
   {
     Close();
   }
@@ -250,7 +251,7 @@ void CGUIDialog::SetAutoClose(unsigned int timeoutMs)
    m_autoClosing = true;
    m_showDuration = timeoutMs;
    if (m_bRunning)
-     m_showStartTime = timeGetTime();
+     m_showStartTime = CTimeUtils::GetFrameTime();
 }
 
 

@@ -1,4 +1,4 @@
-INCLUDES=-I. -I.. -I../../ -I../linux -I../../guilib
+INCLUDES=-I. -I.. -I../../ -I../linux -I../cores -I../../guilib
 
 SRCS=AlarmClock.cpp \
      Archive.cpp \
@@ -53,7 +53,11 @@ SRCS=AlarmClock.cpp \
      DbusServer.cpp \
      Atomics.cpp \
      LockFree.cpp \
-     StreamDetails.cpp
+     StreamDetails.cpp \
+     TimeUtils.cpp \
+     JobManager.cpp \
+     Teletext.cpp \
+     fastmemcpy.cpp
 
 LIB=utils.a
 

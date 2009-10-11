@@ -45,6 +45,7 @@
 #include "Picture.h"
 #include "LocalizeStrings.h"
 #include "StringUtils.h"
+#include "utils/TimeUtils.h"
 
 #include <algorithm>
 
@@ -71,7 +72,7 @@ void CMusicInfoScanner::Process()
 {
   try
   {
-    DWORD dwTick = timeGetTime();
+    unsigned int tick = CTimeUtils::GetTimeMS();
 
     m_musicDatabase.Open();
 
@@ -150,12 +151,13 @@ void CMusicInfoScanner::Process()
       m_musicDatabase.Close();
       CLog::Log(LOGDEBUG, "%s - Finished scan", __FUNCTION__);
 
-      dwTick = timeGetTime() - dwTick;
+      tick = CTimeUtils::GetTimeMS() - tick;
       CStdString strTmp, strTmp1;
-      StringUtils::SecondsToTimeString(dwTick / 1000, strTmp1);
+      StringUtils::SecondsToTimeString(tick / 1000, strTmp1);
       strTmp.Format("My Music: Scanning for music info using worker thread, operation took %s", strTmp1);
       CLog::Log(LOGNOTICE, "%s", strTmp.c_str());
     }
+    bool bCanceled;
     if (m_scanType == 1) // load album info
     {
       if (m_pObserver)
@@ -171,7 +173,6 @@ void CMusicInfoScanner::Process()
         }
 
         CMusicAlbumInfo albumInfo;
-        bool bCanceled;
         DownloadAlbumInfo(it->strGenre,it->strArtist,it->strAlbum, bCanceled, albumInfo); // genre field holds path - see fetchalbuminfo()
 
         if (m_bStop || bCanceled)
@@ -192,9 +193,9 @@ void CMusicInfoScanner::Process()
           m_pObserver->OnSetProgress(iCurrentItem++, m_artistsToScan.size());
         }
 
-        DownloadArtistInfo(it->strGenre,it->strArtist); // genre field holds path - see fetchartistinfo()
+        DownloadArtistInfo(it->strGenre,it->strArtist,bCanceled); // genre field holds path - see fetchartistinfo()
 
-        if (m_bStop)
+        if (m_bStop || bCanceled)
           break;
       }
     }
@@ -532,39 +533,27 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
   }
   m_musicDatabase.CommitTransaction();
 
+  bool bCanceled;
   for (set<CStdString>::iterator i = artistsToScan.begin(); i != artistsToScan.end(); ++i)
   {
+    bCanceled = false;
     long iArtist = m_musicDatabase.GetArtistByName(*i);
     if (find(m_artistsScanned.begin(),m_artistsScanned.end(),iArtist) == m_artistsScanned.end())
     {
       m_artistsScanned.push_back(iArtist);
-      CFileItem item;
-      item.GetMusicInfoTag()->SetArtist(*i);
-      CStdString strCached = item.GetCachedFanart();
-      if (!XFILE::CFile::Exists(strCached) && m_musicDatabase.GetArtistPath(iArtist,item.m_strPath))
-      {
-        CLog::Log(LOGDEBUG, "%s looking for fanart for artist %s in folder %s", __FUNCTION__, i->c_str(), item.m_strPath.c_str());
-        item.m_bIsFolder = true;
-        CStdString strFanart = item.CacheFanart(true);
-        if (!strFanart.IsEmpty())
-        {
-          CPicture pic;
-          pic.CacheImage(strFanart,strCached);
-        }
-        else
-          CLog::Log(LOGDEBUG, "%s no local fanart found for artist %s", __FUNCTION__, i->c_str());
-      }
-      if (!m_bStop && g_guiSettings.GetBool("musiclibrary.autoartistinfo"))
+      if (!m_bStop && g_guiSettings.GetBool("musiclibrary.downloadinfo"))
       {
         CStdString strPath;
         strPath.Format("musicdb://2/%u/",iArtist);
-        if (!DownloadArtistInfo(strPath,*i)) // assume we want to retry
+        if (!DownloadArtistInfo(strPath,*i, bCanceled)) // assume we want to retry
           m_artistsScanned.pop_back();
       }
+      else
+        GetArtistArtwork(iArtist, *i);
     }
   }
 
-  if (g_guiSettings.GetBool("musiclibrary.autoalbuminfo"))
+  if (g_guiSettings.GetBool("musiclibrary.downloadinfo"))
   {
     for (set< pair<CStdString, CStdString> >::iterator i = albumsToScan.begin(); i != albumsToScan.end(); ++i)
     {
@@ -576,7 +565,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
       strPath.Format("musicdb://3/%u/",iAlbum);
 
       CMusicAlbumInfo albumInfo;
-      bool bCanceled;
+      bCanceled = false;
       if (find(m_albumsScanned.begin(), m_albumsScanned.end(), iAlbum) == m_albumsScanned.end())
         if (DownloadAlbumInfo(strPath, i->second, i->first, bCanceled, albumInfo))
           m_albumsScanned.push_back(iAlbum);
@@ -894,7 +883,7 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
         //show dialog with all albums found
         if (pDialog)
         {
-          pDlg = (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
+          pDlg = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
           pDlg->SetHeading(g_localizeStrings.Get(181).c_str());
           pDlg->Reset();
           pDlg->EnableButton(true);
@@ -1028,10 +1017,11 @@ void CMusicInfoScanner::GetAlbumArtwork(long id, const CAlbum &album)
   }
 }
 
-bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStdString& strArtist, CGUIDialogProgress* pDialog)
+bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStdString& strArtist, bool& bCanceled, CGUIDialogProgress* pDialog)
 {
   DIRECTORY::MUSICDATABASEDIRECTORY::CQueryParams params;
   DIRECTORY::MUSICDATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(strPath, params);
+  bCanceled = false;
   CArtist artist;
   m_musicDatabase.Open();
   if (m_musicDatabase.GetArtistInfo(params.GetArtistId(),artist)) // already got the info
@@ -1068,7 +1058,7 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
       CArtist artist;
       nfoReader.GetDetails(artist);
       m_musicDatabase.SetArtistInfo(params.GetArtistId(), artist);
-      GetArtistArtwork(params.GetArtistId(), strArtist, artist);
+      GetArtistArtwork(params.GetArtistId(), strArtist, &artist);
       m_musicDatabase.Close();
       return true;
     }
@@ -1092,7 +1082,10 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
   while (!scraper.Completed())
   {
     if (m_bStop)
+    {
       scraper.Cancel();
+      bCanceled = true;
+    }
     Sleep(1);
   }
 
@@ -1105,7 +1098,7 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
       if (pDialog && scraper.GetArtistCount() > 1)
       {
         // if we found more then 1 album, let user choose one
-        CGUIDialogSelect *pDlg = (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
+        CGUIDialogSelect *pDlg = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
         if (pDlg)
         {
           pDlg->SetHeading(g_localizeStrings.Get(21890));
@@ -1131,7 +1124,11 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
           // and wait till user selects one
           if (pDlg->GetSelectedLabel() < 0)
           { // none chosen
-            if (!pDlg->IsButtonPressed()) return false;
+            if (!pDlg->IsButtonPressed())
+            {
+              bCanceled = true;            
+              return false;
+            }
             // manual button pressed
             CStdString strNewArtist = strArtist;
             if (!CGUIDialogKeyboard::ShowAndGetInput(strNewArtist, g_localizeStrings.Get(16025), false)) return false;
@@ -1142,7 +1139,7 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
               pDialog->Progress();
             }
             m_musicDatabase.Close();
-            return DownloadArtistInfo(strPath,strNewArtist,pDialog);
+            return DownloadArtistInfo(strPath,strNewArtist,bCanceled,pDialog);
           }
           iSelectedArtist = pDlg->GetSelectedItem().m_idepth;
         }
@@ -1162,7 +1159,10 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
   while (!scraper.Completed())
   {
     if (m_bStop)
+    {
       scraper.Cancel();
+      bCanceled = true;
+    }
     Sleep(1);
   }
 
@@ -1175,13 +1175,13 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
   }
 
   // check thumb stuff
-  GetArtistArtwork(params.GetArtistId(), strArtist, artist);
+  GetArtistArtwork(params.GetArtistId(), strArtist, &artist);
 
   m_musicDatabase.Close();
   return true;
 }
 
-void CMusicInfoScanner::GetArtistArtwork(long id, const CStdString &artistName, const CArtist &artist)
+void CMusicInfoScanner::GetArtistArtwork(long id, const CStdString &artistName, const CArtist *artist)
 {
   CStdString artistPath;
   CFileItem item(artistName);
@@ -1190,18 +1190,27 @@ void CMusicInfoScanner::GetArtistArtwork(long id, const CStdString &artistName, 
   {
     CStdString localThumb = CUtil::AddFileToFolder(artistPath, "folder.jpg");
     if (XFILE::CFile::Exists(localThumb))
-    {
-      CPicture pic;
-      pic.DoCreateThumbnail(localThumb, thumb);
-    }
+      CPicture::CreateThumbnail(localThumb, thumb);
   }
-  if (!XFILE::CFile::Exists(thumb) && artist.thumbURL.m_url.size())
-    CScraperUrl::DownloadThumbnail(thumb,artist.thumbURL.m_url[0]);
+  if (!XFILE::CFile::Exists(thumb) && artist && artist->thumbURL.m_url.size())
+    CScraperUrl::DownloadThumbnail(thumb, artist->thumbURL.m_url[0]);
 
   // check fanart
   CFileItem item2(artistPath, true);
   item2.GetMusicInfoTag()->SetArtist(artistName);
-  if (!CFile::Exists(item2.GetCachedFanart()))
-    if (!artist.fanart.m_xml.IsEmpty() && !artist.fanart.DownloadImage(item2.GetCachedFanart()))
-      CLog::Log(LOGERROR, "Failed to download fanart %s to %s", artist.fanart.GetImageURL().c_str(), item2.GetCachedFanart().c_str());
+  CStdString cachedImage = item2.GetCachedFanart();
+  if (!CFile::Exists(cachedImage))
+  { // check for local fanart
+    CLog::Log(LOGDEBUG, "%s looking for fanart for artist %s in folder %s", __FUNCTION__, artistName.c_str(), item2.m_strPath.c_str());
+    item2.m_bIsFolder = true;
+    CStdString strFanart = item.CacheFanart(true);
+    if (!strFanart.IsEmpty())
+      CPicture::CacheImage(strFanart,cachedImage);
+    else
+    {
+      CLog::Log(LOGDEBUG, "%s no local fanart found for artist %s", __FUNCTION__, artistName.c_str());
+      if (artist && !artist->fanart.m_xml.IsEmpty() && !artist->fanart.DownloadImage(item2.GetCachedFanart()))
+        CLog::Log(LOGERROR, "Failed to download fanart %s to %s", artist->fanart.GetImageURL().c_str(), item2.GetCachedFanart().c_str());
+    }
+  }
 }

@@ -71,7 +71,6 @@ CVDPAU::CVDPAU(int width, int height)
   m_glPixmapTexture = 0;
   m_Pixmap = 0;
   m_glContext = 0;
-  m_pixmapBound = false;
   if (!glXBindTexImageEXT)
     glXBindTexImageEXT    = (PFNGLXBINDTEXIMAGEEXTPROC)glXGetProcAddress((GLubyte *) "glXBindTexImageEXT");
   if (!glXReleaseTexImageEXT)
@@ -243,28 +242,18 @@ bool CVDPAU::MakePixmap(int width, int height)
 
 void CVDPAU::BindPixmap()
 {
-  if (!m_pixmapBound)
-  {
-    //CLog::Log(LOGDEBUG,"glXBindTexImageEXT");
-    CSingleLock lock(g_graphicsContext);
-    XLockDisplay(m_Display);
-    glXReleaseTexImageEXT(m_Display, m_glPixmap, GLX_FRONT_LEFT_EXT);
-    glXBindTexImageEXT(m_Display, m_glPixmap, GLX_FRONT_LEFT_EXT, NULL);
-    VerifyGLState();
-    XUnlockDisplay(m_Display);
-    m_pixmapBound = true;
-  }
+  CSingleLock lock(g_graphicsContext);
+  XLockDisplay(m_Display);
+  glXReleaseTexImageEXT(m_Display, m_glPixmap, GLX_FRONT_LEFT_EXT);
+  glXBindTexImageEXT(m_Display, m_glPixmap, GLX_FRONT_LEFT_EXT, NULL);
+  VerifyGLState();
+  XUnlockDisplay(m_Display);
 }
 
 void CVDPAU::ReleasePixmap()
 {
-  if (m_pixmapBound)
-  {
-    //CLog::Log(LOGDEBUG,"glXReleaseTexImageEXT");
-    glXReleaseTexImageEXT(m_Display, m_glPixmap, GLX_FRONT_LEFT_EXT);
-    VerifyGLState();
-  }
-  m_pixmapBound = false;
+  glXReleaseTexImageEXT(m_Display, m_glPixmap, GLX_FRONT_LEFT_EXT);
+  VerifyGLState();
 }
 
 void CVDPAU::Create(int width, int height)
@@ -924,7 +913,6 @@ int CVDPAU::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
   outputSurface = outputSurfaces[surfaceNum];
 
   SpewHardwareAvailable();
-  vdpauConfigured = true;
   return 0;
 }
 
@@ -989,6 +977,7 @@ int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
   VdpStatus vdp_st = VDP_STATUS_ERROR;
   if (render == NULL)
   {
+    CSingleLock lock(g_graphicsContext);
     while(vdp_st != VDP_STATUS_OK && tries < NUM_VIDEO_SURFACES_MAX_TRIES)
     {
       tries++;
@@ -1089,6 +1078,7 @@ void CVDPAU::FFDrawSlice(struct AVCodecContext *s,
                                    render->bitstream_buffers_used,
                                    render->bitstream_buffers);
   vdp->CheckStatus(vdp_st, __LINE__);
+  vdp->vdpauConfigured = true;
 }
 
 void CVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
@@ -1205,6 +1195,8 @@ void CVDPAU::CheckStatus(VdpStatus vdp_st, int line)
   if (vdp_st != VDP_STATUS_OK)
   {
     CLog::Log(LOGERROR, " (VDPAU) Error: %s(%d) at %s:%d\n", vdp_get_error_string(vdp_st), vdp_st, __FILE__, line);
+    if (vdpauConfigured && !VDPAUSwitching) 
+      CheckRecover(true);
   }
   if (vdp_st == VDP_STATUS_HANDLE_DEVICE_MISMATCH)
     CheckRecover(true);

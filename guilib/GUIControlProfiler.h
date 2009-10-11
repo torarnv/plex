@@ -38,10 +38,10 @@ public:
   CStdString m_strDescription;
   int m_controlID;
   CGUIControl::GUICONTROLTYPES m_ControlType;
-  DWORD m_dwVisTime;
-  DWORD m_dwRenderTime;
-  LARGE_INTEGER m_i64VisStart;
-  LARGE_INTEGER m_i64RenderStart;
+  unsigned int m_visTime;
+  unsigned int m_renderTime;
+  int64_t m_i64VisStart;
+  int64_t m_i64RenderStart;
 
   CGUIControlProfilerItem(CGUIControlProfiler *pProfiler, CGUIControlProfilerItem *pParent, CGUIControl *pControl);
   ~CGUIControlProfilerItem(void); 
@@ -52,7 +52,7 @@ public:
   void BeginRender(void); 
   void EndRender(void);
   void SaveToXML(TiXmlElement *parent);
-  DWORD GetTotalTime(void) const { return m_dwVisTime + m_dwRenderTime; };
+  unsigned int GetTotalTime(void) const { return m_visTime + m_renderTime; };
 
   CGUIControlProfilerItem *AddControl(CGUIControl *pControl);
   CGUIControlProfilerItem *FindOrAddControl(CGUIControl *pControl, bool recurse);
@@ -75,7 +75,7 @@ public:
   void SetOutputFile(const CStdString &strOutputFile) { m_strOutputFile = strOutputFile; };
   const CStdString &GetOutputFile(void) const { return m_strOutputFile; };
   bool SaveResults(void);
-  DWORD GetTotalTime(void) const { return m_ItemHead.GetTotalTime(); };
+  unsigned int GetTotalTime(void) const { return m_ItemHead.GetTotalTime(); };
 
   float m_fPerfScale;
 private:

@@ -24,6 +24,7 @@
 #include "ButtonTranslator.h"
 #include "log.h"
 #include "AdvancedSettings.h"
+#include "utils/TimeUtils.h"
 
 #define IRSS_PORT 24000
 
@@ -73,6 +74,7 @@ void CRemoteControl::Reset()
 
 void CRemoteControl::Initialize()
 {
+  if (m_isConnecting || m_bInitialized) return;
   //trying to connect when there is nothing to connect to is kinda slow so kick it off in a thread.
   Create();
   SetName("CRemoteControl");
@@ -82,14 +84,14 @@ void CRemoteControl::Process()
 {
   int iTries = 1;
   DWORD iMsRetryDelay = 5000;
-  DWORD time = timeGetTime() - iMsRetryDelay;
+  DWORD time = CTimeUtils::GetTimeMS() - iMsRetryDelay;
   // try to connect 6 times @ a 5 second interval (30 seconds)
   // multiple tries because irss service might be up and running a little later then xbmc on boot.
   while (!m_bStop && iTries <= 6)
   {
-    if (timeGetTime() - time >= iMsRetryDelay)
+    if (CTimeUtils::GetTimeMS() - time >= iMsRetryDelay)
     {
-      time = timeGetTime();
+      time = CTimeUtils::GetTimeMS();
       if (Connect())
         break;
       iTries++;
@@ -446,4 +448,8 @@ WORD CRemoteControl::GetButton()
 bool CRemoteControl::IsHolding()
 {
   return m_isHolding;
+}
+
+void CRemoteControl::setUsed(bool value)
+{
 }

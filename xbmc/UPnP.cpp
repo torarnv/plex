@@ -53,6 +53,7 @@
 #include "FileItem.h"
 #include "GUIWindowManager.h"
 #include "GUIInfoManager.h"
+#include "utils/TimeUtils.h"
 
 using namespace std;
 using namespace MUSIC_INFO;
@@ -127,7 +128,6 @@ namespace
     else
         return result.SubString(delimiter.GetLength());
   }
-
 }
 
 
@@ -295,13 +295,20 @@ CUPnPServer::GetContentType(const CFileItem& item,
     ext.TrimLeft('.');
     ext = ext.ToLowercase();
 
-    /* we need a valid extension to retrieve the mimetype for the protocol info */
-    NPT_String content = item.GetContentType().c_str();
-    if (content == "application/octet-stream") content = "";
+    NPT_String content;
 
-    if (content.IsEmpty()) {
+    /* We always use Platinum content type first
+       as it is defined to map extension to DLNA compliant content type
+       or custom according to context (who asked for it) */
+    if (!ext.IsEmpty()) {
         content = PLT_MediaObject::GetMimeTypeFromExtension(ext, context);
-        if (content == "application/unknown") content = "";
+        if (content == "application/octet-stream") content = "";
+    }
+
+    /* if Platinum couldn't map it, default to XBMC mapping */
+    if (content.IsEmpty()) {
+        NPT_String content = item.GetContentType().c_str();
+        if (content == "application/octet-stream") content = "";
     }
 
     /* fallback to generic content type if not found */
@@ -326,7 +333,8 @@ CUPnPServer::GetContentType(const CFileItem& item,
 |   CUPnPServer::GetProtocolInfo
 +---------------------------------------------------------------------*/
 NPT_String
-CUPnPServer::GetProtocolInfo(const CFileItem& item, const char* protocol,
+CUPnPServer::GetProtocolInfo(const CFileItem&              item, 
+                             const char*                   protocol,
                              const PLT_HttpRequestContext* context /* = NULL */)
 {
     NPT_String proto = protocol;
@@ -521,8 +529,9 @@ CUPnPServer::BuildObject(const CFileItem&              item,
             // through http file server
             NPT_List<NPT_IpAddress>::Iterator ip = ips.GetFirstItem();
             while (ip) {
-                resource.m_ProtocolInfo = GetProtocolInfo(item, "http", context);
-                resource.m_Uri = PLT_FileMediaServer::BuildSafeResourceUri(upnp_server->m_FileBaseUri, (*ip).ToString(), file_path);
+                resource.m_ProtocolInfo = PLT_ProtocolInfo(GetProtocolInfo(item, "http", context));
+                resource.m_Uri = PLT_FileMediaServer::BuildSafeResourceUri(
+                    upnp_server->m_FileBaseUri, (*ip).ToString(), file_path);
                 object->m_Resources.Add(resource);
                 ++ip;
             }
@@ -530,12 +539,13 @@ CUPnPServer::BuildObject(const CFileItem&              item,
 
         // if the item is remote, add a direct link to the item
         if (CUtil::IsRemote((const char*)file_path)) {
-            resource.m_ProtocolInfo = CUPnPServer::GetProtocolInfo(item, item.GetAsUrl().GetProtocol(), context);
+            resource.m_ProtocolInfo = PLT_ProtocolInfo(
+                CUPnPServer::GetProtocolInfo(item, item.GetAsUrl().GetProtocol(), context));
             resource.m_Uri = file_path;
 
             // if the direct link can be served directly using http, then push it in front
             // otherwise keep the xbmc-get resource last and let a compatible client look for it
-            if (resource.m_ProtocolInfo.StartsWith("xbmc", true)) {
+            if (resource.m_ProtocolInfo.ToString().StartsWith("xbmc", true)) {
                 object->m_Resources.Add(resource);
             } else {
                 object->m_Resources.Insert(object->m_Resources.GetFirstItem(), resource);
@@ -1075,7 +1085,7 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action,
     items.m_strPath = parent_id;
     if (!items.Load()) {
         // cache anything that takes more than a second to retrieve
-        DWORD time = GetTickCount() + 1000;
+        unsigned int time = CTimeUtils::GetTimeMS() + 1000;
 
         if (parent_id.StartsWith("virtualpath://")) {
             CUPnPVirtualPathDirectory dir;
@@ -1084,7 +1094,7 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action,
             CDirectory::GetDirectory((const char*)parent_id, items);
         }
 
-        if (items.CacheToDiscAlways() || (items.CacheToDiscIfSlow() && time < GetTickCount())) {
+        if (items.CacheToDiscAlways() || (items.CacheToDiscIfSlow() && time < CTimeUtils::GetTimeMS())) {
             items.Save();
         }
     }
@@ -1092,7 +1102,7 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action,
     // Don't pass parent_id if action is Search not BrowseDirectChildren, as
     // we want the engine to determine the best parent id, not necessarily the one
     // passed
-    NPT_String action_name = action->GetActionDesc()->GetName();
+    NPT_String action_name = action->GetActionDesc().GetName();
     return BuildResponse(
         action, 
         items, 
@@ -1430,11 +1440,6 @@ public:
 
 private:
     NPT_Result SetupServices(PLT_DeviceData& data);
-    NPT_Result ParseProtocolInfo(NPT_String& info,
-                                 NPT_String& proto,
-                                 NPT_String& mask,
-                                 NPT_String& content,
-                                 NPT_String& extra);
     NPT_Result GetMetadata(NPT_String& meta);
     NPT_Result PlayMedia(const char* uri,
                          const char* metadata = NULL,
@@ -1466,8 +1471,87 @@ CUPnPRenderer::SetupServices(PLT_DeviceData& data)
     // update what we can play
     PLT_Service* service = NULL;
     NPT_CHECK_FATAL(FindServiceByType("urn:schemas-upnp-org:service:ConnectionManager:1", service));
-    service->SetStateVariable("SinkProtocolInfo",
-        "http-get:*:*:*,http-get:*:video/mpeg:*,http-get:*:audio/mpeg:*,xbmc-get:*:*:*");
+    service->SetStateVariable("SinkProtocolInfo"
+        ,"http-get:*:*:*"
+        ",xbmc-get:*:*:*"
+        ",http-get:*:audio/mpegurl:*"
+        ",http-get:*:audio/mpeg:*"
+        ",http-get:*:audio/mpeg3:*"
+        ",http-get:*:audio/mp3:*"
+        ",http-get:*:audio/basic:*"
+        ",http-get:*:audio/midi:*"
+        ",http-get:*:audio/ulaw:*"
+        ",http-get:*:audio/ogg:*"
+        ",http-get:*:audio/DVI4:*"
+        ",http-get:*:audio/G722:*"
+        ",http-get:*:audio/G723:*"
+        ",http-get:*:audio/G726-16:*"
+        ",http-get:*:audio/G726-24:*"
+        ",http-get:*:audio/G726-32:*"
+        ",http-get:*:audio/G726-40:*"
+        ",http-get:*:audio/G728:*"
+        ",http-get:*:audio/G729:*"
+        ",http-get:*:audio/G729D:*"
+        ",http-get:*:audio/G729E:*"
+        ",http-get:*:audio/GSM:*"
+        ",http-get:*:audio/GSM-EFR:*"
+        ",http-get:*:audio/L8:*"
+        ",http-get:*:audio/L16:*"
+        ",http-get:*:audio/LPC:*"
+        ",http-get:*:audio/MPA:*"
+        ",http-get:*:audio/PCMA:*"
+        ",http-get:*:audio/PCMU:*"
+        ",http-get:*:audio/QCELP:*"
+        ",http-get:*:audio/RED:*"
+        ",http-get:*:audio/VDVI:*"
+        ",http-get:*:audio/ac3:*"
+        ",http-get:*:audio/vorbis:*"
+        ",http-get:*:audio/speex:*"
+        ",http-get:*:audio/x-aiff:*"
+        ",http-get:*:audio/x-pn-realaudio:*"
+        ",http-get:*:audio/x-realaudio:*"
+        ",http-get:*:audio/x-wav:*"
+        ",http-get:*:audio/x-ms-wma:*"
+        ",http-get:*:audio/x-mpegurl:*"
+        ",http-get:*:application/x-shockwave-flash:*"
+        ",http-get:*:application/ogg:*"
+        ",http-get:*:application/sdp:*"
+        ",http-get:*:image/gif:*"
+        ",http-get:*:image/jpeg:*"
+        ",http-get:*:image/ief:*"
+        ",http-get:*:image/png:*"
+        ",http-get:*:image/tiff:*"
+        ",http-get:*:video/avi:*"
+        ",http-get:*:video/mpeg:*"
+        ",http-get:*:video/fli:*"
+        ",http-get:*:video/flv:*"
+        ",http-get:*:video/quicktime:*"
+        ",http-get:*:video/vnd.vivo:*"
+        ",http-get:*:video/vc1:*"
+        ",http-get:*:video/ogg:*"
+        ",http-get:*:video/mp4:*"
+        ",http-get:*:video/BT656:*"
+        ",http-get:*:video/CelB:*"
+        ",http-get:*:video/JPEG:*"
+        ",http-get:*:video/H261:*"
+        ",http-get:*:video/H263:*"
+        ",http-get:*:video/H263-1998:*"
+        ",http-get:*:video/H263-2000:*"
+        ",http-get:*:video/MPV:*"
+        ",http-get:*:video/MP2T:*"
+        ",http-get:*:video/MP1S:*"
+        ",http-get:*:video/MP2P:*"
+        ",http-get:*:video/BMPEG:*"
+        ",http-get:*:video/x-ms-wmv:*"
+        ",http-get:*:video/x-ms-avi:*"
+        ",http-get:*:video/x-flv:*"
+        ",http-get:*:video/x-fli:*"
+        ",http-get:*:video/x-ms-asf:*"
+        ",http-get:*:video/x-ms-asx:*"
+        ",http-get:*:video/x-ms-wmx:*"
+        ",http-get:*:video/x-ms-wvx:*"
+        ",http-get:*:video/x-msvideo:*"
+        );
     return NPT_SUCCESS;
 }
 
@@ -1733,24 +1817,6 @@ CUPnPRenderer::OnSetAVTransportURI(PLT_ActionReference& action)
 }
 
 /*----------------------------------------------------------------------
-|   CUPnPRenderer::ParseProtocolInfo
-+---------------------------------------------------------------------*/
-NPT_Result
-CUPnPRenderer::ParseProtocolInfo(NPT_String& info, 
-                                 NPT_String& proto, 
-                                 NPT_String& mask, 
-                                 NPT_String& content, 
-                                 NPT_String& extra)
-{
-  NPT_List<NPT_String> data = info.Split(":");
-  NPT_CHECK_FATAL(data.Get(0, proto));
-  NPT_CHECK      (data.Get(1, mask));
-  NPT_CHECK      (data.Get(2, content));
-  NPT_CHECK      (data.Get(3, extra));
-  return NPT_SUCCESS;
-}
-
-/*----------------------------------------------------------------------
 |   CUPnPRenderer::PlayMedia
 +---------------------------------------------------------------------*/
 NPT_Result
@@ -1767,31 +1833,31 @@ CUPnPRenderer::PlayMedia(const char* uri, const char* meta, PLT_Action* action)
     PLT_MediaObjectListReference list;
     PLT_MediaObject*             object = NULL;
 
-    if(meta && NPT_SUCCEEDED(PLT_Didl::FromDidl(meta, list)))
-      list->Get(0, object);
+    if (meta && NPT_SUCCEEDED(PLT_Didl::FromDidl(meta, list))) {
+        list->Get(0, object);
+    }
 
-    if(object) {
+    if (object) {
         CFileItem item(uri, false);
 
         PLT_MediaItemResource* res = object->m_Resources.GetFirstItem();
         for(NPT_Cardinal i = 0; i < object->m_Resources.GetItemCount(); i++) {
-          if(object->m_Resources[i].m_Uri == uri) { 
-            res = &object->m_Resources[i];
-            break;
-          }
+            if(object->m_Resources[i].m_Uri == uri) { 
+                res = &object->m_Resources[i];
+                break;
+            }
         }
         for(NPT_Cardinal i = 0; i < object->m_Resources.GetItemCount(); i++) {
-          if(object->m_Resources[i].m_ProtocolInfo.StartsWith("xbmc-get:")) {
-            res = &object->m_Resources[i];
-            item.m_strPath = res->m_Uri;
-            break;
-          }
+            if(object->m_Resources[i].m_ProtocolInfo.ToString().StartsWith("xbmc-get:")) {
+                res = &object->m_Resources[i];
+                item.m_strPath = res->m_Uri;
+                break;
+            }
         }
 
         NPT_String proto, mask, content, extra;
-        if(res) {
-          NPT_CHECK(ParseProtocolInfo(res->m_ProtocolInfo, proto, mask, content, extra));
-          item.SetContentType((const char*)content);
+        if (res && res->m_ProtocolInfo.IsValid()) {
+            item.SetContentType((const char*)res->m_ProtocolInfo.GetContentType());
         }
 
         item.m_dateTime.SetFromDateString((const char*)object->m_Date);
@@ -1799,13 +1865,13 @@ CUPnPRenderer::PlayMedia(const char* uri, const char* meta, PLT_Action* action)
         item.SetLabel((const char*)object->m_Title);
         item.SetLabelPreformated(true);
         item.SetThumbnailImage((const char*)object->m_ExtraInfo.album_art_uri);
-        if       (object->m_ObjectClass.type.StartsWith("object.item.audioItem")) {            
+        if (object->m_ObjectClass.type.StartsWith("object.item.audioItem")) {            
             if(NPT_SUCCEEDED(CUPnP::PopulateTagFromObject(*item.GetMusicInfoTag(), *object, res)))
                 item.SetLabelPreformated(false);
-        } else if(object->m_ObjectClass.type.StartsWith("object.item.videoItem")) {
+        } else if (object->m_ObjectClass.type.StartsWith("object.item.videoItem")) {
             if(NPT_SUCCEEDED(CUPnP::PopulateTagFromObject(*item.GetVideoInfoTag(), *object, res)))
                 item.SetLabelPreformated(false);
-        } else if(object->m_ObjectClass.type.StartsWith("object.item.imageItem")) {
+        } else if (object->m_ObjectClass.type.StartsWith("object.item.imageItem")) {
             bImageFile = true;
         }
         bImageFile?g_application.getApplicationMessenger().PictureShow(item.m_strPath)
@@ -1905,7 +1971,7 @@ public:
     {
         CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
         message.SetStringParam("upnp://");
-        m_gWindowManager.SendThreadMessage(message);
+        g_windowManager.SendThreadMessage(message);
 
         return PLT_SyncMediaBrowser::OnMSAdded(device);
     }
@@ -1915,7 +1981,7 @@ public:
 
         CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
         message.SetStringParam("upnp://");
-        m_gWindowManager.SendThreadMessage(message);
+        g_windowManager.SendThreadMessage(message);
 
         PLT_SyncMediaBrowser::OnMSRemoved(device);
     }
@@ -1935,7 +2001,7 @@ public:
 
         CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
         message.SetStringParam(path.GetChars());
-        m_gWindowManager.SendThreadMessage(message);
+        g_windowManager.SendThreadMessage(message);
     }
 };
 
@@ -1999,16 +2065,20 @@ CUPnP::GetInstance()
 |   CUPnP::ReleaseInstance
 +---------------------------------------------------------------------*/
 void
-CUPnP::ReleaseInstance()
+CUPnP::ReleaseInstance(bool bWait)
 {
     if (upnp) {
         CUPnP* _upnp = upnp;
         upnp = NULL;
 
-        // since it takes a while to clean up
-        // starts a detached thread to do this
-        CUPnPCleaner* cleaner = new CUPnPCleaner(_upnp);
-        cleaner->Start();
+        if (bWait) {
+            delete _upnp;
+        } else {
+            // since it takes a while to clean up
+            // starts a detached thread to do this
+            CUPnPCleaner* cleaner = new CUPnPCleaner(_upnp);
+            cleaner->Start();
+        }
     }
 }
 
@@ -2264,4 +2334,5 @@ int CUPnP::PopulateTagFromObject(CVideoInfoTag&         tag,
       tag.m_strRuntime.Format("%d",resource->m_Duration);
     return NPT_SUCCESS;
 }
+
 

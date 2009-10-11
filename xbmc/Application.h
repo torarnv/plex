@@ -21,7 +21,7 @@
  *
  */
 
-#include "system.h"
+#include "system.h" // for HAS_DVD_DRIVE et. al.
 #include "XBApplicationEx.h"
 
 #include "IMsgTargetCallback.h"
@@ -36,7 +36,7 @@ class CFileItemList;
 #include "GUIWindowPointer.h"   // Mouse pointer
 
 #include "cores/IPlayer.h"
-#include "cores/PlayerCoreFactory.h"
+#include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "PlayListPlayer.h"
 #if !defined(_WIN32) && defined(HAS_DVD_DRIVE)
 #include "DetectDVDType.h"
@@ -52,9 +52,6 @@ class CFileItemList;
 #endif
 #ifdef _LINUX
 #include "linux/LinuxResourceCounter.h"
-#endif
-#ifdef _WIN32
-#include "WIN32Util.h"
 #endif
 #include "XBMC_events.h"
 #include "utils/Thread.h"
@@ -106,7 +103,7 @@ public:
   void StartTimeServer();
   void StopTimeServer();
   void StartUPnP();
-  void StopUPnP();
+  void StopUPnP(bool bWait);
   void StartUPnPRenderer();
   void StopUPnPRenderer();
   void StartUPnPClient();
@@ -190,6 +187,7 @@ public:
 
   void SaveMusicScanSettings();
   void RestoreMusicScanSettings();
+  void UpdateLibraries();
   void CheckMusicPlaylist();
 
   bool ExecuteXBMCAction(std::string action);
@@ -231,7 +229,7 @@ public:
   inline bool IsInScreenSaver() { return m_bScreenSave; };
   int m_iScreenSaveLock; // spiff: are we checking for a lock? if so, ignore the screensaver state, if -1 we have failed to input locks
 
-  DWORD m_dwSkinTime;
+  unsigned int m_skinReloadTime;
   bool m_bIsPaused;
   bool m_bPlaybackStarting;
 
@@ -242,7 +240,7 @@ public:
 
   int GlobalIdleTime();
   void NewFrame();
-  bool WaitFrame(DWORD timeout);
+  bool WaitFrame(unsigned int timeout);
 
   void EnablePlatformDirectories(bool enable=true)
   {
@@ -276,7 +274,7 @@ public:
 
   bool IsPresentFrame();
 
-  void Minimize(bool minimize = true);
+  void Minimize();
 
   bool m_bRunResumeJobs;
 
@@ -324,7 +322,7 @@ protected:
 
   bool m_bStandalone;
   bool m_bEnableLegacyRes;
-  bool m_bWasFullScreenBeforeMinimize;
+  bool m_bSystemScreenSaverEnable;
 
 #ifdef HAS_SDL
   int        m_frameCount;
@@ -375,9 +373,6 @@ protected:
 
 #ifdef HAS_EVENT_SERVER
   std::map<std::string, std::map<int, float> > m_lastAxisMap;
-#endif
-#ifdef _WIN32
-  CWIN32Util::SystemParams::SysParam *m_SSysParam;
 #endif
 };
 

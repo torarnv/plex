@@ -43,6 +43,7 @@
 #include "FileSystem/SpecialProtocol.h"
 #include "ThumbnailCache.h"
 #include "FileSystem/RarManager.h"
+#include "FileSystem/CMythDirectory.h"
 #ifdef HAS_UPNP
 #include "FileSystem/UPnPDirectory.h"
 #endif
@@ -78,8 +79,12 @@
 #ifdef HAS_LIRC
 #include "common/LIRC.h"
 #endif
+#ifdef HAS_IRSERVERSUITE
+  #include "common/IRServerSuite/IRServerSuite.h"
+#endif
 #include "WindowingFactory.h"
 #include "LocalizeStrings.h"
+#include "utils/TimeUtils.h"
 
 using namespace std;
 using namespace DIRECTORY;
@@ -95,12 +100,12 @@ using namespace PLAYLIST;
 #ifdef HAS_DX
 static D3DGAMMARAMP oldramp, flashramp;
 #elif defined(HAS_SDL_2D)
-static Uint16 oldrampRed[256];
-static Uint16 oldrampGreen[256];
-static Uint16 oldrampBlue[256];
-static Uint16 flashrampRed[256];
-static Uint16 flashrampGreen[256];
-static Uint16 flashrampBlue[256];
+static uint16_t oldrampRed[256];
+static uint16_t oldrampGreen[256];
+static uint16_t oldrampBlue[256];
+static uint16_t flashrampRed[256];
+static uint16_t flashrampGreen[256];
+static uint16_t flashrampBlue[256];
 #endif
 
 XBOXDETECTION v_xboxclients;
@@ -407,7 +412,7 @@ void CUtil::CleanString(CStdString& strFileName, CStdString& strTitle, CStdStrin
       continue;
     }
     int j=0;
-    if ((j=reTags.RegFind(strFileName.ToLower().c_str())) >= 0)
+    if ((j=reTags.RegFind(strFileName.ToLower().c_str())) > 0)
       strTitleAndYear = strTitleAndYear.Mid(0, j);
   }
 
@@ -1228,7 +1233,7 @@ static const char * sub_exts[] = { ".utf", ".utf8", ".utf-8", ".sub", ".srt", ".
 
 void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionCached, XFILE::IFileCallback *pCallback )
 {
-  DWORD startTimer = timeGetTime();
+  unsigned int startTimer = CTimeUtils::GetTimeMS();
   CLog::Log(LOGDEBUG,"%s: START", __FUNCTION__);
 
   // new array for commons sub dirs
@@ -1340,7 +1345,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
     strLookInPaths.push_back(strPath);
   }
 
-  DWORD nextTimer = timeGetTime();
+  unsigned int nextTimer = CTimeUtils::GetTimeMS();
   CLog::Log(LOGDEBUG,"%s: Done (time: %i ms)", __FUNCTION__, (int)(nextTimer - startTimer));
 
   CStdString strLExt;
@@ -1415,13 +1420,13 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
       g_directoryCache.ClearDirectory(strLookInPaths[step]);
     }
   }
-  CLog::Log(LOGDEBUG,"%s: Done (time: %i ms)", __FUNCTION__, (int)(timeGetTime() - nextTimer));
+  CLog::Log(LOGDEBUG,"%s: Done (time: %i ms)", __FUNCTION__, (int)(CTimeUtils::GetTimeMS() - nextTimer));
 
   // construct string of added exts?
   for (vector<CStdString>::iterator it=vecExtensionsCached.begin(); it != vecExtensionsCached.end(); ++it)
     strExtensionCached += *it+" ";
 
-  CLog::Log(LOGDEBUG,"%s: END (total time: %i ms)", __FUNCTION__, (int)(timeGetTime() - startTimer));
+  CLog::Log(LOGDEBUG,"%s: END (total time: %i ms)", __FUNCTION__, (int)(CTimeUtils::GetTimeMS() - startTimer));
 }
 
 bool CUtil::CacheRarSubtitles(vector<CStdString>& vecExtensionsCached, const CStdString& strRarPath, const CStdString& strCompare, const CStdString& strExtExt)
@@ -1766,9 +1771,9 @@ void CUtil::SetBrightnessContrastGamma(float Brightness, float Contrast, float G
 #ifdef HAS_DX
   D3DGAMMARAMP ramp;
 #elif defined(HAS_SDL_2D)
-  Uint16 rampRed[256];
-  Uint16 rampGreen[256];
-  Uint16 rampBlue[256];
+  uint16_t rampRed[256];
+  uint16_t rampGreen[256];
+  uint16_t rampBlue[256];
 #endif
 
   Gamma = 1.0f / Gamma;
@@ -1987,7 +1992,7 @@ void CUtil::StatToStatI64(struct _stati64 *result, struct stat *stat)
   result->st_uid = stat->st_uid;
   result->st_gid = stat->st_gid;
   result->st_rdev = stat->st_rdev;
-  result->st_size = (__int64)stat->st_size;
+  result->st_size = (int64_t)stat->st_size;
 
 #ifndef _LINUX
   result->st_atime = (long)(stat->st_atime & 0xFFFFFFFF);
@@ -2589,10 +2594,10 @@ bool CUtil::AutoDetection()
   bool bReturn=false;
   if (g_guiSettings.GetBool("autodetect.onoff"))
   {
-    static DWORD pingTimer = 0;
-    if( timeGetTime() - pingTimer < (DWORD)g_advancedSettings.m_autoDetectPingTime * 1000)
+    static unsigned int pingTimer = 0;
+    if( CTimeUtils::GetTimeMS() - pingTimer < (unsigned int)g_advancedSettings.m_autoDetectPingTime * 1000)
       return false;
-    pingTimer = timeGetTime();
+    pingTimer = CTimeUtils::GetTimeMS();
 
     // send ping and request new client info
     if ( CUtil::AutoDetectionPing(
@@ -2631,7 +2636,7 @@ bool CUtil::AutoDetection()
           //YES NO PopUP: ask for connecting to the detected client via Filemanger!
           if (g_guiSettings.GetBool("autodetect.popupinfo") && CGUIDialogYesNo::ShowAndGetInput(1251, 0, 1257, 0))
           {
-            m_gWindowManager.ActivateWindow(WINDOW_FILES, strFTPPath); //Open in MyFiles
+            g_windowManager.ActivateWindow(WINDOW_FILES, strFTPPath); //Open in MyFiles
           }
           bReturn = true;
         }
@@ -2773,7 +2778,7 @@ bool CUtil::AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, 
         {
           // a client is removed from our list, update our shares
           CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
-          m_gWindowManager.SendThreadMessage(msg);
+          g_windowManager.SendThreadMessage(msg);
         }
       }
     }
@@ -2886,7 +2891,7 @@ bool CUtil::AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, 
 
                     // client is removed from our list, update our shares
                     CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
-                    m_gWindowManager.SendThreadMessage(msg);
+                    g_windowManager.SendThreadMessage(msg);
                   }
                 }
               }
@@ -2908,7 +2913,7 @@ bool CUtil::AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, 
           {
             // a client is add or removed from our list, update our shares
             CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
-            m_gWindowManager.SendThreadMessage(msg);
+            g_windowManager.SendThreadMessage(msg);
           }
         }
       }
@@ -3185,8 +3190,12 @@ bool CUtil::SupportsFileOperations(const CStdString& strPath)
     return true;
   if (IsMythTV(strPath))
   {
-    CURL url(strPath);
-    return url.GetFileName().Left(11).Equals("recordings/") && url.GetFileName().length() > 11;
+    /*
+     * Can't use CFile::Exists() to check whether the myth:// path supports file operations because
+     * it hits the directory cache on the way through, which has the Live Channels and Guide
+     * items cached.
+     */
+    return CCMythDirectory::SupportsFileOperations(strPath);
   }
   if (IsStack(strPath))
   {
@@ -3321,9 +3330,9 @@ void CUtil::ClearFileItemCache()
 void CUtil::InitRandomSeed()
 {
   // Init random seed 
-  LARGE_INTEGER now; 
-  QueryPerformanceCounter(&now); 
-  unsigned int seed = (now.u.LowPart);
+  int64_t now; 
+  now = CurrentHostCounter(); 
+  unsigned int seed = now;
 //  CLog::Log(LOGDEBUG, "%s - Initializing random seed with %u", __FUNCTION__, seed);
   srand(seed);
 }

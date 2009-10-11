@@ -140,6 +140,7 @@ class CAdvancedSettings
     bool m_detectAsUdf;
 
     int m_thumbSize;
+    bool m_useDDSFanart;
 
     int m_sambaclienttimeout;
     CStdString m_sambadoscodepage;
@@ -207,7 +208,6 @@ class CAdvancedSettings
 
     bool m_osx_GLFullScreen;
     bool m_bVirtualShares;
-    bool m_bNavVKeyboard; // if true we navigate the virtual keyboard using cursor keys
 
     float m_karaokeSyncDelayCDG; // seems like different delay is needed for CDG and MP3s
     float m_karaokeSyncDelayLRC;

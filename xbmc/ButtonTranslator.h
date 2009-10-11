@@ -75,7 +75,7 @@ public:
   static int TranslateWindowString(const char *szWindow);
   static bool TranslateActionString(const char *szAction, int &action);
 
-#ifdef HAS_LIRC
+#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   int TranslateLircRemoteString(const char* szDevice, const char *szButton);
 #endif
 #if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
@@ -85,22 +85,22 @@ public:
 #endif
 
 private:
-  typedef std::multimap<int, CButtonAction> buttonMap; // our button map to fill in
+  typedef std::multimap<uint32_t, CButtonAction> buttonMap; // our button map to fill in
   std::map<int, buttonMap> translatorMap;       // mapping of windows to button maps
   int GetActionCode(int window, const CKey &key, CStdString &strAction);
 
-  static int TranslateGamepadString(const char *szButton);
-  static int TranslateRemoteString(const char *szButton);
-  static int TranslateUniversalRemoteString(const char *szButton);
+  static uint32_t TranslateGamepadString(const char *szButton);
+  static uint32_t TranslateRemoteString(const char *szButton);
+  static uint32_t TranslateUniversalRemoteString(const char *szButton);
 
-  static int TranslateKeyboardString(const char *szButton);
-  static int TranslateKeyboardButton(TiXmlElement *pButton);
+  static uint32_t TranslateKeyboardString(const char *szButton);
+  static uint32_t TranslateKeyboardButton(TiXmlElement *pButton);
 
   void MapWindowActions(TiXmlNode *pWindow, int wWindowID);
-  void MapAction(int buttonCode, const char *szAction, buttonMap &map);
+  void MapAction(uint32_t buttonCode, const char *szAction, buttonMap &map);
 
   bool LoadKeymap(const CStdString &keymapPath);
-#ifdef HAS_LIRC
+#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   bool LoadLircMap(const CStdString &lircmapPath);
   void MapRemote(TiXmlNode *pRemote, const char* szDevice);
   typedef std::map<CStdString, CStdString> lircButtonMap;

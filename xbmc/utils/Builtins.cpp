@@ -55,6 +55,9 @@
 #ifdef HAS_LIRC
 #include "common/LIRC.h"
 #endif
+#ifdef HAS_IRSERVERSUITE
+  #include "common/IRServerSuite/IRServerSuite.h"
+#endif
 
 #ifdef HAS_PYTHON
 #include "lib/libPython/XBPython.h"
@@ -73,9 +76,9 @@ using namespace MEDIA_DETECT;
 
 typedef struct
 {
-  char command[32];
+  const char* command;
   bool needsParameters;
-  char description[128];
+  const char* description;
 } BUILT_IN;
 
 const BUILT_IN commands[] = {
@@ -132,6 +135,7 @@ const BUILT_IN commands[] = {
   { "Resolution",                 true,   "Change XBMC's Resolution" },
   { "SetFocus",                   true,   "Change current focus to a different control id" },
   { "UpdateLibrary",              true,   "Update the selected library (music or video)" },
+  { "CleanLibrary",               true,   "Clean the video library" },
   { "PageDown",                   true,   "Send a page down event to the pagecontrol with given id" },
   { "PageUp",                     true,   "Send a page up event to the pagecontrol with given id" },
   { "LastFM.Love",                false,  "Add the current playing last.fm radio track to the last.fm loved tracks" },
@@ -152,7 +156,7 @@ const BUILT_IN commands[] = {
   { "LoadProfile",                true,   "Load the specified profile (note; if locks are active it won't work)" },
   { "SetProperty",                true,   "Sets a window property for the current window (key,value)" },
   { "PlayWith",                   true,   "Play the selected item with the specified core" },
-#ifdef HAS_LIRC
+#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   { "LIRC.Stop",                  false,  "Removes XBMC as LIRC client" },
   { "LIRC.Start",                 false,  "Adds XBMC as LIRC client" },
 #endif
@@ -257,7 +261,7 @@ int CBuiltins::Execute(const CStdString& execString)
 
     CUtil::DeleteVideoDatabaseDirectoryCache();
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
-    g_graphicsContext.SendMessage(msg);
+    g_windowManager.SendMessage(msg);
   }
   else if (execute.Equals("takescreenshot"))
   {
@@ -290,7 +294,7 @@ int CBuiltins::Execute(const CStdString& execString)
     {
       // disable the screensaver
       g_application.WakeUpScreenSaverAndDPMS();
-      m_gWindowManager.ActivateWindow(iWindow, params, !execute.Equals("activatewindow"));
+      g_windowManager.ActivateWindow(iWindow, params, !execute.Equals("activatewindow"));
     }
     else
     {
@@ -302,8 +306,8 @@ int CBuiltins::Execute(const CStdString& execString)
   {
     int controlID = atol(params[0].c_str());
     int subItem = (params.size() > 1) ? atol(params[1].c_str())+1 : 0;
-    CGUIMessage msg(GUI_MSG_SETFOCUS, m_gWindowManager.GetActiveWindow(), controlID, subItem);
-    g_graphicsContext.SendMessage(msg);
+    CGUIMessage msg(GUI_MSG_SETFOCUS, g_windowManager.GetActiveWindow(), controlID, subItem);
+    g_windowManager.SendMessage(msg);
   }
 #ifdef HAS_PYTHON
   else if (execute.Equals("runscript") && params.size())
@@ -368,7 +372,7 @@ int CBuiltins::Execute(const CStdString& execString)
     else if (CUtil::IsRAR(params[0]))
       g_RarManager.ExtractArchive(params[0],strDestDirect);
     else
-      CLog::Log(LOGERROR, "CUtil::ExecuteBuiltin: No archive given");
+      CLog::Log(LOGERROR, "XBMC.Extract, No archive given");
   }
   else if (execute.Equals("runplugin"))
   {
@@ -383,7 +387,7 @@ int CBuiltins::Execute(const CStdString& execString)
     }
     else
     {
-      CLog::Log(LOGERROR, "CUtil::ExecBuiltIn, runplugin called with no arguments.");
+      CLog::Log(LOGERROR, "XBMC.RunPlugin called with no arguments.");
     }
   }
   else if (execute.Equals("playmedia"))
@@ -411,10 +415,10 @@ int CBuiltins::Execute(const CStdString& execString)
     }
 
     // restore to previous window if needed
-    if( m_gWindowManager.GetActiveWindow() == WINDOW_SLIDESHOW ||
-        m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO ||
-        m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION )
-        m_gWindowManager.PreviousWindow();
+    if( g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW ||
+        g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO ||
+        g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION )
+        g_windowManager.PreviousWindow();
 
     // reset screensaver
     g_application.ResetScreenSaver();
@@ -476,7 +480,7 @@ int CBuiltins::Execute(const CStdString& execString)
 
     CGUIMessage msg(GUI_MSG_START_SLIDESHOW, 0, 0, flags);
     msg.SetStringParam(params[0]);
-    CGUIWindow *pWindow = m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
+    CGUIWindow *pWindow = g_windowManager.GetWindow(WINDOW_SLIDESHOW);
     if (pWindow) pWindow->OnMessage(msg);
   }
   else if (execute.Equals("reloadskin"))
@@ -638,7 +642,7 @@ int CBuiltins::Execute(const CStdString& execString)
 
       // send message
       CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_RANDOM, 0, 0, iPlaylist, g_playlistPlayer.IsShuffled(iPlaylist));
-      m_gWindowManager.SendThreadMessage(msg);
+      g_windowManager.SendThreadMessage(msg);
 
     }
     else if (parameter.Left(6).Equals("repeat"))
@@ -676,7 +680,7 @@ int CBuiltins::Execute(const CStdString& execString)
 
       // send messages so now playing window can get updated
       CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_REPEAT, 0, 0, iPlaylist, (int)state);
-      m_gWindowManager.SendThreadMessage(msg);
+      g_windowManager.SendThreadMessage(msg);
     }
   }
   else if (execute.Equals("playwith"))
@@ -912,24 +916,24 @@ int CBuiltins::Execute(const CStdString& execString)
       bForce = true;
     if (params[0].CompareNoCase("all") == 0)
     {
-      m_gWindowManager.CloseDialogs(bForce);
+      g_windowManager.CloseDialogs(bForce);
     }
     else
     {
       int id = CButtonTranslator::TranslateWindowString(params[0]);
-      CGUIWindow *window = (CGUIWindow *)m_gWindowManager.GetWindow(id);
+      CGUIWindow *window = (CGUIWindow *)g_windowManager.GetWindow(id);
       if (window && window->IsDialog())
         ((CGUIDialog *)window)->Close(bForce);
     }
   }
   else if (execute.Equals("system.logoff"))
   {
-    if (m_gWindowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN || !g_settings.bUseLoginScreen)
+    if (g_windowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN || !g_settings.bUseLoginScreen)
       return -1;
 
     g_settings.m_iLastUsedProfileIndex = g_settings.m_iLastLoadedProfileIndex;
     g_application.StopPlaying();
-    CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+    CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
     if (musicScan && musicScan->IsScanning())
       musicScan->StopScanning();
 
@@ -937,26 +941,26 @@ int CBuiltins::Execute(const CStdString& execString)
     g_settings.LoadProfile(0); // login screen always runs as default user
     g_passwordManager.m_mapSMBPasswordCache.clear();
     g_passwordManager.bMasterUser = false;
-    m_gWindowManager.ActivateWindow(WINDOW_LOGIN_SCREEN);
+    g_windowManager.ActivateWindow(WINDOW_LOGIN_SCREEN);
     g_application.StartEventServer(); // event server could be needed in some situations
   }
   else if (execute.Equals("pagedown"))
   {
     int id = atoi(parameter.c_str());
-    CGUIMessage message(GUI_MSG_PAGE_DOWN, m_gWindowManager.GetFocusedWindow(), id);
-    g_graphicsContext.SendMessage(message);
+    CGUIMessage message(GUI_MSG_PAGE_DOWN, g_windowManager.GetFocusedWindow(), id);
+    g_windowManager.SendMessage(message);
   }
   else if (execute.Equals("pageup"))
   {
     int id = atoi(parameter.c_str());
-    CGUIMessage message(GUI_MSG_PAGE_UP, m_gWindowManager.GetFocusedWindow(), id);
-    g_graphicsContext.SendMessage(message);
+    CGUIMessage message(GUI_MSG_PAGE_UP, g_windowManager.GetFocusedWindow(), id);
+    g_windowManager.SendMessage(message);
   }
   else if (execute.Equals("updatelibrary") && params.size())
   {
     if (params[0].Equals("music"))
     {
-      CGUIDialogMusicScan *scanner = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+      CGUIDialogMusicScan *scanner = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
       if (scanner)
       {
         if (scanner->IsScanning())
@@ -967,7 +971,7 @@ int CBuiltins::Execute(const CStdString& execString)
     }
     if (params[0].Equals("video"))
     {
-      CGUIDialogVideoScan *scanner = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+      CGUIDialogVideoScan *scanner = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
       SScraperInfo info;
       VIDEO::SScanSettings settings;
       if (scanner)
@@ -977,6 +981,22 @@ int CBuiltins::Execute(const CStdString& execString)
         else
           CGUIWindowVideoBase::OnScan(params.size() > 1 ? params[1] : "",info,settings);
       }
+    }
+  }
+  else if (execute.Equals("cleanlibrary"))
+  {
+    CGUIDialogVideoScan *scanner = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+    if (scanner)
+    {
+      if (!scanner->IsScanning())
+      {
+         CVideoDatabase videodatabase;
+         videodatabase.Open();
+         videodatabase.CleanDatabase();
+         videodatabase.Close();
+      }
+      else
+        CLog::Log(LOGERROR, "XBMC.CleanLibrary is not possible while scanning for media info");
     }
   }
   else if (execute.Equals("lastfm.love"))
@@ -989,73 +1009,73 @@ int CBuiltins::Execute(const CStdString& execString)
   }
   else if (execute.Equals("control.move") && params.size() > 1)
   {
-    CGUIMessage message(GUI_MSG_MOVE_OFFSET, m_gWindowManager.GetFocusedWindow(), atoi(params[0].c_str()), atoi(params[1].c_str()));
-    g_graphicsContext.SendMessage(message);
+    CGUIMessage message(GUI_MSG_MOVE_OFFSET, g_windowManager.GetFocusedWindow(), atoi(params[0].c_str()), atoi(params[1].c_str()));
+    g_windowManager.SendMessage(message);
   }
   else if (execute.Equals("container.refresh"))
   { // NOTE: These messages require a media window, thus they're sent to the current activewindow.
     //       This shouldn't stop a dialog intercepting it though.
-    CGUIMessage message(GUI_MSG_NOTIFY_ALL, m_gWindowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE, 1); // 1 to reset the history
+    CGUIMessage message(GUI_MSG_NOTIFY_ALL, g_windowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE, 1); // 1 to reset the history
     message.SetStringParam(parameter);
-    g_graphicsContext.SendMessage(message);
+    g_windowManager.SendMessage(message);
   }
   else if (execute.Equals("container.update") && params.size())
   {
-    CGUIMessage message(GUI_MSG_NOTIFY_ALL, m_gWindowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE, 0);
+    CGUIMessage message(GUI_MSG_NOTIFY_ALL, g_windowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE, 0);
     message.SetStringParam(params[0]);
     if (params.size() > 1 && params[1].CompareNoCase("replace") == 0)
       message.SetParam2(1); // reset the history
-    g_graphicsContext.SendMessage(message);
+    g_windowManager.SendMessage(message);
   }
   else if (execute.Equals("container.nextviewmode"))
   {
-    CGUIMessage message(GUI_MSG_CHANGE_VIEW_MODE, m_gWindowManager.GetActiveWindow(), 0, 0, 1);
-    g_graphicsContext.SendMessage(message);
+    CGUIMessage message(GUI_MSG_CHANGE_VIEW_MODE, g_windowManager.GetActiveWindow(), 0, 0, 1);
+    g_windowManager.SendMessage(message);
   }
   else if (execute.Equals("container.previousviewmode"))
   {
-    CGUIMessage message(GUI_MSG_CHANGE_VIEW_MODE, m_gWindowManager.GetActiveWindow(), 0, 0, -1);
-    g_graphicsContext.SendMessage(message);
+    CGUIMessage message(GUI_MSG_CHANGE_VIEW_MODE, g_windowManager.GetActiveWindow(), 0, 0, -1);
+    g_windowManager.SendMessage(message);
   }
   else if (execute.Equals("container.setviewmode"))
   {
-    CGUIMessage message(GUI_MSG_CHANGE_VIEW_MODE, m_gWindowManager.GetActiveWindow(), 0, atoi(parameter.c_str()));
-    g_graphicsContext.SendMessage(message);
+    CGUIMessage message(GUI_MSG_CHANGE_VIEW_MODE, g_windowManager.GetActiveWindow(), 0, atoi(parameter.c_str()));
+    g_windowManager.SendMessage(message);
   }
   else if (execute.Equals("container.nextsortmethod"))
   {
-    CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, m_gWindowManager.GetActiveWindow(), 0, 0, 1);
-    g_graphicsContext.SendMessage(message);
+    CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, g_windowManager.GetActiveWindow(), 0, 0, 1);
+    g_windowManager.SendMessage(message);
   }
   else if (execute.Equals("container.previoussortmethod"))
   {
-    CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, m_gWindowManager.GetActiveWindow(), 0, 0, -1);
-    g_graphicsContext.SendMessage(message);
+    CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, g_windowManager.GetActiveWindow(), 0, 0, -1);
+    g_windowManager.SendMessage(message);
   }
   else if (execute.Equals("container.setsortmethod"))
   {
-    CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, m_gWindowManager.GetActiveWindow(), 0, atoi(parameter.c_str()));
-    g_graphicsContext.SendMessage(message);
+    CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, g_windowManager.GetActiveWindow(), 0, atoi(parameter.c_str()));
+    g_windowManager.SendMessage(message);
   }
   else if (execute.Equals("container.sortdirection"))
   {
-    CGUIMessage message(GUI_MSG_CHANGE_SORT_DIRECTION, m_gWindowManager.GetActiveWindow(), 0, 0);
-    g_graphicsContext.SendMessage(message);
+    CGUIMessage message(GUI_MSG_CHANGE_SORT_DIRECTION, g_windowManager.GetActiveWindow(), 0, 0);
+    g_windowManager.SendMessage(message);
   }
   else if (execute.Equals("control.message") && params.size() >= 2)
   {
     int controlID = atoi(params[0].c_str());
-    int windowID = (params.size() == 3) ? CButtonTranslator::TranslateWindowString(params[2].c_str()) : m_gWindowManager.GetActiveWindow();
+    int windowID = (params.size() == 3) ? CButtonTranslator::TranslateWindowString(params[2].c_str()) : g_windowManager.GetActiveWindow();
     if (params[1] == "moveup")
-      g_graphicsContext.SendMessage(GUI_MSG_MOVE_OFFSET, windowID, controlID, 1);
+      g_windowManager.SendMessage(GUI_MSG_MOVE_OFFSET, windowID, controlID, 1);
     else if (params[1] == "movedown")
-      g_graphicsContext.SendMessage(GUI_MSG_MOVE_OFFSET, windowID, controlID, -1);
+      g_windowManager.SendMessage(GUI_MSG_MOVE_OFFSET, windowID, controlID, -1);
     else if (params[1] == "pageup")
-      g_graphicsContext.SendMessage(GUI_MSG_PAGE_UP, windowID, controlID);
+      g_windowManager.SendMessage(GUI_MSG_PAGE_UP, windowID, controlID);
     else if (params[1] == "pagedown")
-      g_graphicsContext.SendMessage(GUI_MSG_PAGE_DOWN, windowID, controlID);
+      g_windowManager.SendMessage(GUI_MSG_PAGE_DOWN, windowID, controlID);
     else if (params[1] == "click")
-      g_graphicsContext.SendMessage(GUI_MSG_CLICKED, controlID, windowID);
+      g_windowManager.SendMessage(GUI_MSG_CLICKED, controlID, windowID);
   }
   else if (execute.Equals("sendclick") && params.size())
   {
@@ -1064,12 +1084,12 @@ int CBuiltins::Execute(const CStdString& execString)
       // have a window - convert it
       int windowID = CButtonTranslator::TranslateWindowString(params[0].c_str());
       CGUIMessage message(GUI_MSG_CLICKED, atoi(params[1].c_str()), windowID);
-      g_graphicsContext.SendMessage(message);
+      g_windowManager.SendMessage(message);
     }
     else
     { // single param - assume you meant the active window
-      CGUIMessage message(GUI_MSG_CLICKED, atoi(params[0].c_str()), m_gWindowManager.GetActiveWindow());
-      g_graphicsContext.SendMessage(message);
+      CGUIMessage message(GUI_MSG_CLICKED, atoi(params[0].c_str()), g_windowManager.GetActiveWindow());
+      g_windowManager.SendMessage(message);
     }
   }
   else if (execute.Equals("action") && params.size())
@@ -1084,7 +1104,7 @@ int CBuiltins::Execute(const CStdString& execString)
       if (params.size() == 2)
       { // have a window - convert it and send to it.
         int windowID = CButtonTranslator::TranslateWindowString(params[1].c_str());
-        CGUIWindow *window = m_gWindowManager.GetWindow(windowID);
+        CGUIWindow *window = g_windowManager.GetWindow(windowID);
         if (window)
           window->OnAction(action);
       }
@@ -1094,17 +1114,19 @@ int CBuiltins::Execute(const CStdString& execString)
   }
   else if (execute.Equals("setproperty") && params.size() == 2)
   {
-    CGUIWindow *window = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+    CGUIWindow *window = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
     if (window)
       window->SetProperty(params[0],params[1]);
   }
-#ifdef HAS_LIRC
+#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   else if (execute.Equals("lirc.stop"))
   {
     g_RemoteControl.Disconnect();
+    g_RemoteControl.setUsed(false);
   }
   else if (execute.Equals("lirc.start"))
   {
+    g_RemoteControl.setUsed(true);
     g_RemoteControl.Initialize();
   }
 #endif

@@ -20,7 +20,7 @@
  *
  */
 
-#include "system.h"
+#include "system.h" // for HAS_XRANDR, and Win32 types
 #include "Thread.h"
 #include "utils/CriticalSection.h"
 
@@ -47,8 +47,8 @@ class CVideoReferenceClock : public CThread
   public:
     CVideoReferenceClock();
 
-    void    GetTime(LARGE_INTEGER *ptime);
-    void    GetFrequency(LARGE_INTEGER *pfreq);
+    int64_t GetTime();
+    int64_t GetFrequency();
     void    SetSpeed(double Speed);
     double  GetSpeed();
     int     GetRefreshRate();
@@ -63,10 +63,11 @@ class CVideoReferenceClock : public CThread
 #endif
     
   private:
-    void Process();
-    bool UpdateRefreshrate(bool Forced = false);
-    void SendVblankSignal();
-    void UpdateClock(int NrVBlanks, bool CheckMissed);
+    void    Process();
+    bool    UpdateRefreshrate(bool Forced = false);
+    void    SendVblankSignal();
+    void    UpdateClock(int NrVBlanks, bool CheckMissed);
+    int64_t TimeOfNextVblank();
 
     int64_t m_CurrTime;          //the current time of the clock when using vblank as clock source
     int64_t m_AdjustedFrequency; //the frequency of the clock set by dvdplayer
@@ -81,8 +82,8 @@ class CVideoReferenceClock : public CThread
     int     m_TotalMissedVblanks;//total number of clock updates missed, used by codec information screen
     int64_t m_VblankTime;        //last time the clock was updated when using vblank as clock
 
-    CEvent m_Started;            //set when the vblank clock is started
-    CEvent m_VblankEvent;        //set when a vblank happens
+    CEvent  m_Started;            //set when the vblank clock is started
+    CEvent  m_VblankEvent;        //set when a vblank happens
 
     CCriticalSection m_CritSection;
 
@@ -123,7 +124,6 @@ class CVideoReferenceClock : public CThread
     unsigned int  m_Adapter;
     MONITORINFOEX m_Monitor;
     MONITORINFOEX m_PrevMonitor;
-    bool          m_IsVista;
 
 #elif defined(__APPLE__)
     bool SetupCocoa();

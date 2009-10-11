@@ -39,12 +39,6 @@ using namespace XFILE;
 using namespace DIRECTORY;
 using namespace std;
 
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
-
-//*********************************************************************************************
-
 #define SEEKTIMOUT 30000
 
 #ifdef HAS_RAR
@@ -133,7 +127,6 @@ CFileRar::CFileRar()
   m_bSeekable = true;
 }
 
-//*********************************************************************************************
 CFileRar::~CFileRar()
 {
 #ifdef HAS_RAR
@@ -156,7 +149,7 @@ CFileRar::~CFileRar()
   }
 #endif
 }
-//*********************************************************************************************
+
 bool CFileRar::Open(const CURL& url)
 {
   CStdString strFile;
@@ -236,7 +229,7 @@ bool CFileRar::Exists(const CURL& url)
 
   return bResult;
 }
-//*********************************************************************************************
+
 int CFileRar::Stat(const CURL& url, struct __stat64* buffer)
 {
   if (Open(url))
@@ -261,15 +254,12 @@ int CFileRar::Stat(const CURL& url, struct __stat64* buffer)
   return -1;
 }
 
-
-//*********************************************************************************************
 bool CFileRar::OpenForWrite(const CURL& url)
 {
   return false;
 }
 
-//*********************************************************************************************
-unsigned int CFileRar::Read(void *lpBuf, __int64 uiBufSize)
+unsigned int CFileRar::Read(void *lpBuf, int64_t uiBufSize)
 {
 #ifdef HAS_RAR
   if (!m_bOpen)
@@ -289,10 +279,10 @@ unsigned int CFileRar::Read(void *lpBuf, __int64 uiBufSize)
 
 
   byte* pBuf = (byte*)lpBuf;
-  __int64 uicBufSize = uiBufSize;
+  int64_t uicBufSize = uiBufSize;
   if (m_iDataInBuffer > 0)
   {
-    __int64 iCopy = uiBufSize<m_iDataInBuffer?uiBufSize:m_iDataInBuffer;
+    int64_t iCopy = uiBufSize<m_iDataInBuffer?uiBufSize:m_iDataInBuffer;
     memcpy(lpBuf,m_szStartOfBuffer,size_t(iCopy));
     m_szStartOfBuffer += iCopy;
     m_iDataInBuffer -= int(iCopy);
@@ -349,13 +339,11 @@ unsigned int CFileRar::Read(void *lpBuf, __int64 uiBufSize)
 #endif
 }
 
-//*********************************************************************************************
-unsigned int CFileRar::Write(void *lpBuf, __int64 uiBufSize)
+unsigned int CFileRar::Write(void *lpBuf, int64_t uiBufSize)
 {
   return 0;
 }
 
-//*********************************************************************************************
 void CFileRar::Close()
 {
 #ifdef HAS_RAR
@@ -381,8 +369,7 @@ void CFileRar::Close()
 #endif
 }
 
-//*********************************************************************************************
-__int64 CFileRar::Seek(__int64 iFilePosition, int iWhence)
+int64_t CFileRar::Seek(int64_t iFilePosition, int iWhence)
 {
 #ifdef HAS_RAR
   if (!m_bOpen)
@@ -491,8 +478,7 @@ __int64 CFileRar::Seek(__int64 iFilePosition, int iWhence)
 #endif
 }
 
-//*********************************************************************************************
-__int64 CFileRar::GetLength()
+int64_t CFileRar::GetLength()
 {
   if (!m_bOpen)
     return 0;
@@ -503,8 +489,7 @@ __int64 CFileRar::GetLength()
   return m_iFileSize;
 }
 
-//*********************************************************************************************
-__int64 CFileRar::GetPosition()
+int64_t CFileRar::GetPosition()
 {
   if (!m_bOpen)
     return -1;
@@ -515,7 +500,7 @@ __int64 CFileRar::GetPosition()
   return m_iFilePosition;
 }
 
-int CFileRar::Write(const void* lpBuf, __int64 uiBufSize)
+int CFileRar::Write(const void* lpBuf, int64_t uiBufSize)
 {
   return -1;
 }
@@ -525,6 +510,7 @@ void CFileRar::Flush()
   if (m_bUseFile)
     m_File.Flush();
 }
+
 void CFileRar::InitFromUrl(const CURL& url)
 {
   url.GetURL(m_strUrl);
@@ -705,5 +691,4 @@ bool CFileRar::OpenInArchive()
   return false;
 #endif
 }
-
 

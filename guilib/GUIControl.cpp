@@ -136,7 +136,7 @@ void CGUIControl::DynamicResourceAlloc(bool bOnOff)
 // 1. animate and set the animation transform
 // 2. if visible, paint
 // 3. reset the animation transform
-void CGUIControl::DoRender(DWORD currentTime)
+void CGUIControl::DoRender(unsigned int currentTime)
 {
   Animate(currentTime);
   if (m_hasCamera)
@@ -284,10 +284,10 @@ void CGUIControl::OnPrevControl()
 
 bool CGUIControl::SendWindowMessage(CGUIMessage &message)
 {
-  CGUIWindow *pWindow = m_gWindowManager.GetWindow(GetParentID());
+  CGUIWindow *pWindow = g_windowManager.GetWindow(GetParentID());
   if (pWindow)
     return pWindow->OnMessage(message);
-  return g_graphicsContext.SendMessage(message);
+  return g_windowManager.SendMessage(message);
 }
 
 int CGUIControl::GetID(void) const
@@ -739,7 +739,7 @@ void CGUIControl::UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentPro
   }
 }
 
-void CGUIControl::Animate(DWORD currentTime)
+void CGUIControl::Animate(unsigned int currentTime)
 {
   // check visible state outside the loop, as it could change
   GUIVISIBLE visible = m_visible;
@@ -872,7 +872,7 @@ void CGUIControl::ExecuteActions(const vector<CGUIActionDescriptor> &actions)
   {
     CGUIMessage message(GUI_MSG_EXECUTE, savedID, savedParent);
     message.SetAction(savedActions[i]);
-    g_graphicsContext.SendMessage(message);
+    g_windowManager.SendMessage(message);
   }
 }
 

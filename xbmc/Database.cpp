@@ -61,11 +61,11 @@ void CDatabase::Split(const CStdString& strFileNameAndPath, CStdString& strPath,
   strFileName = strFileNameAndPath.Right(strFileNameAndPath.size() - i);
 }
 
-DWORD CDatabase::ComputeCRC(const CStdString &text)
+uint32_t CDatabase::ComputeCRC(const CStdString &text)
 {
   Crc32 crc;
   crc.ComputeFromLowerCase(text);
-  return (DWORD)crc;
+  return crc;
 }
 
 CStdString CDatabase::FormatSQL(CStdString strStmt, ...)
@@ -157,7 +157,7 @@ bool CDatabase::Open()
       }
       else
 //#endif
-      version = m_pDS->fv("idVersion").get_asInteger();
+      version = m_pDS->fv("idVersion").get_asInt();
     }
   }
   CDatabase::UpdateOldVersion(version); // always call this
@@ -227,7 +227,7 @@ bool CDatabase::Compress(bool bForce /* =true */)
       m_pDS->query("select iCompressCount from version");
       if (!m_pDS->eof())
       {
-        int iCount = m_pDS->fv(0).get_asInteger();
+        int iCount = m_pDS->fv(0).get_asInt();
         if (iCount > MAX_COMPRESS_COUNT)
           iCount = -1;
         m_pDS->close();

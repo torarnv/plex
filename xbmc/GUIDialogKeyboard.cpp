@@ -30,6 +30,7 @@
 #include "utils/RegExp.h"
 #include "GUIPassword.h"
 #include "utils/md5.h"
+#include "utils/TimeUtils.h"
 #include "xbox/XKGeneral.h"
 #include "Application.h"
 #include "AdvancedSettings.h"
@@ -141,48 +142,15 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
     uint8_t b = action.id & 0xFF;
     if (b == 0x25) // left
     {
-      if (g_advancedSettings.m_bNavVKeyboard)
-      {
-        CAction action;
-        action.id = ACTION_MOVE_LEFT;
-        return OnAction(action);
-      }
-      else
-       MoveCursor( -1);
-    }
-    else if (b == 0x26 && g_advancedSettings.m_bNavVKeyboard)
-    {
-      CAction action;
-      action.id = ACTION_MOVE_UP;
-      return OnAction(action);
+      MoveCursor( -1);
     }
     else if (b == 0x27) // right
-    {
-      if (g_advancedSettings.m_bNavVKeyboard)
-      {
-        CAction action;
-        action.id = ACTION_MOVE_RIGHT;
-        return OnAction(action);
-      }
-      else
-       MoveCursor(1);
-    }
-    else if (b == 0x28 && g_advancedSettings.m_bNavVKeyboard)
-    {
-      CAction action;
-      action.id = ACTION_MOVE_DOWN;
-      return OnAction(action);
+    { 
+      MoveCursor(1);
     }
     else if (b == 0x0D) // enter
     {
-      if (g_advancedSettings.m_bNavVKeyboard)
-      {
-        CAction action;
-        action.id = ACTION_SELECT_ITEM;
-        return OnAction(action);
-      }
-      else
-        OnOK();
+      OnOK();
     }
     else if (b == 0x08) Backspace();    // backspace
     else if (b == 0x1B) Close();        // escape
@@ -195,14 +163,7 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
     {
     case 13:  // enter
     case 10:  // enter
-      if (g_advancedSettings.m_bNavVKeyboard)
-      {
-        CAction action;
-        action.id = ACTION_SELECT_ITEM;
-        return OnAction(action);
-      }
-      else
-        OnOK();
+      OnOK();
       break;
     case 8:   // backspace
       Backspace();
@@ -313,7 +274,7 @@ void CGUIDialogKeyboard::Render()
 {
   // reset the hide state of the label when the remote
   // sms style input times out
-  if (m_lastRemoteClickTime && m_lastRemoteClickTime + REMOTE_SMS_DELAY < timeGetTime())
+  if (m_lastRemoteClickTime && m_lastRemoteClickTime + REMOTE_SMS_DELAY < CTimeUtils::GetFrameTime())
   {
     // finished inputting a sms style character - turn off our shift and symbol states
     ResetShiftAndSymbols();
@@ -330,7 +291,7 @@ void CGUIDialogKeyboard::UpdateLabel() // FIXME seems to be called twice for one
     if (m_hiddenInput)
     { // convert to *'s
       edit.Empty();
-      if (m_lastRemoteClickTime + REMOTE_SMS_DELAY > timeGetTime() && m_strEdit.size())
+      if (m_lastRemoteClickTime + REMOTE_SMS_DELAY > CTimeUtils::GetFrameTime() && m_strEdit.size())
       { // using the remove to input, so display the last key input
         edit.append(m_strEdit.size() - 1, L'*');
         edit.append(1, m_strEdit[m_strEdit.size() - 1]);
@@ -343,7 +304,7 @@ void CGUIDialogKeyboard::UpdateLabel() // FIXME seems to be called twice for one
     g_charsetConverter.wToUTF8(edit, utf8Edit);
     pEdit->SetLabel(utf8Edit);
     // Send off a search message
-    DWORD now = timeGetTime();
+    unsigned int now = CTimeUtils::GetFrameTime();
     // don't send until the REMOTE_SMS_DELAY has passed
     if (m_lastRemoteClickTime && m_lastRemoteClickTime + REMOTE_SMS_DELAY >= now)
       return;
@@ -351,7 +312,7 @@ void CGUIDialogKeyboard::UpdateLabel() // FIXME seems to be called twice for one
     { // send our filter message
       CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_FILTER_ITEMS);
       message.SetStringParam(utf8Edit);
-      g_graphicsContext.SendMessage(message);
+      g_windowManager.SendMessage(message);
     }
 
     if (m_filtering == FILTERING_SEARCH)
@@ -366,7 +327,7 @@ void CGUIDialogKeyboard::SendSearchMessage()
   // send our search message (only the active window needs it)
   CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_SEARCH_UPDATE);
   message.SetStringParam(utf8Edit);
-  CGUIWindow *window = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+  CGUIWindow *window = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
   if (window)
     window->OnMessage(message);
 }
@@ -394,7 +355,7 @@ void CGUIDialogKeyboard::OnClickButton(int iButtonControl)
 
 void CGUIDialogKeyboard::OnRemoteNumberClick(int key)
 {
-  DWORD now = timeGetTime();
+  unsigned int now = CTimeUtils::GetFrameTime();
 
   if (m_lastRemoteClickTime)
   { // a remote key has been pressed
@@ -553,7 +514,7 @@ void CGUIDialogKeyboard::UpdateButtons()
 //          false - unsucessful display of the keyboard or cancelled editing
 bool CGUIDialogKeyboard::ShowAndGetInput(CStdString& aTextString, const CStdString &strHeading, bool allowEmptyResult, bool hiddenInput /* = false */)
 {
-  CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)m_gWindowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
+  CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)g_windowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
 
   if (!pKeyboard)
     return false;
@@ -565,7 +526,7 @@ bool CGUIDialogKeyboard::ShowAndGetInput(CStdString& aTextString, const CStdStri
   pKeyboard->SetHiddenInput(hiddenInput);
   pKeyboard->SetText(aTextString);
   // do this using a thread message to avoid render() conflicts
-  ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_KEYBOARD, m_gWindowManager.GetActiveWindow()};
+  ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_KEYBOARD, g_windowManager.GetActiveWindow()};
   g_application.getApplicationMessenger().SendMessage(tMsg, true);
   pKeyboard->Close();
 
@@ -784,7 +745,7 @@ void CGUIDialogKeyboard::OnOK()
 
 bool CGUIDialogKeyboard::ShowAndGetFilter(CStdString &filter, bool searching)
 {
-  CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)m_gWindowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
+  CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)g_windowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
 
   if (!pKeyboard)
     return false;

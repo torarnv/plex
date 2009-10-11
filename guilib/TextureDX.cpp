@@ -21,7 +21,6 @@
 
 #include "TextureDX.h"
 #include "WindowingFactory.h"
-#include "../xbmc/FileSystem/SpecialProtocol.h"
 #include "utils/log.h"
 
 #ifdef HAS_DX
@@ -29,10 +28,9 @@
 /************************************************************************/
 /*    CDXTexture                                                       */
 /************************************************************************/
-CDXTexture::CDXTexture(unsigned int width, unsigned int height, unsigned int BPP)
-: CBaseTexture(width, height, BPP)
+CDXTexture::CDXTexture(unsigned int width, unsigned int height, unsigned int format)
+: CBaseTexture(width, height, format)
 {
-  Allocate(m_imageWidth, m_imageHeight, m_nBPP);
 }
 
 CDXTexture::~CDXTexture()
@@ -42,64 +40,80 @@ CDXTexture::~CDXTexture()
 
 void CDXTexture::CreateTextureObject()
 {
-  D3DFORMAT format;
+  D3DFORMAT format = D3DFMT_UNKNOWN;
 
-  if (m_nBPP == 8)
-    format = D3DFMT_LIN_A8;
-  else if (m_nBPP == 32)
-    format = D3DFMT_LIN_A8R8G8B8;
-  else
+  switch (m_format)
+  {
+  case XB_FMT_DXT1:
+    format = D3DFMT_DXT1;
+    break;
+  case XB_FMT_DXT3:
+    format = D3DFMT_DXT3;
+    break;
+  case XB_FMT_DXT5:
+  case XB_FMT_DXT5_YCoCg:
+    format = D3DFMT_DXT5;
+    break;
+  case XB_FMT_A8R8G8B8:
+    format = D3DFMT_A8R8G8B8;
+    break;
+  case XB_FMT_A8:
+    format = D3DFMT_A8;
+    break;
+  default:
     return;
+  }
 
-  SAFE_RELEASE(m_pTexture);
+  SAFE_RELEASE(m_texture);
 
-  D3DXCreateTexture(g_Windowing.Get3DDevice(), m_nTextureWidth, m_nTextureHeight, 1, 0, format, D3DPOOL_MANAGED , &m_pTexture);
+  D3DXCreateTexture(g_Windowing.Get3DDevice(), m_textureWidth, m_textureHeight, 1, 0, format, D3DPOOL_MANAGED , &m_texture);
 }
 
 void CDXTexture::DestroyTextureObject()
 {
-  SAFE_RELEASE(m_pTexture);
+  SAFE_RELEASE(m_texture);
 }
 
 void CDXTexture::LoadToGPU()
 {
-  if (!m_pPixels)
+  if (!m_pixels)
   {
     // nothing to load - probably same image (no change)
     return;
   }
 
-  if (m_pTexture == NULL)
+  if (m_texture == NULL)
   {
     CreateTextureObject();
-    if (m_pTexture == NULL)
+    if (m_texture == NULL)
     {
-      CLog::Log(LOGDEBUG, "CDXTexture::CDXTexture: Error creating new texture for size %d x %d", m_nTextureWidth, m_nTextureHeight);
+      CLog::Log(LOGDEBUG, "CDXTexture::CDXTexture: Error creating new texture for size %d x %d", m_textureWidth, m_textureHeight);
       return;
     }
   }
 
   D3DLOCKED_RECT lr;
-  if ( D3D_OK == m_pTexture->LockRect( 0, &lr, NULL, 0 ))
+  if ( D3D_OK == m_texture->LockRect( 0, &lr, NULL, 0 ))
   {
-    DWORD destPitch = lr.Pitch;
-    
-    DWORD srcPitch = m_imageWidth * m_nBPP / 8;
-    BYTE *pixels = (BYTE *)lr.pBits;
+    unsigned char *dst = (unsigned char *)lr.pBits;
+    unsigned char *src = m_pixels;
+    unsigned int dstPitch = lr.Pitch;
+    unsigned int srcPitch = GetPitch();
 
-    for (unsigned int y = 0; y < m_nTextureHeight; y++)
+    unsigned int rows = GetRows();
+    for (unsigned int y = 0; y < rows; y++)
     {
-      BYTE *dst = pixels + y * destPitch;
-      BYTE *src = m_pPixels + y * srcPitch;
-      memcpy(dst, src, srcPitch);
+      memcpy(dst, src, std::min(srcPitch, dstPitch));
+      src += srcPitch;
+      dst += dstPitch;
     }
   }
-  m_pTexture->UnlockRect(0);
+  m_texture->UnlockRect(0);
 
-  delete [] m_pPixels;
-  m_pPixels = NULL;
+  delete [] m_pixels;
+  m_pixels = NULL;
 
-  m_loadedToGPU = true;   
+  m_loadedToGPU = true;
 }
 
 #endif

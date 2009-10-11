@@ -22,7 +22,7 @@
  *
  */
 
-#include "system.h"
+#include "system.h" // for HAS_GL/HAS_GLES
 
 #include <vector>
 #include <string>
@@ -198,7 +198,7 @@ namespace Shaders {
                      , const std::string& frag)
       {
         m_pFP = new CGLSLPixelShader();
-        m_pFP->LoadSource(vert);
+        m_pFP->LoadSource(frag);
         m_pVP = new CGLSLVertexShader();
         m_pVP->LoadSource(vert);
       }

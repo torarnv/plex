@@ -45,8 +45,8 @@ enum fType {
 	ft_WideString,
 	ft_Short,
 	ft_UShort,
-	ft_Long,
-	ft_ULong,
+	ft_Int,
+	ft_UInt,
 	ft_Float,
 	ft_Double,
 	ft_LongDouble,
@@ -65,8 +65,8 @@ private:
     char   char_value;
     short  short_value;
     unsigned short ushort_value;
-    long   long_value;
-    unsigned long  ulong_value;
+    int   int_value;
+    unsigned int uint_value;
     float  float_value;
     double double_value;
     int64_t int64_value;
@@ -82,15 +82,13 @@ public:
   field_value(const char c);
   field_value(const short s);
   field_value(const unsigned short us);
-  field_value(const long l);
-  field_value(const unsigned long ul);
-  field_value(const int i);
+  field_value(const int l);
+  field_value(const unsigned int ul);
   field_value(const float f);
   field_value(const double d);
   field_value(const int64_t i);
   field_value(const field_value & fv);
   ~field_value();
-  
 
   fType get_fType() const {return field_type;}
   bool get_isNull() const {return is_null;}
@@ -99,9 +97,8 @@ public:
   char get_asChar() const;
   short get_asShort() const;
   unsigned short get_asUShort() const;
-  long get_asLong() const;
-  int get_asInteger() const;
-  unsigned long get_asULong() const;
+  int get_asInt() const;
+  unsigned int get_asUInt() const;
   float get_asFloat() const;
   double get_asDouble() const;
   int64_t get_asInt64() const;
@@ -116,12 +113,10 @@ public:
     {set_asShort(s); return *this;}
   field_value& operator= (const unsigned short us)
     {set_asUShort(us); return *this;}
-  field_value& operator= (const long l)
-    {set_asLong(l); return *this;}
-  field_value& operator= (const unsigned long l)
-    {set_asULong(l); return *this;}
-  field_value& operator= (const int i)
-    {set_asLong(i); return *this;}
+  field_value& operator= (const int l)
+    {set_asInt(l); return *this;}
+  field_value& operator= (const unsigned int l)
+    {set_asUInt(l); return *this;}
   field_value& operator= (const float f)
     {set_asFloat(f); return *this;}
   field_value& operator= (const double d)
@@ -153,12 +148,12 @@ public:
       return os << fv.get_asUShort();
       break;
     }
-    case ft_Long: {
-      return os << fv.get_asLong();
+    case ft_Int: {
+      return os << fv.get_asInt();
       break;
     }
-    case ft_ULong: {
-      return os << fv.get_asULong();
+    case ft_UInt: {
+      return os << fv.get_asUInt();
       break;
     }
     case ft_Float: {
@@ -187,9 +182,8 @@ public:
   void set_asChar(const char c);
   void set_asShort(const short s);
   void set_asUShort(const unsigned short us);
-  void set_asInteger(const int i);
-  void set_asLong(const long l);
-  void set_asULong(const unsigned long l);
+  void set_asInt(const int l);
+  void set_asUInt(const unsigned int l);
   void set_asFloat(const float f);
   void set_asDouble(const double d);
   void set_asInt64(const int64_t i);

@@ -21,80 +21,109 @@
  *
  */
 
-#include "utils/Thread.h"
 #include "utils/CriticalSection.h"
+#include "utils/Job.h"
 #include "TextureManager.h"
 
-#include <assert.h>
+/*!
+ \ingroup textures,jobs
+ \brief Image loader job class
 
-class CGUILargeTextureManager : public CThread
+ Used by the CGUILargeTextureManager to perform asynchronous loading of textures.
+
+ \sa CGUILargeTextureManager and CJob
+ */
+class CImageLoader : public CJob
+{
+public:
+  CImageLoader(const CStdString &path);
+  virtual ~CImageLoader();
+
+  /*!
+   \brief Work function that loads in a particular image.
+   */
+  virtual void DoWork();
+  
+  CStdString    m_path; ///< path of image to load
+  CBaseTexture *m_texture; ///< Texture object to load the image into \sa CBaseTexture.
+};
+
+/*!
+ \ingroup textures
+ \brief Background texture loading manager
+ 
+ Used to load textures for the user interface asynchronously, allowing fluid framerates
+ while background loading textures.
+ 
+ \sa IJobCallback, CGUITexture
+ */
+class CGUILargeTextureManager : public IJobCallback
 {
 public:
   CGUILargeTextureManager();
   virtual ~CGUILargeTextureManager();
 
-  virtual void Process();
+  /*!
+   \brief Callback from CImageLoader on completion of a loaded image
+   
+   Transfers texture information from the loading job to our allocated texture list.
+   
+   \sa CImageLoader, IJobCallback
+   */
+  virtual void OnJobComplete(unsigned int jobID, CJob *job);
 
-  bool GetImage(const CStdString &path, CTextureArray &texture, int &orientation, bool firstRequest);
+  /*!
+   \brief Request a texture to be loaded in the background.
+   
+   Loaded textures are reference counted, hence this call may immediately return with the texture
+   object filled if the texture has been previously loaded, else will return with an empty texture
+   object if it is being loaded.
+   
+   \param path path of the image to load.
+   \param texture texture object to hold the resulting texture
+   \param orientation orientation of resulting texture
+   \param firstRequest true if this is the first time we are requesting this texture
+   \return true if the image exists, else false.
+   \sa CGUITextureArray and CGUITexture
+   */
+  bool GetImage(const CStdString &path, CTextureArray &texture, bool firstRequest);
+  
+  /*!
+   \brief Request a texture to be unloaded.
+   
+   When textures are finished with, this function should be called.  This decrements the texture's
+   reference count, and schedules it to be unloaded once the reference count reaches zero.  If the
+   texture is still queued for loading, or is in the process of loading, the image load is cancelled.
+   
+   \param path path of the image to release.
+   \param immediately if set true the image is immediately unloaded once its reference count reaches zero
+                      rather than being unloaded after a delay.
+   */  
   void ReleaseImage(const CStdString &path, bool immediately = false);
 
+  /*!
+   \brief Cleanup images that are no longer in use.
+   
+   Loaded textures are reference counted, and upon reaching reference count 0 through ReleaseImage()
+   they are flagged as unused with the current time.  After a delay they may be unloaded, hence
+   CleanupUnusedImages() should be called periodically to ensure this occurs.
+   */
   void CleanupUnusedImages();
 
-protected:
+private:
   class CLargeTexture
   {
   public:
-    CLargeTexture(const CStdString &path)
-    {
-      m_path = path;
-      m_orientation = 0;
-      m_refCount = 1;
-      m_timeToDelete = 0;
-    };
+    CLargeTexture(const CStdString &path);
+    virtual ~CLargeTexture();
 
-    virtual ~CLargeTexture()
-    {
-      assert(m_refCount == 0);
-      m_texture.Free();
-    };
-
-    void AddRef() { m_refCount++; };
-    bool DecrRef(bool deleteImmediately)
-    {
-      assert(m_refCount);
-      m_refCount--;
-      if (m_refCount == 0)
-      {
-        if (deleteImmediately)
-          delete this;
-        else
-          m_timeToDelete = timeGetTime() + TIME_TO_DELETE;
-        return true;
-      }
-      return false;
-    };
-
-    bool DeleteIfRequired()
-    {
-      if (m_refCount == 0 && m_timeToDelete < timeGetTime())
-      {
-        delete this;
-        return true;
-      }
-      return false;
-    };
-
-    void SetTexture(CBaseTexture* texture, int width, int height, int orientation)
-    {
-      assert(!m_texture.size());
-      if (texture)
-        m_texture.Set(texture, width, height);
-      m_orientation = orientation;
-    };
-
+    void AddRef();
+    bool DecrRef(bool deleteImmediately);
+    bool DeleteIfRequired();
+    void SetTexture(CBaseTexture* texture);
+    
     const CStdString &GetPath() const { return m_path; };
     const CTextureArray &GetTexture() const { return m_texture; };
-    int GetOrientation() const { return m_orientation; };
 
   private:
     static const unsigned int TIME_TO_DELETE = 2000;
@@ -102,20 +131,17 @@ protected:
     unsigned int m_refCount;
     CStdString m_path;
     CTextureArray m_texture;
-    int m_orientation;
     unsigned int m_timeToDelete;
   };
 
   void QueueImage(const CStdString &path);
 
-private:
-  std::vector<CLargeTexture *> m_queued;
+  std::vector< std::pair<unsigned int, CLargeTexture *> > m_queued;
   std::vector<CLargeTexture *> m_allocated;
   typedef std::vector<CLargeTexture *>::iterator listIterator;
+  typedef std::vector< std::pair<unsigned int, CLargeTexture *> >::iterator queueIterator;
 
   CCriticalSection m_listSection;
-  CEvent m_listEvent;
-  bool m_running;
 };
 
 extern CGUILargeTextureManager g_largeTextureManager;

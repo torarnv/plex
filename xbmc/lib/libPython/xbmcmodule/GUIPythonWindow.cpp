@@ -84,14 +84,14 @@ bool CGUIPythonWindow::OnMessage(CGUIMessage& message)
   {
     case GUI_MSG_WINDOW_DEINIT:
     {
-      m_gWindowManager.ShowOverlay(OVERLAY_STATE_SHOWN);
+      g_windowManager.ShowOverlay(OVERLAY_STATE_SHOWN);
     }
     break;
 
     case GUI_MSG_WINDOW_INIT:
     {
       CGUIWindow::OnMessage(message);
-      m_gWindowManager.ShowOverlay(OVERLAY_STATE_HIDDEN);
+      g_windowManager.ShowOverlay(OVERLAY_STATE_HIDDEN);
       return true;
     }
     break;
@@ -148,7 +148,7 @@ void CGUIPythonWindow::SetCallbackWindow(PyObject *object)
   pCallbackWindow = object;
 }
 
-void CGUIPythonWindow::WaitForActionEvent(DWORD timeout)
+void CGUIPythonWindow::WaitForActionEvent(unsigned int timeout)
 {
   g_pythonParser.WaitForEvent(m_actionEvent, timeout);
   ResetEvent(m_actionEvent);
