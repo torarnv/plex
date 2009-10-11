@@ -1185,6 +1185,9 @@ const char* Cocoa_GetAppIcon(const char *applicationPath)
 
 bool Cocoa_IsAppBundle(const char* filePath)
 {
+  if (filePath == 0)
+    return false;
+  
   NSString* appPath = [NSString stringWithUTF8String:filePath];
   NSFileManager* fm = [NSFileManager defaultManager];
   return (([appPath rangeOfString:@".app"].location != NSNotFound) &&
@@ -1197,6 +1200,9 @@ bool Cocoa_IsAppBundle(const char* filePath)
 
 bool Cocoa_IsWflowBundle(const char* filePath)
 {
+  if (filePath == 0)
+    return false;
+  
   NSString* appPath = [NSString stringWithUTF8String:filePath];
   NSFileManager* fm = [NSFileManager defaultManager];
   return (([appPath rangeOfString:@".workflow"].location != NSNotFound) &&
