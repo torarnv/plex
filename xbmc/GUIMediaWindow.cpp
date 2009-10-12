@@ -44,6 +44,7 @@
 #include "PluginSettings.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogOK.h"
+#include "GUIDialogRating.h"
 #include "PlayList.h"
 #include "PlexDirectory.h"
 
@@ -1393,6 +1394,11 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
   if (item == NULL)
      return;
   
+  if (item->HasProperty("isRateable") && item->GetPropertyBOOL("isRateable") && item->HasProperty("ratingKey") && item->HasProperty("pluginIdentifier"))
+  {
+    buttons.Add(CONTEXT_BUTTON_RATING, item->HasProperty("userRating") ? 40206 : 40205);
+  }
+  
   for (int i=0; i < item->m_contextItems.size(); ++i)
   {
     CFileItemPtr contextItem = item->m_contextItems[i];
@@ -1457,6 +1463,35 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CURL url(m_vecItems->Get(itemNumber)->m_strPath);
       CGUIDialogPluginSettings::ShowAndGetInput(url);
       return true;
+    }
+  case CONTEXT_BUTTON_RATING:
+    {
+      CFileItemPtr item = m_vecItems->Get(itemNumber);
+      
+      bool hasUserRating = item->HasProperty("userRating");
+      
+      int newRating = CGUIDialogRating::ShowAndGetInput(hasUserRating ? 40206 : 40205,
+                                                        item->GetVideoInfoTag()->m_strTitle,
+                                                        hasUserRating? item->GetPropertyInt("userRating") : (int)item->GetVideoInfoTag()->m_fRating);
+      
+      if (newRating >= 0 && newRating <= 10)
+      {
+        CStdString pluginIdentifier = item->GetProperty("pluginIdentifier");
+        CStdString ratingKey = item->GetProperty("ratingKey");
+        CStdString callbackUrl;
+        
+        printf("New rating for key %s in plugin %s: %d\n", ratingKey.c_str(), pluginIdentifier.c_str(), newRating);
+        callbackUrl.Format("/:/rate?key=%s&identifier=%s&rating=%d", ratingKey, pluginIdentifier, newRating);
+        callbackUrl = CPlexDirectory::ProcessUrl(m_vecItems->m_strPath, callbackUrl, false);
+        printf("Callback URL is %s\n", callbackUrl.c_str());
+        
+        //TODO: Send back to PMS
+        
+        int selectedItem = m_viewControl.GetSelectedItem();
+        Update(m_vecItems->m_strPath);
+        m_viewControl.SetSelectedItem(selectedItem);
+      }
+      
     }
   case CONTEXT_BUTTON_USER1:
   case CONTEXT_BUTTON_USER2:

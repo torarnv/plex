@@ -11,6 +11,7 @@
 		1A01F0FF0E7D37AA00DC186E /* SUPlexBackgroundUpdateToastDriver.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1A01F0F90E7D37AA00DC186E /* SUPlexBackgroundUpdateToastDriver.mm */; };
 		1A01F1000E7D37AA00DC186E /* SUPlexUpdateDriver.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1A01F0FB0E7D37AA00DC186E /* SUPlexUpdateDriver.mm */; };
 		1A01F1010E7D37AA00DC186E /* SUPlexUpdater.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1A01F0FD0E7D37AA00DC186E /* SUPlexUpdater.mm */; };
+		1A23236E1082809A0056F996 /* GUIDialogRating.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A23236D1082809A0056F996 /* GUIDialogRating.cpp */; };
 		1A2C5DE90E7EF479002F23FA /* relaunch.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A2C5DE80E7EF479002F23FA /* relaunch.m */; };
 		1A2C5DEC0E7EF4BD002F23FA /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A2C5DEB0E7EF4BD002F23FA /* AppKit.framework */; };
 		1A2C5DF70E7EF598002F23FA /* relaunch in Copy Relaunch */ = {isa = PBXBuildFile; fileRef = 1A2C5DE30E7EF410002F23FA /* relaunch */; };
@@ -1002,6 +1003,8 @@
 		1A01F0FC0E7D37AA00DC186E /* SUPlexUpdater.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUPlexUpdater.h; sourceTree = "<group>"; };
 		1A01F0FD0E7D37AA00DC186E /* SUPlexUpdater.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SUPlexUpdater.mm; sourceTree = "<group>"; };
 		1A01F0FE0E7D37AA00DC186E /* SUUpdateDriver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUUpdateDriver.h; sourceTree = "<group>"; };
+		1A23236C1082809A0056F996 /* GUIDialogRating.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogRating.h; sourceTree = "<group>"; };
+		1A23236D1082809A0056F996 /* GUIDialogRating.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogRating.cpp; sourceTree = "<group>"; };
 		1A2C5DBB0E7EE410002F23FA /* SUInstaller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUInstaller.h; sourceTree = "<group>"; };
 		1A2C5DE30E7EF410002F23FA /* relaunch */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = relaunch; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A2C5DE80E7EF479002F23FA /* relaunch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = relaunch.m; sourceTree = "<group>"; };
@@ -4194,6 +4197,8 @@
 				E38E1ED30D25F9FD00618676 /* XBTimeZone.h */,
 				E38E1ED40D25F9FD00618676 /* XBVideoConfig.cpp */,
 				E38E1ED50D25F9FD00618676 /* XBVideoConfig.h */,
+				1A23236C1082809A0056F996 /* GUIDialogRating.h */,
+				1A23236D1082809A0056F996 /* GUIDialogRating.cpp */,
 			);
 			path = xbmc;
 			sourceTree = "<group>";
@@ -7523,6 +7528,7 @@
 				1A57382F0F8EC940001943A9 /* GUIWindowNowPlaying.cpp in Sources */,
 				E3A0E2E40FB195E1005CABFE /* PlexMediaServerScrobbler.cpp in Sources */,
 				E315944410796A9F00F4EA68 /* Compressors.cpp in Sources */,
+				1A23236E1082809A0056F996 /* GUIDialogRating.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

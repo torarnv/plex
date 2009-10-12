@@ -884,6 +884,7 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
   else if (info.Equals("top250")) return LISTITEM_TOP250;
   else if (info.Equals("trailer")) return LISTITEM_TRAILER;
   else if (info.Equals("starrating")) return LISTITEM_STAR_RATING;
+  else if (info.Equals("stardiffuse")) return LISTITEM_STAR_DIFFUSE;
   else if (info.Equals("sortletter")) return LISTITEM_SORT_LETTER;
   else if (info.Left(9).Equals("property(")) return AddListItemProp(info.Mid(9, info.GetLength() - 10));
   return 0;
@@ -939,6 +940,7 @@ TIME_FORMAT CGUIInfoManager::TranslateTimeFormat(const CStdString &format)
 CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
 {
   CStdString strLabel;
+  
   if (info >= MULTI_INFO_START && info <= MULTI_INFO_END)
     return GetMultiInfoLabel(m_multiInfo[info - MULTI_INFO_START], contextWindow);
 
@@ -3929,6 +3931,17 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
       return letter;
     }
     break;
+  case LISTITEM_STAR_DIFFUSE:
+    {
+      CStdString communityRatingColor = item->GetProperty("communityRatingColor");
+      if (item->HasProperty("userRating"))
+        return "FFFFCC00";
+      else if (communityRatingColor.size() > 0)
+        return communityRatingColor;
+      else 
+        return "FFFFFFFF";
+    }
+    break;
   }
   return "";
 }
@@ -3947,13 +3960,17 @@ CStdString CGUIInfoManager::GetItemImage(const CFileItem *item, int info) const
   else if (info == LISTITEM_STAR_RATING)
   {
     CStdString rating;
-    if (item->HasVideoInfoTag())
-    { // rating for videos is assumed 0..10, so convert to 0..5
-      rating.Format("rating%d.png", (long)((item->GetVideoInfoTag()->m_fRating * 0.5f) + 0.5f));
+    if (item->HasProperty("userRating"))
+    {
+      rating.Format("rating%d.png", (long)(item->GetPropertyInt("userRating") + 0.5f));
+    }
+    else if (item->HasVideoInfoTag())
+    { // rating for videos
+      rating.Format("rating%d.png", (long)(item->GetVideoInfoTag()->m_fRating + 0.5f));
     }
     else if (item->HasMusicInfoTag())
-    { // song rating.
-      rating.Format("rating%c.png", item->GetMusicInfoTag()->GetRating());
+    { // song rating in old library is 0..5, so double it
+      rating.Format("rating%c.png", item->GetMusicInfoTag()->GetRating()*2);
     }
     return rating;
   }
