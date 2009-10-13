@@ -1485,7 +1485,9 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         callbackUrl = CPlexDirectory::ProcessUrl(m_vecItems->m_strPath, callbackUrl, false);
         printf("Callback URL is %s\n", callbackUrl.c_str());
         
-        //TODO: Send back to PMS
+        CFileItemList items;
+        CPlexDirectory plexDir;
+        plexDir.GetDirectory(callbackUrl, items);
         
         int selectedItem = m_viewControl.GetSelectedItem();
         Update(m_vecItems->m_strPath);
