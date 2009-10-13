@@ -175,10 +175,7 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   
   const char* httpCookies = root->Attribute("httpCookies");
   const char* userAgent = root->Attribute("userAgent");
-  
-  // Check if we should enable user ratings (TODO: Remove this check once global ratings are available)
-  const char* enableUserRatings = root->Attribute("enableUserRatings");
-  
+    
   const char* pluginIdentifier = root->Attribute("identifier");
   
   // Set fanart on items if they don't have their own, or if individual item fanart is disabled
@@ -204,9 +201,6 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     
     if (communityRatingColor)
       pItem->SetProperty("communityRatingColor", communityRatingColor);
-    
-    if (enableUserRatings && strcmp(enableUserRatings, "1") == 0)
-      pItem->SetProperty("isRateable", true);
     
     if (pluginIdentifier)
       pItem->SetProperty("pluginIdentifier", pluginIdentifier);

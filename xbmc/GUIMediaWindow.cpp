@@ -1394,7 +1394,7 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
   if (item == NULL)
      return;
   
-  if (item->HasProperty("isRateable") && item->GetPropertyBOOL("isRateable") && item->HasProperty("ratingKey") && item->HasProperty("pluginIdentifier"))
+  if (item->HasProperty("ratingKey") && item->HasProperty("pluginIdentifier"))
   {
     buttons.Add(CONTEXT_BUTTON_RATING, item->HasProperty("userRating") ? 40206 : 40205);
   }
