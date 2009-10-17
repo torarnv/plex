@@ -1485,13 +1485,15 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         callbackUrl = CPlexDirectory::ProcessUrl(m_vecItems->m_strPath, callbackUrl, false);
         printf("Callback URL is %s\n", callbackUrl.c_str());
         
-        CFileItemList items;
-        CPlexDirectory plexDir;
-        plexDir.GetDirectory(callbackUrl, items);
-        
-        int selectedItem = m_viewControl.GetSelectedItem();
-        Update(m_vecItems->m_strPath);
-        m_viewControl.SetSelectedItem(selectedItem);
+        CFileCurl m_http;
+        CURL url(callbackUrl);
+        url.SetProtocol("http");
+        url.SetPort(32400);
+        if (m_http.Open(url, false) == false)
+        {
+          CLog::Log(LOGERROR, "Unable to set rating for key %s in plug-in %s", ratingKey.c_str(), pluginIdentifier.c_str());
+        }
+        item->SetProperty("userRating", newRating);
       }
       
     }
