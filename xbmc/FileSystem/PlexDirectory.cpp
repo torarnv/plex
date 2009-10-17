@@ -414,7 +414,7 @@ class PlexMediaNode
      const char* userRating = el.Attribute("userRating");
      if (userRating && strlen(userRating) > 0)
      {
-       pItem->SetProperty("userRating", atoi(userRating));
+       pItem->SetProperty("userRating", atof(userRating));
      }
      
      const char* ratingKey = el.Attribute("ratingKey");
@@ -422,6 +422,12 @@ class PlexMediaNode
      {
        pItem->SetProperty("ratingKey", ratingKey);
      }
+     
+     CVideoInfoTag* videoInfo = pItem->GetVideoInfoTag();
+      
+     const char* rating = el.Attribute("rating");
+     if (rating && strlen(rating) > 0)
+       videoInfo->m_fRating = atof(rating);
      
      return pItem;
    }
@@ -591,10 +597,6 @@ class PlexMediaVideo : public PlexMediaNode
     CVideoInfoTag videoInfo;
     videoInfo.m_strTitle = el.Attribute("title");
     videoInfo.m_strPlot = videoInfo.m_strPlotOutline = el.Attribute("summary");
-    
-    const char* rating = el.Attribute("rating");
-    if (rating && strlen(rating) > 0)
-      videoInfo.m_fRating = atof(rating);
     
     const char* year = el.Attribute("year");
     if (year)
