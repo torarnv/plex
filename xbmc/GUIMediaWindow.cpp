@@ -1494,6 +1494,7 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         item->SetProperty("userRating", newRating);
       }
       
+      return true;
     }
   case CONTEXT_BUTTON_USER1:
   case CONTEXT_BUTTON_USER2:
