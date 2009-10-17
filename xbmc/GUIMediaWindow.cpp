@@ -1470,7 +1470,7 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       
       bool hasUserRating = item->HasProperty("userRating");
       
-      int newRating = CGUIDialogRating::ShowAndGetInput(hasUserRating ? 40206 : 40205,
+      int newRating = CGUIDialogRating::ShowAndGetInput(hasUserRating ? 40208 : 40207,
                                                         item->GetVideoInfoTag()->m_strTitle,
                                                         hasUserRating? item->GetPropertyInt("userRating") : (int)item->GetVideoInfoTag()->m_fRating);
       
@@ -1480,10 +1480,8 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         CStdString ratingKey = item->GetProperty("ratingKey");
         CStdString callbackUrl;
         
-        printf("New rating for key %s in plugin %s: %d\n", ratingKey.c_str(), pluginIdentifier.c_str(), newRating);
         callbackUrl.Format("/:/rate?key=%s&identifier=%s&rating=%d", ratingKey, pluginIdentifier, newRating);
         callbackUrl = CPlexDirectory::ProcessUrl(m_vecItems->m_strPath, callbackUrl, false);
-        printf("Callback URL is %s\n", callbackUrl.c_str());
         
         CFileCurl m_http;
         CURL url(callbackUrl);

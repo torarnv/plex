@@ -2122,7 +2122,9 @@
   <string id="40204">Waiting for response...</string>
   <string id="40205">Rate...</string>
   <string id="40206">Change Rating...</string>
-
+  <string id="40207">Set Rating</string>
+  <string id="40208">Change Rating</string>
+    
   <string id="42000">Could not read from input stream</string>
   <string id="42001">Could not determine input format</string>
   <string id="42002">Could not read file header</string>
