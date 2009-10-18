@@ -16,7 +16,7 @@
 	  <enter>Select</enter>
       <backspace>ParentDir</backspace>
       <m>ActivateWindow(PlayerControls)</m>
-      <s>ActivateWindow(shutdownmenu)</s>
+      <s>Plex.ActivateWindowWithFocus(Home,300,1)</s>
       <escape>PreviousMenu</escape>
       <i>Info</i>
       <c>ContextMenu</c>

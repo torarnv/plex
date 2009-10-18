@@ -16,8 +16,8 @@
 
   <Home>
     <joystick name="Apple Remote">
-      <button id="6">ActivateWindow(shutdownmenu)</button>              <!--- Menu --->
-      <button id="11">FullScreen</button>                               <!--- Hold Menu --->
+      <button id="11">Plex.ActivateWindowWithFocus(Home,300,1)</button> <!--- Hold Menu --->
+      <button id="12">ContextMenu</button>                              <!--- Hold Play --->
     </joystick>
   </Home>
   
