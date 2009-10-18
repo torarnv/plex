@@ -615,6 +615,8 @@ public:
   
   bool GetSlideshowShowDescription();
   void SetSlideshowShowDescription(bool show);
+
+  CStdString LocalizeTime(const CDateTime &time, TIME_FORMAT format) const;
   
   bool m_nowPlayingFlipped;
   
@@ -629,7 +631,6 @@ protected:
   int TranslateListItem(const CStdString &info);
   int TranslateMusicPlayerString(const CStdString &info) const;
   TIME_FORMAT TranslateTimeFormat(const CStdString &format);
-  CStdString LocalizeTime(const CDateTime &time, TIME_FORMAT format) const;
   bool GetItemBool(const CGUIListItem *item, int condition) const;
 
   // Conditional string parameters for testing are stored in a vector for later retrieval.
