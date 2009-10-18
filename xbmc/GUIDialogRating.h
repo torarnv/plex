@@ -18,4 +18,6 @@ public:
   virtual void SetRating(int iRating);
   
   virtual bool OnAction(const CAction &action);
+  
+  bool m_bConfirmed;
 };
