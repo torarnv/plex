@@ -12,6 +12,7 @@
 		1A01F1000E7D37AA00DC186E /* SUPlexUpdateDriver.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1A01F0FB0E7D37AA00DC186E /* SUPlexUpdateDriver.mm */; };
 		1A01F1010E7D37AA00DC186E /* SUPlexUpdater.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1A01F0FD0E7D37AA00DC186E /* SUPlexUpdater.mm */; };
 		1A23236E1082809A0056F996 /* GUIDialogRating.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A23236D1082809A0056F996 /* GUIDialogRating.cpp */; };
+		1A232876108A94510056F996 /* GUIDialogTimer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A232875108A94510056F996 /* GUIDialogTimer.cpp */; };
 		1A2C5DE90E7EF479002F23FA /* relaunch.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A2C5DE80E7EF479002F23FA /* relaunch.m */; };
 		1A2C5DEC0E7EF4BD002F23FA /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A2C5DEB0E7EF4BD002F23FA /* AppKit.framework */; };
 		1A2C5DF70E7EF598002F23FA /* relaunch in Copy Relaunch */ = {isa = PBXBuildFile; fileRef = 1A2C5DE30E7EF410002F23FA /* relaunch */; };
@@ -1005,6 +1006,8 @@
 		1A01F0FE0E7D37AA00DC186E /* SUUpdateDriver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUUpdateDriver.h; sourceTree = "<group>"; };
 		1A23236C1082809A0056F996 /* GUIDialogRating.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogRating.h; sourceTree = "<group>"; };
 		1A23236D1082809A0056F996 /* GUIDialogRating.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogRating.cpp; sourceTree = "<group>"; };
+		1A232874108A94500056F996 /* GUIDialogTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogTimer.h; sourceTree = "<group>"; };
+		1A232875108A94510056F996 /* GUIDialogTimer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogTimer.cpp; sourceTree = "<group>"; };
 		1A2C5DBB0E7EE410002F23FA /* SUInstaller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUInstaller.h; sourceTree = "<group>"; };
 		1A2C5DE30E7EF410002F23FA /* relaunch */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = relaunch; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A2C5DE80E7EF479002F23FA /* relaunch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = relaunch.m; sourceTree = "<group>"; };
@@ -3791,6 +3794,8 @@
 		E38E14610D25F9F900618676 /* xbmc */ = {
 			isa = PBXGroup;
 			children = (
+				1A232874108A94500056F996 /* GUIDialogTimer.h */,
+				1A232875108A94510056F996 /* GUIDialogTimer.cpp */,
 				E3A0E2E30FB195E1005CABFE /* PlexMediaServerScrobbler.cpp */,
 				E3FD41920EF459C100C6172C /* PlayListURL.h */,
 				E3FD41930EF459C100C6172C /* PlayListURL.cpp */,
@@ -7529,6 +7534,7 @@
 				E3A0E2E40FB195E1005CABFE /* PlexMediaServerScrobbler.cpp in Sources */,
 				E315944410796A9F00F4EA68 /* Compressors.cpp in Sources */,
 				1A23236E1082809A0056F996 /* GUIDialogRating.cpp in Sources */,
+				1A232876108A94510056F996 /* GUIDialogTimer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

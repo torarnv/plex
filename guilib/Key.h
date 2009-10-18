@@ -415,6 +415,7 @@
 #define WINDOW_DIALOG_ACCESS_POINTS       10141
 #define WINDOW_DIALOG_FULLSCREEN_INFO     10142
 #define WINDOW_DIALOG_RATING              10200
+#define WINDOW_DIALOG_TIMER               10201
 
 #define WINDOW_MUSIC_PLAYLIST             10500
 #define WINDOW_MUSIC_FILES                10501

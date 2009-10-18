@@ -216,6 +216,7 @@
 #endif
 #include "GUIDialogFullScreenInfo.h"
 #include "GUIDialogRating.h"
+#include "GUIDialogTimer.h"
 
 #ifdef HAS_PERFORMACE_SAMPLE
 #include "utils/PerformanceSample.h"
@@ -1566,6 +1567,7 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIDialogLockSettings); // window id = 131
   m_gWindowManager.Add(new CGUIDialogContentSettings);        // window id = 132
   m_gWindowManager.Add(new CGUIDialogRating);                 // window id = 200
+  m_gWindowManager.Add(new CGUIDialogTimer);                 // window id = 201
 
   m_gWindowManager.Add(new CGUIWindowMusicPlayList);          // window id = 500
   m_gWindowManager.Add(new CGUIWindowMusicSongs);             // window id = 501
