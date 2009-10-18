@@ -29,4 +29,11 @@ class CGUIWindowHome :
 public:
   CGUIWindowHome(void);
   virtual ~CGUIWindowHome(void);
+  virtual bool OnAction(const CAction &action);
+  
+private:
+  virtual bool OnPopupMenu();
+  virtual bool CheckTimer(const CStdString& strExisting, const CStdString& strNew, int title, int line1, int line2);
+
 };
+
