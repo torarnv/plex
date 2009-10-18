@@ -15,6 +15,8 @@
 #include "Key.h"
 #include <boost/lexical_cast.hpp>
 
+#define TIMER_MAX 720
+
 using namespace std;
 
 CGUIDialogTimer::CGUIDialogTimer(void)
@@ -104,10 +106,10 @@ bool CGUIDialogTimer::OnAction(const CAction &action)
       return true;
     }
       
-    // Increase/decrease the timer on up/down (5 minute increments, between 0 and 360 minutes)
+    // Increase/decrease the timer on up/down (5 minute increments, between 0 and TIMER_MAX minutes)
     case ACTION_MOVE_UP:
     {
-      if (m_iTime < 360)
+      if (m_iTime < TIMER_MAX)
       {
         m_typedString = "";
         m_iTime = ((m_iTime / 5) + 1) * 5;
@@ -226,7 +228,7 @@ void CGUIDialogTimer::ConvertTypedTextToTime()
   string strHours = m_typedString.substr(0, 2);
   string strMinutes = m_typedString.substr(2, 2);
   m_iTime = (boost::lexical_cast<int>(strHours) * 60) + boost::lexical_cast<int>(strMinutes);
-  if (m_iTime > 360) m_iTime = 360;
+  if (m_iTime > TIMER_MAX) m_iTime = TIMER_MAX;
   ShowControl(101);
   UpdateLabels();
 }
