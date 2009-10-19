@@ -129,6 +129,7 @@ bool CGUIDialogTimer::OnAction(const CAction &action)
     }
     case ACTION_SELECT_ITEM:
     {
+      ConvertTypedTextToTime(); // Make sure we grab any text entered so far - this will abort if the user is not currently inputting.
       m_bConfirmed = true;
       Close(false);
       return true;
