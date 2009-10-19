@@ -1844,4 +1844,30 @@ voor deze visualisatie</string>
   <string id="29800">Bibliotheekmodus</string>
   <string id="29801">QWERTY-indeling toetsenbord</string>
   <string id="29999">Flikkerfilter toepassen op spellen</string>
+
+  <string id="40205">Waarderen...</string>
+  <string id="40206">Waardering wijzigen...</string>
+  <string id="40207">Waardering instellen</string>
+  <string id="40208">Waardering wijzigen</string>
+
+  <string id="40300">Afsluittimer instellen</string>
+  <string id="40301">Slaaptimer instellen</string>
+  <string id="40302">Uitschakeltimer instellen</string>
+  <string id="40305">Afsluittimer wijzigen</string>
+  <string id="40306">Slaaptimer wijzigen</string>
+  <string id="40307">Uitschakeltimer wijzigen</string>
+  <string id="40310">Plex zal worden afgesloten om</string>
+  <string id="40311">Het systeem zal naar slaapstand gaan om</string>
+  <string id="40312">Het systeem zal worden uitgeschakeld om</string>
+  <string id="40315">Je hebt reeds een afsluittimer ingesteld.</string>
+  <string id="40316">Je hebt reeds een slaaptimer ingesteld.</string>
+  <string id="40317">Je hebt reeds een uitschakeltimer ingesteld.</string>
+  <string id="40320">Wil je liever een afsluittimer instellen?</string>
+  <string id="40321">Wil je liever een slaaptimer instellen?</string>
+  <string id="40322">Wil je liever een uitschakeltimer instellen?</string>
+  <string id="40325">Afsluittimer is reeds ingesteld.</string>
+  <string id="40326">Slaaptimer is reeds ingesteld.</string>
+  <string id="40327">Uitschakeltimer is reeds ingesteld.</string>
+
+
 </strings>
