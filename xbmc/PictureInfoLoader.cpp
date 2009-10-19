@@ -66,6 +66,7 @@ bool CPictureInfoLoader::LoadItem(CFileItem* pItem)
   if (mapItem && mapItem->m_dateTime==pItem->m_dateTime && mapItem->HasPictureInfoTag())
   { // Query map if we previously cached the file on HD
     *pItem->GetPictureInfoTag() = *mapItem->GetPictureInfoTag();
+    pItem->SetProperty("description", pItem->GetPictureInfoTag()->GetInfo(SLIDE_COMMENT));
     pItem->SetThumbnailImage(mapItem->GetThumbnailImage());
     return true;
   }
@@ -73,6 +74,7 @@ bool CPictureInfoLoader::LoadItem(CFileItem* pItem)
   if (m_loadTags)
   { // Nothing found, load tag from file
     pItem->GetPictureInfoTag()->Load(pItem->m_strPath);
+    pItem->SetProperty("description", pItem->GetPictureInfoTag()->GetInfo(SLIDE_COMMENT));
     m_tagReads++;
   }
 
