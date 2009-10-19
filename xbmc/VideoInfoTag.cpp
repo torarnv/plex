@@ -61,7 +61,7 @@ void CVideoInfoTag::Reset()
   m_iEpisode = -1;
   m_iSpecialSortSeason = -1;
   m_iSpecialSortEpisode = -1;
-  m_fRating = 0.0f;
+  m_fRating = -2.0f;
   m_iDbId = -1;
   m_iBookmarkId = -1;
   m_fanart.m_xml = "";
