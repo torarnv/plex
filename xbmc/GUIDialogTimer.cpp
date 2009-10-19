@@ -170,7 +170,7 @@ void CGUIDialogTimer::Render()
     m_lastDateTime = dateTime;
   }
   
-  if (m_typingStopWatch.IsRunning() && m_typingStopWatch.GetElapsedSeconds() >= 5)
+  if (m_typingStopWatch.IsRunning() && m_typingStopWatch.GetElapsedSeconds() >= 3)
   {
     m_typingStopWatch.Stop();
     ConvertTypedTextToTime();
