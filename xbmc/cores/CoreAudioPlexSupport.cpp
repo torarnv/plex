@@ -314,8 +314,11 @@ PlexAudioDevicesPtr PlexAudioDevices::FindAll()
           if (!audioDevices->g_selectedDevice)
             audioDevices->g_selectedDevice = audioDevices->m_defaultDevice;
           
+          if (!audioDevices->g_selectedDevice)
+            CLog::Log(LOGERROR, "There are no usable audio devices, it appears.");
+          
           // Check if the selected device is alive and usable.
-          if (audioDevices->g_selectedDevice->isAlive() == false)
+          if (audioDevices->g_selectedDevice && audioDevices->g_selectedDevice->isAlive() == false)
           {
             CLog::Log(LOGWARNING, "Selected audio device is not alive, switching to default device.");
             audioDevices->g_selectedDevice = audioDevices->m_defaultDevice;
