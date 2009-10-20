@@ -85,5 +85,6 @@ protected:
   CGUIDialogProgress* m_dlgProgress;
   CVideoDatabase m_database;
 
+  virtual CBackgroundInfoLoader* GetBackgroundLoader() { return &m_thumbLoader; }
   CVideoThumbLoader m_thumbLoader;
 };

@@ -21,6 +21,7 @@
  *
  */
 
+#include "BackgroundInfoLoader.h"
 #include "GUIWindow.h"
 #include "FileSystem/VirtualDirectory.h"
 #include "FileSystem/DirectoryHistory.h"
@@ -83,6 +84,8 @@ protected:
   void OnRenameItem(int iItem);
 
 protected:
+  virtual CBackgroundInfoLoader* GetBackgroundLoader() { return 0; }
+  
   bool WaitForNetwork() const;
   CPoint GetContextPosition() const;
 

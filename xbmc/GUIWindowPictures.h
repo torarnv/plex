@@ -62,5 +62,6 @@ protected:
   DllImageLib m_ImageLib;
   bool m_forceShuffle;
   
+  virtual CBackgroundInfoLoader* GetBackgroundLoader() { return &m_thumbLoader; }
   CPictureThumbLoader m_thumbLoader;
 };

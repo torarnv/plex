@@ -1602,7 +1602,20 @@ void CGUIMediaWindow::Render()
       m_vecItems->ClearItems();
       m_vecItems->Append(m_mediaRefresher->getItemList());
       m_vecItems->m_autoRefresh = m_mediaRefresher->getItemList().m_autoRefresh;
+      
+      OnPrepareFileItems(*m_vecItems);
+      m_vecItems->FillInDefaultIcons();
+      OnFinalizeFileItems(*m_vecItems);
       m_viewControl.SetItems(*m_vecItems);
+      
+      // Thumbnails.
+      if (GetBackgroundLoader())
+      {
+        if (GetBackgroundLoader()->IsLoading())
+          GetBackgroundLoader()->StopThread();
+        
+        GetBackgroundLoader()->Load(*m_vecItems);
+      }
       
       // Whack the timer.
       m_refreshTimer.Reset();

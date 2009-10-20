@@ -10,6 +10,7 @@
 /********************************* Includes ***********************************/
 
 #include "stdafx.h"
+#include "GUIMediaWindow.h"
 #include "utils/MusicInfoScraper.h"
 #include "Application.h"
 #include "WebServer.h"
@@ -30,7 +31,6 @@
 #include "musicInfoTagLoaderFactory.h"
 #include "MusicDatabase.h"
 #include "GUIWindowSlideShow.h"
-#include "GUIMediaWindow.h"
 #include "GUIWindowFileManager.h"
 #include "GUIButtonScroller.h"
 #include "FileSystem/FactoryDirectory.h"
