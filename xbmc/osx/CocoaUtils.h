@@ -182,6 +182,11 @@ extern "C"
   
   void Cocoa_SetKeyboardBacklightControlEnabled(bool enabled);
   
+  //
+  // Compatibility check
+  //
+  void CheckOSCompatibility();
+  
 #ifdef __cplusplus
 }
 #endif

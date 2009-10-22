@@ -40,6 +40,7 @@ int main(int argc, char* argv[])
 #ifdef __APPLE__
   InstallCrashReporter();
   void* pool = InitializeAutoReleasePool();
+  CheckOSCompatibility();
 #endif
 
   CFileItemList playlist;

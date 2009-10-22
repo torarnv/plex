@@ -2140,9 +2140,7 @@
   <string id="40320">Would you like to set a quit timer instead?</string>
   <string id="40321">Would you like to set a sleep timer instead?</string>
   <string id="40322">Would you like to set a shut down timer instead?</string>
-  <string id="40325">Quit timer already set</string>
-  <string id="40326">Sleep timer already set</string>
-  <string id="40327">Shut down timer already set</string>
+  <string id="40325">Timer already set</string>
     
   <string id="42000">Could not read from input stream</string>
   <string id="42001">Could not determine input format</string>

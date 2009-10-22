@@ -1870,4 +1870,27 @@
   <string id="40202">flera källor kombinerats till en källa (multipath).</string>
   <string id="40203">Plex Mediaserver</string>
   <string id="40204">Väntar på respons...</string>
+  
+  <string id="40205">Betyg...</string>
+  <string id="40206">Ändra betyg...</string>
+  <string id="40207">Sätt betyg</string>
+  <string id="40208">Ändra betyg</string>
+
+  <string id="40300">Sätt timer för avstängning av Plex</string>
+  <string id="40301">Sätt timer för systemvila</string>
+  <string id="40302">Sätt timer för systemavstängning</string>
+  <string id="40305">Ändra timer för avstängning av Plex</string>
+  <string id="40306">Ändra timer för systemvila</string>
+  <string id="40307">Ändra timer för systemavstängning</string>
+  <string id="40310">Plex kommer stängas av kl</string>
+  <string id="40311">Systemet kommer sättas i vila kl</string>
+  <string id="40312">Systemet kommer stängas av kl</string>
+  <string id="40315">Du har redan satt en avstängnings-timer.</string>
+  <string id="40316">Du har redan satt en timer for systemvila.</string>
+  <string id="40317">Du har redan satt en systemavstängnings-timer.</string>
+  <string id="40320">Vill du sätta en timer för avstängning av Plex istället?</string>
+  <string id="40321">Vill du sätta en timer för systemvila istället?</string>
+  <string id="40322">Vill du sätta en timer för systemavstängning istället?</string>
+  <string id="40325">Timer redan satt</string>
+  
 </strings>

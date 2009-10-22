@@ -1865,9 +1865,7 @@ voor deze visualisatie</string>
   <string id="40320">Wil je liever een afsluittimer instellen?</string>
   <string id="40321">Wil je liever een slaaptimer instellen?</string>
   <string id="40322">Wil je liever een uitschakeltimer instellen?</string>
-  <string id="40325">Afsluittimer is reeds ingesteld.</string>
-  <string id="40326">Slaaptimer is reeds ingesteld.</string>
-  <string id="40327">Uitschakeltimer is reeds ingesteld.</string>
+  <string id="40325">Timer is reeds ingesteld.</string>
 
 
 </strings>
