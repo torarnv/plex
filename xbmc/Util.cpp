@@ -421,8 +421,6 @@ void CUtil::AutodetectPlexSources(CStdString strPlexPath, VECSOURCES& dstSources
     CUtil::AddSlashAtEnd(strPlexPath);
     if (plexDir.GetDirectory(strPlexPath, *fileItems))
     {
-      if (fileItems->Size() == 0) return;
-      
       // Make sure all items in the PlexDirectory are added as sources
       for ( int i = 0; i < fileItems->Size(); i++ )
       {
