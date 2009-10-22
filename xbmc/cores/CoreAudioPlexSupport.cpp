@@ -25,6 +25,16 @@
 PlexAudioDevicePtr PlexAudioDevices::g_selectedDevice;
 
 ///////////////////////////////////////////////////////////////////////////////
+void PlexAudioDevices::Initialize()
+{
+  // Tell the HAL to use its own thread.
+  OSStatus err = noErr;
+  CFRunLoopRef theRunLoop = 0;
+  AudioObjectPropertyAddress theAddress = { kAudioHardwarePropertyRunLoop, kAudioObjectPropertyScopeGlobal, kAudioObjectPropertyElementMaster };
+  SAFELY(AudioObjectSetPropertyData(kAudioObjectSystemObject, &theAddress, 0, NULL, sizeof(CFRunLoopRef), &theRunLoop));
+}
+
+///////////////////////////////////////////////////////////////////////////////
 PlexAudioDevice::PlexAudioDevice(AudioDeviceID deviceID)
   : m_deviceID(deviceID)
   , m_isValid(false)
@@ -277,7 +287,7 @@ PlexAudioDevicesPtr PlexAudioDevices::FindAll()
     int totalDeviceCount = paramSize / sizeof(AudioDeviceID);
     if (totalDeviceCount > 0)
     {
-      CLog::Log(LOGDEBUG, "System has %ld device(s)", totalDeviceCount);
+      CLog::Log(LOGDEBUG, "System has %d device(s)", totalDeviceCount);
 
       // Allocate the device ID array and retreive them.
       AudioDeviceID* pDevices = (AudioDeviceID* )malloc(paramSize);
@@ -342,6 +352,7 @@ PlexAudioDevicePtr PlexAudioDevices::FindByName(const string& audioDeviceName)
   PlexAudioDevicesPtr allDevices = FindAll();
   
   // Find the matching device.
+  CLog::Log(LOGINFO, "Looking for audio device '%s'", audioDeviceName.c_str());
   BOOST_FOREACH(PlexAudioDevicePtr device, allDevices->getDevices())
     if (device->getName() == audioDeviceName)
       return device;

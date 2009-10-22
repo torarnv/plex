@@ -80,6 +80,9 @@ class PlexAudioDevices
    PlexAudioDevicePtr          getDefaultDevice()  { return m_defaultDevice; }
    PlexAudioDevicePtr          getSelectedDevice() { return g_selectedDevice; }
    vector<PlexAudioDevicePtr>& getDevices()        { return m_audioDevices; }
+
+   /// Initialize.
+   static void Initialize();
    
    /// Get all devices.
    static boost::shared_ptr<PlexAudioDevices> FindAll();
