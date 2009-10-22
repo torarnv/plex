@@ -34,6 +34,7 @@
 
 #import "AdvancedSettingsController.h"
 #import "PlexApplication.h"
+#import "PlexCompatibility.h"
 
 extern int GetProcessPid(const char* processName);
 extern void CocoaPlus_Initialize();
@@ -1276,10 +1277,15 @@ void Cocoa_ExecAppleScript(const char* scriptSource)
 
 bool Cocoa_IsGUIShowing()
 {
-  return ([[AdvancedSettingsController sharedInstance] windowIsVisible] || [[PlexApplication sharedInstance] isAboutWindowVisible]);
+  return ([[AdvancedSettingsController sharedInstance] windowIsVisible] || [[PlexApplication sharedInstance] isAboutWindowVisible] || [[PlexCompatibility sharedInstance] userInterfaceVisible]);
 }
 
 void Cocoa_SetKeyboardBacklightControlEnabled(bool enabled)
 {
   [[AppleHardwareInfo sharedInstance] setKeyboardBacklightControlEnabled:enabled];
+}
+
+void CheckOSCompatibility()
+{
+  [[PlexCompatibility sharedInstance] checkCompatibility];
 }

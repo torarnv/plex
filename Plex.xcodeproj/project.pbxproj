@@ -34,6 +34,8 @@
 		1A5536300E86CCD4005AF349 /* GUIDialogUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A55362F0E86CCD4005AF349 /* GUIDialogUtils.cpp */; };
 		1A57382F0F8EC940001943A9 /* GUIWindowNowPlaying.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A57382E0F8EC940001943A9 /* GUIWindowNowPlaying.cpp */; };
 		1A6927FB0EAAB06100A01B8A /* SUPlexBackgroundUpdateDialogDriver.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A6927FA0EAAB06100A01B8A /* SUPlexBackgroundUpdateDialogDriver.m */; };
+		1AA19B9E108E8BCC008D2EAD /* PlexCompatibility.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AA19B9D108E8BCC008D2EAD /* PlexCompatibility.m */; };
+		1AA19C05108EAEDC008D2EAD /* HIDRemote.m in Sources */ = {isa = PBXBuildFile; fileRef = 34A2F55710899C9B00F6206C /* HIDRemote.m */; };
 		1AA456B70E7EA3DD004CC8D2 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AA456B60E7EA3DD004CC8D2 /* Security.framework */; };
 		1AD99BDD0E9EF07200503917 /* QTPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1AD99BDC0E9EF07200503917 /* QTPlayer.cpp */; };
 		1AD99C750E9FB54200503917 /* QuickTimeWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1AD99C740E9FB54200503917 /* QuickTimeWrapper.cpp */; };
@@ -1038,6 +1040,8 @@
 		1A57382E0F8EC940001943A9 /* GUIWindowNowPlaying.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowNowPlaying.cpp; sourceTree = "<group>"; };
 		1A6927F90EAAB06100A01B8A /* SUPlexBackgroundUpdateDialogDriver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUPlexBackgroundUpdateDialogDriver.h; sourceTree = "<group>"; };
 		1A6927FA0EAAB06100A01B8A /* SUPlexBackgroundUpdateDialogDriver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SUPlexBackgroundUpdateDialogDriver.m; sourceTree = "<group>"; };
+		1AA19B9C108E8BCC008D2EAD /* PlexCompatibility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlexCompatibility.h; sourceTree = "<group>"; };
+		1AA19B9D108E8BCC008D2EAD /* PlexCompatibility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlexCompatibility.m; sourceTree = "<group>"; };
 		1AA456B20E7EA2E7004CC8D2 /* SUConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUConstants.h; sourceTree = "<group>"; };
 		1AA456B60E7EA3DD004CC8D2 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
 		1AD99BDB0E9EF07200503917 /* QTPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTPlayer.h; sourceTree = "<group>"; };
@@ -3543,6 +3547,8 @@
 				EF5D577A0EB4833200B16174 /* CocoaUtilsPlus.mm */,
 				1A448E900F8059C1006E71B2 /* AdvancedSettingsController.h */,
 				1A448E910F8059C1006E71B2 /* AdvancedSettingsController.m */,
+				1AA19B9C108E8BCC008D2EAD /* PlexCompatibility.h */,
+				1AA19B9D108E8BCC008D2EAD /* PlexCompatibility.m */,
 			);
 			path = osx;
 			sourceTree = "<group>";
@@ -7542,6 +7548,8 @@
 				E315944410796A9F00F4EA68 /* Compressors.cpp in Sources */,
 				1A23236E1082809A0056F996 /* GUIDialogRating.cpp in Sources */,
 				1A232876108A94510056F996 /* GUIDialogTimer.cpp in Sources */,
+				1AA19B9E108E8BCC008D2EAD /* PlexCompatibility.m in Sources */,
+				1AA19C05108EAEDC008D2EAD /* HIDRemote.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
