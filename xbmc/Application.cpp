@@ -4280,12 +4280,12 @@ void CApplication::Stop()
     StopPlaying();
     
     // Stop playing is asynchronous.
-//    if (m_pPlayer)
-//    {
-//      CLog::Log(LOGNOTICE, "stop mplayer");
-//      delete m_pPlayer;
-//      m_pPlayer = NULL;
-//    }
+    if (m_pPlayer)
+    {
+      CLog::Log(LOGNOTICE, "stop mplayer");
+      delete m_pPlayer;
+      m_pPlayer = NULL;
+    }
 
 #if HAS_FILESYTEM_DAAP
     CLog::Log(LOGNOTICE, "stop daap clients");
@@ -4848,8 +4848,6 @@ void CApplication::OnQueueNextItem()
 
 void CApplication::OnPlayBackStopped()
 {
-  printf("On playback stopped\n");
-  
   // Re-enable sounds.
   g_audioManager.Enable(true);
 
@@ -4974,19 +4972,9 @@ void CApplication::StopPlaying()
       }
     }
     
-    // Asynchronously close the file if we can. 
     m_pPlayer->CloseFile();
-    
-    if (m_pPlayer->CanOpenAsync() == false)
-      FinishStopPlaying();
+    g_partyModeManager.Disable();
   }
-}
-
-void CApplication::FinishStopPlaying()
-{
-  // OK, we're really done closing the file. 
-  g_partyModeManager.Disable();
-  OnPlayBackStopped();
 }
 
 bool CApplication::NeedRenderFullScreen()

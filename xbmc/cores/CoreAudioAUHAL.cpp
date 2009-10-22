@@ -63,28 +63,6 @@ bool CoreAudioAUHAL::s_lastPlayWasSpdif = false;
 
 struct CoreAudioDeviceParameters
 {
-  CoreAudioDeviceParameters()
-    : m_formatChangeEvent(true)
-    , device_id(0)
-    , au_component(0)
-    , au_unit(0)
-    , outputBuffer(0)
-    , outputBufferData(0)
-    , hardwareFrameLatency(0)
-    , b_digital(false)
-    , sInputIOProcID(0)
-    , i_stream_id(0)
-    , i_stream_index(0)
-    , b_revert(false)
-    , hardwareReady(false)
-    , m_bEncodeAC3(false)
-    {
-      memset(&rawSampleBuffer, 0, sizeof(rawSampleBuffer));
-      memset(&m_ac3encoder, 0, sizeof(m_ac3encoder));
-      memset(&stream_format, 0, sizeof(stream_format));
-      memset(&sfmt_revert, 0, sizeof(sfmt_revert));
-    }
-  
   // AUHAL specific.
 	AudioDeviceID				device_id;
 	Component           au_component;   /* The Audio component we use */
@@ -108,7 +86,7 @@ struct CoreAudioDeviceParameters
   AC3Encoder		m_ac3encoder;
 	uint8_t				rawSampleBuffer[AC3_SAMPLES_PER_FRAME * SPDIF_SAMPLESIZE/8 * 6]; // 6 channels = 12 bytes/sample
 
-	CEvent        m_formatChangeEvent;
+	volatile bool m_bInitializationComplete;
 };
 
 /*****************************************************************************
@@ -121,7 +99,7 @@ CoreAudioAUHAL::CoreAudioAUHAL(const CStdString& strName, const char *strCodec, 
   UInt32                  i_param_size = 0;
 	
 	// Allocate structure.
-	deviceParameters = new CoreAudioDeviceParameters();
+	deviceParameters = (CoreAudioDeviceParameters*)calloc(sizeof(CoreAudioDeviceParameters), 1);
 	if (!deviceParameters) return;
 	
 	if (g_audioConfig.HasDigitalOutput() && // disable encoder for legacy SPDIF devices for now
@@ -260,6 +238,10 @@ HRESULT CoreAudioAUHAL::Deinitialize()
 		{
 			CLog::Log(LOGDEBUG, "Reverting CoreAudio stream mode");
 			AudioStreamChangeFormat(deviceParameters, deviceParameters->i_stream_id, deviceParameters->sfmt_revert);
+			
+			// Now we have to wait for it to finish deinitializing.
+			for (int i=0; i<40 && deviceParameters->m_bInitializationComplete == true; i++)
+			  Sleep(50);
 		}
 	}
 	
@@ -586,6 +568,10 @@ int CoreAudioAUHAL::OpenSPDIF(struct CoreAudioDeviceParameters *deviceParameters
 	if (!AudioStreamChangeFormat(deviceParameters, deviceParameters->i_stream_id, deviceParameters->stream_format))
 	  return false;
 
+  // We need to wait for this to complete.
+  for (int i=0; i<40 && deviceParameters->m_bInitializationComplete == false; i++)
+    Sleep(50);
+	
 	deviceParameters->b_revert = true;
 
 	// Get device hardware buffer size
@@ -641,7 +627,7 @@ int CoreAudioAUHAL::OpenSPDIF(struct CoreAudioDeviceParameters *deviceParameters
 /*****************************************************************************
  * AudioStreamChangeFormat: Change i_stream_id to change_format
  *****************************************************************************/
-int CoreAudioAUHAL::AudioStreamChangeFormat(CoreAudioDeviceParameters* deviceParameters, AudioStreamID i_stream_id, AudioStreamBasicDescription change_format)
+int CoreAudioAUHAL::AudioStreamChangeFormat(CoreAudioDeviceParameters *deviceParameters, AudioStreamID i_stream_id, AudioStreamBasicDescription change_format)
 {
   OSStatus err = noErr;
 	AudioObjectPropertyAddress propertyAOPA;
@@ -650,17 +636,12 @@ int CoreAudioAUHAL::AudioStreamChangeFormat(CoreAudioDeviceParameters* devicePar
 	propertyAOPA.mSelector = kAudioStreamPropertyPhysicalFormat;
 	UInt32 propertySize = sizeof(AudioStreamBasicDescription);
 
+	CLog::Log(LOGINFO, STREAM_FORMAT_MSG( "setting stream format: ", change_format ));
+	
 	CSingleLock lock(m_cs); // acquire lock
 
-	// Reset the event.
-	deviceParameters->m_formatChangeEvent.Reset();
-	
-	// Change the format.
-	CLog::Log(LOGINFO, STREAM_FORMAT_MSG("Setting stream format: ", change_format));
+	// change the format.
 	SAFE_RETURN(AudioObjectSetPropertyData(deviceParameters->i_stream_id, &propertyAOPA, 0, NULL, propertySize, &change_format));
-	
-	// Wait for it to change.
-	deviceParameters->m_formatChangeEvent.Wait();
 	
 	return true;
 }
@@ -727,7 +708,7 @@ OSStatus CoreAudioAUHAL::HardwareStreamListener(AudioObjectID inObjectID,
 			if (deviceParameters->hardwareReady == false)
 			{
 				// Mark us as having initialized.
-			  deviceParameters->m_formatChangeEvent.Set();
+				deviceParameters->m_bInitializationComplete = true;
 			}
 			else if (deviceParameters->hardwareReady == true && deviceParameters->b_revert == true)
 			{
@@ -765,7 +746,7 @@ OSStatus CoreAudioAUHAL::HardwareStreamListener(AudioObjectID inObjectID,
         }
       
         // Mark us as having deinitialized.
-        deviceParameters->m_formatChangeEvent.Set();
+        deviceParameters->m_bInitializationComplete = false;
 			}
 		}
 	}

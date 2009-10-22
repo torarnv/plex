@@ -262,8 +262,7 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
       m_dvdPlayerAudio(&m_clock),
       m_dvdPlayerSubtitle(&m_overlayContainer),
       m_messenger("player"),
-      m_bFileOpenComplete(false),
-      m_deathEvent(true)
+      m_bFileOpenComplete(false)
 {
   m_pDemuxer = NULL;
   m_pSubtitleDemuxer = NULL;
@@ -290,16 +289,11 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
 #ifdef DVDDEBUG_MESSAGE_TRACKER
   g_dvdMessageTracker.Init();
 #endif
-  
-  m_deathEvent.Set();
 }
 
 CDVDPlayer::~CDVDPlayer()
 {
   CloseFile();
-
-  // We need the thread to be completely dead before we can safely be deleted.
-  m_deathEvent.WaitMSec(10000);
 
   CloseHandle(m_hReadyEvent);
   DeleteCriticalSection(&m_critStreamSection);
@@ -347,7 +341,6 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
     m_filename = file.m_strPath;
 
     ResetEvent(m_hReadyEvent);
-    m_deathEvent.Reset();
     Create();
   }
   catch(...)
@@ -419,10 +412,7 @@ bool CDVDPlayer::CloseFile()
   // wait for the main thread to finish up
   // since this main thread cleans up all other resources and threads
   // we are done after the StopThread call
-  //StopThread();
-  
-  // Tell the thread to stop, but don't fucking block.
-  StopThreadAsync();
+  StopThread();
 
   m_Edl.Reset();
 
@@ -430,6 +420,8 @@ bool CDVDPlayer::CloseFile()
 #if defined(_LINUX) && defined(HAS_VIDEO_PLAYBACK)
   g_renderManager.OnClose();
 #endif
+  
+  printf("Done with Closefile.\n");
   return true;
 }
 
@@ -1252,7 +1244,6 @@ void CDVDPlayer::Process()
         m_pDlgCache = NULL;
       }
     }
-
   }
 
   // playback ended, make sure anything buffered is displayed
@@ -1796,12 +1787,6 @@ void CDVDPlayer::OnExit()
     else
       m_callback.OnPlayBackEnded();
   }
-  
-  // Notify the application.
-  g_application.getApplicationMessenger().MediaCloseComplete();
-  
-  // Now, and only now, can we declare it dead.
-  m_deathEvent.Set();
 }
 
 void CDVDPlayer::HandleMessages()

@@ -37,7 +37,6 @@ class CFileItem;
 
 #define TMSG_MEDIA_OPEN_COMPLETE  207
 #define TMSG_MEDIA_RESTART_WITH_NEW_PLAYER 208
-#define TMSG_MEDIA_CLOSE_COMPLETE  209
 
 #define TMSG_PLAYLISTPLAYER_PLAY  210
 #define TMSG_PLAYLISTPLAYER_NEXT  211
@@ -101,7 +100,6 @@ public:
   void MediaStop();
   void MediaPause();
   void MediaOpenComplete(bool bStatus, const CStdString& error = "");
-  void MediaCloseComplete();
   void MediaRestart(bool bWait);
 
   void PlayListPlayerPlay();
