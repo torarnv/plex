@@ -97,8 +97,8 @@ bool CGUIWindowHome::OnPopupMenu()
 
     // Check to see if any timers already exist
     if (!CheckTimer("plex_quit_timer", sAlarmName, 40325, 40315, iAlreadySetMsg) ||
-        !CheckTimer("plex_sleep_timer", sAlarmName, 40326, 40316, iAlreadySetMsg) ||
-        !CheckTimer("plex_shutdown_timer", sAlarmName, 40327, 40317, iAlreadySetMsg))
+        !CheckTimer("plex_sleep_timer", sAlarmName, 40325, 40316, iAlreadySetMsg) ||
+        !CheckTimer("plex_shutdown_timer", sAlarmName, 40325, 40317, iAlreadySetMsg))
       return false;
     
 
