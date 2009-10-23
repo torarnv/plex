@@ -26,7 +26,7 @@ id g_plexCompatibility;
 + (void)initialize
 {
   NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-  NSDictionary *appDefaults = [NSDictionary dictionaryWithObject:@"YES" forKey:@"CheckForCandelaIR"];
+  NSDictionary *appDefaults = [NSDictionary dictionaryWithObject:@"YES" forKey:@"CheckForCandelair"];
   [defaults registerDefaults:appDefaults];
 }
 
@@ -40,23 +40,23 @@ id g_plexCompatibility;
     NSLog(@"Unable to check Mac OS X version.");
     return;
   }
-
+  
   NSString* strTitle;
   NSString* strFormat;
   BOOL show = NO;
   
-  // CandelaIR is already installed
+  // Candelair is already installed
   if ([HIDRemote isCandelairInstalled])
   {
-    //NSLog(@"CandelaIR is installed");
+    //NSLog(@"Candelair is installed");
     return;
   }
   
   // Check that the message hasn't been shown before
   NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-  if (![defaults boolForKey:@"CheckForCandelaIR"])
+  if (![defaults boolForKey:@"CheckForCandelair"])
   {
-    //NSLog(@"User doesn't want CandelaIR!");
+    //NSLog(@"User doesn't want Candelair!");
     return;
   }
   
@@ -64,35 +64,36 @@ id g_plexCompatibility;
   if (osVersion >= 0x1050 && osVersion < 0x1060)
   {
     //NSLog(@"On Leopard");
-    strTitle = NSLocalizedString(@"Would you like to install CandelaIR, a replacement driver for the Apple remote?", nil);
-    strFormat = NSLocalizedString(@"CandelaIR offers improved Apple remote support on Mac OS X 10.5. It will also improve compatibility for other applications making use of the remote, and will not interfere with their behavior.", nil);
+    strTitle = NSLocalizedString(@"Would you like to install Candelair, a replacement driver for the Apple remote?", nil);
+    strFormat = NSLocalizedString(@"Candelair offers improved Apple remote support on Mac OS X 10.5. It will also improve compatibility for other applications making use of the remote, and will not interfere with their behavior.", nil);
     show = YES;
   }
   else if (osVersion >= 0x1060 && osVersion < 0x1070)
   {
     //NSLog(@"On Snow Leopard");
-    strTitle = NSLocalizedString(@"The Apple remote has well known and documented issues on Snow Leopard. You can fix these problems by installing CandelaIR, a replacement driver for the Apple remote. Would you like to go to the CandelaIR website now?", nil);
-    strFormat = NSLocalizedString(@"CandelaIR is required for reliable Apple remote support on Mac OS X 10.6. It will also improve compatibility for other applications making use of the remote, and will not interfere with their behavior.", nil);
+    strTitle = NSLocalizedString(@"The Apple remote has well known and documented issues on Snow Leopard. You can fix these problems by installing Candelair, a replacement driver for the Apple remote. Would you like to go to the Candelair website now?", nil);
+    strFormat = NSLocalizedString(@"Candelair is required for reliable Apple remote support on Mac OS X 10.6. It will also improve compatibility for other applications making use of the remote, and will not interfere with their behavior.", nil);
     show = YES;
   }
-    
+  
   // Current OS version is unknown - return
   if (!show) return;
-
-  // Ask the user if they want to install CandelaIR
+  
+  // Ask the user if they want to install Candelair
   self.userInterfaceVisible = YES;
-  NSInteger returnCode = NSRunAlertPanel(strTitle, strFormat, @"Go to the CandelaIR website", @"Remind me later", @"Don't ask me again");
+  [NSApp activateIgnoringOtherApps:YES];
+  NSInteger returnCode = NSRunAlertPanel(strTitle, strFormat, @"Go to the Candelair website", @"Remind me later", @"Don't ask me again");
   self.userInterfaceVisible = NO;
   switch (returnCode) {
     case NSAlertDefaultReturn:
     {
-      [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.candelair.com"]];
+      [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.Candelair.com"]];
       exit(0);
       break;
     }
     case NSAlertOtherReturn:
     {
-      [defaults setBool:NO forKey:@"CheckForCandelaIR"];
+      [defaults setBool:NO forKey:@"CheckForCandelair"];
       break;
     }
     default:
@@ -100,8 +101,8 @@ id g_plexCompatibility;
       break;
     }
   }
-
-
+  
+  
 }
 
 
