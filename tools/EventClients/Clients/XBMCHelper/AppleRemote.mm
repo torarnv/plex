@@ -28,7 +28,6 @@
 #define APPNAME       "Plex.app"
 #define PROGNAME      "PlexHelper"
 #define PROGVERS      "1.1.1"
- 
 
 //#define ENABLE_SWITCH_EVENTS_HANDLER
 
@@ -342,6 +341,12 @@ ReactorAppleRemote theReactor;
 	return [hidRemote startRemoteControl:kHIDRemoteModeExclusive];
 }
 
+- (void)stopRemoteControl
+{
+  if (hidRemote)
+    [hidRemote stopRemoteControl];
+}
+
 /*!
  * @brief Update whether we are using the secure event input workaround.
  *
@@ -540,17 +545,10 @@ pascal OSStatus switchEventsHandler(EventHandlerCallRef nextHandler,
 	if (verbose)
 		printf("New app is frontmost, reopening Apple Remote\n");
 	
-	IOReturn err;
-	if (gAppleHidDeviceInterface)
-	{
-		if ((err = (*gAppleHidDeviceInterface)->close(gAppleHidDeviceInterface, 0)) != KERN_SUCCESS)
-			print_errmsg_if_io_err(err, "ERROR closing Apple Remote device");
-		/* #define kIOReturnNotOpen         iokit_common_err(0x2cd) // device not open  */
-		
-		if ((err = (*gAppleHidDeviceInterface)->open(gAppleHidDeviceInterface, kIOHIDOptionsTypeSeizeDevice)) != KERN_SUCCESS)
-			print_errmsg_if_io_err(err, "ERROR opening Apple Remote device");
-	}	
-
+	// Simply stop and start the remote.
+	[remoteDelegate stopRemoteControl];
+	[remoteDelegate startRemoteControl];
+	
 	if (verbose)
 		printf("Done reopening Apple Remote in exclusive mode\n");
 	
@@ -564,6 +562,7 @@ void* RunEventLoop(void* )
   sigaddset (&signalSet, SIGHUP);
   pthread_sigmask(SIG_BLOCK, &signalSet, NULL);
   
+  printf("Entering Carbon event loop.\n");
   RunApplicationEventLoop();
   printf("Exiting Carbon event loop.\n");
   return 0;
