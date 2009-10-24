@@ -356,9 +356,9 @@ ReactorAppleRemote theReactor;
 /*!
  * @brief Called when a button is pressed or released on the remote
  */
-- (void)hidRemote:(HIDRemote *)hidRemote
-  eventWithButton:(HIDRemoteButtonCode)buttonCode
-		isPressed:(BOOL)isPressed
+- (void)hidRemote:(HIDRemote *)hidRemote  eventWithButton:(HIDRemoteButtonCode)buttonCode
+                                                isPressed:(BOOL)isPressed
+		                           fromHardwareWithAttributes:(NSMutableDictionary *)attributes; // Information on the device this event comes from
 {
 	int  buttonId = keyMap[buttonCode];
 	// Send the message to the button processor.
@@ -371,9 +371,9 @@ ReactorAppleRemote theReactor;
  *
  * This is particularly useful to us because the multicode Harmony remote switches IDs regularly to avoid sequences
  */
-- (void)hidRemote:(HIDRemote *)hidRemote
-remoteIDChangedOldID:(SInt32)old			// 
-			newID:(SInt32)newID
+- (void)hidRemote:(HIDRemote *)hidRemote remoteIDChangedOldID:(SInt32)old
+                                                        newID:(SInt32)newID
+                                    forHardwareWithAttributes:(NSMutableDictionary *)attributes
 {
 	remoteID = newID;
 }
