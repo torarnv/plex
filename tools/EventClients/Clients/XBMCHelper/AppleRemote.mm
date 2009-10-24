@@ -778,14 +778,18 @@ int main(int argc, char **argv)
   xbox360.start();
 
 #ifdef ENABLE_SWITCH_EVENTS_HANDLER
-  // Register for events.
-  const EventTypeSpec applicationEvents[] = {kEventClassApplication, kEventAppFrontSwitched,
-                                             kEventClassApplication, kEventAppLaunched,
-                                             kEventClassApplication, kEventAppTerminated};
-  InstallApplicationEventHandler(NewEventHandlerUPP(switchEventsHandler), GetEventTypeCount(applicationEvents), applicationEvents, 0, NULL);
-  
-  pthread_t thread;
-  pthread_create(&thread, 0, RunEventLoop, 0);
+  // Register for events and spawn the Carbon event loop, but only if Candelair isn't installed.
+  if ([HIDRemote isCandelairInstalled] == NO) 
+  {
+    printf("Candelair is not installed, so we are going to set up Carbon event handlers.\n");
+    const EventTypeSpec applicationEvents[] = {kEventClassApplication, kEventAppFrontSwitched,
+                                               kEventClassApplication, kEventAppLaunched,
+                                               kEventClassApplication, kEventAppTerminated};
+    InstallApplicationEventHandler(NewEventHandlerUPP(switchEventsHandler), GetEventTypeCount(applicationEvents), applicationEvents, 0, NULL);
+    
+    pthread_t thread;
+    pthread_create(&thread, 0, RunEventLoop, 0);
+  }
 #endif
 	
   setupAndRun();
