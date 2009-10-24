@@ -29,7 +29,7 @@
 #define PROGNAME      "PlexHelper"
 #define PROGVERS      "1.1.1"
 
-//#define ENABLE_SWITCH_EVENTS_HANDLER
+#define ENABLE_SWITCH_EVENTS_HANDLER
 
 #include <stdio.h>
 #include <getopt.h>
@@ -542,15 +542,13 @@ pascal OSStatus switchEventsHandler(EventHandlerCallRef nextHandler,
                                     EventRef switchEvent,
                                     void* userData)
 {
-	if (verbose)
-		printf("New app is frontmost, reopening Apple Remote\n");
-	
+	id pool = [[NSAutoreleasePool alloc] init];
+	  
 	// Simply stop and start the remote.
 	[remoteDelegate stopRemoteControl];
 	[remoteDelegate startRemoteControl];
 	
-	if (verbose)
-		printf("Done reopening Apple Remote in exclusive mode\n");
+	[pool drain];
 	
 	return 0;
 }
@@ -561,10 +559,8 @@ void* RunEventLoop(void* )
   sigemptyset (&signalSet);
   sigaddset (&signalSet, SIGHUP);
   pthread_sigmask(SIG_BLOCK, &signalSet, NULL);
-  
-  printf("Entering Carbon event loop.\n");
   RunApplicationEventLoop();
-  printf("Exiting Carbon event loop.\n");
+  
   return 0;
 }          
 #endif
@@ -782,6 +778,12 @@ int main(int argc, char **argv)
   xbox360.start();
 
 #ifdef ENABLE_SWITCH_EVENTS_HANDLER
+  // Register for events.
+  const EventTypeSpec applicationEvents[] = {kEventClassApplication, kEventAppFrontSwitched,
+                                             kEventClassApplication, kEventAppLaunched,
+                                             kEventClassApplication, kEventAppTerminated};
+  InstallApplicationEventHandler(NewEventHandlerUPP(switchEventsHandler), GetEventTypeCount(applicationEvents), applicationEvents, 0, NULL);
+  
   pthread_t thread;
   pthread_create(&thread, 0, RunEventLoop, 0);
 #endif
