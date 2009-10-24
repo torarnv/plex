@@ -35,6 +35,7 @@
   IBOutlet NSTextField* httpProxyUsername;
   IBOutlet NSTextField* httpProxyPassword;
   IBOutlet NSTextField* nowPlayingFlipTime;
+  IBOutlet NSButton* enableKeyboardBacklightControl;
 }
 
 +(AdvancedSettingsController*)sharedInstance;
