@@ -308,6 +308,7 @@ NSXMLElement* rootElement(NSXMLDocument* xmlDoc, NSString* nodeName)
   setEnabledFromXML(xmlDoc, showAddSource, @"./advancedsettings/filelists/disableaddsourcebuttons", YES);
   setEnabledFromXML(xmlDoc, ignoreSortTokens, @"./advancedsettings/filelists/ignorethewhensorting", NO);
   setEnabledFromXML(xmlDoc, vizOnPlay, @"./advancedsettings/visualizeronplay", NO);
+  setEnabledFromXML(xmlDoc, enableKeyboardBacklightControl, @"./advancedsettings/enablekeyboardbacklightcontrol", NO);
   setStringFromXML(xmlDoc, httpProxyUsername, @"./advancedsettings/network/httpproxyusername");
   setStringFromXML(xmlDoc, httpProxyPassword, @"./advancedsettings/network/httpproxypassword");
   setStringFromXML(xmlDoc, timeToViz, @"./advancedsettings/secondstovisualizer");
@@ -384,6 +385,7 @@ NSXMLElement* rootElement(NSXMLDocument* xmlDoc, NSString* nodeName)
   enabledFromControl(filelists, showAddSource, @"disableaddsourcebuttons", YES);
   enabledFromControl(filelists, ignoreSortTokens, @"ignorethewhensorting", NO);
   enabledFromControl(root, vizOnPlay, @"visualizeronplay", NO);
+  enabledFromControl(root, enableKeyboardBacklightControl, @"enablekeyboardbacklightcontrol", NO);
   stringFromControl(network, httpProxyUsername, @"httpproxyusername");
   stringFromControl(network, httpProxyPassword, @"httpproxypassword");
   stringFromControl(root, timeToViz, @"secondstovisualizer");
