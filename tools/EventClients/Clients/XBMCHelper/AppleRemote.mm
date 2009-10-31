@@ -331,9 +331,6 @@ ReactorAppleRemote theReactor;
 		[hidRemote setExclusiveLockLendingEnabled:YES];
 		[hidRemote setEnableSecureEventInputWorkaround:secureInput];
 		[hidRemote setDelegate:self];
-		if ([HIDRemote isCandelairInstallationRequiredForRemoteMode:kHIDRemoteModeExclusive]) {
-			NSLog(@"Installation of Candelair required. Plex should prompt for installation.");
-		}
 	} else {
 		NSLog(@"Couldn't get sharedHIDRemote");
 	}
