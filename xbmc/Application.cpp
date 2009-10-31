@@ -4974,6 +4974,7 @@ void CApplication::StopPlaying()
     
     m_pPlayer->CloseFile();
     g_partyModeManager.Disable();
+    OnPlayBackStopped();
   }
 }
 
