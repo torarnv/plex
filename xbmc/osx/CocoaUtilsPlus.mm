@@ -395,27 +395,6 @@ bool Cocoa_AreHostsEqual(const string& host1, const string& host2)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-VECSOURCES Cocoa_GetPlexMediaServersAsSourcesWithMediaType(const string& mediaType)
-{
-  VECSOURCES ret;
-  @synchronized([[XBMCMain sharedInstance] plexMediaServers])
-  {
-    for (NSNetService *server in [[XBMCMain sharedInstance] plexMediaServers])
-    {
-      // Server has not been resolved
-      if ([[server addresses] count] == 0)
-        continue;
-
-      CMediaSource source;
-      source.strName = [[server name] UTF8String];
-      source.strPath.Format("plex://%s:%d/%s", [[server hostName] UTF8String], [server port], mediaType);
-      ret.push_back(source);
-    }
-  }
-  return ret;
-}
-
-///////////////////////////////////////////////////////////////////////////////
 bool Cocoa_IsLocalPlexMediaServerRunning()
 {
   bool isRunning = PlexMediaServerHelper::Get().IsRunning(); 
