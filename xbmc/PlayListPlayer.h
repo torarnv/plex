@@ -66,7 +66,9 @@ public:
   void SetShuffle(int iPlaylist, bool bYesNo, bool bTemporary = false);
   bool IsShuffled(int iPlaylist) const;
   bool HasPlayedFirstFile() const;
-
+  bool QueuedFirstFile() const { return m_bQueuedFirstFile; }
+  void SetQueuedFirstFile() { m_bQueuedFirstFile = true; }
+  
   void SetRepeat(int iPlaylist, REPEAT_STATE state);
   REPEAT_STATE GetRepeat(int iPlaylist) const;
 
@@ -80,6 +82,7 @@ protected:
   bool RepeatedOne(int iPlaylist) const;
   void ReShuffle(int iPlaylist, int iPosition);
 
+  bool m_bQueuedFirstFile;
   bool m_bPlayedFirstFile;
   bool m_bPlaybackStarted;
   int m_iFailedSongs;

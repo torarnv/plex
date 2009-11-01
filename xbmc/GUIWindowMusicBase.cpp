@@ -656,6 +656,7 @@ void CGUIWindowMusicBase::OnQueueItem(int iItem)
 
     g_playlistPlayer.Reset();
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
+    g_playlistPlayer.SetQueuedFirstFile();
     g_playlistPlayer.Play(iOldSize); // start playing at the first new item
   }
 }
@@ -701,9 +702,6 @@ void CGUIWindowMusicBase::OnShuffleItem(int iItem)
   
   g_playlistPlayer.SetShuffle(PLAYLIST_MUSIC, true, true);
   g_playlistPlayer.Play();
-  
-  if (g_advancedSettings.m_bVisualizerOnPlay)
-    g_application.getApplicationMessenger().ActivateVisualizer();
 }
 
 
@@ -1168,10 +1166,6 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
     // TODO: Add music-specific code for single playback of an item here (See OnClick in MediaWindow, and OnPlayMedia below)
     OnClick(iItem);
   }
-  
-  // Either way, turn on visualizer so we can control things.
-  if (g_advancedSettings.m_bVisualizerOnPlay)
-    g_application.getApplicationMessenger().ActivateVisualizer();
 }
 
 void CGUIWindowMusicBase::LoadPlayList(const CStdString& strPlayList)

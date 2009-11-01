@@ -1001,10 +1001,6 @@ bool CGUIMediaWindow::OnClick(int iItem)
         // play
         g_playlistPlayer.SetCurrentPlaylist(iPlaylist);
         g_playlistPlayer.Play(songToPlay);
-
-        // Turn on now playing so we can control things.
-        if (m_guiState->GetPlaylist() == PLAYLIST_MUSIC && g_advancedSettings.m_bVisualizerOnPlay) 
-          g_application.getApplicationMessenger().ActivateVisualizer();
       }
       return true;
     }
