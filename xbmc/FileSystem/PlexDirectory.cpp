@@ -422,12 +422,13 @@ class PlexMediaNode
      {
        pItem->SetProperty("ratingKey", ratingKey);
      }
-     
-     CVideoInfoTag* videoInfo = pItem->GetVideoInfoTag();
       
      const char* rating = el.Attribute("rating");
      if (rating && strlen(rating) > 0)
+     {
+       CVideoInfoTag* videoInfo = pItem->GetVideoInfoTag();
        videoInfo->m_fRating = atof(rating);
+     }
      
      return pItem;
    }
