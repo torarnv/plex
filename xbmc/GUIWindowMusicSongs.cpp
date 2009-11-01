@@ -75,11 +75,20 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
       // the window translator does it by using a virtual window id (5)
 
       // check for a passed destination path
-      CStdString strDestination = message.GetStringParam();
+      //CStdString strDestination = message.GetStringParam();
+      
+      // check for valid quickpath parameter
+      CStdStringArray params;
+      StringUtils::SplitString(message.GetStringParam(), ",", params);
+      bool returning = params.size() > 1 && params[1] == "return";
+      
+      // check for a passed destination path
+      CStdString strDestination = params.size() ? params[0] : "";
+      
       if (!strDestination.IsEmpty())
       {
         message.SetStringParam("");
-        CLog::Log(LOGINFO, "Attempting to quickpath to: %s", strDestination.c_str());
+        CLog::Log(LOGINFO, "Attempting to %s to: %s", returning ? "return" : "quickpath", strDestination.c_str());
         m_history.ClearPathHistory();
       }
 
@@ -155,7 +164,14 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
         SetHistoryForPath(m_vecItems->m_strPath);
       }
 
-      return CGUIWindowMusicBase::OnMessage(message);
+      if (!CGUIWindowMusicBase::OnMessage(message)) return false;
+      
+      if (message.GetParam1() != WINDOW_INVALID)
+      { // first time to this window - make sure we set the root path
+        m_startDirectory = returning ? m_vecItems->m_strPath : "";
+      }
+      
+      return true;
     }
     break;
 
@@ -228,6 +244,14 @@ bool CGUIWindowMusicSongs::OnAction(const CAction& action)
       OnScan(item);
 
     return true;
+  }
+  else if (action.wID == ACTION_PARENT_DIR)
+  {
+    if (g_advancedSettings.m_bUseEvilB && m_vecItems->m_strPath == m_startDirectory)
+    {
+      m_gWindowManager.PreviousWindow();
+      return true;
+    }
   }
   
   return CGUIWindowMusicBase::OnAction(action);

@@ -52,4 +52,5 @@ protected:
   void DeleteRemoveableMediaDirectoryCache();
 
   CMusicThumbLoader m_thumbLoader;
+  CStdString m_startDirectory;
 };
