@@ -2124,6 +2124,10 @@
   <string id="40206">Change Rating...</string>
   <string id="40207">Set Rating</string>
   <string id="40208">Change Rating</string>
+  
+  <string id="40220">Preferences</string>
+  <string id="40221">Restart</string>
+  <string id="40222">Uninstall</string>
 
   <string id="40300">Set Quit Timer</string>
   <string id="40301">Set Sleep Timer</string>
