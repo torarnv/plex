@@ -93,7 +93,6 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
       }
 
       // is this the first time the window is opened?
-			printf("%s\n", m_vecItems->m_strPath.c_str());
       if ((m_vecItems->m_strPath == "?" || m_vecItems->m_strPath == "") && strDestination.IsEmpty())
       {
         strDestination = g_settings.m_defaultMusicSource;
@@ -444,7 +443,7 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
           if (item->IsAudio() && !item->IsLastFM() && !item->IsShoutCast())
             buttons.Add(CONTEXT_BUTTON_SONG_INFO, 658); // Song Info
           else if (!item->IsParentFolder() && !item->IsLastFM() && !item->IsShoutCast() && 
-                   !item->m_strPath.Left(3).Equals("new") && item->m_bIsFolder)
+                   !item->m_strPath.Left(3).Equals("new") && item->m_bIsFolder && !item->IsPlexMediaServer())
           {
 #if 0
             if (m_musicdatabase.GetAlbumIdByPath(item->m_strPath) > -1)
