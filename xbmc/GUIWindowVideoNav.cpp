@@ -96,6 +96,8 @@ bool CGUIWindowVideoNav::OnAction(const CAction &action)
   {
     if (g_advancedSettings.m_bUseEvilB && m_vecItems->m_strPath == m_startDirectory)
     {
+      m_history.ClearPathHistory();
+      m_vecItems->m_strPath = "?";
       m_gWindowManager.PreviousWindow();
       return true;
     }
