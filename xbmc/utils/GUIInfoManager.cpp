@@ -3573,14 +3573,13 @@ void CGUIInfoManager::UpdateFPS()
 {
   int now = timeGetTime();
   
-  if (m_frameCounter % FRAME_CLUMP_SIZE == 0 && m_frameCounter != 0)
+  if (m_frameCounter % FRAME_CLUMP_SIZE == 0 && m_frameCounter != 0 && m_frameClumpTime > 0)
   {
     // Compute averaged FPS.
     float fps = (FRAME_CLUMP_SIZE-1) / (float)(m_frameClumpTime) * 1000.0;
 
     // Compute weighted running average.
     m_fps = 0.05 * fps + 0.95 * m_fps;
-  
     m_frameClumpTime = 0;
   }
   else
