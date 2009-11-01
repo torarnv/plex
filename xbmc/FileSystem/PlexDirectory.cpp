@@ -427,6 +427,13 @@ class PlexMediaNode
      if (rating && strlen(rating) > 0)
        pItem->SetProperty("rating", atof(rating));
      
+     
+     // Extra attributes for prefixes     
+     
+     const char* share = el.Attribute("share");
+     if (share && strcmp(share, "1") == 0)
+       pItem->SetProperty("share", true);
+     
      return pItem;
    }
    

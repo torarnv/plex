@@ -16,6 +16,7 @@
   void*               pApplication;
   NSNetServiceBrowser *o_plexMediaServerBrowser;
   NSMutableArray      *o_plexMediaServers;
+  NSMutableDictionary *o_plexMediaServerHosts;
 }
 
 + (XBMCMain *)sharedInstance;

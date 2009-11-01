@@ -93,7 +93,8 @@ void CGUIViewStateWindowVideoFiles::SaveViewState()
 VECSOURCES& CGUIViewStateWindowVideoFiles::GetSources()
 {
   // PMS sources
-  CUtil::AutodetectPlexSources("plex://localhost/video/", g_settings.m_videoSources);
+  if (Cocoa_IsLocalPlexMediaServerRunning())
+    CUtil::AutodetectPlexSources("plex://localhost/video/", g_settings.m_videoSources);
   
   bool bIsSourceName = true;
   // plugins share

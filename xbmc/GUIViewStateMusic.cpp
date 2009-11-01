@@ -33,6 +33,8 @@
 #include "FileSystem/PluginDirectory.h"
 #include "FileSystem/ShoutcastDirectory.h"
 
+#include "CocoaUtilsPlus.h"
+
 using namespace DIRECTORY;
 using namespace MUSICDATABASEDIRECTORY;
 
@@ -595,7 +597,8 @@ void CGUIViewStateWindowMusicSongs::SaveViewState()
 VECSOURCES& CGUIViewStateWindowMusicSongs::GetSources()
 {
   // PMS sources
-  CUtil::AutodetectPlexSources("plex://localhost/music/", g_settings.m_musicSources);
+  if (Cocoa_IsLocalPlexMediaServerRunning())
+    CUtil::AutodetectPlexSources("plex://localhost/music/", g_settings.m_musicSources);
   
   bool bIsSourceName = true;
   // plugins share

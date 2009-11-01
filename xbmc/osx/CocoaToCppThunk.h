@@ -18,6 +18,8 @@ extern "C"
 void Cocoa_OnAppleRemoteKey(void* application, AppleRemoteEventIdentifier event, bool pressedDown, unsigned int count);
 void Cocoa_DownloadFile(const char* remoteFile, const char* localFile);
 void Cocoa_CPPUpdateProgressDialog();
+void Cocoa_AutodetectRemotePlexSources(const char* hostName, const char* hostLabel);
+void Cocoa_RemoveRemotePlexSources(const char* hostName);
   
 #ifdef __cplusplus
 }

@@ -8,6 +8,7 @@
 
 #import "XBMCMain.h"
 #import "AppleRemote.h"
+#include "CocoaToCppThunk.h"
 
 #define PLEX_SERVICE_PORT 32401
 #define PLEX_SERVICE_TYPE @"_plexmediasvr._tcp"
@@ -33,6 +34,7 @@ static XBMCMain *_o_sharedMainInstance = nil;
   [o_remote setDelegate: _o_sharedMainInstance];
   
   o_plexMediaServers = [[NSMutableArray alloc] initWithCapacity:10];
+  o_plexMediaServerHosts = [[NSMutableDictionary alloc] initWithCapacity:10];
   o_plexMediaServerBrowser = [[NSNetServiceBrowser alloc] init];
   [o_plexMediaServerBrowser setDelegate:self];
 
@@ -56,6 +58,7 @@ static XBMCMain *_o_sharedMainInstance = nil;
   [o_remote release], o_remote = nil;
   [o_plexMediaServerBrowser release], o_plexMediaServers = nil;
   [o_plexMediaServers release], o_plexMediaServers = nil;
+  [o_plexMediaServerHosts release], o_plexMediaServerHosts = nil;
   [super dealloc];
 }
 
@@ -94,11 +97,18 @@ static XBMCMain *_o_sharedMainInstance = nil;
 -(void)netServiceBrowser:(NSNetServiceBrowser *)aBrowser didRemoveService:(NSNetService *)service moreComing:(BOOL)more {
   NSLog(@"Did Remove Service: %@", [service name]);
   [o_plexMediaServers removeObject:service];
+  if ([o_plexMediaServerHosts objectForKey:[service name]])
+  {
+    Cocoa_RemoveRemotePlexSources([[o_plexMediaServerHosts objectForKey:[service name]] UTF8String]);
+    [o_plexMediaServerHosts removeObjectForKey:[service name]];
+  }
 }
 
 /* NSNetService Delegate Overrides */
 -(void)netServiceDidResolveAddress:(NSNetService *)service {
   NSLog(@"Service Did Resolve: %@", [service name]);
+  [o_plexMediaServerHosts setObject:[service hostName] forKey:[service name]];
+  Cocoa_AutodetectRemotePlexSources([[service hostName] UTF8String], [[service name] UTF8String]);
 }
 
 -(void)netService:(NSNetService *)service didNotResolve:(NSDictionary *)errorDict {

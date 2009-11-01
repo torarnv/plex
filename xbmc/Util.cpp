@@ -405,28 +405,35 @@ const BOOL CUtil::HostInExceptionList(CStdString hostname, std::vector<CStdStrin
   return regExp.RegFind(hostname.c_str()) > -1;
 }
 
-void CUtil::AutodetectPlexSources(CStdString strPlexPath, VECSOURCES& dstSources)
+void CUtil::AutodetectPlexSources(CStdString strPlexPath, VECSOURCES& dstSources, CStdString strLabel, bool onlyShared)
 {
   bool bIsSourceName = true;
   bool bPerformRemove = true;
   
-  // Auto-add local PMS sources
-  if (Cocoa_IsLocalPlexMediaServerRunning())
+  // Auto-add PMS sources
+  VECSOURCES pmsSources;
+  CFileItemList* fileItems = new CFileItemList();
+  CPlexDirectory plexDir;
+  plexDir.SetTimeout(2);
+  
+  CUtil::AddSlashAtEnd(strPlexPath);
+  if (plexDir.GetDirectory(strPlexPath, *fileItems))
   {
-    VECSOURCES pmsSources;
-    CFileItemList* fileItems = new CFileItemList();
-    CPlexDirectory plexDir;
-    plexDir.SetTimeout(2);
-    
-    CUtil::AddSlashAtEnd(strPlexPath);
-    if (plexDir.GetDirectory(strPlexPath, *fileItems))
+    // Make sure all items in the PlexDirectory are added as sources
+    for ( int i = 0; i < fileItems->Size(); i++ )
     {
-      // Make sure all items in the PlexDirectory are added as sources
-      for ( int i = 0; i < fileItems->Size(); i++ )
+      CFileItemPtr item = fileItems->Get(i);
+      if ((!onlyShared) || item->HasProperty("share"))
       {
-        CFileItemPtr item = fileItems->Get(i);
         CMediaSource share;
         share.strName = item->GetLabel();
+        
+        // Add the label (if provided
+        if (strLabel != "")
+        {
+          share.strName.Format("%s (%s)", share.strName, strLabel);
+        }
+          
         share.strPath = item->m_strPath;
         share.m_strFanartUrl = item->GetQuickFanart();
         share.m_ignore = true;
@@ -462,33 +469,38 @@ void CUtil::AutodetectPlexSources(CStdString strPlexPath, VECSOURCES& dstSources
         if (CUtil::GetMatchingSource(share.strName, dstSources, bIsSourceName) < 0)
           dstSources.push_back(share);
       }
-      delete fileItems;
-      
-      // Remove any local PMS sources that don't exist in the PlexDirectory
-      for ( int i = dstSources.size() - 1; i >= 0; i--)
-      {
-        CMediaSource share = dstSources.at(i);
-        if ((share.strPath.find(strPlexPath) != string::npos) && (share.strPath.find("/", strPlexPath.length()) == share.strPath.length()-1))
-        {
-          if (CUtil::GetMatchingSource(dstSources.at(i).strName, pmsSources, bIsSourceName) < 0)
-            dstSources.erase(dstSources.begin()+i);
-        }
-      }
-      
-      // Everything ran successfully - don't remove PMS sources
-      bPerformRemove = false;
     }
+    delete fileItems;
+    
+    // Remove any local PMS sources that don't exist in the PlexDirectory
+    for ( int i = dstSources.size() - 1; i >= 0; i--)
+    {
+      CMediaSource share = dstSources.at(i);
+      if ((share.strPath.find(strPlexPath) != string::npos) && (share.strPath.find("/", strPlexPath.length()) == share.strPath.length()-1))
+      {
+        if (CUtil::GetMatchingSource(dstSources.at(i).strName, pmsSources, bIsSourceName) < 0)
+          dstSources.erase(dstSources.begin()+i);
+      }
+    }
+    
+    // Everything ran successfully - don't remove PMS sources
+    bPerformRemove = false;
   }
   
   // If there was a problem connecting to the local PMS, remove local root sources
   if (bPerformRemove)
   {
-    for ( int i = dstSources.size() - 1; i >= 0; i--)
-    {
-      CMediaSource share = dstSources.at(i);
-      if ((share.strPath.find(strPlexPath) != string::npos) && (share.strPath.find("/", strPlexPath.length()) == share.strPath.length()-1))
-        dstSources.erase(dstSources.begin()+i);
-    }
+    CUtil::RemovePlexSources(strPlexPath, dstSources);
+  }
+}
+
+void CUtil::RemovePlexSources(CStdString strPlexPath, VECSOURCES& dstSources)
+{
+  for ( int i = dstSources.size() - 1; i >= 0; i--)
+  {
+    CMediaSource share = dstSources.at(i);
+    if ((share.strPath.find(strPlexPath) != string::npos) && (share.strPath.find("/", strPlexPath.length()) == share.strPath.length()-1))
+      dstSources.erase(dstSources.begin()+i);
   }
 }
 

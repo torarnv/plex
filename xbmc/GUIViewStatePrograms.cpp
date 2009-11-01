@@ -28,6 +28,7 @@
 #include "FileSystem/Directory.h"
 #include "FileSystem/PluginDirectory.h"
 #include "Util.h"
+#include "CocoaUtilsPlus.h"
 
 using namespace DIRECTORY;
 
@@ -68,7 +69,8 @@ CStdString CGUIViewStateWindowPrograms::GetExtensions()
 VECSOURCES& CGUIViewStateWindowPrograms::GetSources()
 {
   // PMS sources
-  CUtil::AutodetectPlexSources("plex://localhost/applications/", g_settings.m_programSources);
+  if (Cocoa_IsLocalPlexMediaServerRunning())
+    CUtil::AutodetectPlexSources("plex://localhost/applications/", g_settings.m_programSources);
   
   bool bIsSourceName = true;
   // plugins share

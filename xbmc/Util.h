@@ -175,7 +175,8 @@ public:
   virtual ~CUtil(void);
 #ifdef __APPLE__
   static const BOOL HostInExceptionList(CStdString hostname, std::vector<CStdString> exceptionList);
-  static void AutodetectPlexSources(CStdString strPlexPath, VECSOURCES& dstSources);
+  static void AutodetectPlexSources(CStdString strPlexPath, VECSOURCES& dstSources, CStdString strLabel = "", bool onlyShared = false);
+  static void RemovePlexSources(CStdString strPlexPath, VECSOURCES& dstSources);
 #endif
   static const CStdString GetExtension(const CStdString& strFileName);
   static void RemoveExtension(CStdString& strFileName);

@@ -13,6 +13,10 @@
 #include "CocoaToCppThunk.h"
 #include "HTTP.h"
 #include "GUIDialogUtils.h"
+#include "Util.h"
+#include "Settings.h"
+#include "CocoaUtilsPlus.h"
+#include "GUIWindowManager.h"
 
 void Cocoa_OnAppleRemoteKey(void* application, AppleRemoteEventIdentifier event, bool pressedDown, unsigned int count)
 {
@@ -119,4 +123,43 @@ void Cocoa_CPPUpdateProgressDialog()
 {
   ThreadMessage tMsg = {TMSG_GUI_UPDATE_COCOA_DIALOGS};
   g_application.getApplicationMessenger().SendMessage(tMsg);
+}
+
+void Cocoa_AutodetectRemotePlexSources(const char* hostName, const char* hostLabel)
+{
+  CStdString path;
+  
+  if (!Cocoa_AreHostsEqual(hostName, "localhost"))
+  {
+    path.Format("plex://%s/music/", hostName);
+    CUtil::AutodetectPlexSources(path, g_settings.m_musicSources, hostLabel, true);
+    
+    path.Format("plex://%s/video/", hostName);
+    CUtil::AutodetectPlexSources(path, g_settings.m_videoSources, hostLabel, true);
+    
+    path.Format("plex://%s/photos/", hostName);
+    CUtil::AutodetectPlexSources(path, g_settings.m_pictureSources, hostLabel, true);
+    
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
+    m_gWindowManager.SendThreadMessage(msg);
+  }
+}
+
+void Cocoa_RemoveRemotePlexSources(const char* hostName)
+{
+  CStdString path;
+  if (!Cocoa_AreHostsEqual(hostName, "localhost"))
+  {
+    path.Format("plex://%s/music/", hostName);
+    CUtil::RemovePlexSources(path, g_settings.m_musicSources);
+    
+    path.Format("plex://%s/video/", hostName);
+    CUtil::RemovePlexSources(path, g_settings.m_videoSources);
+    
+    path.Format("plex://%s/photos/", hostName);
+    CUtil::RemovePlexSources(path, g_settings.m_pictureSources);
+    
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
+    m_gWindowManager.SendThreadMessage(msg);
+  }
 }
