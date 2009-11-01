@@ -3045,8 +3045,14 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     case VIDEOPLAYER_RATING:
       {
         CStdString strRating;
-        if (m_currentFile->GetVideoInfoTag()->m_fRating > 0.f)
+        if (m_currentFile->HasProperty("rating"))
+        {
+          strRating.Format("%2.2f", m_currentFile->GetPropertyDouble("rating"));
+        }
+        else if (m_currentFile->GetVideoInfoTag()->m_fRating > 0.f)
+        {
           strRating.Format("%2.2f", m_currentFile->GetVideoInfoTag()->m_fRating);
+        }
         return strRating;
       }
       break;
@@ -3738,12 +3744,18 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
   case LISTITEM_RATING:
     {
       CStdString rating;
-      if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetRating() > '0')
+      if (m_currentFile->HasProperty("rating"))
+      {
+        rating.Format("%2.2f", m_currentFile->GetPropertyDouble("rating"));
+      }
+      else if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetRating() > '0')
       { // song rating.  Images will probably be better than numbers for this in the long run
         rating = item->GetMusicInfoTag()->GetRating();
       }
-      else if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_fRating > 0.f) // movie rating
+      else if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_fRating > 0.f)
+      {
         rating.Format("%2.2f", item->GetVideoInfoTag()->m_fRating);
+      }
       return rating;
     }
   case LISTITEM_RATING_AND_VOTES:
@@ -3961,7 +3973,11 @@ CStdString CGUIInfoManager::GetItemImage(const CFileItem *item, int info) const
     CStdString rating;
     if (item->HasProperty("userRating"))
     {
-      rating.Format("rating%d.png", (long)(item->GetPropertyInt("userRating") + 0.5f));
+      rating.Format("rating%d.png", (long)(item->GetPropertyDouble("userRating") + 0.5f));
+    }
+    else if (item->HasProperty("rating"))
+    {
+      rating.Format("rating%d.png", (long)(item->GetPropertyDouble("rating") + 0.5f));
     }
     else if (item->HasVideoInfoTag())
     { // rating for videos
