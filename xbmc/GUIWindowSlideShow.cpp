@@ -478,11 +478,15 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
     {
       // If the item has a description, allow toggling
       CFileItemPtr fileItem = m_slides->Get(m_iCurrentSlide);
-      if (fileItem->GetProperty("description") != "")
+      if (fileItem && fileItem->GetProperty("description") != "")
       {
         g_infoManager.SetSlideshowShowDescription(!g_infoManager.GetSlideshowShowDescription());
         if (stopwatch.IsRunning())
           stopwatch.Stop();
+      }
+      else if (!fileItem)
+      {
+        m_gWindowManager.PreviousWindow();
       }
     }
     break;
