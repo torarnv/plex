@@ -303,7 +303,7 @@ CSettings::CSettings(void)
   g_advancedSettings.m_iTuxBoxDefaultRootMenu = 0; //default TV Mode
   g_advancedSettings.m_iTuxBoxZapWaitTime = 0; // Time in sec. Default 0:OFF
 
-  g_advancedSettings.m_curlclienttimeout = 10;
+  g_advancedSettings.m_curlclienttimeout = 40;
 
 #ifdef HAS_SDL
   g_advancedSettings.m_fullScreen = false;
@@ -311,7 +311,7 @@ CSettings::CSettings(void)
 #endif
 
   g_advancedSettings.m_playlistRetries = 100;
-  g_advancedSettings.m_playlistTimeout = 20; // 20 seconds timeout
+  g_advancedSettings.m_playlistTimeout = 40;
   g_advancedSettings.m_GLRectangleHack = false;
   
   g_advancedSettings.m_secondsToVisualizer = 10;
