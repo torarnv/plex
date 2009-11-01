@@ -38,9 +38,12 @@
 #include "GUIDialogYesNo.h"
 #include "FileItem.h"
 #include "CocoaUtils.h"
+#include "PlexDirectory.h"
+#include "GUIDialogPluginSettings.h"
 
 using namespace std;
 using namespace MEDIA_DETECT;
+using namespace DIRECTORY;
 
 #define BACKGROUND_IMAGE       999
 #define BACKGROUND_BOTTOM      998
@@ -272,6 +275,11 @@ void CGUIDialogContextMenu::GetContextButtons(const CStdString &type, CMediaSour
         isWorkflow = Cocoa_IsWflowBundle(share->vecPaths[0].c_str());
       }
 			
+      if (share->hasPrefs)
+      {
+        buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 40220);
+      }
+      
       if (!(isAppBundle || isWorkflow))
       {
         if (!share->m_ignore)
@@ -456,6 +464,18 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, CMediaSource
     else
       CIoSupport::EjectTray();
     return true;
+      
+  case CONTEXT_BUTTON_PLUGIN_SETTINGS:
+    if (share->hasPrefs)
+    {
+      CFileItemList fileItems;
+      CPlexDirectory plexDir(false);
+      CStdString path = share->strPath + ":/prefs/";
+      plexDir.GetDirectory(path, fileItems);
+      CGUIDialogPluginSettings::ShowAndGetInput(path, plexDir.GetData());
+      return true;
+    }
+    break;
 
   case CONTEXT_BUTTON_ADD_LOCK:
     {

@@ -434,6 +434,17 @@ void CUtil::AutodetectPlexSources(CStdString strPlexPath, VECSOURCES& dstSources
           share.strName.Format("%s (%s)", share.strName, strLabel);
         }
           
+        // Get special attributes for PMS sources
+        if (item->HasProperty("hasPrefs"))
+          share.hasPrefs = item->GetPropertyBOOL("hasPrefs");
+
+        if (item->HasProperty("pluginIdentifer"))
+          share.strPluginIdentifer = item->GetProperty("pluginIdentifier");
+                  
+        if (item->HasProperty("hasStoreServices"))
+          share.hasStoreServices = item->GetPropertyBOOL("hasStoreServices");
+          
+          
         share.strPath = item->m_strPath;
         share.m_strFanartUrl = item->GetQuickFanart();
         share.m_ignore = true;

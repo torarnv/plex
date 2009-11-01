@@ -41,7 +41,7 @@ public:
     SOURCE_TYPE_REMOTE       = 4,
     SOURCE_TYPE_VPATH        = 5
   };
-  CMediaSource() { m_iDriveType=SOURCE_TYPE_UNKNOWN; m_iLockMode=LOCK_MODE_EVERYONE; m_iBadPwdCount=0; m_iHasLock=0; m_ignore=false; };
+  CMediaSource() { m_iDriveType=SOURCE_TYPE_UNKNOWN; m_iLockMode=LOCK_MODE_EVERYONE; m_iBadPwdCount=0; m_iHasLock=0; m_ignore=false; strPluginIdentifer = "", hasPrefs = false; hasStoreServices = false; };
   virtual ~CMediaSource() {};
 
   void FromNameAndPaths(const CStdString &category, const CStdString &name, const std::vector<CStdString> &paths);
@@ -49,6 +49,9 @@ public:
   CStdString strName; ///< Name of the share, can be choosen freely.
   CStdString strStatus; ///< Status of the share (eg has disk etc.)
   CStdString strPath; ///< Path of the share, eg. iso9660:// or F:
+  CStdString strPluginIdentifer;
+  bool hasPrefs;
+  bool hasStoreServices;
 
   /*!
   \brief The type of the media source.

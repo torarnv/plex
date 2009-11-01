@@ -434,6 +434,18 @@ class PlexMediaNode
      if (share && strcmp(share, "1") == 0)
        pItem->SetProperty("share", true);
      
+     const char* hasPrefs = el.Attribute("hasPrefs");
+     if (hasPrefs && strcmp(hasPrefs, "1") == 0)
+       pItem->SetProperty("hasPrefs", true);
+     
+     const char* hasStoreServices = el.Attribute("hasStoreServices");
+     if (hasStoreServices && strcmp(hasStoreServices, "1") > 0)
+       pItem->SetProperty("hasStoreServices", true);
+     
+     const char* pluginIdentifier = el.Attribute("identifier");
+     if (pluginIdentifier && strlen(pluginIdentifier) > 0)
+       pItem->SetProperty("pluginIdentifier", pluginIdentifier);
+     
      return pItem;
    }
    
