@@ -29,6 +29,7 @@
 #include "FileSystem/Directory.h"
 #include "FileSystem/PluginDirectory.h"
 #include "Util.h"
+#include "CocoaUtilsPlus.h"
 
 using namespace DIRECTORY;
 
