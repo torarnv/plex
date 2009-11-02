@@ -1105,6 +1105,10 @@
   <string id="13632">- Alltid igång</string>
   <string id="13633">Avaktiverad</string>
   <string id="13634">Aktiverad</string>
+  
+  <string id="13635">Aktivera scrobbling</string>
+  <string id="13636">Koppla automatiskt upp utdelade bibliotek</string>
+  
   <string id="14000">Stapling: På</string>
   <string id="14001">Stapling: Av</string>
   <string id="14003">Laddar ner spellista...</string>
@@ -1875,6 +1879,10 @@
   <string id="40206">Ändra betyg...</string>
   <string id="40207">Sätt betyg</string>
   <string id="40208">Ändra betyg</string>
+  
+  <string id="40220">Inställningar</string>
+  <string id="40221">Starta om</string>
+  <string id="40222">Avinstallera</string>
 
   <string id="40300">Sätt timer för avstängning av Plex</string>
   <string id="40301">Sätt timer för systemvila</string>
