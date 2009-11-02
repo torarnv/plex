@@ -628,6 +628,7 @@ CGUISettings::CGUISettings(void)
   AddString(0, "network.httpproxypassword", 706, "", BUTTON_CONTROL_INPUT);
 
   AddCategory(6, "servers", 14036);
+  AddBool(1, "servers.remoteautosource", 13636, true);
 #if defined(HAS_FTP_SERVER) || defined (HAS_WEB_SERVER)
 #ifdef HAS_FTP_SERVER
   AddBool(1,  "servers.ftpserver",        167, true);

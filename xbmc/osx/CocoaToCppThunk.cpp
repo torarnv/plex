@@ -17,6 +17,7 @@
 #include "Settings.h"
 #include "CocoaUtilsPlus.h"
 #include "GUIWindowManager.h"
+#include "GUISettings.h"
 
 void Cocoa_OnAppleRemoteKey(void* application, AppleRemoteEventIdentifier event, bool pressedDown, unsigned int count)
 {
@@ -129,7 +130,7 @@ void Cocoa_AutodetectRemotePlexSources(const char* hostName, const char* hostLab
 {
   CStdString path;
   
-  if (!Cocoa_AreHostsEqual(hostName, "localhost"))
+  if (!Cocoa_AreHostsEqual(hostName, "localhost") && g_guiSettings.GetBool("servers.remoteautosource"))
   {
     path.Format("plex://%s/music/", hostName);
     CUtil::AutodetectPlexSources(path, g_settings.m_musicSources, hostLabel, true);
