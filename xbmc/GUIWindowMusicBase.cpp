@@ -934,7 +934,6 @@ void CGUIWindowMusicBase::GetNonContextButtons(CContextButtons &buttons)
     buttons.Add(CONTEXT_BUTTON_GOTO_ROOT, 20128);
   if (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() > 0)
     buttons.Add(CONTEXT_BUTTON_PLAYLIST, 559);
-  buttons.Add(CONTEXT_BUTTON_SETTINGS, 5);
 }
 
 bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
@@ -1017,9 +1016,6 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     Update("");
     return true;
 
-  case CONTEXT_BUTTON_SETTINGS:
-    m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYMUSIC);
-    return true;
   case CONTEXT_BUTTON_LASTFM_UNBAN_ITEM:
     if (CLastFmManager::GetInstance()->Unban(*item->GetMusicInfoTag()))
     {
