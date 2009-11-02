@@ -20,6 +20,7 @@
  */
 
 #include "stdafx.h"
+#include "CocoaUtilsPlus.h"
 #include "GUIViewStatePictures.h"
 #include "GUIBaseContainer.h"
 #include "FileItem.h"
