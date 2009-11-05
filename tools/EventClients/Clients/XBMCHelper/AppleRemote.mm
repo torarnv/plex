@@ -77,7 +77,7 @@ static struct option long_options[] =
     { "verbose",    no_argument,         0, 'v' },
     { "externalConfig", no_argument,     0, 'x' },
     { "appLocation", required_argument,  0, 'a' },
-	{ "secureInput", required_argument,  0, 'i' },
+    { "secureInput", required_argument,  0, 'i' },
     { 0, 0, 0, 0 },
 };
 static const char *options = "hsutvxaim";
@@ -85,6 +85,10 @@ static const char *options = "hsutvxaim";
 const int REMOTE_SWITCH_COOKIE = 39;
 const int IGNORE_CODE = 19;
 const int FIRST_REMOTE_ID = 150;
+
+#define REMOTE_MODE_STANDARD 0
+#define REMOTE_MODE_UNIVERAL 1
+#define REMOTE_MODE_MULTI    2
 
 static int GetBSDProcessList(kinfo_proc **procList, size_t *procCount);
 bool isProgramRunning(const char* strProgram, int ignorePid=0);
@@ -139,19 +143,10 @@ map<string, string> keyMapUniversal;
 map<string, bool> keyMapUniversalRepeat;
 map<int, ButtonConfig> buttonConfigMap;
 
-int sequenceTimeout = 500;
-int remoteID = FIRST_REMOTE_ID;
-string remoteString = SEQUENTIAL_UNIVERSAL_REMOTE;
-bool isUniversalMode = false;
-bool isMultiCodeMode = false;
-#ifdef DEBUG_BUILD
-	bool verbose = true;
-#else
-	bool verbose = true;
-#endif
+volatile bool verbose = false;
+volatile bool secureInput = false;
 string serverAddress = "127.0.0.1";
 string appLocation = "/Applications";
-bool secureInput = false;
 CAddress* pServer = 0;
 int sockfd;
 
@@ -167,6 +162,10 @@ public:
 	
 	ReactorAppleRemote()
     : _needToRelease(false)
+    , _isUniversalMode(false)
+    , _isMultiRemoteMode(false)
+    , _itsTimeout(500)
+    , _itsRemoteID(FIRST_REMOTE_ID)
 	{
 	}
 	
@@ -188,14 +187,10 @@ public:
 		char           strButton[16];
 		int            button = data & kButtonMask;
 		
-		if (isMultiCodeMode)
-		{
-			sprintf(strButton, "%d:%d", remoteID, button);
-		}
+		if (_isMultiRemoteMode)
+			sprintf(strButton, "%d:%d", _itsRemoteID, button);
 		else
-		{
 			sprintf(strButton, "%d", button);
-		}
 		
 		if (verbose)
 			printf("Received %s button\n", strButton);
@@ -210,7 +205,7 @@ public:
 			}
 		}
 		
-		if (isUniversalMode)
+		if (_isUniversalMode)
 		{      
 			if (data & kDownMask)
 			{
@@ -225,19 +220,20 @@ public:
 				{
 					bool isSimpleButton;
 					if (keyMapUniversalRepeat.count(_itsRemotePrefix) > 0)
-					{
-						isSimpleButton = true;
-						_needToRelease = true;
-					} else {
-						isSimpleButton = false;
-						_needToRelease = false;
-					}
+						isSimpleButton = _needToRelease = true;
+					else 
+						isSimpleButton = _needToRelease = false;
 					
 					// Turn off repeat for complex buttons.
 					int flags = BTN_DOWN;
 					if (isSimpleButton == false)
 						flags |= (BTN_NO_REPEAT | BTN_QUEUE);
-                    
+
+					// Figure out the keymap.
+					string remoteString = SEQUENTIAL_UNIVERSAL_REMOTE;
+					if (_isMultiRemoteMode)
+					  remoteString = MULTICODE_UNIVERSAL_REMOTE;
+					
 					// Send the command to XBMC.
 					if (verbose)
 						printf(" -> Sending command: %s, remote: %s\n", val.c_str(), remoteString.c_str());
@@ -253,7 +249,7 @@ public:
 				else
 				{  
 					// We got a prefix. Set a timeout.
-					setTimer(sequenceTimeout);
+					setTimer(_itsTimeout);
 					_lastTime = getTimeInMilliseconds();
 				}
 			}
@@ -271,7 +267,7 @@ public:
 				}
 			}
 		}
-		else if (isUniversalMode == false)
+		else if (_isUniversalMode == false)
 		{
 			// Send the down part.
 			if ((config.sendsUpEvent && (data & kDownMask)) || config.sendsUpEvent == false)
@@ -299,16 +295,49 @@ public:
 		}
 	}
 	
+	virtual void onSetTimeout(int timeout)
+	{
+	  if (verbose)
+	    printf("Setting timeout to %dms.\n", timeout);
+	}
+	
+	virtual void onSetMode(int mode)
+	{
+	  _isUniversalMode = false;
+	  _isMultiRemoteMode = false;
+	  
+	  if (mode == REMOTE_MODE_UNIVERAL || mode == REMOTE_MODE_MULTI)
+	    _isUniversalMode = true;
+	  
+	  if (mode == REMOTE_MODE_MULTI)
+	    _isMultiRemoteMode = true;
+	  
+	  if (verbose)
+	    printf("Setting mode to universal:%d multi:%d.\n", _isUniversalMode, _isMultiRemoteMode);
+	}
+	
+	virtual void onSetRemote(int remote)
+	{
+	  if (verbose)
+	    printf("Setting remote to #%d\n", remote);
+	    
+	  _itsRemoteID = remote;
+	}
+	
 	virtual void onServerCmd(char* data, char* arg)
 	{
-		
 	}
 	
 protected:
 	
+	bool   _isUniversalMode;
+	bool   _isMultiRemoteMode;
+	int    _itsTimeout;
+	int    _itsRemoteID;
+	
 	string _itsRemotePrefix;
-	bool _needToRelease;
-	int  _lastTime;
+	bool   _needToRelease;
+	int    _lastTime;
 };
 
 ReactorAppleRemote theReactor;
@@ -377,7 +406,7 @@ ReactorAppleRemote theReactor;
                                                         newID:(SInt32)newID
                                     forHardwareWithAttributes:(NSMutableDictionary *)attributes
 {
-	remoteID = newID;
+	theReactor.setRemote(newID);
 }
 
 - (void)cleanupRemote
@@ -516,9 +545,6 @@ void setupAndRun()
 		[remoteDelegate startRemoteControl];
 		[pool release];
 
-		// Start the reactor.
-		theReactor.start();
-		
 		// This won't return until the application is complete
 		doRun();
 		
@@ -684,7 +710,6 @@ int main(int argc, char **argv)
 	keyMapUniversalRepeat["153:9_"] = true;
 	keyMapUniversalRepeat["153:10_"] = true;  
 	
-	
 	keyMapUniversal["154:1_"] = "Rewind";
 	keyMapUniversal["154:2_"] = "Forward";
 	keyMapUniversal["154:3_"] = "Nine";
@@ -696,7 +721,6 @@ int main(int argc, char **argv)
 	
 	keyMapUniversalRepeat["154:9_"] = true;
 	keyMapUniversalRepeat["154:10_"] = true;  
-	
 	
 	keyMapUniversal["155:1_"] = "Exit";
 	keyMapUniversal["155:2_"] = "Record";
@@ -751,6 +775,9 @@ int main(int argc, char **argv)
   buttonConfigMap[kRemoteButtonPlay_Hold] = ButtonConfig();
   buttonConfigMap[kRemoteButtonMenu] = ButtonConfig();
 
+  // Start the reactor.
+  theReactor.start();
+  
   // Parse command line options.
   parseOptions(argc, argv);
 
@@ -802,6 +829,9 @@ void parseOptions(int argc, char** argv)
   optind = 0;
 
   bool readExternal = false;
+  int  mode = REMOTE_MODE_STANDARD;
+  int  timeout = 500;
+  
   int c, option_index = 0;
   while ((c = getopt_long(argc, argv, options, long_options, &option_index)) != -1) 
 	{
@@ -814,16 +844,14 @@ void parseOptions(int argc, char** argv)
     case 's':
       serverAddress = optarg;
       break;
-	case 'u':
-	  isUniversalMode = true;
-	  break;
-	case 'm':
-	  isMultiCodeMode = true;
-	  isUniversalMode = true;
-	  remoteString = MULTICODE_UNIVERSAL_REMOTE;
-	  break;			
+    case 'u':
+      mode = REMOTE_MODE_UNIVERAL;
+      break;
+    case 'm':
+      mode = REMOTE_MODE_MULTI;
+      break;			
     case 't':
-      sequenceTimeout = atoi(optarg);
+      timeout = atoi(optarg);
       break;
     case 'v':
       verbose = true;
@@ -844,6 +872,10 @@ void parseOptions(int argc, char** argv)
       break;
     }
   }
+  
+  // Set new configuration.
+  theReactor.setMode(mode);
+  theReactor.setTimeout(timeout);
   
   if (readExternal == true)
     readConfig(); 
@@ -893,10 +925,6 @@ void handleSignal(int signal)
   // Re-read config.
   if (signal == SIGHUP || signal == SIGUSR1)
   {
-    // Reset configuration.
-    sequenceTimeout = 500;
-    verbose = false;
-    
     // Read configuration.
     printf("SIGHUP: Reading configuration.\n");
     readConfig();

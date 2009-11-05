@@ -21,7 +21,7 @@
 extern CAddress* pServer;
 extern int sockfd;
 extern std::string serverAddress;
-extern bool verbose;
+extern volatile bool verbose;
 
 bool isProgramRunning(const char* strProgram, int ignorePid);
 void startXBMC();
