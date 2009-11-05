@@ -112,6 +112,9 @@ bool CMusicInfoLoader::LoadItem(CFileItem* pItem)
 
   if (pItem->HasMusicInfoTag() && pItem->GetMusicInfoTag()->Loaded())
     return true;
+  
+  if (pItem->IsPlexMediaServer())
+    return true;
 
   // first check the cached item
   CFileItemPtr mapItem = (*m_mapFileItems)[pItem->m_strPath];
