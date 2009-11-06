@@ -229,6 +229,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("player.chaptercount")) ret = PLAYER_CHAPTERCOUNT;
     else if (strTest.Equals("player.chaptername")) ret = PLAYER_CHAPTERNAME;
     else if (strTest.Equals("player.starrating")) ret = PLAYER_STAR_RATING;
+    else if (strTest.Equals("player.iswebkit")) ret = PLAYER_ISWEBKIT;
   }
   else if (strCategory.Equals("weather"))
   {
@@ -2051,6 +2052,9 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
     break;
     case PLAYER_SHOWTIME:
       bReturn = m_playerShowTime;
+    break;
+    case PLAYER_ISWEBKIT:
+      bReturn = g_application.GetCurrentPlayer() == EPC_PMSPLAYER;
     break;
     case MUSICPM_ENABLED:
       bReturn = g_partyModeManager.IsEnabled();
