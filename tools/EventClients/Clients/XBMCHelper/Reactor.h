@@ -11,6 +11,9 @@ class Reactor
     CmdData,
     CmdTimer,
     CmdTimerReset,
+    CmdSetMode,
+    CmdSetTimeout,
+    CmdSetRemote,
   };
  
   enum EventMask
@@ -37,6 +40,9 @@ class Reactor
     // Tickle pipe.
     _itsTicklePipe[0] = -1;
     _itsTicklePipe[1] = -1;
+    
+    if (pthread_mutex_init(&_itsMutex, 0) != 0)
+      printf("ERROR: Creating mutex.\n");
   }
 
   //
@@ -48,6 +54,8 @@ class Reactor
     ::close(_itsTicklePipe[0]);
     ::shutdown(_itsTicklePipe[1], 2);
     ::close(_itsTicklePipe[1]);
+    
+    pthread_mutex_destroy(&_itsMutex);
   }
 
   void start()
@@ -72,6 +80,8 @@ class Reactor
   
   void sendMessage(Command cmd, int data=0)
   {
+    pthread_mutex_lock(&_itsMutex);
+    
     // Tickle our tickle-port.
     unsigned char theCmd = cmd;
     if (::write(_itsTicklePipe[1], &theCmd, 1) == -1 ||
@@ -79,6 +89,23 @@ class Reactor
     {
       printf("Error tickling: %d.\n", errno);
     }
+    
+    pthread_mutex_unlock(&_itsMutex);
+  }
+  
+  void setMode(int mode)
+  {
+    sendMessage(CmdSetMode, mode);
+  }
+   
+  void setTimeout(int timeout)
+  {
+    sendMessage(CmdSetTimeout, timeout);
+  }
+   
+  void setRemote(int remote)
+  {
+    sendMessage(CmdSetRemote, remote);
   }
 
  protected:
@@ -163,6 +190,15 @@ class Reactor
           case CmdData:
             onCmd(data);
             break;
+          case CmdSetMode:
+            onSetMode(data);
+            break;
+          case CmdSetTimeout:
+            onSetTimeout(data);
+            break;
+          case CmdSetRemote:
+            onSetRemote(data);
+            break;
         }
       }
       else
@@ -177,7 +213,10 @@ class Reactor
  
    virtual void onTimeout() = 0;
    virtual void onCmd(int data) = 0;
-  
+   virtual void onSetMode(int mode) {}
+   virtual void onSetTimeout(int timeout) {}
+   virtual void onSetRemote(int remote) {}
+   
  private:
  
   static void* Run(void* param)
@@ -191,6 +230,7 @@ class Reactor
   fd_set    _itsExceptSet;
   bool      _isRunning;
   pthread_t _itsThread;
+  pthread_mutex_t _itsMutex;
   int       _itsMaxFD;
   int       _itsTimeout;
   int       _itsTicklePipe[2];
