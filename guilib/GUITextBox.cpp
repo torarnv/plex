@@ -427,6 +427,10 @@ bool CGUITextBox::OnMouseWheel(char wheel, const CPoint &point)
     // check that we are within the correct bounds.
     if (offset + (int)m_itemsPerPage > (int)m_lines.size())
       offset = (m_lines.size() >= m_itemsPerPage) ? m_lines.size() - m_itemsPerPage : 0;
+    
+    if (offset < 0)
+      offset = 0;
+    
     ScrollToOffset(offset);
     // update the page control...
     int iPage = offset / m_itemsPerPage + 1;
