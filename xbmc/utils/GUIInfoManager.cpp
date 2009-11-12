@@ -3248,6 +3248,8 @@ void CGUIInfoManager::SetCurrentSong(CFileItem &item)
     }
     else
     {
+      // Should we whack this?
+#if 0
       // look for remote thumbs
       CStdString thumb(m_currentFile->GetThumbnailImage());
       if (!CURL::IsFileOnly(thumb) && !CUtil::IsHD(thumb))
@@ -3263,7 +3265,8 @@ void CGUIInfoManager::SetCurrentSong(CFileItem &item)
            else
              m_currentFile->SetThumbnailImage("");
          }
-       }  
+       }
+#endif
     }
   }
   else
