@@ -55,6 +55,7 @@ public:
   virtual bool HasVideo() const;
   virtual bool HasAudio() const;
   virtual void ToggleOSD() {}
+  virtual void ExecuteKeyCommand(char key, bool shift=false, bool control=false, bool command=false, bool option=false);
   virtual void SwitchToNextLanguage() {}
   virtual void ToggleSubtitles() {}
   virtual void ToggleFrameDrop() {}

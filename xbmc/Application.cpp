@@ -2914,6 +2914,17 @@ bool CApplication::OnKey(CKey& key)
   action.kKey = g_Keyboard.GetSVKey();
   action.unicode = g_Keyboard.GetUnicode();
   
+  // Look for special key combinations.
+  if (g_Keyboard.GetCtrl() && g_Keyboard.GetAlt() && g_Keyboard.GetShift())
+  {
+    if (m_pPlayer != 0)
+    {
+      m_pPlayer->ExecuteKeyCommand('a' + g_Keyboard.GetAscii() - 1, true, true, false, true);
+      g_Keyboard.Reset();
+      return true;
+    }
+  }
+  
   if (g_Keyboard.GetAlt()  == true  ||
       g_Keyboard.GetApple() == true ||
       g_Keyboard.GetCtrl() == true  ||
