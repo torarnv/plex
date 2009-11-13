@@ -16,6 +16,7 @@
 		1A2C5DE90E7EF479002F23FA /* relaunch.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A2C5DE80E7EF479002F23FA /* relaunch.m */; };
 		1A2C5DEC0E7EF4BD002F23FA /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A2C5DEB0E7EF4BD002F23FA /* AppKit.framework */; };
 		1A2C5DF70E7EF598002F23FA /* relaunch in Copy Relaunch */ = {isa = PBXBuildFile; fileRef = 1A2C5DE30E7EF410002F23FA /* relaunch */; };
+		1A356D5210AD53E50014C668 /* PlexSourceScanner.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A356D5110AD53E50014C668 /* PlexSourceScanner.cpp */; };
 		1A448E920F8059C1006E71B2 /* AdvancedSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A448E910F8059C1006E71B2 /* AdvancedSettingsController.m */; };
 		1A448EB90F8066BB006E71B2 /* Library.icns in Resources */ = {isa = PBXBuildFile; fileRef = 1A448EB50F8066BB006E71B2 /* Library.icns */; };
 		1A448EBA0F8066BB006E71B2 /* Movies.icns in Resources */ = {isa = PBXBuildFile; fileRef = 1A448EB60F8066BB006E71B2 /* Movies.icns */; };
@@ -1016,6 +1017,8 @@
 		1A2C5DE30E7EF410002F23FA /* relaunch */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = relaunch; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A2C5DE80E7EF479002F23FA /* relaunch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = relaunch.m; sourceTree = "<group>"; };
 		1A2C5DEB0E7EF4BD002F23FA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		1A356D5010AD53E50014C668 /* PlexSourceScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlexSourceScanner.h; sourceTree = "<group>"; };
+		1A356D5110AD53E50014C668 /* PlexSourceScanner.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PlexSourceScanner.cpp; sourceTree = "<group>"; };
 		1A448E900F8059C1006E71B2 /* AdvancedSettingsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AdvancedSettingsController.h; sourceTree = "<group>"; };
 		1A448E910F8059C1006E71B2 /* AdvancedSettingsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AdvancedSettingsController.m; sourceTree = "<group>"; };
 		1A448EB50F8066BB006E71B2 /* Library.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = Library.icns; path = guiresources/Library.icns; sourceTree = "<group>"; };
@@ -3549,6 +3552,8 @@
 				1A448E910F8059C1006E71B2 /* AdvancedSettingsController.m */,
 				1AA19B9C108E8BCC008D2EAD /* PlexCompatibility.h */,
 				1AA19B9D108E8BCC008D2EAD /* PlexCompatibility.m */,
+				1A356D5010AD53E50014C668 /* PlexSourceScanner.h */,
+				1A356D5110AD53E50014C668 /* PlexSourceScanner.cpp */,
 			);
 			path = osx;
 			sourceTree = "<group>";
@@ -7550,6 +7555,7 @@
 				1A232876108A94510056F996 /* GUIDialogTimer.cpp in Sources */,
 				1AA19B9E108E8BCC008D2EAD /* PlexCompatibility.m in Sources */,
 				1AA19C05108EAEDC008D2EAD /* HIDRemote.m in Sources */,
+				1A356D5210AD53E50014C668 /* PlexSourceScanner.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
