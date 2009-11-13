@@ -1285,6 +1285,16 @@ void Cocoa_SetKeyboardBacklightControlEnabled(bool enabled)
   [[AppleHardwareInfo sharedInstance] setKeyboardBacklightControlEnabled:enabled];
 }
 
+void Cocoa_RefreshAllRemotePlexSources()
+{
+  [[XBMCMain sharedInstance] refreshAllRemotePlexSources];
+}
+
+void Cocoa_RemoveAllRemotePlexSources()
+{
+  [[XBMCMain sharedInstance] removeAllRemotePlexSources];
+}
+
 void CheckOSCompatibility()
 {
   [[PlexCompatibility sharedInstance] checkCompatibility];

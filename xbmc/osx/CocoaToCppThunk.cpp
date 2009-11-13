@@ -18,6 +18,7 @@
 #include "CocoaUtilsPlus.h"
 #include "GUIWindowManager.h"
 #include "Thread.h"
+#include "GUISettings.h"
 
 void Cocoa_OnAppleRemoteKey(void* application, AppleRemoteEventIdentifier event, bool pressedDown, unsigned int count)
 {
@@ -223,7 +224,7 @@ void Cocoa_AutodetectRemotePlexSources(const char* hostName, const char* hostLab
 {
   CStdString path;
   
-  if (!Cocoa_AreHostsEqual(hostName, "localhost"))
+  if (!Cocoa_AreHostsEqual(hostName, "localhost") && g_guiSettings.GetBool("servers.remoteautosource"))
   {
     PlexSourceScanner::ScanHost(hostName, hostLabel);
     

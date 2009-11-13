@@ -24,4 +24,7 @@
 - (NSArray*)plexMediaServers;
 - (void)setApplication:(void*) application;
 
+- (void)refreshAllRemotePlexSources;
+- (void)removeAllRemotePlexSources;
+
 @end

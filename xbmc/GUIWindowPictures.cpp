@@ -580,8 +580,6 @@ void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &butt
     }
   }
   CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
-  if (item->m_includeStandardContextItems)
-    buttons.Add(CONTEXT_BUTTON_SETTINGS, 5);                  // Settings
 }
 
 bool CGUIWindowPictures::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
@@ -620,9 +618,6 @@ bool CGUIWindowPictures::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     return true;
   case CONTEXT_BUTTON_RENAME:
     OnRenameItem(itemNumber);
-    return true;
-  case CONTEXT_BUTTON_SETTINGS:
-    m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYPICTURES);
     return true;
   case CONTEXT_BUTTON_GOTO_ROOT:
     Update("");

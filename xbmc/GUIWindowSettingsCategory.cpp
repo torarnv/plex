@@ -1942,6 +1942,18 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     CUtil::SetXBOXNickName(strXboxNickNameIn, strXboxNickNameIn);
   }
 #endif
+  else if (strSetting.Equals("servers.remoteautosource"))
+  {
+    if (g_guiSettings.GetBool("servers.remoteautosource"))
+    {
+      Cocoa_RefreshAllRemotePlexSources();
+    }
+    else
+    {
+      Cocoa_RemoveAllRemotePlexSources();
+    }
+    
+  }
   else if (strSetting.Equals("servers.ftpserver"))
   {
     g_application.StopFtpServer();
