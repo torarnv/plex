@@ -1601,6 +1601,7 @@ void CGUIMediaWindow::Render()
       
       OnPrepareFileItems(*m_vecItems);
       m_vecItems->FillInDefaultIcons();
+      FormatAndSort(*m_vecItems);
       OnFinalizeFileItems(*m_vecItems);
       m_viewControl.SetItems(*m_vecItems);
       
