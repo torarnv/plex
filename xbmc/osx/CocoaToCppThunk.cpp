@@ -17,6 +17,7 @@
 #include "Settings.h"
 #include "CocoaUtilsPlus.h"
 #include "GUIWindowManager.h"
+#include "Thread.h"
 
 void Cocoa_OnAppleRemoteKey(void* application, AppleRemoteEventIdentifier event, bool pressedDown, unsigned int count)
 {
@@ -125,12 +126,108 @@ void Cocoa_CPPUpdateProgressDialog()
   g_application.getApplicationMessenger().SendMessage(tMsg);
 }
 
+#include <map>
+#include <boost/shared_ptr.hpp>
+#include <boost/foreach.hpp>
+#include "CriticalSection.h"
+#include "SingleLock.h"
+
+class HostSources
+{
+ public:
+  VECSOURCES videoSources;
+  VECSOURCES musicSources;
+  VECSOURCES pictureSources;
+};
+typedef boost::shared_ptr<HostSources> HostSourcesPtr;
+
+////////////////////////////////////////////
+class PlexSourceScanner : public CThread
+{
+ public:
+ 
+  virtual void Process()
+  {
+    CStdString path;
+    
+    { // Make sure any existing entry is removed.
+      CSingleLock lock(g_lock);
+      g_hostSourcesMap.erase(m_host);
+    }
+    
+    // Create a new entry.
+    HostSourcesPtr sources = HostSourcesPtr(new HostSources());
+    printf("Scanning host: %s\n", m_host.c_str());
+    
+    // Scan the server.
+    path.Format("plex://%s/music/", m_host);
+    CUtil::AutodetectPlexSources(path, sources->musicSources, m_hostLabel, true);
+    
+    path.Format("plex://%s/video/", m_host);
+    CUtil::AutodetectPlexSources(path, sources->videoSources, m_hostLabel, true);
+    
+    path.Format("plex://%s/photos/", m_host);
+    CUtil::AutodetectPlexSources(path, sources->pictureSources, m_hostLabel, true);
+    
+    { // Add the entry to the map.
+      CSingleLock lock(g_lock);
+      g_hostSourcesMap[m_host] = sources;
+    }
+    
+    // Notify the UI.
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
+    m_gWindowManager.SendThreadMessage(msg);
+    
+    printf("Scanning host %s is complete.\n", m_host.c_str());
+  }
+  
+  static void ScanHost(const string& host, const string& hostLabel)
+  {
+    new PlexSourceScanner(host, hostLabel);
+  }
+
+  static void RemoveHost(const string& host)
+  {
+    { // Remove the entry from the map.
+      CSingleLock lock(g_lock);
+      g_hostSourcesMap.erase(host);
+    }
+    
+    // Notify the UI.
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
+    m_gWindowManager.SendThreadMessage(msg);
+  }
+  
+ protected:
+  
+  PlexSourceScanner(const string& host, const string& hostLabel)
+    : m_host(host)
+    , m_hostLabel(hostLabel)
+  {
+    Create(true);
+  }
+ 
+ private:
+  
+  string m_host;
+  string m_hostLabel;
+  
+  static map<string, HostSourcesPtr> g_hostSourcesMap;
+  static CCriticalSection g_lock;
+};
+
+map<string, HostSourcesPtr> PlexSourceScanner::g_hostSourcesMap;
+CCriticalSection PlexSourceScanner::g_lock;
+
 void Cocoa_AutodetectRemotePlexSources(const char* hostName, const char* hostLabel)
 {
   CStdString path;
   
   if (!Cocoa_AreHostsEqual(hostName, "localhost"))
   {
+    PlexSourceScanner::ScanHost(hostName, hostLabel);
+    
+#if 0
     path.Format("plex://%s/music/", hostName);
     CUtil::AutodetectPlexSources(path, g_settings.m_musicSources, hostLabel, true);
     
@@ -142,6 +239,7 @@ void Cocoa_AutodetectRemotePlexSources(const char* hostName, const char* hostLab
     
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
     m_gWindowManager.SendThreadMessage(msg);
+#endif
   }
 }
 
@@ -150,6 +248,9 @@ void Cocoa_RemoveRemotePlexSources(const char* hostName)
   CStdString path;
   if (!Cocoa_AreHostsEqual(hostName, "localhost"))
   {
+    PlexSourceScanner::RemoveHost(hostName);
+    
+#if 0
     path.Format("plex://%s/music/", hostName);
     CUtil::RemovePlexSources(path, g_settings.m_musicSources);
     
@@ -161,5 +262,6 @@ void Cocoa_RemoveRemotePlexSources(const char* hostName)
     
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
     m_gWindowManager.SendThreadMessage(msg);
+#endif
   }
 }
