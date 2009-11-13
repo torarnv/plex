@@ -199,7 +199,29 @@ class PlexSourceScanner : public CThread
     m_gWindowManager.SendThreadMessage(msg);
   }
   
+  static void MergeSources(VECSOURCES& videoSources, VECSOURCES& musicSources, VECSOURCES& pictureSources)
+  {
+    // Remove remote sources...TBD...
+    
+    // Now add the current remote sources in.
+    typedef pair<string, HostSourcesPtr> StringSourcesPair;
+    BOOST_FOREACH(StringSourcesPair pair, g_hostSourcesMap)
+    {
+      MergeSource(videoSources, pair.second->videoSources);
+      MergeSource(musicSources, pair.second->musicSources);
+      MergeSource(pictureSources, pair.second->pictureSources);
+    }
+  }
+  
  protected:
+  
+  static void MergeSource(VECSOURCES& sources, VECSOURCES& remoteSources)
+  {
+    BOOST_FOREACH(CMediaSource source, sources)
+    {
+      // If the source doesn't already exist, add it.
+    }
+  }
   
   PlexSourceScanner(const string& host, const string& hostLabel)
     : m_host(host)
