@@ -70,7 +70,7 @@ void CPlexSourceScanner::RemoveHost(const string& host)
 void CPlexSourceScanner::MergeSourcesForWindow(int windowId)
 {
   // Remove remote sources...TBD...
-
+  CSingleLock lock(g_lock);
   switch (windowId) {
     case WINDOW_MUSIC_FILES:
       BOOST_FOREACH(StringSourcesPair pair, g_hostSourcesMap)
