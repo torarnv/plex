@@ -41,7 +41,7 @@ public:
     SOURCE_TYPE_REMOTE       = 4,
     SOURCE_TYPE_VPATH        = 5
   };
-  CMediaSource() { m_iDriveType=SOURCE_TYPE_UNKNOWN; m_iLockMode=LOCK_MODE_EVERYONE; m_iBadPwdCount=0; m_iHasLock=0; m_ignore=false; strPluginIdentifer = "", hasPrefs = false; hasStoreServices = false; };
+  CMediaSource() { m_iDriveType=SOURCE_TYPE_UNKNOWN; m_iLockMode=LOCK_MODE_EVERYONE; m_iBadPwdCount=0; m_iHasLock=0; m_ignore=false; strPluginIdentifer = "", hasPrefs = false; hasStoreServices = false; m_autoDetected=false; };
   virtual ~CMediaSource() {};
 
   void FromNameAndPaths(const CStdString &category, const CStdString &name, const std::vector<CStdString> &paths);
@@ -99,6 +99,7 @@ public:
 
   std::vector<CStdString> vecPaths;
   bool m_ignore; /// <Do not store in xml
+  bool m_autoDetected;
 };
 
 /*!

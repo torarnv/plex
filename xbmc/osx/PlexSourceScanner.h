@@ -43,6 +43,7 @@ public:
 protected:
   
   static void MergeSource(VECSOURCES& sources, VECSOURCES& remoteSources);
+  static void CheckForRemovedSources(VECSOURCES& sources, int windowId);
   
   CPlexSourceScanner(const string& host, const string& hostLabel)
   : m_host(host)
