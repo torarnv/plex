@@ -229,6 +229,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("player.chaptercount")) ret = PLAYER_CHAPTERCOUNT;
     else if (strTest.Equals("player.chaptername")) ret = PLAYER_CHAPTERNAME;
     else if (strTest.Equals("player.starrating")) ret = PLAYER_STAR_RATING;
+    else if (strTest.Equals("player.iswebkit")) ret = PLAYER_ISWEBKIT;
   }
   else if (strCategory.Equals("weather"))
   {
@@ -2052,6 +2053,9 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
     case PLAYER_SHOWTIME:
       bReturn = m_playerShowTime;
     break;
+    case PLAYER_ISWEBKIT:
+      bReturn = g_application.GetCurrentPlayer() == EPC_PMSPLAYER;
+    break;
     case MUSICPM_ENABLED:
       bReturn = g_partyModeManager.IsEnabled();
     break;
@@ -3248,6 +3252,8 @@ void CGUIInfoManager::SetCurrentSong(CFileItem &item)
     }
     else
     {
+      // Should we whack this?
+#if 0
       // look for remote thumbs
       CStdString thumb(m_currentFile->GetThumbnailImage());
       if (!CURL::IsFileOnly(thumb) && !CUtil::IsHD(thumb))
@@ -3263,7 +3269,8 @@ void CGUIInfoManager::SetCurrentSong(CFileItem &item)
            else
              m_currentFile->SetThumbnailImage("");
          }
-       }  
+       }
+#endif
     }
   }
   else

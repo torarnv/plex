@@ -34,6 +34,7 @@ typedef int (*PBEGINTHREADEX_THREADFUNC)(LPVOID lpThreadParameter);
 
 #include "log.h"
 #include "GraphicContext.h"
+#include "Application.h"
 
 #ifdef __APPLE__
 //
@@ -103,14 +104,13 @@ CThread::CThread(IRunnable* pRunnable)
 
 CThread::~CThread()
 {
-  if (m_ThreadHandle != NULL)
-  {
+  if (m_ThreadHandle != 0)
     CloseHandle(m_ThreadHandle);
-  }
-  m_ThreadHandle = NULL;
+  m_ThreadHandle = 0;
 
   if (m_StopEvent)
     CloseHandle(m_StopEvent);
+  m_StopEvent = 0;
 }
 
 #ifdef _LINUX
@@ -148,7 +148,7 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
     CLog::Log(LOGERROR,"%s, sanity failed. thread is NULL.",__FUNCTION__);
     return 1;
   }
-
+  
   CLog::Log(LOGDEBUG,"thread start, auto delete: %d",pThread->IsAutoDelete());
 
 #ifndef _LINUX
@@ -158,15 +158,8 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
 #ifndef __APPLE__
   pLocalThread = pThread;
 #endif
-  struct sigaction action;
-  action.sa_handler = term_handler;
-  sigemptyset (&action.sa_mask);
-  action.sa_flags = 0;
-  //sigaction (SIGABRT, &action, NULL);
-  //sigaction (SIGSEGV, &action, NULL);
 #endif
 
-  
 #ifdef __APPLE__
   // Set the TLS.
   pthread_setspecific(tlsLocalThread, (void*)pThread);
@@ -239,13 +232,6 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
     CLog::Log(LOGERROR, "%s - Unhandled exception caught in thread exit", __FUNCTION__); 
   }
 
-  if ( pThread->IsAutoDelete() )
-  {
-    CLog::Log(LOGDEBUG,"%s, deleting thread object", __FUNCTION__);
-    delete pThread;
-    pThread = NULL;
-  }
-
   CLog::Log(LOGDEBUG,"%s, deleting thread graphic context", __FUNCTION__);
   g_graphicsContext.DeleteThreadContext();
 
@@ -254,6 +240,14 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
 #ifndef _LINUX
   _endthreadex(123);
 #endif
+  
+  if ( pThread->IsAutoDelete() )
+  {
+    CLog::Log(LOGDEBUG,"%s, deleting thread object", __FUNCTION__);
+    g_application.getApplicationMessenger().DeleteThread(pThread);
+    pThread = 0;
+  }
+  
   return 0;
 }
 
@@ -271,7 +265,6 @@ void CThread::Create(bool bAutoDelete, unsigned stacksize)
   ::ResetEvent(m_StopEvent);
  
   m_ThreadHandle = (HANDLE)_beginthreadex(NULL, stacksize, (PBEGINTHREADEX_THREADFUNC)staticThread, (void*)this, 0, &m_ThreadId);
-
 }
 
 bool CThread::IsAutoDelete() const

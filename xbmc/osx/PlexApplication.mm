@@ -132,6 +132,19 @@ BOOL gCalledAppMainline = FALSE;
   SVKey sv_key;
   NSUInteger modif;
 
+  // Ignore Shift+Control+Alt commands because we're going to process them inside Plex and we 
+  // don't want the "beep" of an unknown key combination.
+  //
+  if ([anEvent type] == NSKeyDown)
+  {
+    if ([anEvent modifierFlags] & NSShiftKeyMask &&
+        [anEvent modifierFlags] & NSControlKeyMask &&
+        [anEvent modifierFlags] & NSAlternateKeyMask)
+    {
+      return;
+    }
+  }
+    
   // If the advanced settings window or about window is visible, detect the Cmd+W shortcut & close the window.
   if ((([anEvent modifierFlags] & NSCommandKeyMask) != 0) && ([anEvent type] == NSKeyDown) && ([anEvent keyCode] == 13) && (Cocoa_IsGUIShowing()))
   {

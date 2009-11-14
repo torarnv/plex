@@ -70,7 +70,6 @@ CXHandle::CXHandle(const CXHandle &src)
 
 CXHandle::~CXHandle()
 {
-
   m_objectTracker[m_type]--;
 
   if (RecursionCount > 0) {
@@ -107,7 +106,6 @@ CXHandle::~CXHandle()
   if ( fd != 0 ) {
     close(fd);
   }
-
 }
 
 void CXHandle::Init()

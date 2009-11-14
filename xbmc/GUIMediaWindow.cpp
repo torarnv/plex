@@ -47,6 +47,7 @@
 #include "GUIDialogRating.h"
 #include "PlayList.h"
 #include "PlexDirectory.h"
+#include "PlexSourceScanner.h"
 
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
 #include "SkinInfo.h"
@@ -1335,6 +1336,7 @@ void CGUIMediaWindow::SetupShares()
   CGUIViewState* viewState=CGUIViewState::GetViewState(GetID(), items);
   if (viewState)
   {
+    CPlexSourceScanner::MergeSourcesForWindow(GetID());
     m_rootDir.SetMask(viewState->GetExtensions());
     m_rootDir.SetSources(viewState->GetSources());
     delete viewState;
@@ -1601,6 +1603,7 @@ void CGUIMediaWindow::Render()
       
       OnPrepareFileItems(*m_vecItems);
       m_vecItems->FillInDefaultIcons();
+      FormatAndSort(*m_vecItems);
       OnFinalizeFileItems(*m_vecItems);
       m_viewControl.SetItems(*m_vecItems);
       

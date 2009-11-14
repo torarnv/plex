@@ -183,6 +183,12 @@ extern "C"
   void Cocoa_SetKeyboardBacklightControlEnabled(bool enabled);
   
   //
+  // Bonjour
+  //
+  void Cocoa_RefreshAllRemotePlexSources();
+  void Cocoa_RemoveAllRemotePlexSources();
+  
+  //
   // Compatibility check
   //
   void CheckOSCompatibility();

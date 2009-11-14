@@ -1088,6 +1088,9 @@ voor deze visualisatie</string>
   <string id="13620">Afstandsbedieningshulpdriver is geïnstalleerd</string>
   <string id="13621">Apple afstandsbedieningsondersteuning kan niet worden geactiveerd.</string>
   <string id="13622">Kijk alstublieft in de Remote Buddy FAQ om te deïnstalleren.</string>
+  
+  <string id="13636">Automatisch verbinding maken met gedeelde bibliotheken</string>
+  
   <string id="14000">Groeperen</string>
   <string id="14001">Groeperen: Uit</string>
   <string id="14003">Afspeellijst downloaden...</string>
@@ -1849,6 +1852,10 @@ voor deze visualisatie</string>
   <string id="40206">Waardering wijzigen...</string>
   <string id="40207">Waardering instellen</string>
   <string id="40208">Waardering wijzigen</string>
+  
+  <string id="40220">Voorkeuren</string>
+  <string id="40221">Herstarten</string>
+  <string id="40222">Deïnstalleren</string>
 
   <string id="40300">Afsluittimer instellen</string>
   <string id="40301">Slaaptimer instellen</string>

@@ -17,6 +17,9 @@
 #include "Settings.h"
 #include "CocoaUtilsPlus.h"
 #include "GUIWindowManager.h"
+#include "Thread.h"
+#include "GUISettings.h"
+#include "PlexSourceScanner.h"
 
 void Cocoa_OnAppleRemoteKey(void* application, AppleRemoteEventIdentifier event, bool pressedDown, unsigned int count)
 {
@@ -125,12 +128,16 @@ void Cocoa_CPPUpdateProgressDialog()
   g_application.getApplicationMessenger().SendMessage(tMsg);
 }
 
+
 void Cocoa_AutodetectRemotePlexSources(const char* hostName, const char* hostLabel)
 {
   CStdString path;
   
-  if (!Cocoa_AreHostsEqual(hostName, "localhost"))
+  if (!Cocoa_AreHostsEqual(hostName, "localhost") && g_guiSettings.GetBool("servers.remoteautosource"))
   {
+    CPlexSourceScanner::ScanHost(hostName, hostLabel);
+    
+#if 0
     path.Format("plex://%s/music/", hostName);
     CUtil::AutodetectPlexSources(path, g_settings.m_musicSources, hostLabel, true);
     
@@ -142,6 +149,7 @@ void Cocoa_AutodetectRemotePlexSources(const char* hostName, const char* hostLab
     
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
     m_gWindowManager.SendThreadMessage(msg);
+#endif
   }
 }
 
@@ -150,6 +158,9 @@ void Cocoa_RemoveRemotePlexSources(const char* hostName)
   CStdString path;
   if (!Cocoa_AreHostsEqual(hostName, "localhost"))
   {
+    CPlexSourceScanner::RemoveHost(hostName);
+    
+#if 0
     path.Format("plex://%s/music/", hostName);
     CUtil::RemovePlexSources(path, g_settings.m_musicSources);
     
@@ -161,5 +172,6 @@ void Cocoa_RemoveRemotePlexSources(const char* hostName)
     
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
     m_gWindowManager.SendThreadMessage(msg);
+#endif
   }
 }

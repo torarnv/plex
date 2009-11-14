@@ -16,7 +16,9 @@ int main(int argc, char** argv)
   {
     // Always do global install for Leopard.
     printf("Attempting to install Smart Crash Reporter.\n");
-    UnsanitySCR_Install(kUnsanitySCR_GlobalInstall);
+    OSStatus ret = UnsanitySCR_Install(kUnsanitySCR_GlobalInstall);
+    if (ret != kUnsanitySCR_Install_NoError)
+      printf("ERROR installing Smart Crash Reporter: %d\n", ret);
   }
   else
   {

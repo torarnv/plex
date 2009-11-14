@@ -11,6 +11,8 @@
       <button id="10">Right</button>                                    <!--- Hold Right --->
       <button id="11">ContextMenu</button>                              <!--- Hold Menu --->
       <button id="12">Info</button>                                     <!--- Hold Info --->
+      <button id="13">Pause</button>                                    <!--- Play/Pause --->
+      <button id="14">FullScreen</button>                               <!--- Hold Play/Pause --->
     </joystick>
   </global>
 

@@ -102,17 +102,18 @@ void handleSignal(int signal);
 #define SEQUENTIAL_UNIVERSAL_REMOTE "R1"
 #define MULTICODE_UNIVERSAL_REMOTE "MCUR"
 
-#define kRemoteButtonUp            1
-#define kRemoteButtonDown          2
-#define kRemoteButtonMenu          6
-#define kRemoteButtonPlay          5
-#define kRemoteButtonRight         4
-#define kRemoteButtonLeft          3
-#define kRemoteButtonRight_Hold   10
-#define kRemoteButtonLeft_Hold     9
-#define kRemoteButtonMenu_Hold    11
-#define kRemoteButtonPlay_Hold    12
-#define kRemoteControl_Switched   19
+#define kRemoteButtonUp              1
+#define kRemoteButtonDown            2
+#define kRemoteButtonLeft            3
+#define kRemoteButtonRight           4
+#define kRemoteButtonCenter          5
+#define kRemoteButtonMenu            6
+#define kRemoteButtonLeft_Hold       9
+#define kRemoteButtonRight_Hold     10
+#define kRemoteButtonMenu_Hold      11
+#define kRemoteButtonCenter_Hold    12
+#define kRemoteButtonPlayPause      13
+#define kRemoteButtonPlayPause_Hold 14
 
 #define kDownMask             0x1000
 #define kButtonMask           0x00FF
@@ -605,17 +606,21 @@ int main(int argc, char **argv)
     exit(-1);
   }
 
-	// Add the keymappings (works for Leopard only).
+	// Add the key mappings.
 	keyMap[kHIDRemoteButtonCodePlus] = kRemoteButtonUp;
 	keyMap[kHIDRemoteButtonCodeMinus] = kRemoteButtonDown;
 	keyMap[kHIDRemoteButtonCodeMenu] = kRemoteButtonMenu;
-	keyMap[kHIDRemoteButtonCodePlayPause] = kRemoteButtonPlay;
+	keyMap[kHIDRemoteButtonCodeCenter] = kRemoteButtonCenter;
 	keyMap[kHIDRemoteButtonCodeRight] = kRemoteButtonRight;
 	keyMap[kHIDRemoteButtonCodeLeft] = kRemoteButtonLeft;
 	keyMap[kHIDRemoteButtonCodeRightHold] = kRemoteButtonRight_Hold;
 	keyMap[kHIDRemoteButtonCodeLeftHold] = kRemoteButtonLeft_Hold;
 	keyMap[kHIDRemoteButtonCodeMenuHold] = kRemoteButtonMenu_Hold;
-	keyMap[kHIDRemoteButtonCodePlayPauseHold] = kRemoteButtonPlay_Hold;
+	keyMap[kHIDRemoteButtonCodeCenterHold] = kRemoteButtonCenter_Hold;
+	
+	// Aluminum remote keys.
+	keyMap[kHIDRemoteButtonCodePlay] = kRemoteButtonPlayPause;
+	keyMap[kHIDRemoteButtonCodePlayHold] = kRemoteButtonPlayPause_Hold;
 	
 	// Mappings for Universal Mode (sequential mode)
 	keyMapUniversal["5_"] = "Select";
@@ -770,10 +775,12 @@ int main(int argc, char **argv)
   buttonConfigMap[kRemoteButtonRight] = ButtonConfig();
   buttonConfigMap[kRemoteButtonLeft_Hold] = ButtonConfig(kButtonSendsUpEvents);
   buttonConfigMap[kRemoteButtonRight_Hold] = ButtonConfig(kButtonSendsUpEvents);
-  buttonConfigMap[kRemoteButtonPlay] = ButtonConfig();
+  buttonConfigMap[kRemoteButtonCenter] = ButtonConfig();
   buttonConfigMap[kRemoteButtonMenu_Hold] = ButtonConfig();
-  buttonConfigMap[kRemoteButtonPlay_Hold] = ButtonConfig();
+  buttonConfigMap[kRemoteButtonCenter_Hold] = ButtonConfig();
   buttonConfigMap[kRemoteButtonMenu] = ButtonConfig();
+  buttonConfigMap[kRemoteButtonPlayPause] = ButtonConfig();
+  buttonConfigMap[kRemoteButtonPlayPause_Hold] = ButtonConfig();
 
   // Start the reactor.
   theReactor.start();

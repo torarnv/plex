@@ -180,6 +180,15 @@ retry:
   return true;
 }
 
+void CPlexMediaServerPlayer::ExecuteKeyCommand(char key, bool shift, bool control, bool command, bool option)
+{
+  char cmd[32];
+  sprintf(cmd, "%c %d %d %d %d", key, shift, control, command, option);
+  
+  // Send the special command over.
+  m_http.WriteLine(string("KEY ") + cmd);
+}
+
 bool CPlexMediaServerPlayer::CloseFile()
 {
   int locks = ExitCriticalSection(g_graphicsContext);  

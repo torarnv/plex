@@ -71,6 +71,8 @@ class CFileItem;
 
 #define TMSG_GUI_UPDATE_COCOA_DIALOGS 700
 
+#define TMSG_GUI_DELETE_THREAD 800
+
 typedef struct
 {
   DWORD dwMessage;
@@ -134,6 +136,8 @@ public:
   void WindowManagerProcess(bool renderOnly = false); // will call m_gWindowManager.Process on the rendering thread
   void Render(); // will call m_gWindowManager.Render on the rendering thread
   void ActivateWindow(int windowID, const CStdString &path, bool swappingWindows);
+  
+  void DeleteThread(CThread* thread);
 
 private:
   void ProcessMessage(ThreadMessage *pMsg);

@@ -444,7 +444,6 @@ void CUtil::AutodetectPlexSources(CStdString strPlexPath, VECSOURCES& dstSources
         if (item->HasProperty("hasStoreServices"))
           share.hasStoreServices = item->GetPropertyBOOL("hasStoreServices");
           
-          
         share.strPath = item->m_strPath;
         share.m_strFanartUrl = item->GetQuickFanart();
         share.m_ignore = true;

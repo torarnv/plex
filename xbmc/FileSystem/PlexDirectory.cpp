@@ -105,7 +105,7 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   
   // Wait for the thread to exit.
   WaitForThreadExit(INFINITE);
-  
+
   // See if we suceeded.
   if (m_bSuccess == false)
     return false;
@@ -143,7 +143,6 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   string strSecondDirLabel = "%Y";
   
   Parse(m_url, root, items, strFileLabel, strSecondFileLabel, strDirLabel, strSecondDirLabel);
-  
   
   // Check if any restrictions should be applied
   bool disableFanart = false;

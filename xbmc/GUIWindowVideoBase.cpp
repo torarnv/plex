@@ -1029,7 +1029,6 @@ void CGUIWindowVideoBase::GetNonContextButtons(int itemNumber, CContextButtons &
     buttons.Add(CONTEXT_BUTTON_GOTO_ROOT, 20128);
   if (g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO).size() > 0)
     buttons.Add(CONTEXT_BUTTON_NOW_PLAYING, 13350);
-  buttons.Add(CONTEXT_BUTTON_SETTINGS, 5);
 }
 
 bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
@@ -1110,10 +1109,6 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
   case CONTEXT_BUTTON_NOW_PLAYING:
     m_gWindowManager.ActivateWindow(WINDOW_VIDEO_PLAYLIST);
-    return true;
-
-  case CONTEXT_BUTTON_SETTINGS:
-    m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYVIDEOS);
     return true;
 
   case CONTEXT_BUTTON_INFO:

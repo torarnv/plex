@@ -115,4 +115,20 @@ static XBMCMain *_o_sharedMainInstance = nil;
   NSLog(@"Service Did Not Resolve: %@ (%@)", [service name], errorDict);
 }
 
+- (void)refreshAllRemotePlexSources
+{
+  for (NSNetService* service in o_plexMediaServers)
+  {
+    Cocoa_AutodetectRemotePlexSources([[service hostName] UTF8String], [[service name] UTF8String]);
+  }
+}
+
+- (void)removeAllRemotePlexSources
+{
+  for (NSNetService* service in o_plexMediaServers)
+  {
+    Cocoa_RemoveRemotePlexSources([[service hostName] UTF8String]);
+  }  
+}
+
 @end
