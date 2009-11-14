@@ -3191,10 +3191,18 @@ bool CApplication::OnAction(const CAction &action)
   {
     // first check whether we're within 3 seconds of the start of the track
     // if not, we just revert to the start of the track
-    if (m_pPlayer && m_pPlayer->CanSeek() && GetTime() > 3)
+    if (GetTime() > 3)
     {
-      SeekTime(0);
-      SetPlaySpeed(1);
+      if (m_pPlayer && m_pPlayer->CanSeek())
+      {
+        SeekTime(0);
+        SetPlaySpeed(1);
+      }
+      else
+      {
+        g_playlistPlayer.Play(g_playlistPlayer.GetCurrentSong());
+      }
+
     }
     else
     {
