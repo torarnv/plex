@@ -372,6 +372,18 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
         }
         return true;
       }
+      else if (message.GetParam1()==GUI_MSG_UPDATE_REMOTE_SOURCES)
+      {
+        CPlexSourceScanner::MergeSourcesForWindow(GetID());
+        SetupShares();
+        if (m_vecItems->IsVirtualDirectoryRoot() && IsActive())
+        {
+          int iItem = m_viewControl.GetSelectedItem();
+          Update(m_vecItems->m_strPath);
+          m_viewControl.SetSelectedItem(iItem);
+        }
+        return true;
+      }
       else if (message.GetParam1()==GUI_MSG_UPDATE && IsActive())
       {
         int iItem = m_viewControl.GetSelectedItem();
@@ -1336,7 +1348,6 @@ void CGUIMediaWindow::SetupShares()
   CGUIViewState* viewState=CGUIViewState::GetViewState(GetID(), items);
   if (viewState)
   {
-    CPlexSourceScanner::MergeSourcesForWindow(GetID());
     m_rootDir.SetMask(viewState->GetExtensions());
     m_rootDir.SetSources(viewState->GetSources());
     delete viewState;
