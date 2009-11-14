@@ -579,6 +579,9 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
     case TMSG_GUI_UPDATE_COCOA_DIALOGS:
       CGUIDialogUtils::UpdateProgressDialog();
       break;
+    case TMSG_GUI_DELETE_THREAD:
+      delete (CThread* )pMsg->lpVoid;
+      break;
   }
 }
 
@@ -834,6 +837,13 @@ void CApplicationMessenger::ActivateWindow(int windowID, const CStdString &path,
   ThreadMessage tMsg = {TMSG_GUI_ACTIVATE_WINDOW, windowID, swappingWindows ? 1 : 0};
   tMsg.strParam = path;
   SendMessage(tMsg, true);
+}
+
+void CApplicationMessenger::DeleteThread(CThread* thread)
+{
+  ThreadMessage tMsg = {TMSG_GUI_DELETE_THREAD};
+  tMsg.lpVoid = thread;
+  SendMessage(tMsg, false);
 }
 
 void CApplicationMessenger::WindowManagerProcess(bool renderOnly)

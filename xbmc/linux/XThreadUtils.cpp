@@ -98,24 +98,17 @@ static void MakeTlsKey()
 static int InternalThreadFunc(void *data)
 {
 #ifdef __APPLE__
+  InternalThreadParam* param = (InternalThreadParam* )data;
   pthread_once(&keyOnce, MakeTlsKey);
   pthread_setspecific(tlsParamKey, data);
-
+  
   // Save the Mach port with the handle.
-  ((InternalThreadParam* )data)->handle->m_machThreadPort = mach_thread_self();
+  param->handle->m_machThreadPort = mach_thread_self();
 #else
   g_pParam = (InternalThreadParam *)data;
 #endif
 
   int nRc = -1;
-
-  // assign termination handler
-  struct sigaction action;
-  action.sa_handler = handler;
-  sigemptyset (&action.sa_mask);
-  action.sa_flags = 0;
-  //sigaction (SIGABRT, &action, NULL);
-  //sigaction (SIGSEGV, &action, NULL);
 
 #ifdef __APPLE__
   void* pool = InitializeAutoReleasePool();
@@ -139,9 +132,11 @@ static int InternalThreadFunc(void *data)
     ExitCriticalSection(g_graphicsContext);
   }
 
-  SetEvent(GET_PARAM()->handle);
-  CloseHandle(GET_PARAM()->handle);
-  delete GET_PARAM();
+  SetEvent(param->handle);
+  mach_port_deallocate(mach_task_self(), param->handle->m_machThreadPort);
+  CloseHandle(param->handle);
+  delete param;
+  
   return nRc;
 }
 
@@ -159,19 +154,19 @@ HANDLE WINAPI CreateThread(
   // DO NOT use SDL_WaitThread for waiting. it will delete the thread object.
   HANDLE h = CreateEvent(NULL, TRUE, FALSE, NULL);
   h->ChangeType(CXHandle::HND_THREAD);
-  InternalThreadParam *pParam = new InternalThreadParam;
+  InternalThreadParam *pParam = new InternalThreadParam();
   pParam->threadFunc = lpStartAddress;
   pParam->data = lpParameter;
   pParam->handle = h;
 
   h->m_nRefCount++;
   h->m_hThread = SDL_CreateThread(InternalThreadFunc, (void*)pParam);
+
   if (lpThreadId)
     *lpThreadId = SDL_GetThreadID(h->m_hThread);
+  
   return h;
-
 }
-
 
 DWORD WINAPI GetCurrentThreadId(void) {
   return SDL_ThreadID();
