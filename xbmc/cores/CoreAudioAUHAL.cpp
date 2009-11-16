@@ -109,7 +109,7 @@ CoreAudioAUHAL::CoreAudioAUHAL(const CStdString& strName, const char *strCodec, 
 	{
 		// Enable AC3 passthrough for digital devices
 		int mpeg_remapping = 0;
-		if (strCodec == "AAC" /*|| strCodec == "DTS"*/) 
+		if (strCodec == "AAC" || strCodec == "DTS") 
 		  mpeg_remapping = 1; // DTS uses MPEG channel mapping
 		
 		if (ac3encoderInit(&deviceParameters->m_ac3encoder, channels, sampleRate, bitsPerSample, mpeg_remapping) == -1)

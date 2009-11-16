@@ -24,6 +24,7 @@
 #include "AudioContext.h"
 #include "DVDStreamInfo.h"
 #include "GUISettings.h"
+#include "XBAudioConfig.h"
 
 #include "Compressors.h"
 
@@ -213,10 +214,10 @@ void CDVDAudioCodecLibDts::SetupChannels(int flags)
 {
   m_iSourceFlags    = flags;
   m_iSourceChannels = GetNrOfChannels(flags);
-  if (g_audioContext.IsPassthroughActive() == false)
-    m_iOutputChannels = 2;
+	if (g_audioConfig.GetAC3Enabled())
+		m_iOutputChannels = m_iSourceChannels;
   else
-    m_iOutputChannels = m_iSourceChannels;
+		m_iOutputChannels = 2;
 
   if (m_iOutputChannels == 1) 
     m_iOutputFlags = DTS_MONO;
