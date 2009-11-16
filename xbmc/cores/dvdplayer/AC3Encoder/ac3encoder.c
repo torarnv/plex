@@ -155,7 +155,7 @@ int ac3encoderEncodePCM(struct AC3Encoder *encoder, uint8_t *pcmSamples, uint8_t
 	
 	
 	// remap sample buffer
-	if(aften_remap)
+	if(aften_remap);
 		aften_remap(pcmBuffer, sampleCount, encoder->m_aftenContext.channels, encoder->m_aftenContext.sample_format, encoder->m_aftenContext.acmod);
 	
 	// pre-set encoder parameters
