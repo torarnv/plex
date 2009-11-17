@@ -409,7 +409,7 @@ void CUtil::AutodetectPlexSources(CStdString strPlexPath, VECSOURCES& dstSources
 {
   bool bIsSourceName = true;
   bool bPerformRemove = true;
-  
+ 
   // Auto-add PMS sources
   VECSOURCES pmsSources;
   CFileItemList* fileItems = new CFileItemList();
@@ -430,9 +430,7 @@ void CUtil::AutodetectPlexSources(CStdString strPlexPath, VECSOURCES& dstSources
         
         // Add the label (if provided
         if (strLabel != "")
-        {
           share.strName.Format("%s (%s)", share.strName, strLabel);
-        }
           
         // Get special attributes for PMS sources
         if (item->HasProperty("hasPrefs"))
@@ -483,7 +481,7 @@ void CUtil::AutodetectPlexSources(CStdString strPlexPath, VECSOURCES& dstSources
     delete fileItems;
     
     // Remove any local PMS sources that don't exist in the PlexDirectory
-    for ( int i = dstSources.size() - 1; i >= 0; i--)
+    for (int i = dstSources.size() - 1; i >= 0; i--)
     {
       CMediaSource share = dstSources.at(i);
       if ((share.strPath.find(strPlexPath) != string::npos) && (share.strPath.find("/", strPlexPath.length()) == share.strPath.length()-1))
