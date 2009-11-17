@@ -17,6 +17,12 @@
 #include <CoreServices/CoreServices.h>
 #import <SystemConfiguration/SystemConfiguration.h>
 #include <arpa/inet.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/ioctl.h>
+#include <net/if.h>
+#include <netinet/in.h>
 #include <IOKit/IOKitLib.h>
 #include <IOKit/network/IOEthernetInterface.h>
 #include <IOKit/network/IONetworkInterface.h>
@@ -28,6 +34,7 @@
 
 #include <boost/shared_ptr.hpp>
 #include <boost/algorithm/string.hpp>
+#include <boost/foreach.hpp>
 #include <map>
 
 using namespace boost;
@@ -379,7 +386,7 @@ string Cocoa_GetSystemFontPathFromDisplayName(const string displayName)
 ///////////////////////////////////////////////////////////////////////////////
 vector<in_addr_t> Cocoa_AddressesForHost(const string& hostname)
 {
-  NSHost *host = [NSHost hostWithName:[NSString stringWithCString:hostname.c_str()]];
+  NSHost *host = [NSHost hostWithName:[NSString stringWithCString:hostname.c_str() encoding:NSUTF8StringEncoding]];
   vector<in_addr_t> ret;
   for (NSString *address in [host addresses])
     ret.push_back(inet_addr([address UTF8String]));
@@ -387,10 +394,68 @@ vector<in_addr_t> Cocoa_AddressesForHost(const string& hostname)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+vector<in_addr_t> Cocoa_GetLocalAddresses()
+{
+  vector<in_addr_t> ret;
+  
+  static struct ifreq ifreqs[32];
+  struct ifconf ifconf;
+  memset(&ifconf, 0, sizeof(ifconf));
+  ifconf.ifc_req = ifreqs;
+  ifconf.ifc_len = sizeof(ifreqs);
+
+  int sd = socket(PF_INET, SOCK_STREAM, 0);
+  ioctl(sd, SIOCGIFCONF, (char *)&ifconf);
+
+  // Localhost (127.0.0.1) which isn't usually added.
+  int localhost = 0x0100007f;
+  bool addedLocalhost = false;
+  
+  // Walk through addresses.
+  for (int i = 0; i < ifconf.ifc_len/sizeof(struct ifreq); ++i)
+  {
+    struct sockaddr_in* addr = (struct sockaddr_in *)&ifreqs[i].ifr_addr;
+    ret.push_back(addr->sin_addr.s_addr);
+    
+    if (addr->sin_addr.s_addr == localhost)
+      addedLocalhost = true;
+  }
+  
+  // Add if we need to.
+  if (addedLocalhost == false)
+    ret.push_back(localhost);
+  
+  close(sd);
+  
+  return ret;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+bool Cocoa_IsHostLocal(const string& host)
+{
+  hostent* pHost = ::gethostbyname(host.c_str());
+  if (pHost)
+  {
+    BOOST_FOREACH(in_addr_t localAddr, Cocoa_GetLocalAddresses())
+    {
+      for (int x=0; pHost->h_addr_list[x]; x++)
+      {
+        struct in_addr* in = (struct in_addr *)pHost->h_addr_list[x];
+        if (in->s_addr == localAddr)
+          return true;
+      }
+    }
+  }
+  
+  return false;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
 bool Cocoa_AreHostsEqual(const string& host1, const string& host2)
 {
-  NSHost *h1 = [NSHost hostWithName:[NSString stringWithCString:host1.c_str()]];
-  NSHost *h2 = [NSHost hostWithName:[NSString stringWithCString:host2.c_str()]];
+  NSHost *h1 = [NSHost hostWithName:[NSString stringWithCString:host1.c_str() encoding:NSUTF8StringEncoding]];
+  NSHost *h2 = [NSHost hostWithName:[NSString stringWithCString:host2.c_str() encoding:NSUTF8StringEncoding]];
   return ([h1 isEqualToHost:h2] || ([h1 isEqualToHost:[NSHost currentHost]] && [h2 isEqualToHost:[NSHost currentHost]]));
 }
 
@@ -619,7 +684,7 @@ string Cocoa_GetTimeString(const string& format, time_t time)
   id pool = [[NSAutoreleasePool alloc] init];
   NSDateFormatter *dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
   [dateFormatter setLocale:[NSLocale currentLocale]];
-  [dateFormatter setDateFormat:[NSString stringWithCString:format.c_str()]];
+  [dateFormatter setDateFormat:[NSString stringWithCString:format.c_str() encoding:NSUTF8StringEncoding]];
 
   NSDate* date = [NSDate dateWithTimeIntervalSince1970:time];
   NSString* formattedDateString = [dateFormatter stringFromDate:date];

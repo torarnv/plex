@@ -32,6 +32,8 @@ string Cocoa_GetSystemFontPathFromDisplayName(const string displayName);
 //
 vector<in_addr_t> Cocoa_AddressesForHost(const string& hostname);
 bool Cocoa_AreHostsEqual(const string& host1, const string& host2);
+bool Cocoa_IsHostLocal(const string& host);
+vector<in_addr_t> Cocoa_GetLocalAddresses();
 bool Cocoa_IsLocalPlexMediaServerRunning();
 
 //
