@@ -597,8 +597,7 @@ void CGUIViewStateWindowMusicSongs::SaveViewState()
 VECSOURCES& CGUIViewStateWindowMusicSongs::GetSources()
 {
   // PMS sources
-  if (Cocoa_IsLocalPlexMediaServerRunning())
-    CUtil::AutodetectPlexSources("plex://localhost/music/", g_settings.m_musicSources);
+  CUtil::AutodetectPlexSources("plex://localhost/music/", g_settings.m_musicSources);
   
   bool bIsSourceName = true;
   // plugins share

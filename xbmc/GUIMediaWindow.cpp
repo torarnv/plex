@@ -360,7 +360,8 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
         return true;
       }
       else if (message.GetParam1()==GUI_MSG_UPDATE_SOURCES)
-      { // State of the sources changed, so update our view
+      { 
+        // State of the sources changed, so update our view
         if (m_vecItems->IsVirtualDirectoryRoot() && IsActive())
         {
           // Some shares dynamically (dis)appear, so we need to refresh them.
