@@ -24,6 +24,7 @@
 #include "AudioContext.h"
 #include "DVDStreamInfo.h"
 #include "GUISettings.h"
+#include "XBAudioConfig.h"
 
 #include "Compressors.h"
 
@@ -147,12 +148,18 @@ void CDVDAudioCodecLibDts::convert2s16_multi(convert_t * _f, int16_t * s16, int 
     case DTS_3F2R | DTS_LFE:
       for (i = 0; i < 256; i++)
       {
-        s16[6*i  ] = convert (f[i+256]);
-        s16[6*i+1] = convert (f[i+512]);
-        s16[6*i+2] = convert (f[i+768]);
-        s16[6*i+3] = convert (f[i+1024]);
-        s16[6*i+4] = convert (f[i]);
-        s16[6*i+5] = convert (f[i+1280]);
+		  //s16[6*i  ] = convert (f[i+256]);
+		  //s16[6*i+1] = convert (f[i+512]);
+		  //s16[6*i+2] = convert (f[i+768]);
+		  //s16[6*i+3] = convert (f[i+1024]);
+		  //s16[6*i+4] = convert (f[i]);
+		  //s16[6*i+5] = convert (f[i+1280]);
+		  s16[6*i  ] = convert (f[i]);
+		  s16[6*i+1] = convert (f[i+256]);
+		  s16[6*i+2] = convert (f[i+512]);
+		  s16[6*i+3] = convert (f[i+768]);
+		  s16[6*i+4] = convert (f[i+1024]);
+		  s16[6*i+5] = convert (f[i+1280]);
       }
       break;
   }
@@ -213,10 +220,10 @@ void CDVDAudioCodecLibDts::SetupChannels(int flags)
 {
   m_iSourceFlags    = flags;
   m_iSourceChannels = GetNrOfChannels(flags);
-  if (g_audioContext.IsPassthroughActive() == false)
-    m_iOutputChannels = 2;
+	if (g_audioConfig.GetAC3Enabled() && g_audioConfig.UseDigitalOutput())
+		m_iOutputChannels = m_iSourceChannels;
   else
-    m_iOutputChannels = m_iSourceChannels;
+		m_iOutputChannels = 2;
 
   if (m_iOutputChannels == 1) 
     m_iOutputFlags = DTS_MONO;
