@@ -220,7 +220,7 @@ void CDVDAudioCodecLibDts::SetupChannels(int flags)
 {
   m_iSourceFlags    = flags;
   m_iSourceChannels = GetNrOfChannels(flags);
-	if (g_audioConfig.GetAC3Enabled())
+	if (g_audioConfig.GetAC3Enabled() && g_audioConfig.UseDigitalOutput())
 		m_iOutputChannels = m_iSourceChannels;
   else
 		m_iOutputChannels = 2;
