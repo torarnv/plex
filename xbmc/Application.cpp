@@ -4282,8 +4282,11 @@ void CApplication::Stop()
 
     // Make sure background loader threads are all dead.
     CBackgroundRunner::StopAll();
-    while (CBackgroundRunner::GetNumActive() != 0)
+    for (int i=0; CBackgroundRunner::GetNumActive() != 0 && i<60; i++)
+    {
+      m_applicationMessenger.ProcessMessages();
       Sleep(50);
+    }
     
     m_bStop = true;
     CLog::Log(LOGNOTICE, "stop all");
