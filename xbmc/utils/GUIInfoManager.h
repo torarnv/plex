@@ -30,6 +30,7 @@
 #include "StringUtils.h"
 #include "Temperature.h"
 #include "CriticalSection.h"
+#include "FileItem.h"
 #ifndef _XBOX
 #include "CPUInfo.h"
 #endif
@@ -44,7 +45,6 @@ namespace MUSIC_INFO
   class CMusicInfoTag;
 }
 class CVideoInfoTag;
-class CFileItem;
 class CGUIListItem;
 class CDateTime;
 class CMusicThumbLoader;
@@ -653,7 +653,7 @@ protected:
   CStdString m_currentMovieDuration;
   
   // Current playing stuff
-  CFileItem* m_currentFile;
+  CFileItemPtr m_currentFile;
   CStdString m_currentMovieThumb;
   unsigned int m_lastMusicBitrateTime;
   unsigned int m_MusicBitrate;

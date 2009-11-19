@@ -98,7 +98,7 @@ void CGUIInfoManager::CCombinedValue::operator =(const CGUIInfoManager::CCombine
   this->m_postfix = mSrc.m_postfix;
 }
 
-CGUIInfoManager::CGUIInfoManager(void)
+CGUIInfoManager::CGUIInfoManager()
 {
   m_lastSysHeatInfoTime = 0; 
   m_lastMusicBitrateTime = 0;
@@ -109,7 +109,6 @@ CGUIInfoManager::CGUIInfoManager(void)
   m_nextWindowID = WINDOW_INVALID;
   m_prevWindowID = WINDOW_INVALID;
   m_stringParameters.push_back("__ZZZZ__");   // to offset the string parameters by 1 to assure that all entries are non-zero
-  m_currentFile = new CFileItem;
   m_currentSlide = new CFileItem;
   m_lastFPSTime = 0;
   m_frameCounter = 0;
@@ -118,12 +117,13 @@ CGUIInfoManager::CGUIInfoManager(void)
   m_slideshowShowDescription = false;
   m_nowPlayingFlipped = false;
   m_musicThumbLoader = new CMusicThumbLoader(1,200);
+  m_currentFile = CFileItemPtr(new CFileItem());
 }
 
-CGUIInfoManager::~CGUIInfoManager(void)
+CGUIInfoManager::~CGUIInfoManager()
 {
-  delete m_currentFile;
   delete m_currentSlide;
+  delete m_musicThumbLoader;
 }
 
 bool CGUIInfoManager::OnMessage(CGUIMessage &message)
@@ -134,7 +134,7 @@ bool CGUIInfoManager::OnMessage(CGUIMessage &message)
     {
       CFileItemPtr item = *(CFileItemPtr*)message.GetLPVOID();
       if (m_currentFile->m_strPath.Equals(item->m_strPath))
-        *m_currentFile = *item;
+        m_currentFile = item;
       return true;
     }
   }
@@ -1255,7 +1255,6 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
   case CONTAINER_SECOND_TITLE:
     {
       CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
-      const CFileItemList& items = ((CGUIMediaWindow *)window)->CurrentDirectory();
       if (window)
         return ((CGUIMediaWindow *)window)->CurrentDirectory().GetSecondTitle();
     }
@@ -2582,12 +2581,12 @@ CStdString CGUIInfoManager::GetImage(int info, DWORD contextWindow)
   else if (info == MUSICPLAYER_RATING)
   {
     if (!g_application.IsPlayingAudio()) return "";
-    return GetItemImage(m_currentFile, LISTITEM_RATING);
+    return GetItemImage(m_currentFile.get(), LISTITEM_RATING);
   }
   else if (info == PLAYER_STAR_RATING)
   {
     if (!g_application.IsPlaying()) return "";
-    return GetItemImage(m_currentFile, LISTITEM_STAR_RATING);
+    return GetItemImage(m_currentFile.get(), LISTITEM_STAR_RATING);
   }
   else if (info == VIDEOPLAYER_COVER)
   {
@@ -2955,9 +2954,9 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
     }
     break;
   case MUSICPLAYER_LYRICS: 
-    return GetItemLabel(m_currentFile, AddListItemProp("lyrics"));
+    return GetItemLabel(m_currentFile.get(), AddListItemProp("lyrics"));
   }
-  return GetMusicTagLabel(item, m_currentFile);
+  return GetMusicTagLabel(item, m_currentFile.get());
 }
 
 CStdString CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item) const
@@ -3230,7 +3229,7 @@ void CGUIInfoManager::SetCurrentAlbumThumb(const CStdString thumbFileName)
 void CGUIInfoManager::SetCurrentSong(CFileItem &item)
 {
   CLog::Log(LOGDEBUG,"CGUIInfoManager::SetCurrentSong(%s)",item.m_strPath.c_str());
-  *m_currentFile = item;
+  m_currentFile = CFileItemPtr(new CFileItem(item));
 
   m_currentFile->LoadMusicTag();
   if (m_currentFile->GetMusicInfoTag()->GetTitle().IsEmpty())
@@ -3256,6 +3255,10 @@ void CGUIInfoManager::SetCurrentSong(CFileItem &item)
     {
       CFileItemList list;
       list.Add(CFileItemPtr(m_currentFile));
+      
+      if (m_musicThumbLoader->IsLoading())
+        m_musicThumbLoader->StopThread();
+      
       m_musicThumbLoader->Load(list);
     }
   }
@@ -3263,13 +3266,13 @@ void CGUIInfoManager::SetCurrentSong(CFileItem &item)
     m_currentFile->SetMusicThumb();
   m_currentFile->FillInDefaultIcon();
 
-  CMusicInfoLoader::LoadAdditionalTagInfo(m_currentFile);
+  CMusicInfoLoader::LoadAdditionalTagInfo(m_currentFile.get());
 }
 
 void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
 {
   CLog::Log(LOGDEBUG,"CGUIInfoManager::SetCurrentMovie(%s)",item.m_strPath.c_str());
-  *m_currentFile = item;
+  m_currentFile = CFileItemPtr(new CFileItem(item));
   
   if (!m_currentFile->HasVideoInfoTag())
   { // attempt to get some information
