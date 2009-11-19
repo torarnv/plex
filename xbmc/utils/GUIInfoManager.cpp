@@ -72,6 +72,7 @@
 #include "musicInfoTagLoaderFactory.h"
 #include "MusicInfoLoader.h"
 #include "LabelFormatter.h"
+#include "ThumbLoader.h"
 
 #include "GUILabelControl.h"  // for CInfoLabel
 #include "GUIWindowVideoInfo.h"
@@ -116,6 +117,7 @@ CGUIInfoManager::CGUIInfoManager(void)
   m_fps = 0.0;
   m_slideshowShowDescription = false;
   m_nowPlayingFlipped = false;
+  m_musicThumbLoader = new CMusicThumbLoader(1,200);
 }
 
 CGUIInfoManager::~CGUIInfoManager(void)
@@ -3252,25 +3254,9 @@ void CGUIInfoManager::SetCurrentSong(CFileItem &item)
     }
     else
     {
-      // Should we whack this?
-#if 0
-      // look for remote thumbs
-      CStdString thumb(m_currentFile->GetThumbnailImage());
-      if (!CURL::IsFileOnly(thumb) && !CUtil::IsHD(thumb))
-       {
-         CStdString cachedThumb(m_currentFile->GetCachedMusicThumb());
-         if(CFile::Exists(cachedThumb))
-           m_currentFile->SetThumbnailImage(cachedThumb);
-         else
-         {
-           CPicture pic;
-           if(pic.DoCreateThumbnail(thumb, cachedThumb))
-             m_currentFile->SetThumbnailImage(cachedThumb);
-           else
-             m_currentFile->SetThumbnailImage("");
-         }
-       }
-#endif
+      CFileItemList list;
+      list.Add(CFileItemPtr(m_currentFile));
+      m_musicThumbLoader->Load(list);
     }
   }
   else

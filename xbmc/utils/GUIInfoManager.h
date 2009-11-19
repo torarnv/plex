@@ -47,6 +47,7 @@ class CVideoInfoTag;
 class CFileItem;
 class CGUIListItem;
 class CDateTime;
+class CMusicThumbLoader;
 
 // conditions for window retrieval
 #define WINDOW_CONDITION_HAS_LIST_ITEMS  1
@@ -709,6 +710,8 @@ protected:
   std::map<int, bool> m_persistentBoolCache;
 
   CCriticalSection m_critInfo;
+  
+  CMusicThumbLoader* m_musicThumbLoader;
 };
 
 /*!
