@@ -393,40 +393,41 @@ vector<in_addr_t> Cocoa_AddressesForHost(const string& hostname)
   return ret;
 }
 
+#define SIZE(p) MAX((p).sa_len, sizeof(p))
+
 ///////////////////////////////////////////////////////////////////////////////
 vector<in_addr_t> Cocoa_GetLocalAddresses()
 {
   vector<in_addr_t> ret;
   
-  static struct ifreq ifreqs[32];
+  static struct ifreq ifreqs[128];
   struct ifconf ifconf;
   memset(&ifconf, 0, sizeof(ifconf));
+  memset(&ifreqs, 0, sizeof(ifreqs));
   ifconf.ifc_req = ifreqs;
   ifconf.ifc_len = sizeof(ifreqs);
-
+  
   int sd = socket(PF_INET, SOCK_STREAM, 0);
-  ioctl(sd, SIOCGIFCONF, (char *)&ifconf);
-
-  // Localhost (127.0.0.1) which isn't usually added.
-  int localhost = 0x0100007f;
-  bool addedLocalhost = false;
-  
-  // Walk through addresses.
-  for (int i = 0; i < ifconf.ifc_len/sizeof(struct ifreq); ++i)
+  if (ioctl(sd, SIOCGIFCONF, (char *)&ifconf) == 0)
   {
-    struct sockaddr_in* addr = (struct sockaddr_in *)&ifreqs[i].ifr_addr;
-    ret.push_back(addr->sin_addr.s_addr);
-    
-    if (addr->sin_addr.s_addr == localhost)
-      addedLocalhost = true;
-  }
-  
-  // Add if we need to.
-  if (addedLocalhost == false)
-    ret.push_back(localhost);
+    char* cp = (char *)ifconf.ifc_req;
+    char* cplim = cp+ifconf.ifc_len;
+    struct ifreq* ifr = ifconf.ifc_req;
+
+    for (; cp<cplim; cp+=(sizeof(ifr->ifr_name) + SIZE(ifr->ifr_addr)))
+    {
+      ifr = (struct ifreq *)cp;
+
+      struct sockaddr *sa = (struct sockaddr *)&(ifr->ifr_addr);
+      if (sa->sa_family == AF_INET || sa->sa_family == AF_LINK)
+      {
+        struct sockaddr_in* pa = (struct sockaddr_in *)sa;
+        ret.push_back(pa->sin_addr.s_addr);
+      }
+     }
+   }
   
   close(sd);
-  
   return ret;
 }
 
@@ -434,9 +435,12 @@ vector<in_addr_t> Cocoa_GetLocalAddresses()
 bool Cocoa_IsHostLocal(const string& host)
 {
   hostent* pHost = ::gethostbyname(host.c_str());
+  vector<in_addr_t> localAddresses = Cocoa_GetLocalAddresses();
+  
+  printf("Asked to check %s.\n", host.c_str());
   if (pHost)
   {
-    BOOST_FOREACH(in_addr_t localAddr, Cocoa_GetLocalAddresses())
+    BOOST_FOREACH(in_addr_t localAddr, localAddresses)
     {
       for (int x=0; pHost->h_addr_list[x]; x++)
       {
@@ -446,6 +450,8 @@ bool Cocoa_IsHostLocal(const string& host)
       }
     }
   }
+  
+  printf("The host %s was not local!\n", host.c_str());
   
   return false;
 }
