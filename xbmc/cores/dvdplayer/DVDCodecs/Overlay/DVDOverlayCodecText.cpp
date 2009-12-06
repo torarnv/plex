@@ -29,6 +29,7 @@ CDVDOverlayCodecText::CDVDOverlayCodecText() : CDVDOverlayCodec("Text Subtitle D
 {
   m_pOverlay = NULL;
   m_bIsSSA = false;
+	m_bIsTX3G = false;
 }
 
 CDVDOverlayCodecText::~CDVDOverlayCodecText()
@@ -40,7 +41,8 @@ CDVDOverlayCodecText::~CDVDOverlayCodecText()
 bool CDVDOverlayCodecText::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
   m_bIsSSA = (hints.codec == CODEC_ID_SSA);
-  if(hints.codec == CODEC_ID_TEXT || hints.codec == CODEC_ID_SSA)
+  m_bIsTX3G = (hints.codec == CODEC_ID_MOV_TEXT);
+  if(hints.codec == CODEC_ID_TEXT || hints.codec == CODEC_ID_MOV_TEXT || hints.codec == CODEC_ID_SSA)
     return true;
   return false;
 }
@@ -65,6 +67,11 @@ int CDVDOverlayCodecText::Decode(BYTE* data, int size, double pts, double durati
   start = (char*)data;
   end   = (char*)data + size;
   p     = (char*)data;
+	
+	if (m_bIsTX3G)
+	{
+		p+=2; start+=2;
+	}
 
   if (m_bIsSSA)
   {

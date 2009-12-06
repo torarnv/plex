@@ -234,7 +234,10 @@ CDVDOverlayCodec* CDVDFactoryCodec::CreateOverlayCodec( CDVDStreamInfo &hint )
     case CODEC_ID_TEXT:
       pCodec = OpenCodec(new CDVDOverlayCodecText(), hint, options);
       if( pCodec ) return pCodec;
-
+		  
+	  case CODEC_ID_MOV_TEXT:
+		  pCodec = OpenCodec(new CDVDOverlayCodecText(), hint, options);
+		  if( pCodec ) return pCodec;
     case CODEC_ID_SSA:
       pCodec = OpenCodec(new CDVDOverlayCodecSSA(), hint, options);
       if( pCodec ) return pCodec;

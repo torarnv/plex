@@ -39,5 +39,6 @@ public:
   
 private:
   bool             m_bIsSSA;
+	bool			m_bIsTX3G;
   CDVDOverlayText* m_pOverlay;
 };
