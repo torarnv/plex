@@ -14,6 +14,7 @@
 {
   AppleRemote*        o_remote;
   void*               pApplication;
+  NSNetService        *o_plexNetService;
   NSNetServiceBrowser *o_plexMediaServerBrowser;
   NSMutableArray      *o_plexMediaServers;
   NSMutableDictionary *o_plexMediaServerHosts;

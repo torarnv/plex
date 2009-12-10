@@ -41,6 +41,14 @@ static XBMCMain *_o_sharedMainInstance = nil;
   // Let the system stablize a bit before we start searching for media servers
   [self performSelector:@selector(searchForPlexMediaServers) withObject:nil afterDelay:0.1];
 	
+  // Start the client's Bonjour service
+  o_plexNetService = [[NSNetService alloc] initWithDomain:@"" type:@"_plexclient._tcp" name:@"" port:32401];
+  [o_plexNetService setTXTRecordData:
+   [NSNetService dataFromTXTRecordDictionary:
+    [NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"]
+                                forKey:@"Version"]]];
+  [o_plexNetService publish];
+  
   // broadcast launch notification
 	CFNotificationCenterPostNotification( CFNotificationCenterGetDistributedCenter (),
 										 CFSTR("PlexGUIInit"), 
@@ -55,6 +63,7 @@ static XBMCMain *_o_sharedMainInstance = nil;
 }
 
 - (void)dealloc {
+  [o_plexNetService release];
   [o_remote release], o_remote = nil;
   [o_plexMediaServerBrowser release], o_plexMediaServers = nil;
   [o_plexMediaServers release], o_plexMediaServers = nil;
