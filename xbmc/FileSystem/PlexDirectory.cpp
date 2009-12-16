@@ -942,7 +942,14 @@ void CPlexDirectory::StopThread()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 string CPlexDirectory::ProcessUrl(const string& parent, const string& url, bool isDirectory)
 {
-  CURL theURL(parent);
+  string parentPath(parent);
+  
+  // If the parent has ? we need to lop off whatever comes after.
+  int questionMark = parentPath.find('?'); 
+  if (questionMark != -1)
+    parentPath = parentPath.substr(0, questionMark);
+  
+  CURL theURL(parentPath);
   
   // Files use plain HTTP.
   if (isDirectory == false)
