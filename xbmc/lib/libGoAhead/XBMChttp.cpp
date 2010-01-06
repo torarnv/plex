@@ -1772,7 +1772,16 @@ int CXbmcHttp::xbmcPlayerPlayFile(int numParas, CStdString paras[])
   }
   else
   {
-    g_application.getApplicationMessenger().MediaPlay(paras[0]);
+    // See if we're getting user agent.
+    if (numParas > 1)
+      item.SetProperty("userAgent", paras[1]);
+    
+    // See if we're getting cookie.
+    if (numParas > 2)
+      item.SetProperty("httpCookies", paras[2]);
+      
+    g_application.getApplicationMessenger().MediaPlay(item);
+    
     if(g_application.IsPlaying())
       return SetResponse(openTag+"OK");
   }
