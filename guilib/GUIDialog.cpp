@@ -75,7 +75,7 @@ bool CGUIDialog::Load(const CStdString& strFileName, bool bContainsPath)
 
 bool CGUIDialog::OnAction(const CAction &action)
 {
-  if (action.wID == ACTION_CLOSE_DIALOG || action.wID == ACTION_PREVIOUS_MENU)
+  if (action.wID == ACTION_CLOSE_DIALOG || action.wID == ACTION_PREVIOUS_MENU || action.wID == ACTION_PARENT_DIR)
   {
     Close();
     return true;
