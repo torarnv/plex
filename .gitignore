@@ -1,4 +1,5 @@
 build/
+Plex.xcodeproj/*.perspectivev3
 Plex.xcodeproj/*.mode1v3
 Plex.xcodeproj/*.pbxuser
 .firstrun
