@@ -76,18 +76,9 @@ bool CDVDSubtitleParserMicroDVD::Open(CDVDStreamInfo &hints)
       pOverlay->iPTSStartTime = m_framerate * atoi(startFrame);
       pOverlay->iPTSStopTime  = m_framerate * atoi(endFrame);
 
-      for(int i=0;i<3 && lines[i];i++)
-      {
-        CStdStringW strUTF16;
-        CStdStringA strUTF8;
-        g_charsetConverter.subtitleCharsetToW(lines[i], strUTF16);
-        g_charsetConverter.wToUTF8(strUTF16, strUTF8);
-        if (strUTF8.IsEmpty())
-          continue;
-CLog::Log(LOGDEBUG, strUTF8);
-        // add a new text element to our container
-        pOverlay->AddElement(new CDVDOverlayText::CElementText(strUTF8.c_str()));
-      }
+      for(int i=0;i<3 && lines[i] && *lines[i];i++)
+        pOverlay->AddElement(new CDVDOverlayText::CElementText(lines[i]));
+
       free(lines[0]);
       free(lines[1]);
       free(lines[2]);

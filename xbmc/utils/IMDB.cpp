@@ -478,7 +478,7 @@ void CIMDB::GetURL(const CStdString &strMovie, CScraperUrl& scrURL, CStdString& 
     strSearch2.Replace('_', ' ');
 
     // convert to utf8 first (if necessary), then to the encoding requested by the parser
-    g_charsetConverter.unknownTo(m_parser.GetSearchStringEncoding(), strSearch2, m_parser.m_param[0]);
+    g_charsetConverter.utf8To(m_parser.GetSearchStringEncoding(), strSearch2, m_parser.m_param[0]);
     CUtil::URLEncode(m_parser.m_param[0]);
   }
   scrURL.ParseString(m_parser.Parse("CreateSearchUrl",&m_info.settings));
@@ -691,7 +691,7 @@ void CIMDB::ConvertToUTF8(CStdStringA& xml_)
   if (server_enc != NULL && server_enc != "")
   {
     if (server_enc != "UTF-8")
-      g_charsetConverter.stringCharsetToUtf8(server_enc, buf, xml_);
+      g_charsetConverter.unknownTo(server_enc, buf, xml_);
   }
   // Second
   else if (!XMLUtils::HasUTF8Declaration(xml_))

@@ -74,6 +74,9 @@ int CDVDSubtitleParserSubrip::ParseFile()
 
   while (m_pStream->ReadLine(line, sizeof(line)))
   {
+    if ((strlen(line) > 0) && (line[strlen(line) - 1] == '\r'))
+      line[strlen(line) - 1] = 0;
+    
     pLineStart = line;
 
     // trim
@@ -101,6 +104,9 @@ int CDVDSubtitleParserSubrip::ParseFile()
 
         while (m_pStream->ReadLine(line, sizeof(line)))
         {
+          if ((strlen(line) > 0) && (line[strlen(line) - 1] == '\r'))
+            line[strlen(line) - 1] = 0;
+          
           pLineStart = line;
           
           // trim
@@ -109,11 +115,9 @@ int CDVDSubtitleParserSubrip::ParseFile()
           // empty line, next subtitle is about to start
           if (strlen(pLineStart) <= 0) break;
 
-          CStdStringW strUTF16;
           CStdStringA strUTF8;
-          g_charsetConverter.subtitleCharsetToW(pLineStart, strUTF16);
-          g_charsetConverter.wToUTF8(strUTF16, strUTF8);
-
+          strUTF8.assign(line, strlen(line));
+          
           // add a new text element to our container
           pOverlay->AddElement(new CDVDOverlayText::CElementText(strUTF8.c_str()));
         }

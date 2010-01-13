@@ -464,11 +464,11 @@ void CGUIControlFactory::GetInfoLabels(const TiXmlNode *pControlNode, const CStd
         if (StringUtils::IsNaturalNumber(label))
           label = g_localizeStrings.Get(atoi(label));
         else // we assume the skin xml's aren't encoded as UTF-8
-          g_charsetConverter.stringCharsetToUtf8(label);
+          g_charsetConverter.unknownToUTF8(label);
         if (StringUtils::IsNaturalNumber(fallback))
           fallback = g_localizeStrings.Get(atoi(fallback));
         else
-          g_charsetConverter.stringCharsetToUtf8(fallback);
+          g_charsetConverter.unknownToUTF8(fallback);
         infoLabels.push_back(CGUIInfoLabel(label, fallback));
       }
     }
@@ -502,7 +502,7 @@ CStdString CGUIControlFactory::FilterLabel(const CStdString &label)
     viewLabel = g_localizeStrings.Get(atoi(label));
   else
   { // TODO: UTF-8: What if the xml is encoded as UTF-8 already?
-    g_charsetConverter.stringCharsetToUtf8(viewLabel);
+    g_charsetConverter.unknownToUTF8(viewLabel);
   }
   // translate the label
   CGUIInfoLabel info(viewLabel, "");
@@ -518,7 +518,7 @@ bool CGUIControlFactory::GetString(const TiXmlNode* pRootNode, const char *strTa
   if (StringUtils::IsNaturalNumber(text))
     text = g_localizeStrings.Get(atoi(text.c_str()));
   else // TODO: UTF-8: What if the xml is encoded as UTF-8 already?
-    g_charsetConverter.stringCharsetToUtf8(text);
+    g_charsetConverter.unknownToUTF8(text);
   return true;
 }
 
