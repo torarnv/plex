@@ -375,10 +375,11 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       }
       else if (message.GetParam1()==GUI_MSG_UPDATE_REMOTE_SOURCES)
       {
-        CPlexSourceScanner::MergeSourcesForWindow(GetID());
-        SetupShares();
         if (m_vecItems->IsVirtualDirectoryRoot() && IsActive())
         {
+          CPlexSourceScanner::MergeSourcesForWindow(GetID());
+          SetupShares();
+          
           int iItem = m_viewControl.GetSelectedItem();
           Update(m_vecItems->m_strPath);
           m_viewControl.SetSelectedItem(iItem);
