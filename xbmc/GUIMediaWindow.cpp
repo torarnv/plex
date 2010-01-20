@@ -884,7 +884,15 @@ bool CGUIMediaWindow::OnClick(int iItem)
       {
         // Encode the query.
         CUtil::URLEncode(strSearchTerm);
-        directory.m_strPath += strSearchTerm;
+        
+        // Find the ? if there is one.
+        CStdString newURL = directory.m_strPath;
+        int questionMark = newURL.find('?');
+        if (questionMark > 0)
+          newURL = newURL.substr(0, questionMark);
+        
+        directory.m_strPath = newURL + "/" + strSearchTerm;
+        printf("Search: %s\n", directory.m_strPath.c_str());
       }
       // If no query was entered or the user dismissed the keyboard, do nothing
       else
