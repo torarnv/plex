@@ -234,10 +234,28 @@ bool CGUIMediaWindow::OnAction(const CAction &action)
   return CGUIWindow::OnAction(action);
 }
 
+void CGUIMediaWindow::RefreshShares()
+{
+  if (m_vecItems->IsVirtualDirectoryRoot() && IsActive())
+  {
+    CPlexSourceScanner::MergeSourcesForWindow(GetID());
+    SetupShares();
+    
+    int iItem = m_viewControl.GetSelectedItem();
+    Update(m_vecItems->m_strPath);
+    m_viewControl.SetSelectedItem(iItem);
+  }
+}
+
 bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
   {
+  case GUI_MSG_FOCUSED:
+    RefreshShares();
+    return true;
+    break;
+  
   case GUI_MSG_WINDOW_DEINIT:
     {
       m_iSelectedItem = m_viewControl.GetSelectedItem();
@@ -362,28 +380,12 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       else if (message.GetParam1()==GUI_MSG_UPDATE_SOURCES)
       { 
         // State of the sources changed, so update our view
-        if (m_vecItems->IsVirtualDirectoryRoot() && IsActive())
-        {
-          // Some shares dynamically (dis)appear, so we need to refresh them.
-          SetupShares();
-          
-          int iItem = m_viewControl.GetSelectedItem();
-          Update(m_vecItems->m_strPath);
-          m_viewControl.SetSelectedItem(iItem);
-        }
+        RefreshShares();
         return true;
       }
       else if (message.GetParam1()==GUI_MSG_UPDATE_REMOTE_SOURCES)
       {
-        if (m_vecItems->IsVirtualDirectoryRoot() && IsActive())
-        {
-          CPlexSourceScanner::MergeSourcesForWindow(GetID());
-          SetupShares();
-          
-          int iItem = m_viewControl.GetSelectedItem();
-          Update(m_vecItems->m_strPath);
-          m_viewControl.SetSelectedItem(iItem);
-        }
+        RefreshShares();
         return true;
       }
       else if (message.GetParam1()==GUI_MSG_UPDATE && IsActive())

@@ -88,6 +88,7 @@ protected:
   
   bool WaitForNetwork() const;
   CPoint GetContextPosition() const;
+  void RefreshShares();
 
   DIRECTORY::CVirtualDirectory m_rootDir;
   CGUIViewControl m_viewControl;
