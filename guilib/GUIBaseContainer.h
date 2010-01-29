@@ -96,6 +96,10 @@ public:
   virtual bool GetCondition(int condition, int data) const;
   CStdString GetLabel(int info) const;
 
+  std::vector<CGUIListItemPtr>& GetStaticItems() { return m_staticItems; };
+  CGUIListItem* GetLastItem() const { return m_lastItem; }
+  void SetLastItem(CGUIListItem* lastItem) { m_lastItem = lastItem; }
+  
 #ifdef _DEBUG
   virtual void DumpTextureUse();
 #endif

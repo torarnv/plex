@@ -18,6 +18,8 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+#include <boost/foreach.hpp>
+#include <vector>
 
 #include "stdafx.h"
 #include "GUIWindowHome.h"
@@ -27,7 +29,8 @@
 #include "GUIWindowManager.h"
 #include "AlarmClock.h"
 #include "GUIBaseContainer.h"
-#include "GUIListItem.h"
+#include "FileItem.h"
+#include "PlexSourceScanner.h"
 
 #define MAIN_MENU         300
 #define POWER_MENU        407
@@ -36,7 +39,11 @@
 #define SLEEP_ITEM        112
 #define SHUTDOWN_ITEM     113
 
-CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml")
+using namespace std;
+
+CGUIWindowHome::CGUIWindowHome(void) 
+    : CGUIWindow(WINDOW_HOME, "Home.xml")
+    , m_lastSelectedItem(-1)
 {
 }
 
@@ -162,3 +169,90 @@ bool CGUIWindowHome::CheckTimer(const CStdString& strExisting, const CStdString&
   else
     return true;
 }
+
+typedef pair<string, HostSourcesPtr> string_sources_pair;
+
+static bool compare(CFileItemPtr first, CFileItemPtr second)
+{
+  return first->GetLabel().compare(second->GetLabel());
+}
+
+bool CGUIWindowHome::OnMessage(CGUIMessage& message)
+{
+  if (message.GetMessage() ==  GUI_MSG_WINDOW_DEINIT)
+  {
+    CGUIBaseContainer* control = (CGUIBaseContainer* )GetControl(MAIN_MENU);
+    m_lastSelectedItem = control->GetSelectedItem();
+  }
+  
+  bool ret = CGUIWindow::OnMessage(message);
+  
+  switch (message.GetMessage())
+  {
+  case GUI_MSG_WINDOW_INIT:
+  case GUI_MSG_WINDOW_RESET:
+  case GUI_MSG_UPDATE_MAIN_MENU:
+  {
+    // This will be our new list.
+    vector<CGUIListItemPtr> newList;
+    
+    // Get the old list.
+    CGUIBaseContainer* control = (CGUIBaseContainer* )GetControl(MAIN_MENU);
+    if (control)
+    {
+      vector<CGUIListItemPtr>& oldList = control->GetStaticItems();
+      
+      // First collect all the real items.
+      BOOST_FOREACH(CGUIListItemPtr item, oldList)
+      {
+        if (item->HasProperty("plex") == false)
+          newList.push_back(item);
+      }
+      
+      // Now collect all the added items.
+      map<string, HostSourcesPtr>& map = CPlexSourceScanner::GetMap();
+      list<CFileItemPtr> newItems;
+
+      BOOST_FOREACH(string_sources_pair nameSource, map)
+      {
+        for (int i=0; i<nameSource.second->librarySections.Size(); i++)
+          newItems.push_back(nameSource.second->librarySections[i]);
+      }
+
+      // Now sort them according to name.
+      newItems.sort(compare);
+
+      // Now add the new ones.
+      BOOST_FOREACH(CFileItemPtr item, newItems)
+      {
+        CFileItemPtr newItem = CFileItemPtr(new CFileItem(item->GetLabel()));
+        newItem->SetLabel2("Visit your");
+        newItem->SetProperty("plex", "1");
+        newItem->m_strPath = "Plex.ActivateWindow(MyVideoFiles," + item->m_strPath + ",return)";
+        newItem->m_idepth = 0;
+            
+        newList.push_back(newItem);
+      }
+
+      // Replace 'em.
+      control->GetStaticItems().clear();
+      control->GetStaticItems().assign(newList.begin(), newList.end());
+      
+      // See if we have a selected item and restore it if we do.
+      if (m_lastSelectedItem >= 0)
+      {
+        CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), control->GetID(), m_lastSelectedItem+1, 0);
+        m_gWindowManager.SendThreadMessage(msg);
+      }
+    }
+  }
+  break;
+  }
+  
+  return ret;
+}
+
+
+
+
+

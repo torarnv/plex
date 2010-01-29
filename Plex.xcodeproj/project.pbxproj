@@ -810,7 +810,7 @@
 		E371C4EF0E2F2D5400FBF841 /* XBMCConfiguration.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E19670D25F9FB00618676 /* XBMCConfiguration.cpp */; };
 		E371C4F00E2F2D5400FBF841 /* xbmcguimodule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E259A0D263CE000618676 /* xbmcguimodule.cpp */; };
 		E371C4F20E2F2D5400FBF841 /* XBMChttp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E19690D25F9FB00618676 /* XBMChttp.cpp */; };
-		E371C4F30E2F2D5400FBF841 /* XBMCMain.m in Sources */ = {isa = PBXBuildFile; fileRef = E363847F0D767AE1005744DD /* XBMCMain.m */; };
+		E371C4F30E2F2D5400FBF841 /* XBMCMain.mm in Sources */ = {isa = PBXBuildFile; fileRef = E363847F0D767AE1005744DD /* XBMCMain.mm */; };
 		E371C4F40E2F2D5400FBF841 /* xbmcmodule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E259B0D263CE000618676 /* xbmcmodule.cpp */; };
 		E371C4F50E2F2D5400FBF841 /* xbmcplugin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E259C0D263CE000618676 /* xbmcplugin.cpp */; };
 		E371C4F60E2F2D5400FBF841 /* XBMCweb.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E196B0D25F9FB00618676 /* XBMCweb.cpp */; };
@@ -1188,7 +1188,7 @@
 		E363844F0D767767005744DD /* AppleRemote.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppleRemote.m; sourceTree = "<group>"; };
 		E36384550D7678E0005744DD /* AppleRemoteKeys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppleRemoteKeys.h; sourceTree = "<group>"; };
 		E363847E0D767AE1005744DD /* XBMCMain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCMain.h; sourceTree = "<group>"; };
-		E363847F0D767AE1005744DD /* XBMCMain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XBMCMain.m; sourceTree = "<group>"; };
+		E363847F0D767AE1005744DD /* XBMCMain.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = XBMCMain.mm; sourceTree = "<group>"; };
 		E36384C90D768158005744DD /* CocoaToCppThunk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CocoaToCppThunk.h; sourceTree = "<group>"; };
 		E36384CA0D768158005744DD /* CocoaToCppThunk.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CocoaToCppThunk.cpp; sourceTree = "<group>"; };
 		E36578860D3AA7B40033CC1C /* DVDPlayerCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDPlayerCodec.cpp; sourceTree = "<group>"; };
@@ -3533,7 +3533,7 @@
 				E37D5CB60D3023BB0081D327 /* CocoaUtils.m */,
 				E36384550D7678E0005744DD /* AppleRemoteKeys.h */,
 				E363847E0D767AE1005744DD /* XBMCMain.h */,
-				E363847F0D767AE1005744DD /* XBMCMain.m */,
+				E363847F0D767AE1005744DD /* XBMCMain.mm */,
 				E36384C90D768158005744DD /* CocoaToCppThunk.h */,
 				E36384CA0D768158005744DD /* CocoaToCppThunk.cpp */,
 				E371C1390E2F151A00FBF841 /* PlexApplication.h */,
@@ -7480,7 +7480,7 @@
 				E371C4EF0E2F2D5400FBF841 /* XBMCConfiguration.cpp in Sources */,
 				E371C4F00E2F2D5400FBF841 /* xbmcguimodule.cpp in Sources */,
 				E371C4F20E2F2D5400FBF841 /* XBMChttp.cpp in Sources */,
-				E371C4F30E2F2D5400FBF841 /* XBMCMain.m in Sources */,
+				E371C4F30E2F2D5400FBF841 /* XBMCMain.mm in Sources */,
 				E371C4F40E2F2D5400FBF841 /* xbmcmodule.cpp in Sources */,
 				E371C4F50E2F2D5400FBF841 /* xbmcplugin.cpp in Sources */,
 				E371C4F60E2F2D5400FBF841 /* XBMCweb.cpp in Sources */,
@@ -7816,7 +7816,6 @@
 					"\"$(SRCROOT)/xbmc/lib/libGoAhead\"",
 					"\"$(SRCROOT)/xbmc/lib/libiconv\"",
 					"\"$(SRCROOT)/xbmc/lib/liblzo\"",
-					"\"$(SRCROOT)/xbmc/lib/libPython/linux/tmp\"",
 					"\"$(SRCROOT)/xbmc/lib/libRTV\"",
 					"\"$(SRCROOT)/xbmc/lib/libshout\"",
 					"\"$(SRCROOT)/xbmc/lib/libSpeex\"",

@@ -8,7 +8,9 @@
  */
 #include "stdafx.h"
 #include "Log.h"
+#include "FileItem.h"
 #include "CocoaUtilsPlus.h"
+#include "PlexDirectory.h"
 #include "PlexSourceScanner.h"
 #include "Util.h"
 #include "GUIWindowManager.h"
@@ -16,6 +18,8 @@
 
 map<string, HostSourcesPtr> CPlexSourceScanner::g_hostSourcesMap;
 CCriticalSection CPlexSourceScanner::g_lock;
+
+using namespace DIRECTORY; 
 
 void CPlexSourceScanner::Process()
 {
@@ -30,21 +34,39 @@ void CPlexSourceScanner::Process()
   {
     CLog::Log(LOGINFO, "Skipping MobileMe address: %s\n", m_host.c_str());
   }
-  else if (Cocoa_IsHostLocal(m_host) == false)
+  else
   {
+    // Compute the real host label (empty for local server).
+    string realHostLabel = m_hostLabel;
+    bool onlyShared = true;
+
+    // Act a bit differently if we're talking to a local server.
+    if (Cocoa_IsHostLocal(m_host) == true)
+    {
+      m_hostLabel = "";
+      onlyShared = false;
+    }
+    
     // Create a new entry.
     HostSourcesPtr sources = HostSourcesPtr(new HostSources());
     CLog::Log(LOGINFO, "Scanning remote server: %s\n", m_host.c_str());
     
     // Scan the server.
     path.Format("plex://%s/music/", m_host);
-    CUtil::AutodetectPlexSources(path, sources->musicSources, m_hostLabel, true);
+    CUtil::AutodetectPlexSources(path, sources->musicSources, m_hostLabel, onlyShared);
     
     path.Format("plex://%s/video/", m_host);
-    CUtil::AutodetectPlexSources(path, sources->videoSources, m_hostLabel, true);
+    CUtil::AutodetectPlexSources(path, sources->videoSources, m_hostLabel, onlyShared);
     
     path.Format("plex://%s/photos/", m_host);
-    CUtil::AutodetectPlexSources(path, sources->pictureSources, m_hostLabel, true);
+    CUtil::AutodetectPlexSources(path, sources->pictureSources, m_hostLabel, onlyShared);
+
+    // Library sections.
+    path.Format("plex://%s/library/sections", m_host);
+    CPlexDirectory plexDir(true, false);
+    plexDir.SetTimeout(5);
+    sources->librarySections.ClearItems();
+    plexDir.GetDirectory(path, sources->librarySections);
     
     { // Add the entry to the map.
       CSingleLock lock(g_lock);
@@ -54,12 +76,12 @@ void CPlexSourceScanner::Process()
     // Notify the UI.
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_REMOTE_SOURCES);
     m_gWindowManager.SendThreadMessage(msg);
+    
+    // Notify the main menu.
+    CGUIMessage msg2(GUI_MSG_UPDATE_MAIN_MENU, WINDOW_HOME, 300);
+    m_gWindowManager.SendThreadMessage(msg2);
   
     CLog::Log(LOGINFO, "Scanning host %s is complete.\n", m_host.c_str());
-  }
-  else
-  {
-    CLog::Log(LOGINFO, "Ignoring local server: %s\n", m_host.c_str());
   }
 }
 
@@ -82,6 +104,9 @@ void CPlexSourceScanner::RemoveHost(const string& host)
   
   CGUIMessage msg2(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
   m_gWindowManager.SendThreadMessage(msg2);
+  
+  CGUIMessage msg3(GUI_MSG_UPDATE_MAIN_MENU, WINDOW_HOME, 300);
+  m_gWindowManager.SendThreadMessage(msg3);
 }
 
 void CPlexSourceScanner::MergeSourcesForWindow(int windowId)

@@ -11,18 +11,21 @@
 #include <map>
 #include <boost/shared_ptr.hpp>
 #include <boost/foreach.hpp>
+
 #include "CriticalSection.h"
-#include "Thread.h"
+#include "FileItem.h"
 #include "SingleLock.h"
 #include "Settings.h"
-
+#include "Thread.h"
 
 class HostSources
 {
-public:
-  VECSOURCES videoSources;
-  VECSOURCES musicSources;
-  VECSOURCES pictureSources;
+ public:
+
+  VECSOURCES    videoSources;
+  VECSOURCES    musicSources;
+  VECSOURCES    pictureSources;
+  CFileItemList librarySections;
 };
 
 typedef boost::shared_ptr<HostSources> HostSourcesPtr;
@@ -39,6 +42,8 @@ public:
   static void RemoveHost(const string& host);
   
   static void MergeSourcesForWindow(int windowId);
+  
+  static map<string, HostSourcesPtr>& GetMap() { return g_hostSourcesMap; }
   
 protected:
   

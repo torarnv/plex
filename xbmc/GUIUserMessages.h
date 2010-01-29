@@ -130,3 +130,6 @@
 
 // Sent when the set of remote sources has changed
 #define GUI_MSG_UPDATE_REMOTE_SOURCES GUI_MSG_USER + 40
+
+// Send when the main menu needs updating.
+#define GUI_MSG_UPDATE_MAIN_MENU      GUI_MSG_USER + 42

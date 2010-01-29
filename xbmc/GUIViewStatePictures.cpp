@@ -82,9 +82,6 @@ CStdString CGUIViewStateWindowPictures::GetExtensions()
 
 VECSOURCES& CGUIViewStateWindowPictures::GetSources()
 {
-  // PMS sources
-  CUtil::AutodetectPlexSources("plex://localhost/photos/", g_settings.m_pictureSources);
-  
   bool bIsSourceName = true;
   // plugins share
   if (CPluginDirectory::HasPlugins("pictures"))

@@ -5,6 +5,7 @@
 //  Created by Elan Feingold on 2/27/2008.
 //  Copyright 2008 __MyCompanyName__. All rights reserved.
 //
+#include <vector>
 
 #import "XBMCMain.h"
 #import "AppleRemote.h"
@@ -12,6 +13,8 @@
 
 #define PLEX_SERVICE_PORT 32401
 #define PLEX_SERVICE_TYPE @"_plexmediasvr._tcp"
+
+using namespace std;
 
 @implementation XBMCMain
 
@@ -96,14 +99,16 @@ static XBMCMain *_o_sharedMainInstance = nil;
 }
 
 /* NSNetServiceBrowser Delegate Overrides */
--(void)netServiceBrowser:(NSNetServiceBrowser *)aBrowser didFindService:(NSNetService *)service moreComing:(BOOL)more {
+-(void)netServiceBrowser:(NSNetServiceBrowser *)aBrowser didFindService:(NSNetService *)service moreComing:(BOOL)more 
+{
   NSLog(@"Did Find Service: %@", [service name]);
   [o_plexMediaServers addObject:service];
   service.delegate = self;
   [service resolveWithTimeout:30];
 }
 
--(void)netServiceBrowser:(NSNetServiceBrowser *)aBrowser didRemoveService:(NSNetService *)service moreComing:(BOOL)more {
+-(void)netServiceBrowser:(NSNetServiceBrowser *)aBrowser didRemoveService:(NSNetService *)service moreComing:(BOOL)more 
+{
   NSLog(@"Did Remove Service: %@", [service name]);
   [o_plexMediaServers removeObject:service];
   if ([o_plexMediaServerHosts objectForKey:[service name]])
@@ -114,14 +119,23 @@ static XBMCMain *_o_sharedMainInstance = nil;
 }
 
 /* NSNetService Delegate Overrides */
--(void)netServiceDidResolveAddress:(NSNetService *)service {
+-(void)netServiceDidResolveAddress:(NSNetService *)service 
+{
   NSLog(@"Service Did Resolve: %@", [service name]);
   [o_plexMediaServerHosts setObject:[service hostName] forKey:[service name]];
   Cocoa_AutodetectRemotePlexSources([[service hostName] UTF8String], [[service name] UTF8String]);
+  [service startMonitoring];
 }
 
--(void)netService:(NSNetService *)service didNotResolve:(NSDictionary *)errorDict {
+-(void)netService:(NSNetService *)service didNotResolve:(NSDictionary *)errorDict 
+{ 
   NSLog(@"Service Did Not Resolve: %@ (%@)", [service name], errorDict);
+}
+
+- (void)netService:(NSNetService *)service didUpdateTXTRecordData:(NSData *)data
+{
+  NSLog(@"TXT record updated: %@", [service name]);
+  Cocoa_AutodetectRemotePlexSources([[service hostName] UTF8String], [[service name] UTF8String]);
 }
 
 - (void)refreshAllRemotePlexSources
