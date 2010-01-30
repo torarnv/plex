@@ -297,7 +297,7 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
 class PlexMediaNode
 {
  public:
-   static PlexMediaNode* Create(const string& name);
+   static PlexMediaNode* Create(TiXmlElement* element);
    
    CFileItemPtr BuildFileItem(const CURL& url, TiXmlElement& el)
    {
@@ -396,7 +396,7 @@ class PlexMediaNode
          PlexMediaNode* contextNode = 0;
          for (TiXmlElement* contextElement = element->FirstChildElement(); contextElement; contextElement=contextElement->NextSiblingElement())
          {
-           contextNode = PlexMediaNode::Create(contextElement->Value());
+           contextNode = PlexMediaNode::Create(contextElement);
            if (contextNode != 0)
            {
              CFileItemPtr contextItem = contextNode->BuildFileItem(url, *contextElement);
@@ -426,9 +426,7 @@ class PlexMediaNode
      if (rating && strlen(rating) > 0)
        pItem->SetProperty("rating", atof(rating));
      
-     
-     // Extra attributes for prefixes     
-     
+     // Extra attributes for prefixes.     
      const char* share = el.Attribute("share");
      if (share && strcmp(share, "1") == 0)
        pItem->SetProperty("share", true);
@@ -479,6 +477,111 @@ class PlexMediaNode
      
      return "";
    }
+   
+   string BuildDurationString(const string& duration)
+   {
+     if (duration.size() > 0)
+     {
+       int seconds = boost::lexical_cast<int>(duration)/1000;
+       int hours = seconds/3600;
+       int minutes = (seconds / 60) % 60;
+       seconds = seconds % 60;
+
+       CStdString std;
+       if (hours > 0)
+         std.Format("%d:%02d:%02d", hours, minutes, seconds);
+       else
+         std.Format(":%d:%02d", minutes, seconds);
+       
+       return std;
+     }
+   }
+};
+
+class PlexMediaNodeLibrary : public PlexMediaNode
+{
+ public:
+  
+  string ComputeMediaUrl(const string& parentPath, TiXmlElement* media)
+  {
+    vector<string> urls;
+    
+    // Collect the URLs.
+    for (TiXmlElement* part = media->FirstChildElement(); part; part=part->NextSiblingElement())
+    {
+      string url = CPlexDirectory::ProcessUrl(parentPath, part->Attribute("key"), false);
+      urls.push_back(url);
+    }
+    
+    // See if we need a stack or not.
+    string ret = urls[0];
+    if (urls.size() > 1)
+    {
+      ret = "stack://";
+      for (int i=0; i<urls.size(); i++)
+      {
+        ret += urls[i];
+        if (i < urls.size()-1)
+          ret += " , ";
+      }
+    }
+    
+    return ret;
+  }
+  
+  virtual void DoBuildFileItem(CFileItemPtr& pItem, const string& parentPath, TiXmlElement& el)
+  {
+    // Top level data.
+    CVideoInfoTag videoInfo;
+    videoInfo.m_strTitle = el.Attribute("title");
+    videoInfo.m_strPlot = videoInfo.m_strPlotOutline = el.Attribute("summary");
+    
+    const char* year = el.Attribute("year");
+    if (year)
+      videoInfo.m_iYear = boost::lexical_cast<int>(year);
+
+    vector<CFileItemPtr> mediaItems;
+    for (TiXmlElement* media = el.FirstChildElement(); media; media=media->NextSiblingElement())
+    {
+      // Create a new file item.
+      CVideoInfoTag theVideoInfo = videoInfo;
+      
+      // Compute the URL.
+      string url = ComputeMediaUrl(parentPath, media);
+      videoInfo.m_strFile = url;
+      videoInfo.m_strFileNameAndPath = url;
+
+      // Duration.
+      const char* pDuration = el.Attribute("duration");
+      if (pDuration && strlen(pDuration) > 0)
+        theVideoInfo.m_strRuntime = BuildDurationString(pDuration);
+
+      // Create the file item.
+      CFileItemPtr theMediaItem(new CFileItem(theVideoInfo));
+
+      theMediaItem->m_bIsFolder = false;
+      theMediaItem->m_strPath = url;
+      
+      // Bitrate.
+      const char* bitrate = el.Attribute("bitrate");
+      if (bitrate && strlen(bitrate) > 0)
+        theMediaItem->m_iBitrate = boost::lexical_cast<int>(bitrate);
+
+      // Media "tags".
+      theMediaItem->SetProperty("type", el.Attribute("type"));
+      theMediaItem->SetProperty("width", el.Attribute("width"));
+      theMediaItem->SetProperty("height", el.Attribute("height"));
+      theMediaItem->SetProperty("container", el.Attribute("container"));
+      theMediaItem->SetProperty("videoCodec", el.Attribute("videoCodec"));
+      theMediaItem->SetProperty("audioCodec", el.Attribute("audioCodec"));
+      theMediaItem->SetProperty("audioChannels", el.Attribute("audioChannels"));
+      
+      // But we add each one to the list.
+      mediaItems.push_back(theMediaItem);
+    }
+    
+    pItem = mediaItems[0];
+  }
 };
 
 class PlexMediaDirectory : public PlexMediaNode
@@ -811,11 +914,15 @@ class PlexMediaPhoto : public PlexMediaNode
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-PlexMediaNode* PlexMediaNode::Create(const string& name)
+PlexMediaNode* PlexMediaNode::Create(TiXmlElement* element)
 {
+  string name = element->Value();
+  
   // FIXME: Move to using factory pattern.
   if (name == "Directory")
     return new PlexMediaDirectory();
+  else if (element->FirstChild("Media") != 0)
+    return new PlexMediaNodeLibrary();
   else if (name == "Artist")
     return new PlexMediaArtist();
   else if (name == "Album")
@@ -851,7 +958,7 @@ void CPlexDirectory::Parse(const CURL& url, TiXmlElement* root, CFileItemList &i
   
   for (TiXmlElement* element = root->FirstChildElement(); element; element=element->NextSiblingElement())
   {
-    mediaNode = PlexMediaNode::Create(element->Value());
+    mediaNode = PlexMediaNode::Create(element);
     if (mediaNode != 0)
     {
       CFileItemPtr item = mediaNode->BuildFileItem(url, *element);
