@@ -277,6 +277,7 @@ public:
   int m_iBitrate;
   bool m_includeStandardContextItems;
   std::vector<CFileItemPtr> m_contextItems;
+  std::vector<CFileItemPtr> m_mediaItems;
   
 private:
   CStdString GetFolderThumb(const CStdString &folderJPG = "folder.jpg") const;
