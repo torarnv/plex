@@ -22,9 +22,9 @@
 #include <vector>
 
 #include "stdafx.h"
+#include "FileSystem/File.h"
 #include "GUIWindowHome.h"
 #include "GUIDialogTimer.h"
-
 #include "GUIDialogYesNo.h"
 #include "GUIWindowManager.h"
 #include "AlarmClock.h"
@@ -40,6 +40,7 @@
 #define SHUTDOWN_ITEM     113
 
 using namespace std;
+using namespace XFILE;
 
 CGUIWindowHome::CGUIWindowHome(void) 
     : CGUIWindow(WINDOW_HOME, "Home.xml")
@@ -133,7 +134,6 @@ bool CGUIWindowHome::OnPopupMenu()
     if (iTime > 0)
         g_alarmClock.start(sAlarmName, iTime*60, sAction, false);
       
-    
     // Focus the main menu again
     CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), MAIN_MENU);
     if(OwningCriticalSection(g_graphicsContext))
@@ -223,6 +223,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       newItems.sort(compare);
 
       // Now add the new ones.
+      int id = 1000;
       BOOST_FOREACH(CFileItemPtr item, newItems)
       {
         CFileItemPtr newItem = CFileItemPtr(new CFileItem(item->GetLabel()));
@@ -230,7 +231,14 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
         newItem->SetProperty("plex", "1");
         newItem->m_strPath = "Plex.ActivateWindow(MyVideoFiles," + item->m_strPath + ",return)";
         newItem->m_idepth = 0;
-            
+        newItem->SetQuickFanart(item->GetQuickFanart());
+        newItem->m_iprogramCount = id++;
+
+        // Load and set fanart.
+        newItem->CacheFanart();
+        if (CFile::Exists(newItem->GetCachedProgramFanart()))
+          newItem->SetProperty("fanart_image", newItem->GetCachedProgramFanart());
+
         newList.push_back(newItem);
       }
 
