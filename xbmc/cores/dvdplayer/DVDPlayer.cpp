@@ -421,7 +421,6 @@ bool CDVDPlayer::CloseFile()
   g_renderManager.OnClose();
 #endif
   
-  printf("Done with Closefile.\n");
   return true;
 }
 
