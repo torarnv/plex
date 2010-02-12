@@ -1013,7 +1013,7 @@ void CPlexDirectory::Process()
     int data_size = 0;
   
     m_data.reserve(size_total);
-    printf("Content-Length was %d bytes\n", size_total);
+    //printf("Content-Length was %d bytes\n", size_total);
     
     // Read response from server into string buffer.
     char buffer[4096];
