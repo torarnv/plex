@@ -151,7 +151,9 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
           }
           else
           {
-            CLog::Log(LOGERROR, "  Failed! Destination parameter (%s) does not match a valid source!", strDestination.c_str());
+            CLog::Log(LOGWARNING, "  Failed! Destination parameter (%s) does not match a valid source!", strDestination.c_str());
+            m_vecItems->m_strPath = strDestination;
+            CUtil::RemoveSlashAtEnd(m_vecItems->m_strPath);
           }
         }
 
