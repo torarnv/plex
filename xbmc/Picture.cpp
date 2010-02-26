@@ -114,9 +114,11 @@ bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString
   CLog::Log(LOGINFO, "Creating thumb from: %s as: %s", strFileName.c_str(),strThumbFileName.c_str());
 
   CFileItem fileItem(strFileName, false);
+  
+#if 0
   if (fileItem.IsPlexMediaServer())
   {
-    // Trust what we get from the media server as long as it's not 0 bytes!
+    // Trust what we get from the media server as long as it's not 0 bytes or too big.
     XFILE::CFile::Cache(strFileName, strThumbFileName, 0);
     
     XFILE::CFile file;
@@ -128,6 +130,7 @@ bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString
     }
   }
   else
+#endif
   {
     // load our dll
     if (!m_dll.Load()) return false;
