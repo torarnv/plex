@@ -352,7 +352,7 @@ class PlexMediaNode
          
          // See if the item is too old.
          string cachedFile(CFileItem::GetCachedPlexMediaServerThumb(strThumb));
-         if (CFile::Age(cachedFile) > MAX_THUMBNAIL_AGE || strThumb.find(":32400/library/files") != -1)
+         if (CFile::Age(cachedFile) > MAX_THUMBNAIL_AGE)
            CFile::Delete(cachedFile);
 
          // Set the thumbnail URL.
@@ -367,7 +367,7 @@ class PlexMediaNode
          
          // See if the item is too old.
          string cachedFile(CFileItem::GetCachedPlexMediaServerFanart(strFanart));
-         if (CFile::Age(cachedFile) > MAX_FANART_AGE || strFanart.find(":32400/library/files") != -1)
+         if (CFile::Age(cachedFile) > MAX_FANART_AGE)
            CFile::Delete(cachedFile);
 
          // Set the fanart.
