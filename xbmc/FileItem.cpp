@@ -2571,23 +2571,21 @@ CStdString CFileItem::GetCachedVideoThumb() const
   // get the locally cached thumb
   CStdString root = g_settings.GetVideoThumbFolder();
   Crc32 crc;
-  if (IsStack())
+
+  if (IsPlexMediaServer() && m_strThumbnailImage.size() > 0)
+  {
+    // For Plex Media Server thumbs, use the thumb path, because multiple items can refer to the same thumb.
+    crc.ComputeFromLowerCase(m_strThumbnailImage);
+    root = g_settings.GetPlexMediaServerThumbFolder();
+  }
+  else if (IsStack())
   {
     CStackDirectory dir;
     crc.ComputeFromLowerCase(dir.GetFirstStackedFile(m_strPath));
   }
   else
   {
-    // For Plex Media Server thumbs, use the thumb path, because multiple items can refer to the same thumb.
-    if (IsPlexMediaServer() && m_strThumbnailImage.size() > 0)
-    {
-      crc.ComputeFromLowerCase(m_strThumbnailImage);
-      root = g_settings.GetPlexMediaServerThumbFolder();
-    }
-    else
-    {
-      crc.ComputeFromLowerCase(m_strPath);
-    }
+    crc.ComputeFromLowerCase(m_strPath);
   }
 
   CStdString hex;
