@@ -2086,6 +2086,14 @@ bool CUtil::IsPlexMediaServer(const CStdString& strFile)
   if (url.GetProtocol() == "plex" || url.GetPort() == 32400)
     return true;
   
+  // A stack can also come from the Plex Media Servers.
+  if (IsStack(strFile))
+  {
+    CStackDirectory dir;
+    CStdString firstFile = dir.GetFirstStackedFile(strFile);
+    return IsPlexMediaServer(firstFile);
+  }
+  
   return false;
 }
 
