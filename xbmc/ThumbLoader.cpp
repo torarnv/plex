@@ -19,6 +19,8 @@
  *
  */
 
+#include <boost/foreach.hpp>
+
 #include "stdafx.h"
 #include "FileSystem/StackDirectory.h"
 #include "ThumbLoader.h"
@@ -140,8 +142,37 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
       if (CFile::Exists(pItem->GetCachedFanart()))
         pItem->SetProperty("fanart_image", pItem->GetCachedFanart());
     }
-  }                          
-
+  }
+  
+  // Walk through properties and see if there are any image resources to be loaded.
+  std::map<CStdString, CStdString, CGUIListItem::icompare>& properties = pItem->GetPropertyDict();
+  typedef pair<CStdString, CStdString> PropertyPair;
+  BOOST_FOREACH(PropertyPair pair, properties)
+  {
+    if (pair.first.substr(0, 6) == "cache$")
+    {
+      string name = pair.first.substr(6);
+      string url = pair.second;
+      
+      string localFile = CFileItem::GetCachedPlexMediaServerThumb(url);
+      if (CFile::Exists(localFile) == false)
+      {
+        CPicture pic;
+        if (pic.DoCreateThumbnail(url, localFile))
+          pItem->SetProperty(name, localFile);
+        else
+          printf("%s Failure downloading %s\n", name.c_str(), url.c_str());
+      }
+      else
+      {
+        pItem->SetProperty(name, localFile);
+      }
+      
+      if (pair.first.Find("movieStudio") != -1)
+        printf("movieStudio => %s\n", pItem->GetProperty(name).c_str());
+    }
+  }
+  
   return true;
 }
 
