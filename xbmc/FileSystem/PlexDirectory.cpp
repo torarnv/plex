@@ -25,6 +25,7 @@
 #include "FileItem.h"
 #include "GUIViewState.h"
 #include "GUIDialogOK.h"
+#include "Picture.h"
 
 using namespace std;
 using namespace XFILE;
@@ -177,8 +178,9 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     
   const char* pluginIdentifier = root->Attribute("identifier");
   
-  // Set fanart on items if they don't have their own, or if individual item fanart is disabled
-  // Also set HTTP & rating info
+  // Set fanart on items if they don't have their own, or if individual item fanart 
+  // is disabled. Also set HTTP & rating info
+  //
   for (int i=0; i<items.Size(); i++)
   {
     CFileItemPtr pItem = items[i];
@@ -214,13 +216,16 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   bool hasViewMode = false;
   viewMode = root->Attribute("viewmode");
   if (viewMode && strlen(viewMode) > 0)
+  {
     hasViewMode = true;
+  }
   else
   {
     viewMode = root->Attribute("viewMode");
     if (viewMode && strlen(viewMode) > 0)
       hasViewMode = true;
   }
+  
   if (hasViewMode)
   {
     items.SetDefaultViewMode(boost::lexical_cast<int>(viewMode));
@@ -364,7 +369,7 @@ class PlexMediaNode
        if (fanart && strlen(fanart) > 0)
        {
          string strFanart = CPlexDirectory::ProcessUrl(parentPath, fanart, false);
-         
+      
          // See if the item is too old.
          string cachedFile(CFileItem::GetCachedPlexMediaServerFanart(strFanart));
          if (CFile::Age(cachedFile) > MAX_FANART_AGE)
@@ -565,24 +570,60 @@ class PlexMediaNodeLibrary : public PlexMediaNode
       theMediaItem->m_strPath = url;
       
       // Bitrate.
-      const char* bitrate = el.Attribute("bitrate");
+      const char* bitrate = media->Attribute("bitrate");
       if (bitrate && strlen(bitrate) > 0)
         theMediaItem->m_iBitrate = boost::lexical_cast<int>(bitrate);
 
-      // Media "tags".
-      theMediaItem->SetProperty("type", el.Attribute("type"));
-      theMediaItem->SetProperty("width", el.Attribute("width"));
-      theMediaItem->SetProperty("height", el.Attribute("height"));
-      theMediaItem->SetProperty("container", el.Attribute("container"));
-      theMediaItem->SetProperty("videoCodec", el.Attribute("videoCodec"));
-      theMediaItem->SetProperty("audioCodec", el.Attribute("audioCodec"));
-      theMediaItem->SetProperty("audioChannels", el.Attribute("audioChannels"));
-      
+      // Build the URL.
+      TiXmlElement* parent = (TiXmlElement* )el.Parent();
+      const char* pRoot = parent->Attribute("mediaTagPrefix");
+      const char* pVersion = parent->Attribute("mediaTagVersion");
+      if (pRoot && pVersion)
+      {
+        string url = CPlexDirectory::ProcessUrl(parentPath, pRoot, false);
+        CacheMediaThumb(theMediaItem, media, url, "aspectRatio", pVersion);
+        CacheMediaThumb(theMediaItem, media, url, "audioChannels", pVersion);
+        CacheMediaThumb(theMediaItem, media, url, "audioCodec", pVersion);
+        CacheMediaThumb(theMediaItem, media, url, "videoCodec", pVersion);
+        CacheMediaThumb(theMediaItem, media, url, "videoResolution", pVersion);
+        CacheMediaThumb(theMediaItem, media, url, "videoFrameRate", pVersion);
+        
+        // From the metadata item.
+        CacheMediaThumb(theMediaItem, &el, url, "contentRating", pVersion);
+        CacheMediaThumb(theMediaItem, &el, url, "tvStudio", pVersion);
+        CacheMediaThumb(theMediaItem, &el, url, "movieStudio", pVersion);
+      }
+
       // But we add each one to the list.
       mediaItems.push_back(theMediaItem);
     }
     
     pItem = mediaItems[0];
+  }
+  
+  void CacheMediaThumb(const CFileItemPtr& mediaItem, TiXmlElement* el, const string& baseURL, const string& resource, const string& version)
+  {
+    const char* val = el->Attribute(resource.c_str());
+    if (val)
+    {
+      // Complete the URL.
+      string url = baseURL;
+      url += resource + "/";
+      
+      CStdString encodedValue = val;
+      CUtil::URLEncode(encodedValue);
+      url += encodedValue;
+      
+      url += "?t=";
+      url += version;
+      
+      // See if it exists (fasttrack) or queue it for download.
+      string localFile = CFileItem::GetCachedPlexMediaServerThumb(url);
+      if (CFile::Exists(localFile))
+        mediaItem->SetProperty(resource, localFile);
+      else
+        mediaItem->SetProperty("cache$" + resource, url);
+    }
   }
 };
 
