@@ -347,6 +347,10 @@ class PlexMediaNode
        pItem->SetLabelPreformated(true);
      }
      
+     // The type of the media.
+     if (el.Attribute("type"))
+       pItem->SetProperty("mediaType::" + string(el.Attribute("type")), "1");
+     
      try
      {
        // Thumb.
@@ -999,6 +1003,7 @@ void CPlexDirectory::Parse(const CURL& url, TiXmlElement* root, CFileItemList &i
 {
   PlexMediaNode* mediaNode = 0;
   
+  bool gotType = false;
   for (TiXmlElement* element = root->FirstChildElement(); element; element=element->NextSiblingElement())
   {
     mediaNode = PlexMediaNode::Create(element);
@@ -1007,6 +1012,31 @@ void CPlexDirectory::Parse(const CURL& url, TiXmlElement* root, CFileItemList &i
       CFileItemPtr item = mediaNode->BuildFileItem(url, *element);
       if (item)
         items.Add(item);
+    
+      // Get the type.
+      const char* pType = element->Attribute("type");
+      if (pType)
+      {
+        string type = pType;
+        if (type == "show")
+          type = "tvshows";
+        else if (type == "season")
+          type = "seasons";
+        else if (type == "episode")
+          type = "episodes";
+        else if (type == "movie")
+          type = "movie";
+
+        // Set the content type for the collection.
+        if (gotType == false)
+        {
+          items.SetContent(type);
+          gotType = true;
+        }
+        
+        // Set the content type for the item.
+        item->SetProperty("mediaType", type);
+      }
     }
   }
   
