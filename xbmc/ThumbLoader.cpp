@@ -160,16 +160,11 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
         CPicture pic;
         if (pic.DoCreateThumbnail(url, localFile))
           pItem->SetProperty(name, localFile);
-        else
-          printf("%s Failure downloading %s\n", name.c_str(), url.c_str());
       }
       else
       {
         pItem->SetProperty(name, localFile);
       }
-      
-      if (pair.first.Find("movieStudio") != -1)
-        printf("movieStudio => %s\n", pItem->GetProperty(name).c_str());
     }
   }
   
