@@ -4010,7 +4010,10 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
     }
   }
   else if (condition == LISTITEM_ISSELECTED)
+  {
     return item->IsSelected();
+  }
+
   return false;
 }
 
