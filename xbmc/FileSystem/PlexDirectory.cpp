@@ -1025,7 +1025,7 @@ void CPlexDirectory::Parse(const CURL& url, TiXmlElement* root, CFileItemList &i
         else if (type == "episode")
           type = "episodes";
         else if (type == "movie")
-          type = "movie";
+          type = "movies";
 
         // Set the content type for the collection.
         if (gotType == false)
