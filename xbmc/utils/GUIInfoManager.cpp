@@ -846,6 +846,7 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
 {
   if (info.Equals("thumb")) return LISTITEM_THUMB;
   else if (info.Equals("icon")) return LISTITEM_ICON;
+  else if (info.Equals("banner")) return LISTITEM_BANNER;
   else if (info.Equals("actualicon")) return LISTITEM_ACTUAL_ICON;
   else if (info.Equals("overlay")) return LISTITEM_OVERLAY;
   else if (info.Equals("label")) return LISTITEM_LABEL;
@@ -3850,6 +3851,9 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
       }
       return strThumb;
     }
+  case LISTITEM_BANNER:
+      return item->GetProperty("banner_image");
+    break;
   case LISTITEM_OVERLAY:
     return item->GetOverlayImage();
   case LISTITEM_THUMB:

@@ -337,6 +337,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   m_contenttype = item.m_contenttype;
   m_extrainfo = item.m_extrainfo;
   m_strFanartUrl = item.m_strFanartUrl;
+  m_strBannerUrl = item.m_strBannerUrl;
   m_bIsPopupMenuItem = item.m_bIsPopupMenuItem;
   m_bIsSettingsDir = item.m_bIsSettingsDir;
   m_bIsSearchDir = item.m_bIsSearchDir;
@@ -391,6 +392,7 @@ void CFileItem::Reset()
   m_pictureInfoTag=NULL;
   m_extrainfo.Empty();
   m_strFanartUrl.Empty();
+  m_strBannerUrl.Empty();
   
   m_bIsPopupMenuItem = false;
   m_bIsSettingsDir = false;
@@ -425,6 +427,7 @@ void CFileItem::Serialize(CArchive& ar)
     ar << m_strLockCode;
     ar << m_iBadPwdCount;
     ar << m_strFanartUrl;
+    ar << m_strBannerUrl;
 
     ar << m_bCanQueue;
     ar << m_contenttype;
@@ -478,6 +481,7 @@ void CFileItem::Serialize(CArchive& ar)
     ar >> m_strLockCode;
     ar >> m_iBadPwdCount;
     ar >> m_strFanartUrl;
+    ar >> m_strBannerUrl;
 
     ar >> m_bCanQueue;
     ar >> m_contenttype;
@@ -2712,6 +2716,26 @@ void CFileItem::SetUserVideoThumb()
   SetCachedVideoThumb();
 }
 
+CStdString CFileItem::CacheBanner() const
+{
+  if (m_strBannerUrl.size() > 0)
+  {
+    CStdString localBanner = GetCachedPlexMediaServerBanner();
+    if (CFile::Exists(localBanner) == false)
+    {
+      CPicture pic;
+      pic.CacheImage(m_strBannerUrl, localBanner);
+      return localBanner;
+    }
+    else
+    {
+      return localBanner;
+    }
+  }
+  
+  return "";
+}
+
 ///
 /// If a cached fanart image already exists, then we're fine.  Otherwise, we look for a local fanart.jpg
 /// and cache that image as our fanart.
@@ -2778,29 +2802,6 @@ CStdString CFileItem::CacheFanart(bool probe) const
 
   bool bFoundFanart = false;
   CStdString localFanart;
-  
-#ifdef USE_SLOW_ASS_DIRECTORY_SCAN
-  // we don't have a cached image, so let's see if the user has a local image ..
-  CStdString strDir;
-  CUtil::GetDirectory(strFile, strDir);
-  CFileItemList items;
-  CDirectory::GetDirectory(strDir, items, g_stSettings.m_pictureExtensions, true, false, true, false);
-  CUtil::RemoveExtension(strFile);
-  strFile += "-fanart";
-  CStdString strFile3 = CUtil::AddFileToFolder(strDir, "fanart");
-
-  for (int i = 0; i < items.Size(); i++)
-  {
-    CStdString strCandidate = items[i]->m_strPath;
-    CUtil::RemoveExtension(strCandidate);
-    if (strCandidate == strFile || strCandidate == strFile2 || strCandidate == strFile3)
-    {
-      bFoundFanart = true;
-      localFanart = items[i]->m_strPath;
-      break;
-    }
-  }
-#endif
   
   // no local fanart found
   if(!bFoundFanart)
@@ -2872,6 +2873,11 @@ CStdString CFileItem::GetCachedPlexMediaServerThumb(const CStdString& path)
 CStdString CFileItem::GetCachedPlexMediaServerFanart() const
 {
   return CFileItem::GetCachedPlexMediaServerFanart(m_strFanartUrl);
+}
+
+CStdString CFileItem::GetCachedPlexMediaServerBanner() const
+{
+  return CFileItem::GetCachedPlexMediaServerThumb(m_strBannerUrl);
 }
 
 CStdString CFileItem::GetCachedPlexMediaServerFanart(const CStdString &path)
@@ -3183,6 +3189,15 @@ void CFileItem::SetQuickFanart(const CStdString& fanartURL)
   // See if it's already cached, and the cached version isn't too old.
   if (CFile::Exists(GetCachedPlexMediaServerFanart()))
     SetProperty("fanart_image", GetCachedPlexMediaServerFanart());
+}
+
+void CFileItem::SetQuickBanner(const CStdString& bannerURL)
+{
+  m_strBannerUrl = bannerURL;
+  
+  // See if it's already cached, and the cached version isn't too old.
+  if (CFile::Exists(GetCachedPlexMediaServerBanner()))
+    SetProperty("banner_image", GetCachedPlexMediaServerBanner());
 }
 
 CStdString CFileItem::FindTrailer() const

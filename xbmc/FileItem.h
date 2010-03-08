@@ -202,13 +202,16 @@ public:
   CStdString GetCachedPlexMediaServerFanart() const;
   static CStdString GetCachedPlexMediaServerFanart(const CStdString &path);
   
+  CStdString GetCachedPlexMediaServerBanner() const;
+  
   static CStdString GetCachedProgramFanart(const CStdString &path);
   static CStdString GetCachedFanart(const CStdString &path);
 
   // Sets the video thumb (cached first, else caches user thumb)
   void SetVideoThumb();
   CStdString CacheFanart(bool probe=false) const;
-
+  CStdString CacheBanner() const;
+  
   // Sets the cached thumb for the item if it exists
   void SetCachedVideoThumb();
   void SetCachedPictureThumb();
@@ -247,6 +250,10 @@ public:
   void SetQuickFanart(const CStdString& fanartURL);
   const CStdString& GetQuickFanart() const { return m_strFanartUrl; }
   
+  void SetQuickBanner(const CStdString& bannerURL);
+  const CStdString& GetQuickBanner() const { return m_strBannerUrl; }
+
+
 private:
   // Gets the .tbn file associated with this item
   CStdString GetTBNFile() const;
@@ -283,6 +290,7 @@ private:
   CStdString GetFolderThumb(const CStdString &folderJPG = "folder.jpg") const;
 
   CStdString m_strFanartUrl;
+  CStdString m_strBannerUrl;
   bool m_bIsParentFolder;
   bool m_bCanQueue;
   bool m_bLabelPreformated;

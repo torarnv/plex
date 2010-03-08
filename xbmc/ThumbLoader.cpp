@@ -22,6 +22,7 @@
 #include <boost/foreach.hpp>
 
 #include "stdafx.h"
+#include "FileCurl.h"
 #include "FileSystem/StackDirectory.h"
 #include "ThumbLoader.h"
 #include "Util.h"
@@ -144,6 +145,16 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
     }
   }
   
+  if (!pItem->HasProperty("banner_image"))
+  {
+    pItem->CacheBanner();
+    if (pItem->GetQuickBanner().size() > 0)
+    {
+      if (CFile::Exists(pItem->GetCachedPlexMediaServerBanner()))
+        pItem->SetProperty("banner_image", pItem->GetCachedPlexMediaServerBanner());
+    }
+  }
+  
   // Walk through properties and see if there are any image resources to be loaded.
   std::map<CStdString, CStdString, CGUIListItem::icompare>& properties = pItem->GetPropertyDict();
   typedef pair<CStdString, CStdString> PropertyPair;
@@ -157,9 +168,18 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
       string localFile = CFileItem::GetCachedPlexMediaServerThumb(url);
       if (CFile::Exists(localFile) == false)
       {
-        CPicture pic;
-        if (pic.DoCreateThumbnail(url, localFile))
-          pItem->SetProperty(name, localFile);
+        CFileCurl remoteFile;
+        CURL theURL(url);
+        if (remoteFile.Exists(theURL))
+        {
+          CPicture pic;
+          if (pic.DoCreateThumbnail(url, localFile))
+            pItem->SetProperty(name, localFile);
+        }
+        else
+        {
+          SleepEx(100, TRUE);
+        }
       }
       else
       {
