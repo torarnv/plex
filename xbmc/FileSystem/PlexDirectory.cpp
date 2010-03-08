@@ -354,34 +354,19 @@ class PlexMediaNode
      try
      {
        // Thumb.
-       const char* thumb = el.Attribute("thumb"); 
-       if (thumb && strlen(thumb) > 0)
-       {
-         string strThumb = CPlexDirectory::ProcessUrl(parentPath, thumb, false);
-         
-         // See if the item is too old.
-         string cachedFile(CFileItem::GetCachedPlexMediaServerThumb(strThumb));
-         if (CFile::Age(cachedFile) > MAX_THUMBNAIL_AGE)
-           CFile::Delete(cachedFile);
-
-         // Set the thumbnail URL.
+       string strThumb = ProcessMediaElement(parentPath, el, "thumb", MAX_THUMBNAIL_AGE);
+       if (strThumb.size() > 0)
          pItem->SetThumbnailImage(strThumb);
-       }
        
        // Fanart.
-       const char* fanart = el.Attribute("art");
-       if (fanart && strlen(fanart) > 0)
-       {
-         string strFanart = CPlexDirectory::ProcessUrl(parentPath, fanart, false);
-      
-         // See if the item is too old.
-         string cachedFile(CFileItem::GetCachedPlexMediaServerFanart(strFanart));
-         if (CFile::Age(cachedFile) > MAX_FANART_AGE)
-           CFile::Delete(cachedFile);
-
-         // Set the fanart.
-         pItem->SetQuickFanart(strFanart);
-       } 
+       string strArt = ProcessMediaElement(parentPath, el, "art", MAX_FANART_AGE);
+       if (strArt.size() > 0)
+         pItem->SetQuickFanart(strArt);
+       
+       // Banner.
+       string strBanner = ProcessMediaElement(parentPath, el, "banner", MAX_FANART_AGE);
+       if (strBanner.size() > 0)
+         pItem->SetQuickBanner(strBanner);
      }
      catch (...)
      {
@@ -421,19 +406,27 @@ class PlexMediaNode
      // Ratings
      const char* userRating = el.Attribute("userRating");
      if (userRating && strlen(userRating) > 0)
-     {
        pItem->SetProperty("userRating", atof(userRating));
-     }
      
      const char* ratingKey = el.Attribute("ratingKey");
      if (ratingKey && strlen(ratingKey) > 0)
-     {
        pItem->SetProperty("ratingKey", ratingKey);
-     }
       
      const char* rating = el.Attribute("rating");
      if (rating && strlen(rating) > 0)
        pItem->SetProperty("rating", atof(rating));
+     
+     // Dates.
+     const char* originallyAvailableAt = el.Attribute("originallyAvailableAt");
+     if (originallyAvailableAt)
+     {
+       char date[128];
+       tm t;
+       time_t timeT = atoi(originallyAvailableAt);
+       localtime_r(&timeT, &t);
+       strftime(date, 128, "%x", &t);
+       pItem->SetProperty("originallyAvailableAt", date);
+     }
      
      // Extra attributes for prefixes.     
      const char* share = el.Attribute("share");
@@ -453,6 +446,24 @@ class PlexMediaNode
        pItem->SetProperty("pluginIdentifier", pluginIdentifier);
      
      return pItem;
+   }
+   
+   string ProcessMediaElement(const string& parentPath, TiXmlElement& el, const string& name, int maxAge)
+   {
+     const char* media = el.Attribute(name.c_str());
+     if (media && strlen(media) > 0)
+     {
+       string strMedia = CPlexDirectory::ProcessUrl(parentPath, media, false);
+       
+       // See if the item is too old.
+       string cachedFile(CFileItem::GetCachedPlexMediaServerThumb(strMedia));
+       if (CFile::Age(cachedFile) > maxAge)
+         CFile::Delete(cachedFile);
+       
+       return strMedia;
+     }
+     
+     return "";
    }
    
    virtual void DoBuildFileItem(CFileItemPtr& pItem, const string& parentPath, TiXmlElement& el) = 0;
@@ -500,7 +511,7 @@ class PlexMediaNode
        if (hours > 0)
          std.Format("%d:%02d:%02d", hours, minutes, seconds);
        else
-         std.Format(":%d:%02d", minutes, seconds);
+         std.Format("%d:%02d", minutes, seconds);
        
        return std;
      }
@@ -546,10 +557,18 @@ class PlexMediaNodeLibrary : public PlexMediaNode
     CVideoInfoTag videoInfo;
     videoInfo.m_strTitle = el.Attribute("title");
     videoInfo.m_strPlot = videoInfo.m_strPlotOutline = el.Attribute("summary");
-    
+
     const char* year = el.Attribute("year");
     if (year)
       videoInfo.m_iYear = boost::lexical_cast<int>(year);
+
+    // Indexes.
+    string type = el.Attribute("type");
+    if (type == "episode")
+    {
+      videoInfo.m_iEpisode = boost::lexical_cast<int>(el.Attribute("index"));
+      videoInfo.m_iSeason = boost::lexical_cast<int>(((TiXmlElement* )el.Parent())->Attribute("parentIndex"));
+    }
 
     vector<CFileItemPtr> mediaItems;
     for (TiXmlElement* media = el.FirstChildElement(); media; media=media->NextSiblingElement())
@@ -597,7 +616,7 @@ class PlexMediaNodeLibrary : public PlexMediaNode
         CacheMediaThumb(theMediaItem, &el, url, "tvStudio", pVersion);
         CacheMediaThumb(theMediaItem, &el, url, "movieStudio", pVersion);
       }
-
+      
       // But we add each one to the list.
       mediaItems.push_back(theMediaItem);
     }
@@ -646,6 +665,16 @@ class PlexMediaDirectory : public PlexMediaNode
       pItem->SetProperty("description", summary);
       tag.m_strPlot = tag.m_strPlotOutline = summary;
     }
+    
+    // Studio.
+    if (el.Attribute("tvStudio"))
+      tag.m_strStudio = el.Attribute("tvStudio");
+    else if (el.Attribute("movieStudio"))
+      tag.m_strStudio = el.Attribute("movieStudio");
+    
+    // Duration.
+    if (el.Attribute("duration"))
+      tag.m_strRuntime = BuildDurationString(el.Attribute("duration"));
     
     CFileItemPtr newItem(new CFileItem(tag));
     newItem->m_bIsFolder = true;
@@ -781,7 +810,7 @@ class PlexMediaVideo : public PlexMediaNode
       if (hours > 0)
         std.Format("%d:%02d:%02d", hours, minutes, seconds);
       else
-        std.Format(":%d:%02d", minutes, seconds);
+        std.Format("%d:%02d", minutes, seconds);
       
       videoInfo.m_strRuntime = std;
     }
