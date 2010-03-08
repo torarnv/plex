@@ -128,6 +128,11 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
           m_vecItems->m_strPath = "";
           CLog::Log(LOGINFO, "  Success! Opening root listing.");
         }
+        else if (CUtil::IsPlexMediaServer(strDestination))
+        {
+          m_vecItems->m_strPath = strDestination;
+          CLog::Log(LOGINFO, "  Jumping directly to PMS destination path: %s", strDestination.c_str());
+        }          
         else
         {
           // default parameters if the jump fails
