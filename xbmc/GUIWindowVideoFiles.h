@@ -37,7 +37,6 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
 
   void GetStackedDirectory(const CStdString &strPath, CFileItemList &items);
-  virtual void OnInfo(CFileItem* pItem, const SScraperInfo& info);
 protected:
   virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   virtual bool OnPlayMedia(int iItem);

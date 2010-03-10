@@ -372,112 +372,6 @@ bool CGUIWindowVideoFiles::OnPlayMedia(int iItem)
   }
 }
 
-void CGUIWindowVideoFiles::OnInfo(CFileItem* pItem, const SScraperInfo& info)
-{
-  if ( !pItem ) return ;
-  bool bFolder(false);
-  if (info.strContent.Equals("tvshows"))
-  {
-    CGUIWindowVideoBase::OnInfo(pItem,info);
-    return;
-  }
-  CStdString strFolder = "";
-  CStdString strFile = pItem->m_strPath;
-  if (pItem->m_bIsFolder && pItem->IsParentFolder()) return ;
-  if (pItem->m_bIsShareOrDrive || pItem->IsPlexMediaServer()) // Disable PMS info window for now - enable again once it does something useful
-    return ;
-  if (pItem->m_bIsFolder)
-  {
-    // IMDB is done on a folder
-    // stack and then find first file in folder
-    bFolder = true;
-    CFileItemList vecitems;
-    GetStackedDirectory(pItem->m_strPath, vecitems);
-    bool bFoundFile(false);
-    for (int i = 0; i < (int)vecitems.Size(); ++i)
-    {
-      CFileItemPtr item = vecitems[i];
-      if (!item->m_bIsFolder)
-      {
-        if (item->IsVideo() && !item->IsNFO() && !item->IsPlayList() && 
-            item->m_strPath.Find("-trailer.") == -1)
-        {
-          bFoundFile = true;
-          strFile = item->m_strPath;
-          break;
-        }
-      }
-      else
-      { // check for a dvdfolder
-        if (item->GetLabel().CompareNoCase("VIDEO_TS") == 0)
-        { // found a dvd folder - grab the main .ifo file
-          CUtil::AddFileToFolder(item->m_strPath, "VIDEO_TS.IFO", strFile);
-          if (CFile::Exists(strFile))
-          {
-            bFoundFile = true;
-            break;
-          }
-        }
-        // check for a "CD1" folder
-        if (item->GetLabel().CompareNoCase("CD1") == 0)
-        {
-          CFileItemList items;
-          GetStackedDirectory(item->m_strPath, items);
-          for (int i = 0; i < items.Size(); i++)
-          {
-            CFileItemPtr item = items[i];
-            if (!item->m_bIsFolder && item->IsVideo() && !item->IsNFO() && 
-                !item->IsPlayList())
-            {
-              bFoundFile = true;
-              strFile = item->m_strPath;
-              break;
-            }
-          }
-          if (bFoundFile)
-            break;
-        }
-      }
-    }
-    if (!bFoundFile)
-    {
-      // no video file in this folder?
-      if (info.strContent.Equals("movies"))
-        CGUIDialogOK::ShowAndGetInput(13346,20349,20022,20022);
-
-      return ;
-    }
-  }
-
-  // setup our item with the label and thumb information
-  CFileItem item(strFile, false);
-  item.SetLabel(pItem->GetLabel());
-
-  // hack since our label sometimes contains extensions
-  if(!pItem->m_bIsFolder && !g_guiSettings.GetBool("filelists.hideextensions") &&
-     !pItem->IsLabelPreformated())
-  {
-    item.RemoveExtension();
-  }
-  
-  item.SetCachedVideoThumb();
-  if (!item.HasThumbnail() && pItem->GetProperty("HasAutoThumb") != "1") // inherit from the original item if it exists
-    item.SetThumbnailImage(pItem->GetThumbnailImage());
-
-  if (!info.strContent.Equals("plugin"))
-    AddFileToDatabase(&item);
-  else
-  {
-    if (pItem->HasVideoInfoTag())
-      *item.GetVideoInfoTag() = *pItem->GetVideoInfoTag();
-  }
-  // we need to also request any thumbs also be applied to the folder item
-  if (pItem->m_bIsFolder)
-    item.SetProperty("set_folder_thumb", pItem->m_strPath);
-  if (ShowIMDB(&item,info) && !info.strContent.Equals("plugin"))
-    Update(m_vecItems->m_strPath);
-}
-
 void CGUIWindowVideoFiles::AddFileToDatabase(const CFileItem* pItem)
 {
   if (!pItem->IsVideo()) return ;
@@ -597,135 +491,24 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
     item = m_vecItems->Get(itemNumber);
   
   bool includeStandardContextButtons = true;
-  
-  CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
   if (item)
   {
     includeStandardContextButtons = item->m_includeStandardContextItems;
-    // are we in the playlists location?
-    if (m_vecItems->IsVirtualDirectoryRoot())
-    {
-      // get the usual shares, and anything for all media windows
-      CMediaSource *share = CGUIDialogContextMenu::GetShare("video", item.get());
-      CGUIDialogContextMenu::GetContextButtons("video", share, buttons);
-      CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
-      // add scan button somewhere here
-      if (pScanDlg && pScanDlg->IsScanning())
-        buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);	// Stop Scanning
-      if (g_guiSettings.GetBool("videolibrary.enabled") && !item->IsDVD() && 
-         (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
-      {
-        CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-        if ((!pScanDlg || (pScanDlg && !pScanDlg->IsScanning())) && !item->IsPlexMediaServer())
-          buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
-        CVideoDatabase database;
-        database.Open();
-        SScraperInfo info;
-        
-        if (share != 0 && database.GetScraperForPath(share->strPath,info))
-        {
-          if (!info.strPath.IsEmpty() && !info.strContent.IsEmpty())
-            if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
-              buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
-        }
-      }
-    }
-    else
-    {
+    
+    // The info button.
+    if (m_vecItems->GetContent() == "movies")
+      buttons.Add(CONTEXT_BUTTON_INFO, 13346);
+    else if (m_vecItems->GetContent() == "tvshows")
+      buttons.Add(CONTEXT_BUTTON_INFO, 20351);
+    else if (m_vecItems->GetContent() == "episodes")
+      buttons.Add(CONTEXT_BUTTON_INFO, 20352);
+    
+    if (m_vecItems->IsVirtualDirectoryRoot() == false)
       CGUIWindowVideoBase::GetContextButtons(itemNumber, buttons);
-      // Movie Info button
-      if (includeStandardContextButtons)
-      {
-        if (pScanDlg && pScanDlg->IsScanning())
-          buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);
-        if (g_guiSettings.GetBool("videolibrary.enabled") &&
-          (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
-        {
-          SScraperInfo info;
-          VIDEO::SScanSettings settings;
-          int iFound = GetScraperForItem(item.get(), info, settings);
-
-          int infoString = 13346;
-          if (info.strContent.Equals("tvshows"))
-            infoString = item->m_bIsFolder ? 20351 : 20352;
-          if (info.strContent.Equals("musicvideos"))
-            infoString = 20393;
-
-          if (item->m_bIsFolder)
-          {
-            if ((!pScanDlg || (pScanDlg && !pScanDlg->IsScanning())) && !item->IsPlexMediaServer())
-              if (!item->IsPlayList())
-                buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
-            if (iFound==0)
-            { // scraper not set - allow movie information or set content
-              CStdString strPath(item->m_strPath);
-              CUtil::AddSlashAtEnd(strPath);
-              if ((info.strContent.Equals("movies") && m_database.HasMovieInfo(strPath)) ||
-                  (info.strContent.Equals("tvshows") && m_database.HasTvShowInfo(strPath)))
-                buttons.Add(CONTEXT_BUTTON_INFO, infoString);
-            }
-            else
-            { // scraper found - allow to add to library, scan for new content, or set different type of content
-              if (!info.strContent.Equals("musicvideos"))
-                buttons.Add(CONTEXT_BUTTON_INFO, infoString);
-              else
-              {
-                if (!item->IsPlayList())
-                  buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
-              }
-              if (!info.strPath.IsEmpty() && !info.strContent.IsEmpty())
-                if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
-                  buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
-            }
-          }
-          else
-          {
-            // single file
-            if ((info.strContent.Equals("movies") && (iFound > 0 || 
-                 m_database.HasMovieInfo(item->m_strPath)))      || 
-                 m_database.HasEpisodeInfo(item->m_strPath)      || 
-                 info.strContent.Equals("musicvideos"))
-            {
-              buttons.Add(CONTEXT_BUTTON_INFO, infoString);
-            }
-            m_database.Open();
-            if (!item->IsParentFolder())
-            {
-              if (!m_database.HasMovieInfo(item->m_strPath) && !m_database.HasEpisodeInfo(item->m_strPath) && !item->IsPlexMediaServer())
-                buttons.Add(CONTEXT_BUTTON_ADD_TO_LIBRARY, 527); // Add to Database
-            }
-            m_database.Close();
-          }
-        }
-        if (!item->IsParentFolder())
-        {
-          if ((m_vecItems->m_strPath.Equals("special://videoplaylists/")) || 
-               g_guiSettings.GetBool("filelists.allowfiledeletion"))
-          { // video playlists or file operations are allowed
-            if (!item->IsReadOnly())
-            {
-              buttons.Add(CONTEXT_BUTTON_DELETE, 117);
-              buttons.Add(CONTEXT_BUTTON_RENAME, 118);
-            }
-          }
-        }
-        if (m_vecItems->IsPluginFolder() && item->HasVideoInfoTag())
-          buttons.Add(CONTEXT_BUTTON_INFO,13346); // only movie information for now
-      }
-    }
   }
-  else
-  {
-    if (pScanDlg && pScanDlg->IsScanning())
-      buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);	// Stop Scanning
-  }
+
   if (includeStandardContextButtons)
-  {
-    if (!m_vecItems->IsVirtualDirectoryRoot() && !m_vecItems->IsPlexMediaServer())
-      buttons.Add(CONTEXT_BUTTON_SWITCH_MEDIA, 523);
-
     CGUIWindowVideoBase::GetNonContextButtons(itemNumber, buttons);
-  }
 }
 
 bool CGUIWindowVideoFiles::OnContextButton(int itemNumber, CONTEXT_BUTTON button)

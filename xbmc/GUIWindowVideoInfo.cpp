@@ -63,8 +63,6 @@ using namespace XFILE;
 #define CONTROL_TOP250              37
 #define CONTROL_TRAILER             38
 
-
-#define CONTROL_IMAGE                3
 #define CONTROL_TEXTAREA             4
 #define CONTROL_BTN_TRACKS           5
 #define CONTROL_BTN_REFRESH          6
@@ -287,6 +285,10 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
 void CGUIWindowVideoInfo::SetMovie(const CFileItem *item)
 {
   *m_movieItem = *item;
+  m_castList->SetContent("movies");
+  
+#if 0
+  
   // setup cast list + determine type.  We need to do this here as it makes
   // sure that content type (among other things) is set correctly for the
   // old fixed id labels that we have floating around (they may be using
@@ -377,6 +379,8 @@ void CGUIWindowVideoInfo::SetMovie(const CFileItem *item)
     else
       m_castList->SetContent("movies");
   }
+  
+#endif
 }
 
 void CGUIWindowVideoInfo::Update()
@@ -483,15 +487,6 @@ void CGUIWindowVideoInfo::Update()
     CONTROL_DISABLE(CONTROL_BTN_PLAY);
   }
 
-  // update the thumbnail
-  const CGUIControl* pControl = GetControl(CONTROL_IMAGE);
-  if (pControl)
-  {
-    CGUIImage* pImageControl = (CGUIImage*)pControl;
-    pImageControl->FreeResources();
-    pImageControl->SetFileName(m_movieItem->GetThumbnailImage());
-  }
-  
   // tell our GUI to completely reload all controls (as some of them
   // are likely to have had this image in use so will need refreshing)
   CGUIMessage reload(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
@@ -500,45 +495,7 @@ void CGUIWindowVideoInfo::Update()
 
 void CGUIWindowVideoInfo::Refresh()
 {
-  // quietly return if Internet lookups are disabled
-  if (!g_guiSettings.GetBool("network.enableinternet"))
-  {
-    Update();
-    return ;
-  }
-
-  try
-  {
-    OutputDebugString("Refresh\n");
-
-    CStdString strImage = m_movieItem->GetVideoInfoTag()->m_strPictureURL.GetFirstThumb().m_url;
-
-    CStdString thumbImage = m_movieItem->GetCachedVideoThumb();
-    if (!CFile::Exists(thumbImage) || m_movieItem->GetProperty("HasAutoThumb") == "1")
-      m_movieItem->SetUserVideoThumb();
-    if (!CFile::Exists(thumbImage) && strImage.size() > 0)
-    {
-      CScraperUrl::DownloadThumbnail(thumbImage,m_movieItem->GetVideoInfoTag()->m_strPictureURL.GetFirstThumb());
-      CUtil::DeleteVideoDatabaseDirectoryCache(); // to get them new thumbs to show
-    }
-
-    if (!CFile::Exists(thumbImage) )
-    {
-      thumbImage.Empty();
-    }
-    else if (m_movieItem->HasProperty("set_folder_thumb"))
-    { // have a folder thumb to set as well
-      VIDEO::CVideoInfoScanner::ApplyIMDBThumbToFolder(m_movieItem->GetProperty("set_folder_thumb"), thumbImage);
-    }
-
-    m_movieItem->SetThumbnailImage(thumbImage);
-
-    //OutputDebugString("update\n");
-    Update();
-    //OutputDebugString("updated\n");
-  }
-  catch (...)
-  {}
+  Update();
 }
 bool CGUIWindowVideoInfo::NeedRefresh() const
 {
@@ -706,9 +663,9 @@ void CGUIWindowVideoInfo::ClearCastList()
 
 void CGUIWindowVideoInfo::Play(bool resume)
 {
-  CFileItem movie(m_movieItem->GetVideoInfoTag()->m_strFileNameAndPath, false);
-  if (m_movieItem->GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty())
-    movie.m_strPath = m_movieItem->m_strPath;
+  CFileItem movie(m_movieItem->m_strPath, false);
+  printf("Path: %s\n", m_movieItem->m_strPath.c_str());
+  
   CGUIWindowVideoFiles* pWindow = (CGUIWindowVideoFiles*)m_gWindowManager.GetWindow(WINDOW_VIDEO_FILES);
   if (pWindow)
   {
