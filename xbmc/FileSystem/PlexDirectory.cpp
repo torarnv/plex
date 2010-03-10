@@ -416,6 +416,11 @@ class PlexMediaNode
      if (rating && strlen(rating) > 0)
        pItem->SetProperty("rating", atof(rating));
      
+     // Content rating.
+     const char* contentRating = el.Attribute("contentRating");
+     if (contentRating)
+       pItem->SetProperty("contentRating", contentRating);
+     
      // Dates.
      const char* originallyAvailableAt = el.Attribute("originallyAvailableAt");
      if (originallyAvailableAt)
