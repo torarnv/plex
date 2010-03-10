@@ -168,18 +168,9 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
       string localFile = CFileItem::GetCachedPlexMediaServerThumb(url);
       if (CFile::Exists(localFile) == false)
       {
-        CFileCurl remoteFile;
-        CURL theURL(url);
-        if (remoteFile.Exists(theURL))
-        {
-          CPicture pic;
-          if (pic.DoCreateThumbnail(url, localFile))
-            pItem->SetProperty(name, localFile);
-        }
-        else
-        {
-          SleepEx(100, TRUE);
-        }
+        CPicture pic;
+        if (pic.DoCreateThumbnail(url, localFile))
+          pItem->SetProperty(name, localFile);
       }
       else
       {
