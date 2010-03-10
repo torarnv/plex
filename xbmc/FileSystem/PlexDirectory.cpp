@@ -566,8 +566,12 @@ class PlexMediaNodeLibrary : public PlexMediaNode
     string type = el.Attribute("type");
     if (type == "episode")
     {
-      videoInfo.m_iEpisode = boost::lexical_cast<int>(el.Attribute("index"));
-      videoInfo.m_iSeason = boost::lexical_cast<int>(((TiXmlElement* )el.Parent())->Attribute("parentIndex"));
+      if (el.Attribute("index"))
+        videoInfo.m_iEpisode = boost::lexical_cast<int>(el.Attribute("index"));
+      
+      const char* parentIndex = ((TiXmlElement* )el.Parent())->Attribute("parentIndex");
+      if (parentIndex)
+        videoInfo.m_iSeason = boost::lexical_cast<int>(parentIndex);
     }
 
     vector<CFileItemPtr> mediaItems;
