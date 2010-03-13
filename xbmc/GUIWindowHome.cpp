@@ -227,7 +227,6 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       BOOST_FOREACH(CFileItemPtr item, newItems)
       {
         CFileItemPtr newItem = CFileItemPtr(new CFileItem(item->GetLabel()));
-        newItem->SetLabel2("Visit your");
         newItem->SetProperty("plex", "1");
         newItem->m_strPath = "Plex.ActivateWindow(MyVideoFiles," + item->m_strPath + ",return)";
         newItem->m_idepth = 0;
