@@ -44,8 +44,12 @@
 #include "MediaManager.h"
 #include "utils/AsyncFileCopy.h"
 
+#include "HTTP.h"
+#include "PlexDirectory.h"
+
 using namespace std;
 using namespace XFILE;
+using namespace DIRECTORY;
 
 #define CONTROL_TITLE               20
 #define CONTROL_DIRECTOR            21
@@ -72,6 +76,7 @@ using namespace XFILE;
 #define CONTROL_BTN_GET_THUMB       10
 #define CONTROL_BTN_PLAY_TRAILER    11
 #define CONTROL_BTN_GET_FANART      12
+#define CONTROL_BTN_GET_BANNER      13
 
 #define CONTROL_LIST                50
 
@@ -229,6 +234,11 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
       {
         OnGetFanart();
       }
+      else if (iControl == CONTROL_BTN_GET_BANNER)
+      {
+        OnGetBanner();
+      }
+      
 /*      else if (iControl == CONTROL_DISC)
       {
         int iItem = 0;
@@ -282,10 +292,12 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
   return CGUIDialog::OnMessage(message);
 }
 
-void CGUIWindowVideoInfo::SetMovie(const CFileItem *item)
+void CGUIWindowVideoInfo::SetMovie(const CFileItemPtr& item)
 {
-  *m_movieItem = *item;
-  m_castList->SetContent("movies");
+  m_movieItem = item;
+  
+  // Set the cast list appropriately.
+  m_castList->SetContent(m_movieItem->GetProperty("mediaType"));
   
 #if 0
   
@@ -631,27 +643,6 @@ VIDEODB_CONTENT_TYPE CGUIWindowVideoInfo::GetContentType(const CFileItem *pItem)
 /// \param pItem Search result item
 void CGUIWindowVideoInfo::OnSearchItemFound(const CFileItem* pItem)
 {
-  VIDEODB_CONTENT_TYPE type = GetContentType(pItem);
-
-  CVideoDatabase db;
-  if (!db.Open())
-    return;
-
-  CVideoInfoTag movieDetails;
-  if (type == VIDEODB_CONTENT_MOVIES)
-    db.GetMovieInfo(pItem->m_strPath, movieDetails, pItem->GetVideoInfoTag()->m_iDbId);
-  if (type == VIDEODB_CONTENT_EPISODES)
-    db.GetEpisodeInfo(pItem->m_strPath, movieDetails, pItem->GetVideoInfoTag()->m_iDbId);
-  if (type == VIDEODB_CONTENT_TVSHOWS)
-    db.GetTvShowInfo(pItem->m_strPath, movieDetails, pItem->GetVideoInfoTag()->m_iDbId);
-  if (type == VIDEODB_CONTENT_MUSICVIDEOS)
-    db.GetMusicVideoInfo(pItem->m_strPath, movieDetails, pItem->GetVideoInfoTag()->m_iDbId);
-  db.Close();
-
-  CFileItem item(*pItem);
-  *item.GetVideoInfoTag() = movieDetails;
-  SetMovie(&item);
-  Refresh();
 }
 
 void CGUIWindowVideoInfo::ClearCastList()
@@ -677,233 +668,148 @@ void CGUIWindowVideoInfo::Play(bool resume)
   }
 }
 
-// Get Thumb from user choice.
-// Options are:
-// 1.  Current thumb
-// 2.  IMDb thumb
-// 3.  Local thumb
-// 4.  No thumb (if no Local thumb is available)
 void CGUIWindowVideoInfo::OnGetThumb()
+{
+  string newPoster = OnGetMedia("posters", m_movieItem->GetThumbnailImage(), 20016);
+  if (newPoster.size() > 0)
+  {
+    string newPosterFile = CFileItem::GetCachedPlexMediaServerThumb(newPoster);
+    bool   success = true;
+    
+    if (CFile::Exists(newPosterFile) == false)
+      success = AsyncDownloadMedia(newPoster, newPosterFile);
+
+    if (success)
+    {
+      m_movieItem->SetThumbnailImage(newPosterFile);
+      
+      // Tell our GUI to completely reload all controls.
+      CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
+      g_graphicsContext.SendMessage(msg);
+    }
+  }
+}
+
+string CGUIWindowVideoInfo::OnGetMedia(const string& mediaType, const string& currentCachedMedia, int label)
 {
   CFileItemList items;
 
-  // Current thumb
-  if (CFile::Exists(m_movieItem->GetThumbnailImage()))
+  // Current one.
+  if (currentCachedMedia.size() > 0 && CFile::Exists(currentCachedMedia))
   {
-    CFileItemPtr item(new CFileItem("thumb://Current", false));
-    item->SetThumbnailImage(m_movieItem->GetThumbnailImage());
-    item->SetLabel(g_localizeStrings.Get(20016));
-    items.Add(item);
+    CFileItemPtr itemCurrent(new CFileItem("media://Current", false));
+    itemCurrent->SetThumbnailImage(currentCachedMedia);
+    itemCurrent->SetLabel(g_localizeStrings.Get(label));
+    items.Add(itemCurrent);
   }
 
-  // Grab the thumbnails from the web
-  int i=1;
-  for (std::vector<CScraperUrl::SUrlEntry>::iterator iter=m_movieItem->GetVideoInfoTag()->m_strPictureURL.m_url.begin();iter != m_movieItem->GetVideoInfoTag()->m_strPictureURL.m_url.end();++iter)
+  // Get a list of available ones.
+  CFileItemList fileItems;
+  CPlexDirectory plexDir;
+  string url = m_movieItem->GetProperty("rootKey").c_str() + string("/") + mediaType;
+  plexDir.GetDirectory(url, fileItems);
+
+  m_mediaMap.clear();
+  for (int i=0; i<fileItems.Size(); i++)
   {
-    if (iter->m_type == CScraperUrl::URL_TYPE_SEASON)
-      continue;
-    CStdString strItemPath;
-    strItemPath.Format("thumb://Remote%i",i++);
-    CFileItemPtr item(new CFileItem(strItemPath, false));
-    item->SetThumbnailImage("http://this.is/a/thumb/from/the/web");
-    item->SetIconImage("defaultPicture.png");
-    item->GetVideoInfoTag()->m_strPictureURL.m_url.push_back(*iter);
-    item->SetLabel(g_localizeStrings.Get(415));
-    item->SetProperty("labelonthumbload", g_localizeStrings.Get(20015));
-
-    // make sure any previously cached thumb is removed
-    if (CFile::Exists(item->GetCachedPictureThumb()))
-      CFile::Delete(item->GetCachedPictureThumb());
-    items.Add(item);
+    CFileItemPtr item = fileItems.Get(i);
+    if (item->GetProperty("selected") == "0")
+    {
+      m_mediaMap[item->m_strPath] = item->GetProperty("ratingKey");
+      item->SetLabel("");
+      items.Add(item);
+    }
   }
-
-  CStdString cachedLocalThumb;
-  CStdString localThumb(m_movieItem->GetUserVideoThumb());
-  if (CFile::Exists(localThumb))
-  {
-    CUtil::AddFileToFolder(g_advancedSettings.m_cachePath, "localthumb.jpg", cachedLocalThumb);
-    CPicture pic;
-    pic.DoCreateThumbnail(localThumb, cachedLocalThumb);
-    CFileItemPtr item(new CFileItem("thumb://Local", false));
-    item->SetThumbnailImage(cachedLocalThumb);
-    item->SetLabel(g_localizeStrings.Get(20017));
-    items.Add(item);
-  }
-  else
-  { // no local thumb exists, so we are just using the IMDb thumb or cached thumb
-    // which is probably the IMDb thumb.  These could be wrong, so allow the user
-    // to delete the incorrect thumb
-    CFileItemPtr item(new CFileItem("thumb://None", false));
-    item->SetThumbnailImage("defaultVideoBig.png");
-    item->SetLabel(g_localizeStrings.Get(20018));
-    items.Add(item);
-  }
-
+  
+  // Have the user pick one.
   CStdString result;
   VECSOURCES sources(g_settings.m_videoSources);
   g_mediaManager.GetLocalDrives(sources);
-  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(20019), result))
-    return;   // user cancelled
+  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(label), result, false))
+    return "";
+  
+  if (result == "media://Current")
+    return "";
+  
+  // Take the result and send it back, to the singular URL (e.g. PUT .../art)
+  CStdString selectedKey = m_mediaMap[result];
+  CUtil::URLEncode(selectedKey);
 
-  if (result == "thumb://Current")
-    return;   // user chose the one they have
+  CURL finalURL(CStdString(url.substr(0, url.size()-1)) + "?url=" + selectedKey);
+  finalURL.SetProtocol("http");
+  finalURL.SetPort(32400);
 
-  // delete the thumbnail if that's what the user wants, else overwrite with the
-  // new thumbnail
-  CFileItem item(*m_movieItem->GetVideoInfoTag());
-  CStdString cachedThumb(item.GetCachedVideoThumb());
+  CHTTP set;
+  CStdString strData;
+  set.Open(finalURL.GetURL(), "PUT", 0);
+  set.ReadData(strData);
+  set.Close();
+  
+  // Compute the new URL.
+  finalURL.SetFileName(strData.substr(1));
+  finalURL.SetOptions("");
 
-  if (result.Left(14) == "thumb://Remote")
+  return finalURL.GetURL();
+}
+
+// Allow user to select a Banner
+void CGUIWindowVideoInfo::OnGetBanner()
+{
+  string newBanner = OnGetMedia("banners", m_movieItem->GetCachedPlexMediaServerBanner(), 20036);
+  if (newBanner.size() > 0)
   {
-    CStdString strFile;
-    CFileItem chosen(result, false);
-    CStdString thumb = chosen.GetCachedPictureThumb();
-    if (CFile::Exists(thumb))
+    string newBannerFile = CFileItem::GetCachedPlexMediaServerThumb(newBanner);
+    bool   success = true;
+    
+    if (CFile::Exists(newBannerFile) == false)
+      success = AsyncDownloadMedia(newBanner, newBannerFile);
+
+    if (success)
     {
-      // NOTE: This could fail if the thumbloader was too slow and the user too impatient
-      CFile::Cache(thumb, cachedThumb);
+      m_movieItem->SetQuickBanner(newBanner);
+      m_movieItem->SetProperty("banner_image", newBannerFile);
+      
+      // Tell our GUI to completely reload all controls.
+      CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
+      g_graphicsContext.SendMessage(msg);
     }
-    else
-      result = "thumb://None";
   }
-  else if (result == "thumb://Local")
-    CFile::Cache(cachedLocalThumb, cachedThumb);
-  else if (CFile::Exists(result))
-  {
-    CPicture pic;
-    pic.DoCreateThumbnail(result, cachedThumb);
-  }
-  else
-    result = "thumb://None";
-
-  if (result == "thumb://None")
-  { // cache the default thumb
-    CPicture pic;
-    pic.CacheSkinImage("defaultVideoBig.png", cachedThumb);
-  }
-
-  CUtil::DeleteVideoDatabaseDirectoryCache(); // to get them new thumbs to show
-  m_movieItem->SetThumbnailImage(cachedThumb);
-  if (m_movieItem->HasProperty("set_folder_thumb"))
-  { // have a folder thumb to set as well
-    VIDEO::CVideoInfoScanner::ApplyIMDBThumbToFolder(m_movieItem->GetProperty("set_folder_thumb"), cachedThumb);
-  }
-
-  // tell our GUI to completely reload all controls (as some of them
-  // are likely to have had this image in use so will need refreshing)
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
-  g_graphicsContext.SendMessage(msg);
-  // Update our screen
-  Update();
 }
 
 // Allow user to select a Fanart
 void CGUIWindowVideoInfo::OnGetFanart()
 {
-  CFileItemList items;
-
-  // ensure the fanart is unpacked
-  m_movieItem->GetVideoInfoTag()->m_fanart.Unpack();
-
-  // Grab the thumbnails from the web
-  CStdString strPath;
-  CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"fanartthumbs",strPath);
-  CUtil::WipeDir(strPath);
-  DIRECTORY::CDirectory::Create(strPath);
-  for (unsigned int i = 0; i < m_movieItem->GetVideoInfoTag()->m_fanart.GetNumFanarts(); i++)
+  string newFanart = OnGetMedia("arts", m_movieItem->GetCachedFanart(), 20035);
+  if (newFanart.size() > 0)
   {
-    CStdString strItemPath;
-    strItemPath.Format("fanart://Remote%i",i);
-    CFileItemPtr item(new CFileItem(strItemPath, false));
-    item->SetThumbnailImage("http://this.is/a/thumb/from/the/web");
-    item->SetIconImage("defaultPicture.png");
-    item->GetVideoInfoTag()->m_fanart = m_movieItem->GetVideoInfoTag()->m_fanart;
-    item->SetProperty("fanart_number", (int)i);
-    item->SetLabel(g_localizeStrings.Get(415));
-    item->SetProperty("labelonthumbload", g_localizeStrings.Get(20015));
-
-    // make sure any previously cached thumb is removed
-    if (CFile::Exists(item->GetCachedPictureThumb()))
-      CFile::Delete(item->GetCachedPictureThumb());
-    items.Add(item);
-  }
-  
-  CFileItem item(*m_movieItem->GetVideoInfoTag());
-  CStdString cachedThumb(item.GetCachedFanart());
-
-  CStdString strLocal = item.CacheFanart(true);
-  if (!strLocal.IsEmpty())
-  {
-    CFileItemPtr itemLocal(new CFileItem("fanart://Local",false));
-    itemLocal->SetThumbnailImage(strLocal);
-    itemLocal->SetLabel(g_localizeStrings.Get(20017));
-    items.Add(itemLocal);
-  }
-  
-  if (CFile::Exists(cachedThumb))
-  {
-    CFileItemPtr itemCurrent(new CFileItem("fanart://Current",false));
-    itemCurrent->SetThumbnailImage(cachedThumb);
-    itemCurrent->SetLabel(g_localizeStrings.Get(20016));
-    items.Add(itemCurrent);
-  }
-
-  CFileItemPtr itemNone(new CFileItem("fanart://None", false));
-  itemNone->SetThumbnailImage("defaultVideoBig.png");
-  itemNone->SetLabel(g_localizeStrings.Get(20018));
-  items.Add(itemNone);
-
-  CStdString result;
-  VECSOURCES sources(g_settings.m_videoSources);
-  g_mediaManager.GetLocalDrives(sources);
-  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(20019), result) || result.Equals("fanart://Current"))
-    return;   // user cancelled
+    string newFanartFile = CFileItem::GetCachedPlexMediaServerFanart(newFanart);
+    bool   success = true;
     
-  if (CFile::Exists(cachedThumb))
-    CFile::Delete(cachedThumb);
+    if (CFile::Exists(newFanartFile) == false)
+      success = AsyncDownloadMedia(newFanart, newFanartFile);
 
-  if (result.Equals("fanart://Local"))
-    result = strLocal;
-
-  if (result.Left(15) == "fanart://Remote")
-  {
-    int iFanart = atoi(result.Mid(15).c_str());
-    // set new primary fanart, and update our database accordingly
-    m_movieItem->GetVideoInfoTag()->m_fanart.SetPrimaryFanart(iFanart);
-    CVideoDatabase db;
-    if (db.Open())
+    if (success)
     {
-      db.UpdateFanart(*m_movieItem, GetContentType(m_movieItem.get()));
-      db.Close();
+      m_movieItem->SetQuickFanart(newFanart);
+      m_movieItem->SetProperty("fanart_image", newFanartFile);
+      
+      // Tell our GUI to completely reload all controls.
+      CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
+      g_graphicsContext.SendMessage(msg);
     }
-
-    // download the fullres fanart image
-    CStdString tempFile = _P("Z:\\fanart_download.jpg");
-    CAsyncFileCopy downloader;
-    bool succeeded = downloader.Copy(m_movieItem->GetVideoInfoTag()->m_fanart.GetImageURL(), tempFile, g_localizeStrings.Get(13413));
-    if (succeeded)
-    {
-      CPicture pic;
-      pic.CacheImage(tempFile, cachedThumb);
-    }
-    CFile::Delete(tempFile);
-    if (!succeeded)
-      return; // failed or cancelled download, so don't do anything
   }
-  else if (CFile::Exists(result))
-  { // local file
-    CPicture pic;
-    pic.CacheImage(result, cachedThumb);
-  }
+}
 
-  CUtil::DeleteVideoDatabaseDirectoryCache(); // to get them new thumbs to show
-
-  // tell our GUI to completely reload all controls (as some of them
-  // are likely to have had this image in use so will need refreshing)
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
-  g_graphicsContext.SendMessage(msg);
-  // Update our screen
-  Update();
+bool CGUIWindowVideoInfo::AsyncDownloadMedia(const string& remoteFile, const string& localFile)
+{
+  CStdString tempFile = _P("Z:\\fanart_download.jpg");
+  CAsyncFileCopy downloader;
+  bool success = downloader.Copy(remoteFile, tempFile, g_localizeStrings.Get(13413));
+  CPicture pic;
+  pic.CacheImage(tempFile, localFile);
+  CFile::Delete(tempFile);
+  
+  return success;
 }
 
 void CGUIWindowVideoInfo::PlayTrailer()

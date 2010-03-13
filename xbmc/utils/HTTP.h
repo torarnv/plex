@@ -66,12 +66,12 @@ public:
   /// Additions for Plex.
   bool ReadLine(std::string& line, int timeout);
   void WriteLine(const std::string& line);
+  bool ReadData(std::string& strData);
   
 protected:
   bool Send(char* pBuffer, int iLen);
   bool Connect();
   bool Recv(int iLen, int timeout = 15000);
-  bool ReadData(std::string& strData);
   void ParseHeaders();
   int  QuickRecv(int timeout);
 

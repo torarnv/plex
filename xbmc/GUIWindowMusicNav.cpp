@@ -671,7 +671,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       if (pWindow)
       {
         SScraperInfo info;
-        pWindow->OnInfo(item.get(),info);
+        pWindow->OnInfo(item,info);
         Update(m_vecItems->m_strPath);
       }
       return true;

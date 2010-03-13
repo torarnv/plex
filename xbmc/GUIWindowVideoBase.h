@@ -39,7 +39,7 @@ public:
 
   void AddToDatabase(int iItem);
   static void OnScan(const CStdString& strPath, const SScraperInfo& info, const VIDEO::SScanSettings& settings);
-  virtual void OnInfo(CFileItem* pItem, const SScraperInfo& info);
+  virtual void OnInfo(const CFileItemPtr& pItem, const SScraperInfo& info);
   static void MarkUnWatched(const CFileItemPtr &pItem);
   static void MarkWatched(const CFileItemPtr &pItem);
   static void UpdateVideoTitle(const CFileItem* pItem);
@@ -70,9 +70,8 @@ protected:
   virtual bool OnPlayMedia(int iItem);
   void LoadPlayList(const CStdString& strPlayList, int iPlayList = PLAYLIST_VIDEO);
 
-  bool ShowIMDB(CFileItem *item, const SScraperInfo& info);
+  bool ShowIMDB(const CFileItemPtr& item, const SScraperInfo& info);
 
-  void OnManualIMDB();
   bool CheckMovie(const CStdString& strFileName);
 
   void AddItemToPlayList(const CFileItemPtr &pItem, CFileItemList &queuedItems);

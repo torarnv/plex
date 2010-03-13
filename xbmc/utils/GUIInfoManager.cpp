@@ -3734,6 +3734,8 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
   case LISTITEM_DATE:
     if (item->m_dateTime.IsValid())
       return item->m_dateTime.GetAsLocalizedDate();
+    else if (item->HasProperty("originallyAvailableAt"))
+      return item->GetProperty("originallyAvailableAt");
     break;
   case LISTITEM_SIZE:
     if (!item->m_bIsFolder || item->m_dwSize)

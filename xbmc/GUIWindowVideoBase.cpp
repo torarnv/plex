@@ -188,50 +188,10 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
           CFileItemPtr item = m_vecItems->Get(iItem);
 
           // Don't show the Info dialog for Plex paths
-          if (CUtil::IsPlexMediaServer(item->m_strPath))
+          if (CUtil::IsPlexMediaServer(item->m_strPath) && item->HasProperty("type") == false)
             return false;
           
-          if (m_vecItems->IsPluginFolder() || m_vecItems->IsMythTV())
-            info.strContent = "plugin";
-          else
-          {
-            if (item->IsVideoDb()       && 
-                item->HasVideoInfoTag() && 
-              !item->GetVideoInfoTag()->m_strPath.IsEmpty())
-            {
-              strDir = item->GetVideoInfoTag()->m_strPath;
-            }
-            else
-              CUtil::GetDirectory(item->m_strPath,strDir);
-
-            int iFound;
-            m_database.GetScraperForPath(strDir, info, settings, iFound);
-            CScraperParser parser;
-            if (parser.Load("q:\\system\\scrapers\\video\\"+info.strPath))
-              info.strTitle = parser.GetName();
-
-            if (info.strContent.IsEmpty() && 
-              !(m_database.HasMovieInfo(item->m_strPath) || 
-                m_database.HasTvShowInfo(strDir)                           || 
-                m_database.HasEpisodeInfo(item->m_strPath)))
-            {
-              // hack
-              CGUIDialogVideoScan* pDialog = (CGUIDialogVideoScan*)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-              if (pDialog && pDialog->IsScanning())
-                return true;
-
-              CStdString strOldPath = item->m_strPath;
-              item->m_strPath = strDir;
-              OnAssignContent(iItem,1, info, settings);
-              item->m_strPath = strOldPath;
-              return true;
-            }
-
-            if (info.strContent.Equals("tvshows") && iFound == 1 && !settings.parent_name_root) // dont lookup on root tvshow folder
-              return true;
-          }
-
-          OnInfo(item.get(),info);
+          OnInfo(item,info);
 
           return true;
         }
@@ -259,10 +219,6 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
           
           return true;
         }
-      }
-      else if (iControl == CONTROL_IMDB)
-      {
-        OnManualIMDB();
       }
     }
     break;
@@ -305,16 +261,12 @@ void CGUIWindowVideoBase::UpdateButtons()
   CGUIMediaWindow::UpdateButtons();
 }
 
-void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, const SScraperInfo& info)
+void CGUIWindowVideoBase::OnInfo(const CFileItemPtr& item, const SScraperInfo& info)
 {
-  if (!pItem) 
+  if (!item) 
     return;
   
-  // ShowIMDB can kill the item as this window can be closed while we do it,
-  // so take a copy of the item now
-  CFileItem item(*pItem);
-  
-  bool modified = ShowIMDB(&item, info);
+  bool modified = ShowIMDB(item, info);
   if (modified)
   {
     int itemNumber = m_viewControl.GetSelectedItem();
@@ -323,7 +275,7 @@ void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, const SScraperInfo& info)
   }
 }
 
-bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
+bool CGUIWindowVideoBase::ShowIMDB(const CFileItemPtr& item, const SScraperInfo& info)
 {
   CGUIDialogProgress* pDlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
   CGUIDialogSelect* pDlgSelect = (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
@@ -342,26 +294,6 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info)
     return false;
   
   return true;
-}
-
-void CGUIWindowVideoBase::OnManualIMDB()
-{
-  CStdString strInput;
-  if (!CGUIDialogKeyboard::ShowAndGetInput(strInput, g_localizeStrings.Get(16009), false)) 
-    return;
-
-  CFileItem item(strInput);
-  item.m_strPath = "Z:\\";
-  ::DeleteFile(item.GetCachedVideoThumb().c_str());
-
-  SScraperInfo info;
-  info.strContent = "movies";
-  info.strPath = "imdb.xml";
-  info.strTitle = "IMDb";
-
-  ShowIMDB(&item,info);
-  
-  return;
 }
 
 bool CGUIWindowVideoBase::IsCorrectDiskInDrive(const CStdString& strFileName, const CStdString& strDVDLabel)
@@ -774,7 +706,7 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_INFO:
     {
       SScraperInfo info;
-      OnInfo(item.get(),info);
+      OnInfo(item, info);
       return true;
     }
   case CONTEXT_BUTTON_STOP_SCANNING:
@@ -808,7 +740,7 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         OnScan(strPath,info,settings);
       }
       else
-        OnInfo(item.get(),info);
+        OnInfo(item, info);
 
       return true;
     }

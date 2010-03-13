@@ -337,7 +337,7 @@ bool CGUIWindowVideoFiles::OnClick(int iItem)
     info.strPath = "imdb.xml";
     info.strContent = "movies";
     info.strTitle = "IMDb";
-    OnInfo(pItem.get(),info);
+    OnInfo(pItem,info);
     return true;
   }
 

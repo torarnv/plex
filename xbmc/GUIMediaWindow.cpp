@@ -1413,9 +1413,7 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
      return;
   
   if (item->HasProperty("ratingKey") && item->HasProperty("pluginIdentifier"))
-  {
     buttons.Add(CONTEXT_BUTTON_RATING, item->HasProperty("userRating") ? 40206 : 40205);
-  }
   
   for (int i=0; i < item->m_contextItems.size(); ++i)
   {
@@ -1509,6 +1507,9 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         {
           CLog::Log(LOGERROR, "Unable to set rating for key %s in plug-in %s", ratingKey.c_str(), pluginIdentifier.c_str());
         }
+        
+        //void onRate(item->GetProperty("pluginIdentifier", m_vecItems->m_strPath, item->GetProperty("ratingKey"), newRating);
+        
         item->SetProperty("userRating", newRating);
       }
       

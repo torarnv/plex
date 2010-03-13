@@ -21,10 +21,14 @@
  *
  */
 
+#include <map>
+
 #include "GUIDialog.h"
 #include "GUIListItem.h"
 #include "GUIWindowVideoBase.h"
 #include "GUIWindowVideoFiles.h"
+
+using namespace std;
 
 class CFileItem;
 
@@ -35,7 +39,7 @@ public:
   CGUIWindowVideoInfo(void);
   virtual ~CGUIWindowVideoInfo(void);
   virtual bool OnMessage(CGUIMessage& message);
-  void SetMovie(const CFileItem *item);
+  void SetMovie(const CFileItemPtr& item);
   bool NeedRefresh() const;
   bool RefreshAll() const;
 
@@ -57,12 +61,17 @@ protected:
   void Play(bool resume = false);
   void OnGetThumb();
   void OnGetFanart();
+  void OnGetBanner();
   void PlayTrailer();
 
+  string OnGetMedia(const string& mediaType, const string& currentCachedMedia, int label);
+  bool AsyncDownloadMedia(const string& remoteFile, const string& localFile);
+  
   CFileItemPtr m_movieItem;
   CFileItemList *m_castList;
   bool m_bViewReview;
   bool m_bRefresh;
   bool m_bRefreshAll;
   CGUIDialogProgress* m_dlgProgress;
+  map<string, string> m_mediaMap;
 };

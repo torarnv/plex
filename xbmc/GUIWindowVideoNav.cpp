@@ -860,7 +860,7 @@ void CGUIWindowVideoNav::Render()
   CGUIWindowVideoBase::Render();
 }
 
-void CGUIWindowVideoNav::OnInfo(CFileItem* pItem, const SScraperInfo& info)
+void CGUIWindowVideoNav::OnInfo(const CFileItemPtr& pItem, const SScraperInfo& info)
 {
   SScraperInfo info2(info);
   CStdString strPath,strFile;
