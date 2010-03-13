@@ -306,22 +306,24 @@ class PlexMediaNode
    
    CFileItemPtr BuildFileItem(const CURL& url, TiXmlElement& el)
    {
+     CStdString parentPath;
+     url.GetURL(parentPath);
+     
      CFileItemPtr pItem(new CFileItem());
      pItem->m_bIsFolder = true;
      
      const char* key = el.Attribute("key");
      if (key == 0 || strlen(key) == 0)
        return CFileItemPtr();
-       
-     string src = key;
-     CStdString parentPath;
-     url.GetURL(parentPath);
      
      // Compute the new path.
-     pItem->m_strPath = CPlexDirectory::ProcessUrl(parentPath, src, true);
+     pItem->m_strPath = CPlexDirectory::ProcessUrl(parentPath, key, true);
      
      // Let subclass finish.
      DoBuildFileItem(pItem, string(parentPath), el);
+     
+     // Set the key.
+     pItem->SetProperty("key", CPlexDirectory::ProcessUrl(parentPath, key, false));
      
      // Date.
      const char* date = el.Attribute("subtitle"); 
@@ -349,7 +351,10 @@ class PlexMediaNode
      
      // The type of the media.
      if (el.Attribute("type"))
+     {
        pItem->SetProperty("mediaType::" + string(el.Attribute("type")), "1");
+       pItem->SetProperty("type", el.Attribute("type"));
+     }
      
      try
      {
@@ -410,7 +415,16 @@ class PlexMediaNode
      
      const char* ratingKey = el.Attribute("ratingKey");
      if (ratingKey && strlen(ratingKey) > 0)
+     {
        pItem->SetProperty("ratingKey", ratingKey);
+
+       // Build the root URL.
+       CURL theURL(parentPath);
+       theURL.SetFileName("library/metadata/" + string(ratingKey));
+       CStdString url;
+       theURL.GetURL(url);
+       pItem->SetProperty("rootKey", url);
+     }
       
      const char* rating = el.Attribute("rating");
      if (rating && strlen(rating) > 0)
@@ -578,6 +592,10 @@ class PlexMediaNodeLibrary : public PlexMediaNode
       if (parentIndex)
         videoInfo.m_iSeason = boost::lexical_cast<int>(parentIndex);
     }
+    else if (type == "show")
+    {
+      videoInfo.m_strShowTitle = videoInfo.m_strTitle;
+    }
 
     vector<CFileItemPtr> mediaItems;
     for (TiXmlElement* media = el.FirstChildElement(); media; media=media->NextSiblingElement())
@@ -666,6 +684,7 @@ class PlexMediaDirectory : public PlexMediaNode
     pItem->SetLabel(GetLabel(el));
     CVideoInfoTag tag;
     tag.m_strTitle = pItem->GetLabel();
+    tag.m_strShowTitle = tag.m_strTitle;
     
     // Summary.
     const char* summary = el.Attribute("summary");
@@ -992,6 +1011,11 @@ class PlexMediaPhoto : public PlexMediaNode
     const char* summary = el.Attribute("summary");
     if  (summary)
       pItem->SetProperty("description", summary);
+    
+    // Selected.
+    const char* selected = el.Attribute("selected");
+    if (selected)
+      pItem->SetProperty("selected", selected);
     
     // Path to the photo.
     pItem->m_strPath = CPlexDirectory::ProcessUrl(parentPath, el.Attribute("key"), false);
