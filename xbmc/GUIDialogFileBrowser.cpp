@@ -557,7 +557,7 @@ void CGUIDialogFileBrowser::OnWindowUnload()
   m_viewControl.Reset();
 }
 
-bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList &items, VECSOURCES &shares, const CStdString &heading, CStdString &result)
+bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList &items, VECSOURCES &shares, const CStdString &heading, CStdString &result, bool addBrowse)
 {
   CStdString mask = ".png|.jpg|.bmp|.gif";
   CGUIDialogFileBrowser *browser = new CGUIDialogFileBrowser();
@@ -569,7 +569,7 @@ bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList &items, VECSOURC
   browser->m_singleList = true;
   browser->m_vecItems->Clear();
   browser->m_vecItems->Append(items);
-  if (true)
+  if (addBrowse)
   {
     CFileItemPtr item(new CFileItem("image://Browse", false));
     item->SetLabel(g_localizeStrings.Get(20153));
