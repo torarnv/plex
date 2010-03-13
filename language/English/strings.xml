@@ -1574,9 +1574,11 @@
   <string id="20024">Scan new</string>
   <string id="20025">Scan all</string>
   <string id="20026">Region</string>
-
+  
   <!-- string id's 20027 thru 20034 are reserved for temperaturestrings  (LocalizeStrings.cpp)-->
 
+  <string id="20035">Choose Fanart</string>
+  <string id="20036">Choose Banner</string>
   <string id="20038">Lock music window</string>
   <string id="20039">Lock videos window</string>
   <string id="20040">Lock pictures window</string>
