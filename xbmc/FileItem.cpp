@@ -351,6 +351,9 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
     m_contextItems.push_back(item.m_contextItems[i]);
   }
   
+  m_mapProperties.clear();
+  m_mapProperties = item.m_mapProperties;
+  
   return *this;
 }
 
