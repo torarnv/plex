@@ -5,6 +5,8 @@
 #include <boost/thread.hpp>
 #include <boost/thread/condition.hpp>
 
+#include "FileItem.h"
+#include "Thread.h"
 #include "PlexDirectory.h"
 
 using namespace std;
@@ -22,27 +24,68 @@ class PlexMediaServerQueue : public CThread
   /// Events, send to media server who owns the item.
   void onPlayingStarted(const string& identifier, const string& rootURL, const string& key, bool fullScreen);
   void onPlayingPaused(const string& identifier, const string& rootURL, const string& key, bool isPaused);
-  void onPlayingProgress(const string& identifier, const string& rootURL, const string& key, int ms);
   void onPlayingStopped(const string& identifier, const string& rootURL, const string& key, int ms);
-  void onViewed(const string& identifier, const string& rootURL, const string& key);
-  void onViewModeChanged(const string& identifier, const string& rootURL, const string& key, int viewMode);
+  
+  void onViewModeChanged(const string& identifier, const string& rootURL, const string& key, int viewMode)
+  {
+    
+  }
+  
+  /// Play progress.
+  void onPlayingProgress(const CFileItemPtr& item, int ms)
+  { enqueue("progress", item, "time=" + lexical_cast<string>(ms)); }
+  
+  /// Clear playing progress.
+  void onClearPlayingProgress(const CFileItemPtr& item)
+  { enqueue("resetProgress", item); }
+  
+  /// Notify of a viewed item (a scrobble).
+  void onViewed(const CFileItemPtr& item, bool force=false)
+  {
+    if (m_allowScrobble || force)
+      enqueue("scrobble", item);
+    
+    m_allowScrobble = false;
+  }
+
+  /// Notify of an un-view.
+  void onUnviewed(const CFileItemPtr& item)
+  { enqueue("unscrobble", item); }
+
+  /// Notify of a rate.
+  void onRate(const CFileItemPtr& item, float rating)
+  { enqueue("rate", item, "&rating=" + lexical_cast<string>(rating)); }
   
   /// These go to local media server only.
   void onIdleStart();
   void onIdleStop();
   void onQuit();
   
-  /// Commands.
-  void onMarkedViewed(const string& identifier, const string& parentURL, const string& key);
-  void onMarkedUnviewed(const string& identifier, const string& parentURL, const string& key);
-  
-  void onRate(const string& identifier, const string& parentURL, const string& key, float rating)
-  {
-    string url = "/:/rate?key=%s&identifier=%s&rating=%d";
-    url = CPlexDirectory::ProcessUrl(parentURL, url, false);
-  }
+  /// Return the singleton.
+  static PlexMediaServerQueue& Get() 
+  { return g_plexMediaServerQueue; }
+
+  /// Mark to allow the next scrobble that occurs.
+  void allowScrobble()
+  { m_allowScrobble = true; }
   
  protected:
+  
+  void enqueue(const string& verb, const CFileItemPtr& item, const string& options="")
+  {
+    if (item->HasProperty("ratingKey"))
+    {
+      // Build the URL.
+      string url = "/:/" + verb;
+      url = CPlexDirectory::ProcessUrl(item->m_strPath, url, false);
+      url += "?key=" + item->GetProperty("ratingKey");
+      url += "&identifier=" + item->GetProperty("pluginIdentifier");
+      url += options;
+      
+      // Queue it up!
+      enqueue(url);
+    }
+  }
   
   void enqueue(const string& url)
   {
@@ -57,4 +100,7 @@ class PlexMediaServerQueue : public CThread
   queue<string> m_queue;
   condition     m_condition;
   mutex         m_mutex;
+  bool          m_allowScrobble;
+  
+  static PlexMediaServerQueue g_plexMediaServerQueue;
 };
