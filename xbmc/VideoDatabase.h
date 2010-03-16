@@ -298,8 +298,6 @@ public:
   long AddEpisode(long idShow, const CStdString& strFilenameAndPath);
 
   // editing functions
-  void MarkAsWatched(const CFileItem &item);
-  void MarkAsUnWatched(const CFileItem &item);
   void UpdateMovieTitle(long lMovieId, const CStdString& strNewMovieTitle, VIDEODB_CONTENT_TYPE iType=VIDEODB_CONTENT_MOVIES);
 
   bool HasMovieInfo(const CStdString& strFilenameAndPath);
