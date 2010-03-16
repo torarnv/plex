@@ -53,7 +53,7 @@
 #include "GUIDialogKeyboard.h"
 #include "FileSystem/Directory.h"
 #include "PlayList.h"
-
+#include "PlexMediaServerQueue.h"
 #include "SkinInfo.h"
 
 using namespace std;
@@ -944,55 +944,13 @@ void CGUIWindowVideoBase::OnDeleteItem(int iItem)
 
 void CGUIWindowVideoBase::MarkUnWatched(const CFileItemPtr &item)
 {
-  CVideoDatabase database;
-  database.Open();
-  CFileItemList items;
-  if (item->m_bIsFolder)
-  {
-    CVideoDatabaseDirectory dir;
-    CStdString strPath = item->m_strPath;
-    if (dir.GetDirectoryChildType(item->m_strPath) == NODE_TYPE_SEASONS)
-      strPath += "-1/";
-    dir.GetDirectory(strPath,items);
-  }
-  else
-    items.Add(item);
-
-  for (int i=0;i<items.Size();++i)
-  {
-    CFileItemPtr pItem=items[i];
-    if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_playCount == 0)
-      continue;
-
-    database.MarkAsUnWatched(*pItem);
-  }
+  PlexMediaServerQueue::Get().onUnviewed(item);
 }
 
 //Add Mark a Title as watched
 void CGUIWindowVideoBase::MarkWatched(const CFileItemPtr &item)
 {
-  CVideoDatabase database;
-  database.Open();
-  CFileItemList items;
-  if (item->m_bIsFolder)
-  {
-    CVideoDatabaseDirectory dir;
-    CStdString strPath = item->m_strPath;
-    if (dir.GetDirectoryChildType(item->m_strPath) == NODE_TYPE_SEASONS)
-      strPath += "-1/";
-    dir.GetDirectory(strPath,items);
-  }
-  else
-    items.Add(item);
-
-  for (int i=0;i<items.Size();++i)
-  {
-    CFileItemPtr pItem=items[i];
-    if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_playCount > 0)
-      continue;
-
-    database.MarkAsWatched(*pItem);
-  }
+  PlexMediaServerQueue::Get().onViewed(item);
 }
 
 //Add change a title's name
