@@ -242,7 +242,7 @@
 #include "PlexRemoteHelper.h"
 #include "PlexMediaServerHelper.h"
 #include "PlexMediaServerPlayer.h"
-#include "PlexMediaServerScrobbler.h"
+#include "PlexMediaServerQueue.h"
 #include "QTPlayer.h"
 #include "GUIDialogUtils.h"
 #include "CoreAudioAUHAL.h"
@@ -4215,7 +4215,6 @@ HRESULT CApplication::Cleanup()
 #endif
     CScrobbler::RemoveInstance();
     CLastFmManager::RemoveInstance();
-    //CPlexMediaServerScrobbler::Shutdown();
 #ifdef HAS_EVENT_SERVER
     CEventServer::RemoveInstance();
 #endif
@@ -4330,6 +4329,7 @@ void CApplication::Stop()
       PlexMediaServerHelper::Get().Stop();
     
     Cocoa_GL_UnblankOtherDisplays(Cocoa_GetCurrentDisplay());
+    PlexMediaServerQueue::Get().StopThread();
 #endif
 
 /* Python resource freeing must be done after skin has been unloaded, not before
@@ -4560,6 +4560,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
     m_iPlaySpeed = 1;
     *m_itemCurrentFile = item;
+
     m_nextPlaylistItem = -1;
     m_currentStackPosition = 0;
     m_currentStack->Clear();
@@ -4969,38 +4970,25 @@ void CApplication::StopPlaying()
     if (IsVisualizerActive())
       m_gWindowManager.PreviousWindow();
 
-    // TODO: Add saving of watched status in here
-    if ( IsPlayingVideo() )
-    { // save our position for resuming at a later date
-      CVideoDatabase dbs;
-      if (dbs.Open())
+    if (IsPlayingVideo())
+    { 
+      // mark as watched if we are passed the usual amount
+      if (GetPercentage() >= g_advancedSettings.m_playCountMinimumPercent)
       {
-        // mark as watched if we are passed the usual amount
-        if (GetPercentage() >= g_advancedSettings.m_playCountMinimumPercent)
-        {
-          dbs.MarkAsWatched(*m_itemCurrentFile);
-          CUtil::DeleteVideoDatabaseDirectoryCache();
-        }
-
-        if( m_pPlayer )
-        {
-          // ignore two minutes at start and either 2 minutes, or up to 5% at end (end credits)
-          double current = GetTime();
-          double total = GetTotalTime();
-          if (current > 120 && total - current > 120 && total - current > 0.05 * total)
-          {
-            CBookmark bookmark;
-            bookmark.player = CPlayerCoreFactory::GetPlayerName(m_eCurrentPlayer);
-            bookmark.playerState = m_pPlayer->GetPlayerState();
-            bookmark.timeInSeconds = current;
-            bookmark.thumbNailImage.Empty();
-
-            dbs.AddBookMarkToFile(CurrentFile(),bookmark, CBookmark::RESUME);
-          }
-          else
-            dbs.DeleteResumeBookMark(CurrentFile());
-        }
-        dbs.Close();
+        // Mark it watched.
+        PlexMediaServerQueue::Get().onViewed(m_itemCurrentFile, true);
+        CUtil::DeleteVideoDatabaseDirectoryCache();
+      }
+      
+      if (m_pPlayer)
+      {
+        // Ignore two minutes at start and either 2 minutes, or up to 5% at end (end credits)
+        double current = GetTime();
+        double total = GetTotalTime();
+        if (current > 120 && total - current > 120 && total - current > 0.05 * total)
+          PlexMediaServerQueue::Get().onPlayingProgress(m_itemCurrentFile, (int)(current * 1000));
+        else
+          PlexMediaServerQueue::Get().onClearPlayingProgress(m_itemCurrentFile);
       }
     }
     
@@ -5625,11 +5613,9 @@ bool CApplication::OnMessage(CGUIMessage& message)
         }
         else
           CScrobbler::GetInstance()->SetSubmitSong(false);
-        
-#ifdef __APPLE__
-        if (g_guiSettings.GetBool("plexmediaserver.scrobble"))
-          CPlexMediaServerScrobbler::Get()->AllowPlay();
-#endif
+
+        // Notify that we'll allow the scrobble.
+        PlexMediaServerQueue::Get().allowScrobble();
       }
       
       // Turn off the keyboard backlight if playing video
@@ -5707,12 +5693,8 @@ bool CApplication::OnMessage(CGUIMessage& message)
       SaveCurrentFileSettings();
       if (m_itemCurrentFile->IsVideo() && message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
       {
-        CVideoDatabase dbs;
-        dbs.Open();
-        dbs.MarkAsWatched(*m_itemCurrentFile);
-        CUtil::DeleteVideoDatabaseDirectoryCache();
-        dbs.ClearBookMarksOfFile(m_itemCurrentFile->m_strPath, CBookmark::RESUME);
-        dbs.Close();
+        PlexMediaServerQueue::Get().onViewed(m_itemCurrentFile, true);
+        PlexMediaServerQueue::Get().onClearPlayingProgress(m_itemCurrentFile);
       }
 
       // reset the current playing file
@@ -6508,11 +6490,8 @@ void CApplication::CheckAudioScrobblerStatus()
       CScrobbler::GetInstance()->SetSubmitSong(true);
     }
     
-#ifdef __APPLE__
-    if (g_guiSettings.GetBool("plexmediaserver.scrobble"))
-      CPlexMediaServerScrobbler::Get()->AllowPlay();
-#endif
-    
+    // Notify that we'll allow the scrobble.
+    PlexMediaServerQueue::Get().allowScrobble();
     return;
   }
 
@@ -6554,11 +6533,8 @@ void CApplication::CheckAudioScrobblerStatus()
       CScrobbler::GetInstance()->SetSubmitSong(false);
     }
     
-#ifdef __APPLE__
     // Submit to Plex Media Server.
-    if (g_guiSettings.GetBool("plexmediaserver.scrobble"))
-      CPlexMediaServerScrobbler::Get()->AddPlay(m_itemCurrentFile->m_strPath.c_str());
-#endif
+    PlexMediaServerQueue::Get().onViewed(m_itemCurrentFile);
   }
 }
 
