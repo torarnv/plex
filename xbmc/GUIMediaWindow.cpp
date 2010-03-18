@@ -48,6 +48,7 @@
 #include "PlayList.h"
 #include "PlexDirectory.h"
 #include "PlexSourceScanner.h"
+#include "PlexMediaServerQueue.h"
 
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
 #include "SkinInfo.h"
@@ -435,7 +436,10 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
         viewMode = m_viewControl.GetViewModeByID(message.GetParam1());
       else if (message.GetParam2())
         viewMode = m_viewControl.GetNextViewMode((int)message.GetParam2());
-      
+
+      // Notify the media server.
+      PlexMediaServerQueue::Get().onViewModeChanged(m_vecItems->GetProperty("identifier"), m_vecItems->m_strPath, m_vecItems->GetProperty("viewGroup"), viewMode, -1, -1);
+
       if (m_guiState.get())
         m_guiState->SaveViewAsControl(viewMode);
 
@@ -1485,31 +1489,13 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CFileItemPtr item = m_vecItems->Get(itemNumber);
       
       bool hasUserRating = item->HasProperty("userRating");
-      
       int newRating = CGUIDialogRating::ShowAndGetInput(hasUserRating ? 40208 : 40207,
                                                         item->GetVideoInfoTag()->m_strTitle,
                                                         hasUserRating? item->GetPropertyInt("userRating") : (int)item->GetVideoInfoTag()->m_fRating);
       
       if (newRating >= 0 && newRating <= 10)
       {
-        CStdString pluginIdentifier = item->GetProperty("pluginIdentifier");
-        CStdString ratingKey = item->GetProperty("ratingKey");
-        CStdString callbackUrl;
-        
-        callbackUrl.Format("/:/rate?key=%s&identifier=%s&rating=%d", ratingKey, pluginIdentifier, newRating);
-        callbackUrl = CPlexDirectory::ProcessUrl(m_vecItems->m_strPath, callbackUrl, false);
-        
-        CFileCurl m_http;
-        CURL url(callbackUrl);
-        url.SetProtocol("http");
-        url.SetPort(32400);
-        if (m_http.Open(url, false) == false)
-        {
-          CLog::Log(LOGERROR, "Unable to set rating for key %s in plug-in %s", ratingKey.c_str(), pluginIdentifier.c_str());
-        }
-        
-        //void onRate(item->GetProperty("pluginIdentifier", m_vecItems->m_strPath, item->GetProperty("ratingKey"), newRating);
-        
+        PlexMediaServerQueue::Get().onRate(item, newRating);
         item->SetProperty("userRating", newRating);
       }
       
