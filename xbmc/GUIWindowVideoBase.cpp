@@ -457,12 +457,17 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
 
 int  CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item)
 {
+  if (item->HasProperty("viewOffset"))
+    return boost::lexical_cast<int>(item->GetProperty("viewOffset")) * 75 / 1000;
+  
+  return 0;
+  
+#ifdef FUCKING_DOOMED_CODE
   m_database.Open();
   long startoffset = 0;
 
   if (item->IsStack() && !g_guiSettings.GetBool("myvideos.treatstackasfile") )
   {
-
     CStdStringArray movies;
     GetStackedFiles(item->m_strPath, movies);
 
@@ -491,6 +496,7 @@ int  CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item)
   m_database.Close();
   
   return startoffset;
+#endif
 }
 
 bool CGUIWindowVideoBase::OnClick(int iItem)
@@ -512,36 +518,33 @@ void CGUIWindowVideoBase::OnResumeItem(int iItem)
 {
   if (iItem < 0 || iItem >= m_vecItems->Size()) return;
   CFileItemPtr item = m_vecItems->Get(iItem);
+  
   // we always resume the movie if the user doesn't want us to ask
   bool resumeItem = g_guiSettings.GetInt("myvideos.resumeautomatically") != RESUME_ASK;
   if (!item->m_bIsFolder && !resumeItem)
   {
-    // check to see whether we have a resume offset available
-    CVideoDatabase db;
-    if (db.Open())
-    {
-      CBookmark bookmark;
-      CStdString itemPath(item->m_strPath);
-      if (item->IsVideoDb())
-        itemPath = item->GetVideoInfoTag()->m_strFileNameAndPath;
-      if (db.GetResumeBookMark(itemPath, bookmark) )
-      { // prompt user whether they wish to resume
-        vector<CStdString> choices;
-        CStdString resumeString, time;
-        StringUtils::SecondsToTimeString(bookmark.timeInSeconds, time);
-        resumeString.Format(g_localizeStrings.Get(12022).c_str(), time.c_str());
-        choices.push_back(resumeString);
-        choices.push_back(g_localizeStrings.Get(12021)); // start from the beginning
-        int retVal = CGUIDialogContextMenu::ShowAndGetChoice(choices, GetContextPosition());
-        if (!retVal)
-          return; // don't do anything
-        resumeItem = (retVal == 1);
-      }
-      db.Close();
+    // See if we have a view offset.
+    if (item->HasProperty("viewOffset"))
+    { 
+      float seconds = boost::lexical_cast<int>(item->GetProperty("viewOffset")) / 1000.0f;
+      
+      // prompt user whether they wish to resume
+      vector<CStdString> choices;
+      CStdString resumeString, time;
+      StringUtils::SecondsToTimeString(seconds, time);
+      resumeString.Format(g_localizeStrings.Get(12022).c_str(), time.c_str());
+      choices.push_back(resumeString);
+      choices.push_back(g_localizeStrings.Get(12021)); // start from the beginning
+      int retVal = CGUIDialogContextMenu::ShowAndGetChoice(choices, GetContextPosition());
+      if (!retVal)
+        return; // don't do anything
+      resumeItem = (retVal == 1);
     }
   }
+  
   if (resumeItem)
     item->m_lStartOffset = STARTOFFSET_RESUME;
+  
   CGUIMediaWindow::OnClick(iItem);
 }
 

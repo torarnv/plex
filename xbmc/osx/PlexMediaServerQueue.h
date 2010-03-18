@@ -18,6 +18,7 @@ class PlexMediaServerQueue : public CThread
  public:
   
   PlexMediaServerQueue();
+  virtual ~PlexMediaServerQueue() { m_mutex.lock(); m_mutex.unlock(); }
   virtual void Process();
   virtual void StopThread();
   
@@ -26,14 +27,26 @@ class PlexMediaServerQueue : public CThread
   void onPlayingPaused(const string& identifier, const string& rootURL, const string& key, bool isPaused);
   void onPlayingStopped(const string& identifier, const string& rootURL, const string& key, int ms);
   
-  void onViewModeChanged(const string& identifier, const string& rootURL, const string& key, int viewMode)
+  /// View mode changed.
+  void onViewModeChanged(const string& identifier, const string& rootURL, const string& viewGroup, int viewMode, int sortMode, int sortAsc)
   {
+    if (identifier.size() > 0 && viewGroup.size() > 0)
+    {
+      string url = "/:/viewChange";
+      url = CPlexDirectory::ProcessUrl(rootURL, url, false);
+      url += "?identifier=" + identifier + 
+             "&viewGroup=" + viewGroup + 
+             "&viewMode=" + lexical_cast<string>(viewMode) + 
+             "&sortMode=" + lexical_cast<string>(sortMode) +
+             "&sortAsc=" + lexical_cast<string>(sortAsc);
     
+      enqueue(url);
+    }
   }
   
   /// Play progress.
   void onPlayingProgress(const CFileItemPtr& item, int ms)
-  { enqueue("progress", item, "time=" + lexical_cast<string>(ms)); }
+  { enqueue("progress", item, "&time=" + lexical_cast<string>(ms)); }
   
   /// Clear playing progress.
   void onClearPlayingProgress(const CFileItemPtr& item)

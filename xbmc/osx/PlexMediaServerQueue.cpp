@@ -14,8 +14,6 @@ PlexMediaServerQueue::PlexMediaServerQueue()
 /////////////////////////////////////////////////////////////////////////////
 void PlexMediaServerQueue::Process()
 {
-  printf("Starting the queue!\n");
-  
   while (m_bStop == false)
   {
     // Wait for be signalled.
@@ -41,7 +39,7 @@ void PlexMediaServerQueue::Process()
     m_mutex.unlock();
   }
   
-  printf("Exiting queue...\n");
+  printf("Exiting Plex Media Server queue...\n");
 }
 
 /////////////////////////////////////////////////////////////////////////////

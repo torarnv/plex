@@ -4469,6 +4469,7 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
   //       that we can use on a file to get it's time.
   vector<long> times;
   bool haveTimes(false);
+
   CVideoDatabase dbs;
   if (dbs.Open())
   {
@@ -4476,8 +4477,7 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
     haveTimes = dbs.GetStackTimes(item.m_strPath, times);
     dbs.Close();
   }
-
-
+  
   // calculate the total time of the stack
   CStackDirectory dir;
   dir.GetDirectory(item.m_strPath, *m_currentStack);
@@ -4502,24 +4502,15 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
 
   double seconds = item.m_lStartOffset / 75.0;
 
-  if (!haveTimes || item.m_lStartOffset == STARTOFFSET_RESUME )
-  {  // have our times now, so update the dB
-    if (dbs.Open())
-    {
-      if( !haveTimes )
-        dbs.SetStackTimes(item.m_strPath, times);
-
-      if( item.m_lStartOffset == STARTOFFSET_RESUME )
-      {
-        // can only resume seek here, not dvdstate
-        CBookmark bookmark;
-        if( dbs.GetResumeBookMark(item.m_strPath, bookmark) )
-          seconds = bookmark.timeInSeconds;
-        else
-          seconds = 0.0f;
-      }
-      dbs.Close();
-    }
+  if (!haveTimes || item.m_lStartOffset == STARTOFFSET_RESUME)
+  { 
+    // See if we have a view offset.
+    if (item.HasProperty("viewOffset"))
+      seconds = boost::lexical_cast<int>(item.GetProperty("viewOffset"))/1000.0;
+    else
+      seconds = 0.0f;
+    
+    printf("Computed seconds: %f\n", seconds);
   }
 
   m_bPlaybackStarting = true;
@@ -4623,37 +4614,11 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   {
     options.starttime = item.m_lStartOffset / 75.0;
 
-    if (item.IsVideo())
+    if (item.m_lStartOffset == STARTOFFSET_RESUME)
     {
-      // open the d/b and retrieve the bookmarks for the current movie
-      CVideoDatabase dbs;
-      dbs.Open();
-      dbs.GetVideoSettings(item.m_strPath, g_stSettings.m_currentVideoSettings);
-
-      if( item.m_lStartOffset == STARTOFFSET_RESUME )
-      {
-        options.starttime = 0.0f;
-        CBookmark bookmark;
-        if(dbs.GetResumeBookMark(item.m_strPath, bookmark))
-        {
-          options.starttime = bookmark.timeInSeconds;
-          options.state = bookmark.playerState;
-        }
-      }
-      else if (item.HasVideoInfoTag())
-      {
-        const CVideoInfoTag *tag = item.GetVideoInfoTag();
-
-        if (tag->m_iBookmarkId != -1 && tag->m_iBookmarkId != 0)
-        {
-          CBookmark bookmark;
-          dbs.GetBookMarkForEpisode(*tag, bookmark);
-          options.starttime = bookmark.timeInSeconds;
-          options.state = bookmark.playerState;
-        }
-      }
-
-      dbs.Close();
+      // See if we have a view offset.
+      if (item.HasProperty("viewOffset"))
+        options.starttime = boost::lexical_cast<int>(item.GetProperty("viewOffset"))/1000.0;
     }
 
     if (m_eForcedNextPlayer != EPC_NONE)
@@ -4986,9 +4951,15 @@ void CApplication::StopPlaying()
         double current = GetTime();
         double total = GetTotalTime();
         if (current > 120 && total - current > 120 && total - current > 0.05 * total)
+        {
           PlexMediaServerQueue::Get().onPlayingProgress(m_itemCurrentFile, (int)(current * 1000));
+          m_itemCurrentFile->SetProperty("viewOffset", boost::lexical_cast<string>((int)(current*1000)));
+        }
         else
+        {
           PlexMediaServerQueue::Get().onClearPlayingProgress(m_itemCurrentFile);
+          m_itemCurrentFile->ClearProperty("viewOffset");
+        }
       }
     }
     
@@ -5695,6 +5666,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       {
         PlexMediaServerQueue::Get().onViewed(m_itemCurrentFile, true);
         PlexMediaServerQueue::Get().onClearPlayingProgress(m_itemCurrentFile);
+        m_itemCurrentFile->ClearProperty("viewOffset");
       }
 
       // reset the current playing file
