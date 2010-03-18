@@ -177,6 +177,8 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   const char* userAgent = root->Attribute("userAgent");
     
   const char* pluginIdentifier = root->Attribute("identifier");
+  if (pluginIdentifier)
+    items.SetProperty("identifier", pluginIdentifier);
   
   // Set fanart on items if they don't have their own, or if individual item fanart 
   // is disabled. Also set HTTP & rating info
@@ -212,9 +214,8 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     items.SetQuickFanart(strFanart);
     
   // Set the view mode.
-  const char* viewMode;
   bool hasViewMode = false;
-  viewMode = root->Attribute("viewmode");
+  const char* viewMode = root->Attribute("viewmode");
   if (viewMode && strlen(viewMode) > 0)
   {
     hasViewMode = true;
@@ -233,6 +234,11 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     viewState->SaveViewAsControl(boost::lexical_cast<int>(viewMode));
   }
   
+  // The view group.
+  const char* viewGroup = root->Attribute("viewGroup");
+  if (viewGroup)
+    items.SetProperty("viewGroup", viewGroup);
+  
   // Override labels.
   const char* fileLabel = root->Attribute("filelabel");
   if (fileLabel && strlen(fileLabel) > 0)
@@ -248,9 +254,7 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   // Set the content label.
   const char* content = root->Attribute("content");
   if (content && strlen(content) > 0)
-  {
     items.SetContent(content);
-  }
   
   // Check for dialog message attributes
   CStdString strMessage = "";
@@ -334,6 +338,11 @@ class PlexMediaNode
      const char* bitrate = el.Attribute("bitrate");
      if (bitrate && strlen(bitrate) > 0)
        pItem->m_iBitrate = boost::lexical_cast<int>(bitrate);
+     
+     // View offset.
+     const char* viewOffset = el.Attribute("viewOffset");
+     if (viewOffset)
+       pItem->SetProperty("viewOffset", viewOffset);
      
      const char* label2;
      label2 = el.Attribute("infolabel");
