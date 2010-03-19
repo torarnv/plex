@@ -894,12 +894,14 @@ bool CGUIMediaWindow::OnClick(int iItem)
         // Find the ? if there is one.
         CStdString newURL = directory.m_strPath;
         CUtil::RemoveSlashAtEnd(newURL);
-        newURL += "&query=" + strSearchTerm;
+        
+        newURL += (newURL.Find("?") > 0) ? "&" : "?";
+        newURL += "query=" + strSearchTerm;
         directory.m_strPath = newURL;
       }
-      // If no query was entered or the user dismissed the keyboard, do nothing
       else
       {
+        // If no query was entered or the user dismissed the keyboard, do nothing
         return true;
       }
     }
