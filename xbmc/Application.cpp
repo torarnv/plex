@@ -1682,27 +1682,9 @@ HRESULT CApplication::Initialize()
     RestoreMusicScanSettings();
   }
 
-  if (g_guiSettings.GetBool("videolibrary.updateonstartup"))
-  {
-    CLog::Log(LOGNOTICE, "Updating video library on startup");
-    CGUIDialogVideoScan *scanner = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-    SScraperInfo info;
-    VIDEO::SScanSettings settings;
-    if (scanner && !scanner->IsScanning())
-      scanner->StartScanning("",info,settings,false);
-  }
-
 #ifdef HAS_HAL
   g_HalManager.Initialize();
 #endif
-
-  if (g_guiSettings.GetBool("musiclibrary.updateonstartup"))
-  {
-    CLog::Log(LOGNOTICE, "Updating music library on startup");
-    CGUIDialogMusicScan *scanner = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-    if (scanner && !scanner->IsScanning())
-      scanner->StartScanning("");
-  }
 
   m_slowTimer.StartZero();
   
@@ -4269,15 +4251,6 @@ void CApplication::Stop()
     }
     else
       CLog::Log(LOGNOTICE, "Not saving settings (settings.xml is not present)");
-
-    // Stop the scanners.
-    CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-    if (musicScan /*&& musicScan->IsDialogRunning()*/)
-      musicScan->StopScanning();
-
-    CGUIDialogVideoScan *videoScan = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-    if (videoScan /*&& videoScan->IsDialogRunning()*/)
-      videoScan->StopScanning();
 
     // Make sure background loader threads are all dead.
     CBackgroundRunner::StopAll();
