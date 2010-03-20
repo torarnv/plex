@@ -41,6 +41,7 @@
 #include "GUIDialogYesNo.h"
 #include "FileSystem/File.h"
 #include "PlayList.h"
+#include "CocoaUtils.h"
 
 using namespace std;
 using namespace MEDIA_DETECT;
@@ -313,6 +314,13 @@ bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileIte
 
   items.SetThumbnailImage("");
   items.SetVideoThumb();
+  
+  // See if we need to turn on/off theme music.
+  string themeURL = items.GetProperty("theme");
+  if (themeURL.size() > 0)
+    Cocoa_SetBackgroundMusicThemeId(themeURL.c_str());
+  else
+    Cocoa_SetBackgroundMusicThemeId(NULL);
 
   return true;
 }
