@@ -131,7 +131,7 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   string strFanart;
   if (fanart && strlen(fanart) > 0)
     strFanart = ProcessUrl(strPath, fanart, false);
-
+  
   // See if the item is too old.
   string cachedFile(CFileItem::GetCachedPlexMediaServerThumb(strFanart));
   if (CFile::Age(cachedFile) > MAX_FANART_AGE)
@@ -255,6 +255,13 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   const char* content = root->Attribute("content");
   if (content && strlen(content) > 0)
     items.SetContent(content);
+  
+  // Theme music.
+  if (root->Attribute("theme"))
+  {
+    string strTheme = ProcessUrl(m_url, root->Attribute("theme"), false);
+    items.SetProperty("theme", strTheme);
+  }
   
   // Check for dialog message attributes
   CStdString strMessage = "";
@@ -381,6 +388,11 @@ class PlexMediaNode
        string strBanner = ProcessMediaElement(parentPath, el, "banner", MAX_FANART_AGE);
        if (strBanner.size() > 0)
          pItem->SetQuickBanner(strBanner);
+       
+       // Theme music.
+       string strTheme = ProcessMediaElement(parentPath, el, "theme", MAX_FANART_AGE);
+       if (strBanner.size() > 0)
+         pItem->SetProperty("theme", strTheme);
      }
      catch (...)
      {
@@ -633,7 +645,7 @@ class PlexMediaNodeLibrary : public PlexMediaNode
       if (bitrate && strlen(bitrate) > 0)
         theMediaItem->m_iBitrate = boost::lexical_cast<int>(bitrate);
 
-      // Build the URL.
+      // Build the URLs for the flags.
       TiXmlElement* parent = (TiXmlElement* )el.Parent();
       const char* pRoot = parent->Attribute("mediaTagPrefix");
       const char* pVersion = parent->Attribute("mediaTagVersion");
@@ -679,9 +691,9 @@ class PlexMediaNodeLibrary : public PlexMediaNode
       // See if it exists (fasttrack) or queue it for download.
       string localFile = CFileItem::GetCachedPlexMediaServerThumb(url);
       if (CFile::Exists(localFile))
-        mediaItem->SetProperty(resource, localFile);
+        mediaItem->SetProperty("mediaTag::" + resource, localFile);
       else
-        mediaItem->SetProperty("cache$" + resource, url);
+        mediaItem->SetProperty("cache$mediaTag::" + resource, url);
     }
   }
 };
