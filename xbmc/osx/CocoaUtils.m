@@ -923,12 +923,6 @@ void Cocoa_SetBackgroundMusicThemeDownloadsEnabled(bool enabled)
   [[BackgroundMusicPlayer sharedInstance] setThemeDownloadsEnabled:enabled];
 }
 
-void Cocoa_CheckForThemeWithId(const char* tvShowId)
-{
-  if (tvShowId != NULL)
-    [[BackgroundMusicPlayer sharedInstance] checkForThemeWithId:[NSString stringWithCString:tvShowId]];
-}
-
 void Cocoa_SetBackgroundMusicThemeId(const char* tvShowId)
 {
   if (tvShowId == NULL)

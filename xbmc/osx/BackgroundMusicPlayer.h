@@ -44,8 +44,6 @@
 - (void)setThemeMusicEnabled:(BOOL)enabled;
 - (void)setThemeDownloadsEnabled:(BOOL)enabled;
 
-- (void)checkForThemeWithId:(NSString*)tvShowId;
-
 - (void)pause;
 - (void)play;
 - (BOOL)isPlaying;

@@ -148,32 +148,6 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
 
 - (BOOL)themeDownloadsEnabled { return isThemeDownloadingEnabled; }
 - (void)setThemeDownloadsEnabled:(BOOL)enabled { isThemeDownloadingEnabled = enabled; }
-
-- (void)checkForThemeWithId:(NSString*)tvShowId
-{
-  if (isEnabled && isThemeMusicEnabled && isThemeDownloadingEnabled)
-  {
-    // If there's already a theme file, return
-    NSString *localFile = [themeMusicPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.mp3", tvShowId]];
-    if ([[NSFileManager defaultManager] fileExistsAtPath:localFile]) return;
-
-    // If the theme has been requested recently, return
-    NSDate* lastRequestDate = [themeMusicRequests objectForKey:tvShowId];
-    if (lastRequestDate != nil)
-      if ([lastRequestDate timeIntervalSinceNow] > -BACKGROUND_MUSIC_THEME_REQ_LIMIT)
-      {
-        NSLog(@"Skipping download of theme %@ - recently requested", tvShowId);
-        return;
-      }
-    
-    // Construct the theme URL and attempt to download the file
-    NSString *remoteFile = [[NSString stringWithFormat:@"%@/%@.mp3", BACKGROUND_MUSIC_THEME_DOWNLOAD_URL, tvShowId]
-                              stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    [themeMusicRequests setObject:[NSDate date] forKey:tvShowId];
-    Cocoa_DownloadFile([remoteFile UTF8String], [localFile UTF8String]);
-  }
-}
-
 - (void)pause
 {
   [self fadeAudioTo:[NSNumber numberWithInt:0]];
@@ -315,18 +289,31 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
       // If given a new theme, see if there's a file available
       if (![newId isEqualToString:currentId])
       {
-        NSString *localFile = [themeMusicPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.mp3", newId]];
-        if ([[NSFileManager defaultManager] fileExistsAtPath:localFile])
+        currentId = newId;
+        [themeMusic release];
+        
+        NSURL* url = [NSURL URLWithString:newId];
+        NSError* error = 0;
+        
+        // Try to stream it.
+        themeMusic = [[QTMovie alloc] initWithURL:url error:&error];
+        if (themeMusic)
+          [themeMusic play];
+        
+        [url release];
+        
+        if (error)
         {
-          currentId = newId;
-          [themeMusic release];
-          themeMusic = [[QTMovie alloc] initWithFile:localFile error:nil];
-
-          if (isPlaying && isFocused)
-          {
-            [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(checkThemeCrossFade:) userInfo:nil repeats:YES];
-            [self crossFadeToTheme:YES];
-          }
+          NSLog(@"ERROR: %@", error);
+          [error release];
+          currentId = nil;
+          [currentId release];
+        }
+        
+        if (isPlaying && isFocused)
+        {
+          [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(checkThemeCrossFade:) userInfo:nil repeats:YES];
+          [self crossFadeToTheme:YES];
         }
       }
     }
