@@ -120,6 +120,7 @@ public:
   bool IsDAAP() const;
   bool IsPlexMediaServer() const;
   bool IsPlexMediaServerMusic() const;
+  bool IsPlexMediaServerLibrary() const;
   bool IsWebKit() const;
   bool IsStack() const;
   bool IsMultiPath() const;

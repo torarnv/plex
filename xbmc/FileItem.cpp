@@ -835,6 +835,17 @@ bool CFileItem::IsPlexMediaServer() const
   return CUtil::IsPlexMediaServer(m_strPath);
 }
 
+bool CFileItem::IsPlexMediaServerLibrary() const
+{
+  if (IsPlexMediaServer() == false)
+      return false;
+  
+  if (m_strPath.Find("/library/parts/") != -1)
+    return true;
+  
+  return false;
+}
+
 bool CFileItem::IsPlexMediaServerMusic() const
 {
   if (IsPlexMediaServer() == false)
