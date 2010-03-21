@@ -307,7 +307,10 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       // things like MOV over http:// now work much better.
       //
       CFileItem fileItem(strFile, false);
-      if (fileItem.IsInternetStream() == true)
+      
+      if (fileItem.IsPlexMediaServerLibrary())
+        context->is_streamed = 0;
+      else if (fileItem.IsInternetStream() == true)
         context->is_streamed = 1;
       
       //if(m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
