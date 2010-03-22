@@ -675,7 +675,7 @@ class PlexMediaNodeLibrary : public PlexMediaNode
   void CacheMediaThumb(const CFileItemPtr& mediaItem, TiXmlElement* el, const string& baseURL, const string& resource, const string& version)
   {
     const char* val = el->Attribute(resource.c_str());
-    if (val)
+    if (val && strlen(val) > 0)
     {
       // Complete the URL.
       string url = baseURL;
