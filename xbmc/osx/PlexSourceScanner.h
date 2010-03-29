@@ -43,7 +43,9 @@ public:
   
   static void MergeSourcesForWindow(int windowId);
   
+  static void Lock() { ::EnterCriticalSection(g_lock); }
   static map<string, HostSourcesPtr>& GetMap() { return g_hostSourcesMap; }
+  static void Unlock() { ::LeaveCriticalSection(g_lock); }
   
 protected:
   

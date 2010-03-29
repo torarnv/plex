@@ -210,15 +210,18 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       }
       
       // Now collect all the added items.
+      CPlexSourceScanner::Lock();
+      
       map<string, HostSourcesPtr>& map = CPlexSourceScanner::GetMap();
       list<CFileItemPtr> newItems;
-
       BOOST_FOREACH(string_sources_pair nameSource, map)
       {
         for (int i=0; i<nameSource.second->librarySections.Size(); i++)
           newItems.push_back(nameSource.second->librarySections[i]);
       }
 
+      CPlexSourceScanner::Unlock();
+      
       // Now sort them according to name.
       newItems.sort(compare);
 
