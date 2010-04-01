@@ -361,7 +361,6 @@
 		E371C3280E2F2D5400FBF841 /* GUIDialogLockSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17B60D25F9FA00618676 /* GUIDialogLockSettings.cpp */; };
 		E371C3290E2F2D5400FBF841 /* GUIDialogMediaSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17B80D25F9FA00618676 /* GUIDialogMediaSource.cpp */; };
 		E371C32A0E2F2D5400FBF841 /* GUIDialogMusicOSD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17BA0D25F9FA00618676 /* GUIDialogMusicOSD.cpp */; };
-		E371C32B0E2F2D5400FBF841 /* GUIDialogMusicScan.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17BC0D25F9FA00618676 /* GUIDialogMusicScan.cpp */; };
 		E371C32C0E2F2D5400FBF841 /* GUIDialogMuteBug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17BE0D25F9FA00618676 /* GUIDialogMuteBug.cpp */; };
 		E371C32D0E2F2D5400FBF841 /* GUIDialogNetworkSetup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17C00D25F9FA00618676 /* GUIDialogNetworkSetup.cpp */; };
 		E371C32E0E2F2D5400FBF841 /* GUIDialogNumeric.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17C20D25F9FA00618676 /* GUIDialogNumeric.cpp */; };
@@ -379,7 +378,6 @@
 		E371C33A0E2F2D5400FBF841 /* GUIDialogSongInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17DA0D25F9FA00618676 /* GUIDialogSongInfo.cpp */; };
 		E371C33B0E2F2D5400FBF841 /* GUIDialogSubMenu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17DC0D25F9FA00618676 /* GUIDialogSubMenu.cpp */; };
 		E371C33D0E2F2D5400FBF841 /* GUIDialogVideoBookmarks.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17E00D25F9FA00618676 /* GUIDialogVideoBookmarks.cpp */; };
-		E371C33E0E2F2D5400FBF841 /* GUIDialogVideoScan.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17E20D25F9FA00618676 /* GUIDialogVideoScan.cpp */; };
 		E371C33F0E2F2D5400FBF841 /* GUIDialogVideoSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17E40D25F9FA00618676 /* GUIDialogVideoSettings.cpp */; };
 		E371C3400E2F2D5400FBF841 /* GUIDialogVisualisationPresetList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17E60D25F9FA00618676 /* GUIDialogVisualisationPresetList.cpp */; };
 		E371C3410E2F2D5400FBF841 /* GUIDialogVisualisationSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17E80D25F9FA00618676 /* GUIDialogVisualisationSettings.cpp */; };
@@ -2051,8 +2049,6 @@
 		E38E17B90D25F9FA00618676 /* GUIDialogMediaSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogMediaSource.h; sourceTree = "<group>"; };
 		E38E17BA0D25F9FA00618676 /* GUIDialogMusicOSD.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogMusicOSD.cpp; sourceTree = "<group>"; };
 		E38E17BB0D25F9FA00618676 /* GUIDialogMusicOSD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogMusicOSD.h; sourceTree = "<group>"; };
-		E38E17BC0D25F9FA00618676 /* GUIDialogMusicScan.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogMusicScan.cpp; sourceTree = "<group>"; };
-		E38E17BD0D25F9FA00618676 /* GUIDialogMusicScan.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogMusicScan.h; sourceTree = "<group>"; };
 		E38E17BE0D25F9FA00618676 /* GUIDialogMuteBug.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogMuteBug.cpp; sourceTree = "<group>"; };
 		E38E17BF0D25F9FA00618676 /* GUIDialogMuteBug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogMuteBug.h; sourceTree = "<group>"; };
 		E38E17C00D25F9FA00618676 /* GUIDialogNetworkSetup.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogNetworkSetup.cpp; sourceTree = "<group>"; };
@@ -2087,8 +2083,6 @@
 		E38E17DD0D25F9FA00618676 /* GUIDialogSubMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogSubMenu.h; sourceTree = "<group>"; };
 		E38E17E00D25F9FA00618676 /* GUIDialogVideoBookmarks.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogVideoBookmarks.cpp; sourceTree = "<group>"; };
 		E38E17E10D25F9FA00618676 /* GUIDialogVideoBookmarks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogVideoBookmarks.h; sourceTree = "<group>"; };
-		E38E17E20D25F9FA00618676 /* GUIDialogVideoScan.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogVideoScan.cpp; sourceTree = "<group>"; };
-		E38E17E30D25F9FA00618676 /* GUIDialogVideoScan.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogVideoScan.h; sourceTree = "<group>"; };
 		E38E17E40D25F9FA00618676 /* GUIDialogVideoSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogVideoSettings.cpp; sourceTree = "<group>"; };
 		E38E17E50D25F9FA00618676 /* GUIDialogVideoSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogVideoSettings.h; sourceTree = "<group>"; };
 		E38E17E60D25F9FA00618676 /* GUIDialogVisualisationPresetList.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogVisualisationPresetList.cpp; sourceTree = "<group>"; };
@@ -3932,8 +3926,6 @@
 				E38E17B90D25F9FA00618676 /* GUIDialogMediaSource.h */,
 				E38E17BA0D25F9FA00618676 /* GUIDialogMusicOSD.cpp */,
 				E38E17BB0D25F9FA00618676 /* GUIDialogMusicOSD.h */,
-				E38E17BC0D25F9FA00618676 /* GUIDialogMusicScan.cpp */,
-				E38E17BD0D25F9FA00618676 /* GUIDialogMusicScan.h */,
 				E38E17BE0D25F9FA00618676 /* GUIDialogMuteBug.cpp */,
 				E38E17BF0D25F9FA00618676 /* GUIDialogMuteBug.h */,
 				E38E17C00D25F9FA00618676 /* GUIDialogNetworkSetup.cpp */,
@@ -3968,8 +3960,6 @@
 				E38E17DD0D25F9FA00618676 /* GUIDialogSubMenu.h */,
 				E38E17E00D25F9FA00618676 /* GUIDialogVideoBookmarks.cpp */,
 				E38E17E10D25F9FA00618676 /* GUIDialogVideoBookmarks.h */,
-				E38E17E20D25F9FA00618676 /* GUIDialogVideoScan.cpp */,
-				E38E17E30D25F9FA00618676 /* GUIDialogVideoScan.h */,
 				E38E17E40D25F9FA00618676 /* GUIDialogVideoSettings.cpp */,
 				E38E17E50D25F9FA00618676 /* GUIDialogVideoSettings.h */,
 				E38E17E60D25F9FA00618676 /* GUIDialogVisualisationPresetList.cpp */,
@@ -7040,7 +7030,6 @@
 				E371C3280E2F2D5400FBF841 /* GUIDialogLockSettings.cpp in Sources */,
 				E371C3290E2F2D5400FBF841 /* GUIDialogMediaSource.cpp in Sources */,
 				E371C32A0E2F2D5400FBF841 /* GUIDialogMusicOSD.cpp in Sources */,
-				E371C32B0E2F2D5400FBF841 /* GUIDialogMusicScan.cpp in Sources */,
 				E371C32C0E2F2D5400FBF841 /* GUIDialogMuteBug.cpp in Sources */,
 				E371C32D0E2F2D5400FBF841 /* GUIDialogNetworkSetup.cpp in Sources */,
 				E371C32E0E2F2D5400FBF841 /* GUIDialogNumeric.cpp in Sources */,
@@ -7058,7 +7047,6 @@
 				E371C33A0E2F2D5400FBF841 /* GUIDialogSongInfo.cpp in Sources */,
 				E371C33B0E2F2D5400FBF841 /* GUIDialogSubMenu.cpp in Sources */,
 				E371C33D0E2F2D5400FBF841 /* GUIDialogVideoBookmarks.cpp in Sources */,
-				E371C33E0E2F2D5400FBF841 /* GUIDialogVideoScan.cpp in Sources */,
 				E371C33F0E2F2D5400FBF841 /* GUIDialogVideoSettings.cpp in Sources */,
 				E371C3400E2F2D5400FBF841 /* GUIDialogVisualisationPresetList.cpp in Sources */,
 				E371C3410E2F2D5400FBF841 /* GUIDialogVisualisationSettings.cpp in Sources */,

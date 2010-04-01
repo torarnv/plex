@@ -56,8 +56,6 @@
 #include "PictureInfoTag.h"
 #include "MusicInfoTag.h"
 #include "VideoDatabase.h"
-#include "GUIDialogMusicScan.h"
-#include "GUIDialogVideoScan.h"
 #include "GUIWindowManager.h"
 #include "FileSystem/File.h"
 #include "PlayList.h"
@@ -1815,12 +1813,7 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
   }
   else if (condition == LIBRARY_IS_SCANNING)
   {
-    CGUIDialogMusicScan *musicScanner = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-    CGUIDialogVideoScan *videoScanner = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-    if (musicScanner->IsScanning() || videoScanner->IsScanning())
-      bReturn = true;
-    else
-      bReturn = false;
+    bReturn = false;
   }
   else if (condition == SYSTEM_PLATFORM_LINUX)
 #ifdef _LINUX

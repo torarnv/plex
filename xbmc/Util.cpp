@@ -72,9 +72,7 @@
 #include "ButtonTranslator.h"
 #include "Picture.h"
 #include "GUIDialogNumeric.h"
-#include "GUIDialogMusicScan.h"
 #include "GUIDialogFileBrowser.h"
-#include "GUIDialogVideoScan.h"
 #include "utils/fstrcmp.h"
 #include "utils/Trainer.h"
 #ifdef HAS_XBOX_HARDWARE
@@ -4736,9 +4734,6 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
 
     g_settings.m_iLastUsedProfileIndex = g_settings.m_iLastLoadedProfileIndex;
     g_application.StopPlaying();
-    CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-    if (musicScan && musicScan->IsScanning())
-      musicScan->StopScanning();
 
     g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
 #ifdef HAS_XBOX_NETWORK
@@ -4768,30 +4763,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if (execute.Equals("updatelibrary"))
   {
-    if (parameter.Equals("music"))
-    {
-      CGUIDialogMusicScan *scanner = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-      if (scanner)
-      {
-        if (scanner->IsScanning())
-          scanner->StopScanning();
-        else
-          scanner->StartScanning("");
-      }
-    }
-    if (parameter.Equals("video"))
-    {
-      CGUIDialogVideoScan *scanner = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-      SScraperInfo info;
-      VIDEO::SScanSettings settings;
-      if (scanner)
-      {
-        if (scanner->IsScanning())
-          scanner->StopScanning();
-        else
-          CGUIWindowVideoBase::OnScan("",info,settings);
-      }
-    }
+    // Bye-bye.
   }
   else if (execute.Equals("lastfm.love"))
   {

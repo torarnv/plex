@@ -189,7 +189,6 @@
 #include "GUIDialogProfileSettings.h"
 #include "GUIDialogLockSettings.h"
 #include "GUIDialogContentSettings.h"
-#include "GUIDialogVideoScan.h"
 #include "GUIDialogBusy.h"
 
 #include "GUIDialogKeyboard.h"
@@ -204,7 +203,6 @@
 #include "GUIDialogFavourites.h"
 //#include "GUIDialogButtonMenu.h"
 #include "GUIDialogContextMenu.h"
-#include "GUIDialogMusicScan.h"
 #include "GUIDialogPlayerControls.h"
 #include "GUIDialogSongInfo.h"
 #include "GUIDialogSmartPlaylistEditor.h"
@@ -1538,7 +1536,6 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIDialogNumeric);            // window id = 109
   m_gWindowManager.Add(new CGUIDialogGamepad);            // window id = 110
   //m_gWindowManager.Add(new CGUIDialogButtonMenu);         // window id = 111
-  m_gWindowManager.Add(new CGUIDialogMusicScan);          // window id = 112
   m_gWindowManager.Add(new CGUIDialogPlayerControls);     // window id = 113
   m_gWindowManager.Add(new CGUIDialogMusicOSD);           // window id = 120
   m_gWindowManager.Add(new CGUIDialogVisualisationSettings);     // window id = 121
@@ -1553,7 +1550,6 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIDialogNetworkSetup);  // window id = 128
   m_gWindowManager.Add(new CGUIDialogMediaSource);   // window id = 129
   m_gWindowManager.Add(new CGUIDialogProfileSettings); // window id = 130
-  m_gWindowManager.Add(new CGUIDialogVideoScan);      // window id = 133
   m_gWindowManager.Add(new CGUIDialogFavourites);     // window id = 134
   m_gWindowManager.Add(new CGUIDialogSongInfo);       // window id = 135
   m_gWindowManager.Add(new CGUIDialogSmartPlaylistEditor);       // window id = 136
@@ -5262,8 +5258,6 @@ void CApplication::CheckForUpdates()
 void CApplication::CheckShutdown()
 {
 #if defined(HAS_XBOX_HARDWARE) || defined(__APPLE__)
-  CGUIDialogMusicScan *pMusicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-  CGUIDialogVideoScan *pVideoScan = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
 
   if (IsPlayingAudio() && !IsPlayingVideo() && !IsPaused())
   {
@@ -5271,7 +5265,7 @@ void CApplication::CheckShutdown()
     return;
   }
 
-  if (!m_bInactive || g_guiSettings.GetInt("energy.shutdowntime") <= 0 || (pMusicScan && pMusicScan->IsScanning()) || (pVideoScan && pVideoScan->IsScanning()))
+  if (!m_bInactive || g_guiSettings.GetInt("energy.shutdowntime") <= 0)
     return;
 
 #ifdef HAS_FTP_SERVER
@@ -6405,17 +6399,8 @@ void CApplication::CheckPlayingProgress()
     m_playCountUpdated = true;
     if (IsPlayingAudio())
     {
-      // Can't write to the musicdatabase while scanning for music info
-      CGUIDialogMusicScan *dialog = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-      if (dialog && !dialog->IsDialogRunning())
-      {
-        CMusicDatabase musicdatabase;
-        if (musicdatabase.Open())
-        {
-          musicdatabase.IncrTop100CounterByFileName(m_itemCurrentFile->m_strPath);
-          musicdatabase.Close();
-        }
-      }
+      //musicdatabase.IncrTop100CounterByFileName(m_itemCurrentFile->m_strPath);
+      //musicdatabase.Close();
     }
   }
   else

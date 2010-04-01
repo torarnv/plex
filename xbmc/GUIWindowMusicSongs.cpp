@@ -26,7 +26,6 @@
 #include "Application.h"
 #include "CueDocument.h"
 #include "GUIPassword.h"
-#include "GUIDialogMusicScan.h"
 #include "GUIWindowManager.h"
 #include "FileItem.h"
 
@@ -277,20 +276,6 @@ void CGUIWindowMusicSongs::OnScan(int iItem)
 
 void CGUIWindowMusicSongs::DoScan(const CStdString &strPath)
 {
-  CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-  if (musicScan && musicScan->IsScanning())
-  {
-    musicScan->StopScanning();
-    return;
-  }
-
-  // Start background loader
-  int iControl=GetFocusedControlID();
-  if (musicScan) musicScan->StartScanning(strPath);
-  SET_CONTROL_FOCUS(iControl, 0);
-  UpdateButtons();
-
-  return;
 }
 
 bool CGUIWindowMusicSongs::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
@@ -390,16 +375,6 @@ void CGUIWindowMusicSongs::UpdateButtons()
     }
   }
 
-  CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-  if (musicScan && musicScan->IsScanning())
-  {
-    SET_CONTROL_LABEL(CONTROL_BTNSCAN, 14056); // Stop Scan
-  }
-  else
-  {
-    SET_CONTROL_LABEL(CONTROL_BTNSCAN, 102); // Scan
-  }
-
   // Update object count label
   CStdString items;
   items.Format("%i %s", m_vecItems->GetObjectCount(), g_localizeStrings.Get(127).c_str());
@@ -479,22 +454,6 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
             buttons.Add(CONTEXT_BUTTON_RENAME, 118);
           }
         }
-      }
-    }
-
-    // Add the scan button(s)
-    CGUIDialogMusicScan *pScanDlg = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-    if (g_guiSettings.GetBool("musiclibrary.enabled") && pScanDlg && includeStandardContextButtons)
-    {
-      if (pScanDlg->IsScanning())
-        buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353); // Stop Scanning
-      else if (!inPlaylists && !m_vecItems->IsInternetStream()           && 
-               !item->IsLastFM() && !item->IsShoutCast()                 && 
-               !item->m_strPath.Equals("add") && !item->IsParentFolder() &&
-               !item->IsPlexMediaServer() &&
-              (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
-      {
-        buttons.Add(CONTEXT_BUTTON_SCAN, 13352);
       }
     }
   }
