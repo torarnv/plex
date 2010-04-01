@@ -33,7 +33,6 @@
 #include "GUIPassword.h"
 #include "GUIDialogMediaSource.h"
 #include "GUIDialogContentSettings.h"
-#include "GUIDialogVideoScan.h"
 #include "FileSystem/MultiPathDirectory.h"
 #include "utils/RegExp.h"
 #include "GUIWindowManager.h"
@@ -511,6 +510,11 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
     else if (m_vecItems->GetContent() == "episodes")
       buttons.Add(CONTEXT_BUTTON_INFO, 20352);
     
+    if (item->m_bIsFolder || item->GetVideoInfoTag()->m_playCount > 0)
+      buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104);
+    if (item->m_bIsFolder || item->GetVideoInfoTag()->m_playCount == 0)
+      buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);
+    
     if (m_vecItems->IsVirtualDirectoryRoot() == false)
       CGUIWindowVideoBase::GetContextButtons(itemNumber, buttons);
   }
@@ -541,24 +545,16 @@ bool CGUIWindowVideoFiles::OnContextButton(int itemNumber, CONTEXT_BUTTON button
   case CONTEXT_BUTTON_SWITCH_MEDIA:
     CGUIDialogContextMenu::SwitchMedia("video", m_vecItems->m_strPath);
     return true;
+    
+  case CONTEXT_BUTTON_MARK_WATCHED:
+    // If we're about to hide this item, select the next one
+    if (g_stSettings.m_iMyVideoWatchMode == VIDEO_SHOW_UNWATCHED)
+      m_viewControl.SetSelectedItem((itemNumber+1) % m_vecItems->Size());
+    MarkWatched(item);
+    return true;
 
-  case CONTEXT_BUTTON_SET_CONTENT:
-    {
-      SScraperInfo info;
-      SScanSettings settings;
-      if (item->HasVideoInfoTag())  // files view shouldn't need this check I think?
-        m_database.GetScraperForPath(item->GetVideoInfoTag()->m_strPath, info, settings);
-      else
-        m_database.GetScraperForPath(item->m_strPath, info, settings);
-      CScraperParser parser;
-      if (parser.Load(_P("q:\\system\\scrapers\\video\\"+info.strPath)))
-        info.strTitle = parser.GetName();
-      OnAssignContent(itemNumber,0, info, settings);
-      return true;
-    }
-
-  case CONTEXT_BUTTON_ADD_TO_LIBRARY:
-    AddToDatabase(itemNumber);
+  case CONTEXT_BUTTON_MARK_UNWATCHED:
+    MarkUnWatched(item);
     return true;
 
   default:

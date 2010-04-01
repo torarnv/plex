@@ -27,7 +27,6 @@
 #include "utils/GUIInfoManager.h"
 #include "GUIWindowVideoInfo.h"
 #include "GUIDialogFileBrowser.h"
-#include "GUIDialogVideoScan.h"
 #include "GUIDialogSmartPlaylistEditor.h"
 #include "GUIDialogProgress.h"
 #include "PlayListFactory.h"
@@ -561,15 +560,15 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
     includeStandardContextButtons = item->m_includeStandardContextItems;
     if (!item->IsParentFolder() && includeStandardContextButtons)
     {
+#if 0
       CStdString path(item->m_strPath);
-      if (item->IsVideoDb() && item->HasVideoInfoTag())
-        path = item->GetVideoInfoTag()->m_strFileNameAndPath;
       if (CUtil::IsStack(path))
       {
         vector<long> times;
         if (m_database.GetStackTimes(path,times))
           buttons.Add(CONTEXT_BUTTON_PLAY_PART, 20324);
       }
+#endif
 
       if (GetID() != WINDOW_VIDEO_NAV || (!m_vecItems->m_strPath.IsEmpty() && 
          !item->m_strPath.Left(19).Equals("newsmartplaylist://")))
@@ -714,9 +713,6 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
   case CONTEXT_BUTTON_STOP_SCANNING:
     {
-      CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-      if (pScanDlg && pScanDlg->IsScanning())
-        pScanDlg->StopScanning();
       return true;
     }
   case CONTEXT_BUTTON_SCAN:
@@ -948,12 +944,20 @@ void CGUIWindowVideoBase::OnDeleteItem(int iItem)
 void CGUIWindowVideoBase::MarkUnWatched(const CFileItemPtr &item)
 {
   PlexMediaServerQueue::Get().onUnviewed(item);
+  
+  item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED);
+  if (item->GetVideoInfoTag())
+    item->GetVideoInfoTag()->m_playCount = 0;
 }
 
 //Add Mark a Title as watched
 void CGUIWindowVideoBase::MarkWatched(const CFileItemPtr &item)
 {
-  PlexMediaServerQueue::Get().onViewed(item);
+  PlexMediaServerQueue::Get().onViewed(item, true);
+  
+  item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_WATCHED);
+  if (item->GetVideoInfoTag())
+    item->GetVideoInfoTag()->m_playCount++;
 }
 
 //Add change a title's name
@@ -1342,8 +1346,4 @@ int CGUIWindowVideoBase::GetScraperForItem(CFileItem *item, SScraperInfo &info, 
 
 void CGUIWindowVideoBase::OnScan(const CStdString& strPath, const SScraperInfo& info, const SScanSettings& settings)
 {
-  CGUIDialogVideoScan* pDialog = (CGUIDialogVideoScan*)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-  if (pDialog)
-    pDialog->StartScanning(strPath,info,settings,false);
 }
-
