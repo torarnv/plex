@@ -44,7 +44,7 @@ protected:
   BYTE m_inputBuffer[4096];
   BYTE* m_pInputBuffer;
 
-  short m_decodedData[131072]; // could be a bit to big
+  short m_decodedData[1024*1024]; // could be a bit to big
   int m_decodedDataSize;
 
   CodecID m_codecID;

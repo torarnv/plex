@@ -21,7 +21,6 @@
 
 #include "stdafx.h"
 #include "GUIViewState.h"
-#include "GUIViewStateMusic.h"
 #include "GUIViewStateVideo.h"
 #include "GUIViewStatePicturesProgramsScripts.h"
 #include "PlayListPlayer.h"
@@ -50,47 +49,6 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
 
   if (items.HasSortDetails())
     return new CGUIViewStateFromItems(items);
-
-  if (url.GetProtocol()=="musicdb")
-    return new CGUIViewStateMusicDatabase(items);
-
-  if (url.GetProtocol()=="musicsearch")
-    return new CGUIViewStateMusicSearch(items);
-
-  if (items.IsSmartPlayList())
-  {
-    if (items.GetContent() == "songs")
-      return new CGUIViewStateMusicSmartPlaylist(items);
-    else if (items.GetContent() == "musicvideos") // TODO: Update this
-      return new CGUIViewStateMusicSmartPlaylist(items);
-    else if (items.GetContent() == "tvshows")
-      return new CGUIViewStateVideoTVShows(items);
-    else if (items.GetContent() == "episodes")
-      return new CGUIViewStateVideoEpisodes(items);
-    else if (items.GetContent() == "movies")
-      return new CGUIViewStateVideoMovies(items);
-  }
-
-  if (items.IsPlayList())
-    return new CGUIViewStateMusicPlaylist(items);
-
-  if (url.GetProtocol() == "shout")
-    return new CGUIViewStateMusicShoutcast(items);
-
-  if (url.GetProtocol() == "lastfm")
-    return new CGUIViewStateMusicLastFM(items);
-
-  if (windowId==WINDOW_MUSIC_NAV)
-    return new CGUIViewStateWindowMusicNav(items);
-
-  if (windowId==WINDOW_MUSIC_FILES)
-    return new CGUIViewStateWindowMusicSongs(items);
-
-  if (windowId==WINDOW_MUSIC_PLAYLIST)
-    return new CGUIViewStateWindowMusicPlaylist(items);
-
-  if (windowId==WINDOW_MUSIC_PLAYLIST_EDITOR)
-    return new CGUIViewStateWindowMusicSongs(items);
 
   if (windowId==WINDOW_VIDEO_FILES)
     return new CGUIViewStateWindowVideoFiles(items);

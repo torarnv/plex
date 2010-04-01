@@ -30,8 +30,6 @@
 #include "FileSystem/StackDirectory.h"
 #include "FileSystem/FileCurl.h"
 #include "FileSystem/MultiPathDirectory.h"
-#include "FileSystem/MusicDatabaseDirectory.h"
-#include "FileSystem/VideoDatabaseDirectory.h"
 #include "musicInfoTagLoaderFactory.h"
 #include "CueDocument.h"
 #include "utils/fstrcmp.h"
@@ -2352,11 +2350,6 @@ CStdString CFileItemList::GetDiscCacheFile() const
 
 bool CFileItemList::AlwaysCache() const
 {
-  // some database folders are always cached
-  if (IsMusicDb())
-    return CMusicDatabaseDirectory::CanCache(m_strPath);
-  if (IsVideoDb())
-    return CVideoDatabaseDirectory::CanCache(m_strPath);
   return false;
 }
 

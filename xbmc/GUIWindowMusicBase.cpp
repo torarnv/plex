@@ -39,7 +39,6 @@
 #include "GUIDialogMediaSource.h"
 #include "PartyModeManager.h"
 #include "utils/GUIInfoManager.h"
-#include "FileSystem/MusicDatabaseDirectory.h"
 #include "GUIDialogSongInfo.h"
 #include "GUIDialogSmartPlaylistEditor.h"
 #include "LastFmManager.h"
@@ -54,7 +53,6 @@
 using namespace std;
 using namespace XFILE;
 using namespace DIRECTORY;
-using namespace MUSICDATABASEDIRECTORY;
 using namespace PLAYLIST;
 using namespace MUSIC_GRABBER;
 using namespace MEDIA_DETECT;
@@ -272,40 +270,6 @@ void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
   
   album.idAlbum = -1;
   
-  if (pItem->IsMusicDb())
-  {
-    CQueryParams params;
-    CDirectoryNode::GetDatabaseInfo(pItem->m_strPath, params);
-    if (params.GetAlbumId() == -1)
-    {
-      artist.idArtist = params.GetArtistId();
-      artist.strArtist = pItem->GetMusicInfoTag()->GetArtist();
-    }
-    else
-    {
-      // show dialog box indicating we're searching the album name
-      if (m_dlgProgress && bShowInfo)
-      {
-        m_dlgProgress->SetHeading(185);
-        m_dlgProgress->SetLine(0, 501);
-        m_dlgProgress->SetLine(1, "");
-        m_dlgProgress->SetLine(2, "");
-        m_dlgProgress->StartModal();
-        m_dlgProgress->Progress();
-        if (m_dlgProgress->IsCanceled()) 
-          return;
-      }
-
-      album.idAlbum = params.GetAlbumId();
-      album.strAlbum = pItem->GetMusicInfoTag()->GetAlbum();
-      album.strArtist = pItem->GetMusicInfoTag()->GetArtist();
-
-      // we're going to need it's path as well (we assume that there's only one) - this is for
-      // assigning thumbs to folders, and obtaining the local folder.jpg
-      m_musicdatabase.GetAlbumPath(album.idAlbum, strPath);
-    }
-  }
-  else
   { // lookup is done on a folder - find the albums in the folder
     CFileItemList items;
     GetDirectory(strPath, items);
@@ -578,19 +542,6 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
   // fast lookup is needed here
   queuedItems.SetFastLookup(true);
 
-  if (pItem->IsMusicDb() && pItem->m_bIsFolder && !pItem->IsParentFolder())
-  { // we have a music database folder, just grab the "all" item underneath it
-    CMusicDatabaseDirectory dir;
-    if (!dir.ContainsSongs(pItem->m_strPath))
-    { // grab the ALL item in this category
-      // Genres will still require 2 lookups, and queuing the entire Genre folder
-      // will require 3 lookups (genre, artist, album)
-      CFileItemPtr item(new CFileItem(pItem->m_strPath + "-1/", true));
-      item->SetCanQueue(true); // workaround for CanQueue() check above
-      AddItemToPlayList(item, queuedItems);
-      return;
-    }
-  }
   if (pItem->m_bIsFolder || (m_gWindowManager.GetActiveWindow() == WINDOW_MUSIC_NAV && pItem->IsPlayList()))
   {
     // Check if we add a locked share

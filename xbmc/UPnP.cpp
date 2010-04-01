@@ -28,12 +28,8 @@
 #include "utils/Network.h"
 #include "UPnP.h"
 #include "FileSystem/UPnPVirtualPathDirectory.h"
-#include "FileSystem/MusicDatabaseDirectory.h"
-#include "FileSystem/VideoDatabaseDirectory.h"
 #include "MusicDatabase.h"
 #include "VideoDatabase.h"
-#include "FileSystem/VideoDatabaseDirectory/DirectoryNode.h"
-#include "FileSystem/VideoDatabaseDirectory/QueryParams.h"
 #include "File.h"
 #include "Platinum.h"
 #include "PltMediaConnect.h"
@@ -613,64 +609,7 @@ CUPnPServer::BuildObject(const CFileItem&              item,
         container->m_ChildrenCount = -1;
 
         /* this might be overkill, but hey */
-        if (item.IsMusicDb()) {
-            MUSICDATABASEDIRECTORY::NODE_TYPE node = CMusicDatabaseDirectory::GetDirectoryType(item.m_strPath);
-            switch(node) {
-                case MUSICDATABASEDIRECTORY::NODE_TYPE_ARTIST: {
-                      container->m_ObjectClass.type += ".person.musicArtist";
-                      CMusicInfoTag *tag = (CMusicInfoTag*)item.GetMusicInfoTag();
-                      if (tag) {
-                          container->m_People.artists.Add(
-                              CorrectAllItemsSortHack(tag->GetArtist()).c_str(), "Performer");
-                          container->m_People.artists.Add(
-                              CorrectAllItemsSortHack(!tag->GetAlbumArtist().empty()?tag->GetAlbumArtist():tag->GetArtist()).c_str(), "AlbumArtist");
-                      }
-#ifdef WMP_ID_MAPPING
-                      // Some upnp clients expect all artists to have parent root id 107
-                      container->m_ParentID = "107";
-#endif
-                  }
-                  break;
-                case MUSICDATABASEDIRECTORY::NODE_TYPE_ALBUM:
-                case MUSICDATABASEDIRECTORY::NODE_TYPE_ALBUM_COMPILATIONS:
-                case MUSICDATABASEDIRECTORY::NODE_TYPE_ALBUM_RECENTLY_ADDED:
-                case MUSICDATABASEDIRECTORY::NODE_TYPE_YEAR_ALBUM: {
-                      container->m_ObjectClass.type += ".album.musicAlbum";
-                      // for Sonos to be happy
-                      CMusicInfoTag *tag = (CMusicInfoTag*)item.GetMusicInfoTag();
-                      if (tag) {
-                          container->m_People.artists.Add(
-                              CorrectAllItemsSortHack(tag->GetArtist()).c_str(), "Performer");
-                          container->m_People.artists.Add(
-                              CorrectAllItemsSortHack(!tag->GetAlbumArtist().empty()?tag->GetAlbumArtist():tag->GetArtist()).c_str(), "AlbumArtist");
-                          container->m_Affiliation.album = CorrectAllItemsSortHack(tag->GetAlbum()).c_str();
-                      }
-#ifdef WMP_ID_MAPPING
-                      // Some upnp clients expect all albums to have parent root id 7
-                      container->m_ParentID = "7";
-#endif
-                  }
-                  break;
-                case MUSICDATABASEDIRECTORY::NODE_TYPE_GENRE:
-                  container->m_ObjectClass.type += ".genre.musicGenre";
-                  break;
-                default:
-                  break;
-            }
-        } else if (item.IsVideoDb()) {
-            VIDEODATABASEDIRECTORY::NODE_TYPE node = CVideoDatabaseDirectory::GetDirectoryType(item.m_strPath);
-            switch(node) {
-                case VIDEODATABASEDIRECTORY::NODE_TYPE_GENRE:
-                  container->m_ObjectClass.type += ".genre.movieGenre";
-                  break;
-                case VIDEODATABASEDIRECTORY::NODE_TYPE_MOVIES_OVERVIEW:
-                  container->m_ObjectClass.type += ".storageFolder";
-                  break;
-                default:
-                  container->m_ObjectClass.type += ".storageFolder";
-                  break;
-            }
-        } else if (item.IsPlayList()) {
+      if (item.IsPlayList()) {
             container->m_ObjectClass.type += ".playlistContainer";
         }
 
@@ -739,67 +678,7 @@ CUPnPServer::Build(CFileItemPtr                  item,
 
         file_path = item->m_strPath;
         share_name = "";
-
-        if (path.StartsWith("musicdb://")) {
-            CStdString label;
-            if (path == "musicdb://" ) {
-                item->SetLabel("Music Library");
-                item->SetLabelPreformated(true);
-            } else {
-                if (!item->HasMusicInfoTag() || !item->GetMusicInfoTag()->Loaded() )
-                    item->LoadMusicTag();
-
-                if (!item->HasThumbnail() )
-                    item->SetCachedMusicThumb();
-
-                if (item->GetLabel().IsEmpty()) {
-                    /* if no label try to grab it from node type */
-                    if (CMusicDatabaseDirectory::GetLabel((const char*)path, label)) {
-                        item->SetLabel(label);
-                        item->SetLabelPreformated(true);
-                    }
-                }
-            }
-        } else if (file_path.StartsWith("videodb://")) {
-            CStdString label;
-            if (path == "videodb://" ) {
-                item->SetLabel("Video Library");
-                item->SetLabelPreformated(true);
-            } else {
-                if (!item->HasVideoInfoTag()) {
-                    DIRECTORY::VIDEODATABASEDIRECTORY::CQueryParams params;
-                    DIRECTORY::VIDEODATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo((const char*)path, params);
-
-                    CVideoDatabase db;
-                    if (!db.Open() ) return NULL;
-
-                    if (params.GetMovieId() >= 0 )
-                        db.GetMovieInfo((const char*)path, *item->GetVideoInfoTag(), params.GetMovieId());
-                    else if (params.GetEpisodeId() >= 0 )
-                        db.GetEpisodeInfo((const char*)path, *item->GetVideoInfoTag(), params.GetEpisodeId());
-                    else if (params.GetTvShowId() >= 0 )
-                        db.GetTvShowInfo((const char*)path, *item->GetVideoInfoTag(), params.GetTvShowId());
-                }
-
-                // try to grab title from tag
-                if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strTitle.IsEmpty()) {
-                    item->SetLabel(item->GetVideoInfoTag()->m_strTitle);
-                    item->SetLabelPreformated(true);
-                }
-
-                // try to grab it from the folder
-                if (item->GetLabel().IsEmpty()) {
-                    if (CVideoDatabaseDirectory::GetLabel((const char*)path, label)) {
-                        item->SetLabel(label);
-                        item->SetLabelPreformated(true);
-                    }
-                }
-
-                if (!item->HasThumbnail() )
-                    item->SetCachedVideoThumb();
-            }
-        }
-
+        
         // not a virtual path directory, new system
         object = BuildObject(*item.get(), file_path, with_count, context, this);
 

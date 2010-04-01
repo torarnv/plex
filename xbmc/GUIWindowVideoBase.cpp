@@ -44,7 +44,6 @@
 #include "GUIDialogFileStacking.h"
 #include "GUIDialogMediaSource.h"
 #include "GUIWindowFileManager.h"
-#include "FileSystem/VideoDatabaseDirectory.h"
 #include "PartyModeManager.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogOK.h"
@@ -60,7 +59,6 @@ using namespace XFILE;
 using namespace DIRECTORY;
 using namespace MEDIA_DETECT;
 using namespace PLAYLIST;
-using namespace VIDEODATABASEDIRECTORY;
 using namespace VIDEO;
 
 #define CONTROL_BTNVIEWASICONS     2

@@ -23,10 +23,6 @@
 #include "MusicDatabase.h"
 #include "FileSystem/cddb.h"
 #include "FileSystem/DirectoryCache.h"
-#include "FileSystem/MusicDatabaseDirectory/DirectoryNode.h"
-#include "FileSystem/MusicDatabaseDirectory/QueryParams.h"
-#include "FileSystem/MusicDatabaseDirectory.h"
-#include "GUIDialogMusicScan.h"
 #include "DetectDVDType.h"
 #include "utils/GUIInfoManager.h"
 #include "MusicInfoTag.h"
@@ -49,7 +45,6 @@ using namespace std;
 using namespace AUTOPTR;
 using namespace XFILE;
 using namespace DIRECTORY;
-using namespace MUSICDATABASEDIRECTORY;
 using namespace MEDIA_DETECT;
 
 #define MUSIC_DATABASE_OLD_VERSION 1.6f
@@ -2124,68 +2119,6 @@ int CMusicDatabase::Cleanup(CGUIDialogProgress *pDlgProgress)
 
 void CMusicDatabase::DeleteAlbumInfo()
 {
-  // open our database
-  Open();
-  if (NULL == m_pDB.get()) return ;
-  if (NULL == m_pDS.get()) return ;
-
-  // If we are scanning for music info in the background,
-  // other writing access to the database is prohibited.
-  CGUIDialogMusicScan* dlgMusicScan = (CGUIDialogMusicScan*)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-  if (dlgMusicScan->IsDialogRunning())
-  {
-    CGUIDialogOK::ShowAndGetInput(189, 14057, 0, 0);
-    return;
-  }
-
-  CStdString strSQL="select * from albuminfo,album,artist where and albuminfo.idAlbum=album.idAlbum and album.idArtist=artist.idArtist order by album.strAlbum";
-  if (!m_pDS->query(strSQL.c_str())) return ;
-  int iRowsFound = m_pDS->num_rows();
-  if (iRowsFound == 0)
-  {
-    m_pDS->close();
-    CGUIDialogOK::ShowAndGetInput(313, 425, 0, 0);
-  }
-  vector<CAlbumCache> vecAlbums;
-  while (!m_pDS->eof())
-  {
-    CAlbumCache album;
-    album.idAlbum = m_pDS->fv("album.idAlbum").get_asLong() ;
-    album.strAlbum = m_pDS->fv("album.strAlbum").get_asString();
-    album.strArtist = m_pDS->fv("artist.strArtist").get_asString();
-    album.strArtist += m_pDS->fv("album.strExtraArtists").get_asString();
-    vecAlbums.push_back(album);
-    m_pDS->next();
-  }
-  m_pDS->close();
-
-  // Show a selectdialog that the user can select the albuminfo to delete
-  CGUIDialogSelect *pDlg = (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
-  if (pDlg)
-  {
-    pDlg->SetHeading(g_localizeStrings.Get(181).c_str());
-    pDlg->Reset();
-    for (int i = 0; i < (int)vecAlbums.size(); ++i)
-    {
-      CMusicDatabase::CAlbumCache& album = vecAlbums[i];
-      pDlg->Add(album.strAlbum + " - " + album.strArtist);
-    }
-    pDlg->DoModal();
-
-    // and wait till user selects one
-    int iSelectedAlbum = pDlg->GetSelectedLabel();
-    if (iSelectedAlbum < 0)
-    {
-      vecAlbums.erase(vecAlbums.begin(), vecAlbums.end());
-      return ;
-    }
-
-    CAlbumCache& album = vecAlbums[iSelectedAlbum];
-    strSQL=FormatSQL("delete from albuminfo where albuminfo.idAlbum=%i", album.idAlbum);
-    if (!m_pDS->exec(strSQL.c_str())) return ;
-
-    vecAlbums.erase(vecAlbums.begin(), vecAlbums.end());
-  }
 }
 
 bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
@@ -2391,34 +2324,6 @@ void CMusicDatabase::DeleteCDDBInfo()
 
 void CMusicDatabase::Clean()
 {
-  // If we are scanning for music info in the background,
-  // other writing access to the database is prohibited.
-  CGUIDialogMusicScan* dlgMusicScan = (CGUIDialogMusicScan*)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-  if (dlgMusicScan->IsDialogRunning())
-  {
-    CGUIDialogOK::ShowAndGetInput(189, 14057, 0, 0);
-    return;
-  }
-
-  if (CGUIDialogYesNo::ShowAndGetInput(313, 333, 0, 0))
-  {
-    CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-    if (dlgProgress)
-    {
-      CMusicDatabase musicdatabase;
-      if (musicdatabase.Open())
-      {
-        int iReturnString = musicdatabase.Cleanup(dlgProgress);
-        musicdatabase.Close();
-
-        if (iReturnString != ERROR_OK)
-        {
-          CGUIDialogOK::ShowAndGetInput(313, iReturnString, 0, 0);
-        }
-      }
-      dlgProgress->Close();
-    }
-  }
 }
 
 bool CMusicDatabase::GetGenresNav(const CStdString& strBaseDir, CFileItemList& items)
@@ -3879,315 +3784,21 @@ bool CMusicDatabase::CommitTransaction()
 
 bool CMusicDatabase::SetScraperForPath(const CStdString& strPath, const SScraperInfo& info)
 {
-  try
-  {
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
-    
-    // wipe old settings
-    CStdString strSQL = FormatSQL("delete from content where strPath like '%s'",strPath.c_str());
-    m_pDS->exec(strSQL.c_str());
-
-    // insert new settings
-    strSQL = FormatSQL("insert into content (strPath, strScraperPath, strContent, strSettings) values ('%s','%s','%s')",strPath.c_str(),info.strPath.c_str(),info.strContent.c_str(),info.settings.GetSettings().c_str());
-    m_pDS->exec(strSQL.c_str());
-
-    return true;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s - (%s) failed", __FUNCTION__, strPath.c_str());
-  }
   return false;
 }
 
 bool CMusicDatabase::GetScraperForPath(const CStdString& strPath, SScraperInfo& info)
 {
-  try
-  {
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
-    
-    CStdString strSQL = FormatSQL("select * from content where strPath like '%s'",strPath.c_str());
-    m_pDS->query(strSQL.c_str());
-    if (m_pDS->eof()) // no info set for path - fallback logic commencing
-    {
-      CQueryParams params;
-      CDirectoryNode::GetDatabaseInfo(strPath, params);
-      if (params.GetGenreId() != -1) // check genre
-      {
-        strSQL = FormatSQL("select * from content where strPath like 'musicdb://1/%u/'",params.GetGenreId());
-        m_pDS->query(strSQL.c_str());
-      }
-      if (m_pDS->eof() && params.GetAlbumId() != -1) // check album
-      {
-        strSQL = FormatSQL("select * from content where strPath like 'musicdb://3/%u/'",params.GetGenreId());
-        m_pDS->query(strSQL.c_str());
-      }
-      if (m_pDS->eof() && params.GetArtistId() != -1) // check artist
-      {
-        strSQL = FormatSQL("select * from content where strPath like 'musicdb://2/%u/'",params.GetArtistId());
-        m_pDS->query(strSQL.c_str());
-      }
-      if (m_pDS->eof()) // general albums setting
-      {
-        strSQL = FormatSQL("select * from content where strPath like 'musicdb://3/'");
-        m_pDS->query(strSQL.c_str());
-      }
-      if (m_pDS->eof()) // general artist setting
-      {
-        strSQL = FormatSQL("select * from content where strPath like 'musicdb://2/'");
-        m_pDS->query(strSQL.c_str());
-      }
-    }
-
-    if (!m_pDS->eof())
-    {
-      info.strContent = m_pDS->fv("content.strContent").get_asString();
-      info.strPath = m_pDS->fv("content.strScraperPath").get_asString();
-      info.settings.LoadUserXML(m_pDS->fv("content.strSettings").get_asString());
-    }
-    if (info.strPath.IsEmpty()) // default fallback
-    {
-      info.strPath = g_stSettings.m_defaultMusicScraper;
-      info.strContent = "albums";
-    }
-    
-    m_pDS->close();
-    return true;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s -(%s) failed", __FUNCTION__, strPath.c_str());
-  }
   return false;
 }
 
 void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* = false */)
 {
-  try
-  {
-    if (NULL == m_pDB.get()) return;
-    if (NULL == m_pDS.get()) return;
-    if (NULL == m_pDS2.get()) return;
 
-    // find all albums
-    CStdString sql = "select albumview.*,albuminfo.strImage,albuminfo.idalbuminfo from albuminfo "
-                     "join albumview on albuminfo.idAlbum=albumview.idAlbum "
-                     "join genre on albuminfo.idGenre=genre.idGenre";
- 
-    m_pDS->query(sql.c_str());
-
-    CGUIDialogProgress *progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-    if (progress)
-    {
-      progress->SetHeading(20196);
-      progress->SetLine(0, 650);
-      progress->SetLine(1, "");
-      progress->SetLine(2, "");
-      progress->SetPercentage(0);
-      progress->StartModal();
-      progress->ShowProgressBar(true);
-    }
-
-    int total = m_pDS->num_rows();
-    int current = 0;
-
-    // create our xml document
-    TiXmlDocument xmlDoc;
-    TiXmlDeclaration decl("1.0", "UTF-8", "yes");
-    xmlDoc.InsertEndChild(decl);
-    TiXmlNode *pMain = NULL;
-    if (singleFiles)
-      pMain = &xmlDoc;
-    else
-    {
-      TiXmlElement xmlMainElement("musicdb");
-      pMain = xmlDoc.InsertEndChild(xmlMainElement);
-    }
-    while (!m_pDS->eof())
-    {
-      CAlbum album = GetAlbumFromDataset(m_pDS.get());
-      album.thumbURL.Clear();
-      album.thumbURL.ParseString(m_pDS->fv("albuminfo.strImage").get_asString());
-      long idAlbumInfo = m_pDS->fv("albuminfo.idAlbumInfo").get_asLong();
-      GetAlbumInfoSongs(idAlbumInfo,album.songs);
-      CStdString strPath;
-      GetAlbumPath(album.idAlbum,strPath);
-      album.Save(pMain, "album", strPath);
-      if (singleFiles)
-      {
-        CStdString nfoFile;
-        CUtil::AddFileToFolder(strPath, "album.nfo", nfoFile);
-        xmlDoc.SaveFile(nfoFile.c_str());
-        xmlDoc.Clear();
-        TiXmlDeclaration decl("1.0", "UTF-8", "yes");
-        xmlDoc.InsertEndChild(decl);
-      }
-      if ((current % 50) == 0 && progress)
-      {
-        progress->SetLine(1, album.strAlbum);
-        progress->SetPercentage(current * 100 / total);
-        progress->Progress();
-        if (progress->IsCanceled())
-        {
-          progress->Close();
-          m_pDS->close();
-          return;
-        }
-      }
-      m_pDS->next();
-      current++;
-    }
-    m_pDS->close();
-
-    // find all artists
-    sql = "select * from artistinfo "
-          "join artist on artist.idartist=artistinfo.idArtist";
- 
-    m_pDS->query(sql.c_str());
-
-    total = m_pDS->num_rows();
-    current = 0;
-
-    while (!m_pDS->eof())
-    {
-      CArtist artist = GetArtistFromDataset(m_pDS.get());
-      CStdString strSQL=FormatSQL("select * from discography where idArtist=%i",artist.idArtist);
-      m_pDS2->query(strSQL.c_str());
-      while (!m_pDS2->eof())
-      {
-        artist.discography.push_back(make_pair(m_pDS2->fv("strAlbum").get_asString(),m_pDS2->fv("strYear").get_asString()));
-        m_pDS2->next();
-      }
-      CStdString strPath;
-      GetArtistPath(artist.idArtist,strPath);
-      artist.Save(pMain, "artist", strPath);
-      if (singleFiles)
-      {
-        CStdString nfoFile;
-        CUtil::AddFileToFolder(strPath, "artist.nfo", nfoFile);
-        xmlDoc.SaveFile(nfoFile.c_str());
-        xmlDoc.Clear();
-        TiXmlDeclaration decl("1.0", "UTF-8", "yes");
-        xmlDoc.InsertEndChild(decl);
-      }
-      if ((current % 50) == 0 && progress)
-      {
-        progress->SetLine(1, artist.strArtist);
-        progress->SetPercentage(current * 100 / total);
-        progress->Progress();
-        if (progress->IsCanceled())
-        {
-          progress->Close();
-          m_pDS->close();
-          return;
-        }
-      }
-      m_pDS->next();
-      current++;
-    }
-    m_pDS->close();
-
-    if (progress)
-      progress->Close();
-
-    xmlDoc.SaveFile(xmlFile.c_str());
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
-  }
 }
 
 void CMusicDatabase::ImportFromXML(const CStdString &xmlFile)
 {
-  CGUIDialogProgress *progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-  try
-  {
-    if (NULL == m_pDB.get()) return;
-    if (NULL == m_pDS.get()) return;
 
-    TiXmlDocument xmlDoc;
-    if (!xmlDoc.LoadFile(xmlFile))
-      return;
-
-    TiXmlElement *root = xmlDoc.RootElement();
-    if (!root) return;
-
-    if (progress)
-    {
-      progress->SetHeading(648);
-      progress->SetLine(0, 649);
-      progress->SetLine(1, 330);
-      progress->SetLine(2, "");
-      progress->SetPercentage(0);
-      progress->StartModal();
-      progress->ShowProgressBar(true);
-    }
-
-    TiXmlElement *entry = root->FirstChildElement();
-    int current = 0;
-    int total = 0;
-    // first count the number of items...
-    while (entry)
-    {
-      if (strnicmp(entry->Value(), "artist", 6)==0 ||
-          strnicmp(entry->Value(), "album", 5)==0)
-        total++;
-      entry = entry->NextSiblingElement();
-    }
-
-    BeginTransaction();
-    entry = root->FirstChildElement();
-    while (entry)
-    {
-      CArtist artist;
-      CAlbum album;
-      CStdString strTitle;
-      if (strnicmp(entry->Value(), "artist", 6) == 0)
-      { 
-        artist.Load(entry);
-        strTitle = artist.strArtist;
-        long idArtist = GetArtistByName(artist.strArtist);
-        if (idArtist > -1)
-          SetArtistInfo(idArtist,artist);
-
-        current++;
-      }
-      else if (strnicmp(entry->Value(), "album", 5) == 0)
-      { 
-        album.Load(entry);
-        strTitle = album.strAlbum;
-        long idAlbum = GetAlbumByName(album.strAlbum,album.strArtist);
-        if (idAlbum > -1)
-          SetAlbumInfo(idAlbum,album,album.songs,false);
-
-        current++;
-      }
-      entry = entry ->NextSiblingElement();
-      if (progress && total)
-      {
-        progress->SetPercentage(current * 100 / total);
-        progress->SetLine(2, strTitle);
-        progress->Progress();
-        if (progress->IsCanceled())
-        {
-          progress->Close();
-          RollbackTransaction();
-          return;
-        }
-      }
-    }
-    CommitTransaction();
-
-    g_infoManager.ResetPersistentCache();
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
-  }
-  if (progress)
-    progress->Close();
 }
 

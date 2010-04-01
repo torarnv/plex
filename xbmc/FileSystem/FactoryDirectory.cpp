@@ -27,9 +27,7 @@
 #include "StackDirectory.h"
 #include "FactoryFileDirectory.h"
 #include "PlaylistDirectory.h"
-#include "MusicDatabaseDirectory.h"
 #include "MusicSearchDirectory.h"
-#include "VideoDatabaseDirectory.h"
 #include "PlexDirectory.h"
 #include "ShoutcastDirectory.h"
 #include "LastFMDirectory.h"
@@ -112,9 +110,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
   if (strProtocol == "stack") return new CStackDirectory();
   if (strProtocol == "playlistmusic") return new CPlaylistDirectory();
   if (strProtocol == "playlistvideo") return new CPlaylistDirectory();
-  if (strProtocol == "musicdb") return new CMusicDatabaseDirectory();
   if (strProtocol == "musicsearch") return new CMusicSearchDirectory();
-  if (strProtocol == "videodb") return new CVideoDatabaseDirectory();
   if (strProtocol == "filereader")
     return CFactoryDirectory::Create(url.GetFileName());
 #ifdef HAS_XBOX_HARDWARE

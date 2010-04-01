@@ -22,7 +22,6 @@
 #include "stdafx.h"
 #include "GUIViewStateVideo.h"
 #include "PlayListPlayer.h"
-#include "FileSystem/VideoDatabaseDirectory.h"
 #include "FileSystem/PluginDirectory.h"
 #include "GUIBaseContainer.h"
 #include "VideoDatabase.h"
@@ -33,7 +32,6 @@
 #include "PlexDirectory.h"
 
 using namespace DIRECTORY;
-using namespace VIDEODATABASEDIRECTORY;
 
 CStdString CGUIViewStateWindowVideo::GetLockType()
 {
@@ -116,189 +114,6 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
 
     SetSortOrder(SORT_ORDER_NONE);
   }
-  else if (items.IsVideoDb())
-  {
-    NODE_TYPE NodeType=CVideoDatabaseDirectory::GetDirectoryChildType(items.m_strPath);
-    CQueryParams params;
-    CVideoDatabaseDirectory::GetQueryParams(items.m_strPath,params);
-    
-    switch (NodeType)
-    {
-    case NODE_TYPE_MOVIES_OVERVIEW:
-    case NODE_TYPE_TVSHOWS_OVERVIEW:
-    case NODE_TYPE_MUSICVIDEOS_OVERVIEW:
-    case NODE_TYPE_OVERVIEW:
-      {
-        AddSortMethod(SORT_METHOD_NONE, 551, LABEL_MASKS("%F", "%I", "%L", ""));  // Filename, Size | Foldername, empty
-
-        SetSortMethod(SORT_METHOD_NONE);
-
-        SetViewAsControl(DEFAULT_VIEW_LIST);
-
-        SetSortOrder(SORT_ORDER_NONE);
-      }
-      break;
-    case NODE_TYPE_DIRECTOR:
-    case NODE_TYPE_ACTOR:
-      {
-        AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%T", "%R", "%L", ""));  // Filename, Duration | Foldername, empty
-        SetSortMethod(SORT_METHOD_LABEL);
-
-        SetViewAsControl(g_stSettings.m_viewStateVideoNavActors.m_viewMode);
-
-        SetSortOrder(g_stSettings.m_viewStateVideoNavActors.m_sortOrder);
-      }
-      break;
-    case NODE_TYPE_YEAR:
-      {
-        AddSortMethod(SORT_METHOD_LABEL, 562, LABEL_MASKS("%T", "%R", "%L", ""));  // Filename, Duration | Foldername, empty
-        SetSortMethod(SORT_METHOD_LABEL);
-
-        SetViewAsControl(g_stSettings.m_viewStateVideoNavYears.m_viewMode);
-
-        SetSortOrder(g_stSettings.m_viewStateVideoNavYears.m_sortOrder);
-      }
-      break;
-    case NODE_TYPE_SEASONS:
-      {
-        AddSortMethod(SORT_METHOD_VIDEO_TITLE, 551, LABEL_MASKS("%L", "","%L",""));  // Filename, Duration | Foldername, empty
-        SetSortMethod(SORT_METHOD_VIDEO_TITLE);
-
-        SetViewAsControl(g_stSettings.m_viewStateVideoNavSeasons.m_viewMode);
-
-        SetSortOrder(g_stSettings.m_viewStateVideoNavSeasons.m_sortOrder);
-      }
-      break;
-    case NODE_TYPE_TITLE_TVSHOWS:
-      {
-        if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
-          AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551, LABEL_MASKS("%L", "%M", "%L", "%M"));  // Filename, Duration | Foldername, empty
-        else
-          AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%L", "%M", "%L", "%M"));  // Filename, Duration | Foldername, empty
-
-        AddSortMethod(SORT_METHOD_TRACKNUM, 20360, LABEL_MASKS("%L", "%M", "%L", "%M"));  // Filename, Duration | Foldername, empty
-        AddSortMethod(SORT_METHOD_YEAR,562,LABEL_MASKS("%L","%Y","%L","%Y"));
-        SetSortMethod(SORT_METHOD_LABEL);
-
-        SetViewAsControl(g_stSettings.m_viewStateVideoNavTvShows.m_viewMode);
-
-        SetSortOrder(g_stSettings.m_viewStateVideoNavTvShows.m_sortOrder);
-      }
-      break;
-    case NODE_TYPE_GENRE:
-    case NODE_TYPE_STUDIO:
-      {
-        AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%T", "%R", "%L", ""));  // Filename, Duration | Foldername, empty
-        SetSortMethod(SORT_METHOD_LABEL);
-
-        SetViewAsControl(g_stSettings.m_viewStateVideoNavGenres.m_viewMode);
-
-        SetSortOrder(g_stSettings.m_viewStateVideoNavGenres.m_sortOrder);
-      }
-      break;
-    case NODE_TYPE_EPISODES:
-      {
-        if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
-          AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551, LABEL_MASKS("%T","%R"));  // Filename, Duration | Foldername, empty
-        else
-          AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%T", "%R"));  // Filename, Duration | Foldername, empty
-        if (params.GetSeason() > -1)
-        {
-          AddSortMethod(SORT_METHOD_VIDEO_RATING, 563, LABEL_MASKS("%E. %T", "%R"));  // Filename, Duration | Foldername, empty
-          AddSortMethod(SORT_METHOD_EPISODE,20359,LABEL_MASKS("%E. %T","%R"));
-          AddSortMethod(SORT_METHOD_PRODUCTIONCODE,20368,LABEL_MASKS("%E. %T","%P", "%E. %T","%P"));
-          AddSortMethod(SORT_METHOD_DATE,552,LABEL_MASKS("%E. %T","%J","E. %T","%J"));
-        }
-        else
-        {
-          AddSortMethod(SORT_METHOD_VIDEO_RATING, 563, LABEL_MASKS("%H. %T", "%R"));  // Filename, Duration | Foldername, empty
-          AddSortMethod(SORT_METHOD_EPISODE,20359,LABEL_MASKS("%H. %T","%R"));
-          AddSortMethod(SORT_METHOD_PRODUCTIONCODE,20368,LABEL_MASKS("%H. %T","%P", "%H. %T","%P"));
-          AddSortMethod(SORT_METHOD_DATE,552,LABEL_MASKS("%H. %T","%J","%H. %T","%J"));
-        }
-
-        SetSortMethod(g_stSettings.m_viewStateVideoNavEpisodes.m_sortMethod);
-
-        SetViewAsControl(g_stSettings.m_viewStateVideoNavEpisodes.m_viewMode);
-
-        SetSortOrder(g_stSettings.m_viewStateVideoNavEpisodes.m_sortOrder);
-        break;
-      }
-    case NODE_TYPE_RECENTLY_ADDED_EPISODES:
-      {
-        AddSortMethod(SORT_METHOD_NONE, 552, LABEL_MASKS("%Z - %H. %T", "%R"));  // Filename, Duration | Foldername, empty
-        SetSortMethod(SORT_METHOD_NONE);
-
-        SetViewAsControl(g_stSettings.m_viewStateVideoNavEpisodes.m_viewMode);
-        SetSortOrder(SORT_ORDER_NONE);
-
-        break;
-      }
-    case NODE_TYPE_TITLE_MOVIES:
-      {
-        if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
-          AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551, LABEL_MASKS("%T", "%R"));  // Filename, Duration | Foldername, empty
-        else
-          AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%T", "%R"));  // Filename, Duration | Foldername, empty
-        AddSortMethod(SORT_METHOD_VIDEO_RATING, 563, LABEL_MASKS("%T", "%R"));  // Filename, Duration | Foldername, empty
-        AddSortMethod(SORT_METHOD_YEAR,562, LABEL_MASKS("%T", "%Y"));
-        SetSortMethod(g_stSettings.m_viewStateVideoNavTitles.m_sortMethod);
-
-        SetViewAsControl(g_stSettings.m_viewStateVideoNavTitles.m_viewMode);
-
-        SetSortOrder(g_stSettings.m_viewStateVideoNavTitles.m_sortOrder);
-      }
-      break;
-      case NODE_TYPE_TITLE_MUSICVIDEOS:
-      {
-        if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
-          AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 556, LABEL_MASKS("%T", "%Y"));  // Filename, Duration | Foldername, empty
-        else
-          AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%T", "%Y"));  // Filename, Duration | Foldername, empty
-        AddSortMethod(SORT_METHOD_YEAR,562, LABEL_MASKS("%T", "%Y"));
-        if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
-        {
-          AddSortMethod(SORT_METHOD_ARTIST_IGNORE_THE,557, LABEL_MASKS("%A - %T", "%Y"));
-          AddSortMethod(SORT_METHOD_ALBUM_IGNORE_THE,558, LABEL_MASKS("%B - %T", "%Y"));
-        }
-        else
-        {
-          AddSortMethod(SORT_METHOD_ARTIST,557, LABEL_MASKS("%A - %T", "%Y"));
-          AddSortMethod(SORT_METHOD_ALBUM,558, LABEL_MASKS("%B - %T", "%Y"));
-        }
-        
-        SetSortMethod(g_stSettings.m_viewStateVideoNavMusicVideos.m_sortMethod);
-
-        SetViewAsControl(g_stSettings.m_viewStateVideoNavMusicVideos.m_viewMode);
-
-        SetSortOrder(g_stSettings.m_viewStateVideoNavMusicVideos.m_sortOrder);
-      }
-      break;
-    case NODE_TYPE_RECENTLY_ADDED_MOVIES:
-      {
-        AddSortMethod(SORT_METHOD_NONE, 552, LABEL_MASKS("%T", "%R"));
-        SetSortMethod(SORT_METHOD_NONE);
-
-        SetViewAsControl(g_stSettings.m_viewStateVideoNavTitles.m_viewMode);
-
-        SetSortOrder(SORT_ORDER_NONE);
-      }
-      break;
-    case NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS:
-      {
-        AddSortMethod(SORT_METHOD_NONE, 552, LABEL_MASKS("%A - %T", "%Y"));
-        SetSortMethod(SORT_METHOD_NONE);
-
-        SetViewAsControl(g_stSettings.m_viewStateVideoNavMusicVideos.m_viewMode);
-
-        SetSortOrder(SORT_ORDER_NONE);
-      }
-      break;
-    default:
-      break;
-    } 
-  }
-  else
   {
     AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%F", "%D", "%L", ""));  // Filename, Duration | Foldername, empty
     SetSortMethod(SORT_METHOD_LABEL);
@@ -311,36 +126,6 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
 
 void CGUIViewStateWindowVideoNav::SaveViewState()
 {
-  NODE_TYPE NodeType = CVideoDatabaseDirectory::GetDirectoryChildType(m_items.m_strPath);
-  switch (NodeType)
-  {
-  case NODE_TYPE_ACTOR:
-    SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, g_stSettings.m_viewStateVideoNavActors);
-    break;
-  case NODE_TYPE_YEAR:
-    SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, g_stSettings.m_viewStateVideoNavYears);
-    break;
-  case NODE_TYPE_GENRE:
-    SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, g_stSettings.m_viewStateVideoNavGenres);
-    break;
-  case NODE_TYPE_TITLE_MOVIES:
-    SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, g_stSettings.m_viewStateVideoNavTitles);
-    break;
-  case NODE_TYPE_EPISODES:
-    SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, g_stSettings.m_viewStateVideoNavEpisodes);
-    break;
-  case NODE_TYPE_TITLE_TVSHOWS:
-    SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, g_stSettings.m_viewStateVideoNavTvShows);
-    break;
-  case NODE_TYPE_SEASONS:
-    SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, g_stSettings.m_viewStateVideoNavSeasons);
-    break;
-  case NODE_TYPE_TITLE_MUSICVIDEOS:
-    SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, g_stSettings.m_viewStateVideoNavMusicVideos);
-  default:
-    SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV);
-    break;
-  }
 }
 
 VECSOURCES& CGUIViewStateWindowVideoNav::GetSources()
@@ -382,12 +167,6 @@ VECSOURCES& CGUIViewStateWindowVideoNav::GetSources()
 
 bool CGUIViewStateWindowVideoNav::AutoPlayNextItem()
 {
-  CVideoDatabaseDirectory dir;
-  CQueryParams params;
-  CVideoDatabaseDirectory::GetQueryParams(m_items.m_strPath,params);
-  if (params.GetContentType() == VIDEODB_CONTENT_MUSICVIDEOS || params.GetContentType() == 6) // recently added musicvideos
-    return g_guiSettings.GetBool("mymusic.autoplaynextitem");
-  
   return false;
 }
 

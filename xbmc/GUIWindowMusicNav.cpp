@@ -33,8 +33,6 @@
 #include "GUIDialogFileBrowser.h"
 #include "GUIDialogContentSettings.h"
 #include "Picture.h"
-#include "FileSystem/MusicDatabaseDirectory.h"
-#include "FileSystem/VideoDatabaseDirectory.h"
 #include "PartyModeManager.h"
 #include "PlayListFactory.h"
 #include "VideoDatabase.h"
@@ -50,7 +48,6 @@
 using namespace std;
 using namespace DIRECTORY;
 using namespace PLAYLIST;
-using namespace MUSICDATABASEDIRECTORY;
 
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
@@ -301,18 +298,6 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
 
 bool CGUIWindowMusicNav::OnAction(const CAction& action)
 {
-  if (action.wID == ACTION_SCAN_ITEM)
-  {
-    int item = m_viewControl.GetSelectedItem();
-    CMusicDatabaseDirectory dir;
-    if (item > -1 && m_vecItems->Get(item)->m_bIsFolder
-                  && (dir.HasAlbumInfo(m_vecItems->Get(item)->m_strPath)||
-                      dir.IsArtistDir(m_vecItems->Get(item)->m_strPath)))
-      OnContextButton(item,CONTEXT_BUTTON_INFO);
-
-    return true;
-  }
-  
   return CGUIWindowMusicBase::OnAction(action);
 }
 
@@ -389,30 +374,7 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
     }
   }
 
-  // update our content in the info manager
-  if (strDirectory.Left(10).Equals("videodb://"))
-  {
-    CVideoDatabaseDirectory dir;
-    VIDEODATABASEDIRECTORY::NODE_TYPE node = dir.GetDirectoryChildType(strDirectory);
-    if (node == VIDEODATABASEDIRECTORY::NODE_TYPE_TITLE_MUSICVIDEOS)
-      items.SetContent("musicvideos");
-  }
-  else if (strDirectory.Left(10).Equals("musicdb://"))
-  {
-    CMusicDatabaseDirectory dir;
-    NODE_TYPE node = dir.GetDirectoryChildType(strDirectory);
-    if (node == NODE_TYPE_ALBUM)
-      items.SetContent("albums");
-    else if (node == NODE_TYPE_ARTIST)
-      items.SetContent("artists");
-    else if (node == NODE_TYPE_SONG)
-      items.SetContent("songs");
-    else if (node == NODE_TYPE_GENRE)
-      items.SetContent("genres");
-    else if (node == NODE_TYPE_YEAR)
-      items.SetContent("years");
-  }
-  else if (strDirectory.Equals("special://musicplaylists"))
+  if (strDirectory.Equals("special://musicplaylists"))
     items.SetContent("playlists");
   else if (strDirectory.Equals("plugin://music/"))
     items.SetContent("plugins");
@@ -463,8 +425,6 @@ void CGUIWindowMusicNav::UpdateButtons()
   // everything else is from a musicdb:// path
   else
   {
-    CMusicDatabaseDirectory dir;
-    dir.GetLabel(m_vecItems->m_strPath, strLabel);
   }
 
   SET_CONTROL_LABEL(CONTROL_FILTER, strLabel);
@@ -780,11 +740,6 @@ void CGUIWindowMusicNav::SetThumb(int iItem, CONTEXT_BUTTON button)
     if (picturePath.Equals("thumb://None") ||
         picture.DoCreateThumbnail(picturePath, cachedThumb))
     {
-      CMusicDatabaseDirectory dir;
-      dir.ClearDirectoryCache(m_vecItems->m_strPath);
-      CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
-      g_graphicsContext.SendMessage(msg);
-      Update(m_vecItems->m_strPath);
     }
     else
       CLog::Log(LOGERROR, " %s Could not cache artist/plugin thumb: %s", __FUNCTION__, picturePath.c_str());
@@ -869,6 +824,7 @@ void CGUIWindowMusicNav::OnFilterItems()
 
 void CGUIWindowMusicNav::FilterItems(CFileItemList &items)
 {
+#if 0
   if (m_vecItems->IsVirtualDirectoryRoot())
     return;
 
@@ -907,6 +863,7 @@ void CGUIWindowMusicNav::FilterItems(CFileItemList &items)
     if (pos != CStdString::npos)
       items.Add(item);
   }
+#endif
 }
 
 void CGUIWindowMusicNav::OnFinalizeFileItems(CFileItemList &items)
