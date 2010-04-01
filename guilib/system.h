@@ -144,13 +144,13 @@
 #define HAS_LCD
 #include "../config.h"
 #endif
-#define HAS_PYTHON
-#undef  HAS_TRAINER
+#undef HAS_PYTHON
+#undef HAS_TRAINER
 #define HAS_WEB_SERVER
 #define HAS_EVENT_SERVER
-#define HAS_UPNP
-#undef  HAS_AUDIO
-#define  HAS_SHOUTCAST
+#undef HAS_UPNP
+#undef HAS_AUDIO
+#define HAS_SHOUTCAST
 #define HAS_SDL
 #define HAS_RAR
 #ifndef __APPLE__

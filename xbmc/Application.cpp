@@ -5923,10 +5923,6 @@ void CApplication::ProcessSlow()
   // checks whats in the DVD drive and tries to autostart the content (xbox games, dvd, cdda, avi files...)
   m_Autorun.HandleAutorun();
 
-  // update upnp server/renderer states
-  if(CUPnP::IsInstantiated())
-    CUPnP::GetInstance()->UpdateState();
-
   //Check to see if current playing Title has changed and whether we should broadcast the fact
   CheckForTitleChange();
 
