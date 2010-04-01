@@ -661,8 +661,7 @@ class PlexMediaNodeLibrary : public PlexMediaNode
         
         // From the metadata item.
         CacheMediaThumb(theMediaItem, &el, url, "contentRating", pVersion);
-        CacheMediaThumb(theMediaItem, &el, url, "tvStudio", pVersion);
-        CacheMediaThumb(theMediaItem, &el, url, "movieStudio", pVersion);
+        CacheMediaThumb(theMediaItem, &el, url, "studio", pVersion);
       }
       
       // But we add each one to the list.
