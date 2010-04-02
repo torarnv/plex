@@ -501,6 +501,13 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
   if (item)
   {
     includeStandardContextButtons = item->m_includeStandardContextItems;
+    if (m_vecItems->IsVirtualDirectoryRoot())
+    {
+      // get the usual shares, and anything for all media windows
+      CMediaSource *share = CGUIDialogContextMenu::GetShare("video", item.get());
+      CGUIDialogContextMenu::GetContextButtons("video", share, buttons);
+      CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
+    }
     
     // The info button.
     if (m_vecItems->GetContent() == "movies")
@@ -510,10 +517,13 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
     else if (m_vecItems->GetContent() == "episodes")
       buttons.Add(CONTEXT_BUTTON_INFO, 20352);
     
-    if (item->m_bIsFolder || item->GetVideoInfoTag()->m_playCount > 0)
-      buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104);
-    if (item->m_bIsFolder || item->GetVideoInfoTag()->m_playCount == 0)
-      buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);
+    if (item->IsPlexMediaServerLibrary())
+    {
+      if (item->m_bIsFolder || item->GetVideoInfoTag()->m_playCount > 0)
+        buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104);
+      if (item->m_bIsFolder || item->GetVideoInfoTag()->m_playCount == 0)
+        buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);
+    }
     
     if (m_vecItems->IsVirtualDirectoryRoot() == false)
       CGUIWindowVideoBase::GetContextButtons(itemNumber, buttons);
