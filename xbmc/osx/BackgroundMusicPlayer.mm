@@ -300,8 +300,6 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
         if (themeMusic)
           [themeMusic play];
         
-        [url release];
-        
         if (error)
         {
           NSLog(@"ERROR: %@", error);
