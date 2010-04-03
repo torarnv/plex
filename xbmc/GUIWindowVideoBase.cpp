@@ -946,16 +946,37 @@ void CGUIWindowVideoBase::MarkUnWatched(const CFileItemPtr &item)
   item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED);
   if (item->GetVideoInfoTag())
     item->GetVideoInfoTag()->m_playCount = 0;
+  
+  // Fix numbers.
+  if (item->HasProperty("watchedepisodes"))
+  {
+    int watched = boost::lexical_cast<int>(item->GetProperty("watchedepisodes"));
+    int unwatched = boost::lexical_cast<int>(item->GetProperty("unwatchedepisodes"));
+    
+    item->SetProperty("unwatchedepisodes", watched + unwatched);
+    item->SetProperty("watchedepisodes", 0);
+  }
 }
 
 //Add Mark a Title as watched
 void CGUIWindowVideoBase::MarkWatched(const CFileItemPtr &item)
 {
   PlexMediaServerQueue::Get().onViewed(item, true);
-  
+
+  // Change the item.
   item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_WATCHED);
   if (item->GetVideoInfoTag())
     item->GetVideoInfoTag()->m_playCount++;
+  
+  // Fix numbers.
+  if (item->HasProperty("watchedepisodes"))
+  {
+    int watched = boost::lexical_cast<int>(item->GetProperty("watchedepisodes"));
+    int unwatched = boost::lexical_cast<int>(item->GetProperty("unwatchedepisodes"));
+    
+    item->SetProperty("unwatchedepisodes", 0);
+    item->SetProperty("watchedepisodes", watched + unwatched);
+  }
 }
 
 //Add change a title's name

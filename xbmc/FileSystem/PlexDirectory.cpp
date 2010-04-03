@@ -618,6 +618,11 @@ class PlexMediaNodeLibrary : public PlexMediaNode
       videoInfo.m_strShowTitle = videoInfo.m_strTitle;
     }
 
+    // Views.
+    int viewCount = 0;
+    if (el.Attribute("viewCount"))
+      viewCount = boost::lexical_cast<int>(el.Attribute("viewCount"));
+    
     vector<CFileItemPtr> mediaItems;
     for (TiXmlElement* media = el.FirstChildElement(); media; media=media->NextSiblingElement())
     {
@@ -634,11 +639,15 @@ class PlexMediaNodeLibrary : public PlexMediaNode
       if (pDuration && strlen(pDuration) > 0)
         theVideoInfo.m_strRuntime = BuildDurationString(pDuration);
 
+      // Viewed.
+      theVideoInfo.m_playCount = viewCount;
+      
       // Create the file item.
       CFileItemPtr theMediaItem(new CFileItem(theVideoInfo));
 
       theMediaItem->m_bIsFolder = false;
       theMediaItem->m_strPath = url;
+      theMediaItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, viewCount > 0);
       
       // Bitrate.
       const char* bitrate = media->Attribute("bitrate");
@@ -715,11 +724,9 @@ class PlexMediaDirectory : public PlexMediaNode
     }
     
     // Studio.
-    if (el.Attribute("tvStudio"))
-      tag.m_strStudio = el.Attribute("tvStudio");
-    else if (el.Attribute("movieStudio"))
-      tag.m_strStudio = el.Attribute("movieStudio");
-    
+    if (el.Attribute("studio"))
+      tag.m_strStudio = el.Attribute("studio");
+
     // Duration.
     if (el.Attribute("duration"))
       tag.m_strRuntime = BuildDurationString(el.Attribute("duration"));
@@ -729,6 +736,19 @@ class PlexMediaDirectory : public PlexMediaNode
     newItem->m_strPath = pItem->m_strPath;
     newItem->SetProperty("description", pItem->GetProperty("description"));
     pItem = newItem;
+
+    // Watch/unwatched.
+    if (el.Attribute("leafCount") && el.Attribute("viewedLeafCount"))
+    {
+      int count = boost::lexical_cast<int>(el.Attribute("leafCount"));
+      int watchedCount = boost::lexical_cast<int>(el.Attribute("viewedLeafCount"));
+      
+      pItem->SetProperty("watchedepisodes", watchedCount);
+      pItem->SetProperty("unwatchedepisodes", count - watchedCount);
+      pItem->GetVideoInfoTag()->m_iEpisode = count;
+      pItem->GetVideoInfoTag()->m_playCount = (count == watchedCount) ? 1 : 0;
+      pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pItem->GetVideoInfoTag()->m_playCount > 0);
+    }
     
     // Check for special directories.
     const char* search = el.Attribute("search");
