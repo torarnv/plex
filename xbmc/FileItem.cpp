@@ -838,8 +838,10 @@ bool CFileItem::IsPlexMediaServerLibrary() const
   if (IsPlexMediaServer() == false)
       return false;
   
-  if (m_strPath.Find("/library/parts/") != -1)
+  if (m_strPath.Find("/library/parts/") != -1 || m_strPath.Find("/library/sections/") != -1)
+  {
     return true;
+  }
   
   return false;
 }
