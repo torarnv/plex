@@ -60,6 +60,7 @@
 		E313121E0EC64B7300629994 /* PlexMediaServerHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E313121C0EC64B7300629994 /* PlexMediaServerHelper.cpp */; };
 		E315944410796A9F00F4EA68 /* Compressors.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E315944310796A9F00F4EA68 /* Compressors.cpp */; };
 		E32B456E0EB2DC4D00E19A30 /* GUIListGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E32B456C0EB2DC4D00E19A30 /* GUIListGroup.cpp */; };
+		E32C7870116821BF00522F8C /* GUIViewStateMusic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E32C786F116821BF00522F8C /* GUIViewStateMusic.cpp */; };
 		E336EF2F0E60256000270758 /* GUIViewStatePictures.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E336EF000E60250700270758 /* GUIViewStatePictures.cpp */; };
 		E336EF300E60256000270758 /* GUIViewStatePrograms.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E336EF020E60250700270758 /* GUIViewStatePrograms.cpp */; };
 		E336EF310E60256000270758 /* GUIViewStateScripts.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E336EF040E60250700270758 /* GUIViewStateScripts.cpp */; };
@@ -1117,6 +1118,8 @@
 		E315944310796A9F00F4EA68 /* Compressors.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Compressors.cpp; sourceTree = "<group>"; };
 		E32B456C0EB2DC4D00E19A30 /* GUIListGroup.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIListGroup.cpp; sourceTree = "<group>"; };
 		E32B456D0EB2DC4D00E19A30 /* GUIListGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIListGroup.h; sourceTree = "<group>"; };
+		E32C786E116821BF00522F8C /* GUIViewStateMusic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIViewStateMusic.h; sourceTree = "<group>"; };
+		E32C786F116821BF00522F8C /* GUIViewStateMusic.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIViewStateMusic.cpp; sourceTree = "<group>"; };
 		E33206370D5070AA00435CE3 /* DVDDemuxVobsub.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDDemuxVobsub.cpp; sourceTree = "<group>"; };
 		E33466A50D2E5103005A65EC /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
 		E336EF000E60250700270758 /* GUIViewStatePictures.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIViewStatePictures.cpp; sourceTree = "<group>"; };
@@ -3680,6 +3683,8 @@
 		E38E14610D25F9F900618676 /* xbmc */ = {
 			isa = PBXGroup;
 			children = (
+				E32C786E116821BF00522F8C /* GUIViewStateMusic.h */,
+				E32C786F116821BF00522F8C /* GUIViewStateMusic.cpp */,
 				1A232874108A94500056F996 /* GUIDialogTimer.h */,
 				1A232875108A94510056F996 /* GUIDialogTimer.cpp */,
 				E3A0E2E30FB195E1005CABFE /* PlexMediaServerScrobbler.cpp */,
@@ -7268,6 +7273,7 @@
 				1AA19C05108EAEDC008D2EAD /* HIDRemote.m in Sources */,
 				1A356D5210AD53E50014C668 /* PlexSourceScanner.cpp in Sources */,
 				E3D32FC2114C59B100F2B108 /* PlexMediaServerQueue.cpp in Sources */,
+				E32C7870116821BF00522F8C /* GUIViewStateMusic.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
