@@ -32,6 +32,12 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
   else
     _o_sharedMainInstance = [super init];
  
+  // Register for notifications.
+  [[NSNotificationCenter defaultCenter] addObserver:self
+      selector:@selector(movieLoadStateDidChange:)
+      name:QTMovieLoadStateDidChangeNotification
+      object:nil];
+  
   // Initialize random number generator.
   srandom(time(0));
   
@@ -493,6 +499,19 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
 
     // Fade the audio in after we wait .5 seconds
     [self performSelector:@selector(play) withObject:nil afterDelay:0.5];  // wait 2 seconds before we try to pause
+  }
+}
+
+- (void)movieLoadStateDidChange:(NSNotification *)notification
+{
+  // First make sure that this notification is for our movie.
+  if ([notification object] == themeMusic)
+  {
+    if ([themeMusic rate] == 0)
+    {
+      if ([[themeMusic attributeForKey:QTMovieLoadStateAttribute] longValue] >= kMovieLoadStatePlaythroughOK)
+        [themeMusic play];
+    }
   }
 }
 

@@ -62,4 +62,6 @@
 
 - (void)foundFocus;
 - (void)lostFocus;
+
+- (void)movieLoadStateDidChange:(NSNotification *)notification;
 @end
