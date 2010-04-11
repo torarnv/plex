@@ -34,12 +34,13 @@ class CPlexDirectory : public IDirectory,
   string GetData() { return m_data; } 
   
  protected:
-   
+  
   virtual void Process();
   virtual void OnExit();
   virtual void StopThread();
   
   void Parse(const CURL& url, TiXmlElement* root, CFileItemList &items, string& strFileLabel, string& strSecondFileLabel, string& strDirLabel, string& strSecondDirLabel);
+  void ParseTags(TiXmlElement* element, const CFileItemPtr& item, const string& name);
   
   CEvent     m_downloadEvent;
   bool       m_bStop;

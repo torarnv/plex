@@ -855,6 +855,7 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
   else if (info.Equals("album")) return LISTITEM_ALBUM;
   else if (info.Equals("year")) return LISTITEM_YEAR;
   else if (info.Equals("genre")) return LISTITEM_GENRE;
+  else if (info.Equals("firstgenre")) return LISTITEM_FIRST_GENRE;
   else if (info.Equals("director")) return LISTITEM_DIRECTOR;
   else if (info.Equals("filename")) return LISTITEM_FILENAME;
   else if (info.Equals("filenameandpath")) return LISTITEM_FILENAME_AND_PATH;
@@ -3039,7 +3040,7 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
       return m_currentFile->GetVideoInfoTag()->m_strGenre;
       break;
     case VIDEOPLAYER_DIRECTOR:
-      return m_currentFile->GetVideoInfoTag()->m_strDirector;
+      return m_currentFile->GetProperty("director");
       break;
     case VIDEOPLAYER_RATING:
       {
@@ -3134,7 +3135,7 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     case VIDEOPLAYER_ALBUM:
       return m_currentFile->GetVideoInfoTag()->m_strAlbum;
     case VIDEOPLAYER_WRITER:
-      return m_currentFile->GetVideoInfoTag()->m_strWritingCredits;
+      return m_currentFile->GetProperty("writer");
     case VIDEOPLAYER_TAGLINE:
       return m_currentFile->GetVideoInfoTag()->m_strTagLine;
     }
@@ -3677,8 +3678,8 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
       return CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strArtist);
     break;
   case LISTITEM_DIRECTOR:
-    if (item->HasVideoInfoTag())
-      return CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strDirector);
+    return item->GetProperty("director");
+    break;
   case LISTITEM_ALBUM:
     if (item->HasMusicInfoTag())
       return CorrectAllItemsSortHack(item->GetMusicInfoTag()->GetAlbum());
@@ -3713,10 +3714,10 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
     }
     break;
   case LISTITEM_GENRE:
-    if (item->HasMusicInfoTag())
-      return CorrectAllItemsSortHack(item->GetMusicInfoTag()->GetGenre());
-    if (item->HasVideoInfoTag())
-      return CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strGenre);
+    return item->GetProperty("genre");
+    break;
+  case LISTITEM_FIRST_GENRE:
+    return item->GetProperty("firstGenre");
     break;
   case LISTITEM_FILENAME:
     if (item->IsMusicDb() && item->HasMusicInfoTag())
@@ -3910,8 +3911,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
       return item->GetVideoInfoTag()->GetCast(true);
     break;
   case LISTITEM_WRITER:
-    if (item->HasVideoInfoTag())
-      return item->GetVideoInfoTag()->m_strWritingCredits;;
+    return item->GetProperty("writer");
     break;
   case LISTITEM_TAGLINE:
     if (item->HasVideoInfoTag())

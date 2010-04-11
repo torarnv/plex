@@ -170,6 +170,11 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   if (title2 && strlen(title2) > 0)
     items.SetSecondTitle(title2);
   
+  // Get container summary.
+  const char* summary = root->Attribute("summary");
+  if (summary)
+    items.SetProperty("description", summary);
+  
   // Get color values
   const char* communityRatingColor = root->Attribute("ratingColor");
   
@@ -571,6 +576,7 @@ class PlexMediaNodeLibrary : public PlexMediaNode
     // Collect the URLs.
     for (TiXmlElement* part = media->FirstChildElement(); part; part=part->NextSiblingElement())
     {
+      //if (part->ValueStr() == "Media")
       string url = CPlexDirectory::ProcessUrl(parentPath, part->Attribute("key"), false);
       urls.push_back(url);
     }
@@ -626,55 +632,58 @@ class PlexMediaNodeLibrary : public PlexMediaNode
     vector<CFileItemPtr> mediaItems;
     for (TiXmlElement* media = el.FirstChildElement(); media; media=media->NextSiblingElement())
     {
-      // Create a new file item.
-      CVideoInfoTag theVideoInfo = videoInfo;
-      
-      // Compute the URL.
-      string url = ComputeMediaUrl(parentPath, media);
-      videoInfo.m_strFile = url;
-      videoInfo.m_strFileNameAndPath = url;
-
-      // Duration.
-      const char* pDuration = el.Attribute("duration");
-      if (pDuration && strlen(pDuration) > 0)
-        theVideoInfo.m_strRuntime = BuildDurationString(pDuration);
-
-      // Viewed.
-      theVideoInfo.m_playCount = viewCount;
-      
-      // Create the file item.
-      CFileItemPtr theMediaItem(new CFileItem(theVideoInfo));
-
-      theMediaItem->m_bIsFolder = false;
-      theMediaItem->m_strPath = url;
-      theMediaItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, viewCount > 0);
-      
-      // Bitrate.
-      const char* bitrate = media->Attribute("bitrate");
-      if (bitrate && strlen(bitrate) > 0)
-        theMediaItem->m_iBitrate = boost::lexical_cast<int>(bitrate);
-
-      // Build the URLs for the flags.
-      TiXmlElement* parent = (TiXmlElement* )el.Parent();
-      const char* pRoot = parent->Attribute("mediaTagPrefix");
-      const char* pVersion = parent->Attribute("mediaTagVersion");
-      if (pRoot && pVersion)
+      if (media->ValueStr() == "Media")
       {
-        string url = CPlexDirectory::ProcessUrl(parentPath, pRoot, false);
-        CacheMediaThumb(theMediaItem, media, url, "aspectRatio", pVersion);
-        CacheMediaThumb(theMediaItem, media, url, "audioChannels", pVersion);
-        CacheMediaThumb(theMediaItem, media, url, "audioCodec", pVersion);
-        CacheMediaThumb(theMediaItem, media, url, "videoCodec", pVersion);
-        CacheMediaThumb(theMediaItem, media, url, "videoResolution", pVersion);
-        CacheMediaThumb(theMediaItem, media, url, "videoFrameRate", pVersion);
-        
-        // From the metadata item.
-        CacheMediaThumb(theMediaItem, &el, url, "contentRating", pVersion);
-        CacheMediaThumb(theMediaItem, &el, url, "studio", pVersion);
+        // Create a new file item.
+        CVideoInfoTag theVideoInfo = videoInfo;
+
+        // Compute the URL.
+        string url = ComputeMediaUrl(parentPath, media);
+        videoInfo.m_strFile = url;
+        videoInfo.m_strFileNameAndPath = url;
+
+        // Duration.
+        const char* pDuration = el.Attribute("duration");
+        if (pDuration && strlen(pDuration) > 0)
+          theVideoInfo.m_strRuntime = BuildDurationString(pDuration);
+
+        // Viewed.
+        theVideoInfo.m_playCount = viewCount;
+
+        // Create the file item.
+        CFileItemPtr theMediaItem(new CFileItem(theVideoInfo));
+
+        theMediaItem->m_bIsFolder = false;
+        theMediaItem->m_strPath = url;
+        theMediaItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, viewCount > 0);
+
+        // Bitrate.
+        const char* bitrate = media->Attribute("bitrate");
+        if (bitrate && strlen(bitrate) > 0)
+          theMediaItem->m_iBitrate = boost::lexical_cast<int>(bitrate);
+
+        // Build the URLs for the flags.
+        TiXmlElement* parent = (TiXmlElement* )el.Parent();
+        const char* pRoot = parent->Attribute("mediaTagPrefix");
+        const char* pVersion = parent->Attribute("mediaTagVersion");
+        if (pRoot && pVersion)
+        {
+          string url = CPlexDirectory::ProcessUrl(parentPath, pRoot, false);
+          CacheMediaThumb(theMediaItem, media, url, "aspectRatio", pVersion);
+          CacheMediaThumb(theMediaItem, media, url, "audioChannels", pVersion);
+          CacheMediaThumb(theMediaItem, media, url, "audioCodec", pVersion);
+          CacheMediaThumb(theMediaItem, media, url, "videoCodec", pVersion);
+          CacheMediaThumb(theMediaItem, media, url, "videoResolution", pVersion);
+          CacheMediaThumb(theMediaItem, media, url, "videoFrameRate", pVersion);
+
+          // From the metadata item.
+          CacheMediaThumb(theMediaItem, &el, url, "contentRating", pVersion);
+          CacheMediaThumb(theMediaItem, &el, url, "studio", pVersion);
+        }
+
+        // But we add each one to the list.
+        mediaItems.push_back(theMediaItem);
       }
-      
-      // But we add each one to the list.
-      mediaItems.push_back(theMediaItem);
     }
     
     pItem = mediaItems[0];
@@ -1139,6 +1148,11 @@ void CPlexDirectory::Parse(const CURL& url, TiXmlElement* root, CFileItemList &i
         // Set the content type for the item.
         item->SetProperty("mediaType", type);
       }
+      
+      // Tags.
+      ParseTags(element, item, "Genre");
+      ParseTags(element, item, "Writer");
+      ParseTags(element, item, "Director");
     }
   }
   
@@ -1147,6 +1161,34 @@ void CPlexDirectory::Parse(const CURL& url, TiXmlElement* root, CFileItemList &i
     CStdString strURL;
     url.GetURL(strURL);
     mediaNode->ComputeLabels(strURL, strFileLabel, strSecondFileLabel, strDirLabel, strSecondDirLabel);
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CPlexDirectory::ParseTags(TiXmlElement* element, const CFileItemPtr& item, const string& name)
+{
+  // Tags.
+  vector<string> tagList;
+  string tagString;
+  
+  for (TiXmlElement* child = element->FirstChildElement(); child; child=child->NextSiblingElement())
+  {
+    if (child->ValueStr() == name)
+    {
+      string tag = child->Attribute("tag");
+      tagList.push_back(tag);
+      tagString += tag + ", ";
+    }
+  }
+  
+  if (tagList.size() > 0)
+  {
+    string tagName = name;
+    boost::to_lower(tagName);
+    
+    tagString = tagString.substr(0, tagString.size()-2);
+    item->SetProperty(tagName, tagString);
+    item->SetProperty("first" + name, tagList[0]);
   }
 }
 
