@@ -69,7 +69,8 @@ void CGUILargeTextureManager::Process()
       {
         loadPath = g_TextureManager.GetTexturePath(path);
       }
-      texture = pic.Load(loadPath, std::min(g_graphicsContext.GetWidth(), 2048), std::min(g_graphicsContext.GetHeight(), 1080));
+      //texture = pic.Load(loadPath, std::min(g_graphicsContext.GetWidth(), 2048), std::min(g_graphicsContext.GetHeight(), 1080));
+      texture = pic.Load(loadPath, 2048, 1080); //std::min(g_graphicsContext.GetWidth(), 2048), std::min(g_graphicsContext.GetHeight(), 1080));
     }
     // and add to our allocated list
     lock.Enter();
