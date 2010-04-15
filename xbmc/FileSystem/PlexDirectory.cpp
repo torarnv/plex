@@ -577,8 +577,11 @@ class PlexMediaNodeLibrary : public PlexMediaNode
     for (TiXmlElement* part = media->FirstChildElement(); part; part=part->NextSiblingElement())
     {
       //if (part->ValueStr() == "Media")
-      string url = CPlexDirectory::ProcessUrl(parentPath, part->Attribute("key"), false);
-      urls.push_back(url);
+      if (part->Attribute("key"))
+      {
+        string url = CPlexDirectory::ProcessUrl(parentPath, part->Attribute("key"), false);
+        urls.push_back(url);
+      }
     }
     
     // See if we need a stack or not.
