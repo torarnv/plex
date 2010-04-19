@@ -316,15 +316,15 @@ static int decode_stream_header(NUTContext *nut){
     {
         case 0:
             st->codec->codec_type = CODEC_TYPE_VIDEO;
-            st->codec->codec_id = codec_get_id(codec_bmp_tags, tmp);
+            st->codec->codec_id = ff_codec_get_id(ff_codec_bmp_tags, tmp);
             break;
         case 1:
             st->codec->codec_type = CODEC_TYPE_AUDIO;
-            st->codec->codec_id = codec_get_id(codec_wav_tags, tmp);
+            st->codec->codec_id = ff_codec_get_id(ff_codec_wav_tags, tmp);
             break;
         case 2:
             st->codec->codec_type = CODEC_TYPE_SUBTITLE;
-            st->codec->codec_id = codec_get_id(ff_nut_subtitle_tags, tmp);
+            st->codec->codec_id = ff_codec_get_id(ff_nut_subtitle_tags, tmp);
             break;
         case 3:
             st->codec->codec_type = CODEC_TYPE_DATA;
@@ -389,8 +389,8 @@ static void set_disposition_bits(AVFormatContext* avf, char* value, int stream_i
 static int decode_info_header(NUTContext *nut){
     AVFormatContext *s= nut->avf;
     ByteIOContext *bc = s->pb;
-    uint64_t tmp;
-    unsigned int stream_id_plus1, chapter_start, chapter_len, count;
+    uint64_t tmp, chapter_start, chapter_len;
+    unsigned int stream_id_plus1, count;
     int chapter_id, i;
     int64_t value, end;
     char name[256], str_value[1024], type_str[256];
@@ -897,9 +897,13 @@ static int read_seek(AVFormatContext *s, int stream_index, int64_t pts, int flag
 static int nut_read_close(AVFormatContext *s)
 {
     NUTContext *nut = s->priv_data;
+    int i;
 
     av_freep(&nut->time_base);
     av_freep(&nut->stream);
+    ff_nut_free_sp(nut);
+    for(i = 1; i < nut->header_count; i++)
+        av_freep(&nut->header[i]);
 
     return 0;
 }
@@ -915,5 +919,6 @@ AVInputFormat nut_demuxer = {
     nut_read_close,
     read_seek,
     .extensions = "nut",
+    .metadata_conv = ff_nut_metadata_conv,
 };
 #endif
