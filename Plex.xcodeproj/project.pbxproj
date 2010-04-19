@@ -860,6 +860,7 @@
 		E3C1A6610E71275B00CE0104 /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = E3C1A65C0E7126F400CE0104 /* Sparkle.framework */; };
 		E3C1A6AA0E74E85C00CE0104 /* AsyncFileCopy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3C1A6A90E74E85C00CE0104 /* AsyncFileCopy.cpp */; };
 		E3C56E530F86011E0021BE13 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3C56E520F86011E0021BE13 /* AddressBook.framework */; };
+		E3C7CFF9117C0005000BC8F8 /* DllAvFormat.c in Sources */ = {isa = PBXBuildFile; fileRef = E3C7CFF8117C0005000BC8F8 /* DllAvFormat.c */; };
 		E3D32FC2114C59B100F2B108 /* PlexMediaServerQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3D32FC0114C59B100F2B108 /* PlexMediaServerQueue.cpp */; };
 		E3D32FFF114C5E2D00F2B108 /* libboost_thread-mt.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3D32FFE114C5E2D00F2B108 /* libboost_thread-mt.dylib */; };
 		E3F471BB0EAC481F004BB122 /* utf8tolatin1.c in Sources */ = {isa = PBXBuildFile; fileRef = E3F471B90EAC481F004BB122 /* utf8tolatin1.c */; };
@@ -2968,6 +2969,7 @@
 		E3C1A6A80E74E85C00CE0104 /* AsyncFileCopy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AsyncFileCopy.h; sourceTree = "<group>"; };
 		E3C1A6A90E74E85C00CE0104 /* AsyncFileCopy.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AsyncFileCopy.cpp; sourceTree = "<group>"; };
 		E3C56E520F86011E0021BE13 /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
+		E3C7CFF8117C0005000BC8F8 /* DllAvFormat.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = DllAvFormat.c; sourceTree = "<group>"; };
 		E3D32FC0114C59B100F2B108 /* PlexMediaServerQueue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PlexMediaServerQueue.cpp; sourceTree = "<group>"; };
 		E3D32FC1114C59B100F2B108 /* PlexMediaServerQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlexMediaServerQueue.h; sourceTree = "<group>"; };
 		E3D32FFE114C5E2D00F2B108 /* libboost_thread-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_thread-mt.dylib"; path = "/Volumes/Whopper/opt/local/lib/libboost_thread-mt.dylib"; sourceTree = "<absolute>"; };
@@ -4536,6 +4538,7 @@
 		E38E159F0D25F9FA00618676 /* ffmpeg */ = {
 			isa = PBXGroup;
 			children = (
+				E3C7CFF8117C0005000BC8F8 /* DllAvFormat.c */,
 				E38E15A50D25F9FA00618676 /* DllAvCodec.h */,
 				E38E15A60D25F9FA00618676 /* DllAvFormat.h */,
 				E38E15A70D25F9FA00618676 /* DllPostProc.h */,
@@ -7274,6 +7277,7 @@
 				1A356D5210AD53E50014C668 /* PlexSourceScanner.cpp in Sources */,
 				E3D32FC2114C59B100F2B108 /* PlexMediaServerQueue.cpp in Sources */,
 				E32C7870116821BF00522F8C /* GUIViewStateMusic.cpp in Sources */,
+				E3C7CFF9117C0005000BC8F8 /* DllAvFormat.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7503,6 +7507,7 @@
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				HEADER_SEARCH_PATHS = (
+					xbmc/cores/dvdplayer/Codecs/ffmpeg,
 					xbmc/cores/dvdplayer/DVDCodecs/Audio/libdca,
 					xbmc,
 					xbmc/lib/libaften,
@@ -7596,6 +7601,7 @@
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				HEADER_SEARCH_PATHS = (
+					xbmc/cores/dvdplayer/Codecs/ffmpeg,
 					xbmc/cores/dvdplayer/DVDCodecs/Audio/libdca,
 					xbmc,
 					xbmc/lib/libaften,
