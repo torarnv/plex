@@ -28,7 +28,8 @@
  */
 
 #include "avcodec.h"
-#include "bitstream.h"
+#include "get_bits.h"
+#include "put_bits.h"
 
 const uint8_t ff_log2_run[32]={
  0, 0, 0, 0, 1, 1, 1, 1,
@@ -36,23 +37,6 @@ const uint8_t ff_log2_run[32]={
  4, 4, 5, 5, 6, 6, 7, 7,
  8, 9,10,11,12,13,14,15
 };
-
-/**
- * Same as av_mallocz_static(), but does a realloc.
- *
- * @param[in] ptr The block of memory to reallocate.
- * @param[in] size The requested size.
- * @return Block of memory of requested size.
- * @deprecated. Code which uses ff_realloc_static is broken/misdesigned
- * and should correctly use static arrays
- */
-attribute_deprecated av_alloc_size(2)
-static void *ff_realloc_static(void *ptr, unsigned int size);
-
-static void *ff_realloc_static(void *ptr, unsigned int size)
-{
-    return av_realloc(ptr, size);
-}
 
 void align_put_bits(PutBitContext *s)
 {
@@ -63,19 +47,18 @@ void align_put_bits(PutBitContext *s)
 #endif
 }
 
-void ff_put_string(PutBitContext * pbc, const char *s, int put_zero)
+void ff_put_string(PutBitContext *pb, const char *string, int terminate_string)
 {
-    while(*s){
-        put_bits(pbc, 8, *s);
-        s++;
+    while(*string){
+        put_bits(pb, 8, *string);
+        string++;
     }
-    if(put_zero)
-        put_bits(pbc, 8, 0);
+    if(terminate_string)
+        put_bits(pb, 8, 0);
 }
 
 void ff_copy_bits(PutBitContext *pb, const uint8_t *src, int length)
 {
-    const uint16_t *srcw= (const uint16_t*)src;
     int words= length>>4;
     int bits= length&15;
     int i;
@@ -83,16 +66,16 @@ void ff_copy_bits(PutBitContext *pb, const uint8_t *src, int length)
     if(length==0) return;
 
     if(CONFIG_SMALL || words < 16 || put_bits_count(pb)&7){
-        for(i=0; i<words; i++) put_bits(pb, 16, be2me_16(srcw[i]));
+        for(i=0; i<words; i++) put_bits(pb, 16, AV_RB16(src + 2*i));
     }else{
         for(i=0; put_bits_count(pb)&31; i++)
             put_bits(pb, 8, src[i]);
         flush_put_bits(pb);
-        memcpy(pbBufPtr(pb), src+i, 2*words-i);
+        memcpy(put_bits_ptr(pb), src+i, 2*words-i);
         skip_put_bytes(pb, 2*words-i);
     }
 
-    put_bits(pb, bits, be2me_16(srcw[words])>>(16-bits));
+    put_bits(pb, bits, AV_RB16(src + 2*words)>>(16-bits));
 }
 
 /* VLC decoding */
@@ -122,15 +105,11 @@ static int alloc_table(VLC *vlc, int size, int use_static)
     index = vlc->table_size;
     vlc->table_size += size;
     if (vlc->table_size > vlc->table_allocated) {
-        if(use_static>1)
+        if(use_static)
             abort(); //cant do anything, init_vlc() is used with too little memory
         vlc->table_allocated += (1 << vlc->bits);
-        if(use_static)
-            vlc->table = ff_realloc_static(vlc->table,
-                                           sizeof(VLC_TYPE) * 2 * vlc->table_allocated);
-        else
-            vlc->table = av_realloc(vlc->table,
-                                    sizeof(VLC_TYPE) * 2 * vlc->table_allocated);
+        vlc->table = av_realloc(vlc->table,
+                                sizeof(VLC_TYPE) * 2 * vlc->table_allocated);
         if (!vlc->table)
             return -1;
     }
@@ -149,7 +128,7 @@ static int build_table(VLC *vlc, int table_nb_bits,
     VLC_TYPE (*table)[2];
 
     table_size = 1 << table_nb_bits;
-    table_index = alloc_table(vlc, table_size, flags & (INIT_VLC_USE_STATIC|INIT_VLC_USE_NEW_STATIC));
+    table_index = alloc_table(vlc, table_size, flags & INIT_VLC_USE_NEW_STATIC);
 #ifdef DEBUG_VLC
     av_log(NULL,AV_LOG_DEBUG,"new table index=%d size=%d code_prefix=%x n=%d\n",
            table_index, table_size, code_prefix, n_prefix);
@@ -179,42 +158,44 @@ static int build_table(VLC *vlc, int table_nb_bits,
 #endif
         /* if code matches the prefix, it is in the table */
         n -= n_prefix;
-        if(flags & INIT_VLC_LE)
-            code_prefix2= code & (n_prefix>=32 ? 0xffffffff : (1 << n_prefix)-1);
-        else
-            code_prefix2= code >> n;
-        if (n > 0 && code_prefix2 == code_prefix) {
-            if (n <= table_nb_bits) {
-                /* no need to add another table */
-                j = (code << (table_nb_bits - n)) & (table_size - 1);
-                nb = 1 << (table_nb_bits - n);
-                for(k=0;k<nb;k++) {
-                    if(flags & INIT_VLC_LE)
-                        j = (code >> n_prefix) + (k<<n);
+        if (n > 0) {
+            if(flags & INIT_VLC_LE)
+                code_prefix2= code & (n_prefix>=32 ? 0xffffffff : (1 << n_prefix)-1);
+            else
+                code_prefix2= code >> n;
+            if (code_prefix2 == code_prefix) {
+                if (n <= table_nb_bits) {
+                    /* no need to add another table */
+                    j = (code << (table_nb_bits - n)) & (table_size - 1);
+                    nb = 1 << (table_nb_bits - n);
+                    for(k=0;k<nb;k++) {
+                        if(flags & INIT_VLC_LE)
+                            j = (code >> n_prefix) + (k<<n);
 #ifdef DEBUG_VLC
-                    av_log(NULL, AV_LOG_DEBUG, "%4x: code=%d n=%d\n",
-                           j, i, n);
+                        av_log(NULL, AV_LOG_DEBUG, "%4x: code=%d n=%d\n",
+                               j, i, n);
 #endif
-                    if (table[j][1] /*bits*/ != 0) {
-                        av_log(NULL, AV_LOG_ERROR, "incorrect codes\n");
-                        return -1;
+                        if (table[j][1] /*bits*/ != 0) {
+                            av_log(NULL, AV_LOG_ERROR, "incorrect codes\n");
+                            return -1;
+                        }
+                        table[j][1] = n; //bits
+                        table[j][0] = symbol;
+                        j++;
                     }
-                    table[j][1] = n; //bits
-                    table[j][0] = symbol;
-                    j++;
-                }
-            } else {
-                n -= table_nb_bits;
-                j = (code >> ((flags & INIT_VLC_LE) ? n_prefix : n)) & ((1 << table_nb_bits) - 1);
+                } else {
+                    n -= table_nb_bits;
+                    j = (code >> ((flags & INIT_VLC_LE) ? n_prefix : n)) & ((1 << table_nb_bits) - 1);
 #ifdef DEBUG_VLC
-                av_log(NULL,AV_LOG_DEBUG,"%4x: n=%d (subtable)\n",
-                       j, n);
+                    av_log(NULL,AV_LOG_DEBUG,"%4x: n=%d (subtable)\n",
+                           j, n);
 #endif
-                /* compute table size */
-                n1 = -table[j][1]; //bits
-                if (n > n1)
-                    n1 = n;
-                table[j][1] = -n1; //bits
+                    /* compute table size */
+                    n1 = -table[j][1]; //bits
+                    if (n > n1)
+                        n1 = n;
+                    table[j][1] = -n1; //bits
+                }
             }
         }
     }
@@ -284,15 +265,10 @@ int init_vlc_sparse(VLC *vlc, int nb_bits, int nb_codes,
         }else if(vlc->table_size){
             abort(); // fatal error, we are called on a partially initialized table
         }
-    }else if(!(flags & INIT_VLC_USE_STATIC)) {
+    }else {
         vlc->table = NULL;
         vlc->table_allocated = 0;
         vlc->table_size = 0;
-    } else {
-        /* Static tables are initially always NULL, return
-           if vlc->table != NULL to avoid double allocation */
-        if(vlc->table)
-            return 0;
     }
 
 #ifdef DEBUG_VLC
