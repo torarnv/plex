@@ -2136,18 +2136,28 @@
   <string id="40300">Set Quit Timer</string>
   <string id="40301">Set Sleep Timer</string>
   <string id="40302">Set Shut Down Timer</string>
+  <string id="40323">Set Sleep Display Timer</string>
+  
   <string id="40305">Change Quit Timer</string>
   <string id="40306">Change Sleep Timer</string>
   <string id="40307">Change Shut Down Timer</string>
+  <string id="40308">Change Sleep Display Timer</string>
+
   <string id="40310">Plex will quit at</string>
   <string id="40311">The system will sleep at</string>
   <string id="40312">The system will shut down at</string>
+  <string id="40313">The system will sleep the display at</string>
+  
   <string id="40315">You have already set a quit timer.</string>
   <string id="40316">You have already set a sleep timer.</string>
   <string id="40317">You have already set a shut down timer.</string>
+  <string id="40318">You have already set a sleep display timer.</string>
+  
   <string id="40320">Would you like to set a quit timer instead?</string>
   <string id="40321">Would you like to set a sleep timer instead?</string>
   <string id="40322">Would you like to set a shut down timer instead?</string>
+  <string id="40323">Would you like to set a display sleep timer instead?</string>
+  
   <string id="40325">Timer already set</string>
     
   <string id="42000">Could not read from input stream</string>

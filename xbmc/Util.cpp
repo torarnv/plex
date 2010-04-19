@@ -3760,6 +3760,7 @@ const BUILT_IN commands[] = {
   { "Quit",                       false,  "Quit Plex" },
   { "SleepSystem",                false,  "Go to standby mode"},
   { "ShutDownSystem",             false,  "Send a shut down request to Mac OS X" },
+  { "SleepDisplay",               false,  "Sleep the display" },
   { "Dashboard",                  false,  "Run your dashboard" },
   { "RestartApp",                 false,  "Restart XBMC" },
   { "Credits",                    false,  "Run XBMCs Credits" },
@@ -3902,6 +3903,12 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   {
 #ifdef __APPLE__
     Cocoa_ShutDownSystem();
+#endif
+  }
+  else if (execute.Equals("SleepDisplay"))
+  {
+#ifdef __APPLE__
+    Cocoa_DimDisplayNow();
 #endif
   }
   else if (execute.Equals("dashboard"))

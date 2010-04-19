@@ -35,9 +35,10 @@
 #define MAIN_MENU         300
 #define POWER_MENU        407
 
-#define QUIT_ITEM         111
-#define SLEEP_ITEM        112
-#define SHUTDOWN_ITEM     113
+#define QUIT_ITEM          111
+#define SLEEP_ITEM         112
+#define SHUTDOWN_ITEM      113
+#define SLEEP_DISPLAY_ITEM 114
 
 using namespace std;
 using namespace XFILE;
@@ -76,7 +77,8 @@ bool CGUIWindowHome::OnPopupMenu()
 
     if (controlId == POWER_MENU) menuOffset = 180;
       
-    switch (itemId) {
+    switch (itemId) 
+    {
       case QUIT_ITEM:
         iHeading = 40300;
         iInfo = 40310;
@@ -98,6 +100,12 @@ bool CGUIWindowHome::OnPopupMenu()
         sAlarmName = "plex_shutdown_timer";
         sAction = "shutdownsystem";
         break;
+      case SLEEP_DISPLAY_ITEM:
+        iHeading = 40303;
+        iInfo = 40312;
+        iAlreadySetMsg = 40323;
+        sAlarmName = "plex_sleep_display_timer";
+        sAction = "sleepdisplay";
       default:
         return false;
         break;
@@ -106,7 +114,8 @@ bool CGUIWindowHome::OnPopupMenu()
     // Check to see if any timers already exist
     if (!CheckTimer("plex_quit_timer", sAlarmName, 40325, 40315, iAlreadySetMsg) ||
         !CheckTimer("plex_sleep_timer", sAlarmName, 40325, 40316, iAlreadySetMsg) ||
-        !CheckTimer("plex_shutdown_timer", sAlarmName, 40325, 40317, iAlreadySetMsg))
+        !CheckTimer("plex_shutdown_timer", sAlarmName, 40325, 40317, iAlreadySetMsg) ||
+        !CheckTimer("plex_sleep_display_timer", sAlarmName, 40325, 40318, iAlreadySetMsg))
       return false;
     
 
