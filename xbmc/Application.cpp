@@ -5887,7 +5887,9 @@ void CApplication::ProcessSlow()
 
 #ifdef __APPLE__
   // If not inactive tickle system, or else if in full-screen always tickle.
-  if (((timeGetTime() - m_dwOSXscreensaverTicks) > 5000) && (g_advancedSettings.m_fullScreen || !m_bInactive))
+  if ((timeGetTime() - m_dwOSXscreensaverTicks) > 5000  && 
+      (g_advancedSettings.m_fullScreen || !m_bInactive) &&
+      m_bDisplaySleeping == false)
   {
     Cocoa_UpdateSystemActivity();
     m_dwOSXscreensaverTicks = timeGetTime();
