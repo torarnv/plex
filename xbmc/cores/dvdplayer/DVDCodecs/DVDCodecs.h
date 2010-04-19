@@ -37,8 +37,8 @@ extern "C" {
 #pragma warning(disable:4244)
 #endif
 #ifdef __APPLE__
-#include "cores/ffmpeg/log.h"
-#include "cores/ffmpeg/avcodec.h"
+#include "libavutil/log.h"
+#include "libavcodec/avcodec.h"
 #else
 #include "../../ffmpeg/avcodec.h"
 #endif

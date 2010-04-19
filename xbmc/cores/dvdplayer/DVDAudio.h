@@ -30,8 +30,8 @@ enum CodecID;
 #else
 #ifdef __APPLE__
 extern "C" {
-#include "cores/ffmpeg/log.h"
-#include "cores/ffmpeg/avcodec.h"
+#include "libavutil/log.h"
+#include "libavcodec/avcodec.h"
 }
 #else
 #include "ffmpeg/avcodec.h"
