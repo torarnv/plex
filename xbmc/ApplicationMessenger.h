@@ -53,6 +53,8 @@ class CFileItem;
 #define TMSG_RESTARTAPP           304
 #define TMSG_SWITCHTOFULLSCREEN   305
 #define TMSG_SLEEPSYSTEM          307
+#define TMSG_SYSTEM_WOKE_UP       310
+#define TMSG_SYSTEM_WILL_SLEEP    311
 
 #define TMSG_TOGGLEFULLSCREEN     320
 #define TMSG_MOVE_TO_PREV_SCREEN  321
@@ -119,6 +121,8 @@ public:
   void SwitchToFullscreen(); //
   void ToggleFullscreen();
   void SleepSystem();
+  void SystemWokeUp();
+  void SystemWillSleep();
   void ActivateVisualizer();
   void MoveToNextScreen();
   void MoveToPrevScreen();

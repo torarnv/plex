@@ -327,6 +327,8 @@ CApplication::CApplication(void)
   XSetFileCacheSize (256*1024); //default=64kb
 #endif
   m_bInactive = false;
+  m_bDisplaySleeping = false;
+  m_bSystemSleeping = false;
   m_bScreenSave = false;
   m_iScreenSaveLock = 0;
   m_dwShutdownTick = m_dwSaverTick = timeGetTime();
@@ -5287,17 +5289,31 @@ void CApplication::CheckShutdown()
 #endif
 }
 
-void CApplication::SleepSystem() 
+void CApplication::SleepSystem()
 {
-#ifdef __APPLE__
-  CLog::Log(LOGDEBUG, "Sleeping system.");
-  Cocoa_SleepSystem();
-#endif
-  
-  // Set everything to reset when we wake up
+  if (m_bSystemSleeping == false)
+  {
+    // Request a sleep. This is an asynchronous request.
+    CLog::Log(LOGDEBUG, "Sleeping system.");
+    Cocoa_SleepSystem();
+  }
+}
+
+void CApplication::SystemWillSleep()
+{
+  // We're actually going to sleep now!
+  CLog::Log(LOGDEBUG, "System is going to sleep.");
+  m_bSystemSleeping = true;
+}
+
+void CApplication::SystemWokeUp()
+{
+  // Set everything to reset when we wake up.
+  CLog::Log(LOGDEBUG, "System woke up.");
   m_dwShutdownTick = m_dwSaverTick = timeGetTime();
   m_bInactive = false;
   m_bDisplaySleeping = true;
+  m_bSystemSleeping = false;
 }
 
 void CApplication::ResetDisplaySleep()
