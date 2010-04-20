@@ -295,6 +295,14 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
     case TMSG_SLEEPSYSTEM:
       g_application.SleepSystem();
       break;
+      
+    case TMSG_SYSTEM_WOKE_UP:
+      g_application.SystemWokeUp();
+      break;
+      
+    case TMSG_SYSTEM_WILL_SLEEP:
+      g_application.SystemWillSleep();
+      break;
 		  
     case TMSG_PICTURE_SHOW:
       {
@@ -769,6 +777,18 @@ void CApplicationMessenger::SleepSystem()
 {
 	ThreadMessage tMsg = {TMSG_SLEEPSYSTEM};
 	SendMessage(tMsg);
+}
+
+void CApplicationMessenger::SystemWokeUp()
+{
+  ThreadMessage tMsg = {TMSG_SYSTEM_WOKE_UP};
+  SendMessage(tMsg);
+}
+
+void CApplicationMessenger::SystemWillSleep()
+{
+  ThreadMessage tMsg = {TMSG_SYSTEM_WILL_SLEEP};
+  SendMessage(tMsg);
 }
 
 void CApplicationMessenger::ActivateVisualizer()

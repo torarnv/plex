@@ -178,6 +178,8 @@ public:
   void ProcessSlow();
   void ResetScreenSaver();
   void SleepSystem();
+  void SystemWokeUp();
+  void SystemWillSleep();
 
   int GetVolume() const;
   void SetVolume(int iPercent);
@@ -260,6 +262,7 @@ protected:
   // screensaver
   bool m_bInactive;
   bool m_bDisplaySleeping;
+  bool m_bSystemSleeping;
   bool m_bScreenSave;
   CStdString m_screenSaverMode;
   DWORD m_dwSaverTick;

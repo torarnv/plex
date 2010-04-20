@@ -5,10 +5,14 @@
 //  Created by Enrique Osuna on 10/26/2008.
 //  Copyright 2008 __MyCompanyName__. All rights reserved.
 //
+#include <IOKit/pwr_mgt/IOPMLib.h> 
+#include <IOKit/IOMessage.h>
+
 #include "stdafx.h"
 #include "CocoaUtilsPlus.h"
 #include "XBMCMain.h"
 #include "Settings.h"
+#include "Application.h"
 #include "MediaSource.h"
 #include <Cocoa/Cocoa.h>
 #import <AddressBook/AddressBook.h>
@@ -38,6 +42,9 @@
 #include <map>
 
 using namespace boost;
+
+// Save the root port.
+io_connect_t root_port = 0;
 
 #define COCOA_KEY_PLAYPAUSE  1051136
 #define COCOA_KEY_PREV_TRACK 1313280
@@ -104,6 +111,35 @@ CGEventRef tapEventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef 
     return event;
   else
     return NULL;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void Cocoa_PowerStateNotification(void* x, io_service_t y, natural_t messageType, void* messageArgument)
+{
+  switch (messageType)
+  { 
+  case kIOMessageSystemWillSleep:
+    // Handle demand sleep (such as sleep caused by running out of batteries, 
+    // closing the lid of a laptop, or selecting sleep from the Apple menu).
+    //
+    g_application.getApplicationMessenger().SystemWillSleep();
+    IOAllowPowerChange(root_port, (long)messageArgument);
+    break; 
+    
+  case kIOMessageCanSystemSleep:
+    // In this case, the computer has been idle for several minutes 
+    // and will sleep soon so you must either allow or cancel 
+    // this notification. Important: if you don't respond, there will 
+    // be a 30-second timeout before the computer sleeps.
+    // 
+    IOAllowPowerChange(root_port, (long)messageArgument);
+    break;
+    
+  case kIOMessageSystemHasPoweredOn:
+    // Handle wake-up.
+    g_application.getApplicationMessenger().SystemWokeUp();
+    break;
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -329,6 +365,14 @@ void CocoaPlus_Initialize()
       
   CFRunLoopAddSource(runLoop,  eventSrc, kCFRunLoopDefaultMode);
 #endif
+  
+  // Add notification for power events.
+  IONotificationPortRef notify; io_object_t anIterator;
+  root_port = IORegisterForSystemPower (0, &notify, Cocoa_PowerStateNotification, &anIterator); 
+  if (root_port == 0)
+    printf("IORegisterForSystemPower failed\n");
+
+  CFRunLoopAddSource(CFRunLoopGetCurrent(), IONotificationPortGetRunLoopSource(notify), kCFRunLoopDefaultMode);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
