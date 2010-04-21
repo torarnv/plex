@@ -504,9 +504,12 @@ bool Cocoa_IsHostLocal(const string& host)
 ///////////////////////////////////////////////////////////////////////////////
 bool Cocoa_AreHostsEqual(const string& host1, const string& host2)
 {
+  return (host1 == host2);
+#if 0
   NSHost *h1 = [NSHost hostWithName:[NSString stringWithCString:host1.c_str() encoding:NSUTF8StringEncoding]];
   NSHost *h2 = [NSHost hostWithName:[NSString stringWithCString:host2.c_str() encoding:NSUTF8StringEncoding]];
   return ([h1 isEqualToHost:h2] || ([h1 isEqualToHost:[NSHost currentHost]] && [h2 isEqualToHost:[NSHost currentHost]]));
+#endif
 }
 
 ///////////////////////////////////////////////////////////////////////////////
