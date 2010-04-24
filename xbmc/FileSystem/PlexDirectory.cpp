@@ -490,6 +490,17 @@ class PlexMediaNode
      if (pluginIdentifier && strlen(pluginIdentifier) > 0)
        pItem->SetProperty("pluginIdentifier", pluginIdentifier);
      
+     // Build the URLs for the flags.
+     TiXmlElement* parent = (TiXmlElement* )el.Parent();
+     const char* pRoot = parent->Attribute("mediaTagPrefix");
+     const char* pVersion = parent->Attribute("mediaTagVersion");
+     if (pRoot && pVersion)
+     {
+       string url = CPlexDirectory::ProcessUrl(parentPath, pRoot, false);
+       CacheMediaThumb(pItem, &el, url, "contentRating", pVersion);
+       CacheMediaThumb(pItem, &el, url, "studio", pVersion);
+     }
+     
      return pItem;
    }
    
@@ -509,6 +520,31 @@ class PlexMediaNode
      }
      
      return "";
+   }
+   
+   void CacheMediaThumb(const CFileItemPtr& mediaItem, TiXmlElement* el, const string& baseURL, const string& resource, const string& version)
+   {
+     const char* val = el->Attribute(resource.c_str());
+     if (val && strlen(val) > 0)
+     {
+       // Complete the URL.
+       string url = baseURL;
+       url += resource + "/";
+       
+       CStdString encodedValue = val;
+       CUtil::URLEncode(encodedValue);
+       url += encodedValue;
+       
+       url += "?t=";
+       url += version;
+       
+       // See if it exists (fasttrack) or queue it for download.
+       string localFile = CFileItem::GetCachedPlexMediaServerThumb(url);
+       if (CFile::Exists(localFile))
+         mediaItem->SetProperty("mediaTag::" + resource, localFile);
+       else
+         mediaItem->SetProperty("cache$mediaTag::" + resource, url);
+     }
    }
    
    virtual void DoBuildFileItem(CFileItemPtr& pItem, const string& parentPath, TiXmlElement& el) = 0;
@@ -692,30 +728,6 @@ class PlexMediaNodeLibrary : public PlexMediaNode
     pItem = mediaItems[0];
   }
   
-  void CacheMediaThumb(const CFileItemPtr& mediaItem, TiXmlElement* el, const string& baseURL, const string& resource, const string& version)
-  {
-    const char* val = el->Attribute(resource.c_str());
-    if (val && strlen(val) > 0)
-    {
-      // Complete the URL.
-      string url = baseURL;
-      url += resource + "/";
-      
-      CStdString encodedValue = val;
-      CUtil::URLEncode(encodedValue);
-      url += encodedValue;
-      
-      url += "?t=";
-      url += version;
-      
-      // See if it exists (fasttrack) or queue it for download.
-      string localFile = CFileItem::GetCachedPlexMediaServerThumb(url);
-      if (CFile::Exists(localFile))
-        mediaItem->SetProperty("mediaTag::" + resource, localFile);
-      else
-        mediaItem->SetProperty("cache$mediaTag::" + resource, url);
-    }
-  }
 };
 
 class PlexMediaDirectory : public PlexMediaNode
