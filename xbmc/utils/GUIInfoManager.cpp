@@ -3738,9 +3738,9 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
   case LISTITEM_RATING:
     {
       CStdString rating;
-      if (m_currentFile->HasProperty("rating"))
+      if (item->HasProperty("rating"))
       {
-        rating.Format("%2.2f", m_currentFile->GetPropertyDouble("rating"));
+        rating.Format("%2.2f", item->GetPropertyDouble("rating"));
       }
       else if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetRating() > '0')
       { // song rating.  Images will probably be better than numbers for this in the long run
