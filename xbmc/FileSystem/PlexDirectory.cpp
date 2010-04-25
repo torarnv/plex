@@ -662,6 +662,10 @@ class PlexMediaNodeLibrary : public PlexMediaNode
     {
       videoInfo.m_strShowTitle = videoInfo.m_strTitle;
     }
+    
+    // Tagline.
+    if (el.Attribute("tagline"))
+      videoInfo.m_strTagLine = el.Attribute("tagline");
 
     // Views.
     int viewCount = 0;
