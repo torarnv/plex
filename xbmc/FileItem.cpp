@@ -401,6 +401,7 @@ void CFileItem::Reset()
   m_strSearchPrompt = "";
   m_iBitrate = 0;
   m_includeStandardContextItems = true;
+  ClearProperties();
   
   SetInvalid();
 }
@@ -518,6 +519,10 @@ void CFileItem::Serialize(CArchive& ar)
 
 bool CFileItem::IsVideo() const
 {
+  string type = GetProperty("type");
+  if (type == "episode" || type == "movie")
+    return true;
+  
   /* check preset content type */
   if( m_contenttype.Left(6).Equals("video/") )
     return true;
@@ -553,6 +558,10 @@ bool CFileItem::IsVideo() const
 
 bool CFileItem::IsAudio() const
 {
+  string type = GetProperty("type");
+  if (type == "track")
+    return true;
+  
   if (IsCDDA()) return true;
   if (IsShoutCast() && !m_bIsFolder) return true;
   if (IsLastFM() && !m_bIsFolder) return true;
