@@ -201,6 +201,7 @@ CGUILabelControl::CGUILabelControl(DWORD dwParentID, DWORD dwControlId, float po
   ControlType = GUICONTROL_LABEL;
   m_ScrollInsteadOfTruncate = false;
   m_startHighlight = m_endHighlight = 0;
+  m_minWidth = 0;
 }
 
 CGUILabelControl::~CGUILabelControl(void)
@@ -310,11 +311,21 @@ void CGUILabelControl::SetLabel(const string &strLabel)
     m_iCursorPos = strLabel.size();
 }
 
-void CGUILabelControl::SetWidthControl(bool bScroll, int scrollSpeed)
+void CGUILabelControl::SetWidthControl(float minWidth, bool bScroll, int scrollSpeed)
 {
+  m_minWidth = minWidth;
   m_ScrollInsteadOfTruncate = bScroll;
   m_ScrollInfo.SetSpeed(scrollSpeed);
   m_ScrollInfo.Reset();
+}
+
+#define CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
+
+float CGUILabelControl::GetWidth()
+{
+  if (m_minWidth && m_minWidth != m_width)
+    return CLAMP(m_textLayout.GetTextWidth(), m_minWidth, m_width);
+  return m_width;
 }
 
 void CGUILabelControl::SetAlignment(DWORD align)
