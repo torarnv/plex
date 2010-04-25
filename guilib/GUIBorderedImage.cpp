@@ -22,8 +22,8 @@
 #include "include.h"
 #include "GUIBorderedImage.h"
 
-CGUIBorderedImage::CGUIBorderedImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& texture, const CImage& borderTexture, const FRECT &borderSize, DWORD dwColorKey)
-   : CGUIImage(dwParentID, dwControlId, posX + borderSize.left, posY + borderSize.top, width - borderSize.left - borderSize.right, height - borderSize.top - borderSize.bottom, texture, dwColorKey),
+CGUIBorderedImage::CGUIBorderedImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& texture, const CImage& borderTexture, const FRECT &borderSize, DWORD dwColorKey, float minWidth)
+   : CGUIImage(dwParentID, dwControlId, posX + borderSize.left, posY + borderSize.top, width - borderSize.left - borderSize.right, height - borderSize.top - borderSize.bottom, texture, dwColorKey, minWidth),
      m_borderImage(dwParentID, dwControlId, posX, posY, width, height, borderTexture, dwColorKey)
 {
   memcpy(&m_borderSize, &borderSize, sizeof(FRECT));

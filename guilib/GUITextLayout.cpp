@@ -448,10 +448,10 @@ void CGUITextLayout::GetTextExtent(float &width, float &height)
   height = m_font->GetTextHeight(m_lines.size());
 }
 
-float CGUITextLayout::GetTextWidth()
+float CGUITextLayout::GetTextWidth() const
 {
   float width, height;
-  GetTextExtent(width, height);
+  ((CGUITextLayout* )this)->GetTextExtent(width, height);
   return width;
 }
 

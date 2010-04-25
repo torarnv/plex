@@ -48,7 +48,7 @@ namespace MathUtils {
 
 #define MIX_ALPHA(a,c) (((a * (c >> 24)) / 255) << 24) | (c & 0x00ffffff)
 
-CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& texture, DWORD dwColorKey)
+CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& texture, DWORD dwColorKey, float minWidth)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
 {
   memset(m_alpha, 0xff, 4);
@@ -69,6 +69,7 @@ CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY
   m_texturesAllocated = false;
   m_diffuseTexture = NULL;
   m_diffusePalette = NULL;
+  m_minWidth = m_minWidth;
 }
 
 CGUIImage::CGUIImage(const CGUIImage &left)
@@ -93,6 +94,7 @@ CGUIImage::CGUIImage(const CGUIImage &left)
   m_image = left.m_image;
   m_diffuseTexture = NULL;
   m_diffusePalette = NULL;
+  m_minWidth = left.m_minWidth;
 }
 
 CGUIImage::~CGUIImage(void)
@@ -901,9 +903,9 @@ void CGUIImage::CalculateSize()
     if (m_aspect.align & ASPECT_ALIGN_LEFT)
       m_fX = m_posX;
     else if (m_aspect.align & ASPECT_ALIGN_RIGHT)
-      m_fX = m_posX + m_width - m_fNW;
+      m_fX = m_posX + GetWidth() - m_fNW;
     else
-      m_fX = m_posX + (m_width - m_fNW) * 0.5f;
+      m_fX = m_posX + (GetWidth() - m_fNW) * 0.5f;
     if (m_aspect.align & ASPECT_ALIGNY_TOP)
       m_fY = m_posY;
     else if (m_aspect.align & ASPECT_ALIGNY_BOTTOM)
@@ -1169,6 +1171,19 @@ void CGUIImage::RenderWithEffects(SDL_Surface *src, float *x, float *y, float *u
     SDL_UnlockSurface(diffuse);
 }
 #endif
+
+#define CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
+
+float CGUIImage::GetWidth() const
+{
+  float ret = m_width;
+  float m_minWidth = 1.0f;
+  
+  if (m_minWidth && m_minWidth != m_width)
+    ret = CLAMP(m_fNW, m_minWidth, m_width);
+  
+  return ret;
+}
 
 void CGUIImage::OrientateTexture(CRect &rect, int orientation)
 {

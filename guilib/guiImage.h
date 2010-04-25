@@ -122,7 +122,7 @@ public:
     bool         scaleDiffuse;
   };
 
-  CGUIImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& texture, DWORD dwColorKey = 0);
+  CGUIImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& texture, DWORD dwColorKey = 0, float minWidth = 0.0f);
   CGUIImage(const CGUIImage &left);
   virtual ~CGUIImage(void);
 
@@ -138,6 +138,7 @@ public:
   virtual bool CanFocus() const;
   virtual bool IsAllocated() const;
   virtual void UpdateInfo(const CGUIListItem *item = NULL);
+  virtual float GetWidth() const;
 
   void PythonSetColorKey(DWORD dwColorKey);
   virtual void SetFileName(const CStdString& strFileName, bool setConstant = false);
@@ -212,6 +213,8 @@ protected:
   float m_fNW;
   float m_fNH;
   bool m_linearTexture; // true if it's a linear 32bit texture
+  
+  float m_minWidth;
 
   // border + conditional info
   CImage m_image;

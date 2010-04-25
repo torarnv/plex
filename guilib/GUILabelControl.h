@@ -77,7 +77,7 @@ public:
   virtual bool CanFocus() const;
   virtual bool OnMessage(CGUIMessage& message);
   virtual CStdString GetDescription() const;
-  virtual float GetWidth();
+  virtual float GetWidth() const;
   
   const CLabelInfo& GetLabelInfo() const { return m_label; };
   void SetLabel(const std::string &strLabel);

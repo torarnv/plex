@@ -321,11 +321,14 @@ void CGUILabelControl::SetWidthControl(float minWidth, bool bScroll, int scrollS
 
 #define CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
 
-float CGUILabelControl::GetWidth()
+float CGUILabelControl::GetWidth() const
 {
+  float ret = m_width; 
+  
   if (m_minWidth && m_minWidth != m_width)
-    return CLAMP(m_textLayout.GetTextWidth(), m_minWidth, m_width);
-  return m_width;
+    ret = CLAMP(m_textLayout.GetTextWidth(), m_minWidth, m_width);
+  
+  return ret;
 }
 
 void CGUILabelControl::SetAlignment(DWORD align)
