@@ -4480,8 +4480,6 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
       seconds = boost::lexical_cast<int>(item.GetProperty("viewOffset"))/1000.0;
     else
       seconds = 0.0f;
-    
-    printf("Computed seconds: %f\n", seconds);
   }
 
   m_bPlaybackStarting = true;
@@ -4897,6 +4895,8 @@ void CApplication::StopPlaying()
 {
   if ( IsPlaying() )
   {
+    UpdateFileState(true);
+    
 #ifdef HAS_KARAOKE
     if( m_pCdgParser )
       m_pCdgParser->Stop();
@@ -4905,34 +4905,6 @@ void CApplication::StopPlaying()
     // turn off visualisation window when stopping
     if (IsVisualizerActive())
       m_gWindowManager.PreviousWindow();
-
-    if (IsPlayingVideo())
-    { 
-      // mark as watched if we are passed the usual amount
-      if (GetPercentage() >= g_advancedSettings.m_playCountMinimumPercent)
-      {
-        // Mark it watched.
-        PlexMediaServerQueue::Get().onViewed(m_itemCurrentFile, true);
-        CUtil::DeleteVideoDatabaseDirectoryCache();
-      }
-      
-      if (m_pPlayer)
-      {
-        // Ignore two minutes at start and either 2 minutes, or up to 5% at end (end credits)
-        double current = GetTime();
-        double total = GetTotalTime();
-        if (current > 120 && total - current > 120 && total - current > 0.05 * total)
-        {
-          PlexMediaServerQueue::Get().onPlayingProgress(m_itemCurrentFile, (int)(current * 1000));
-          m_itemCurrentFile->SetProperty("viewOffset", boost::lexical_cast<string>((int)(current*1000)));
-        }
-        else
-        {
-          PlexMediaServerQueue::Get().onClearPlayingProgress(m_itemCurrentFile);
-          m_itemCurrentFile->ClearProperty("viewOffset");
-        }
-      }
-    }
     
     m_pPlayer->CloseFile();
     g_partyModeManager.Disable();
@@ -5607,6 +5579,10 @@ bool CApplication::OnMessage(CGUIMessage& message)
   case GUI_MSG_PLAYBACK_ENDED:
   case GUI_MSG_PLAYLISTPLAYER_STOPPED:
     {
+      // If the file ended naturally, notify.
+      if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
+        UpdateFileState(true, true);
+
       // Re-enable sounds.
       g_audioManager.Enable(true);
       
@@ -5632,6 +5608,8 @@ bool CApplication::OnMessage(CGUIMessage& message)
       // first check if we still have items in the stack to play
       if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
       {
+        SaveCurrentFileSettings();
+
         if (m_itemCurrentFile->IsStack() && m_currentStack->Size() > 0 && m_currentStackPosition < m_currentStack->Size() - 1)
         { // just play the next item in the stack
           PlayFile(*(*m_currentStack)[++m_currentStackPosition], true);
@@ -5645,12 +5623,6 @@ bool CApplication::OnMessage(CGUIMessage& message)
 
       // Save our settings for the current file for next time
       SaveCurrentFileSettings();
-      if (m_itemCurrentFile->IsVideo() && message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
-      {
-        PlexMediaServerQueue::Get().onViewed(m_itemCurrentFile, true);
-        PlexMediaServerQueue::Get().onClearPlayingProgress(m_itemCurrentFile);
-        m_itemCurrentFile->ClearProperty("viewOffset");
-      }
 
       // reset the current playing file
       m_itemCurrentFile->Reset();
@@ -5859,8 +5831,49 @@ void CApplication::Process()
   }
 }
 
+void CApplication::UpdateFileState(bool final, bool ended)
+{
+  if (m_itemCurrentFile->m_strPath.size() > 0)
+  {
+    if (final == true)
+    {
+      // Mark as watched if we are passed the usual amount
+      if (ended == true || GetPercentage() >= g_advancedSettings.m_playCountMinimumPercent)
+      {
+        PlexMediaServerQueue::Get().onViewed(m_itemCurrentFile, true);
+        m_itemCurrentFile->GetVideoInfoTag()->m_playCount++;
+      }
+    }
+
+    // Ignore two minutes at start and either 2 minutes, or up to 5% at end (end credits)
+    double current = GetTime();
+    double total = GetTotalTime();
+    if (current > 120 && total - current > 120 && total - current > 0.05 * total)
+    {
+      PlexMediaServerQueue::Get().onPlayingProgress(m_itemCurrentFile, (int)(current * 1000));
+      m_itemCurrentFile->SetProperty("viewOffset", boost::lexical_cast<string>((int)(current*1000)));
+    }
+    else
+    {
+      PlexMediaServerQueue::Get().onClearPlayingProgress(m_itemCurrentFile);
+      m_itemCurrentFile->ClearProperty("viewOffset");
+    }
+    
+    CGUIMediaWindow* mediaWindow = (CGUIMediaWindow* )m_gWindowManager.GetWindow(WINDOW_VIDEO_FILES);
+    if (mediaWindow)
+    {
+      mediaWindow->SetUpdatedItem(m_itemCurrentFile);
+    }
+  }
+}
+
 void CApplication::ProcessSlow()
 {
+  // Every 5 seconds, update the progress.
+  static int beat = 0;
+  if (beat++ % 10 == 0 && IsPlaying())
+    UpdateFileState();
+
   // Get the OS X volume if we're linked.
   if (g_guiSettings.GetBool("audiooutput.systemvolumefollows") && !g_audioConfig.UseDigitalOutput())
   {
@@ -6565,9 +6578,11 @@ void CApplication::StartFtpEmergencyRecoveryMode()
 }
 
 void CApplication::SaveCurrentFileSettings()
-{
+{    
+  // FIXME, this is deprecated and the data should be pushed to PMS.
   if (m_itemCurrentFile->IsVideo())
-  { // save video settings
+  { 
+    // Save video settings
     if (g_stSettings.m_currentVideoSettings != g_stSettings.m_defaultVideoSettings)
     {
       CVideoDatabase dbs;

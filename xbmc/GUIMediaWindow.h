@@ -49,6 +49,13 @@ public:
   const CGUIViewState *GetViewState() const;
   virtual CFileItemPtr GetCurrentListItem(int offset = 0);
   virtual void Render();
+  void SetUpdatedItem(const CFileItemPtr& updatedItem) 
+  { 
+    CFileItem* pItem = new CFileItem();
+    (*pItem) = *(updatedItem.get());
+    
+    m_updatedItem = CFileItemPtr(pItem); 
+  }
   
 protected:
   virtual void LoadAdditionalTags(TiXmlElement *root);
@@ -97,6 +104,8 @@ protected:
   CFileItemList* m_vecItems;
   CDirectoryHistory m_history;
   std::auto_ptr<CGUIViewState> m_guiState;
+  
+  CFileItemPtr m_updatedItem;
 
   // save control state on window exit
   int m_iLastControl;

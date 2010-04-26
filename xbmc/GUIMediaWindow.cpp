@@ -651,7 +651,7 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
   }
 
   items.Assign(newItems, false);
-
+  
   return true;
 }
 
@@ -729,6 +729,20 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
   m_vecItems->ClearProperties();
   m_vecItems->Assign(newItems);
   
+  // Double check and see if we need to update.
+  if (m_updatedItem &&
+      m_vecItems->Get(m_iSelectedItem) &&
+      m_updatedItem->GetProperty("ratingKey").size() > 0 &&
+      m_updatedItem->GetProperty("ratingKey") == m_vecItems->Get(m_iSelectedItem)->GetProperty("ratingKey"))
+  {
+    // Update resume time and view count.
+    CFileItemPtr item = m_vecItems->Get(m_iSelectedItem);
+    item->SetProperty("viewOffset", m_updatedItem->GetProperty("viewOffset"));
+    item->GetVideoInfoTag()->m_playCount = m_updatedItem->GetVideoInfoTag()->m_playCount;
+    
+    m_updatedItem = CFileItemPtr();
+  }
+
   // if we're getting the root source listing
   // make sure the path history is clean
   if (strDirectory.IsEmpty())

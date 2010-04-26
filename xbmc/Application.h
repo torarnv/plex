@@ -339,6 +339,7 @@ protected:
   void CheckActive();
   bool IsVisualizerActive();
 
+  void UpdateFileState(bool final=false, bool ended=false);
   void SaveCurrentFileSettings();
 
   void InitDirectories();
