@@ -69,7 +69,7 @@ CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY
   m_texturesAllocated = false;
   m_diffuseTexture = NULL;
   m_diffusePalette = NULL;
-  m_minWidth = m_minWidth;
+  m_minWidth = minWidth;
 }
 
 CGUIImage::CGUIImage(const CGUIImage &left)
@@ -1177,7 +1177,6 @@ void CGUIImage::RenderWithEffects(SDL_Surface *src, float *x, float *y, float *u
 float CGUIImage::GetWidth() const
 {
   float ret = m_width;
-  float m_minWidth = 1.0f;
   
   if (m_minWidth && m_minWidth != m_width)
     ret = CLAMP(m_fNW, m_minWidth, m_width);
