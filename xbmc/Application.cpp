@@ -6598,6 +6598,11 @@ CApplicationMessenger& CApplication::getApplicationMessenger()
    return m_applicationMessenger;
 }
 
+bool CApplication::IsCurrentThread() const
+{
+  return m_threadID == GetCurrentThreadId(); 
+}
+
 #ifdef HAS_LINUX_NETWORK
 CNetworkLinux& CApplication::getNetwork()
 {

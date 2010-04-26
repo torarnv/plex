@@ -70,6 +70,7 @@ class CFileItem;
 #define TMSG_GUI_WIN_MANAGER_PROCESS  602
 #define TMSG_GUI_WIN_MANAGER_RENDER   603
 #define TMSG_GUI_ACTIVATE_WINDOW      604
+#define TMSG_GUI_DIALOG_CLOSE         606
 
 #define TMSG_GUI_UPDATE_COCOA_DIALOGS 700
 
@@ -137,6 +138,7 @@ public:
 
   void DoModal(CGUIDialog *pDialog, int iWindowID = WINDOW_INVALID, const CStdString &param = "");
   void Show(CGUIDialog *pDialog);
+  void Close(CGUIDialog *pDialog, bool forceClose, bool waitResult=true);
   void WindowManagerProcess(bool renderOnly = false); // will call m_gWindowManager.Process on the rendering thread
   void Render(); // will call m_gWindowManager.Render on the rendering thread
   void ActivateWindow(int windowID, const CStdString &path, bool swappingWindows);

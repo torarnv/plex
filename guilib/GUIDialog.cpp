@@ -117,6 +117,19 @@ bool CGUIDialog::OnMessage(CGUIMessage& message)
 
 void CGUIDialog::Close(bool forceClose /*= false*/)
 {
+  if (!g_application.IsCurrentThread())
+  {
+    // make sure graphics lock is not held
+    int nCount = ExitCriticalSection(g_graphicsContext);
+    g_application.getApplicationMessenger().Close(this, forceClose);
+    RestoreCriticalSection(g_graphicsContext, nCount);
+  }
+  else
+    g_application.getApplicationMessenger().Close(this, forceClose);
+}
+
+void CGUIDialog::Close_Internal(bool forceClose /*= false*/)
+{
   //Lock graphic context here as it is sometimes called from non rendering threads
   //maybe we should have a critical section per window instead??
   CSingleLock lock(g_graphicsContext);

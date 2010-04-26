@@ -206,6 +206,7 @@ public:
   void CheckMusicPlaylist();
 
   CApplicationMessenger& getApplicationMessenger();
+  bool IsCurrentThread() const;
 #ifdef HAS_LINUX_NETWORK
   CNetworkLinux& getNetwork();
 #else
