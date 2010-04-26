@@ -737,7 +737,12 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
   {
     // Update resume time and view count.
     CFileItemPtr item = m_vecItems->Get(m_iSelectedItem);
-    item->SetProperty("viewOffset", m_updatedItem->GetProperty("viewOffset"));
+    
+    if (m_updatedItem->HasProperty("viewOffset"))
+      item->SetProperty("viewOffset", m_updatedItem->GetProperty("viewOffset"));
+    else
+      item->ClearProperty("viewOffset");
+    
     item->GetVideoInfoTag()->m_playCount = m_updatedItem->GetVideoInfoTag()->m_playCount;
     
     m_updatedItem = CFileItemPtr();
