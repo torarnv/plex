@@ -43,7 +43,7 @@ void CPlexSourceScanner::Process()
     // Act a bit differently if we're talking to a local server.
     if (Cocoa_IsHostLocal(m_host) == true)
     {
-      m_hostLabel = "";
+      //m_hostLabel = "";
       onlyShared = false;
     }
     
@@ -67,6 +67,13 @@ void CPlexSourceScanner::Process()
     plexDir.SetTimeout(5);
     sources->librarySections.ClearItems();
     plexDir.GetDirectory(path, sources->librarySections);
+    
+    // Edit for friendly name.
+    for (int i=0; i<sources->librarySections.Size(); i++)
+    {
+      CFileItemPtr item = sources->librarySections[i];
+      item->SetLabel2(m_hostLabel);
+    }
     
     { // Add the entry to the map.
       CSingleLock lock(g_lock);

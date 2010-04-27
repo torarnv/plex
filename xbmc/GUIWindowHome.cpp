@@ -240,6 +240,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       {
         CFileItemPtr newItem = CFileItemPtr(new CFileItem(item->GetLabel()));
         newItem->SetProperty("plex", "1");
+        newItem->SetLabel2(item->GetLabel2());
         newItem->m_strPath = "Plex.ActivateWindow(MyVideoFiles," + item->m_strPath + ",return)";
         newItem->m_idepth = 0;
         newItem->SetQuickFanart(item->GetQuickFanart());
