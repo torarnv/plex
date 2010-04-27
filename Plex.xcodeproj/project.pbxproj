@@ -54,6 +54,8 @@
 		94DEBCE50F647401003FF0E9 /* libpostproc-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 94DEBCE00F647401003FF0E9 /* libpostproc-osx.a */; };
 		94DEBCE60F647401003FF0E9 /* libswscale-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 94DEBCE10F647401003FF0E9 /* libswscale-osx.a */; };
 		94DEBE2B0F64B949003FF0E9 /* libfaad.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 94DEBE2A0F64B949003FF0E9 /* libfaad.a */; };
+		94F96B7811856DE100AA6635 /* DVDVideoCodecVDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 94F96B7611856DE100AA6635 /* DVDVideoCodecVDA.cpp */; };
+		94F96C501185A7B000AA6635 /* VideoDecodeAcceleration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 94F96C4F1185A7B000AA6635 /* VideoDecodeAcceleration.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		E3065EA210182FEB004555EF /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3065EA110182FEB004555EF /* CoreVideo.framework */; };
 		E31312180EC647FB00629994 /* PlexRemoteHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E31312160EC647FB00629994 /* PlexRemoteHelper.cpp */; };
 		E31312190EC647FB00629994 /* PlexHelperApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E31312170EC647FB00629994 /* PlexHelperApp.cpp */; };
@@ -1106,6 +1108,9 @@
 		94DEBCE00F647401003FF0E9 /* libpostproc-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libpostproc-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libpostproc-osx.a"; sourceTree = "<group>"; };
 		94DEBCE10F647401003FF0E9 /* libswscale-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libswscale-osx.a"; path = "xbmc/lib/libffmpeg-OSX/libswscale-osx.a"; sourceTree = "<group>"; };
 		94DEBE2A0F64B949003FF0E9 /* libfaad.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfaad.a; path = xbmc/lib/libfaad2/libfaad.a; sourceTree = "<group>"; };
+		94F96B7611856DE100AA6635 /* DVDVideoCodecVDA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDVideoCodecVDA.cpp; sourceTree = "<group>"; };
+		94F96B7711856DE100AA6635 /* DVDVideoCodecVDA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDVideoCodecVDA.h; sourceTree = "<group>"; };
+		94F96C4F1185A7B000AA6635 /* VideoDecodeAcceleration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoDecodeAcceleration.framework; path = SDKs/MacOSX10.6.sdk/System/Library/Frameworks/VideoDecodeAcceleration.framework; sourceTree = DEVELOPER_DIR; };
 		B1A921F30DF6D14F0024CC4F /* libbz2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libbz2.dylib; path = /usr/lib/libbz2.dylib; sourceTree = "<absolute>"; };
 		E3065EA110182FEB004555EF /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		E30B3E8E0D5D59290030A311 /* libShout-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libShout-osx.a"; path = "xbmc/lib/libshout/libShout-osx.a"; sourceTree = "<group>"; };
@@ -3089,6 +3094,7 @@
 				E3A1DF910FB1A5C4007E6585 /* libboost_regex-mt.a in Frameworks */,
 				E3065EA210182FEB004555EF /* CoreVideo.framework in Frameworks */,
 				E3D32FFF114C5E2D00F2B108 /* libboost_thread-mt.dylib in Frameworks */,
+				94F96C501185A7B000AA6635 /* VideoDecodeAcceleration.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3219,6 +3225,7 @@
 				E38E23900D2626E600618676 /* Foundation.framework */,
 				E38E23910D2626E600618676 /* OpenGL.framework */,
 				09AB6884FE841BABC02AAC07 /* CoreFoundation.framework */,
+				94F96C4F1185A7B000AA6635 /* VideoDecodeAcceleration.framework */,
 			);
 			name = "External Frameworks and Libraries";
 			sourceTree = "<group>";
@@ -4420,6 +4427,8 @@
 		E38E153A0D25F9F900618676 /* Video */ = {
 			isa = PBXGroup;
 			children = (
+				94F96B7611856DE100AA6635 /* DVDVideoCodecVDA.cpp */,
+				94F96B7711856DE100AA6635 /* DVDVideoCodecVDA.h */,
 				E38E153B0D25F9F900618676 /* DllLibMpeg2.h */,
 				E38E153C0D25F9F900618676 /* DVDVideoCodec.h */,
 				E38E153D0D25F9F900618676 /* DVDVideoCodecFFmpeg.cpp */,
@@ -7274,6 +7283,7 @@
 				1A356D5210AD53E50014C668 /* PlexSourceScanner.cpp in Sources */,
 				E3D32FC2114C59B100F2B108 /* PlexMediaServerQueue.cpp in Sources */,
 				E32C7870116821BF00522F8C /* GUIViewStateMusic.cpp in Sources */,
+				94F96B7811856DE100AA6635 /* DVDVideoCodecVDA.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

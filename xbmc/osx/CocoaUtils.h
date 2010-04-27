@@ -191,6 +191,9 @@ extern "C"
   // Compatibility check
   //
   void CheckOSCompatibility();
+	
+  // version
+  bool isSnowLeopardOrBetter();
   
 #ifdef __cplusplus
 }
