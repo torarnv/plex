@@ -1299,3 +1299,14 @@ void CheckOSCompatibility()
 {
   [[PlexCompatibility sharedInstance] checkCompatibility];
 }
+
+bool isSnowLeopardOrBetter()
+{
+	SInt32 MacVersion;
+	
+	if (Gestalt(gestaltSystemVersion, &MacVersion) == noErr)
+	{
+		return (MacVersion >= 0x1060);
+	}
+	return false;
+}

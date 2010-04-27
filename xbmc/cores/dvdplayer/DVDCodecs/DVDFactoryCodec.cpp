@@ -28,6 +28,7 @@
 
 #include "Video/DVDVideoCodecFFmpeg.h"
 #include "Video/DVDVideoCodecLibMpeg2.h"
+#include "Video/DVDVideoCodecVDA.h"
 #include "Audio/DVDAudioCodecFFmpeg.h"
 #include "Audio/DVDAudioCodecLiba52.h"
 #include "Audio/DVDAudioCodecLibDts.h"
@@ -41,6 +42,9 @@
 #include "Overlay/DVDOverlayCodecFFmpeg.h"
 
 #include "DVDStreamInfo.h"
+
+#include "CocoaUtils.h"
+
 
 
 CDVDVideoCodec* CDVDFactoryCodec::OpenCodec(CDVDVideoCodec* pCodec, CDVDStreamInfo &hints, CDVDCodecOptions &options )
@@ -137,6 +141,16 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
   }
 
   CDVDCodecOptions dvdOptions;
+	
+	if (hint.codec == CODEC_ID_H264 && isSnowLeopardOrBetter())
+	{
+		CLog::Log(LOGNOTICE, "Attempting to start VDA Hardware Decoder");
+		pCodec = OpenCodec(new CDVDVideoCodecVDA(), hint, options);
+		if (pCodec) return pCodec;
+	}
+
+    
+	
   if( (pCodec = OpenCodec(new CDVDVideoCodecFFmpeg(), hint, dvdOptions)) ) return pCodec;
 
   return NULL;
