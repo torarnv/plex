@@ -43,7 +43,7 @@ void CPlexSourceScanner::Process()
     // Act a bit differently if we're talking to a local server.
     if (Cocoa_IsHostLocal(m_host) == true)
     {
-      //m_hostLabel = "";
+      realHostLabel = "";
       onlyShared = false;
     }
     
@@ -53,13 +53,13 @@ void CPlexSourceScanner::Process()
     
     // Scan the server.
     path.Format("plex://%s/music/", m_host);
-    CUtil::AutodetectPlexSources(path, sources->musicSources, m_hostLabel, onlyShared);
+    CUtil::AutodetectPlexSources(path, sources->musicSources, realHostLabel, onlyShared);
     
     path.Format("plex://%s/video/", m_host);
-    CUtil::AutodetectPlexSources(path, sources->videoSources, m_hostLabel, onlyShared);
+    CUtil::AutodetectPlexSources(path, sources->videoSources, realHostLabel, onlyShared);
     
     path.Format("plex://%s/photos/", m_host);
-    CUtil::AutodetectPlexSources(path, sources->pictureSources, m_hostLabel, onlyShared);
+    CUtil::AutodetectPlexSources(path, sources->pictureSources, realHostLabel, onlyShared);
 
     // Library sections.
     path.Format("plex://%s/library/sections", m_host);
