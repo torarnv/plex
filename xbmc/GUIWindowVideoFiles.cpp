@@ -517,11 +517,11 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
     else if (m_vecItems->GetContent() == "episodes")
       buttons.Add(CONTEXT_BUTTON_INFO, 20352);
     
-    if (item->IsPlexMediaServerLibrary())
+    if (item->IsPlexMediaServerLibrary() && m_vecItems->GetContent() != "files")
     {
-      if (item->m_bIsFolder || item->GetVideoInfoTag()->m_playCount > 0)
+      if (item->GetVideoInfoTag()->m_playCount > 0)
         buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104);
-      if (item->m_bIsFolder || item->GetVideoInfoTag()->m_playCount == 0)
+      if (item->GetVideoInfoTag()->m_playCount == 0)
         buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);
     }
     
