@@ -311,16 +311,22 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
     if (m_pDlgCache)
       m_pDlgCache->Close();
 
+    // See if we can find the file locally.
+    CFileItem theFile(file);
+    string localPath = file.GetProperty("localPath");
+    if (localPath.size() > 0 && CFile::Exists(localPath))
+      theFile.m_strPath = localPath;
+    
     CStdString strHeader;
-    if (file.IsInternetStream())
+    if (theFile.IsInternetStream())
       strHeader = g_localizeStrings.Get(10214);
 
-    if(file.IsInternetStream())
-      m_pDlgCache = new CDlgCache(0, strHeader, file.GetLabel());
-    else if(!file.IsDVDFile(false, true) && !file.IsDVDImage() && !file.IsDVD())
-      m_pDlgCache = new CDlgCache(3000, strHeader, file.GetLabel());
+    if (theFile.IsInternetStream())
+      m_pDlgCache = new CDlgCache(0, strHeader, theFile.GetLabel());
+    else if(!theFile.IsDVDFile(false, true) && !theFile.IsDVDImage() && !theFile.IsDVD())
+      m_pDlgCache = new CDlgCache(3000, strHeader, theFile.GetLabel());
 
-    CLog::Log(LOGNOTICE, "DVDPlayer: Opening: %s", file.m_strPath.c_str());
+    CLog::Log(LOGNOTICE, "DVDPlayer: Opening: %s", theFile.m_strPath.c_str());
 
     // if playing a file close it first
     // this has to be changed so we won't have to close it.
@@ -336,9 +342,9 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
     m_UpdateApplication = 0;
 
     m_PlayerOptions = options;
-    m_item     = file;
-    m_content  = file.GetContentType();
-    m_filename = file.m_strPath;
+    m_item     = theFile;
+    m_content  = theFile.GetContentType();
+    m_filename = theFile.m_strPath;
 
     ResetEvent(m_hReadyEvent);
     Create();
