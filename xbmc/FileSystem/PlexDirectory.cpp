@@ -605,31 +605,45 @@ class PlexMediaNodeLibrary : public PlexMediaNode
 {
  public:
   
-  string ComputeMediaUrl(const string& parentPath, TiXmlElement* media)
+  string ComputeMediaUrl(const string& parentPath, TiXmlElement* media, string& localPath)
   {
+    string ret;
+    
     vector<string> urls;
+    vector<string> localPaths;
     
     // Collect the URLs.
     for (TiXmlElement* part = media->FirstChildElement(); part; part=part->NextSiblingElement())
     {
-      //if (part->ValueStr() == "Media")
       if (part->Attribute("key"))
       {
         string url = CPlexDirectory::ProcessUrl(parentPath, part->Attribute("key"), false);
         urls.push_back(url);
+        localPaths.push_back(part->Attribute("file"));
       }
     }
     
-    // See if we need a stack or not.
-    string ret = urls[0];
-    if (urls.size() > 1)
+    if (urls.size() > 0)
     {
-      ret = "stack://";
-      for (int i=0; i<urls.size(); i++)
+      // See if we need a stack or not.
+      ret = urls[0];
+      localPath = localPaths[0];
+      
+      if (urls.size() > 1)
       {
-        ret += urls[i];
-        if (i < urls.size()-1)
-          ret += " , ";
+        ret = localPath = "stack://";
+        
+        for (int i=0; i<urls.size(); i++)
+        {
+          ret += urls[i];
+          localPath += localPaths[i];
+          
+          if (i < urls.size()-1)
+          {
+            ret += " , ";
+            localPath += " , ";
+          }
+        }
       }
     }
     
@@ -681,7 +695,8 @@ class PlexMediaNodeLibrary : public PlexMediaNode
         CVideoInfoTag theVideoInfo = videoInfo;
 
         // Compute the URL.
-        string url = ComputeMediaUrl(parentPath, media);
+        string localPath;
+        string url = ComputeMediaUrl(parentPath, media, localPath);
         videoInfo.m_strFile = url;
         videoInfo.m_strFileNameAndPath = url;
 
@@ -696,6 +711,7 @@ class PlexMediaNodeLibrary : public PlexMediaNode
         // Create the file item.
         CFileItemPtr theMediaItem(new CFileItem(theVideoInfo));
 
+        theMediaItem->SetProperty("localPath", localPath);
         theMediaItem->m_bIsFolder = false;
         theMediaItem->m_strPath = url;
         theMediaItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, viewCount > 0);
