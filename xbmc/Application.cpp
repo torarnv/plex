@@ -4452,6 +4452,16 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
   // calculate the total time of the stack
   CStackDirectory dir;
   dir.GetDirectory(item.m_strPath, *m_currentStack);
+  
+  // Move local paths in.
+  if (item.HasProperty("localPath"))
+  {
+    CFileItemList stackedItems;
+    dir.GetDirectory(item.GetProperty("localPath"), stackedItems);
+    for (int i=0; i<stackedItems.Size(); i++)
+      (*m_currentStack)[i]->SetProperty("localPath", stackedItems[i]->m_strPath);
+  }
+  
   long totalTime = 0;
   for (int i = 0; i < m_currentStack->Size(); i++)
   {
@@ -4460,7 +4470,14 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
     else
     {
       int duration;
-      if (!CDVDFileInfo::GetFileDuration((*m_currentStack)[i]->m_strPath, duration))
+      
+      // Prefer local path.
+      string path = (*m_currentStack)[i]->m_strPath;
+      string localPath = (*m_currentStack)[i]->GetProperty("localPath");
+      if (CFile::Exists(localPath))
+        path = localPath;
+      
+      if (!CDVDFileInfo::GetFileDuration(path, duration))
       {
         m_currentStack->Clear();
         return false;
