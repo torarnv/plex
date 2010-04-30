@@ -44,8 +44,7 @@
 #include "DVDStreamInfo.h"
 
 #include "CocoaUtils.h"
-
-
+#include "Settings.h"
 
 CDVDVideoCodec* CDVDFactoryCodec::OpenCodec(CDVDVideoCodec* pCodec, CDVDStreamInfo &hints, CDVDCodecOptions &options )
 {  
@@ -142,7 +141,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
 
   CDVDCodecOptions dvdOptions;
 	
-	if (hint.codec == CODEC_ID_H264 && isSnowLeopardOrBetter())
+	if (hint.codec == CODEC_ID_H264 && isSnowLeopardOrBetter() && g_guiSettings.GetBool("videoplayer.hwdecode"))
 	{
 		CLog::Log(LOGNOTICE, "Attempting to start VDA Hardware Decoder");
 		pCodec = OpenCodec(new CDVDVideoCodecVDA(), hint, options);

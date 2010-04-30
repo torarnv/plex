@@ -74,14 +74,17 @@ CDVDVideoCodecVDA::CDVDVideoCodecVDA() : CDVDVideoCodec()
 	m_iPictureWidth = 0;
 	m_iPictureHeight = 0;
 	
+  m_dropPictures = FALSE;
 	m_iScreenWidth = 0;
 	m_iScreenHeight = 0;
 	
 	m_iQueueDepth = 0;
 	_displayQueue = NULL;
-	yuvBuffer[0] = NULL;
-	yuvBuffer[1] = NULL;
-	yuvBuffer[2] = NULL;
+	for (int i = 0; i<3; i++)
+	{
+		yuvPlaneSize[i] = 0;
+		yuvBuffer[i] = NULL;
+	}
 	pthread_mutex_init(&_queueMutex, NULL);
 }
 
@@ -118,6 +121,12 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 	if (hints.extrasize < 7 || hints.extradata == NULL) 
 	{
 		CLog::Log(LOGERROR, "avcC atom cannot be NULL!");
+		return FALSE;
+	}
+	// the avcC data chunk from the bitstream must be valid
+	if ( *(char*)hints.extradata != 1 )
+	{
+		CLog::Log(LOGERROR, "invalid avcC atom data");
 		return FALSE;
 	}
 	
@@ -171,17 +180,27 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 	
 	if (kVDADecoderNoErr != status) 
 	{
-		CLog::Log(LOGERROR, "VDADecoderCreate failed. err: %d\n", (int)status);
+		if (status == kVDADecoderFormatNotSupportedErr)
+		{
+			CLog::Log(LOGERROR, "Video hardware does not suport VDA acceleration");
+		}
+		else if (status == kVDADecoderFormatNotSupportedErr)
+		{
+			CLog::Log(LOGERROR,  "Video hardware does not suport VDA acceleration of this video format");
+		}
+		else if (status == kVDADecoderConfigurationError)
+		{
+			CLog::Log(LOGERROR,  "Incorrect configuration passed to VDA decoder");
+		}
+		else if (status == kVDADecoderDecoderFailedErr)
+		{
+			CLog::Log(LOGERROR,  "Internal VDA decoder error");
+		}
+		else 
+		{
+			CLog::Log(LOGERROR, "VDA decoder failed, error %i", status);
+		}					  
 		return FALSE;
-	}
-	
-	// allocate YUV framebuffer
-	yuvPlaneSize[0] = m_iPictureWidth * m_iPictureHeight;
-	yuvPlaneSize[1] = m_iPictureWidth/2 * m_iPictureHeight/2;
-	yuvPlaneSize[2] = yuvPlaneSize[1];
-	for (int i=0; i<3; i++)
-	{
-		yuvBuffer[i] = malloc(yuvPlaneSize[i]);
 	}
 	
 	if (decoderConfiguration) CFRelease(decoderConfiguration);
@@ -200,6 +219,7 @@ void CDVDVideoCodecVDA::Dispose()
 		for (int i=0; i<3; i++)
 		{
 			free(yuvBuffer[i]);
+			yuvBuffer[i] = NULL;
 		}
 	}
 }
@@ -264,7 +284,6 @@ void CDVDVideoCodecVDA::DecoderOutputCallback(void               *decompressionO
                 newFrame->nextFrame = nextFrame;
                 queueWalker->nextFrame = newFrame;
                 frameInserted = TRUE;
-
             }
             queueWalker = nextFrame;
         }
@@ -277,11 +296,13 @@ void CDVDVideoCodecVDA::DecoderOutputCallback(void               *decompressionO
 
 void CDVDVideoCodecVDA::SetDropState(bool bDrop)
 {
-	
+	m_dropPictures = bDrop;
 }
 
 int CDVDVideoCodecVDA::Decode(BYTE* pData, int iSize, double pts)
 {
+	//CLog::Log(LOGDEBUG, "Queuing packet pts %.2f", pts);
+	
 	CFDictionaryRef frameInfo = NULL;
     OSStatus status = kVDADecoderNoErr;
 	CFDataRef frameData = CFDataCreate(kCFAllocatorDefault, pData, iSize);
@@ -291,7 +312,11 @@ int CDVDVideoCodecVDA::Decode(BYTE* pData, int iSize, double pts)
 	
     // ask the hardware to decode our frame, frameInfo will be retained and pased back to us
     // in the output callback for this frame
-    status = VDADecoderDecode((VDADecoder)hardwareDecoder, 0, frameData, frameInfo);
+	uint32_t avc_flags = 0;
+	if (m_dropPictures)
+		avc_flags = kVDADecoderDecodeFlags_DontEmitFrame;
+	
+    status = VDADecoderDecode((VDADecoder)hardwareDecoder, avc_flags, frameData, frameInfo);
 	
 	// the dictionary passed into decode is retained by the framework so
     // make sure to release it here
@@ -304,10 +329,10 @@ int CDVDVideoCodecVDA::Decode(BYTE* pData, int iSize, double pts)
 		return VC_ERROR;
     }
 	
-	if (m_iQueueDepth < 10)
+	if (m_iQueueDepth < 16)
 	{
 		return VC_BUFFER;
-
+		
 	}
 	return VC_PICTURE | VC_BUFFER;
 }
@@ -325,7 +350,7 @@ void CDVDVideoCodecVDA::Reset()
 void CDVDVideoCodecVDA::AdvanceQueueHead()
 {
 	if (!_displayQueue || m_iQueueDepth == 0) return;
-
+	
 	// advance head
 	displayFrameRef dropFrame = _displayQueue;
 	_displayQueue = _displayQueue->nextFrame;
@@ -342,24 +367,35 @@ bool CDVDVideoCodecVDA::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 	pDvdVideoPicture->iWidth = pDvdVideoPicture->iDisplayWidth = m_iPictureWidth;
 	pDvdVideoPicture->iHeight = pDvdVideoPicture->iDisplayHeight = m_iPictureHeight;
 	pDvdVideoPicture->pts = DVD_NOPTS_VALUE;
-		
+	
 	pthread_mutex_lock(&_queueMutex);
 	CVPixelBufferLockBaseAddress(_displayQueue->frame, 0);
-
+	
 	// YUV420p frame
 	for (int i = 0; i < 3; i++)
 	{
-		UInt32 planeWidth = CVPixelBufferGetBytesPerRowOfPlane(_displayQueue->frame, i);
 		UInt32 planeHeight = CVPixelBufferGetHeightOfPlane(_displayQueue->frame, i);
+		UInt32 planeWidth = CVPixelBufferGetBytesPerRowOfPlane(_displayQueue->frame, i);
 		UInt32 planeSize = planeWidth * planeHeight;
 		pDvdVideoPicture->iLineSize[i] = planeWidth;
-		//pDvdVideoPicture->data[i] =	(BYTE *)malloc(planeSize);
 		void *planePointer = CVPixelBufferGetBaseAddressOfPlane(_displayQueue->frame, i);
-		memcpy(yuvBuffer[i], planePointer, planeSize);
+		
+		if (!yuvBuffer[i] || yuvPlaneSize[i] != planeSize)
+		{
+			if (yuvBuffer[i])
+			{
+				free(yuvBuffer[i]);
+			}
+			// allocate YUV plane buffer
+			yuvPlaneSize[i] = planeSize;
+			yuvBuffer[i] = malloc(yuvPlaneSize[i]);
+		}
+		
+		memcpy(yuvBuffer[i], planePointer, yuvPlaneSize[i]);
 		pDvdVideoPicture->data[i] = (BYTE *)yuvBuffer[i];
 	}
 	CVPixelBufferUnlockBaseAddress(_displayQueue->frame, 0);
-
+	
 	pDvdVideoPicture->iRepeatPicture = 0;
 	pDvdVideoPicture->iFlags = DVP_FLAG_ALLOCATED;    
 	
@@ -368,7 +404,7 @@ bool CDVDVideoCodecVDA::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 	AdvanceQueueHead();
 	
 	pthread_mutex_unlock(&_queueMutex);
-
+	
 	return VC_PICTURE | VC_BUFFER;
 }
 

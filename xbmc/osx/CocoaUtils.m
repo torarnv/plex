@@ -1306,7 +1306,7 @@ bool isSnowLeopardOrBetter()
 	
 	if (Gestalt(gestaltSystemVersion, &MacVersion) == noErr)
 	{
-		return (MacVersion >= 0x1060);
+		return (MacVersion >= 0x1063);
 	}
 	return false;
 }

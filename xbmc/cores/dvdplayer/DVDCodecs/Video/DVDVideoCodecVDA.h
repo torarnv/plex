@@ -1,6 +1,9 @@
 #pragma once
 
 /*
+ *      Copyright (C) 2010 Plex Incorporated
+ *		http://www.plexapp.com
+ *
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
  *
@@ -22,10 +25,8 @@
  */
 
 #include "cores/ffmpeg/DllAvFormat.h"
-#include "cores/ffmpeg/DllSwScale.h"
 
 #include "DVDVideoCodec.h"
-#define DEBUG 0
 #include <VideoDecodeAcceleration/VDADecoder.h>
 
 // tracks a frame in and output queue in display order
@@ -63,6 +64,7 @@ protected:
 	SInt32 m_iPictureWidth;
 	SInt32 m_iPictureHeight;
 	
+  bool m_dropPictures;
 	int m_iScreenWidth;
 	int m_iScreenHeight;
 	//	DllSwScale m_dllSwScale;
