@@ -27,6 +27,7 @@
 #include "Overlay/DVDOverlayCodec.h"
 
 #include "Video/DVDVideoCodecFFmpeg.h"
+#include "Video/DVDVideoCodecVDA.h"
 #include "Video/DVDVideoCodecLibMpeg2.h"
 #include "Video/DVDVideoCodecVDA.h"
 #include "Audio/DVDAudioCodecFFmpeg.h"

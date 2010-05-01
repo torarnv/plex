@@ -29,6 +29,9 @@
 #include "DVDVideoCodec.h"
 #include <VideoDecodeAcceleration/VDADecoder.h>
 
+#define DEBUG 0
+#include <VideoDecodeAcceleration/VDADecoder.h>
+
 // tracks a frame in and output queue in display order
 typedef struct displayFrame {
     Float64					frameDisplayTime;
@@ -46,8 +49,8 @@ public:
 	virtual int Decode(BYTE* pData, int iSize, double pts);
 	virtual void Reset();
 	virtual bool GetPicture(DVDVideoPicture* pDvdVideoPicture);
-	virtual void SetDropState(bool bDrop);
 	virtual const char* GetName() { return "AppleHardwareVDA"; };
+	virtual void SetDropState(bool bDrop);
 	
 protected:
 	void GetVideoAspect(AVCodecContext* pCodecContext, unsigned int& iWidth, unsigned int& iHeight);
@@ -63,6 +66,7 @@ protected:
 	
 	SInt32 m_iPictureWidth;
 	SInt32 m_iPictureHeight;
+	bool m_DropPictures;
 	
   bool m_dropPictures;
 	int m_iScreenWidth;
