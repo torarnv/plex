@@ -655,6 +655,10 @@ class PlexMediaNodeLibrary : public PlexMediaNode
     // Top level data.
     CVideoInfoTag videoInfo;
     videoInfo.m_strTitle = el.Attribute("title");
+    
+    if (el.Attribute("originalTitle"))
+      videoInfo.m_strOriginalTitle = el.Attribute("originalTitle");
+    
     videoInfo.m_strPlot = videoInfo.m_strPlotOutline = el.Attribute("summary");
 
     const char* year = el.Attribute("year");
