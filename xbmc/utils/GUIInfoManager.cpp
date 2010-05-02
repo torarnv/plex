@@ -3671,7 +3671,6 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
     break;
   case LISTITEM_TRACKNUMBER:
     {
-      printf("INDEX: %d\n", item->GetProperty("index").c_str());
       if (item->HasProperty("index"))
         return item->GetProperty("index");
       
