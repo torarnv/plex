@@ -132,6 +132,12 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   if (fanart && strlen(fanart) > 0)
     strFanart = ProcessUrl(strPath, fanart, false);
   
+  // Get the thumb.
+  const char* thumb = root->Attribute("thumb");
+  string strThumb;
+  if (thumb && strlen(thumb) > 0)
+    strThumb = ProcessUrl(strPath, thumb, false);
+
   // See if the item is too old.
   string cachedFile(CFileItem::GetCachedPlexMediaServerThumb(strFanart));
   if (CFile::Age(cachedFile) > MAX_FANART_AGE)
@@ -192,9 +198,15 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   {
     CFileItemPtr pItem = items[i];
     
+    // Fall back to directory fanart?
     if ((strFanart.size() > 0 && pItem->GetQuickFanart().size() == 0) || disableFanart)
       pItem->SetQuickFanart(strFanart);
-      
+    
+    // Fall back to directory thumb?
+    printf("Thumb: %s, Fall back: %s\n", pItem->GetThumbnailImage().c_str(), strThumb.c_str());
+    if (strThumb.size() > 0 && pItem->GetThumbnailImage().size() == 0)
+      pItem->SetThumbnailImage(strThumb);
+    
     // Make sure sort label is lower case.
     string sortLabel = pItem->GetLabel();
     boost::to_lower(sortLabel);
@@ -758,11 +770,17 @@ class PlexMediaDirectory : public PlexMediaNode
 {
   virtual void DoBuildFileItem(CFileItemPtr& pItem, const string& parentPath, TiXmlElement& el)
   {
+    string type;
+    if (el.Attribute("type"))
+      type = el.Attribute("type");
+    
     pItem->SetLabel(GetLabel(el));
+    
+    // Video.
     CVideoInfoTag tag;
     tag.m_strTitle = pItem->GetLabel();
     tag.m_strShowTitle = tag.m_strTitle;
-    
+
     // Summary.
     const char* summary = el.Attribute("summary");
     if (summary)
@@ -775,6 +793,10 @@ class PlexMediaDirectory : public PlexMediaNode
     if (el.Attribute("studio"))
       tag.m_strStudio = el.Attribute("studio");
 
+    // Year.
+    if (el.Attribute("year"))
+      tag.m_iYear = boost::lexical_cast<int>(el.Attribute("year"));
+    
     // Duration.
     if (el.Attribute("duration"))
       tag.m_strRuntime = BuildDurationString(el.Attribute("duration"));
@@ -796,6 +818,23 @@ class PlexMediaDirectory : public PlexMediaNode
       pItem->GetVideoInfoTag()->m_iEpisode = count;
       pItem->GetVideoInfoTag()->m_playCount = (count == watchedCount) ? 1 : 0;
       pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pItem->GetVideoInfoTag()->m_playCount > 0);
+    }
+
+    // Music.
+    if (type == "artist")
+    {
+      pItem->SetProperty("artist", pItem->GetLabel());
+    }
+    else if (type == "album")
+    {
+      pItem->SetProperty("album", pItem->GetLabel());
+      if (el.Attribute("year"))
+        pItem->SetLabel2(el.Attribute("year"));
+    }
+    else if (type == "track")
+    {
+      if (el.Attribute("index"))
+        pItem->SetProperty("index", el.Attribute("index"));
     }
     
     // Check for special directories.
@@ -1176,6 +1215,10 @@ void CPlexDirectory::Parse(const CURL& url, TiXmlElement* root, CFileItemList &i
           type = "episodes";
         else if (type == "movie")
           type = "movies";
+        else if (type == "artist")
+          type = "artists";
+        else if (type == "album")
+          type = "albums";
 
         // Set the content type for the collection.
         if (gotType == false)
