@@ -2963,10 +2963,16 @@ CStdString CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item) co
   case MUSICPLAYER_TITLE:
     if (tag.GetTitle().size()) { return tag.GetTitle(); }
     break;
-  case MUSICPLAYER_ALBUM: 
+  case MUSICPLAYER_ALBUM:
+    if (item->HasProperty("album"))
+      return item->GetProperty("album");
+    
     if (tag.GetAlbum().size()) { return tag.GetAlbum(); }
     break;
-  case MUSICPLAYER_ARTIST: 
+  case MUSICPLAYER_ARTIST:
+    if (item->HasProperty("artist"))
+      return item->GetProperty("artist");
+    
     if (tag.GetArtist().size()) { return tag.GetArtist(); }
     break;
   case MUSICPLAYER_YEAR: 
@@ -3665,6 +3671,10 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
     break;
   case LISTITEM_TRACKNUMBER:
     {
+      printf("INDEX: %d\n", item->GetProperty("index").c_str());
+      if (item->HasProperty("index"))
+        return item->GetProperty("index");
+      
       CStdString track;
       if (item->HasMusicInfoTag())
         track.Format("%i", item->GetMusicInfoTag()->GetTrackNumber());
@@ -3672,6 +3682,8 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
       return track;
     }
   case LISTITEM_ARTIST:
+    if (item->HasProperty("artist"))
+      return item->GetProperty("artist");
     if (item->HasMusicInfoTag())
       return CorrectAllItemsSortHack(item->GetMusicInfoTag()->GetArtist());
     if (item->HasVideoInfoTag())
@@ -3681,6 +3693,8 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
     return item->GetProperty("director");
     break;
   case LISTITEM_ALBUM:
+    if (item->HasProperty("album"))
+      return item->GetProperty("album");
     if (item->HasMusicInfoTag())
       return CorrectAllItemsSortHack(item->GetMusicInfoTag()->GetAlbum());
     if (item->HasVideoInfoTag())
