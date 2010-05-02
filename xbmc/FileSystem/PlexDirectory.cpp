@@ -536,14 +536,18 @@ class PlexMediaNode
      return "";
    }
    
-   void CacheMediaThumb(const CFileItemPtr& mediaItem, TiXmlElement* el, const string& baseURL, const string& resource, const string& version)
+   void CacheMediaThumb(const CFileItemPtr& mediaItem, TiXmlElement* el, const string& baseURL, const string& resource, const string& version, const string& attrName="")
    {
      const char* val = el->Attribute(resource.c_str());
      if (val && strlen(val) > 0)
      {
+       string attr = resource;
+       if (attrName.size() > 0)
+         attr = attrName;
+       
        // Complete the URL.
        string url = baseURL;
-       url += resource + "/";
+       url += attr + "/";
        
        CStdString encodedValue = val;
        CUtil::URLEncode(encodedValue);
@@ -551,13 +555,15 @@ class PlexMediaNode
        
        url += "?t=";
        url += version;
-       
+
        // See if it exists (fasttrack) or queue it for download.
        string localFile = CFileItem::GetCachedPlexMediaServerThumb(url);
        if (CFile::Exists(localFile))
-         mediaItem->SetProperty("mediaTag::" + resource, localFile);
+         mediaItem->SetProperty("mediaTag::" + attr, localFile);
        else
-         mediaItem->SetProperty("cache$mediaTag::" + resource, url);
+         mediaItem->SetProperty("cache$mediaTag::" + attr, url);
+       
+       printf("Setting [%s] to [%s]\n", attr.c_str(), url.c_str());
      }
    }
    
@@ -605,6 +611,28 @@ class PlexMediaNode
      const char* pVal = el.Attribute(name);
      if (pVal && *pVal != 0)
        value = boost::lexical_cast<int>(pVal);
+   }
+   
+   void SetValue(const TiXmlElement& el, const TiXmlElement& parentEl, CStdString& value, const char* name)
+   {
+     const char* val = el.Attribute(name);
+     const char* valParent = parentEl.Attribute(name);
+     
+     if (val && *val != 0)
+       value = val;
+     else if (valParent && *valParent)
+       value = valParent;
+   }
+   
+   void SetValue(const TiXmlElement& el, const TiXmlElement& parentEl, int& value, const char* name)
+   {
+     const char* val = el.Attribute(name);
+     const char* valParent = parentEl.Attribute(name);
+     
+     if (val && *val != 0)
+       value = boost::lexical_cast<int>(val);
+     else if (valParent && *valParent)
+       value = boost::lexical_cast<int>(valParent);
    }
    
    void SetPropertyValue(const TiXmlElement& el, CFileItemPtr& item, const string& propName, const char* attrName)
@@ -690,23 +718,10 @@ class PlexMediaNodeLibrary : public PlexMediaNode
     TiXmlElement* parent = (TiXmlElement* )el.Parent();
     CSong song;
     
-    // Artist.
-    if (el.Attribute("grandparentTitle"))
-      song.strArtist = el.Attribute("grandparentTitle");
-    else
-      song.strArtist = parent->Attribute("grandparentTitle");
-    
-    // Album.
-    if (el.Attribute("parentTitle"))
-      song.strAlbum = el.Attribute("parentTitle");
-    else
-      song.strAlbum = parent->Attribute("parentTitle");
-    
-    // Year.
-    if (el.Attribute("parentYear"))
-      SetValue(el, song.iYear, "parentYear");
-    else
-      SetValue(*parent, song.iYear, "parentYear");
+    // Artist, album, year.
+    SetValue(el, *parent, song.strArtist, "grandparentTitle");
+    SetValue(el, *parent, song.strAlbum, "parentTitle");
+    SetValue(el, *parent, song.iYear, "parentYear");
     
     song.strTitle = GetLabel(el);
     
@@ -844,8 +859,15 @@ class PlexMediaNodeLibrary : public PlexMediaNode
           CacheMediaThumb(theMediaItem, media, url, "videoFrameRate", pVersion);
 
           // From the metadata item.
-          CacheMediaThumb(theMediaItem, &el, url, "contentRating", pVersion);
-          CacheMediaThumb(theMediaItem, &el, url, "studio", pVersion);
+          if (el.Attribute("contentRating"))
+            CacheMediaThumb(theMediaItem, &el, url, "contentRating", pVersion);
+          else
+            CacheMediaThumb(theMediaItem, parent, url, "grandparentContentRating", pVersion, "contentRating");
+          
+          if (el.Attribute("studio"))
+            CacheMediaThumb(theMediaItem, &el, url, "studio", pVersion);
+          else
+            CacheMediaThumb(theMediaItem, parent, url, "grandparentStudio", pVersion, "studio");
         }
 
         // But we add each one to the list.
