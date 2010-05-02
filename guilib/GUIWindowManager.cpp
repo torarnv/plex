@@ -323,9 +323,6 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const CStdString& strPath,
 
 void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const CStdString& strPath, bool swappingWindows)
 {
-  if (GetActiveWindow() == iWindowID && GetActiveWindow() == WINDOW_NOW_PLAYING)
-    return;
-  
   CStdString strPath1 = strPath;
   // translate virtual windows
   // virtual music window which returns the last open music window (aka the music start window)
