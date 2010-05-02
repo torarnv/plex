@@ -921,6 +921,7 @@ int CGUIInfoManager::TranslateMusicPlayerString(const CStdString &info) const
   else if (info.Equals("hasnewcovernext")) return MUSICPLAYER_HAS_NEW_COVER_NEXT;
   else if (info.Equals("nextnewcover")) return MUSICPLAYER_NEXT_NEW_COVER;
   else if (info.Equals("nowplayingflipped")) return MUSICPLAYER_NOW_PLAYING_FLIPPED;
+  else if (info.Equals("fanart")) return MUSICPLAYER_FANART;
   return 0;
 }
 
@@ -1028,6 +1029,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
   case MUSICPLAYER_RATING:
   case MUSICPLAYER_COMMENT:
   case MUSICPLAYER_LYRICS:
+  case MUSICPLAYER_FANART:
     strLabel = GetMusicLabel(info);
   break;
   case VIDEOPLAYER_TITLE:
@@ -3000,6 +3002,10 @@ CStdString CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item) co
         return strDisc;
       } 
     }
+    break;
+  case MUSICPLAYER_FANART:
+    if (item->HasProperty("fanart_fallback") == false)
+      return item->GetProperty("fanart_image");
     break;
   case MUSICPLAYER_RATING:
     return GetItemLabel(item, LISTITEM_RATING);
