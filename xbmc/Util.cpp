@@ -4217,6 +4217,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     // restore to previous window if needed
     if( m_gWindowManager.GetActiveWindow() == WINDOW_SLIDESHOW ||
         m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO ||
+        m_gWindowManager.GetActiveWindow() == WINDOW_NOW_PLAYING ||
         m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION )
         m_gWindowManager.PreviousWindow();
 
