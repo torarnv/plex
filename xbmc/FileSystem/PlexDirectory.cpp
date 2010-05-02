@@ -200,7 +200,10 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     
     // Fall back to directory fanart?
     if ((strFanart.size() > 0 && pItem->GetQuickFanart().size() == 0) || disableFanart)
+    {
       pItem->SetQuickFanart(strFanart);
+      pItem->SetProperty("fanart_fallback", "1");
+    }
     
     // Fall back to directory thumb?
     if (strThumb.size() > 0 && pItem->GetThumbnailImage().size() == 0)
@@ -589,6 +592,27 @@ class PlexMediaNode
      
      return "";
    }
+
+   void SetValue(const TiXmlElement& el, CStdString& value, const char* name)
+   {
+     const char* pVal = el.Attribute(name);
+     if (pVal && *pVal != 0)
+       value = pVal;
+   }
+
+   void SetValue(const TiXmlElement& el, int& value, const char* name)
+   {
+     const char* pVal = el.Attribute(name);
+     if (pVal && *pVal != 0)
+       value = boost::lexical_cast<int>(pVal);
+   }
+   
+   void SetPropertyValue(const TiXmlElement& el, CFileItemPtr& item, const string& propName, const char* attrName)
+   {
+     const char* pVal = el.Attribute(attrName);
+     if (pVal && *pVal != 0)
+       item->SetProperty(propName, pVal);
+   }
    
    string BuildDurationString(const string& duration)
    {
@@ -661,31 +685,104 @@ class PlexMediaNodeLibrary : public PlexMediaNode
     return ret;
   }
   
-  virtual void DoBuildFileItem(CFileItemPtr& pItem, const string& parentPath, TiXmlElement& el)
+  void DoBuildTrackItem(CFileItemPtr& pItem, const string& parentPath, TiXmlElement& el)
   {
+    TiXmlElement* parent = (TiXmlElement* )el.Parent();
+    CSong song;
+    
+    // Artist.
+    if (el.Attribute("grandparentTitle"))
+      song.strArtist = el.Attribute("grandparentTitle");
+    else
+      song.strArtist = parent->Attribute("grandparentTitle");
+    
+    // Album.
+    if (el.Attribute("parentTitle"))
+      song.strAlbum = el.Attribute("parentTitle");
+    else
+      song.strAlbum = parent->Attribute("parentTitle");
+    
+    // Year.
+    if (el.Attribute("parentYear"))
+      SetValue(el, song.iYear, "parentYear");
+    else
+      SetValue(*parent, song.iYear, "parentYear");
+    
+    song.strTitle = GetLabel(el);
+    
+    // Duration.
+    SetValue(el, song.iDuration, "duration");
+    song.iDuration /= 1000;
+    
+    // Track number.
+    SetValue(el, song.iTrack, "index");
+
+    // Media tags.
+    const char* pRoot = parent->Attribute("mediaTagPrefix");
+    const char* pVersion = parent->Attribute("mediaTagVersion");
+    
+    vector<CFileItemPtr> mediaItems;
+    for (TiXmlElement* media = el.FirstChildElement(); media; media=media->NextSiblingElement())
+    {
+      if (media->ValueStr() == "Media")
+      {
+        // Replace the item.
+        CFileItemPtr newItem(new CFileItem(song));
+        newItem->m_strPath = pItem->m_strPath;
+        pItem = newItem;
+        
+        const char* bitrate = el.Attribute("bitrate");
+        if (bitrate && strlen(bitrate) > 0)
+        {
+          pItem->m_dwSize = boost::lexical_cast<int>(bitrate);
+          pItem->GetMusicInfoTag()->SetAlbum(bitrate);
+        }
+        
+        // Summary.
+        SetPropertyValue(*parent, pItem, "description", "summary");
+        
+        // Path to the track.
+        string localPath;
+        string url = ComputeMediaUrl(parentPath, media, localPath);
+        pItem->m_strPath = url;
+        song.strFileName = pItem->m_strPath;
+        
+        if (pRoot && pVersion)
+        {
+          string url = CPlexDirectory::ProcessUrl(parentPath, pRoot, false);
+          CacheMediaThumb(pItem, media, url, "audioChannels", pVersion);
+          CacheMediaThumb(pItem, media, url, "audioCodec", pVersion);
+          CacheMediaThumb(pItem, &el, url, "contentRating", pVersion);
+          CacheMediaThumb(pItem, &el, url, "studio", pVersion);
+        }
+
+        // We're done.
+        break;
+      }
+    }
+    
+    pItem->m_bIsFolder = false;
+    
+    // Summary.
+    SetPropertyValue(el, pItem, "description", "summary");
+  }
+  
+  virtual void DoBuildVideoFileItem(CFileItemPtr& pItem, const string& parentPath, TiXmlElement& el)
+  {
+    string type = el.Attribute("type");
+    
     // Top level data.
     CVideoInfoTag videoInfo;
-    videoInfo.m_strTitle = el.Attribute("title");
-    
-    if (el.Attribute("originalTitle"))
-      videoInfo.m_strOriginalTitle = el.Attribute("originalTitle");
-    
+    SetValue(el, videoInfo.m_strTitle, "title");
+    SetValue(el, videoInfo.m_strOriginalTitle, "originalTitle");
     videoInfo.m_strPlot = videoInfo.m_strPlotOutline = el.Attribute("summary");
-
-    const char* year = el.Attribute("year");
-    if (year)
-      videoInfo.m_iYear = boost::lexical_cast<int>(year);
-
+    SetValue(el, videoInfo.m_iYear, "year");
+    
     // Indexes.
-    string type = el.Attribute("type");
     if (type == "episode")
     {
-      if (el.Attribute("index"))
-        videoInfo.m_iEpisode = boost::lexical_cast<int>(el.Attribute("index"));
-      
-      const char* parentIndex = ((TiXmlElement* )el.Parent())->Attribute("parentIndex");
-      if (parentIndex)
-        videoInfo.m_iSeason = boost::lexical_cast<int>(parentIndex);
+      SetValue(el, videoInfo.m_iEpisode, "index");
+      SetValue(*((TiXmlElement* )el.Parent()), videoInfo.m_iSeason, "parentIndex");
     }
     else if (type == "show")
     {
@@ -693,13 +790,11 @@ class PlexMediaNodeLibrary : public PlexMediaNode
     }
     
     // Tagline.
-    if (el.Attribute("tagline"))
-      videoInfo.m_strTagLine = el.Attribute("tagline");
+    SetValue(el, videoInfo.m_strTagLine, "tagline");
 
     // Views.
     int viewCount = 0;
-    if (el.Attribute("viewCount"))
-      viewCount = boost::lexical_cast<int>(el.Attribute("viewCount"));
+    SetValue(el, viewCount, "viewCount");
     
     vector<CFileItemPtr> mediaItems;
     for (TiXmlElement* media = el.FirstChildElement(); media; media=media->NextSiblingElement())
@@ -732,9 +827,7 @@ class PlexMediaNodeLibrary : public PlexMediaNode
         theMediaItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, viewCount > 0);
 
         // Bitrate.
-        const char* bitrate = media->Attribute("bitrate");
-        if (bitrate && strlen(bitrate) > 0)
-          theMediaItem->m_iBitrate = boost::lexical_cast<int>(bitrate);
+        SetValue(*media, theMediaItem->m_iBitrate, "bitrate");
 
         // Build the URLs for the flags.
         TiXmlElement* parent = (TiXmlElement* )el.Parent();
@@ -761,6 +854,17 @@ class PlexMediaNodeLibrary : public PlexMediaNode
     }
     
     pItem = mediaItems[0];
+  }
+  
+  virtual void DoBuildFileItem(CFileItemPtr& pItem, const string& parentPath, TiXmlElement& el)
+  {
+    string type = el.Attribute("type");
+    
+    // Check for track.
+    if (type == "track")
+      DoBuildTrackItem(pItem, parentPath, el);
+    else
+      DoBuildVideoFileItem(pItem, parentPath, el);
   }
   
 };
