@@ -119,7 +119,7 @@ public:
   bool IsSmb() const;
   bool IsDAAP() const;
   bool IsPlexMediaServer() const;
-  bool IsPlexMediaServerMusic() const;
+  virtual bool IsPlexMediaServerMusic() const;
   bool IsPlexMediaServerLibrary() const;
   bool IsWebKit() const;
   bool IsStack() const;
@@ -426,6 +426,8 @@ public:
   const CStdString& GetDisabledViewModes() const { return m_disabledViewModes; }
   
   void ClearSortState();
+  
+  virtual bool IsPlexMediaServerMusic() const;
   
   bool m_wasListingCancelled;
   bool m_displayMessage;

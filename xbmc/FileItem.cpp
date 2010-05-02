@@ -872,6 +872,9 @@ bool CFileItem::IsPlexMediaServerMusic() const
     if (str.Find("/music/") == 0)
       return true;
   }
+  
+  if (GetProperty("type") == "track")
+    return true;
 
   return false;
 }
@@ -3176,6 +3179,11 @@ void CFileItemList::ClearSortState()
 {
   m_sortMethod=SORT_METHOD_NONE;
   m_sortOrder=SORT_ORDER_NONE;
+}
+
+bool CFileItemList::IsPlexMediaServerMusic() const
+{
+  return GetContent() == "track";
 }
 
 CVideoInfoTag* CFileItem::GetVideoInfoTag()
