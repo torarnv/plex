@@ -203,7 +203,6 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
       pItem->SetQuickFanart(strFanart);
     
     // Fall back to directory thumb?
-    printf("Thumb: %s, Fall back: %s\n", pItem->GetThumbnailImage().c_str(), strThumb.c_str());
     if (strThumb.size() > 0 && pItem->GetThumbnailImage().size() == 0)
       pItem->SetThumbnailImage(strThumb);
     
