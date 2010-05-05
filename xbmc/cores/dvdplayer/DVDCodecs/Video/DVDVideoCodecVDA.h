@@ -1,9 +1,6 @@
 #pragma once
 
 /*
- *      Copyright (C) 2010 Plex Incorporated
- *		http://www.plexapp.com
- *
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
  *
@@ -27,8 +24,6 @@
 #include "cores/ffmpeg/DllAvFormat.h"
 
 #include "DVDVideoCodec.h"
-#include <VideoDecodeAcceleration/VDADecoder.h>
-
 #define DEBUG 0
 #include <VideoDecodeAcceleration/VDADecoder.h>
 
@@ -49,8 +44,8 @@ public:
 	virtual int Decode(BYTE* pData, int iSize, double pts);
 	virtual void Reset();
 	virtual bool GetPicture(DVDVideoPicture* pDvdVideoPicture);
-	virtual const char* GetName() { return "AppleHardwareVDA"; };
 	virtual void SetDropState(bool bDrop);
+	virtual const char* GetName() { return "AppleHardwareVDA"; };
 	
 protected:
 	void GetVideoAspect(AVCodecContext* pCodecContext, unsigned int& iWidth, unsigned int& iHeight);
@@ -66,12 +61,11 @@ protected:
 	
 	SInt32 m_iPictureWidth;
 	SInt32 m_iPictureHeight;
-	bool m_DropPictures;
-	
-  bool m_dropPictures;
+	bool              m_DropPictures;
+	bool m_convert_bytestream;
+
 	int m_iScreenWidth;
 	int m_iScreenHeight;
-	//	DllSwScale m_dllSwScale;
 	void *hardwareDecoder;
 	void *yuvBuffer[3];
 	UInt32 yuvPlaneSize[3];
