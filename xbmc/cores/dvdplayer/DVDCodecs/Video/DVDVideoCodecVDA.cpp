@@ -585,21 +585,33 @@ void CDVDVideoCodecVDA::AdvanceQueueHead()
 
 bool CDVDVideoCodecVDA::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 {
+	if (!_displayQueue->frame) return VC_BUFFER;
+
 	pDvdVideoPicture->iWidth = pDvdVideoPicture->iDisplayWidth = m_iPictureWidth;
 	pDvdVideoPicture->iHeight = pDvdVideoPicture->iDisplayHeight = m_iPictureHeight;
 	pDvdVideoPicture->pts = DVD_NOPTS_VALUE;
+	
+	// get reference to queue head
 		
 	pthread_mutex_lock(&_queueMutex);
-	CVPixelBufferLockBaseAddress(_displayQueue->frame, 0);
+
+	pDvdVideoPicture->pts = _displayQueue->frameDisplayTime;
+	CVPixelBufferRef nextFrame = CVPixelBufferRetain(_displayQueue->frame);
+
+	AdvanceQueueHead();
+
+	pthread_mutex_unlock(&_queueMutex);
+
+	CVPixelBufferLockBaseAddress(nextFrame, 0);
 
 	// YUV420p frame
 	for (int i = 0; i < 3; i++)
 	{
-		UInt32 planeHeight = CVPixelBufferGetHeightOfPlane(_displayQueue->frame, i);
-		UInt32 planeWidth = CVPixelBufferGetBytesPerRowOfPlane(_displayQueue->frame, i);
+		UInt32 planeHeight = CVPixelBufferGetHeightOfPlane(nextFrame, i);
+		UInt32 planeWidth = CVPixelBufferGetBytesPerRowOfPlane(nextFrame, i);
 		UInt32 planeSize = planeWidth * planeHeight;
 		pDvdVideoPicture->iLineSize[i] = planeWidth;
-		void *planePointer = CVPixelBufferGetBaseAddressOfPlane(_displayQueue->frame, i);
+		void *planePointer = CVPixelBufferGetBaseAddressOfPlane(nextFrame, i);
 		
 		if (!yuvBuffer[i] || yuvPlaneSize[i] != planeSize)
 		{
@@ -615,17 +627,12 @@ bool CDVDVideoCodecVDA::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 		memcpy(yuvBuffer[i], planePointer, yuvPlaneSize[i]);
 		pDvdVideoPicture->data[i] = (BYTE *)yuvBuffer[i];
 	}
-	CVPixelBufferUnlockBaseAddress(_displayQueue->frame, 0);
+	CVPixelBufferUnlockBaseAddress(nextFrame, 0);
+	CVPixelBufferRelease(nextFrame);
 
 	pDvdVideoPicture->iRepeatPicture = 0;
 	pDvdVideoPicture->iFlags = DVP_FLAG_ALLOCATED;    
 	
-	pDvdVideoPicture->pts = _displayQueue->frameDisplayTime;
-	
-	AdvanceQueueHead();
-	
-	pthread_mutex_unlock(&_queueMutex);
-
 	return VC_PICTURE | VC_BUFFER;
 }
 
