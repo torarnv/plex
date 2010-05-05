@@ -202,7 +202,9 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     if ((strFanart.size() > 0 && pItem->GetQuickFanart().size() == 0) || disableFanart)
     {
       pItem->SetQuickFanart(strFanart);
-      pItem->SetProperty("fanart_fallback", "1");
+      
+      if (strFanart.find("32400/:/resources") != -1)
+        pItem->SetProperty("fanart_fallback", "1");
     }
     
     // Fall back to directory thumb?
