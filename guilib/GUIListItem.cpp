@@ -148,6 +148,8 @@ CStdString CGUIListItem::GetOverlayImage() const
     return "OverlayUnwatched.png";
   case ICON_OVERLAY_WATCHED:
     return "OverlayWatched.png";
+  case ICON_OVERLAY_IN_PROGRESS:
+    return "OverlayInProgress.png";
   case ICON_OVERLAY_HD:
     return "OverlayHD.png";
   default:

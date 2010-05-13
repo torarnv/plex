@@ -53,6 +53,7 @@ public:
                         ICON_OVERLAY_TRAINED,
                         ICON_OVERLAY_UNWATCHED,
                         ICON_OVERLAY_WATCHED,
+                        ICON_OVERLAY_IN_PROGRESS,
                         ICON_OVERLAY_HD};
 
   CGUIListItem(void);
