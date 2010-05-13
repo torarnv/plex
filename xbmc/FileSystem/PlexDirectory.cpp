@@ -358,9 +358,11 @@ class PlexMediaNode
      pItem->SetProperty("key", CPlexDirectory::ProcessUrl(parentPath, key, false));
      
      // Date.
-     const char* date = el.Attribute("subtitle"); 
-     if (date && strlen(date) > 0)
-       pItem->SetProperty("subtitle", date);
+     SetProperty(pItem, el, "subtitle");
+     
+     // Ancestry.
+     SetProperty(pItem, el, "parentTitle");
+     SetProperty(pItem, el, "grandparentTitle");
      
      // Bitrate.
      const char* bitrate = el.Attribute("bitrate");
@@ -368,9 +370,7 @@ class PlexMediaNode
        pItem->m_iBitrate = boost::lexical_cast<int>(bitrate);
      
      // View offset.
-     const char* viewOffset = el.Attribute("viewOffset");
-     if (viewOffset)
-       pItem->SetProperty("viewOffset", viewOffset);
+     SetProperty(pItem, el, "viewOffset");
      
      const char* label2;
      label2 = el.Attribute("infolabel");
@@ -412,7 +412,7 @@ class PlexMediaNode
        
        // Theme music.
        string strTheme = ProcessMediaElement(parentPath, el, "theme", MAX_FANART_AGE);
-       if (strBanner.size() > 0)
+       if (strTheme.size() > 0)
          pItem->SetProperty("theme", strTheme);
      }
      catch (...)
@@ -450,10 +450,8 @@ class PlexMediaNode
        }
      }
      
-     // Ratings
-     const char* userRating = el.Attribute("userRating");
-     if (userRating && strlen(userRating) > 0)
-       pItem->SetProperty("userRating", atof(userRating));
+     // Ratings.
+     SetProperty(pItem, el, "userRating");
      
      const char* ratingKey = el.Attribute("ratingKey");
      if (ratingKey && strlen(ratingKey) > 0)
@@ -467,15 +465,13 @@ class PlexMediaNode
        theURL.GetURL(url);
        pItem->SetProperty("rootKey", url);
      }
-      
+ 
      const char* rating = el.Attribute("rating");
      if (rating && strlen(rating) > 0)
        pItem->SetProperty("rating", atof(rating));
      
      // Content rating.
-     const char* contentRating = el.Attribute("contentRating");
-     if (contentRating)
-       pItem->SetProperty("contentRating", contentRating);
+     SetProperty(pItem, el, "contentRating");
      
      // Dates.
      const char* originallyAvailableAt = el.Attribute("originallyAvailableAt");
@@ -601,6 +597,18 @@ class PlexMediaNode
      return "";
    }
 
+   
+   void SetProperty(const CFileItemPtr& item, const TiXmlElement& el, const string& attrName, const string& propertyName="")
+   {
+     string propName = attrName;
+     if (propertyName.size() > 0)
+       propName = propertyName;
+     
+     const char* pVal = el.Attribute(attrName.c_str());
+     if (pVal && *pVal != 0)
+       item->SetProperty(propName, pVal);
+   }
+   
    void SetValue(const TiXmlElement& el, CStdString& value, const char* name)
    {
      const char* pVal = el.Attribute(name);
@@ -841,7 +849,12 @@ class PlexMediaNodeLibrary : public PlexMediaNode
         theMediaItem->SetProperty("localPath", localPath);
         theMediaItem->m_bIsFolder = false;
         theMediaItem->m_strPath = url;
-        theMediaItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, viewCount > 0);
+        
+        // See if the item has been played or is in progress.
+        if (el.Attribute("viewOffset") != 0 && strlen(el.Attribute("viewOffset")) > 0)
+          theMediaItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_IN_PROGRESS);
+        else
+          theMediaItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, viewCount > 0);
 
         // Bitrate.
         SetValue(*media, theMediaItem->m_iBitrate, "bitrate");
