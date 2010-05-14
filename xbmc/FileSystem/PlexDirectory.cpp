@@ -560,8 +560,6 @@ class PlexMediaNode
          mediaItem->SetProperty("mediaTag::" + attr, localFile);
        else
          mediaItem->SetProperty("cache$mediaTag::" + attr, url);
-       
-       printf("Setting [%s] to [%s]\n", attr.c_str(), url.c_str());
      }
    }
    
