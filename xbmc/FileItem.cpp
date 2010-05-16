@@ -859,24 +859,30 @@ bool CFileItem::IsPlexMediaServerLibrary() const
 
 bool CFileItem::IsPlexMediaServerMusic() const
 {
-  if (IsPlexMediaServer() == false)
-    return false;
+  bool ret = false;
   
-  // Look for plex://xxx/music.
-  CStdString str = m_strPath;
-  int firstSlash = str.Find('/');
-  firstSlash = str.Find('/', firstSlash + 2);
-  if (firstSlash > 0)
+  if (IsPlexMediaServer() == false)
   {
-    str = str.substr(firstSlash);
-    if (str.Find("/music/") == 0)
-      return true;
+    ret = false;
+  }
+  else
+  {
+    // Look for plex://xxx/music.
+    CStdString str = m_strPath;
+    int firstSlash = str.Find('/');
+    firstSlash = str.Find('/', firstSlash + 2);
+    if (firstSlash > 0)
+    {
+      str = str.substr(firstSlash);
+      if (str.Find("/music/") == 0)
+        ret = true;
+    }
+  
+    if (GetProperty("type") == "track")
+      ret = true;
   }
   
-  if (GetProperty("type") == "track")
-    return true;
-
-  return false;
+  return ret;
 }
 
 bool CFileItem::IsWebKit() const
@@ -3183,7 +3189,7 @@ void CFileItemList::ClearSortState()
 
 bool CFileItemList::IsPlexMediaServerMusic() const
 {
-  return GetContent() == "track";
+  return GetContent() == "track" || GetContent() == "songs";
 }
 
 CVideoInfoTag* CFileItem::GetVideoInfoTag()
