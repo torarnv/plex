@@ -44,6 +44,8 @@
 #include "PictureInfoTag.h"
 #include "FileItem.h"
 #include "Settings.h"
+#include "PlexDirectory.h"
+#include "ThumbLoader.h"
 
 using namespace std;
 using namespace MUSIC_GRABBER;
@@ -1788,6 +1790,69 @@ int CXbmcHttp::xbmcPlayerPlayFile(int numParas, CStdString paras[])
   return SetResponse(openTag+"Error:Could not play file");
 }
 
+int CXbmcHttp::xbmcPlayerPlayMedia(int numParas, CStdString paras[])
+{
+  if (numParas<2)
+    return SetResponse(openTag+"Error:Missing parameter");
+  
+  CStdString path = paras[0];
+  CStdString key = paras[1];
+  
+  CFileItemList fileItems;
+  CPlexDirectory plexDir;
+  plexDir.GetDirectory(path, fileItems);
+  int itemIndex = -1;
+
+  for (int i=0; i < fileItems.Size(); ++i)
+  {
+    CFileItemPtr fileItem = fileItems[i];
+    if (fileItem->GetProperty("unprocessedKey") == key)
+    {
+      itemIndex = i;
+      break;
+    }
+  }
+  
+  if (itemIndex == -1)
+    return SetResponse(openTag+"Key not found");
+    
+  CFileItemPtr item = fileItems[itemIndex];
+  CStdString mediaType = item->GetProperty("type");
+  
+  if (numParas > 2 && paras[2] != "")
+    item.SetProperty("userAgent", paras[2]);
+  
+  if (numParas > 3 && paras[3] != "")
+    item.SetProperty("httpCookies", paras[3]);
+  
+  
+  if (mediaType == "episode" || mediaType == "movie")
+  {
+    CVideoThumbLoader loader;
+    loader.LoadItem(item.get());
+  }
+  else if (mediaType == "track")
+  {
+    CMusicThumbLoader loader;
+    loader.LoadItem(item.get());
+  }
+  else
+    return SetResponse(openTag+"Unsupported media type");
+  
+  if (mediaType == "track")
+  {
+    g_playlistPlayer.ClearPlaylist(PLAYLIST_MUSIC);
+    g_playlistPlayer.Reset();
+    g_playlistPlayer.Add(PLAYLIST_MUSIC, fileItems);
+    g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
+    g_playlistPlayer.Play(itemIndex);
+  }
+  else
+    g_application.getApplicationMessenger().PlayFile(*item);
+  
+  return SetResponse(openTag+"OK");
+}
+
 int CXbmcHttp::xbmcGetCurrentPlayList()
 {
   CStdString tmp;
@@ -2966,7 +3031,8 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
   {
     if (command == "clearplaylist")                   retVal = xbmcClearPlayList(numParas, paras);  
       else if (command == "addtoplaylist")            retVal = xbmcAddToPlayList(numParas, paras);  
-      else if (command == "playfile")                 retVal = xbmcPlayerPlayFile(numParas, paras); 
+      else if (command == "playfile")                 retVal = xbmcPlayerPlayFile(numParas, paras);
+      else if (command == "playmedia")                retVal = xbmcPlayerPlayMedia(numParas, paras);
       else if (command == "pause")                    retVal = xbmcAction(numParas, paras,1);
       else if (command == "stop")                     retVal = xbmcAction(numParas, paras,2);
       else if (command == "playnext")                 retVal = xbmcAction(numParas, paras,3);
