@@ -1797,7 +1797,7 @@ int CXbmcHttp::xbmcPlayerPlayMedia(int numParas, CStdString paras[])
   
   CStdString path = paras[0];
   CStdString key = paras[1];
-  
+
   CFileItemList fileItems;
   CPlexDirectory plexDir;
   plexDir.GetDirectory(path, fileItems);
@@ -1820,11 +1820,16 @@ int CXbmcHttp::xbmcPlayerPlayMedia(int numParas, CStdString paras[])
   CStdString mediaType = item->GetProperty("type");
   
   if (numParas > 2 && paras[2] != "")
-    item.SetProperty("userAgent", paras[2]);
+    item->SetProperty("userAgent", paras[2]);
   
   if (numParas > 3 && paras[3] != "")
-    item.SetProperty("httpCookies", paras[3]);
+    item->SetProperty("httpCookies", paras[3]);
   
+  if (numParas > 4 && paras[4] != "")
+  {
+    item->SetProperty("viewOffset", paras[4]);
+    item->m_lStartOffset = STARTOFFSET_RESUME;
+  }
   
   if (mediaType == "episode" || mediaType == "movie")
   {
