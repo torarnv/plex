@@ -460,7 +460,7 @@ CGUISettings::CGUISettings(void)
   AddCategory(4, "plexmediaserver", 13630);
 #ifdef __APPLE__
   AddInt(1, "plexmediaserver.mode", 13631, PlexMediaServerHelper::MODE_ENABLED, PlexMediaServerHelper::MODE_DISABLED, 1, PlexMediaServerHelper::MODE_ENABLED, SPIN_CONTROL_TEXT);
-  AddBool(2, "plexmediaserver.alwayson", 13632, false);
+  AddBool(2, "plexmediaserver.alwayson", 13632, true);
   //AddBool(3, "plexmediaserver.scrobble", 13635, false);
 #endif
   
