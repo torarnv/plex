@@ -355,6 +355,7 @@ class PlexMediaNode
      DoBuildFileItem(pItem, string(parentPath), el);
      
      // Set the key.
+     pItem->SetProperty("unprocessedKey", key);
      pItem->SetProperty("key", CPlexDirectory::ProcessUrl(parentPath, key, false));
      
      // Date.
