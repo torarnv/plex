@@ -801,11 +801,14 @@ class PlexMediaNodeLibrary : public PlexMediaNode
     videoInfo.m_strPlot = videoInfo.m_strPlotOutline = el.Attribute("summary");
     SetValue(el, videoInfo.m_iYear, "year");
     
+    // Show, season.
+    SetValue(el, *(TiXmlElement* )el.Parent(), videoInfo.m_strShowTitle, "grandparentTitle");
+    
     // Indexes.
     if (type == "episode")
     {
       SetValue(el, videoInfo.m_iEpisode, "index");
-      SetValue(*((TiXmlElement* )el.Parent()), videoInfo.m_iSeason, "parentIndex");
+      SetValue(el, *((TiXmlElement* )el.Parent()), videoInfo.m_iSeason, "parentIndex");
     }
     else if (type == "show")
     {
@@ -1108,23 +1111,6 @@ class PlexMediaVideo : public PlexMediaNode
       videoInfo.m_strRuntime = std;
     }
     
-#if 0
-    // NOT YET, messes up display in file mode.
-    
-    // TV show information.
-    const char* season = el.Attribute("season");
-    if (season)
-      videoInfo.m_iSeason = boost::lexical_cast<int>(season);
-
-    const char* episode = el.Attribute("episode");
-    if (episode)
-      videoInfo.m_iEpisode = boost::lexical_cast<int>(episode);
-      
-    const char* show = el.Attribute("show");
-    if (show)
-      videoInfo.m_strShowTitle = show;
-#endif
-        
     // Path to the track itself.
     CURL url2(pItem->m_strPath);
     if (url2.GetProtocol() == "plex" && url2.GetFileName().Find("video/:/") == -1)
