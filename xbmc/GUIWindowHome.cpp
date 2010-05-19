@@ -183,7 +183,7 @@ typedef pair<string, HostSourcesPtr> string_sources_pair;
 
 static bool compare(CFileItemPtr first, CFileItemPtr second)
 {
-  return first->GetLabel().compare(second->GetLabel());
+  return first->GetLabel() <= second->GetLabel();
 }
 
 bool CGUIWindowHome::OnMessage(CGUIMessage& message)
