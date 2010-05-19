@@ -3189,7 +3189,10 @@ void CFileItemList::ClearSortState()
 
 bool CFileItemList::IsPlexMediaServerMusic() const
 {
-  return GetContent() == "track" || GetContent() == "songs";
+  if (GetContent() == "track" || GetContent() == "songs")
+    return true;
+  
+  return CFileItem::IsPlexMediaServerMusic();
 }
 
 CVideoInfoTag* CFileItem::GetVideoInfoTag()
