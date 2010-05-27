@@ -78,6 +78,7 @@ public:
 
   void SetOverlayImage(GUIIconOverlay icon, bool bOnOff=false);
   CStdString GetOverlayImage() const;
+  GUIIconOverlay GetOverlayImageIcon() const { return m_overlayIcon; }
 
   void SetSortLabel(const CStdString &label);
   const CStdString &GetSortLabel() const;
