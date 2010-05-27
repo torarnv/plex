@@ -5850,6 +5850,8 @@ void CApplication::Process()
 
 void CApplication::UpdateFileState(bool final, bool ended)
 {
+  bool completed = false;
+  
   if (m_itemCurrentFile->m_strPath.size() > 0)
   {
     if (final == true)
@@ -5859,6 +5861,8 @@ void CApplication::UpdateFileState(bool final, bool ended)
       {
         PlexMediaServerQueue::Get().onViewed(m_itemCurrentFile, true);
         m_itemCurrentFile->GetVideoInfoTag()->m_playCount++;
+        m_itemCurrentFile->SetOverlayImage(CGUIListItem::ICON_OVERLAY_WATCHED);
+        completed = true;
       }
     }
 
@@ -5869,7 +5873,10 @@ void CApplication::UpdateFileState(bool final, bool ended)
     {
       PlexMediaServerQueue::Get().onPlayingProgress(m_itemCurrentFile, (int)(current * 1000));
       m_itemCurrentFile->SetProperty("viewOffset", boost::lexical_cast<string>((int)(current*1000)));
-    }
+      
+      if (final == true && completed == false)
+        m_itemCurrentFile->SetOverlayImage(CGUIListItem::ICON_OVERLAY_IN_PROGRESS);
+    }      
     else
     {
       PlexMediaServerQueue::Get().onClearPlayingProgress(m_itemCurrentFile);
