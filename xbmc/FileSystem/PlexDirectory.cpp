@@ -6,6 +6,7 @@
  */
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
+#include <boost/algorithm/string.hpp>
 
 #include "stdafx.h"
 #include "Album.h"
@@ -700,8 +701,8 @@ class PlexMediaNodeLibrary : public PlexMediaNode
       // See if we need a stack or not.
       ret = urls[0];
       localPath = localPaths[0];
-      
-      if (urls.size() > 1)
+
+      if (urls.size() > 1 && boost::iequals(CUtil::GetExtension(urls[0]), ".ifo") == false)
       {
         ret = localPath = "stack://";
         
