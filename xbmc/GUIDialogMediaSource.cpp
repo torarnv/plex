@@ -97,13 +97,6 @@ bool CGUIDialogMediaSource::OnMessage(CGUIMessage& message)
         OnOK();
       else if (iControl == CONTROL_CANCEL)
         OnCancel();
-      else if (iControl == CONTROL_CONTENT)
-      {
-        CMediaSource share;
-        share.FromNameAndPaths("video", m_name, GetPaths());
-        
-        CGUIDialogContentSettings::ShowForDirectory(share.strPath,m_info,m_settings,m_bRunScan);
-      }
       return true;
     }
     break;
@@ -552,22 +545,8 @@ void CGUIDialogMediaSource::UpdateButtons()
     SET_CONTROL_LABEL(CONTROL_PATH, path)
   }
 
-  if (m_type.Equals("video") && m_paths->Size() > 0)
-  {
-    SET_CONTROL_VISIBLE(CONTROL_CONTENT)
-    if (m_paths->Get(0)->m_strPath.IsEmpty() || m_name.IsEmpty() || CUtil::IsPlexMediaServer(m_paths->Get(0)->m_strPath))
-    {
-      CONTROL_DISABLE(CONTROL_CONTENT)
-    }
-    else
-    {
-      CONTROL_ENABLE(CONTROL_CONTENT)
-    }
-  }
-  else
-  {
-    SET_CONTROL_HIDDEN(CONTROL_CONTENT)
-  }
+  // Nope.
+  SET_CONTROL_HIDDEN(CONTROL_CONTENT)
 }
 
 void CGUIDialogMediaSource::SetShare(const CMediaSource &share)
