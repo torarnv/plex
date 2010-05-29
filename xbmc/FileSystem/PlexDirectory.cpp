@@ -208,6 +208,14 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
         pItem->SetProperty("fanart_fallback", "1");
     }
     
+    // Save the fallback fanart in case we need it while loading the real one.
+    if (strFanart.size() > 0)
+    {
+      // Only do this if we have it cached already.
+      if (CFile::Exists(CFileItem::GetCachedPlexMediaServerFanart(strFanart)))
+        pItem->SetProperty("fanart_image_fallback", CFileItem::GetCachedPlexMediaServerFanart(strFanart));
+    }
+    
     // Fall back to directory thumb?
     if (strThumb.size() > 0 && pItem->GetThumbnailImage().size() == 0)
       pItem->SetThumbnailImage(strThumb);
