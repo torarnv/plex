@@ -221,7 +221,7 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
       pItem->SetThumbnailImage(strThumb);
     
     // Make sure sort label is lower case.
-    string sortLabel = pItem->GetLabel();
+    string sortLabel = pItem->GetSortLabel();
     boost::to_lower(sortLabel);
     pItem->SetSortLabel(sortLabel);
     
@@ -362,6 +362,12 @@ class PlexMediaNode
      
      // Let subclass finish.
      DoBuildFileItem(pItem, string(parentPath), el);
+     
+     // Sort label.
+     if (el.Attribute("titleSort"))
+       pItem->SetSortLabel(el.Attribute("titleSort"));
+     else
+       pItem->SetSortLabel(pItem->GetLabel());
      
      // Set the key.
      pItem->SetProperty("unprocessedKey", key);
@@ -962,10 +968,9 @@ class PlexMediaDirectory : public PlexMediaNode
     if (el.Attribute("leafCount") && el.Attribute("viewedLeafCount"))
     {
       int count = boost::lexical_cast<int>(el.Attribute("leafCount"));
-      int watchedCount = boost::lexical_cast<int>(el.Attribute("viewedLeafCount"));
+      int watchedCount = boost::lexical_cast<int>(el.Attribute("viewedLeafCount"));      
+      pItem->SetEpisodeData(count, watchedCount);
       
-      pItem->SetProperty("watchedepisodes", watchedCount);
-      pItem->SetProperty("unwatchedepisodes", count - watchedCount);
       pItem->GetVideoInfoTag()->m_iEpisode = count;
       pItem->GetVideoInfoTag()->m_playCount = (count == watchedCount) ? 1 : 0;
       pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pItem->GetVideoInfoTag()->m_playCount > 0);
