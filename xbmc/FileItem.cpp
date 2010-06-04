@@ -3219,6 +3219,20 @@ MUSIC_INFO::CMusicInfoTag* CFileItem::GetMusicInfoTag()
   return m_musicInfoTag;
 }
 
+void CFileItem::SetEpisodeData(int total, int watchedCount)
+{
+  SetProperty("watchedepisodes", watchedCount);
+  SetProperty("unwatchedepisodes", total - watchedCount);
+      
+  if (total - watchedCount == 1)
+    SetProperty("singularepisodecount", 1);
+  else if (total == 1)
+    SetProperty("singularepisodecount", 1);
+  
+  if (total - watchedCount == 0)
+    SetProperty("zeroepisodecount", 1);
+}
+
 void CFileItem::SetQuickFanart(const CStdString& fanartURL)
 {
   m_strFanartUrl = fanartURL;

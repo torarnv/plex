@@ -148,6 +148,8 @@ public:
   bool IsLabelPreformated() const { return m_bLabelPreformated; }
   void SetLabelPreformated(bool bYesNo) { m_bLabelPreformated=bYesNo; }
 
+  void SetEpisodeData(int total, int watchedCount);
+  
   bool HasMusicInfoTag() const
   {
     return m_musicInfoTag != NULL;
