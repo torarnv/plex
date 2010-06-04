@@ -953,8 +953,7 @@ void CGUIWindowVideoBase::MarkUnWatched(const CFileItemPtr &item)
     int watched = boost::lexical_cast<int>(item->GetProperty("watchedepisodes"));
     int unwatched = boost::lexical_cast<int>(item->GetProperty("unwatchedepisodes"));
     
-    item->SetProperty("unwatchedepisodes", watched + unwatched);
-    item->SetProperty("watchedepisodes", 0);
+    item->SetEpisodeData(watched+unwatched, 0);
   }
 }
 
@@ -973,9 +972,8 @@ void CGUIWindowVideoBase::MarkWatched(const CFileItemPtr &item)
   {
     int watched = boost::lexical_cast<int>(item->GetProperty("watchedepisodes"));
     int unwatched = boost::lexical_cast<int>(item->GetProperty("unwatchedepisodes"));
-    
-    item->SetProperty("unwatchedepisodes", 0);
-    item->SetProperty("watchedepisodes", watched + unwatched);
+
+    item->SetEpisodeData(watched+unwatched, watched+unwatched);
   }
 }
 
