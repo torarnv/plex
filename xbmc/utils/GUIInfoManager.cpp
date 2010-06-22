@@ -3884,15 +3884,19 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
   case LISTITEM_PATH:
     {
       CStdString path;
-      if (item->IsMusicDb() && item->HasMusicInfoTag())
-        CUtil::GetDirectory(CorrectAllItemsSortHack(item->GetMusicInfoTag()->GetURL()), path);
-      else if (item->IsVideoDb() && item->HasVideoInfoTag())
-        CUtil::GetDirectory(CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strFileNameAndPath), path);
+      if (item->HasProperty("localPath"))
+      {
+        CUtil::GetDirectory(item->GetProperty("localPath"), path);
+      }
       else
+      {
         CUtil::GetDirectory(item->m_strPath, path);
-      CURL url(path);
-      url.GetURLWithoutUserDetails(path);
-      CUtil::UrlDecode(path);
+      
+        CURL url(path);
+        url.GetURLWithoutUserDetails(path);
+        CUtil::UrlDecode(path);
+      }
+      
       return path;
     }
   case LISTITEM_FILENAME_AND_PATH:
