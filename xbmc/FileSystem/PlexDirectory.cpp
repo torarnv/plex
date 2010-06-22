@@ -286,6 +286,10 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   if (content && strlen(content) > 0)
     items.SetContent(content);
   
+  // See if it's mixed parent content.
+  if (root->Attribute("mixedParents") && strcmp(root->Attribute("mixedParents"), "1") == 0)
+    items.SetProperty("mixedParents", "1");
+  
   // Theme music.
   if (root->Attribute("theme"))
   {
