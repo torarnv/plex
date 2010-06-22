@@ -19,6 +19,8 @@
  *
  */
 
+#include <boost/foreach.hpp>
+
 #include "include.h"
 #include "GUIFontManager.h"
 #include "GraphicContext.h"
@@ -316,12 +318,12 @@ CGUIFont* GUIFontManager::GetFont(const CStdString& strFontName, bool fallback /
 
 void GUIFontManager::Clear()
 {
-  for (int i = 0; i < (int)m_vecFonts.size(); ++i)
-  {
-    CGUIFont* pFont = m_vecFonts[i];
+  BOOST_FOREACH(CGUIFont* pFont, m_vecFonts)
     delete pFont;
-  }
 
+  BOOST_FOREACH(CGUIFontTTF* guiFontTTF, m_vecFontFiles)
+    delete guiFontTTF;
+  
   m_vecFonts.clear();
   m_vecFontFiles.clear();
   m_vecFontInfo.clear();
