@@ -525,7 +525,9 @@ void startXBMC()
 
 void doRun()
 {
+  NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	CFRunLoopRun();	
+	[pool release];
 	
 	// If we enabled secure input, disable it after the run loop exits
 	if (secureInput == true)
@@ -537,7 +539,7 @@ void doRun()
 
 void setupAndRun()
 {
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+  NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
 	remoteDelegate = [[PlexHIDRemoteDelegate alloc] init];
 	NSLog(@"PlexHIDRemoteDelegate is %@", remoteDelegate);
