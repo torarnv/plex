@@ -18,7 +18,7 @@ class PlexMediaServerQueue : public CThread
  public:
   
   PlexMediaServerQueue();
-  virtual ~PlexMediaServerQueue() { m_mutex.lock(); m_mutex.unlock(); }
+  virtual ~PlexMediaServerQueue() { StopThread(); m_mutex.lock(); m_mutex.unlock(); }
   virtual void Process();
   virtual void StopThread();
   
