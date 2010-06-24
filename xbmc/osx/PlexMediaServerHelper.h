@@ -21,6 +21,8 @@ class PlexMediaServerHelper : public PlexHelperApp
     
     return *_theInstance;
   }
+
+  void AddArguments(const string& args) { m_arguments = args; }
   
  protected:
    
@@ -32,8 +34,10 @@ class PlexMediaServerHelper : public PlexHelperApp
   virtual string GetHelperBinaryName() const { return "Plex Media Server.app"; }
   virtual string GetPlistName() { return "com.plexapp.mediaserver.plist"; }
   virtual void   InstallLatestVersion(const string& dstDir);
+  virtual string GetArguments() { return m_arguments; }
   
  private:
    
   static PlexMediaServerHelper* _theInstance;
+  string m_arguments;
 };

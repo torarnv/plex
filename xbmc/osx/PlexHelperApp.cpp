@@ -149,9 +149,16 @@ bool PlexHelperApp::Start()
     // Check for .app.
     string command = "\"" + m_helperInstalledFile + "\"";
     if (m_helperInstalledFile.substr(m_helperInstalledFile.size()-4) == ".app")
+    {
       command = "/usr/bin/open -g " + command;
+      
+      if (GetArguments().size() > 0)
+        command += " --args " + GetArguments();
+    }
     else
+    {
       command = command + " -x &";
+    }
     
     CLog::Log(LOGNOTICE, "Asking %s to start [%s]", GetHelperBinaryName().c_str(), command.c_str());
     system(command.c_str());
