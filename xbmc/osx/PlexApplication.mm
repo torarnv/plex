@@ -212,6 +212,17 @@ BOOL gCalledAppMainline = FALSE;
 #  undef main
 #endif
 
+#ifdef __APPLE__
+#include <mach-o/dyld.h>
+#endif
+#include <fstream>
+#include "File.h"
+#include "PlexMediaServerHelper.h"
+#include "PlexMediaServerQueue.h"
+
+using namespace std;
+using namespace XFILE;
+
 /* Main entry point to executable - should *not* be SDL_main! */
 int main(int argc, const char **argv)
 {
@@ -234,6 +245,32 @@ int main(int argc, const char **argv)
     gFinderLaunch = NO;
   }
 
+  // If this is a first run, don't start Plex, but instead start the Media Server so
+  // we can walk through the nice wizard.
+  //
+  string firstRunFile = getenv("HOME");
+  firstRunFile += "/Library/Application Support/Plex Media Server/FirstRun"; 
+  
+  if (CFile::Exists(firstRunFile) == false)
+  {
+    id pool = [[NSAutoreleasePool alloc] init];
+    
+    // Get our path.
+    char path[1024];
+    unsigned int size = 1024;
+    _NSGetExecutablePath(&path[0], &size);
+    printf("Our path is [%s]\n", path);
+    
+    PlexMediaServerHelper::Get().AddArguments("--first-run-binary \"" + firstRunFile + "\"");
+    PlexMediaServerHelper::Get().Configure();
+    
+    ofstream out(firstRunFile.c_str());
+    out.close();
+    
+    [pool drain];
+    exit(0);
+  }
+  
   NSApplicationMain(argc, argv);  
   return 0;
 }
