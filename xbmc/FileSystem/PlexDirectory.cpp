@@ -499,13 +499,22 @@ class PlexMediaNode
      {
        char date[128];
        tm t;
-       time_t timeT = atoi(originallyAvailableAt);
-       localtime_r(&timeT, &t);
-       strftime(date, 128, "%x", &t);
+       memset(&t, 0, sizeof(t));
+       
+       vector<string> parts;
+       boost::split(parts, originallyAvailableAt, boost::is_any_of("-"));
+       if (parts.size() == 3)
+       {
+         t.tm_year = boost::lexical_cast<int>(parts[0]) - 1900;
+         t.tm_mon  = boost::lexical_cast<int>(parts[1]) - 1;
+         t.tm_mday = boost::lexical_cast<int>(parts[2]);
+       }
+
+       strftime(date, 128, "%B %d, %Y", &t);
        pItem->SetProperty("originallyAvailableAt", date);
      }
      
-     // Extra attributes for prefixes.     
+     // Extra attributes for prefixes.
      const char* share = el.Attribute("share");
      if (share && strcmp(share, "1") == 0)
        pItem->SetProperty("share", true);
