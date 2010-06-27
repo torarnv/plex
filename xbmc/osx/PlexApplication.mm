@@ -256,16 +256,12 @@ int main(int argc, const char **argv)
     id pool = [[NSAutoreleasePool alloc] init];
     
     // Get our path.
-    char path[1024];
-    unsigned int size = 1024;
-    _NSGetExecutablePath(&path[0], &size);
-    printf("Our path is [%s]\n", path);
+    string pathStr = [[[NSBundle mainBundle] bundlePath] UTF8String];
+    printf("Our path is [%s]\n", pathStr.c_str());
     
-    PlexMediaServerHelper::Get().AddArguments("--first-run-binary \"" + firstRunFile + "\"");
+    PlexMediaServerHelper::Get().AddArguments("--first-run-application \"" + pathStr + "\"");
     PlexMediaServerHelper::Get().Configure();
     
-    ofstream out(firstRunFile.c_str());
-    out.close();
     
     [pool drain];
     exit(0);
