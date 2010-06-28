@@ -221,12 +221,16 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       // Now collect all the added items.
       CPlexSourceScanner::Lock();
       
+      map<string, int> nameCounts;
       map<string, HostSourcesPtr>& map = CPlexSourceScanner::GetMap();
       list<CFileItemPtr> newItems;
       BOOST_FOREACH(string_sources_pair nameSource, map)
       {
         for (int i=0; i<nameSource.second->librarySections.Size(); i++)
+        {
           newItems.push_back(nameSource.second->librarySections[i]);
+          ++nameCounts[nameSource.second->librarySections[i]->GetLabel()];
+        }
       }
 
       CPlexSourceScanner::Unlock();
@@ -240,7 +244,8 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       {
         CFileItemPtr newItem = CFileItemPtr(new CFileItem(item->GetLabel()));
         newItem->SetProperty("plex", "1");
-        newItem->SetLabel2(item->GetLabel2());
+        if (nameCounts[item->GetLabel()] > 1)
+          newItem->SetLabel2(item->GetLabel2());
        
         if (item->GetProperty("type") == "artist")
           newItem->m_strPath = "Plex.ActivateWindow(MyMusicFiles," + item->m_strPath + ",return)";
