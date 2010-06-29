@@ -249,7 +249,9 @@ int main(int argc, const char **argv)
   // we can walk through the nice wizard.
   //
   string firstRunFile = getenv("HOME");
-  firstRunFile += "/Library/Application Support/Plex Media Server/FirstRun"; 
+  string firstRunPlexFile = firstRunFile;
+  firstRunFile += "/Library/Application Support/Plex Media Server/FirstRun";
+  firstRunPlexFile += "/Library/Application Support/Plex/FirstRun.plex";
   
   if (CFile::Exists(firstRunFile) == false)
   {
@@ -270,7 +272,6 @@ int main(int argc, const char **argv)
     printf("Our path is [%s]\n", pathStr.c_str());
     
     // Write out path to a file.
-    string firstRunPlexFile = firstRunFile + ".plex";
     PlexHelperApp::WriteFile(firstRunPlexFile, pathStr);
     
     // Install and start PMS.
