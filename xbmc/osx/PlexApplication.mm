@@ -269,7 +269,11 @@ int main(int argc, const char **argv)
     string pathStr = [[[NSBundle mainBundle] bundlePath] UTF8String];
     printf("Our path is [%s]\n", pathStr.c_str());
     
-    PlexMediaServerHelper::Get().AddArguments("--first-run-application \"" + pathStr + "\"");
+    // Write out path to a file.
+    string firstRunPlexFile = firstRunFile + ".plex";
+    PlexHelperApp::WriteFile(firstRunPlexFile, pathStr);
+    
+    // Install and start PMS.
     PlexMediaServerHelper::Get().Configure();
     
     [pool drain];
