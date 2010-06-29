@@ -255,13 +255,22 @@ int main(int argc, const char **argv)
   {
     id pool = [[NSAutoreleasePool alloc] init];
     
+    // Make sure the paths exist, we are very early.
+    string dstDir = getenv("HOME");
+    mkdir(dstDir.c_str(), 0755);
+    dstDir += "/Library";
+    mkdir(dstDir.c_str(), 0755);
+    dstDir += "/Application Support";
+    mkdir(dstDir.c_str(), 0755);
+    dstDir += "/Plex";
+    mkdir(dstDir.c_str(), 0755);
+    
     // Get our path.
     string pathStr = [[[NSBundle mainBundle] bundlePath] UTF8String];
     printf("Our path is [%s]\n", pathStr.c_str());
     
     PlexMediaServerHelper::Get().AddArguments("--first-run-application \"" + pathStr + "\"");
     PlexMediaServerHelper::Get().Configure();
-    
     
     [pool drain];
     exit(0);
