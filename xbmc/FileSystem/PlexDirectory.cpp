@@ -1371,6 +1371,8 @@ void CPlexDirectory::Parse(const CURL& url, TiXmlElement* root, CFileItemList &i
           type = "artists";
         else if (type == "album")
           type = "albums";
+        else if (type == "track")
+          type = "songs";
 
         // Set the content type for the collection.
         if (gotType == false)
