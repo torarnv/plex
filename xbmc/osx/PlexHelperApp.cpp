@@ -225,14 +225,17 @@ void PlexHelperApp::Configure()
     Uninstall();
   }
 
+  bool goingToInstall = (oldAlwaysOn == false && m_alwaysOn == true && CFile::Exists(m_launchAgentInstallFile) == false);
+  bool goingToUninstall = (oldAlwaysOn == true && m_alwaysOn == false); 
+  
   // Turning on.
-  if (oldMode == MODE_DISABLED && m_mode != MODE_DISABLED)
+  if (oldMode == MODE_DISABLED && m_mode != MODE_DISABLED && goingToInstall == false)
     Start();
 
   // Installation/uninstallation.
-  if (oldAlwaysOn == false && m_alwaysOn == true)
+  if (goingToInstall)
     Install();
-  if (oldAlwaysOn == true && m_alwaysOn == false)
+  if (goingToUninstall)
     Uninstall();
 }
 
