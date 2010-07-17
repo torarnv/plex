@@ -70,7 +70,7 @@ public:
   void Select(const CStdString& strPicture);
   const CFileItemList &GetSlideShowContents();
   const CFileItemPtr GetCurrentSlide();
-  void RunSlideShow(const CStdString& strPath, bool bRecursive = false);
+  void RunSlideShow(const CStdString& strPath, bool bRecursive = false, int startIndex = 0);
   void StartSlideShow(bool screensaver=false);
   bool InSlideShow() const;
   virtual bool OnMessage(CGUIMessage& message);

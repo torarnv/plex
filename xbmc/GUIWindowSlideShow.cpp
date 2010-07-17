@@ -651,7 +651,7 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
     {
       CStdString strFolder = message.GetStringParam();
       bool bRecursive = message.GetParam1() != 0;
-        RunSlideShow(strFolder, bRecursive);
+      RunSlideShow(strFolder, bRecursive, message.GetParam2());
     }
     break;
   }
@@ -801,7 +801,7 @@ int CGUIWindowSlideShow::CurrentSlide() const
   return m_iCurrentSlide + 1;
 }
 
-void CGUIWindowSlideShow::RunSlideShow(const CStdString &strPath, bool bRecursive)
+void CGUIWindowSlideShow::RunSlideShow(const CStdString &strPath, bool bRecursive, int startIndex)
 {
   // stop any video
   if (g_application.IsPlayingVideo())
@@ -812,11 +812,19 @@ void CGUIWindowSlideShow::RunSlideShow(const CStdString &strPath, bool bRecursiv
     Reset();
     AddItems(strPath, bRecursive);
     // ok, now run the slideshow
+    
+    // Pick the first slide.
+    if (startIndex != 0 && startIndex < NumSlides())
+    {
+      m_iCurrentSlide = startIndex;
+      m_iNextSlide = (m_iCurrentSlide + 1) % NumSlides();
+    }
   }
   if (g_guiSettings.GetBool("slideshow.shuffle"))
     Shuffle();
 
   StartSlideShow();
+
   if (NumSlides())
     m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
 }
