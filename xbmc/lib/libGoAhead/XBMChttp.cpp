@@ -46,6 +46,7 @@
 #include "Settings.h"
 #include "PlexDirectory.h"
 #include "ThumbLoader.h"
+#include "PictureThumbLoader.h"
 
 using namespace std;
 using namespace MUSIC_GRABBER;
@@ -1830,8 +1831,21 @@ int CXbmcHttp::xbmcPlayerPlayMedia(int numParas, CStdString paras[])
     item->SetProperty("viewOffset", paras[4]);
     item->m_lStartOffset = STARTOFFSET_RESUME;
   }
+
+  // See if it's a plug-in.
+  if (mediaType.size() == 0)
+  {
+    CURL url(path);
+    if (url.GetFileName().Find("video/") == 0)
+      mediaType = "video";
+    else if (url.GetFileName().Find("music/") == 0)
+      mediaType = "track";
+    else if (url.GetFileName().Find("photos/") == 0)
+      mediaType = "photo";
+  }
   
-  if (mediaType == "episode" || mediaType == "movie")
+  // Load thumbs.
+  if (mediaType == "episode" || mediaType == "movie" || mediaType == "video")
   {
     CVideoThumbLoader loader;
     loader.LoadItem(item.get());
@@ -1841,9 +1855,17 @@ int CXbmcHttp::xbmcPlayerPlayMedia(int numParas, CStdString paras[])
     CMusicThumbLoader loader;
     loader.LoadItem(item.get());
   }
+  else if (mediaType == "photo")
+  {
+    CPictureThumbLoader loader;
+    loader.LoadItem(item.get());
+  }
   else
-    return SetResponse(openTag+"Unsupported media type");
+  {
+    CLog::Log(LOGWARNING, "Unknown type: [%s] (path=%s)", mediaType.c_str(), path.c_str());
+  }
   
+  // Play the media.
   if (mediaType == "track")
   {
     g_playlistPlayer.ClearPlaylist(PLAYLIST_MUSIC);
@@ -1852,8 +1874,19 @@ int CXbmcHttp::xbmcPlayerPlayMedia(int numParas, CStdString paras[])
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
     g_playlistPlayer.Play(itemIndex);
   }
+  else if (mediaType == "photo")
+  {
+    CGUIMessage msg(GUI_MSG_START_SLIDESHOW, 0, 0, false, itemIndex);
+    msg.SetStringParam(path);
+    
+    CGUIWindow* pWindow = m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
+    if (pWindow)
+      pWindow->OnMessage(msg);
+  }
   else
+  {
     g_application.getApplicationMessenger().PlayFile(*item);
+  }
   
   return SetResponse(openTag+"OK");
 }
