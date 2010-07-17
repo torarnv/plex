@@ -120,7 +120,11 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
   if( g_application.getNetwork().IsAvailable() )
   {
     if (strProtocol == "shout") return new CShoutcastDirectory();
+    
+    // Two cases for Plex
     if (strProtocol == "plex") return new CPlexDirectory();
+    if (strProtocol == "http" && url.GetPort() == 32400) return new CPlexDirectory();
+    
     if (strProtocol == "lastfm") return new CLastFMDirectory();
     if (strProtocol == "tuxbox") return new CDirectoryTuxBox();
     if (strProtocol == "ftp"
