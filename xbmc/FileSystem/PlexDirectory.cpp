@@ -1389,6 +1389,7 @@ void CPlexDirectory::Parse(const CURL& url, TiXmlElement* root, CFileItemList &i
       ParseTags(element, item, "Genre");
       ParseTags(element, item, "Writer");
       ParseTags(element, item, "Director");
+      ParseTags(element, item, "Role");
     }
   }
   
