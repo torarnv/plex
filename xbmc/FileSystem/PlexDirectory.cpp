@@ -1441,7 +1441,7 @@ void CPlexDirectory::Process()
   m_http.SetRequestHeader("X-Plex-Version", Cocoa_GetAppVersion());
   m_http.SetRequestHeader("X-Plex-Language", Cocoa_GetLanguage());
   m_http.SetRequestHeader("X-Plex-Client-Platform", "MacOSX");
-  m_http.SetRequestHeader("X-Plex-Client-Capabilities", "protocols=shoutcast,webkit,rtmp,http-video,spiff");
+  m_http.SetRequestHeader("X-Plex-Client-Capabilities", "protocols=shoutcast,webkit,http-video,spiff");
   
   m_http.SetTimeout(m_timeout);
   if (m_http.Open(url, false) == false) 
