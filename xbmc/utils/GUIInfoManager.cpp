@@ -3933,8 +3933,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
     return item->GetProperty("contentRating");
     break;
   case LISTITEM_CAST:
-    if (item->HasVideoInfoTag())
-      return item->GetVideoInfoTag()->GetCast();
+    return item->GetProperty("role");
     break;
   case LISTITEM_CAST_AND_ROLE:
     if (item->HasVideoInfoTag())
