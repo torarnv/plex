@@ -2268,20 +2268,35 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
       {
         CStdString content;
         CGUIWindow *window = GetWindowWithCondition(dwContextWindow, 0);
+        bool        insidePlugins = false;
+        
         if (window)
         {
           if (window->GetID() == WINDOW_MUSIC_INFO)
+          {
             content = ((CGUIWindowMusicInfo *)window)->CurrentDirectory().GetContent();
+            insidePlugins = ((CGUIWindowMusicInfo *)window)->CurrentDirectory().GetPropertyBOOL("insidePlugins");
+          }
           else if (window->GetID() == WINDOW_VIDEO_INFO)
+          {
             content = ((CGUIWindowVideoInfo *)window)->CurrentDirectory().GetContent();
+            insidePlugins = ((CGUIWindowVideoInfo *)window)->CurrentDirectory().GetPropertyBOOL("insidePlugins");
+          }
         }
         if (content.IsEmpty())
         {
           window = GetWindowWithCondition(dwContextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
           if (window)
+          {
             content = ((CGUIMediaWindow *)window)->CurrentDirectory().GetContent();
+            insidePlugins = ((CGUIMediaWindow *)window)->CurrentDirectory().GetPropertyBOOL("insidePlugins");
+          }
         }
-        bReturn = m_stringParameters[info.GetData1()].Equals(content);
+        
+        if (insidePlugins == true && m_stringParameters[info.GetData1()].Equals("plugincontent"))
+          bReturn = true;
+        else
+          bReturn = m_stringParameters[info.GetData1()].Equals(content);
       }
       break;
       case CONTAINER_ROW:
@@ -4011,6 +4026,7 @@ CStdString CGUIInfoManager::GetItemImage(const CFileItem *item, int info) const
     { // song rating in old library is 0..5, so double it
       rating.Format("rating%c.png", item->GetMusicInfoTag()->GetRating()*2);
     }
+    
     return rating;
   }
   return GetItemLabel(item, info);
