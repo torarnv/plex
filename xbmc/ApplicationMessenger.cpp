@@ -366,7 +366,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
         if (pMsg->dwMessage == TMSG_SLIDESHOW_SCREENSAVER && 
             g_guiSettings.GetString("screensaver.mode").Equals("Fanart Slideshow"))
         { 
-          CUtil::GetRecursiveListing(_P("P:\\Thumbnails\\Video\\Fanart"), items, ".tbn");
+          CUtil::GetRecursiveListing(_P("P:\\Thumbnails\\PlexMediaServer\\Fanart"), items, ".tbn");
         }
         else
           CUtil::GetRecursiveListing(strPath, items, g_stSettings.m_pictureExtensions);
