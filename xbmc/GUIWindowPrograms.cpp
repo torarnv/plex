@@ -99,10 +99,18 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
       CStdStringArray params;
       StringUtils::SplitString(message.GetStringParam(), ",", params);
       bool returning = params.size() > 1 && params[1] == "return";
-      
-      // check for a passed destination path
 
       CStdString strDestination = params.size() ? params[0] : "";
+
+      // Since most of the fucked up code in this method checks for empty,
+      // make sure that empty is treated correctly, as if we were initialzing
+      // from scratch.
+      //
+      bool firstEntry = (message.GetParam1() != WINDOW_INVALID);
+      if (firstEntry && strDestination.IsEmpty())
+        m_vecItems->m_strPath = "";
+      
+      // check for a passed destination path
       if (!strDestination.IsEmpty())
       {
         message.SetStringParam("");

@@ -2241,6 +2241,25 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
   // save the current window details
   int currentWindow = m_gWindowManager.GetActiveWindow();
+  CStdString currentDirectory;
+  CStdString startDirectory;
+  CDirectoryHistory directoryHistory;
+  
+  if (currentWindow != WINDOW_INVALID)
+  {
+    // Remember the current place and where the "start" is (for when
+    // we used returns).
+    //
+    CGUIWindow* win = m_gWindowManager.GetWindow(currentWindow);
+    if (win->IsMediaWindow())
+    {
+      CGUIMediaWindow* mediaWin = (CGUIMediaWindow* )win;
+      currentDirectory = mediaWin->CurrentDirectory().m_strPath;
+      startDirectory = mediaWin->StartDirectory();
+      directoryHistory = mediaWin->DirectoryHistory();
+    }
+  }
+  
   vector<DWORD> currentModelessWindows;
   m_gWindowManager.GetActiveModelessWindows(currentModelessWindows);
 
@@ -2381,7 +2400,13 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   // restore windows
   if (currentWindow != WINDOW_INVALID)
   {
-    m_gWindowManager.ActivateWindow(currentWindow);
+    m_gWindowManager.ActivateWindow(currentWindow, currentDirectory);
+    if (startDirectory.size() > 0)
+    {
+      ((CGUIMediaWindow* )m_gWindowManager.GetWindow(currentWindow))->SetStartDirectory(startDirectory);
+      ((CGUIMediaWindow* )m_gWindowManager.GetWindow(currentWindow))->SetDirectoryHistory(directoryHistory);
+    }
+    
     for (unsigned int i = 0; i < currentModelessWindows.size(); i++)
     {
       CGUIDialog *dialog = (CGUIDialog *)m_gWindowManager.GetWindow(currentModelessWindows[i]);

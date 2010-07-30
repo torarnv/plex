@@ -53,6 +53,4 @@ protected:
 
   virtual CBackgroundInfoLoader* GetBackgroundLoader() { return &m_thumbLoader; }
   CProgramThumbLoader m_thumbLoader;
-  
-  CStdString m_startDirectory;
 };

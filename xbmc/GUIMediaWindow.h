@@ -44,6 +44,11 @@ public:
   virtual void OnInitWindow();
   virtual bool IsMediaWindow() const { return true; };
   const CFileItemList &CurrentDirectory() const;
+  const CStdString& StartDirectory() const { return m_startDirectory; }
+  void SetStartDirectory(const CStdString& startDir) { m_startDirectory = startDir; }
+  CDirectoryHistory& DirectoryHistory()  { return m_history; }
+  void SetDirectoryHistory(const CDirectoryHistory& history) { m_history = history; }
+  
   int GetViewContainerID() const { return m_viewControl.GetCurrentControl(); };
   virtual bool HasListItems() const { return true; };
   const CGUIViewState *GetViewState() const;
@@ -115,4 +120,6 @@ protected:
   bool m_wasDirectoryListingCancelled;
   CStopWatch m_refreshTimer;
   bool m_isRefreshing;
+  
+  CStdString m_startDirectory;
 };

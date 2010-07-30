@@ -54,8 +54,6 @@ protected:
   virtual void LoadPlayList(const CStdString& strFileName);
   void PlayFolder(const CFileItem* pItem);
   
-  CStdString m_startDirectory;
-
 private:
   bool m_stackingAvailable;
 };

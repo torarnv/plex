@@ -95,7 +95,7 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
       CStdString strDestination = params.size() ? params[0] : "";
 
       // Since most of the fucked up code in this method checks for empty,
-      // make sure that empty is treated correctly, as if we were initialzing
+      // make sure that empty is treated correctly, as if we were initializing
       // from scratch.
       //
       bool firstEntry = (message.GetParam1() != WINDOW_INVALID);
