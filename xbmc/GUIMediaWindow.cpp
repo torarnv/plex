@@ -652,6 +652,15 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
 
   items.Assign(newItems, false);
   
+  // PLEX: Hack for plug-ins grid view.
+  if (strDirectory.size() == 0)
+  {
+    int viewMode = 131131; 
+    items.SetDefaultViewMode(boost::lexical_cast<int>(viewMode));
+    CGUIViewState* viewState = CGUIViewState::GetViewState(0, items);
+    viewState->SaveViewAsControl(boost::lexical_cast<int>(viewMode));
+  }
+  
   return true;
 }
 
