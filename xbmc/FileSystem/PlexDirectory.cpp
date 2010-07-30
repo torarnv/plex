@@ -268,6 +268,11 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   const char* viewGroup = root->Attribute("viewGroup");
   if (viewGroup)
     items.SetProperty("viewGroup", viewGroup);
+
+  // See if we're in plug-in land.
+  CURL theURL(m_url);
+  if (theURL.GetFileName().Find("library/") == -1)
+    items.SetProperty("insidePlugins", true);
   
   // Override labels.
   const char* fileLabel = root->Attribute("filelabel");
