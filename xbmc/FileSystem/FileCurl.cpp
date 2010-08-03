@@ -117,12 +117,13 @@ size_t CFileCurl::CReadState::HeaderCallback(void *ptr, size_t size, size_t nmem
   free(strData);
 
   // See if we redirected to a player that CURL can't handle.
-  CStdString redirectUrl = m_httpheader.GetValue("Location"); 
+  CStdString redirectUrl = m_httpheader.GetValue("Location");
   if (redirectUrl.size() > 7)
   {
     if (redirectUrl.substr(0, 7) == "plex://" ||
         redirectUrl.substr(0, 7) == "plex://" ||
-        redirectUrl.substr(0, 6) == "mms://")
+        redirectUrl.substr(0, 6) == "mms://"  ||
+        redirectUrl.Find("/video/:/webkit") != -1)
     {
       CLog::Log(LOGINFO, "We reached a non-CURL URL: %s", redirectUrl.c_str());
       m_strDeadEndUrl = redirectUrl;
