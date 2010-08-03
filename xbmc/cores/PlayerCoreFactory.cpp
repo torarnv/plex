@@ -117,7 +117,19 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
 
   // Plex media server streams.
   if (url.GetProtocol().Equals("plex", false))
-      vecCores.push_back(EPC_PMSPLAYER);
+  {
+    CLog::Log(LOGDEBUG, "Matched primary WebKit playback.");
+    vecCores.push_back(EPC_PMSPLAYER);
+    return;
+  }
+  
+  // Alternate check for Plex webkit streams.
+  if (url.GetProtocol().Equals("http", false) && url.GetPort() == 32400 && url.GetFileName() == "video/:/webkit")
+  {
+    CLog::Log(LOGDEBUG, "Matched alternate WebKit playback.");
+    vecCores.push_back(EPC_PMSPLAYER);
+    return;
+  }
   
   // Play audio files with iTunes DRM using QuickTime
   if (url.GetFileType().Equals("m4p") || url.GetFileType().Equals("m4b"))
