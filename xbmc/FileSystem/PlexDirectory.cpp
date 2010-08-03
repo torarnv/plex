@@ -881,10 +881,13 @@ class PlexMediaNodeLibrary : public PlexMediaNode
         // Create the file item.
         CFileItemPtr theMediaItem(new CFileItem(theVideoInfo));
 
-        theMediaItem->SetProperty("localPath", localPath);
+        // If it's not an STRM file then save the local path.
+        if (CUtil::GetExtension(localPath) != ".strm")
+          theMediaItem->SetProperty("localPath", localPath);
+         
         theMediaItem->m_bIsFolder = false;
         theMediaItem->m_strPath = url;
-        
+
         // See if the item has been played or is in progress.
         if (el.Attribute("viewOffset") != 0 && strlen(el.Attribute("viewOffset")) > 0)
           theMediaItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_IN_PROGRESS);
