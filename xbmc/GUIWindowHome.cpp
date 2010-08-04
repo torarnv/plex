@@ -59,6 +59,11 @@ bool CGUIWindowHome::OnAction(const CAction &action)
   {
     return OnPopupMenu();
   }
+  else if (action.wID == ACTION_PREVIOUS_MENU || action.wID == ACTION_PARENT_DIR)
+  {
+    CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), 300);
+    OnMessage(msg);
+  }
   return CGUIWindow::OnAction(action);
 }
 
