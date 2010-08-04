@@ -1507,19 +1507,25 @@ HRESULT CApplication::Initialize()
 
   m_gWindowManager.Add(new CGUIWindowPrograms);                 // window id = 1
   m_gWindowManager.Add(new CGUIWindowPictures);                 // window id = 2
+#if 0  
   m_gWindowManager.Add(new CGUIWindowFileManager);      // window id = 3
+#endif
   m_gWindowManager.Add(new CGUIWindowVideoFiles);          // window id = 6
   m_gWindowManager.Add(new CGUIWindowSettings);                 // window id = 4
   //m_gWindowManager.Add(new CGUIWindowSystemInfo);               // window id = 7
   m_gWindowManager.Add(new CGUIWindowTestPattern);      // window id = 8
   m_gWindowManager.Add(new CGUIWindowSettingsScreenCalibration); // window id = 11
   m_gWindowManager.Add(new CGUIWindowSettingsCategory);         // window id = 12 slideshow:window id 2007
+#if 0
   m_gWindowManager.Add(new CGUIWindowScripts);                  // window id = 20
+#endif
   m_gWindowManager.Add(new CGUIWindowVideoNav);                 // window id = 36
   m_gWindowManager.Add(new CGUIWindowVideoPlaylist);            // window id = 28
+#if 0
   m_gWindowManager.Add(new CGUIWindowLoginScreen);            // window id = 29
   m_gWindowManager.Add(new CGUIWindowSettingsProfile);          // window id = 34
   m_gWindowManager.Add(new CGUIWindowGameSaves);               // window id = 35
+#endif
   m_gWindowManager.Add(new CGUIWindowNowPlaying);         // window id = 50
   m_gWindowManager.Add(new CGUIDialogYesNo);              // window id = 100
   m_gWindowManager.Add(new CGUIDialogProgress);           // window id = 101
