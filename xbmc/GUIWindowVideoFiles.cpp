@@ -527,9 +527,11 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
     
     if (item->IsPlexMediaServerLibrary() && m_vecItems->GetContent() != "files")
     {
-      if (item->GetVideoInfoTag()->m_playCount > 0)
+      CStdString viewOffset = item->GetProperty("viewOffset");
+      
+      if (item->GetVideoInfoTag()->m_playCount > 0 || viewOffset.size() > 0)
         buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104);
-      if (item->GetVideoInfoTag()->m_playCount == 0)
+      if (item->GetVideoInfoTag()->m_playCount == 0 || viewOffset.size() > 0)
         buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);
     }
     
