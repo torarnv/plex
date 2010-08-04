@@ -229,7 +229,8 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
         for (int i=0; i<nameSource.second->librarySections.Size(); i++)
         {
           newItems.push_back(nameSource.second->librarySections[i]);
-          ++nameCounts[nameSource.second->librarySections[i]->GetLabel()];
+          CStdString sectionName = nameSource.second->librarySections[i]->GetLabel();
+          ++nameCounts[sectionName.ToLower()];
         }
       }
 
@@ -244,7 +245,9 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       {
         CFileItemPtr newItem = CFileItemPtr(new CFileItem(item->GetLabel()));
         newItem->SetProperty("plex", "1");
-        if (nameCounts[item->GetLabel()] > 1)
+        
+        CStdString sectionName = item->GetLabel();
+        if (nameCounts[sectionName.ToLower()] > 1)
           newItem->SetLabel2(item->GetLabel2());
        
         if (item->GetProperty("type") == "artist")
