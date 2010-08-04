@@ -2119,6 +2119,11 @@
   <string id="40105">Energy Saver</string>
   <string id="40106">Remove Workflow</string>
   
+  <string id="40110">Visit Plex Online from the main menu to browse and install plug-ins</string>
+  <string id="40111">You don't have any video plug-ins installed</string>
+  <string id="40112">You don't have any music plug-ins installed</string>
+  <string id="40113">You don't have any picture plug-ins installed</string>
+  
   <string id="40150">Now Playing</string>
 
   <string id="40200">Unsupported path</string>

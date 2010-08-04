@@ -245,6 +245,23 @@ void CGUIMediaWindow::RefreshShares()
     int iItem = m_viewControl.GetSelectedItem();
     Update(m_vecItems->m_strPath);
     m_viewControl.SetSelectedItem(iItem);
+    
+    // Check for empty root views & tell the user how to download plug-ins if they don't have any
+    if (m_vecItems->Size() == 0)
+    {
+      int iWindow = GetID();
+      int iTitle = 0;
+      
+      if (iWindow == WINDOW_VIDEO_FILES)
+        iTitle = 40111;
+      else if (iWindow == WINDOW_MUSIC_FILES)
+        iTitle = 40112;
+      else if (iWindow == WINDOW_PICTURES)
+        iTitle = 40113;
+      
+      CGUIDialogOK::ShowAndGetInput(iTitle, 40110, 0, 0);
+      m_gWindowManager.PreviousWindow();
+    }
   }
 }
 
