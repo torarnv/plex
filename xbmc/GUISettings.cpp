@@ -203,7 +203,7 @@ CGUISettings::CGUISettings(void)
   AddInt(0, "pictures.viewmode", 582, DEFAULT_VIEW_AUTO, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX, SPIN_CONTROL_TEXT);
   AddInt(0, "pictures.sortmethod", 581, SORT_METHOD_LABEL, SORT_METHOD_LABEL, 1, SORT_METHOD_MAX, SPIN_CONTROL_TEXT);
   AddInt(0, "pictures.sortorder", 580, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_DESC, SPIN_CONTROL_TEXT);
-  AddBool(4, "pictures.savefolderviews", 583, true);
+  AddBool(0, "pictures.savefolderviews", 583, true);
   AddSeparator(5,"pictures.sep1");
   AddBool(6, "pictures.useexifrotation", 20184, true);
   AddBool(0, "pictures.usetags", 258, true);
@@ -268,7 +268,7 @@ CGUISettings::CGUISettings(void)
 	AddBool(10, "mymusic.usecddb", 227, true);
 
   AddSeparator(6, "mymusic.sep2");
-  AddString(7,"mymusic.recordingpath",20005,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
+  AddString(0,"mymusic.recordingpath",20005,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
 
   //AddCategory(3,"musiclibrary",14022);
   AddBool(0, "musiclibrary.enabled", 418, true);
@@ -589,7 +589,7 @@ CGUISettings::CGUISettings(void)
   AddSeparator(7, "subtitles.sep1");
   AddBool(0, "subtitles.searchrars", 13249, true);
   AddSeparator(10,"subtitles.sep2");
-  AddString(11, "subtitles.custompath", 21366, "", BUTTON_CONTROL_PATH_INPUT, false, 657);
+  AddString(0, "subtitles.custompath", 21366, "", BUTTON_CONTROL_PATH_INPUT, false, 657);
   AddBool(12, "subtitles.autoselectsubtitlestream", 13139, true);
 
   // Don't add the category - makes them hidden in the GUI
