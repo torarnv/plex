@@ -618,6 +618,7 @@ void CGUIDialogContextMenu::ClearDefault(const CStdString &strType)
 
 void CGUIDialogContextMenu::SwitchMedia(const CStdString& strType, const CStdString& strPath)
 {
+#if 0
   // what should we display?
   vector <CStdString> vecTypes;
   if (!strType.Equals("music"))
@@ -672,6 +673,7 @@ void CGUIDialogContextMenu::SwitchMedia(const CStdString& strType, const CStdStr
     }
   }
   return;
+#endif
 }
 
 int CGUIDialogContextMenu::ShowAndGetChoice(const vector<CStdString> &choices, const CPoint &pos)

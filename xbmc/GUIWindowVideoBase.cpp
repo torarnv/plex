@@ -617,8 +617,6 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
 
 void CGUIWindowVideoBase::GetNonContextButtons(int itemNumber, CContextButtons &buttons)
 {
-  if (!m_vecItems->m_strPath.IsEmpty())
-    buttons.Add(CONTEXT_BUTTON_GOTO_ROOT, 20128);
   if (g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO).size() > 0)
     buttons.Add(CONTEXT_BUTTON_NOW_PLAYING, 13350);
 }
@@ -693,10 +691,6 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
   case CONTEXT_BUTTON_RESUME_ITEM:
     OnResumeItem(itemNumber);
-    return true;
-
-  case CONTEXT_BUTTON_GOTO_ROOT:
-    Update("");
     return true;
 
   case CONTEXT_BUTTON_NOW_PLAYING:

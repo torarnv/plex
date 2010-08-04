@@ -683,8 +683,6 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
 
 void CGUIWindowMusicBase::GetNonContextButtons(CContextButtons &buttons)
 {
-  if (!m_vecItems->IsVirtualDirectoryRoot())
-    buttons.Add(CONTEXT_BUTTON_GOTO_ROOT, 20128);
   if (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() > 0)
     buttons.Add(CONTEXT_BUTTON_PLAYLIST, 559);
 }
@@ -758,10 +756,6 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   
   case CONTEXT_BUTTON_PLAYLIST:
     m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
-    return true;
-
-  case CONTEXT_BUTTON_GOTO_ROOT:
-    Update("");
     return true;
 
   case CONTEXT_BUTTON_LASTFM_UNBAN_ITEM:

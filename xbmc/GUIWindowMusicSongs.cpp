@@ -467,8 +467,6 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
   }
   if (includeStandardContextButtons)
   {
-    if (!m_vecItems->IsVirtualDirectoryRoot() && !m_vecItems->IsPlexMediaServer())
-      buttons.Add(CONTEXT_BUTTON_SWITCH_MEDIA, 523);
     CGUIWindowMusicBase::GetNonContextButtons(buttons);
   }
 }
@@ -515,9 +513,6 @@ bool CGUIWindowMusicSongs::OnContextButton(int itemNumber, CONTEXT_BUTTON button
     OnRenameItem(itemNumber);
     return true;
 
-  case CONTEXT_BUTTON_SWITCH_MEDIA:
-    CGUIDialogContextMenu::SwitchMedia("music", m_vecItems->m_strPath);
-    return true;
   default:
     break;
   }
