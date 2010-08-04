@@ -23,12 +23,8 @@
   IBOutlet NSButton* opticalMedia;
   IBOutlet NSButton* fileDeletion;
   IBOutlet NSButton* trueFullscreen;
-  IBOutlet NSButton* cleanOnUpdate;
   IBOutlet NSButton* showExtensions;
   IBOutlet NSButton* showAddSource;
-  IBOutlet NSButton* ignoreSortTokens;
-  IBOutlet NSPopUpButton* showAllSeasons;
-  IBOutlet NSPopUpButton* flattenTVShows;
   IBOutlet NSPopUpButton* scalingAlgorithm;
   IBOutlet NSButton* vizOnPlay;
   IBOutlet NSTextField* timeToViz;

@@ -153,8 +153,7 @@ NSXMLElement* rootElement(NSXMLDocument* xmlDoc, NSString* nodeName)
   m_shouldClose = NO;
   m_isVisible = NO;
   
-  // Remove RSS feeds & background music views until they're implemented
-  [toolbar removeItemAtIndex:2];
+  // Remove background music view until it's implemented
   [musicTabView removeTabViewItem:[[musicTabView tabViewItems] objectAtIndex:1]];
   
   [self loadSettings];
@@ -302,11 +301,9 @@ NSXMLElement* rootElement(NSXMLDocument* xmlDoc, NSString* nodeName)
   setEnabledFromXML(xmlDoc, debugLogging, @"./advancedsettings/system/debuglogging", NO);
   setEnabledFromXML(xmlDoc, opticalMedia, @"./advancedsettings/enableopticalmedia", NO);
   setEnabledFromXML(xmlDoc, trueFullscreen, @"./advancedsettings/fakefullscreen", YES);
-  setEnabledFromXML(xmlDoc, cleanOnUpdate, @"./advancedsettings/videolibrary/cleanonupdate", NO);
   setEnabledFromXML(xmlDoc, fileDeletion, @"./advancedsettings/filelists/allowfiledeletion", NO);
   setEnabledFromXML(xmlDoc, showExtensions, @"./advancedsettings/filelists/hideextensions", YES);
   setEnabledFromXML(xmlDoc, showAddSource, @"./advancedsettings/filelists/disableaddsourcebuttons", YES);
-  setEnabledFromXML(xmlDoc, ignoreSortTokens, @"./advancedsettings/filelists/ignorethewhensorting", NO);
   setEnabledFromXML(xmlDoc, vizOnPlay, @"./advancedsettings/visualizeronplay", NO);
   setEnabledFromXML(xmlDoc, enableKeyboardBacklightControl, @"./advancedsettings/enablekeyboardbacklightcontrol", NO);
   setStringFromXML(xmlDoc, httpProxyUsername, @"./advancedsettings/network/httpproxyusername");
@@ -314,25 +311,6 @@ NSXMLElement* rootElement(NSXMLDocument* xmlDoc, NSString* nodeName)
   setStringFromXML(xmlDoc, timeToViz, @"./advancedsettings/secondstovisualizer");
   setStringFromXML(xmlDoc, nowPlayingFlipTime, @"./advancedsettings/nowplayingfliptime");
   setPopupFromXML(xmlDoc, scalingAlgorithm, @"./advancedsettings/videoplayer/upscalingalgorithm");
-  setPopupFromXML(xmlDoc, flattenTVShows, @"./advancedsettings/videolibrary/flattentvshows");
-  
-  NSArray* nodes = [xmlDoc nodesForXPath:@"./advancedsettings/videolibrary/hideallitems" error:nil];
-  if ([nodes count] > 0)
-  {
-    if ([[[nodes objectAtIndex:0] stringValue] isEqualToString:@"true"])
-      [showAllSeasons selectItemWithTag:0];
-    else
-    {
-      NSArray* nodes2 = [xmlDoc nodesForXPath:@"./advancedsettings/videolibrary/allitemsonbottom" error:nil];
-      if ([nodes2 count] > 0)
-      {
-        if ([[[nodes2 objectAtIndex:0] stringValue] isEqualToString:@"true"])
-          [showAllSeasons selectItemWithTag:2];
-        else
-          [showAllSeasons selectItemWithTag:1];
-      }
-    }
-  }
   
   [xmlDoc release];
 }
@@ -379,11 +357,9 @@ NSXMLElement* rootElement(NSXMLDocument* xmlDoc, NSString* nodeName)
   enabledFromControl(system, debugLogging, @"debuglogging", NO);
   enabledFromControl(root, opticalMedia, @"enableopticalmedia", NO);
   enabledFromControl(root, trueFullscreen, @"fakefullscreen", YES);
-  enabledFromControl(videolibrary, cleanOnUpdate, @"cleanonupdate", NO);
   enabledFromControl(filelists, fileDeletion, @"allowfiledeletion", NO); 
   enabledFromControl(filelists, showExtensions, @"hideextensions", YES);
   enabledFromControl(filelists, showAddSource, @"disableaddsourcebuttons", YES);
-  enabledFromControl(filelists, ignoreSortTokens, @"ignorethewhensorting", NO);
   enabledFromControl(root, vizOnPlay, @"visualizeronplay", NO);
   enabledFromControl(root, enableKeyboardBacklightControl, @"enablekeyboardbacklightcontrol", NO);
   stringFromControl(network, httpProxyUsername, @"httpproxyusername");
@@ -391,22 +367,6 @@ NSXMLElement* rootElement(NSXMLDocument* xmlDoc, NSString* nodeName)
   stringFromControl(root, timeToViz, @"secondstovisualizer");
   stringFromControl(root, nowPlayingFlipTime, @"nowplayingfliptime");
   tagFromControl(videoplayer, scalingAlgorithm, @"upscalingalgorithm");
-  tagFromControl(videolibrary, flattenTVShows, @"flattentvshows");
-  
-  switch([showAllSeasons selectedTag])
-  {
-    case 0:
-      fromString(videolibrary, @"true", @"hideallitems");
-      break;
-    case 1:
-      fromString(videolibrary, @"false", @"hideallitems");
-      fromString(videolibrary, @"false", @"allitemsonbottom");
-      break;
-    case 2:
-      fromString(videolibrary, @"false", @"hideallitems");
-      fromString(videolibrary, @"true", @"allitemsonbottom");
-      break;
-  }
 
   NSData* xmlData = [xmlDoc XMLDataWithOptions:NSXMLNodePrettyPrint];
   if (![xmlData writeToFile:[ADVSETTINGS_FILE stringByExpandingTildeInPath] atomically:YES]) {

@@ -765,9 +765,13 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
 
   int iWindow = GetID();
   bool bOkay = (iWindow == WINDOW_MUSIC_FILES || iWindow == WINDOW_VIDEO_FILES || iWindow == WINDOW_FILES || iWindow == WINDOW_PICTURES || iWindow == WINDOW_PROGRAMS);
-  if (strDirectory.IsEmpty() && bOkay && (m_vecItems->Size() == 0 || !m_guiState->DisableAddSourceButtons())) // add 'add source button'
+  if (strDirectory.IsEmpty() && bOkay && (iWindow == WINDOW_PROGRAMS || !m_guiState->DisableAddSourceButtons())) // add 'add source button'
   {
-    CStdString strLabel = g_localizeStrings.Get(1026);
+    CStdString strLabel;
+    if (iWindow == WINDOW_PROGRAMS)
+      strLabel = g_localizeStrings.Get(40101);
+    else
+      strLabel = g_localizeStrings.Get(1026);
     CFileItemPtr pItem(new CFileItem(strLabel));
     pItem->m_strPath = "add";
     pItem->SetThumbnailImage("DefaultAddSource.png");
