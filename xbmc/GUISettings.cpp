@@ -209,7 +209,7 @@ CGUISettings::CGUISettings(void)
   AddBool(0, "pictures.usetags", 258, true);
   AddInt(0, "pictures.displayresolution", 169, (int)AUTORES, (int)HDTV_1080i, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
   AddSeparator(9,"pictures.sep2");
-  AddString(10,"pictures.screenshotpath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
+  AddString(0,"pictures.screenshotpath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
 
   AddCategory(0, "slideshow", 108);
   AddInt(1, "slideshow.staytime", 12378, 9, 1, 1, 100, SPIN_CONTROL_INT_PLUS, MASK_SECS);
@@ -234,7 +234,7 @@ CGUISettings::CGUISettings(void)
   AddString(9, "myprograms.dashboard", 13006, "C:\\xboxdash.xbe", BUTTON_CONTROL_PATH_INPUT, false, 655);
 #endif
 
-  AddCategory(1,"programfiles",744);
+  //AddCategory(1,"programfiles",744);
   AddInt(1, "programfiles.viewmode", 582, DEFAULT_VIEW_AUTO, DEFAULT_VIEW_LIST, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX, SPIN_CONTROL_TEXT);
   AddInt(2, "programfiles.sortmethod", 581, SORT_METHOD_LABEL, SORT_METHOD_LABEL, 1, SORT_METHOD_MAX, SPIN_CONTROL_TEXT);
   AddInt(3, "programfiles.sortorder", 580, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_DESC, SPIN_CONTROL_TEXT);
@@ -270,7 +270,7 @@ CGUISettings::CGUISettings(void)
   AddSeparator(6, "mymusic.sep2");
   AddString(7,"mymusic.recordingpath",20005,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
 
-  AddCategory(3,"musiclibrary",14022);
+  //AddCategory(3,"musiclibrary",14022);
   AddBool(0, "musiclibrary.enabled", 418, true);
   AddBool(0, "musiclibrary.albumartistsonly", 13414, false);
   AddSeparator(3,"musiclibrary.sep1");
@@ -322,8 +322,8 @@ CGUISettings::CGUISettings(void)
   AddCategory(3, "backgroundmusic", 15230);
   AddBool(8, "backgroundmusic.bgmusicenabled", 18104, true);
   AddInt(9, "backgroundmusic.bgmusicvolume", 18101, 50, 5, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
-  AddBool(10, "backgroundmusic.thememusicenabled", 18102, true);
-  AddBool(11, "backgroundmusic.themedownloadsenabled", 18103, true);
+  AddBool(0, "backgroundmusic.thememusicenabled", 18102, true);
+  AddBool(0, "backgroundmusic.themedownloadsenabled", 18103, true);
   
 //  AddCategory(3, "cddaripper", 620);
   AddString(1, "cddaripper.path", 20000, "select writable folder", BUTTON_CONTROL_PATH_INPUT, false, 657);
@@ -534,8 +534,8 @@ CGUISettings::CGUISettings(void)
   AddInt(6, "myvideos.sortmethod", 581, SORT_METHOD_LABEL, SORT_METHOD_LABEL, 1, SORT_METHOD_MAX, SPIN_CONTROL_TEXT);
   AddInt(7, "myvideos.sortorder", 580, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_ASC, SORT_ORDER_DESC, SPIN_CONTROL_TEXT);
   AddBool(0, "myvideos.savefolderviews", 583, true);
-  AddCategory(5, "videolibrary", 14022);
-
+  
+  //AddCategory(5, "videolibrary", 14022);
   AddBool(0, "videolibrary.enabled", 418, true);
   AddSeparator(2, "videolibrary.sep1");
   AddBool(3, "videolibrary.hideplots", 20369, false);
@@ -630,7 +630,7 @@ CGUISettings::CGUISettings(void)
   AddString(0, "network.httpproxyusername", 706, "", BUTTON_CONTROL_INPUT);
   AddString(0, "network.httpproxypassword", 706, "", BUTTON_CONTROL_INPUT);
 
-  AddCategory(6, "servers", 14036);
+  //AddCategory(6, "servers", 14036);
   AddBool(1, "servers.remoteautosource", 13636, true);
 #if defined(HAS_FTP_SERVER) || defined (HAS_WEB_SERVER)
 #ifdef HAS_FTP_SERVER
@@ -671,7 +671,7 @@ CGUISettings::CGUISettings(void)
   AddBool  (5, "smb.mountshares", 1208,   false);
 #endif
 
-  AddCategory(6, "upnp", 20110);
+  //AddCategory(6, "upnp", 20110);
   AddBool(1,    "upnp.client", 20111, false);
   AddBool(2, "upnp.renderer", 21881, false);
   AddSeparator(3,"upnp.sep1");
@@ -752,7 +752,7 @@ CGUISettings::CGUISettings(void)
   AddString(4, "lookandfeel.font",13303,"Default", SPIN_CONTROL_TEXT);
   AddBool(0, "lookandfeel.lastLoadRequiredUnicode", 0, false);
   AddInt(0, "lookandfeel.skinzoom",20109, 0, -20, 2, 20, SPIN_CONTROL_INT, MASK_PERCENT);
-  AddInt(6, "lookandfeel.startupwindow",512,1, WINDOW_HOME, 1, WINDOW_PYTHON_END, SPIN_CONTROL_TEXT);
+  AddInt(0, "lookandfeel.startupwindow",512,1, WINDOW_HOME, 1, WINDOW_PYTHON_END, SPIN_CONTROL_TEXT);
   AddSeparator(7, "lookandfeel.sep1");
   AddString(8, "lookandfeel.soundskin",15108,"SKINDEFAULT", SPIN_CONTROL_TEXT);
   AddSeparator(10, "lookandfeel.sep2");
