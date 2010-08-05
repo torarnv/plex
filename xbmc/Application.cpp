@@ -4276,6 +4276,9 @@ void CApplication::Stop()
       Sleep(50);
     
 #endif
+    
+    // Stop the texture manager.
+    g_largeTextureManager.StopThread();
 
     CLog::Log(LOGNOTICE, "Storing total System Uptime");
     g_stSettings.m_iSystemTimeTotalUp = g_stSettings.m_iSystemTimeTotalUp + (int)(timeGetTime() / 60000);
