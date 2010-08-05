@@ -261,7 +261,6 @@ void CGUIWindowPrograms::GetContextButtons(int itemNumber, CContextButtons &butt
           buttons.Add(CONTEXT_BUTTON_RENAME, 520); // edit xbe title
       }
     }
-    buttons.Add(CONTEXT_BUTTON_GOTO_ROOT, 20128); // Go to Root
   }
   CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
 }
@@ -310,10 +309,6 @@ bool CGUIWindowPrograms::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       }
       return true;
     }
-
-  case CONTEXT_BUTTON_GOTO_ROOT:
-    Update("");
-    return true;
 
   case CONTEXT_BUTTON_LAUNCH:
     OnClick(itemNumber);

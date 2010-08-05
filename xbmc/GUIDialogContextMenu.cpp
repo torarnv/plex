@@ -283,7 +283,7 @@ void CGUIDialogContextMenu::GetContextButtons(const CStdString &type, CMediaSour
       {
         if (!share->m_ignore)
           buttons.Add(CONTEXT_BUTTON_EDIT_SOURCE, 1027); // Edit Source
-        buttons.Add(CONTEXT_BUTTON_SET_DEFAULT, 13335); // Set as Default
+        
         if (!share->m_ignore)
           buttons.Add(CONTEXT_BUTTON_REMOVE_SOURCE, 522); // Remove Source
       }
@@ -305,9 +305,6 @@ void CGUIDialogContextMenu::GetContextButtons(const CStdString &type, CMediaSour
     }
     if (type != "programs")
     {
-      if (!GetDefaultShareNameByType(type).IsEmpty())
-        buttons.Add(CONTEXT_BUTTON_CLEAR_DEFAULT, 13403); // Clear Default
-
       buttons.Add(CONTEXT_BUTTON_ADD_SOURCE, 
 									1026); // Add Source
     }
@@ -397,25 +394,6 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, CMediaSource
       return true;
     }
     break;
-
-  case CONTEXT_BUTTON_SET_DEFAULT:
-    if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() && !g_passwordManager.IsProfileLockUnlocked())
-      return false;
-    else if (!g_passwordManager.IsMasterLockUnlocked(true))
-      return false;
-
-    // make share default
-    SetDefault(type, share->strName);
-    return true;
-
-  case CONTEXT_BUTTON_CLEAR_DEFAULT:
-    if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() && !g_passwordManager.IsProfileLockUnlocked())
-      return false;
-    else if (!g_passwordManager.IsMasterLockUnlocked(true))
-      return false;
-    // remove share default
-    ClearDefault(type);
-    return true;
 
   case CONTEXT_BUTTON_SET_THUMB:
     {
@@ -640,6 +618,7 @@ void CGUIDialogContextMenu::ClearDefault(const CStdString &strType)
 
 void CGUIDialogContextMenu::SwitchMedia(const CStdString& strType, const CStdString& strPath)
 {
+#if 0
   // what should we display?
   vector <CStdString> vecTypes;
   if (!strType.Equals("music"))
@@ -694,6 +673,7 @@ void CGUIDialogContextMenu::SwitchMedia(const CStdString& strType, const CStdStr
     }
   }
   return;
+#endif
 }
 
 int CGUIDialogContextMenu::ShowAndGetChoice(const vector<CStdString> &choices, const CPoint &pos)

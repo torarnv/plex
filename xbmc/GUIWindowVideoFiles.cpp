@@ -561,11 +561,7 @@ bool CGUIWindowVideoFiles::OnContextButton(int itemNumber, CONTEXT_BUTTON button
   }
 
   switch (button)
-  {
-  case CONTEXT_BUTTON_SWITCH_MEDIA:
-    CGUIDialogContextMenu::SwitchMedia("video", m_vecItems->m_strPath);
-    return true;
-    
+  {    
   case CONTEXT_BUTTON_MARK_WATCHED:
     // If we're about to hide this item, select the next one
     if (g_stSettings.m_iMyVideoWatchMode == VIDEO_SHOW_UNWATCHED)
