@@ -238,6 +238,7 @@
 #ifdef __APPLE__
 #include "CocoaUtils.h"
 #include "PlexRemoteHelper.h"
+#include "PlexSourceScanner.h"
 #include "PlexMediaServerHelper.h"
 #include "PlexMediaServerPlayer.h"
 #include "PlexMediaServerQueue.h"
@@ -4261,6 +4262,13 @@ void CApplication::Stop()
       PlexMediaServerHelper::Get().Restart();
     }
     
+    // Shut down bonjour.
+    Cocoa_StopLookingForRemotePlexSources();
+    
+    // Wait for any active source scanners.
+    for (int i=0; CPlexSourceScanner::GetActiveScannerCount() != 0 && i<120; i++)
+      Sleep(50);
+    
 #endif
 
     CLog::Log(LOGNOTICE, "Storing total System Uptime");
@@ -4277,7 +4285,7 @@ void CApplication::Stop()
 
     // Make sure background loader threads are all dead.
     CBackgroundRunner::StopAll();
-    for (int i=0; CBackgroundRunner::GetNumActive() != 0 && i<60; i++)
+    for (int i=0; CBackgroundRunner::GetNumActive() != 0 && i<120; i++)
     {
       m_applicationMessenger.ProcessMessages();
       Sleep(50);

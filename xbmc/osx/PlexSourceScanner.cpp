@@ -18,6 +18,7 @@
 
 map<string, HostSourcesPtr> CPlexSourceScanner::g_hostSourcesMap;
 CCriticalSection CPlexSourceScanner::g_lock;
+int CPlexSourceScanner::g_activeScannerCount = 0;
 
 using namespace DIRECTORY; 
 
@@ -25,9 +26,12 @@ void CPlexSourceScanner::Process()
 {
   CStdString path;
   
+  CLog::Log(LOGINFO, "Plex Source Scanner starting...", m_host.c_str());
+  
   { // Make sure any existing entry is removed.
     CSingleLock lock(g_lock);
     g_hostSourcesMap.erase(m_host);
+    g_activeScannerCount++;
   }
   
   if (m_host.find("members.mac.com") != -1)
@@ -49,7 +53,7 @@ void CPlexSourceScanner::Process()
     
     // Create a new entry.
     HostSourcesPtr sources = HostSourcesPtr(new HostSources());
-    CLog::Log(LOGINFO, "Scanning remote server: %s\n", m_host.c_str());
+    CLog::Log(LOGINFO, "Scanning remote server: %s", m_host.c_str());
     
     // Scan the server.
     path.Format("plex://%s/music/", m_host);
@@ -88,8 +92,14 @@ void CPlexSourceScanner::Process()
     CGUIMessage msg2(GUI_MSG_UPDATE_MAIN_MENU, WINDOW_HOME, 300);
     m_gWindowManager.SendThreadMessage(msg2);
   
-    CLog::Log(LOGINFO, "Scanning host %s is complete.\n", m_host.c_str());
+    CLog::Log(LOGINFO, "Scanning host %s is complete.", m_host.c_str());
   }
+  
+  CSingleLock lock(g_lock);
+  g_hostSourcesMap.erase(m_host);
+  g_activeScannerCount--;
+  
+  CLog::Log(LOGINFO, "Plex Source Scanner finished (%d left)", g_activeScannerCount);
 }
 
 void CPlexSourceScanner::ScanHost(const string& host, const string& hostLabel)

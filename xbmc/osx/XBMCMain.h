@@ -22,6 +22,7 @@
 
 + (XBMCMain *)sharedInstance;
 - (void)searchForPlexMediaServers;
+- (void)stopSearchingForPlexMediaServers;
 - (NSArray*)plexMediaServers;
 - (void)setApplication:(void*) application;
 

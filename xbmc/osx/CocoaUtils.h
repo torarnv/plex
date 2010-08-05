@@ -186,6 +186,7 @@ extern "C"
   //
   void Cocoa_RefreshAllRemotePlexSources();
   void Cocoa_RemoveAllRemotePlexSources();
+  void Cocoa_StopLookingForRemotePlexSources();
   
   //
   // Compatibility check

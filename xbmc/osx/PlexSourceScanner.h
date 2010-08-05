@@ -46,6 +46,8 @@ public:
   static void Lock() { ::EnterCriticalSection(g_lock); }
   static map<string, HostSourcesPtr>& GetMap() { return g_hostSourcesMap; }
   static void Unlock() { ::LeaveCriticalSection(g_lock); }
+
+  static int GetActiveScannerCount() { return g_activeScannerCount; } 
   
 protected:
   
@@ -59,6 +61,8 @@ protected:
     Create(true);
   }
   
+  virtual ~CPlexSourceScanner() {}
+  
 private:
   
   string m_host;
@@ -66,4 +70,5 @@ private:
   
   static map<string, HostSourcesPtr> g_hostSourcesMap;
   static CCriticalSection g_lock;
+  static int g_activeScannerCount;
 };

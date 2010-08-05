@@ -1284,6 +1284,11 @@ void Cocoa_RefreshAllRemotePlexSources()
   [[XBMCMain sharedInstance] refreshAllRemotePlexSources];
 }
 
+void Cocoa_StopLookingForRemotePlexSources()
+{
+  [[XBMCMain sharedInstance] stopSearchingForPlexMediaServers];
+}
+
 void Cocoa_RemoveAllRemotePlexSources()
 {
   [[XBMCMain sharedInstance] removeAllRemotePlexSources];

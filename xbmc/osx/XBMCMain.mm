@@ -74,9 +74,14 @@ static XBMCMain *_o_sharedMainInstance = nil;
   [super dealloc];
 }
 
-- (void)searchForPlexMediaServers;
+- (void)searchForPlexMediaServers
 {
   [o_plexMediaServerBrowser searchForServicesOfType:PLEX_SERVICE_TYPE inDomain:@""];
+}
+
+- (void)stopSearchingForPlexMediaServers
+{
+  [o_plexMediaServerBrowser stop];
 }
 
 - (NSArray *)plexMediaServers
