@@ -36,7 +36,7 @@ void CPlexSourceScanner::Process()
   
   if (m_host.find("members.mac.com") != -1)
   {
-    CLog::Log(LOGINFO, "Skipping MobileMe address: %s\n", m_host.c_str());
+    CLog::Log(LOGINFO, "Skipping MobileMe address: %s", m_host.c_str());
   }
   else
   {
@@ -96,7 +96,6 @@ void CPlexSourceScanner::Process()
   }
   
   CSingleLock lock(g_lock);
-  g_hostSourcesMap.erase(m_host);
   g_activeScannerCount--;
   
   CLog::Log(LOGINFO, "Plex Source Scanner finished (%d left)", g_activeScannerCount);
