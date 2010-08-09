@@ -320,9 +320,9 @@ CGUISettings::CGUISettings(void)
   AddString(4,"lastfm.password", 15203, "", BUTTON_CONTROL_HIDDEN_INPUT, false, 15203);
 
   AddCategory(3, "backgroundmusic", 15230);
-  AddBool(8, "backgroundmusic.bgmusicenabled", 18104, true);
+  AddBool(7, "backgroundmusic.bgmusicenabled", 18104, true);
+  AddBool(8, "backgroundmusic.thememusicenabled", 18102, true);
   AddInt(9, "backgroundmusic.bgmusicvolume", 18101, 50, 5, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
-  AddBool(0, "backgroundmusic.thememusicenabled", 18102, true);
   AddBool(0, "backgroundmusic.themedownloadsenabled", 18103, true);
   
 //  AddCategory(3, "cddaripper", 620);
