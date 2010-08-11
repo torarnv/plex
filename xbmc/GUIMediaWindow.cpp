@@ -246,6 +246,7 @@ void CGUIMediaWindow::RefreshShares()
     Update(m_vecItems->m_strPath);
     m_viewControl.SetSelectedItem(iItem);
     
+    /*
     // Check for empty root views & tell the user how to download plug-ins if they don't have any
     if (m_vecItems->Size() == 0)
     {
@@ -262,6 +263,7 @@ void CGUIMediaWindow::RefreshShares()
       CGUIDialogOK::ShowAndGetInput(iTitle, 40110, 0, 0);
       m_gWindowManager.PreviousWindow();
     }
+     */
   }
 }
 
