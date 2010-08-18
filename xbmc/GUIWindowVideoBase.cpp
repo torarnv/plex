@@ -177,7 +177,6 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
         else if (iAction == ACTION_SHOW_INFO)
         {
           SScraperInfo info;
-          SScanSettings settings;          
           CStdString strDir;
           if (iItem < 0 || iItem >= m_vecItems->Size())
             return false;
