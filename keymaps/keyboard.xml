@@ -345,6 +345,7 @@
 
   <MyVideoFiles>
     <keyboard>
+      <w>ToggleWatched</w>
       <space>Playlist</space>
       <f1>ParentDir</f1>
       <q>Queue</q>
