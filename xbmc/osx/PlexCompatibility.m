@@ -32,10 +32,12 @@ id g_plexCompatibility;
 
 - (void)checkCompatibility
 {
-  SInt32 osVersion;
+  SInt32 osVersionMinor;
+  SInt32 osVersionBugFix;
   
   // Try to get the OS version
-  if (Gestalt(gestaltSystemVersion, &osVersion) != noErr) 
+  if ((Gestalt(gestaltSystemVersionMinor, &osVersionMinor) != noErr) ||
+      (Gestalt(gestaltSystemVersionBugFix, &osVersionBugFix) != noErr))
   {
     NSLog(@"Unable to check Mac OS X version.");
     return;
@@ -61,18 +63,18 @@ id g_plexCompatibility;
   }
   
   // Create strings relevant to the current OS version.
-  if (osVersion >= 0x1050 && osVersion < 0x1060)
+  if (osVersionMinor == 6 && osVersionBugFix < 3)
   {
-    //NSLog(@"On Leopard");
-    strTitle = NSLocalizedString(@"Would you like to install Candelair, a replacement driver for the Apple remote?", nil);
-    strFormat = NSLocalizedString(@"Candelair offers improved Apple remote support on Mac OS X 10.5. It will also improve compatibility for other applications making use of the remote, and will not interfere with their behavior.", nil);
+    //NSLog(@"On a broken Snow Leopard release");
+    strTitle = NSLocalizedString(@"The Apple remote has well known and documented issues on Snow Leopard. You can fix these problems by installing Candelair, a replacement driver for the Apple remote. Would you like to go to the Candelair website now?", nil);
+    strFormat = NSLocalizedString(@"Candelair is required for reliable Apple remote support on Mac OS X 10.6.0, 10.6.1 and 10.6.2. It will also improve compatibility for other applications making use of the remote, and will not interfere with their behavior.", nil);
     show = YES;
   }
-  else if (osVersion >= 0x1060 && osVersion < 0x1070)
+  else if (osVersionMinor == 5 || (osVersionMinor == 6 && osVersionBugFix >= 3))
   {
-    //NSLog(@"On Snow Leopard");
-    strTitle = NSLocalizedString(@"The Apple remote has well known and documented issues on Snow Leopard. You can fix these problems by installing Candelair, a replacement driver for the Apple remote. Would you like to go to the Candelair website now?", nil);
-    strFormat = NSLocalizedString(@"Candelair is required for reliable Apple remote support on Mac OS X 10.6. It will also improve compatibility for other applications making use of the remote, and will not interfere with their behavior.", nil);
+    //NSLog(@"On Leopard or a fixed Snow Leopard release");
+    strTitle = NSLocalizedString(@"Would you like to install Candelair, a replacement driver for the Apple remote?", nil);
+    strFormat = NSLocalizedString(@"Candelair offers improved Apple remote support. It will also improve compatibility for other applications making use of the remote, and will not interfere with their behavior.", nil);
     show = YES;
   }
   

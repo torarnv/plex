@@ -320,9 +320,9 @@ CGUISettings::CGUISettings(void)
   AddString(4,"lastfm.password", 15203, "", BUTTON_CONTROL_HIDDEN_INPUT, false, 15203);
 
   AddCategory(3, "backgroundmusic", 15230);
-  AddBool(8, "backgroundmusic.bgmusicenabled", 18104, true);
+  AddBool(7, "backgroundmusic.bgmusicenabled", 18104, true);
+  AddBool(8, "backgroundmusic.thememusicenabled", 18102, true);
   AddInt(9, "backgroundmusic.bgmusicvolume", 18101, 50, 5, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
-  AddBool(0, "backgroundmusic.thememusicenabled", 18102, true);
   AddBool(0, "backgroundmusic.themedownloadsenabled", 18103, true);
   
 //  AddCategory(3, "cddaripper", 620);
@@ -503,6 +503,16 @@ CGUISettings::CGUISettings(void)
 
   AddCategory(4, "cache", 439);
   AddInt(1, "cache.seconds", 14029, 5, 3, 1, 20, SPIN_CONTROL_INT_PLUS, MASK_SECS);
+  
+  // Software update settings
+	AddCategory(4, "softwareupdate", 40018);
+	AddString(1, "softwareupdate.checknow", 40016, "", BUTTON_CONTROL_STANDARD);
+	AddSeparator(2, "softwareupdate.sep1");
+	AddBool(3, "softwareupdate.alertsenabled", 40017, true);
+	AddInt(4, "softwareupdate.checkinterval", 40025, UPDATE_INTERVAL_DAILY, UPDATE_INTERVAL_HOURLY, 1, UPDATE_INTERVAL_WEEKLY, SPIN_CONTROL_TEXT);
+	AddInt(0, "softwareupdate.alerttype", 40019, UPDATE_ASK, UPDATE_NOTIFY, 1, UPDATE_ASK, SPIN_CONTROL_TEXT);
+	AddBool(0, "softwareupdate.firstrun", 40000, true);
+  
 
 #ifndef __APPLE__
   AddCategory(4, "videooutput", 21373);
@@ -731,16 +741,7 @@ CGUISettings::CGUISettings(void)
   AddInt(8,   "remoteevents.initialdelay",    795, 750, 5, 5, 10000, SPIN_CONTROL_INT);
   AddInt(9,   "remoteevents.continuousdelay", 796, 25, 5, 5, 10000, SPIN_CONTROL_INT);
 #endif
-	
-	// Software update settings
-	AddCategory(6, "softwareupdate", 40018);
-	AddString(1, "softwareupdate.checknow", 40016, "", BUTTON_CONTROL_STANDARD);
-	AddSeparator(2, "softwareupdate.sep1");
-	AddBool(3, "softwareupdate.alertsenabled", 40017, true);
-	AddInt(4, "softwareupdate.checkinterval", 40025, UPDATE_INTERVAL_DAILY, UPDATE_INTERVAL_HOURLY, 1, UPDATE_INTERVAL_WEEKLY, SPIN_CONTROL_TEXT);
-	AddInt(0, "softwareupdate.alerttype", 40019, UPDATE_ASK, UPDATE_NOTIFY, 1, UPDATE_ASK, SPIN_CONTROL_TEXT);
-	AddBool(0, "softwareupdate.firstrun", 40000, true);
-	
+		
   // appearance settings
   AddGroup(7, 480);
 	
