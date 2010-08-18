@@ -235,32 +235,18 @@ bool CGUIMediaWindow::OnAction(const CAction &action)
   return CGUIWindow::OnAction(action);
 }
 
-void CGUIMediaWindow::RefreshShares()
+void CGUIMediaWindow::RefreshShares(bool update)
 {
   if (m_vecItems->IsVirtualDirectoryRoot() && IsActive())
   {
     CPlexSourceScanner::MergeSourcesForWindow(GetID());
     SetupShares();
     
-    int iItem = m_viewControl.GetSelectedItem();
-    Update(m_vecItems->m_strPath);
-    m_viewControl.SetSelectedItem(iItem);
-    
-    // Check for empty root views & tell the user how to download plug-ins if they don't have any
-    if (m_vecItems->Size() == 0)
+    if (update)
     {
-      int iWindow = GetID();
-      int iTitle = 0;
-      
-      if (iWindow == WINDOW_VIDEO_FILES)
-        iTitle = 40111;
-      else if (iWindow == WINDOW_MUSIC_FILES)
-        iTitle = 40112;
-      else if (iWindow == WINDOW_PICTURES)
-        iTitle = 40113;
-      
-      CGUIDialogOK::ShowAndGetInput(iTitle, 40110, 0, 0);
-      m_gWindowManager.PreviousWindow();
+      int iItem = m_viewControl.GetSelectedItem();
+      Update(m_vecItems->m_strPath);
+      m_viewControl.SetSelectedItem(iItem);
     }
   }
 }
@@ -269,11 +255,6 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
   {
-  case GUI_MSG_FOCUSED:
-    RefreshShares();
-    return true;
-    break;
-  
   case GUI_MSG_WINDOW_DEINIT:
     {
       m_iSelectedItem = m_viewControl.GetSelectedItem();
@@ -398,12 +379,12 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       else if (message.GetParam1()==GUI_MSG_UPDATE_SOURCES)
       { 
         // State of the sources changed, so update our view
-        RefreshShares();
+        RefreshShares(true);
         return true;
       }
       else if (message.GetParam1()==GUI_MSG_UPDATE_REMOTE_SOURCES)
       {
-        RefreshShares();
+        RefreshShares(true);
         return true;
       }
       else if (message.GetParam1()==GUI_MSG_UPDATE && IsActive())
@@ -686,6 +667,8 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
 // This function calls OnPrepareFileItems() and OnFinalizeFileItems()
 bool CGUIMediaWindow::Update(const CStdString &strDirectory)
 {
+  RefreshShares();
+  
   // get selected item
   int iItem = m_viewControl.GetSelectedItem();
   CStdString strSelectedItem = "";
@@ -780,6 +763,24 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
   if (strDirectory.IsEmpty())
     m_history.ClearPathHistory();
 
+  // Check for empty root views & tell the user how to download plug-ins if they don't have any
+  if (m_vecItems->Size() == 0)
+  {
+    int iWindow = GetID();
+    int iTitle = 0;
+    
+    if (iWindow == WINDOW_VIDEO_FILES)
+      iTitle = 40111;
+    else if (iWindow == WINDOW_MUSIC_FILES)
+      iTitle = 40112;
+    else if (iWindow == WINDOW_PICTURES)
+      iTitle = 40113;
+    
+    CGUIDialogOK::ShowAndGetInput(iTitle, 40110, 0, 0);
+    m_gWindowManager.PreviousWindow();
+    return true;
+  }
+  
   int iWindow = GetID();
   bool bOkay = (iWindow == WINDOW_MUSIC_FILES || iWindow == WINDOW_VIDEO_FILES || iWindow == WINDOW_FILES || iWindow == WINDOW_PICTURES || iWindow == WINDOW_PROGRAMS);
   if (strDirectory.IsEmpty() && bOkay && (iWindow == WINDOW_PROGRAMS || !m_guiState->DisableAddSourceButtons())) // add 'add source button'
