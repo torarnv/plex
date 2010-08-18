@@ -3228,9 +3228,13 @@ void CFileItem::SetEpisodeData(int total, int watchedCount)
     SetProperty("singularepisodecount", 1);
   else if (total == 1)
     SetProperty("singularepisodecount", 1);
+  else
+    ClearProperty("singularepisodecount");
   
   if (total - watchedCount == 0)
     SetProperty("zeroepisodecount", 1);
+  else
+    ClearProperty("zeroepisodecount");
 }
 
 void CFileItem::SetQuickFanart(const CStdString& fanartURL)
