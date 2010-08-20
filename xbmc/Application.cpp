@@ -1709,11 +1709,8 @@ HRESULT CApplication::Initialize()
   if (g_guiSettings.GetBool("softwareupdate.firstrun"))
   {
     g_guiSettings.SetBool("softwareupdate.firstrun", false);
-    bool userWantsAlerts = CGUIDialogUtils::ShowYesNoDialog(CGUIDialogUtils::Localize(40022),
-                                                            CGUIDialogUtils::Localize(40023),
-                                                            CGUIDialogUtils::Localize(40024),
-                                                            "");
-    g_guiSettings.SetBool("softwareupdate.alertsenabled", userWantsAlerts);
+    bool userAlertsDisabled = CGUIDialogYesNo::ShowAndGetInput(40022, 40023, 40024, -1, 107, 106);
+    g_guiSettings.SetBool("softwareupdate.alertsenabled", userAlertsDisabled ? false : true);
   }
   
   // Check for updates & alert the user if a new version is available
