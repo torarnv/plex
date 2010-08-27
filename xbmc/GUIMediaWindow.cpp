@@ -870,6 +870,10 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
       return false;
   }
   
+  // Make sure root directories end up with a content type of "plugins".
+  if (m_vecItems->IsVirtualDirectoryRoot())
+    m_vecItems->SetContent("plugins");
+  
   return true;
 }
 
