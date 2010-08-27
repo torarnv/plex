@@ -135,6 +135,8 @@ static BackgroundMusicPlayer *_o_sharedMainInstance = nil;
     }
     else
     {
+      [self stopMusic:NO];
+      
       NSString* id = currentId;
       [self setThemeMusicId:nil];
       currentId = id;
