@@ -5,6 +5,7 @@
 //  Created by Elan Feingold on 7/16/2008.
 //  Copyright 2008 Blue Mandrill Design. All rights reserved.
 //
+#include <boost/lexical_cast.hpp>
 #include <SDL/SDL.h>
 #define BOOL CPP_BOOL
 #include "stdafx.h"
@@ -28,6 +29,8 @@ const char  **gArgv;
 
 BOOL gFinderLaunch = FALSE;
 BOOL gCalledAppMainline = FALSE;
+
+using namespace boost;
 
 @implementation PlexApplication
 
@@ -248,10 +251,40 @@ int main(int argc, const char **argv)
   // If this is a first run, don't start Plex, but instead start the Media Server so
   // we can walk through the nice wizard.
   //
-  string firstRunFile = getenv("HOME");
-  string firstRunPlexFile = firstRunFile;
-  firstRunFile += "/Library/Application Support/Plex Media Server/FirstRun";
-  firstRunPlexFile += "/Library/Application Support/Plex/FirstRun.plex";
+  string applicationSupport = getenv("HOME");
+  applicationSupport += "/Library/Application Support";
+  
+  string firstRunFile = applicationSupport + "/Plex Media Server/FirstRun";
+  string firstRunPlexFile = applicationSupport + "/Plex/FirstRun.plex";
+
+  string versionTwoFramework = applicationSupport + "/Plex Media Server/Plug-ins/Framework.bundle/Contents/Resources/Versions/2";
+  string framework = applicationSupport +  "/Plex Media Server/Plug-ins/Framework.bundle";
+  
+  // If we find Plex/Eight running, move it aside. v0.8.6 should coexist fine, so we check
+  // for the existence of the v2 framework, which dictates more than anything else whether or 
+  // not we (Plex/Nine) can run.
+  //
+  if (CFile::Exists(applicationSupport) == true &&  // ~/L/AS/PMS exists. 
+      CFile::Exists(framework) == true &&           // Framework bundle is there.
+      CFile::Exists(versionTwoFramework) == false)  // There's no v2 Framework.
+  {
+    string backupPMSRoot = applicationSupport + "/Plex Media Server.v8";
+    string backupPlexRoot = applicationSupport + "/Plex.v8";
+    
+    string backupPMS = backupPMSRoot;
+    string backupPlex = backupPlexRoot;
+    
+    // Make sure the name is unique.
+    for (int suffix=0; CFile::Exists(backupPMS) || CFile::Exists(backupPlex); suffix++)
+    {
+      backupPMS = backupPMSRoot + "." + lexical_cast<string>(suffix);
+      backupPlex = backupPlexRoot  + "." + lexical_cast<string>(suffix);
+    }
+      
+    printf("Old version of Plex detected, moving aside.\n");
+    CFile::Rename(applicationSupport + "/Plex Media Server", backupPMS);
+    CFile::Rename(applicationSupport + "/Plex", backupPlex);
+  }
   
   if (CFile::Exists(firstRunFile) == false)
   {
@@ -269,7 +302,6 @@ int main(int argc, const char **argv)
     
     // Get our path.
     string pathStr = [[[NSBundle mainBundle] bundlePath] UTF8String];
-    printf("Our path is [%s]\n", pathStr.c_str());
     
     // Write out path to a file.
     PlexHelperApp::WriteFile(firstRunPlexFile, pathStr);
