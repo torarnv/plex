@@ -763,6 +763,9 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
   if (strDirectory.IsEmpty())
     m_history.ClearPathHistory();
 
+// Disabling for now because it's firing all over the place.
+#if 0
+  
   // Check for empty root views & tell the user how to download plug-ins if they don't have any
   if (m_vecItems->Size() == 0)
   {
@@ -780,6 +783,8 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
     m_gWindowManager.PreviousWindow();
     return true;
   }
+  
+#endif
   
   int iWindow = GetID();
   bool bOkay = (iWindow == WINDOW_MUSIC_FILES || iWindow == WINDOW_VIDEO_FILES || iWindow == WINDOW_FILES || iWindow == WINDOW_PICTURES || iWindow == WINDOW_PROGRAMS);
