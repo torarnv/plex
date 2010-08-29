@@ -56,10 +56,10 @@
   <string id="119">Nouveau</string>
   <string id="120">Confirmer la copie du fichier</string>
   <string id="121">Confirmer le déplacement du fichier</string>
-  <string id="122">Confirmer l'effacement du fichier ? Ceci va supprimer votre fichier.</string>
+  <string id="122">Confirmer l'effacement du fichier ? Ceci va supprimer définitivement votre fichier.</string>
   <string id="123">Êtes-vous sûr de copier ce(s) fichier(s)?</string>
   <string id="124">Êtes-vous sûr de déplacer ce(s) fichier(s)?</string>
-  <string id="125">Voulez-vous supprimer ce(s) fichier(s)? Ceci va supprimer votre fichier.</string>
+  <string id="125">Voulez-vous supprimer ce(s) fichier(s)? Ceci va supprimer définitivement votre fichier.</string>
   <string id="126">Statut</string>
   <string id="127">Objets</string>
   <string id="128">Général</string>
@@ -238,7 +238,7 @@
   <string id="310">- Ajuster luminosité/contraste</string>
   <string id="311">- Dering</string>
   <string id="312">(0=auto)</string>
-  <string id="313">Nettoyer la base de données</string>
+  <string id="313">Optimisation de la base de données</string>
   <string id="314">Préparation...</string>
   <string id="315">Erreur dans la base de données</string>
   <string id="316">Recherche des titres...</string>
@@ -256,10 +256,10 @@
   <string id="328">Enregistrement des modifications...</string>
   <string id="329">Erreur pendant l'enregistrement des modifications...</string>
   <string id="330">Cette opération peut durer un moment...</string>
-  <string id="331">Nettoyage de la base de données...</string>
-  <string id="332">Erreur pendant le nettoyage de la base de données</string>
-  <string id="333">Voulez-vous nettoyer votre base de données ?</string>
-  <string id="334">Nettoyer la bibliothèque</string>
+  <string id="331">Compression de la base de données...</string>
+  <string id="332">Erreur pendant la compression de la base de données</string>
+  <string id="333">Voulez-vous optimiser votre bibliothèque ?</string>
+  <string id="334">Optimiser la bibliothèque</string>
   <string id="335">Lancer</string>
   <string id="336">Conversion FPS</string>
   <string id="337">Sortie audio</string>
@@ -267,7 +267,7 @@
   <string id="339">Numérique</string>
   <string id="340">Artistes Divers</string>
   <string id="341">Lire le DVD</string>
-  <string id="342">Séquences</string>
+  <string id="342">Films</string>
   <string id="343">Ajuster le taux de rafraîchissement</string>
   <string id="344">Acteurs</string>
   <string id="345">Année</string>
@@ -293,7 +293,7 @@
   <string id="369">Titre</string>
   <string id="370">Orageux</string>
   <string id="371">Assez</string>
-  <string id="372">Très</string>
+  <string id="372">Généralement</string>
   <string id="373">Ensoleillé</string>
   <string id="374">Nuageux</string>
   <string id="375">Neige</string>
@@ -354,12 +354,12 @@
   <string id="429">Merci d'insérer le CD/DVD</string>
   <string id="430">Lister par : DVD#</string>
   <string id="431">Pas de cache</string>
-  <string id="432">Retirer le film de la bibliothèque</string>
-  <string id="433">Êtes-vous sûr(e) retirer '%s'?</string>
+  <string id="432">Supprimer le film de la bibliothèque</string>
+  <string id="433">Êtes-vous sûr(e) de supprimer '%s'?</string>
   <string id="434"></string>
   <string id="435"></string>
   <string id="436"></string>
-  <string id="437"></string>
+  <string id="437">Disque amovible</string>
   <string id="438">Ouverture du fichier</string>
   <string id="439">Cache</string>
   <string id="440">Disque dur</string>
@@ -464,7 +464,7 @@
   <string id="546">Passer par le Périphérique de Sortie</string>
   <string id="547">Pas de biographie pour cet artiste</string>
   
-  <string id="550">Lister par : %s</string>
+  <string id="550">Liste par : %s</string>
   <string id="551">Nom</string>
   <string id="552">Date</string>
   <string id="553">Taille</string>
@@ -487,6 +487,8 @@
   <string id="570">Ajouté le</string>
   <string id="571">Défaut</string>
   <string id="572">Studio</string>
+  <string id="573">Réseau</string>
+
   <string id="574">Support de la sortie numérique</string>
   <string id="575">Détection automatique</string>
   <string id="576">Forcer le numérique</string>
@@ -540,7 +542,7 @@
   <string id="634">Étirée 16:9</string>
   <string id="635">Originale</string>
   <string id="636">Personnalisée</string>
-  <string id="637">Replay Gain</string>
+  <string id="637">Gain sonore</string>
   <string id="638">Mode</string>
   <string id="639">Utiliser le volume de la chanson</string>
   <string id="640">Utiliser le volume de l'album</string>
@@ -615,7 +617,7 @@
   <string id="748">Éditer le chemin</string>
   <string id="749"></string>
   <string id="750">Êtes-vous sûr(e) ?</string>
-  <string id="751">Supprimer la source</string>
+  <string id="751">Suppression de la source</string>
   <string id="752"></string>
   <string id="753"></string>
   <string id="754">Ajouter un lien programme</string>
@@ -753,21 +755,21 @@
   <string id="1247">Mot de Passe du Serveur FTP modifié avec succès</string>
   
   <string id="1250">Autodétection</string>
-  <string id="1251">Autodétection XBox</string>
-  <string id="1252">Nom de la XBox</string>
+  <string id="1251">Autodétection système</string>
+  <string id="1252">Nom du système</string>
   <string id="1253"></string>
-  <string id="1254">Notification par PopUp</string>
+  <string id="1254">Demande de permission de connexion</string>
   <string id="1255">Envoyer Mot de Passe et Nom d'Utilisateur FTP</string>
   <string id="1256">Temps de réponse (ping)</string>
-  <string id="1257">Voulez-vous vous connecter à la XBox auto détectée?</string>
+  <string id="1257">Voulez-vous vous connecter au système auto détecté ?</string>
   
   <string id="1396">Dérivant</string>
   <string id="1397">et</string>
   <string id="1398">gelant</string>
   <string id="1399">Tard</string>
   <string id="1400">Isolé(e)</string>
-  <string id="1401">douches</string>
-  <string id="1402">éclairs / orage</string>
+  <string id="1401">orages</string>
+  <string id="1402">éclairs</string>
   <string id="1403">Soleil</string>
   <string id="1404">important(e)(s)</string>
   <string id="1405">dans</string>
@@ -828,8 +830,8 @@
 
   <string id="10500">Musique/Playlist</string>
   <string id="10501">Musique/Fichiers</string>
-  <string id="10502">Musique/Bibliothèques</string>
-  <string id="10503">Playlist Éditeur</string>
+  <string id="10502">Musique/Bibliothèque</string>
+  <string id="10503">Éditeur de Playlist</string>
   <string id="10504">Chansons Top 100</string>
   <string id="10505">Albums Top 100</string>
   <string id="10506">Programmes</string>
@@ -852,7 +854,7 @@
   <string id="10523">Infos Album</string>
   <string id="10524">Infos Film</string>
   
-  <string id="12000">Choisir un dialogues</string>
+  <string id="12000">Choisir un dialogue</string>
   <string id="12001">Musique/info</string>
   <string id="12002">Dialogues OK</string>
   <string id="12003">Vidéos/Info</string>
@@ -893,10 +895,10 @@
   <string id="12322">*</string>
   <string id="12325">Sécurisé! Entrer le code</string>
   <string id="12326">Saisissez le mot de passe</string>
-  <string id="12327">Saisissez le code Administrateur</string>
+  <string id="12327">Saisissez le code Maître</string>
   <string id="12328">Saisissez le code de déblocage</string>
   <string id="12329">ou appuyez sur C pour annuler</string>
-  <string id="12330">Saisissez la combinaison de boutons XBox et</string>
+  <string id="12330">Saisissez la combinaison de boutons manette et</string>
   <string id="12331">appuyez sur Start pour valider, ou Back pour annuler</string>
   <string id="12332">Sécuriser</string>
   <string id="12333">Déprotéger</string>
@@ -911,16 +913,16 @@
   <string id="12343">Nombre d'essais restant</string>
   <string id="12344">Les mots de passe saisis ne correspondent pas.</string>
   <string id="12345">Accès refusé</string>
-  <string id="12346">Vous avez excédé le nombre d'essais autorisés.</string>
-  <string id="12347">La XBox va maintenant s'éteindre.</string>
+  <string id="12346">Vous avez dépassé le nombre d'essais autorisés.</string>
+  <string id="12347">Le système va maintenant s'éteindre.</string>
   <string id="12348">Sécurisé</string>
   <string id="12353">Ré-activer la sécurité</string>
   <string id="12356">Changer la sécurité</string>
   <string id="12357">Sécurité Sources</string>
   <string id="12358">Le mot de passe rentré est vide. Essayez encore.</string>
-  <string id="12360">Sécurités Plex</string>
-  <string id="12362">Éteindre après trop de tentatives</string>
-  <string id="12367">Le code Maitre n'est pas valide!</string>
+  <string id="12360">Sécurités par code Maître</string>
+  <string id="12362">Éteindre après trop de tentatives du code Maître</string>
+  <string id="12367">Le code Maître n'est pas valide!</string>
   <string id="12368">Merci de rentrer un code Maitre valide!</string>
   <string id="12373">Paramètres &amp; Fichiers</string>
   <string id="12376">Enregistrer comme paramètres par défaut</string>
@@ -951,15 +953,18 @@
   <string id="13002">Vidéo seule</string>
   <string id="13003">- Délai</string>
   <string id="13004">- Durée minimale du fichier</string>
-  <string id="13005">Éteindre</string>
+  <string id="13005">Quitter</string>
   <string id="13006">Dashboard</string>
   <string id="13007">Utiliser Dashboard Personnalisé</string>
   <string id="13008">Mode d'arrêt par défaut</string>
   <string id="13009">Quitter</string>
   <string id="13010">Mettre en veille</string>
   <string id="13011">Suspendre</string>
-  
+  <string id="13012">Sortir</string>
+  <string id="13013">Redémarrer</string>
+
   <string id="13100">Filtre de scintillement</string>
+  <string id="13101">Choix par le pilote (redémarrage obligatoire)</string>
   <string id="13105">Sync. Verticale</string>
   <string id="13106">Désactivée</string>
   <string id="13107">Activée pendant la lecture vidéo</string>
@@ -972,7 +977,8 @@
   <string id="13113">Désactiver</string>
   <string id="13114">Activer pour contenu SD</string>
   <string id="13115">Toujours activé</string>
- 
+  <string id="13120">Activé</string>
+
   <string id="13116">Méthode d'Upscaling</string>
   <string id="13117">Bicubic</string>
   <string id="13118">Lanczos</string>
@@ -982,7 +988,9 @@
   <string id="13131">Désactivé</string>
   <string id="13132">Activé</string>
  
-  <string id="13134">Booster la vitesse H.264</string>
+  <string id="13133">Décodage matériel H.264</string>
+
+  <string id="13134">Doper la vitesse H.264</string>
   <string id="13135">Désactivé</string>
   <string id="13136">Moyen</string>
   <string id="13137">Élevé</string>
@@ -994,9 +1002,9 @@
   <string id="13141">Si vous continuez vous ne serez plus en mesure de contrôler Plex</string>
   <string id="13142">par la suite. Êtes-vous sur de stopper le serveur Event ?</string>
 
-  <string id="13144">Changer le mode Apple Remote ?</string>
+  <string id="13144">Changer le mode télécommande Apple ?</string>
   <string id="13145">Si vous utilisez actuellement la télécommande Apple pour contrôler</string>
-  <string id="13146">Plex, le changement de ce paramètre peut affecter l'abilité</string>
+  <string id="13146">Plex, le changement de ce paramètre peut affecter la capacité</string>
   <string id="13147">de continuer à contrôler celui-ci. Effectuer la modification ?</string>
  
   <string id="13150">HDD Clé :</string>
@@ -1055,7 +1063,7 @@
   <string id="13278">Défaut</string>
   <string id="13279">Réseau</string>
   <string id="13280">Vidéo</string>
-  <string id="13281">Matériel</string>
+  <string id="13281">Général</string>
   <string id="13282">_</string>
   <string id="13283">Version du noyau :</string>
   <string id="13284">Vitesse du CPU :</string>
@@ -1183,16 +1191,18 @@
   
   <string id="13450">Mise en Veille</string>
   
-  <string id="13600">Apple Remote</string>
-  <string id="13601">Mode</string>
+  <string id="13600">Contrôleur</string>
+  <string id="13601">Mode télécommande Apple</string>
   <string id="13602">Toujours activé</string>
   <string id="13603">Temps délai séquence</string>
-  
+  <string id="13604">Activer contrôle sécurisé</string>  
+
   <string id="13610">Désactiver</string>
   <string id="13611">Standard</string>
   <string id="13612">Télécommande Universelle</string>
-  
-  <string id="13620">Erreur Apple Remote.</string>
+  <string id="13613">Télécommande Harmony</string>
+
+  <string id="13620">Le pilote Remote Buddy est installé.</string>
   <string id="13621">Le support de la télécommande Apple ne peut être activé.</string>
   <string id="13622">Veuillez lire la FAQ de Remote Buddy pour le désinstaller.</string>
   
@@ -1203,11 +1213,18 @@
   <string id="13631">Mode</string>  
   <string id="13632">- Toujours actif</string>
 
-  <string id="13633">désactivé</string>
-  <string id="13634">activé</string>
+  <string id="13633">Désactivé</string>
+  <string id="13634">Activé</string>
 
   <string id="13635">Activer le Scrobbling</string>
-  
+  <string id="13636">Connexion automatique aux bibliothèques partagées</string>
+
+  <string id="13640">Doper le volume par Mixdown</string>
+  <string id="13641">Désactivé</string>
+  <string id="13642">Normal</string>
+  <string id="13643">Beaucoup</string>
+  <string id="13644">Énormément</string>
+
   <string id="14000">Empiler</string>
   <string id="14001">Désempiler</string>
   <string id="14003">Téléchargement de la liste de lecture...</string>
@@ -1511,7 +1528,7 @@
   <string id="17500">Afficher temps avant la mise en veille</string> 
   <string id="17501">Luminosité de l'affichage</string>
 
-  <string id="17701">Baterrie faible</string>
+  <string id="17701">Baterie faible</string>
   <string id="17702">Connecter l'adaptateur secteur</string>
   
   <string id="18000">Modèle</string>
@@ -1561,6 +1578,8 @@
 
   <!-- string id's 20027 thru 20034 are reserved for temperaturestrings  (LocalizeStrings.cpp)-->
 
+  <string id="20035">Choisir le Fanart</string>
+  <string id="20036">Choisir la Bannière</string>
   <string id="20038">Sécuriser la section Musique</string>
   <string id="20039">Sécuriser la section Vidéo</string>
   <string id="20040">Sécuriser la section Images</string>
@@ -1605,7 +1624,7 @@
   <string id="20079">Activer les animations</string>
   <string id="20080">Désactiver le flux RSS pendant la Musique</string>
   <string id="20081">Activer les boutons Signets</string>
-  <string id="20082">Afficher les infos Xlink Kai</string>
+  <string id="20082">Afficher les Applications</string>
   <string id="20083">Afficher les infos Musique</string>
   <string id="20084">Afficher les infos Météo</string>
   <string id="20085">Afficher les infos Système</string>
@@ -1614,7 +1633,7 @@
   <string id="20088">Infos Météo</string>
   <string id="20089">Espace disque libre</string>
   <string id="20090">Entrer le nom d'un partage existant</string>
-  <string id="20091">Verrouiller le code</string>
+  <string id="20091">Code de verrouillage</string>
   <string id="20092">Charger un profil</string>
   <string id="20093">Nom du profil</string>
   <string id="20094">Sources des Médias</string>
@@ -1640,8 +1659,8 @@
   <string id="20114">Profil %i / %i</string>
   <string id="20115">Connexion utilisateur / Choix du profil</string>
   <string id="20116">Utiliser le verrou sur l'écran de connexion</string>
-  <string id="20117">Code verrou invalide.</string>
-  <string id="20118">Ceci nécessite le code Admin. pour être réglé.</string>
+  <string id="20117">Code de verrouillage invalide.</string>
+  <string id="20118">Ceci nécessite le code Maître pour être réglé.</string>
   <string id="20119">Voulez-vous le régler maintenant ?</string>
   <string id="20120">Chargement des informations du programme</string>
   <string id="20121">Mix de Soirée lancé !</string>
@@ -1804,7 +1823,7 @@
   <string id="20371">Définir l'image de la saison</string>
   <string id="20372">Image Saison</string>
   <string id="20373">Saison</string>
-  <string id="20374">Téléchargement des infos vidéo</string>
+  <string id="20374">Téléchargement des infos du film</string>
   <string id="20375">Catégorie non assignée</string>
   <string id="20376">1re Diffusion :</string>
   <string id="20377">Rafraîchir Info Séries TV</string>
@@ -1817,7 +1836,7 @@
   <string id="20384">Lien vers Série TV</string>
   <string id="20385">Supprimer le lien vers la série TV</string>
   <string id="20386">Films récemment ajoutés</string>
-  <string id="20387">Séries récemment ajoutées</string>
+  <string id="20387">Épisodes récemment ajoutés</string>
   <string id="20388">Studios</string>
   <string id="20389">Clip Musicaux</string>
   <string id="20390">Clips ajoutés récemment</string>
@@ -1857,6 +1876,7 @@
   <string id="20424">Faux</string>
   <string id="20425">Diaporama des FanArts</string>
   <string id="20475">Nombre de vidéos récentes</string>
+
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Afficher les dossiers et les fichiers cachés</string>
@@ -1890,7 +1910,7 @@
   <string id="21373">Matériel vidéo</string>
   <string id="21374">Aspect vidéo</string>
   <string id="21375">Normal</string>
-  <string id="21376">Boite aux lettres</string>
+  <string id="21376">Boîte aux lettres</string>
   <string id="21377">Panoramique</string>
   <string id="21378">Activer 480p</string>
   <string id="21379">Activer 720p</string>
@@ -1927,7 +1947,7 @@
   <string id="21410">dans le dernier</string>
   <string id="21411">pas dans le dernier</string>
 
-  <string id="21420">Valeur pour l'assortiment</string>
+  <string id="21420">Valeur à trouver</string>
   <string id="21421">Règle Smart Playlist</string>
   <string id="21422">Chansons assorties</string>
   <string id="21423">Nouvelle règle...</string>
@@ -1948,7 +1968,7 @@
   <string id="21438">%c Disque</string>
   <string id="21439">Règles Mix de soirée</string>
   <string id="21440">Dossier racine</string>
-  <string id="21441">Compteur vus</string>
+  <string id="21441">Nombre de visions</string>
   <string id="21442">Titre de l'épisode</string>
 
   <string id="21800">Nom du fichier</string>
@@ -2044,6 +2064,7 @@
   <string id="22011">CPU Température :</string>
   <string id="22012">Mémoire Totale</string>
   <string id="22013">Données Profil</string>
+  <string id="22014">Assombrir si pause durant affichage de vidéo</string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Mode Bibliothèque</string>
@@ -2053,6 +2074,8 @@
 
   <!-- strings 30000 thru 30999 reserved for plugins and plugin settings -->
   <!-- strings 31000 thru 31999 reserved for skins -->
+
+
   <!-- strings 32000 thru 32999 reserved for scripts -->
   
   <string id="40000">Mise à jour</string>
@@ -2093,14 +2116,54 @@
   <string id="40105">Économie d'énergie</string>
   <string id="40106">Supprimer le Workflow</string>
   
+  <string id="40110">Visitez Plex Online depuis le menu principal pour parcourir et installer des plug-ins</string>
+  <string id="40111">Aucun plug-in video n'est installé</string>
+  <string id="40112">Aucun plug-in audio n'est installé</string>
+  <string id="40113">Aucun plug-in image n'est installé</string>
+
   <string id="40150">En cours de lecture</string>
 
-  <string id="40200">chemin non suporté</string>
-  <string id="40201">le chemin de Plex Media Server paths ne peut être ajouté au multipath</string>
-  <string id="40202">sources.</string>
+  <string id="40200">Chemin non suporté</string>
+  <string id="40201">Les chemins du Plex Media Server ne peuvent être ajoutés aux sources</string>
+  <string id="40202">multipath.</string>
   <string id="40203">Plex Media Server</string>
   <string id="40204">En attente d'une réponse...</string>
+  <string id="40205">Note...</string>
+  <string id="40206">Changer la note...</string>
+  <string id="40207">Fixer la note</string>
+  <string id="40208">Changer la note</string>
   
+  <string id="40220">Préférences</string>
+  <string id="40221">Redémarrer</string>
+  <string id="40222">Désinstaller</string>
+
+  <string id="40300">Fixer le délai de sortie</string>
+  <string id="40301">Fixer le délai de mise en veille</string>
+  <string id="40302">Fixer le délai d'arrêt du système</string>
+  <string id="40323">Fixer le délai de mise en veille de l'écran</string>
+  
+  <string id="40305">Modifier le délai de sortie</string>
+  <string id="40306">Modifier le délai de mise en veille</string>
+  <string id="40307">Modifier le délai d'arrêt du système</string>
+  <string id="40308">Modifier le délai de mise en veille de l'écran</string>
+
+  <string id="40310">Plex quittera à</string>
+  <string id="40311">Le système se mettra en veille à</string>
+  <string id="40312">Le système s'arrêtera à</string>
+  <string id="40313">Le système mettra l'écran en veille à</string>
+  
+  <string id="40315">Vous avez déjà établi un délai de sortie.</string>
+  <string id="40316">Vous avez déjà établi un délai de mise en veille.</string>
+  <string id="40317">Vous avez déjà établi un délai d'arrêt du système.</string>
+  <string id="40318">Vous avez déjà établi un délai de mise en veille de l'écran.</string>
+  
+  <string id="40320">Voulez-vous plutôt fixer un délai de sortie ?</string>
+  <string id="40321">Voulez-vous plutôt fixer un délai de mise en veille ?</string>
+  <string id="40322">Voulez-vous plutôt fixer un délai d'arrêt du système ?</string>
+  <string id="40323">Voulez-vous plutôt fixer un délai de mise en veille de l'écran ?</string>
+  
+  <string id="40325">Délai déjà fixé</string>
+    
   <string id="42000">Lecture impossible du flux</string>
   <string id="42001">Le format du flux n'a pas été reconnnu</string>
   <string id="42002">L'en-tête du fichier est illisible</string>
