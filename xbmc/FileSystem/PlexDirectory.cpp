@@ -594,6 +594,9 @@ class PlexMediaNode
          mediaItem->SetProperty("mediaTag::" + attr, localFile);
        else
          mediaItem->SetProperty("cache$mediaTag::" + attr, url);
+       
+       // Set the value.
+       mediaItem->SetProperty("mediaTag-" + attr, val);
      }
    }
    
