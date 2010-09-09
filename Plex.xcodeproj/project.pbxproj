@@ -7517,6 +7517,7 @@
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				HEADER_SEARCH_PATHS = (
+					xbmc/cores/dvdplayer/Codecs/ffmpeg/include,
 					xbmc/cores/dvdplayer/Codecs/ffmpeg,
 					xbmc/cores/dvdplayer/DVDCodecs/Audio/libdca,
 					xbmc,
@@ -7612,6 +7613,7 @@
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				HEADER_SEARCH_PATHS = (
+					xbmc/cores/dvdplayer/Codecs/ffmpeg/include,
 					xbmc/cores/dvdplayer/Codecs/ffmpeg,
 					xbmc/cores/dvdplayer/DVDCodecs/Audio/libdca,
 					xbmc,
