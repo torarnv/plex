@@ -1,6 +1,5 @@
 /*
- * LATM parser
- * Copyright (c) 2008 Paul Kendall <paul@kcbbs.gen.nz>
+ * copyright (c) 2008 Paul Kendall <paul@kcbbs.gen.nz>
  *
  * This file is part of FFmpeg.
  *
@@ -23,6 +22,12 @@
  * @file latm_parser.c
  * LATM parser
  */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <math.h>
+#include <sys/types.h>
 
 #include "parser.h"
 
@@ -53,7 +58,7 @@ static int latm_find_frame_end(AVCodecParserContext *s1, const uint8_t *buf,
     if(!pic_found){
         for(i=0; i<buf_size; i++){
             state = (state<<8) | buf[i];
-            if((state & LATM_MASK) == LATM_HEADER){
+            if((state & LATM_MASK) == LATM_HEADER) {
                 i++;
                 s->count = - i;
                 pic_found=1;
@@ -104,25 +109,10 @@ static int latm_parse(AVCodecParserContext *s1,
     return next;
 }
 
-static int latm_split(AVCodecContext *avctx,
-                           const uint8_t *buf, int buf_size)
-{
-    int i;
-    uint32_t state= -1;
-
-    for(i=0; i<buf_size; i++){
-        state= (state<<8) | buf[i];
-        if((state & LATM_MASK) == LATM_HEADER)
-            return i-2;
-    }
-    return 0;
-}
-
-AVCodecParser aac_latm_parser = {
+AVCodecParser latm_parser = {
     { CODEC_ID_AAC_LATM },
     sizeof(LATMParseContext),
     NULL,
     latm_parse,
-    ff_parse_close,
-    latm_split,
+    ff_parse_close
 };
