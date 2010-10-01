@@ -3001,7 +3001,8 @@ bool CApplication::OnKey(CKey& key)
       if (control)
       {
         if (/* control->GetControlType() == CGUIControl::GUICONTROL_EDIT ||*/
-            (control->IsContainer() && g_Keyboard.GetShift()))
+            (control->IsContainer() && g_Keyboard.GetShift()) ||
+            (key.GetFromHttpApi() && key.GetButtonCode() > KEY_ASCII))
           useKeyboard = true;
       }
     }
