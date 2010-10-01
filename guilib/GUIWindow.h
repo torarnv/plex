@@ -144,6 +144,8 @@ public:
   int GetVisibleCondition() const { return m_visibleCondition; };
   void SetXMLFile(const CStdString &xmlFile) { m_xmlFile = xmlFile; };
   const CStdString &GetXMLFile() const { return m_xmlFile; };
+  void SetCustom(bool isCustom = true) { m_isCustom = isCustom; };
+  bool GetCustom() { return m_isCustom; };
   void LoadOnDemand(bool loadOnDemand) { m_loadOnDemand = loadOnDemand; };
   bool GetLoadOnDemand() { return m_loadOnDemand; }
   int GetRenderOrder() { return m_renderOrder; };
@@ -218,6 +220,7 @@ protected:
   bool m_windowLoaded;  // true if the window's xml file has been loaded
   bool m_loadOnDemand;  // true if the window should be loaded only as needed
   bool m_isDialog;      // true if we have a dialog, false otherwise.
+  bool m_isCustom;
   bool m_dynamicResourceAlloc;
   int m_visibleCondition;
 

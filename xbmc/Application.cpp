@@ -2574,6 +2574,7 @@ bool CApplication::LoadUserWindows(const CStdString& strSkinPath)
       // set the window's xml file, and add it to the window manager.
       pWindow->SetXMLFile(FindFileData.cFileName);
       pWindow->SetID(WINDOW_HOME + id);
+      pWindow->SetCustom();
       m_gWindowManager.AddCustomWindow(pWindow);
     }
     CloseHandle(hFind);

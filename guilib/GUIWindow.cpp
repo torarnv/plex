@@ -70,6 +70,7 @@ CGUIWindow::CGUIWindow(DWORD dwID, const CStdString &xmlFile)
   m_hasRendered = false;
   m_hasCamera = false;
   m_previousWindow = WINDOW_INVALID;
+  m_isCustom = false;
 }
 
 CGUIWindow::~CGUIWindow(void)
@@ -499,6 +500,12 @@ bool CGUIWindow::OnAction(const CAction &action)
 {
   if (action.wID == ACTION_MOUSE)
     return OnMouseAction();
+  
+  if (m_isCustom && action.wID == ACTION_PARENT_DIR)
+  {
+    m_gWindowManager.PreviousWindow();
+    return true;
+  }
 
   CGUIControl *focusedControl = GetFocusedControl();
   if (focusedControl)
