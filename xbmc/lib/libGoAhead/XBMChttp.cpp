@@ -1865,6 +1865,8 @@ int CXbmcHttp::xbmcPlayerPlayMedia(int numParas, CStdString paras[])
     CLog::Log(LOGWARNING, "Unknown type: [%s] (path=%s)", mediaType.c_str(), path.c_str());
   }
   
+  g_application.ResetDisplaySleep();
+  
   // Play the media.
   if (mediaType == "track")
   {

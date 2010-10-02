@@ -2574,6 +2574,7 @@ bool CApplication::LoadUserWindows(const CStdString& strSkinPath)
       // set the window's xml file, and add it to the window manager.
       pWindow->SetXMLFile(FindFileData.cFileName);
       pWindow->SetID(WINDOW_HOME + id);
+      pWindow->SetCustom();
       m_gWindowManager.AddCustomWindow(pWindow);
     }
     CloseHandle(hFind);
@@ -3000,7 +3001,8 @@ bool CApplication::OnKey(CKey& key)
       if (control)
       {
         if (/* control->GetControlType() == CGUIControl::GUICONTROL_EDIT ||*/
-            (control->IsContainer() && g_Keyboard.GetShift()))
+            (control->IsContainer() && g_Keyboard.GetShift()) ||
+            (key.GetFromHttpApi() && key.GetButtonCode() > KEY_ASCII))
           useKeyboard = true;
       }
     }
