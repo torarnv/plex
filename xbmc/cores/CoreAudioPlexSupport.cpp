@@ -236,14 +236,16 @@ float PlexAudioDevice::getVolume(bool& isMuted)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void PlexAudioDevice::setVolume(float vol, bool isMuted)
+void PlexAudioDevice::setVolume(float vol, bool isMuted, bool scalar)
 {
   UInt32   paramSize = 0;
   OSStatus err = noErr;
   Boolean  canSet = false;
+  AudioObjectPropertySelector sel = scalar ? kAudioDevicePropertyVolumeScalar : kAudioDevicePropertyVolumeDecibels;
   
   // Convert from Plex's [-60, 0] to [-65, 0].
-  vol = (65.0/60.0) * vol;
+  if (!scalar)
+    vol = (65.0/60.0) * vol;
       
   // Pass along the muted parameter.
   int muted = (isMuted == true) ? 1 : 0;
@@ -252,11 +254,11 @@ void PlexAudioDevice::setVolume(float vol, bool isMuted)
   
   // Try to set master-channel (0) volume.
   paramSize = sizeof(canSet);
-  err = AudioDeviceGetPropertyInfo(m_deviceID, 0, FALSE, kAudioDevicePropertyVolumeDecibels, &paramSize, &canSet);
+  err = AudioDeviceGetPropertyInfo(m_deviceID, 0, FALSE, sel, &paramSize, &canSet);
   if (err == noErr && canSet == true) 
   {
     paramSize = sizeof(vol);
-    SAFELY(AudioDeviceSetProperty(m_deviceID, NULL, 0, false, kAudioDevicePropertyVolumeDecibels, paramSize, &vol));
+    SAFELY(AudioDeviceSetProperty(m_deviceID, NULL, 0, false, sel, paramSize, &vol));
     return;
   }
 
@@ -269,8 +271,8 @@ void PlexAudioDevice::setVolume(float vol, bool isMuted)
     
   // Set volume
   paramSize = sizeof(vol);
-  SAFELY(AudioDeviceSetProperty(m_deviceID, 0, channels[0], false, kAudioDevicePropertyVolumeDecibels, paramSize, &vol));
-  SAFELY(AudioDeviceSetProperty(m_deviceID, 0, channels[1], false, kAudioDevicePropertyVolumeDecibels, paramSize, &vol));
+  SAFELY(AudioDeviceSetProperty(m_deviceID, 0, channels[0], false, sel, paramSize, &vol));
+  SAFELY(AudioDeviceSetProperty(m_deviceID, 0, channels[1], false, sel, paramSize, &vol));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
