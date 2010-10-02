@@ -59,6 +59,7 @@ bool CGUIWindowSettingsScreenCalibration::OnAction(const CAction &action)
   switch (action.wID)
   {
   case ACTION_PREVIOUS_MENU:
+  case ACTION_PARENT_DIR:
     {
       m_gWindowManager.PreviousWindow();
       return true;
