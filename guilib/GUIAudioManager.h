@@ -56,6 +56,7 @@ public:
 
           void        Enable(bool bEnable);
           void        SetVolume(int iLevel);
+          void        SetSystemVolumeScalar(int iPercent);
 private:
           bool        LoadWindowSound(TiXmlNode* pWindowNode, const CStdString& strIdentifier, CStdString& strFile);
 

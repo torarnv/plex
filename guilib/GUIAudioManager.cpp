@@ -398,6 +398,25 @@ void CGUIAudioManager::Enable(bool bEnable)
   m_bEnabled=bEnable;
 }
 
+void CGUIAudioManager::SetSystemVolumeScalar(int iPercent)
+{
+    CSingleLock lock(m_cs);
+    if (g_guiSettings.GetBool("audiooutput.systemvolumefollows") && !g_audioConfig.UseDigitalOutput())
+    {
+        PlexAudioDevicePtr dev = PlexAudioDevices::FindDefault();
+        if (dev)
+        {
+            float vol = (float)iPercent / 100.0;
+            dev->setVolume(vol, g_stSettings.m_bMute, true);
+            
+            // Immediately read back the volume, because it might be slightly different.
+            bool isMuted = false;
+            vol = dev->getVolume(isMuted);
+            g_stSettings.m_nVolumeLevel = vol*100.0;
+        }
+    }
+}
+
 // \brief Sets the volume of all playing sounds
 void CGUIAudioManager::SetVolume(int iLevel)
 {
