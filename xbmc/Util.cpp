@@ -5025,8 +5025,6 @@ int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES,
       bool bDummy;
       return GetMatchingSource(strPath, VECSOURCES, bDummy);
     }
-
-    CLog::Log(LOGWARNING,"CUtil::GetMatchingSource... no matching source found for [%s]", strPath1.c_str());
   }
   return iIndex;
 }
