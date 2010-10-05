@@ -41,6 +41,8 @@
 #include <boost/foreach.hpp>
 #include <map>
 
+#include "Log.h"
+
 using namespace boost;
 
 // Save the root port.
@@ -480,8 +482,8 @@ bool Cocoa_IsHostLocal(const string& host)
 {
   hostent* pHost = ::gethostbyname(host.c_str());
   vector<in_addr_t> localAddresses = Cocoa_GetLocalAddresses();
+  bool ret = false;
   
-  printf("Asked to check %s.\n", host.c_str());
   if (pHost)
   {
     BOOST_FOREACH(in_addr_t localAddr, localAddresses)
@@ -490,14 +492,16 @@ bool Cocoa_IsHostLocal(const string& host)
       {
         struct in_addr* in = (struct in_addr *)pHost->h_addr_list[x];
         if (in->s_addr == localAddr)
-          return true;
+        {
+          ret = true;
+          break;
+        }
       }
     }
   }
   
-  printf("The host %s was not local!\n", host.c_str());
-  
-  return false;
+  CLog::Log(LOGINFO, "Asked to check whether [%s] is local => %d", host.c_str(), ret);  
+  return ret;
 }
 
 

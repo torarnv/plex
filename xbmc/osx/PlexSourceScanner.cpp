@@ -26,7 +26,7 @@ void CPlexSourceScanner::Process()
 {
   CStdString path;
   
-  CLog::Log(LOGINFO, "Plex Source Scanner starting...", m_host.c_str());
+  CLog::Log(LOGNOTICE, "Plex Source Scanner starting...", m_host.c_str());
   
   { // Make sure any existing entry is removed.
     CSingleLock lock(g_lock);
@@ -36,7 +36,7 @@ void CPlexSourceScanner::Process()
   
   if (m_host.find("members.mac.com") != -1)
   {
-    CLog::Log(LOGINFO, "Skipping MobileMe address: %s", m_host.c_str());
+    CLog::Log(LOGWARNING, "Skipping MobileMe address: %s", m_host.c_str());
   }
   else
   {
@@ -53,7 +53,7 @@ void CPlexSourceScanner::Process()
     
     // Create a new entry.
     HostSourcesPtr sources = HostSourcesPtr(new HostSources());
-    CLog::Log(LOGINFO, "Scanning remote server: %s", m_host.c_str());
+    CLog::Log(LOGNOTICE, "Scanning remote server: %s", m_host.c_str());
     
     // Scan the server.
     path.Format("plex://%s/music/", m_host);
@@ -77,6 +77,7 @@ void CPlexSourceScanner::Process()
     {
       CFileItemPtr item = sources->librarySections[i];
       item->SetLabel2(m_hostLabel);
+      CLog::Log(LOGNOTICE, " -> Section '%s' found.", item->GetLabel().c_str());
     }
     
     { // Add the entry to the map.
@@ -92,13 +93,13 @@ void CPlexSourceScanner::Process()
     CGUIMessage msg2(GUI_MSG_UPDATE_MAIN_MENU, WINDOW_HOME, 300);
     m_gWindowManager.SendThreadMessage(msg2);
   
-    CLog::Log(LOGINFO, "Scanning host %s is complete.", m_host.c_str());
+    CLog::Log(LOGNOTICE, "Scanning host %s is complete.", m_host.c_str());
   }
   
   CSingleLock lock(g_lock);
   g_activeScannerCount--;
   
-  CLog::Log(LOGINFO, "Plex Source Scanner finished (%d left)", g_activeScannerCount);
+  CLog::Log(LOGNOTICE, "Plex Source Scanner finished for host %s (%d left)", m_host.c_str(), g_activeScannerCount);
 }
 
 void CPlexSourceScanner::ScanHost(const string& host, const string& hostLabel)
@@ -114,7 +115,7 @@ void CPlexSourceScanner::RemoveHost(const string& host)
   }
   
   // Notify the UI.
-  CLog::Log(LOGINFO, "Notifying remote remove host on %s\n", host.c_str());
+  CLog::Log(LOGNOTICE, "Notifying remote remove host on %s", host.c_str());
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_REMOTE_SOURCES);
   m_gWindowManager.SendThreadMessage(msg);
   

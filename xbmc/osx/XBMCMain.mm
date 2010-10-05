@@ -9,6 +9,8 @@
 
 #import "XBMCMain.h"
 #import "AppleRemote.h"
+typedef char BYTE;
+#include "Log.h"
 #include "CocoaToCppThunk.h"
 
 #define PLEX_SERVICE_PORT 32401
@@ -106,7 +108,7 @@ static XBMCMain *_o_sharedMainInstance = nil;
 /* NSNetServiceBrowser Delegate Overrides */
 -(void)netServiceBrowser:(NSNetServiceBrowser *)aBrowser didFindService:(NSNetService *)service moreComing:(BOOL)more 
 {
-  NSLog(@"Did Find Service: %@", [service name]);
+  CLog::Log(LOGNOTICE, "Bonjour: Did find service - %s", [[service name] UTF8String]);
   [o_plexMediaServers addObject:service];
   service.delegate = self;
   [service resolveWithTimeout:30];
@@ -114,7 +116,7 @@ static XBMCMain *_o_sharedMainInstance = nil;
 
 -(void)netServiceBrowser:(NSNetServiceBrowser *)aBrowser didRemoveService:(NSNetService *)service moreComing:(BOOL)more 
 {
-  NSLog(@"Did Remove Service: %@", [service name]);
+  CLog::Log(LOGNOTICE, "Bonjour: Did remove service - %s", [[service name] UTF8String]);
   [o_plexMediaServers removeObject:service];
   if ([o_plexMediaServerHosts objectForKey:[service name]])
   {
@@ -126,7 +128,7 @@ static XBMCMain *_o_sharedMainInstance = nil;
 /* NSNetService Delegate Overrides */
 -(void)netServiceDidResolveAddress:(NSNetService *)service 
 {
-  NSLog(@"Service Did Resolve: %@", [service name]);
+  CLog::Log(LOGNOTICE, "Bonjour: Did resolve service - %s (type: %s)", [[service name] UTF8String], [[service type] UTF8String]);
   [o_plexMediaServerHosts setObject:[service hostName] forKey:[service name]];
   Cocoa_AutodetectRemotePlexSources([[service hostName] UTF8String], [[service name] UTF8String]);
   [service startMonitoring];
@@ -134,12 +136,12 @@ static XBMCMain *_o_sharedMainInstance = nil;
 
 -(void)netService:(NSNetService *)service didNotResolve:(NSDictionary *)errorDict 
 { 
-  NSLog(@"Service Did Not Resolve: %@ (%@)", [service name], errorDict);
+  CLog::Log(LOGWARNING, "Bonjour: Did NOT resolve service - %s", [[service name] UTF8String]);
 }
 
 - (void)netService:(NSNetService *)service didUpdateTXTRecordData:(NSData *)data
 {
-  NSLog(@"TXT record updated: %@", [service name]);
+  CLog::Log(LOGNOTICE, "Bonjour: Updated TXT record for - %s", [[service name] UTF8String]);
   Cocoa_AutodetectRemotePlexSources([[service hostName] UTF8String], [[service name] UTF8String]);
 }
 
