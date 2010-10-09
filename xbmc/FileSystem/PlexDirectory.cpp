@@ -64,7 +64,7 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   strRoot.Replace(" ", "%20");
 
   // Start the download thread running.
-  CLog::Log(LOGINFO, "PlexDirectory::GetDirectory(%s)", strRoot.c_str());
+  CLog::Log(LOGNOTICE, "PlexDirectory::GetDirectory(%s)", strRoot.c_str());
   m_url = strRoot;
   CThread::Create(false, 0);
 
