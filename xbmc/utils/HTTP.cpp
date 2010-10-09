@@ -862,7 +862,7 @@ bool CHTTP::Recv(int iLen, int theTimeout)
 
     char *buf = &m_RecvBuffer[m_RecvBytes];
 
-    while (!m_cancelled)
+    while (!m_cancelled && m_socket >= 0)
     {
       n = -1;
 
