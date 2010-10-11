@@ -43,6 +43,7 @@
 #include "FileItem.h"
 #include "MediaManager.h"
 #include "utils/AsyncFileCopy.h"
+#include "XMLUtils.h"
 
 #include "HTTP.h"
 #include "PlexDirectory.h"
@@ -295,9 +296,59 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
 void CGUIWindowVideoInfo::SetMovie(const CFileItemPtr& item)
 {
   m_movieItem = item;
+  ClearCastList();
   
   // Set the cast list appropriately.
   m_castList->SetContent(m_movieItem->GetProperty("mediaType"));
+  
+  if (m_castList->GetContent() == "movies")
+  {
+    // Compute the URL for the movie information.
+    CURL url(item->m_strPath);
+    url.SetFileName("library/metadata/" + item->GetProperty("ratingKey"));
+
+    // Download the data.
+    CHTTP set;
+    CStdString strData;
+    set.Open(url.GetURL(), "GET", 0);
+    set.ReadData(strData);
+    set.Close();
+
+    // Parse document.
+    TiXmlDocument xmlDoc;
+    if (!xmlDoc.Parse(strData)) return;
+
+    // The container node.
+    TiXmlElement* root = xmlDoc.RootElement();
+    if (!root) return;
+
+    // The Video node.
+    TiXmlElement* video = root->FirstChildElement();
+    if (!video) return;
+
+    // The child nodes.
+    TiXmlElement* role = video->FirstChildElement("Role");
+    if (!role) return;
+
+    while (role)
+    {
+      const char* strActor = role->Attribute("tag");
+      const char* strRole  = role->Attribute("role");
+
+      CStdString character;
+      if (strRole == 0 || strlen(strRole) == 0)
+        character = strActor;
+      else
+        character.Format("%s %s %s", strActor, g_localizeStrings.Get(20347).c_str(), strRole);
+
+      CFileItemPtr item(new CFileItem(strActor));
+      item->SetIconImage("DefaultActor.png");
+      item->SetLabel(character);
+      m_castList->Add(item);
+
+      role = role->NextSiblingElement();
+    }
+  }
   
 #if 0
   
@@ -522,6 +573,7 @@ bool CGUIWindowVideoInfo::RefreshAll() const
 /// \brief Search the current directory for a string got from the virtual keyboard
 void CGUIWindowVideoInfo::OnSearch(CStdString& strSearch)
 {
+#if 0
   if (m_dlgProgress)
   {
     m_dlgProgress->SetHeading(194);
@@ -568,6 +620,7 @@ void CGUIWindowVideoInfo::OnSearch(CStdString& strSearch)
     if (m_dlgProgress) m_dlgProgress->Close();
     CGUIDialogOK::ShowAndGetInput(194, 284, 0, 0);
   }
+#endif
 }
 
 /// \brief Make the actual search for the OnSearch function.
@@ -575,6 +628,7 @@ void CGUIWindowVideoInfo::OnSearch(CStdString& strSearch)
 /// \param items Items Found
 void CGUIWindowVideoInfo::DoSearch(CStdString& strSearch, CFileItemList& items)
 {
+#if 0
   VECMOVIES movies;
   CVideoDatabase db;
   if (!db.Open())
@@ -625,6 +679,8 @@ void CGUIWindowVideoInfo::DoSearch(CStdString& strSearch, CFileItemList& items)
     items.Add(pItem);
   }
   db.Close();
+  
+#endif
 }
 
 VIDEODB_CONTENT_TYPE CGUIWindowVideoInfo::GetContentType(const CFileItem *pItem) const
