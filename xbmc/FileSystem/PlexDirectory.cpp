@@ -932,6 +932,7 @@ class PlexMediaNodeLibrary : public PlexMediaNode
     }
     
     pItem = mediaItems[0];
+    pItem->m_mediaItems = mediaItems;
   }
   
   virtual void DoBuildFileItem(CFileItemPtr& pItem, const string& parentPath, TiXmlElement& el)

@@ -782,6 +782,39 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem)
   
   CFileItemPtr pItem = m_vecItems->Get(iItem);
   
+  // If there is more than one media item, allow picking which one.
+  if (pItem->m_mediaItems.size() > 1 && g_guiSettings.GetBool("videoplayer.alternatemedia") == true)
+  {
+    CFileItemList fileItems;
+    vector<CStdString> items;
+    CPlexDirectory mediaChoices;
+    
+    for (int i=0; i < pItem->m_mediaItems.size(); i++)
+    {
+      CFileItemPtr item = pItem->m_mediaItems[i];
+      
+      CStdString label = pItem->GetLabel();
+      CStdString videoCodec = item->GetProperty("mediaTag-videoCodec").ToUpper();
+      CStdString videoRes = item->GetProperty("mediaTag-videoResolution").ToUpper();
+      
+      if (isnumber(videoRes[0]))
+        videoRes += "p";
+      
+      label += " (" + videoRes;
+      label += " " + videoCodec + ")";
+      
+      if (item->GetProperty("mediaTag-videoResolution"))
+      
+      items.push_back(label);
+    }
+    
+    int choice = CGUIDialogContextMenu::ShowAndGetChoice(items, GetContextPosition());
+    if (choice > 0)
+      pItem = pItem->m_mediaItems[choice-1];
+    else
+      return false;
+  }
+  
   // party mode
   if (g_partyModeManager.IsEnabled(PARTYMODECONTEXT_VIDEO))
   {

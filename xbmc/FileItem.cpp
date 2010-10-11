@@ -351,6 +351,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   
   m_mapProperties.clear();
   m_mapProperties = item.m_mapProperties;
+  m_mediaItems = item.m_mediaItems;
   
   return *this;
 }

@@ -1008,6 +1008,8 @@
   <string id="13146">Plex, changing this setting might affect your ability</string>
   <string id="13147">to continue controlling it. Do you want to proceed?</string>
 
+	<string id="13148">Allow Picking Alternate Media</string>
+
   <string id="13150">HDD Key:</string>
   <string id="13151">HDD Temp:</string>
   <string id="13152">DVD Model:</string>

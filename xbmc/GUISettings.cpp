@@ -586,6 +586,8 @@ CGUISettings::CGUISettings(void)
   if (isSnowLeopardOrBetter())
     AddBool(14, "videoplayer.hwdecode", 13133, true);
   
+  AddBool(15, "videoplayer.alternatemedia", 13148, true);
+  
   AddInt(0, "videoplayer.dvdplayerregion", 21372, 0, 0, 1, 8, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
   AddBool(0, "videoplayer.dvdautomenu", 21882, true);
   AddBool(0, "videoplayer.editdecision", 22003, false);
