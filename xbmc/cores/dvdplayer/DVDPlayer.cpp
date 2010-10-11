@@ -554,7 +554,9 @@ bool CDVDPlayer::OpenDemuxStream()
   CFileItem file = g_application.CurrentFileItem();
   int bitrate = m_pDemuxer->GetStreamBitrate();
   
-  if (file.m_iBitrate > 0)
+  if (file.IsPlexMediaServerLibrary() && bitrate > file.m_iBitrate)
+    ; // Take computed bitrate.
+  else if (file.m_iBitrate > 0)
     bitrate = file.m_iBitrate * 1000;
   
   // Set the cache size based on the bitrate.
