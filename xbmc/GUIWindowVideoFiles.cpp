@@ -183,7 +183,6 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
           }
           else
           {
-            CLog::Log(LOGWARNING, "  Failed! Destination parameter (%s) does not match a valid source!", strDestination.c_str());
             m_vecItems->m_strPath = strDestination;
             CUtil::RemoveSlashAtEnd(m_vecItems->m_strPath);
           }
