@@ -219,7 +219,7 @@ bool CProgramThumbLoader::LoadItem(CFileItem *pItem)
   {
     pItem->CacheFanart();
     if (CFile::Exists(pItem->GetCachedFanart()))
-      pItem->SetProperty("fanart_image",pItem->GetCachedFanart());
+      pItem->SetProperty("fanart_image", pItem->GetCachedFanart());
   }
   
   return true;
