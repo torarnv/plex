@@ -61,6 +61,8 @@ public:
 
 protected:
   
+  bool GetMediaFromPlexMediaServerCache(const CStdString& strFileName, const CStdString& strThumbFileName);
+  
 private:
 #ifndef HAS_SDL
   struct VERTEX

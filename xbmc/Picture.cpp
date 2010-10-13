@@ -18,6 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+#include <boost/lexical_cast.hpp>
 
 #include "stdafx.h"
 #include "Picture.h"
@@ -25,6 +26,8 @@
 #include "Settings.h"
 #include "FileItem.h"
 #include "FileSystem/File.h"
+#include "Util.h"
+#include "sha.h"
 
 using namespace XFILE;
 
@@ -104,6 +107,65 @@ SDL_Surface* CPicture::Load(const CStdString& strFileName, int iMaxWidth, int iM
   m_dll.ReleaseImage(&m_info);
   return pTexture;
 }
+  
+bool CPicture::GetMediaFromPlexMediaServerCache(const CStdString& strFileName, const CStdString& strThumbFileName)
+{
+  CFileItem fileItem(strFileName, false);
+  if (fileItem.IsPlexMediaServer() && strFileName.Find("/photo/:/transcode") != string::npos)
+  {
+    CLog::Log(LOGDEBUG, "Asked to check media from PMS: %s", strFileName.c_str());
+
+    // First optimize by checking for the actual cached file; size requested is always 720p.
+    int start = fileItem.m_strPath.Find("url=") + 4;
+    CStdString url = fileItem.m_strPath.substr(start);
+    CUtil::UrlDecode(url);
+    
+    if (url.Find("127.0.0.1") != string::npos)
+    {
+      // Bogus, needs to match PlexDirectory.
+      CStdString size = "1280-720";
+      if (url.Find("/poster") != string::npos || url.Find("/thumb") != string::npos)
+        size = boost::lexical_cast<string>(g_advancedSettings.m_thumbSize) + "-" + boost::lexical_cast<string>(g_advancedSettings.m_thumbSize);
+      else if (url.Find("/banner") != string::npos)
+        size = "800-200";
+      
+      string cacheToken = url + "-" + size;
+      
+      // Compute SHA.
+      SHA_CTX m_ctx;
+      SHA1_Init(&m_ctx);
+      SHA1_Update(&m_ctx, (const u_int8_t* )cacheToken.c_str(), cacheToken.size());
+      char sha[SHA1_DIGEST_STRING_LENGTH];
+      SHA1_End(&m_ctx, sha);
+      string hash = sha;
+      
+      // Compute cache file.
+      CStdString cacheFile = getenv("HOME");
+      cacheFile += "/Library/Caches/PlexMediaServer/PhotoTranscoder/";
+      cacheFile += hash.substr(0, 2) + "/";
+      cacheFile += hash + ".jpg";
+      
+      if (CFile::Exists(cacheFile))
+      {
+        // Copy it over.
+        CopyFile(cacheFile, strThumbFileName, FALSE);
+        return true;
+      }
+      
+      // Otherwise, let's take exactly what we get from the Plex Media Server.
+      CLog::Log(LOGINFO, "Cache file didn't exist for %s (%s)", url.c_str(), cacheFile.c_str());
+    }
+  }
+  
+  CFile::Cache(strFileName, strThumbFileName, 0);
+  if (CFile::Size(strThumbFileName) == 0)
+  {
+    CFile::Delete(strThumbFileName);
+    return false;
+  }
+
+  return true;
+}
 
 bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString& strThumbFileName, bool checkExistence /*= false*/)
 {
@@ -114,53 +176,52 @@ bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString
   CLog::Log(LOGINFO, "Creating thumb from: %s as: %s", strFileName.c_str(),strThumbFileName.c_str());
 
   CFileItem fileItem(strFileName, false);
+  CStdString tmpFile = strThumbFileName + ".tmp";
   
-#if 0
-  if (fileItem.IsPlexMediaServer())
-  {
-    // Trust what we get from the media server as long as it's not 0 bytes or too big.
-    XFILE::CFile::Cache(strFileName, strThumbFileName, 0);
-    
-    XFILE::CFile file;
-    file.Open(strThumbFileName);
-    if (file.GetLength() == 0)
-    {
-      XFILE::CFile::Delete(strThumbFileName);
-      return false;
-    }
-  }
-  else
-#endif
+  if (GetMediaFromPlexMediaServerCache(strFileName, tmpFile) == false)
   {
     // load our dll
     if (!m_dll.Load()) return false;
   
     memset(&m_info, 0, sizeof(ImageInfo));
-    if (!m_dll.CreateThumbnail(strFileName.c_str(), strThumbFileName.c_str(), g_advancedSettings.m_thumbSize, g_advancedSettings.m_thumbSize, g_guiSettings.GetBool("pictures.useexifrotation")))
+    if (!m_dll.CreateThumbnail(strFileName.c_str(), tmpFile.c_str(), g_advancedSettings.m_thumbSize, g_advancedSettings.m_thumbSize, g_guiSettings.GetBool("pictures.useexifrotation")))
     {
       CLog::Log(LOGERROR, "PICTURE::DoCreateThumbnail: Unable to create thumbfile %s from image %s", strThumbFileName.c_str(), strFileName.c_str());
+      CFile::Delete(tmpFile);
       return false;
     }
   }
+
+  // Atomically rename.
+  CFile::Rename(tmpFile, strThumbFileName);
   
   return true;
 }
 
 bool CPicture::CacheImage(const CStdString& sourceFileName, const CStdString& destFileName)
 {
+  bool ret = true;
   CLog::Log(LOGINFO, "Caching image from: %s to %s", sourceFileName.c_str(), destFileName.c_str());
-
-#ifdef RESAMPLE_CACHED_IMAGES
-  if (!m_dll.Load()) return false;
-  if (!m_dll.CreateThumbnail(sourceFileName.c_str(), destFileName.c_str(), 1280, 720, g_guiSettings.GetBool("pictures.useexifrotation")))
+  
+  CStdString tmpFile = destFileName + ".tmp";
+  if (GetMediaFromPlexMediaServerCache(sourceFileName, tmpFile) == false)
   {
-    CLog::Log(LOGERROR, "%s Unable to create new image %s from image %s", __FUNCTION__, destFileName.c_str(), sourceFileName.c_str());
-    return false;
-  }
-  return true;
+#ifdef RESAMPLE_CACHED_IMAGES
+    if (!m_dll.Load()) return false;
+    if (!m_dll.CreateThumbnail(sourceFileName.c_str(), tmpFile.c_str(), 1280, 720, g_guiSettings.GetBool("pictures.useexifrotation")))
+    {
+      CLog::Log(LOGERROR, "%s Unable to create new image %s from image %s", __FUNCTION__, destFileName.c_str(), sourceFileName.c_str());
+      ret = false;
+    }
 #else
-  return CFile::Cache(sourceFileName, destFileName);
+    ret = CFile::Cache(sourceFileName, tmpFile);
 #endif
+  }
+  
+  // Atomically rename.
+  CFile::Rename(tmpFile, destFileName);
+  
+  return ret;
 }
 
 bool CPicture::CreateThumbnailFromMemory(const BYTE* pBuffer, int nBufSize, const CStdString& strExtension, const CStdString& strThumbFileName)
