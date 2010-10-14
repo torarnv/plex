@@ -746,6 +746,8 @@ void CGUIWindowVideoInfo::OnGetThumb()
   }
 }
 
+extern bool Cocoa_IsHostLocal(const string& host);
+
 string CGUIWindowVideoInfo::OnGetMedia(const string& mediaType, const string& currentCachedMedia, int label)
 {
   CFileItemList items;
@@ -805,7 +807,8 @@ string CGUIWindowVideoInfo::OnGetMedia(const string& mediaType, const string& cu
   finalURL.SetFileName(strData.substr(1));
   finalURL.SetOptions("");
 
-  return finalURL.GetURL();
+  bool local = Cocoa_IsHostLocal(finalURL.GetHostName());
+  return CPlexDirectory::BuildImageURL(url, finalURL.GetURL(), local);
 }
 
 // Allow user to select a Banner
