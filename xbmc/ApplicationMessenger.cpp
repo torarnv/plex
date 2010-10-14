@@ -175,7 +175,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
           exit(0);
         }
 #else
-        exit(0);
+        _exit(0);
 #endif
 #endif
       }
