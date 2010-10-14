@@ -33,6 +33,8 @@ class CPlexDirectory : public IDirectory,
   
   string GetData() { return m_data; } 
   
+  static string BuildImageURL(const string& parentURL, const string& imageURL, bool local);
+  
  protected:
   
   virtual void Process();

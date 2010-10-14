@@ -352,6 +352,44 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   return true;
 }
 
+string CPlexDirectory::BuildImageURL(const string& parentURL, const string& imageURL, bool local)
+{
+  // This is a poster, fanart, or banner. Let's send it through the transcoder
+  // so that the media server downloads the original. The cache for these don't
+  // expire because if they change, the URL will change.
+  //
+  CStdString encodedUrl = imageURL;
+  CURL mediaUrl(encodedUrl);
+  
+  // If it's local, don't use the Bonjour host.
+  if (local)
+    mediaUrl.SetHostName("127.0.0.1");
+  
+  encodedUrl = mediaUrl.GetURL();
+  CUtil::URLEncode(encodedUrl);
+  
+  // Pick the sizes.
+  CStdString width = "1280";
+  CStdString height = "720";
+  
+  if (strstr(imageURL.c_str(), "poster") || strstr(imageURL.c_str(), "thumb"))
+  {
+    width = boost::lexical_cast<string>(g_advancedSettings.m_thumbSize);
+    height = width;
+  }
+  else if (strstr(imageURL.c_str(), "banner"))
+  {
+    width = "800";
+    height = "200";
+  }
+  
+  CURL url(parentURL);
+  url.SetProtocol("http");
+  url.SetPort(32400);
+  url.SetFileName("photo/:/transcode?width=" + width + "&height=" + height + "&url=" + encodedUrl);
+  return url.GetURL();
+}
+
 class PlexMediaNode
 {
  public:
@@ -562,41 +600,8 @@ class PlexMediaNode
       
        if (strstr(media, "/library/metadata/"))
        {
-         // This is a poster, fanart, or banner. Let's send it through the transcoder
-         // so that the media server downloads the original. The cache for these don't
-         // expire because if they change, the URL will change.
-         //
-         CURL url(parentPath);
-         
-         CStdString encodedUrl = strMedia;
-         CURL mediaUrl(encodedUrl);
-         
-         // If it's local, don't use the Bonjour host.
-         if (local)
-           mediaUrl.SetHostName("127.0.0.1");
-
-         encodedUrl = mediaUrl.GetURL();
-         CUtil::URLEncode(encodedUrl);
-         
-         // Pick the sizes.
-         CStdString width = "1280";
-         CStdString height = "720";
-         
-         if (strstr(media, "poster") || strstr(media, "thumb"))
-         {
-           width = boost::lexical_cast<string>(g_advancedSettings.m_thumbSize);
-           height = width;
-         }
-         else if (strstr(media, "banner"))
-         {
-           width = "800";
-           height = "200";
-         }
-         
-         url.SetProtocol("http");
-         url.SetPort(32400);
-         url.SetFileName("photo/:/transcode?width=" + width + "&height=" + height + "&url=" + encodedUrl);
-         strMedia = url.GetURL();
+         // Build a special URL to get the media from the media server.
+         strMedia = CPlexDirectory::BuildImageURL(parentPath, strMedia, local);
        }
        else
        {
