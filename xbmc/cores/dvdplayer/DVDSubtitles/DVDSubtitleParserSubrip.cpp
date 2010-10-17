@@ -119,7 +119,7 @@ int CDVDSubtitleParserSubrip::ParseFile()
           strUTF8.assign(line, strlen(line));
           
           // add a new text element to our container
-          pOverlay->AddElement(new CDVDOverlayText::CElementText(strUTF8.c_str()));
+          pOverlay->AddElement(new CDVDOverlayText::CElementText(strUTF8.c_str(), strUTF8.size()));
         }
 
         m_collection.Add(pOverlay);
