@@ -274,8 +274,9 @@ void PlexHelperApp::Install()
       WriteFile(m_launchAgentInstallFile.c_str(), plistData);
 
       // Load it.
-      string cmd = "/bin/launchctl load ";
+      string cmd = "/bin/launchctl load \"";
       cmd += m_launchAgentInstallFile;
+      cmd += "\"";
       system(cmd.c_str());
     }
     else
@@ -300,8 +301,9 @@ void PlexHelperApp::Uninstall()
     CLog::Log(LOGNOTICE, "Uninstalling %s from %s.", GetHelperBinaryName().c_str(), m_launchAgentInstallFile.c_str());
 
     // Call the unloader.
-    string cmd = "/bin/launchctl unload ";
+    string cmd = "/bin/launchctl unload \"";
     cmd += m_launchAgentInstallFile;
+    cmd += "\"";
     system(cmd.c_str());
 
     // Remove the plist file.
