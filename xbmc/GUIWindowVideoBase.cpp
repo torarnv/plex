@@ -793,17 +793,22 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem)
     {
       CFileItemPtr item = pItem->m_mediaItems[i];
       
-      CStdString label = pItem->GetLabel();
+      CStdString label;
       CStdString videoCodec = item->GetProperty("mediaTag-videoCodec").ToUpper();
       CStdString videoRes = item->GetProperty("mediaTag-videoResolution").ToUpper();
       
-      if (isnumber(videoRes[0]))
-        videoRes += "p";
+      if (videoCodec.size() == 0 && videoRes.size() == 0)
+      {
+        label = "Unknown";
+      }
+      else
+      {
+        if (isnumber(videoRes[0]))
+          videoRes += "p";
       
-      label += " (" + videoRes;
-      label += " " + videoCodec + ")";
-      
-      if (item->GetProperty("mediaTag-videoResolution"))
+        label += videoRes;
+        label += " " + videoCodec;
+      }
       
       items.push_back(label);
     }
