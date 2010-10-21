@@ -385,9 +385,9 @@ void CDVDVideoCodecFFmpeg::GetVideoAspect(AVCodecContext* pCodecContext, unsigne
   /* XXX: we suppose the screen has a 1.0 pixel ratio */ // CDVDVideo will compensate it.
   iHeight = pCodecContext->height;
   iWidth = ((int)RINT(pCodecContext->height * aspect_ratio)) & -3;
-  if (iWidth > (unsigned int)pCodecContext->width)
-  {
-    iWidth = pCodecContext->width;
-    iHeight = ((int)RINT(pCodecContext->width / aspect_ratio)) & -3;
-  }
+  //if (iWidth > (unsigned int)pCodecContext->width)
+  //{
+   // iWidth = pCodecContext->width;
+  //  iHeight = ((int)RINT(pCodecContext->width / aspect_ratio)) & -3;
+ // }
 }

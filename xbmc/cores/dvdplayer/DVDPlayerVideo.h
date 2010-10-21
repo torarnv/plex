@@ -146,8 +146,6 @@ protected:
   bool m_bAllowFullscreen;
   bool m_bRenderSubs;
   
-  float m_fForcedAspectRatio;
-  
   int m_iNrOfPicturesNotToSkip;
   int m_speed;
 
