@@ -136,6 +136,10 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
     CLog::Log(LOGERROR, "Unsupported video codec");
     return false;
   }
+	
+  // use aspect in stream if available
+  m_fForcedAspectRatio = hint.aspect;
+
 
   m_stalled = false;
   m_started = false;

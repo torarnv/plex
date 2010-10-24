@@ -151,7 +151,12 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
 
     
 	
-  if( (pCodec = OpenCodec(new CDVDVideoCodecFFmpeg(), hint, dvdOptions)) ) return pCodec;
+  if( (pCodec = OpenCodec(new CDVDVideoCodecFFmpeg(), hint, dvdOptions)) ) 
+  {
+	  hint.aspect = 0.0; // disable wacky aspect
+	  return pCodec;
+  }
+	  
 
   return NULL;
 }
