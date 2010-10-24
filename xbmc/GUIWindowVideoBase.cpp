@@ -815,9 +815,22 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem)
     
     int choice = CGUIDialogContextMenu::ShowAndGetChoice(items, GetContextPosition());
     if (choice > 0)
+    {
+      // Steal the resume offset and mode.
+      long offset = pItem->m_lStartOffset;
+      CStdString resumeTime = pItem->GetProperty("viewOffset");
+      
+      // Copy over the selected item.
       pItem = pItem->m_mediaItems[choice-1];
+      
+      // Store what we need to resume.
+      pItem->m_lStartOffset = offset;
+      pItem->SetProperty("viewOffset", resumeTime);
+    }
     else
+    {
       return false;
+    }
   }
   
   // party mode
