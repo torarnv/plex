@@ -776,7 +776,10 @@ class PlexMediaNodeLibrary : public PlexMediaNode
       {
         string url = CPlexDirectory::ProcessUrl(parentPath, part->Attribute("key"), false);
         urls.push_back(url);
-        localPaths.push_back(part->Attribute("file"));
+        
+        CStdString path = part->Attribute("file");
+        CUtil::UrlDecode(path);
+        localPaths.push_back(path);
       }
     }
     
