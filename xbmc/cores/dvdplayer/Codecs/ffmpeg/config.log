@@ -1,4 +1,4 @@
-# ./configure --extra-cflags='-arch i386 -D_XBOX -I/opt/local/include' --extra-ldflags='-arch i386 -L/opt/local/lib' --enable-postproc --enable-gpl --enable-static --enable-swscale --enable-protocol=http --enable-memalign-hack --disable-altivec --enable-pthreads --disable-debug --disable-shared --disable-decoder=mpeg_xvmc --disable-ffplay --disable-ffserver --disable-ffprobe --disable-muxers --disable-encoders --arch=i386
+# ./configure --extra-cflags='-arch i386 -D_XBOX -I/opt/local/include' --extra-ldflags='-arch i386 -L/opt/local/lib' --enable-postproc --enable-gpl --enable-static --enable-swscale --enable-protocol=http --enable-memalign-hack --disable-altivec --enable-pthreads --disable-debug --disable-shared --disable-decoder=mpeg_xvmc --enable-libfaad --disable-ffplay --disable-ffserver --disable-ffprobe --disable-muxers --disable-encoders --disable-decoder=aac --arch=i386
 ACODEC_TESTS='ac3_test
 adpcm_ima_qt_test
 adpcm_ima_wav_test
@@ -55,8 +55,8 @@ ARCH_LIST='
 '
 Apple_PubSub_Socket_Render=/tmp/launch-YvvG4F/Render
 BASH=/bin/sh
-BASH_ARGC=([0]="19")
-BASH_ARGV=([0]="--arch=i386" [1]="--disable-encoders" [2]="--disable-muxers" [3]="--disable-ffprobe" [4]="--disable-ffserver" [5]="--disable-ffplay" [6]="--disable-decoder=mpeg_xvmc" [7]="--disable-shared" [8]="--disable-debug" [9]="--enable-pthreads" [10]="--disable-altivec" [11]="--enable-memalign-hack" [12]="--enable-protocol=http" [13]="--enable-swscale" [14]="--enable-static" [15]="--enable-gpl" [16]="--enable-postproc" [17]="--extra-ldflags=-arch i386 -L/opt/local/lib" [18]="--extra-cflags=-arch i386 -D_XBOX -I/opt/local/include")
+BASH_ARGC=([0]="21")
+BASH_ARGV=([0]="--arch=i386" [1]="--disable-decoder=aac" [2]="--disable-encoders" [3]="--disable-muxers" [4]="--disable-ffprobe" [5]="--disable-ffserver" [6]="--disable-ffplay" [7]="--enable-libfaad" [8]="--disable-decoder=mpeg_xvmc" [9]="--disable-shared" [10]="--disable-debug" [11]="--enable-pthreads" [12]="--disable-altivec" [13]="--enable-memalign-hack" [14]="--enable-protocol=http" [15]="--enable-swscale" [16]="--enable-static" [17]="--enable-gpl" [18]="--enable-postproc" [19]="--extra-ldflags=-arch i386 -L/opt/local/lib" [20]="--extra-cflags=-arch i386 -D_XBOX -I/opt/local/include")
 BASH_LINENO=([0]="0")
 BASH_SOURCE=([0]="./configure")
 BASH_VERSINFO=([0]="3" [1]="2" [2]="48" [3]="1" [4]="release" [5]="x86_64-apple-darwin10.0")
@@ -847,7 +847,7 @@ libvpx_encoder
 libx264_encoder
 libxvid_encoder'
 EUID=503
-FFMPEG_CONFIGURATION='--extra-cflags='\''-arch i386 -D_XBOX -I/opt/local/include'\'' --extra-ldflags='\''-arch i386 -L/opt/local/lib'\'' --enable-postproc --enable-gpl --enable-static --enable-swscale --enable-protocol=http --enable-memalign-hack --disable-altivec --enable-pthreads --disable-debug --disable-shared --disable-decoder=mpeg_xvmc --disable-ffplay --disable-ffserver --disable-ffprobe --disable-muxers --disable-encoders --arch=i386'
+FFMPEG_CONFIGURATION='--extra-cflags='\''-arch i386 -D_XBOX -I/opt/local/include'\'' --extra-ldflags='\''-arch i386 -L/opt/local/lib'\'' --enable-postproc --enable-gpl --enable-static --enable-swscale --enable-protocol=http --enable-memalign-hack --disable-altivec --enable-pthreads --disable-debug --disable-shared --disable-decoder=mpeg_xvmc --enable-libfaad --disable-ffplay --disable-ffserver --disable-ffprobe --disable-muxers --disable-encoders --disable-decoder=aac --arch=i386'
 FFSERVERLDFLAGS=-Wl,-E
 FILTER_LIST='aspect_filter
 crop_filter
@@ -1196,7 +1196,7 @@ PKG_CONFIG_PATH=/Library/Frameworks/Mono.framework/Versions/nightly/lib/pkgconfi
 PLEX_DEV=/Users/elan/Code/Python/PlexDev
 PLEX_HOME=/Users/elan/Code/C++/Eclipse/Plex.app/Contents/Resources/Plex
 POSIXLY_CORRECT=y
-PPID=16185
+PPID=86055
 PROTOCOL_LIST='file_protocol
 gopher_protocol
 http_protocol
@@ -1216,7 +1216,7 @@ PWD=/Users/elan/Code/C++/Eclipse/Plex/xbmc/cores/dvdplayer/Codecs/ffmpeg
 SHELL=/bin/bash
 SHELLOPTS=braceexpand:hashall:interactive-comments:posix
 SHFLAGS='-shared -Wl,-soname,$$(@F)'
-SHLVL=2
+SHLVL=3
 SLIBNAME='$(SLIBPREF)$(FULLNAME)$(SLIBSUF)'
 SLIBNAME_WITH_MAJOR='$(SLIBNAME).$(LIBMAJOR)'
 SLIBNAME_WITH_VERSION='$(SLIBNAME).$(LIBVERSION)'
@@ -1270,10 +1270,10 @@ snowll_test
 svq1_test
 wmv1_test
 wmv2_test'
-_='# ./configure --extra-cflags='\''-arch i386 -D_XBOX -I/opt/local/include'\'' --extra-ldflags='\''-arch i386 -L/opt/local/lib'\'' --enable-postproc --enable-gpl --enable-static --enable-swscale --enable-protocol=http --enable-memalign-hack --disable-altivec --enable-pthreads --disable-debug --disable-shared --disable-decoder=mpeg_xvmc --disable-ffplay --disable-ffserver --disable-ffprobe --disable-muxers --disable-encoders --arch=i386'
+_='# ./configure --extra-cflags='\''-arch i386 -D_XBOX -I/opt/local/include'\'' --extra-ldflags='\''-arch i386 -L/opt/local/lib'\'' --enable-postproc --enable-gpl --enable-static --enable-swscale --enable-protocol=http --enable-memalign-hack --disable-altivec --enable-pthreads --disable-debug --disable-shared --disable-decoder=mpeg_xvmc --enable-libfaad --disable-ffplay --disable-ffserver --disable-ffprobe --disable-muxers --disable-encoders --disable-decoder=aac --arch=i386'
 __CF_USER_TEXT_ENCODING=0x1F7:0:0
 aac_adtstoasc_bsf=yes
-aac_decoder=yes
+aac_decoder=no
 aac_decoder_select='mdct rdft'
 aac_demuxer=yes
 aac_encoder_select=mdct
@@ -1286,7 +1286,7 @@ ac3_demuxer_deps=ac3_parser
 ac3_parser=yes
 ac3_test=yes
 ac3_test_deps='ac3_encoder ac3_decoder'
-action=unset
+action=disable
 adpcm_4xm_decoder=yes
 adpcm_adx_decoder=yes
 adpcm_ct_decoder=yes
@@ -2221,6 +2221,7 @@ libdirac_decoder=yes
 libdirac_decoder_deps='libdirac !libschroedinger'
 libdirac_encoder_deps=libdirac
 libfaac_encoder_deps=libfaac
+libfaad=yes
 libfaad_decoder=yes
 libfaad_decoder_deps=libfaad
 libfaad_latm_decoder=yes
@@ -2778,7 +2779,7 @@ mxf_demuxer=yes
 mxf_test=yes
 mxf_test_deps='mxf_muxer mxf_demuxer'
 n=protocols
-name=mpeg_xvmc_decoder
+name=aac_decoder
 nc_demuxer=yes
 need_memalign='altivec neon sse'
 nellymoser_decoder=yes
@@ -3255,94 +3256,110 @@ type mktemp
 mktemp is /usr/bin/mktemp
 check_ld
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	int main(void){ return 0; }
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -arch i386 -D_XBOX -I/opt/local/include -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -arch i386 -L/opt/local/lib -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.yqeA5MyR /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -arch i386 -D_XBOX -I/opt/local/include -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -arch i386 -L/opt/local/lib -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.HcLjrNzM /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o
 check_cflags -std=c99
 check_cc -std=c99
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	int x;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -arch i386 -D_XBOX -I/opt/local/include -std=c99 -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -arch i386 -D_XBOX -I/opt/local/include -std=c99 -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 check_cc -D_FILE_OFFSET_BITS=64
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	#include <stdlib.h>
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -arch i386 -D_XBOX -I/opt/local/include -std=c99 -D_FILE_OFFSET_BITS=64 -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -arch i386 -D_XBOX -I/opt/local/include -std=c99 -D_FILE_OFFSET_BITS=64 -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 check_cc -D_LARGEFILE_SOURCE
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	#include <stdlib.h>
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -arch i386 -D_XBOX -I/opt/local/include -std=c99 -D_LARGEFILE_SOURCE -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -arch i386 -D_XBOX -I/opt/local/include -std=c99 -D_LARGEFILE_SOURCE -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 check_host_cflags -std=c99
 check_host_cc -std=c99
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	int x;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -O3 -g -Wall -std=c99 -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -O3 -g -Wall -std=c99 -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	        int test[(int)sizeof(char*) - 7];
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:1: error: size of array 'test' is negative
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:1: error: size of array 'test' is negative
 check_cflags -mdynamic-no-pic
 check_cc -mdynamic-no-pic
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	int x;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 check_cpp_condition stdlib.h defined(__PIC__) || defined(__pic__) || defined(PIC)
 check_cpp
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	#include <stdlib.h>
     2	#if !(defined(__PIC__) || defined(__pic__) || defined(PIC))
     3	#error "unsatisfied condition: defined(__PIC__) || defined(__pic__) || defined(PIC)"
     4	#endif
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:3:2: error: #error "unsatisfied condition: defined(__PIC__) || defined(__pic__) || defined(PIC)"
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:3:2: error: #error "unsatisfied condition: defined(__PIC__) || defined(__pic__) || defined(PIC)"
+check_header faad.h
+check_cpp
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+    1	#include <faad.h>
+    2	int x;
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+check_cc
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+    1	#include <faad.h>
+    2	#ifndef FAAD2_VERSION
+    3	ok faad1
+    4	#endif
+    5	int main(void) { return 0; }
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 check_cflags -fomit-frame-pointer
 check_cc -fomit-frame-pointer
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	int x;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	int ff_extern;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	void foo(void) { __asm__ volatile ("" ::); }
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	void foo(char * restrict p);
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	struct { int x; } __attribute__((packed)) x;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	union { int x; } __attribute__((may_alias)) x;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	unsigned int endian = 'B' << 24 | 'I' << 16 | 'G' << 8 | 'E';
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 check_ld
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	#include <signal.h>
     2	static void sighandler(int sig){
     3	    raise(SIGTERM);
@@ -3360,23 +3377,23 @@ BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
    15	    ::: "%ebp");
    16	    return i; }
    17	}
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.yqeA5MyR /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.HcLjrNzM /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o
 check_asm ebx_available ""::"b"(0)
 check_as
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	void foo(void){ __asm__ volatile(""::"b"(0)); }
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -mdynamic-no-pic -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -mdynamic-no-pic -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 check_asm ebx_available "":::"%ebx"
 check_as
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	void foo(void){ __asm__ volatile("":::"%ebx"); }
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -mdynamic-no-pic -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -mdynamic-no-pic -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	int main(void) {
     2	    int x=0;
     3	    __asm__ volatile(
@@ -3385,218 +3402,218 @@ BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
     6	    );
     7	    return 0;
     8	}
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 check_asm ssse3 "pabsw %xmm0, %xmm0"
 check_as
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	void foo(void){ __asm__ volatile("pabsw %xmm0, %xmm0"); }
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -mdynamic-no-pic -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -mdynamic-no-pic -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 check_asm mmx2 "pmaxub %mm0, %mm1"
 check_as
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	void foo(void){ __asm__ volatile("pmaxub %mm0, %mm1"); }
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -mdynamic-no-pic -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -mdynamic-no-pic -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 check_asm bswap "bswap %%eax" ::: "%eax"
 check_as
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	void foo(void){ __asm__ volatile("bswap %%eax" ::: "%eax"); }
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -mdynamic-no-pic -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -mdynamic-no-pic -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 check_yasm pabsw xmm0, xmm0
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.EdDD993Y.S
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.ydBy3sT2.S
     1	pabsw xmm0, xmm0
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.EdDD993Y.S
-yasm -f macho -DARCH_X86_32 -DPREFIX -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.EdDD993Y.S
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.ydBy3sT2.S
+yasm -f macho -DARCH_X86_32 -DPREFIX -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.ydBy3sT2.S
 check_asm gnu_as ".macro m n
 \n:.int 0
 .endm
 m x"
 check_as
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	void foo(void){ __asm__ volatile(".macro m n\n\\n:.int 0\n.endm\nm x"); }
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gas-preprocessor.pl gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -mdynamic-no-pic -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gas-preprocessor.pl gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -mdynamic-no-pic -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 ./configure: line 558: gas-preprocessor.pl: command not found
 check_func dlopen
 check_ld
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	extern int dlopen();
     2	int main(void){ dlopen(); }
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.yqeA5MyR /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.HcLjrNzM /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o
 check_func nanosleep
 check_ld
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	extern int nanosleep();
     2	int main(void){ nanosleep(); }
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.yqeA5MyR /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.HcLjrNzM /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o
 check_func fcntl
 check_ld
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	extern int fcntl();
     2	int main(void){ fcntl(); }
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.yqeA5MyR /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.HcLjrNzM /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o
 check_func fork
 check_ld
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	extern int fork();
     2	int main(void){ fork(); }
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.yqeA5MyR /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.HcLjrNzM /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o
 check_func getaddrinfo
 check_ld
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	extern int getaddrinfo();
     2	int main(void){ getaddrinfo(); }
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.yqeA5MyR /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.HcLjrNzM /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o
 check_func gethrtime
 check_ld
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	extern int gethrtime();
     2	int main(void){ gethrtime(); }
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.yqeA5MyR /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.HcLjrNzM /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o
 Undefined symbols:
   "_gethrtime", referenced from:
-      _main in ffconf.MwAC7R1g.o
+      _main in ffconf.8nF9kPBU.o
 ld: symbol(s) not found
 collect2: ld returned 1 exit status
 check_func getrusage
 check_ld
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	extern int getrusage();
     2	int main(void){ getrusage(); }
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.yqeA5MyR /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.HcLjrNzM /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o
 check_type sys/time.h sys/resource.h struct rusage ru_maxrss
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	
     2	#include <sys/time.h>
     3	#include <sys/resource.h>
     4	const void *p = &((struct rusage *)0)->ru_maxrss;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:4: error: 'struct rusage' has no member named 'ru_maxrss'
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:4: error: 'struct rusage' has no member named 'ru_maxrss'
 check_func inet_aton
 check_ld
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	extern int inet_aton();
     2	int main(void){ inet_aton(); }
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.yqeA5MyR /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.HcLjrNzM /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o
 check_func isatty
 check_ld
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	extern int isatty();
     2	int main(void){ isatty(); }
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.yqeA5MyR /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.HcLjrNzM /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o
 check_func memalign
 check_ld
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	extern int memalign();
     2	int main(void){ memalign(); }
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.yqeA5MyR /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.HcLjrNzM /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o
 Undefined symbols:
   "_memalign", referenced from:
-      _main in ffconf.MwAC7R1g.o
+      _main in ffconf.8nF9kPBU.o
 ld: symbol(s) not found
 collect2: ld returned 1 exit status
 check_func mkstemp
 check_ld
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	extern int mkstemp();
     2	int main(void){ mkstemp(); }
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.yqeA5MyR /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.HcLjrNzM /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o
 check_func posix_memalign
 check_ld
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	extern int posix_memalign();
     2	int main(void){ posix_memalign(); }
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.yqeA5MyR /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.HcLjrNzM /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o
 check_func setrlimit
 check_ld
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	extern int setrlimit();
     2	int main(void){ setrlimit(); }
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.yqeA5MyR /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.HcLjrNzM /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o
 check_func strerror_r
 check_ld
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	extern int strerror_r();
     2	int main(void){ strerror_r(); }
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.yqeA5MyR /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.HcLjrNzM /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o
 check_func_headers io.h setmode
 check_ld
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	
     2	#include <io.h>
     3	int main(int argc, char **argv){
     4	    return (long) setmode;
     5	}
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:2:16: error: io.h: No such file or directory
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c: In function 'main':
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:4: error: 'setmode' undeclared (first use in this function)
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:4: error: (Each undeclared identifier is reported only once
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:4: error: for each function it appears in.)
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:2:16: error: io.h: No such file or directory
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c: In function 'main':
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:4: error: 'setmode' undeclared (first use in this function)
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:4: error: (Each undeclared identifier is reported only once
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:4: error: for each function it appears in.)
 check_func_headers lzo/lzo1x.h lzo1x_999_compress
 check_ld
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	
     2	#include <lzo/lzo1x.h>
     3	int main(int argc, char **argv){
     4	    return (long) lzo1x_999_compress;
     5	}
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.yqeA5MyR /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.HcLjrNzM /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o
 Undefined symbols:
   "_lzo1x_999_compress", referenced from:
-      _lzo1x_999_compress$non_lazy_ptr in ffconf.MwAC7R1g.o
+      _lzo1x_999_compress$non_lazy_ptr in ffconf.8nF9kPBU.o
      (maybe you meant: _lzo1x_999_compress$non_lazy_ptr)
 ld: symbol(s) not found
 collect2: ld returned 1 exit status
@@ -3604,678 +3621,691 @@ check_lib2 windows.h psapi.h GetProcessMemoryInfo -lpsapi
 check_func_headers windows.h psapi.h GetProcessMemoryInfo -lpsapi
 check_ld -lpsapi
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	
     2	#include <windows.h>
     3	#include <psapi.h>
     4	int main(int argc, char **argv){
     5	    return (long) GetProcessMemoryInfo;
     6	}
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:2:21: error: windows.h: No such file or directory
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:3:19: error: psapi.h: No such file or directory
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c: In function 'main':
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:5: error: 'GetProcessMemoryInfo' undeclared (first use in this function)
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:5: error: (Each undeclared identifier is reported only once
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:5: error: for each function it appears in.)
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:2:21: error: windows.h: No such file or directory
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:3:19: error: psapi.h: No such file or directory
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c: In function 'main':
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:5: error: 'GetProcessMemoryInfo' undeclared (first use in this function)
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:5: error: (Each undeclared identifier is reported only once
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:5: error: for each function it appears in.)
 check_func_headers windows.h GetProcessTimes
 check_ld
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	
     2	#include <windows.h>
     3	int main(int argc, char **argv){
     4	    return (long) GetProcessTimes;
     5	}
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:2:21: error: windows.h: No such file or directory
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c: In function 'main':
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:4: error: 'GetProcessTimes' undeclared (first use in this function)
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:4: error: (Each undeclared identifier is reported only once
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:4: error: for each function it appears in.)
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:2:21: error: windows.h: No such file or directory
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c: In function 'main':
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:4: error: 'GetProcessTimes' undeclared (first use in this function)
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:4: error: (Each undeclared identifier is reported only once
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:4: error: for each function it appears in.)
 check_func_headers windows.h VirtualAlloc
 check_ld
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	
     2	#include <windows.h>
     3	int main(int argc, char **argv){
     4	    return (long) VirtualAlloc;
     5	}
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:2:21: error: windows.h: No such file or directory
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c: In function 'main':
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:4: error: 'VirtualAlloc' undeclared (first use in this function)
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:4: error: (Each undeclared identifier is reported only once
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:4: error: for each function it appears in.)
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:2:21: error: windows.h: No such file or directory
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c: In function 'main':
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:4: error: 'VirtualAlloc' undeclared (first use in this function)
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:4: error: (Each undeclared identifier is reported only once
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:4: error: for each function it appears in.)
 check_header conio.h
 check_cpp
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	#include <conio.h>
     2	int x;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:1:19: error: conio.h: No such file or directory
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:1:19: error: conio.h: No such file or directory
 check_header dlfcn.h
 check_cpp
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	#include <dlfcn.h>
     2	int x;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 check_header dxva2api.h
 check_cpp
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	#include <dxva2api.h>
     2	int x;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:1:22: error: dxva2api.h: No such file or directory
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:1:22: error: dxva2api.h: No such file or directory
 check_header malloc.h
 check_cpp
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	#include <malloc.h>
     2	int x;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:1:20: error: malloc.h: No such file or directory
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:1:20: error: malloc.h: No such file or directory
 check_header poll.h
 check_cpp
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	#include <poll.h>
     2	int x;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 check_header sys/mman.h
 check_cpp
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	#include <sys/mman.h>
     2	int x;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 check_header sys/resource.h
 check_cpp
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	#include <sys/resource.h>
     2	int x;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 check_header sys/select.h
 check_cpp
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	#include <sys/select.h>
     2	int x;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 check_header termios.h
 check_cpp
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	#include <termios.h>
     2	int x;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 check_header vdpau/vdpau.h
 check_cpp
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	#include <vdpau/vdpau.h>
     2	int x;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:1:25: error: vdpau/vdpau.h: No such file or directory
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:1:25: error: vdpau/vdpau.h: No such file or directory
 check_header vdpau/vdpau_x11.h
 check_cpp
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	#include <vdpau/vdpau_x11.h>
     2	int x;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:1:29: error: vdpau/vdpau_x11.h: No such file or directory
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:1:29: error: vdpau/vdpau_x11.h: No such file or directory
 check_cpp_condition vdpau/vdpau.h defined(VDP_DECODER_PROFILE_MPEG4_PART2_SP)
 check_cpp
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	#include <vdpau/vdpau.h>
     2	#if !(defined(VDP_DECODER_PROFILE_MPEG4_PART2_SP))
     3	#error "unsatisfied condition: defined(VDP_DECODER_PROFILE_MPEG4_PART2_SP)"
     4	#endif
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:1:25: error: vdpau/vdpau.h: No such file or directory
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:3:2: error: #error "unsatisfied condition: defined(VDP_DECODER_PROFILE_MPEG4_PART2_SP)"
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:1:25: error: vdpau/vdpau.h: No such file or directory
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:3:2: error: #error "unsatisfied condition: defined(VDP_DECODER_PROFILE_MPEG4_PART2_SP)"
 check_header X11/extensions/XvMClib.h
 check_cpp
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	#include <X11/extensions/XvMClib.h>
     2	int x;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 check_type dxva2api.h DXVA_PictureParameters wDecodedPictureIndex
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	
     2	#include <dxva2api.h>
     3	const void *p = &((DXVA_PictureParameters *)0)->wDecodedPictureIndex;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:2:22: error: dxva2api.h: No such file or directory
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:3: error: 'DXVA_PictureParameters' undeclared here (not in a function)
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:3: error: expected expression before ')' token
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:2:22: error: dxva2api.h: No such file or directory
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:3: error: 'DXVA_PictureParameters' undeclared here (not in a function)
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:3: error: expected expression before ')' token
 check_lib zlib.h zlibVersion -lz
 check_header zlib.h
 check_cpp
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	#include <zlib.h>
     2	int x;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 check_func zlibVersion -lz
 check_ld -lz
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	extern int zlibVersion();
     2	int main(void){ zlibVersion(); }
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.yqeA5MyR /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o -lz
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.HcLjrNzM /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o -lz
 check_lib2 bzlib.h BZ2_bzlibVersion -lbz2
 check_func_headers bzlib.h BZ2_bzlibVersion -lbz2
 check_ld -lbz2
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	
     2	#include <bzlib.h>
     3	int main(int argc, char **argv){
     4	    return (long) BZ2_bzlibVersion;
     5	}
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.yqeA5MyR /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o -lz -lbz2
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.HcLjrNzM /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o -lz -lbz2
 check_func pthread_create
 check_ld
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	extern int pthread_create();
     2	int main(void){ pthread_create(); }
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.yqeA5MyR /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o -lbz2 -lz
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.HcLjrNzM /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o -lbz2 -lz
 check_lib math.h sin -lm
 check_header math.h
 check_cpp
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	#include <math.h>
     2	int x;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 check_func sin -lm
 check_ld -lm
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	extern int sin();
     2	int main(void){ sin(); }
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:1: warning: conflicting types for built-in function 'sin'
-gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.yqeA5MyR /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o -lbz2 -lz -lm
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:1: warning: conflicting types for built-in function 'sin'
+gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.HcLjrNzM /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o -lbz2 -lz -lm
 check_lib va/va.h vaInitialize -lva
 check_header va/va.h
 check_cpp
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	#include <va/va.h>
     2	int x;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:1:19: error: va/va.h: No such file or directory
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:1:19: error: va/va.h: No such file or directory
 check_mathfunc exp2
 check_ld
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	#include <math.h>
     2	float foo(float f) { return exp2(f); }
     3	int main(void){ return 0; }
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.yqeA5MyR /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o -lm -lbz2 -lz
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.HcLjrNzM /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o -lm -lbz2 -lz
 check_mathfunc exp2f
 check_ld
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	#include <math.h>
     2	float foo(float f) { return exp2f(f); }
     3	int main(void){ return 0; }
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.yqeA5MyR /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o -lm -lbz2 -lz
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.HcLjrNzM /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o -lm -lbz2 -lz
 check_mathfunc llrint
 check_ld
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	#include <math.h>
     2	float foo(float f) { return llrint(f); }
     3	int main(void){ return 0; }
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.yqeA5MyR /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o -lm -lbz2 -lz
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.HcLjrNzM /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o -lm -lbz2 -lz
 check_mathfunc llrintf
 check_ld
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	#include <math.h>
     2	float foo(float f) { return llrintf(f); }
     3	int main(void){ return 0; }
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.yqeA5MyR /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o -lm -lbz2 -lz
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.HcLjrNzM /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o -lm -lbz2 -lz
 check_mathfunc log2
 check_ld
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	#include <math.h>
     2	float foo(float f) { return log2(f); }
     3	int main(void){ return 0; }
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.yqeA5MyR /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o -lm -lbz2 -lz
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.HcLjrNzM /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o -lm -lbz2 -lz
 check_mathfunc log2f
 check_ld
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	#include <math.h>
     2	float foo(float f) { return log2f(f); }
     3	int main(void){ return 0; }
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.yqeA5MyR /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o -lm -lbz2 -lz
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.HcLjrNzM /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o -lm -lbz2 -lz
 check_mathfunc lrint
 check_ld
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	#include <math.h>
     2	float foo(float f) { return lrint(f); }
     3	int main(void){ return 0; }
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.yqeA5MyR /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o -lm -lbz2 -lz
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.HcLjrNzM /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o -lm -lbz2 -lz
 check_mathfunc lrintf
 check_ld
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	#include <math.h>
     2	float foo(float f) { return lrintf(f); }
     3	int main(void){ return 0; }
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.yqeA5MyR /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o -lm -lbz2 -lz
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.HcLjrNzM /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o -lm -lbz2 -lz
 check_mathfunc round
 check_ld
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	#include <math.h>
     2	float foo(float f) { return round(f); }
     3	int main(void){ return 0; }
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.yqeA5MyR /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o -lm -lbz2 -lz
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.HcLjrNzM /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o -lm -lbz2 -lz
 check_mathfunc roundf
 check_ld
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	#include <math.h>
     2	float foo(float f) { return roundf(f); }
     3	int main(void){ return 0; }
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.yqeA5MyR /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o -lm -lbz2 -lz
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.HcLjrNzM /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o -lm -lbz2 -lz
 check_mathfunc truncf
 check_ld
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	#include <math.h>
     2	float foo(float f) { return truncf(f); }
     3	int main(void){ return 0; }
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.yqeA5MyR /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o -lm -lbz2 -lz
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.HcLjrNzM /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o -lm -lbz2 -lz
+check_lib2 faad.h faacDecOpen -lfaad
+check_func_headers faad.h faacDecOpen -lfaad
+check_ld -lfaad
+check_cc
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+    1	
+    2	#include <faad.h>
+    3	int main(int argc, char **argv){
+    4	    return (long) faacDecOpen;
+    5	}
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.HcLjrNzM /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o -lm -lbz2 -lz -lfaad
 check_func_headers SDL.h SDL_Init -I/opt/local/include/SDL -D_GNU_SOURCE=1 -D_THREAD_SAFE -L/opt/local/lib -lSDLmain -lSDL -Wl,-framework,Cocoa
 check_ld -I/opt/local/include/SDL -D_GNU_SOURCE=1 -D_THREAD_SAFE -L/opt/local/lib -lSDLmain -lSDL -Wl,-framework,Cocoa
 check_cc -I/opt/local/include/SDL -D_GNU_SOURCE=1 -D_THREAD_SAFE -L/opt/local/lib -Wl,-framework,Cocoa
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	
     2	#include <SDL.h>
     3	int main(int argc, char **argv){
     4	    return (long) SDL_Init;
     5	}
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -I/opt/local/include/SDL -D_GNU_SOURCE=1 -D_THREAD_SAFE -L/opt/local/lib -Wl,-framework,Cocoa -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -I/opt/local/include/SDL -D_GNU_SOURCE=1 -D_THREAD_SAFE -L/opt/local/lib -Wl,-framework,Cocoa -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 i686-apple-darwin10-gcc-4.2.1: -framework: linker input file unused because linking not done
 i686-apple-darwin10-gcc-4.2.1: Cocoa: linker input file unused because linking not done
-gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -I/opt/local/include/SDL -D_GNU_SOURCE=1 -D_THREAD_SAFE -L/opt/local/lib -Wl,-framework,Cocoa -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.yqeA5MyR /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o -lm -lbz2 -lz -lSDLmain -lSDL
+gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -I/opt/local/include/SDL -D_GNU_SOURCE=1 -D_THREAD_SAFE -L/opt/local/lib -Wl,-framework,Cocoa -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.HcLjrNzM /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o -lfaad -lm -lbz2 -lz -lSDLmain -lSDL
 check_cpp_condition SDL.h (SDL_MAJOR_VERSION<<16 | SDL_MINOR_VERSION<<8 | SDL_PATCHLEVEL) >= 0x010201 -I/opt/local/include/SDL -D_GNU_SOURCE=1 -D_THREAD_SAFE
 check_cpp -I/opt/local/include/SDL -D_GNU_SOURCE=1 -D_THREAD_SAFE
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	#include <SDL.h>
     2	#if !((SDL_MAJOR_VERSION<<16 | SDL_MINOR_VERSION<<8 | SDL_PATCHLEVEL) >= 0x010201)
     3	#error "unsatisfied condition: (SDL_MAJOR_VERSION<<16 | SDL_MINOR_VERSION<<8 | SDL_PATCHLEVEL) >= 0x010201"
     4	#endif
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -I/opt/local/include/SDL -D_GNU_SOURCE=1 -D_THREAD_SAFE -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -I/opt/local/include/SDL -D_GNU_SOURCE=1 -D_THREAD_SAFE -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 check_type SDL.h SDL_VideoInfo current_w -I/opt/local/include/SDL -D_GNU_SOURCE=1 -D_THREAD_SAFE
 check_cc -I/opt/local/include/SDL -D_GNU_SOURCE=1 -D_THREAD_SAFE
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	
     2	#include <SDL.h>
     3	const void *p = &((SDL_VideoInfo *)0)->current_w;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -I/opt/local/include/SDL -D_GNU_SOURCE=1 -D_THREAD_SAFE -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -I/opt/local/include/SDL -D_GNU_SOURCE=1 -D_THREAD_SAFE -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 check_type sys/types.h sys/socket.h socklen_t
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	
     2	#include <sys/types.h>
     3	#include <sys/socket.h>
     4	socklen_t v;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 check_type netdb.h struct addrinfo
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	
     2	#include <netdb.h>
     3	struct addrinfo v;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 check_type netinet/in.h struct ipv6_mreq
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	
     2	#include <netinet/in.h>
     3	struct ipv6_mreq v;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:3: error: storage size of 'v' isn't known
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:3: error: storage size of 'v' isn't known
 check_type netinet/in.h struct sockaddr_in6
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	
     2	#include <netinet/in.h>
     3	struct sockaddr_in6 v;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 check_type sys/types.h sys/socket.h struct sockaddr_storage
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	
     2	#include <sys/types.h>
     3	#include <sys/socket.h>
     4	struct sockaddr_storage v;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 check_type sys/types.h sys/socket.h struct sockaddr sa_len
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	
     2	#include <sys/types.h>
     3	#include <sys/socket.h>
     4	const void *p = &((struct sockaddr *)0)->sa_len;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 check_header arpa/inet.h
 check_cpp
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	#include <arpa/inet.h>
     2	int x;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 check_func closesocket
 check_ld
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	extern int closesocket();
     2	int main(void){ closesocket(); }
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.yqeA5MyR /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o -lm -lbz2 -lz
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.HcLjrNzM /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o -lfaad -lm -lbz2 -lz
 Undefined symbols:
   "_closesocket", referenced from:
-      _main in ffconf.MwAC7R1g.o
+      _main in ffconf.8nF9kPBU.o
 ld: symbol(s) not found
 collect2: ld returned 1 exit status
 check_header linux/videodev.h
 check_cpp
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	#include <linux/videodev.h>
     2	int x;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:1:28: error: linux/videodev.h: No such file or directory
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:1:28: error: linux/videodev.h: No such file or directory
 check_header linux/videodev2.h
 check_cpp
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	#include <linux/videodev2.h>
     2	int x;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:1:29: error: linux/videodev2.h: No such file or directory
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:1:29: error: linux/videodev2.h: No such file or directory
 check_header sys/videoio.h
 check_cpp
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	#include <sys/videoio.h>
     2	int x;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:1:25: error: sys/videoio.h: No such file or directory
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:1:25: error: sys/videoio.h: No such file or directory
 check_func_headers windows.h vfw.h capCreateCaptureWindow -lavicap32
 check_ld -lavicap32
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	
     2	#include <windows.h>
     3	#include <vfw.h>
     4	int main(int argc, char **argv){
     5	    return (long) capCreateCaptureWindow;
     6	}
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:2:21: error: windows.h: No such file or directory
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:3:17: error: vfw.h: No such file or directory
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c: In function 'main':
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:5: error: 'capCreateCaptureWindow' undeclared (first use in this function)
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:5: error: (Each undeclared identifier is reported only once
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:5: error: for each function it appears in.)
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:2:21: error: windows.h: No such file or directory
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:3:17: error: vfw.h: No such file or directory
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c: In function 'main':
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:5: error: 'capCreateCaptureWindow' undeclared (first use in this function)
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:5: error: (Each undeclared identifier is reported only once
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:5: error: for each function it appears in.)
 check_cpp_condition vfw.h WM_CAP_DRIVER_CONNECT > WM_USER
 check_cpp
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	#include <vfw.h>
     2	#if !(WM_CAP_DRIVER_CONNECT > WM_USER)
     3	#error "unsatisfied condition: WM_CAP_DRIVER_CONNECT > WM_USER"
     4	#endif
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:1:17: error: vfw.h: No such file or directory
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:3:2: error: #error "unsatisfied condition: WM_CAP_DRIVER_CONNECT > WM_USER"
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:1:17: error: vfw.h: No such file or directory
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:3:2: error: #error "unsatisfied condition: WM_CAP_DRIVER_CONNECT > WM_USER"
 check_header dev/bktr/ioctl_meteor.h
 check_cpp
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	#include <dev/bktr/ioctl_meteor.h>
     2	int x;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:1:35: error: dev/bktr/ioctl_meteor.h: No such file or directory
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:1:35: error: dev/bktr/ioctl_meteor.h: No such file or directory
 check_header machine/ioctl_meteor.h
 check_cpp
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	#include <machine/ioctl_meteor.h>
     2	int x;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:1:34: error: machine/ioctl_meteor.h: No such file or directory
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:1:34: error: machine/ioctl_meteor.h: No such file or directory
 check_header dev/video/meteor/ioctl_meteor.h
 check_cpp
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	#include <dev/video/meteor/ioctl_meteor.h>
     2	int x;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:1:43: error: dev/video/meteor/ioctl_meteor.h: No such file or directory
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:1:43: error: dev/video/meteor/ioctl_meteor.h: No such file or directory
 check_header dev/ic/bt8xx.h
 check_cpp
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	#include <dev/ic/bt8xx.h>
     2	int x;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:1:26: error: dev/ic/bt8xx.h: No such file or directory
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:1:26: error: dev/ic/bt8xx.h: No such file or directory
 check_header sys/soundcard.h
 check_cpp
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	#include <sys/soundcard.h>
     2	int x;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:1:27: error: sys/soundcard.h: No such file or directory
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:1:27: error: sys/soundcard.h: No such file or directory
 check_header soundcard.h
 check_cpp
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	#include <soundcard.h>
     2	int x;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:1:23: error: soundcard.h: No such file or directory
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -E -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:1:23: error: soundcard.h: No such file or directory
 check_lib2 alsa/asoundlib.h snd_pcm_htimestamp -lasound
 check_func_headers alsa/asoundlib.h snd_pcm_htimestamp -lasound
 check_ld -lasound
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	
     2	#include <alsa/asoundlib.h>
     3	int main(int argc, char **argv){
     4	    return (long) snd_pcm_htimestamp;
     5	}
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:2:28: error: alsa/asoundlib.h: No such file or directory
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c: In function 'main':
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:4: error: 'snd_pcm_htimestamp' undeclared (first use in this function)
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:4: error: (Each undeclared identifier is reported only once
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:4: error: for each function it appears in.)
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:2:28: error: alsa/asoundlib.h: No such file or directory
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c: In function 'main':
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:4: error: 'snd_pcm_htimestamp' undeclared (first use in this function)
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:4: error: (Each undeclared identifier is reported only once
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:4: error: for each function it appears in.)
 check_lib2 jack/jack.h jack_client_open -ljack
 check_func_headers jack/jack.h jack_client_open -ljack
 check_ld -ljack
 check_cc
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	
     2	#include <jack/jack.h>
     3	int main(int argc, char **argv){
     4	    return (long) jack_client_open;
     5	}
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:2:23: error: jack/jack.h: No such file or directory
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c: In function 'main':
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:4: error: 'jack_client_open' undeclared (first use in this function)
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:4: error: (Each undeclared identifier is reported only once
-/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c:4: error: for each function it appears in.)
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:2:23: error: jack/jack.h: No such file or directory
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c: In function 'main':
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:4: error: 'jack_client_open' undeclared (first use in this function)
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:4: error: (Each undeclared identifier is reported only once
+/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c:4: error: for each function it appears in.)
 check_cflags -Wdeclaration-after-statement
 check_cc -Wdeclaration-after-statement
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	int x;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -Wdeclaration-after-statement -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -Wdeclaration-after-statement -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 check_cflags -Wall
 check_cc -Wall
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	int x;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -Wdeclaration-after-statement -Wall -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -Wdeclaration-after-statement -Wall -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 check_cflags -Wno-switch
 check_cc -Wno-switch
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	int x;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -Wdeclaration-after-statement -Wall -Wno-switch -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -Wdeclaration-after-statement -Wall -Wno-switch -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 check_cflags -Wdisabled-optimization
 check_cc -Wdisabled-optimization
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	int x;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -Wdeclaration-after-statement -Wall -Wno-switch -Wdisabled-optimization -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -Wdeclaration-after-statement -Wall -Wno-switch -Wdisabled-optimization -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 check_cflags -Wpointer-arith
 check_cc -Wpointer-arith
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	int x;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -Wdeclaration-after-statement -Wall -Wno-switch -Wdisabled-optimization -Wpointer-arith -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -Wdeclaration-after-statement -Wall -Wno-switch -Wdisabled-optimization -Wpointer-arith -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 check_cflags -Wredundant-decls
 check_cc -Wredundant-decls
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	int x;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -Wdeclaration-after-statement -Wall -Wno-switch -Wdisabled-optimization -Wpointer-arith -Wredundant-decls -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -Wdeclaration-after-statement -Wall -Wno-switch -Wdisabled-optimization -Wpointer-arith -Wredundant-decls -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 check_cflags -Wno-pointer-sign
 check_cc -Wno-pointer-sign
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	int x;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -Wdeclaration-after-statement -Wall -Wno-switch -Wdisabled-optimization -Wpointer-arith -Wredundant-decls -Wno-pointer-sign -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -Wdeclaration-after-statement -Wall -Wno-switch -Wdisabled-optimization -Wpointer-arith -Wredundant-decls -Wno-pointer-sign -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 check_cflags -Wcast-qual
 check_cc -Wcast-qual
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	int x;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -Wdeclaration-after-statement -Wall -Wno-switch -Wdisabled-optimization -Wpointer-arith -Wredundant-decls -Wno-pointer-sign -Wcast-qual -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -Wdeclaration-after-statement -Wall -Wno-switch -Wdisabled-optimization -Wpointer-arith -Wredundant-decls -Wno-pointer-sign -Wcast-qual -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 check_cflags -Wwrite-strings
 check_cc -Wwrite-strings
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	int x;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -Wdeclaration-after-statement -Wall -Wno-switch -Wdisabled-optimization -Wpointer-arith -Wredundant-decls -Wno-pointer-sign -Wcast-qual -Wwrite-strings -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -Wdeclaration-after-statement -Wall -Wno-switch -Wdisabled-optimization -Wpointer-arith -Wredundant-decls -Wno-pointer-sign -Wcast-qual -Wwrite-strings -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 check_cflags -Wtype-limits
 check_cc -Wtype-limits
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	int x;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -Wdeclaration-after-statement -Wall -Wno-switch -Wdisabled-optimization -Wpointer-arith -Wredundant-decls -Wno-pointer-sign -Wcast-qual -Wwrite-strings -Wtype-limits -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -Wdeclaration-after-statement -Wall -Wno-switch -Wdisabled-optimization -Wpointer-arith -Wredundant-decls -Wno-pointer-sign -Wcast-qual -Wwrite-strings -Wtype-limits -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 cc1: error: unrecognized command line option "-Wtype-limits"
 check_cflags -Wundef
 check_cc -Wundef
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	int x;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -Wdeclaration-after-statement -Wall -Wno-switch -Wdisabled-optimization -Wpointer-arith -Wredundant-decls -Wno-pointer-sign -Wcast-qual -Wwrite-strings -Wundef -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -Wdeclaration-after-statement -Wall -Wno-switch -Wdisabled-optimization -Wpointer-arith -Wredundant-decls -Wno-pointer-sign -Wcast-qual -Wwrite-strings -Wundef -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 check_ldflags -Wl,--warn-common
 test_ldflags -Wl,--warn-common
 check_ld -Wl,--warn-common
 check_cc -Wl,--warn-common
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	int main(void){ return 0; }
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -Wdeclaration-after-statement -Wall -Wno-switch -Wdisabled-optimization -Wpointer-arith -Wredundant-decls -Wno-pointer-sign -Wcast-qual -Wwrite-strings -Wundef -Wl,--warn-common -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -Wdeclaration-after-statement -Wall -Wno-switch -Wdisabled-optimization -Wpointer-arith -Wredundant-decls -Wno-pointer-sign -Wcast-qual -Wwrite-strings -Wundef -Wl,--warn-common -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 i686-apple-darwin10-gcc-4.2.1: --warn-common: linker input file unused because linking not done
-gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -Wl,--warn-common -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.yqeA5MyR /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o -lm -lbz2 -lz
+gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -Wl,--warn-common -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.HcLjrNzM /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o -lfaad -lm -lbz2 -lz
 ld: unknown option: --warn-common
 collect2: ld returned 1 exit status
 check_ldflags -Wl,--as-needed
 test_ldflags -Wl,--as-needed
 check_ld -Wl,--as-needed
 check_cc -Wl,--as-needed
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	int main(void){ return 0; }
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -Wdeclaration-after-statement -Wall -Wno-switch -Wdisabled-optimization -Wpointer-arith -Wredundant-decls -Wno-pointer-sign -Wcast-qual -Wwrite-strings -Wundef -Wl,--as-needed -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -Wdeclaration-after-statement -Wall -Wno-switch -Wdisabled-optimization -Wpointer-arith -Wredundant-decls -Wno-pointer-sign -Wcast-qual -Wwrite-strings -Wundef -Wl,--as-needed -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 i686-apple-darwin10-gcc-4.2.1: --as-needed: linker input file unused because linking not done
-gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -Wl,--as-needed -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.yqeA5MyR /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o -lm -lbz2 -lz
+gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -Wl,--as-needed -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.HcLjrNzM /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o -lfaad -lm -lbz2 -lz
 ld: unknown option: --as-needed
 collect2: ld returned 1 exit status
 check_ldflags -Wl,-rpath-link,\$(BUILD_ROOT)/libpostproc -Wl,-rpath-link,\$(BUILD_ROOT)/libswscale -Wl,-rpath-link,\$(BUILD_ROOT)/libavfilter -Wl,-rpath-link,\$(BUILD_ROOT)/libavdevice -Wl,-rpath-link,\$(BUILD_ROOT)/libavformat -Wl,-rpath-link,\$(BUILD_ROOT)/libavcodec -Wl,-rpath-link,\$(BUILD_ROOT)/libavutil
 test_ldflags -Wl,-rpath-link,\$(BUILD_ROOT)/libpostproc -Wl,-rpath-link,\$(BUILD_ROOT)/libswscale -Wl,-rpath-link,\$(BUILD_ROOT)/libavfilter -Wl,-rpath-link,\$(BUILD_ROOT)/libavdevice -Wl,-rpath-link,\$(BUILD_ROOT)/libavformat -Wl,-rpath-link,\$(BUILD_ROOT)/libavcodec -Wl,-rpath-link,\$(BUILD_ROOT)/libavutil
 check_ld -Wl,-rpath-link,\$(BUILD_ROOT)/libpostproc -Wl,-rpath-link,\$(BUILD_ROOT)/libswscale -Wl,-rpath-link,\$(BUILD_ROOT)/libavfilter -Wl,-rpath-link,\$(BUILD_ROOT)/libavdevice -Wl,-rpath-link,\$(BUILD_ROOT)/libavformat -Wl,-rpath-link,\$(BUILD_ROOT)/libavcodec -Wl,-rpath-link,\$(BUILD_ROOT)/libavutil
 check_cc -Wl,-rpath-link,\$(BUILD_ROOT)/libpostproc -Wl,-rpath-link,\$(BUILD_ROOT)/libswscale -Wl,-rpath-link,\$(BUILD_ROOT)/libavfilter -Wl,-rpath-link,\$(BUILD_ROOT)/libavdevice -Wl,-rpath-link,\$(BUILD_ROOT)/libavformat -Wl,-rpath-link,\$(BUILD_ROOT)/libavcodec -Wl,-rpath-link,\$(BUILD_ROOT)/libavutil
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	int main(void){ return 0; }
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -Wdeclaration-after-statement -Wall -Wno-switch -Wdisabled-optimization -Wpointer-arith -Wredundant-decls -Wno-pointer-sign -Wcast-qual -Wwrite-strings -Wundef -Wl,-rpath-link,\$(BUILD_ROOT)/libpostproc -Wl,-rpath-link,\$(BUILD_ROOT)/libswscale -Wl,-rpath-link,\$(BUILD_ROOT)/libavfilter -Wl,-rpath-link,\$(BUILD_ROOT)/libavdevice -Wl,-rpath-link,\$(BUILD_ROOT)/libavformat -Wl,-rpath-link,\$(BUILD_ROOT)/libavcodec -Wl,-rpath-link,\$(BUILD_ROOT)/libavutil -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -Wdeclaration-after-statement -Wall -Wno-switch -Wdisabled-optimization -Wpointer-arith -Wredundant-decls -Wno-pointer-sign -Wcast-qual -Wwrite-strings -Wundef -Wl,-rpath-link,\$(BUILD_ROOT)/libpostproc -Wl,-rpath-link,\$(BUILD_ROOT)/libswscale -Wl,-rpath-link,\$(BUILD_ROOT)/libavfilter -Wl,-rpath-link,\$(BUILD_ROOT)/libavdevice -Wl,-rpath-link,\$(BUILD_ROOT)/libavformat -Wl,-rpath-link,\$(BUILD_ROOT)/libavcodec -Wl,-rpath-link,\$(BUILD_ROOT)/libavutil -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 i686-apple-darwin10-gcc-4.2.1: -rpath-link: linker input file unused because linking not done
 i686-apple-darwin10-gcc-4.2.1: \$(BUILD_ROOT)/libpostproc: linker input file unused because linking not done
 i686-apple-darwin10-gcc-4.2.1: -rpath-link: linker input file unused because linking not done
@@ -4290,55 +4320,55 @@ i686-apple-darwin10-gcc-4.2.1: -rpath-link: linker input file unused because lin
 i686-apple-darwin10-gcc-4.2.1: \$(BUILD_ROOT)/libavcodec: linker input file unused because linking not done
 i686-apple-darwin10-gcc-4.2.1: -rpath-link: linker input file unused because linking not done
 i686-apple-darwin10-gcc-4.2.1: \$(BUILD_ROOT)/libavutil: linker input file unused because linking not done
-gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -Wl,-rpath-link,\$(BUILD_ROOT)/libpostproc -Wl,-rpath-link,\$(BUILD_ROOT)/libswscale -Wl,-rpath-link,\$(BUILD_ROOT)/libavfilter -Wl,-rpath-link,\$(BUILD_ROOT)/libavdevice -Wl,-rpath-link,\$(BUILD_ROOT)/libavformat -Wl,-rpath-link,\$(BUILD_ROOT)/libavcodec -Wl,-rpath-link,\$(BUILD_ROOT)/libavutil -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.yqeA5MyR /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o -lm -lbz2 -lz
+gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -Wl,-rpath-link,\$(BUILD_ROOT)/libpostproc -Wl,-rpath-link,\$(BUILD_ROOT)/libswscale -Wl,-rpath-link,\$(BUILD_ROOT)/libavfilter -Wl,-rpath-link,\$(BUILD_ROOT)/libavdevice -Wl,-rpath-link,\$(BUILD_ROOT)/libavformat -Wl,-rpath-link,\$(BUILD_ROOT)/libavcodec -Wl,-rpath-link,\$(BUILD_ROOT)/libavutil -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.HcLjrNzM /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o -lfaad -lm -lbz2 -lz
 ld: unknown option: -rpath-link
 collect2: ld returned 1 exit status
 check_ldflags -Wl,-Bsymbolic
 test_ldflags -Wl,-Bsymbolic
 check_ld -Wl,-Bsymbolic
 check_cc -Wl,-Bsymbolic
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	int main(void){ return 0; }
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -Wdeclaration-after-statement -Wall -Wno-switch -Wdisabled-optimization -Wpointer-arith -Wredundant-decls -Wno-pointer-sign -Wcast-qual -Wwrite-strings -Wundef -Wl,-Bsymbolic -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -Wdeclaration-after-statement -Wall -Wno-switch -Wdisabled-optimization -Wpointer-arith -Wredundant-decls -Wno-pointer-sign -Wcast-qual -Wwrite-strings -Wundef -Wl,-Bsymbolic -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 i686-apple-darwin10-gcc-4.2.1: -Bsymbolic: linker input file unused because linking not done
-gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -Wl,-Bsymbolic -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.yqeA5MyR /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o -lm -lbz2 -lz
+gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -Wl,-Bsymbolic -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.HcLjrNzM /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o -lfaad -lm -lbz2 -lz
 ld: unknown option: -Bsymbolic
 collect2: ld returned 1 exit status
-test_ldflags -Wl,--version-script,/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.j8pug9rN.ver
-check_ld -Wl,--version-script,/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.j8pug9rN.ver
-check_cc -Wl,--version-script,/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.j8pug9rN.ver
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+test_ldflags -Wl,--version-script,/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.JNplDcSL.ver
+check_ld -Wl,--version-script,/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.JNplDcSL.ver
+check_cc -Wl,--version-script,/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.JNplDcSL.ver
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	int main(void){ return 0; }
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -Wdeclaration-after-statement -Wall -Wno-switch -Wdisabled-optimization -Wpointer-arith -Wredundant-decls -Wno-pointer-sign -Wcast-qual -Wwrite-strings -Wundef -Wl,--version-script,/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.j8pug9rN.ver -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -Wdeclaration-after-statement -Wall -Wno-switch -Wdisabled-optimization -Wpointer-arith -Wredundant-decls -Wno-pointer-sign -Wcast-qual -Wwrite-strings -Wundef -Wl,--version-script,/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.JNplDcSL.ver -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 i686-apple-darwin10-gcc-4.2.1: --version-script: linker input file unused because linking not done
-i686-apple-darwin10-gcc-4.2.1: /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.j8pug9rN.ver: linker input file unused because linking not done
-gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -Wl,--version-script,/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.j8pug9rN.ver -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.yqeA5MyR /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o -lm -lbz2 -lz
+i686-apple-darwin10-gcc-4.2.1: /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.JNplDcSL.ver: linker input file unused because linking not done
+gcc -arch i386 -L/opt/local/lib -Wl,-dynamic,-search_paths_first -Wl,--version-script,/var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.JNplDcSL.ver -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.HcLjrNzM /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o -lfaad -lm -lbz2 -lz
 ld: unknown option: --version-script
 collect2: ld returned 1 exit status
 check_cflags -fno-math-errno
 check_cc -fno-math-errno
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	int x;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -Wdeclaration-after-statement -Wall -Wno-switch -Wdisabled-optimization -Wpointer-arith -Wredundant-decls -Wno-pointer-sign -Wcast-qual -Wwrite-strings -Wundef -O3 -fno-math-errno -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -Wdeclaration-after-statement -Wall -Wno-switch -Wdisabled-optimization -Wpointer-arith -Wredundant-decls -Wno-pointer-sign -Wcast-qual -Wwrite-strings -Wundef -O3 -fno-math-errno -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 check_cflags -fno-signed-zeros
 check_cc -fno-signed-zeros
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	int x;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -Wdeclaration-after-statement -Wall -Wno-switch -Wdisabled-optimization -Wpointer-arith -Wredundant-decls -Wno-pointer-sign -Wcast-qual -Wwrite-strings -Wundef -O3 -fno-math-errno -fno-signed-zeros -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -Wdeclaration-after-statement -Wall -Wno-switch -Wdisabled-optimization -Wpointer-arith -Wredundant-decls -Wno-pointer-sign -Wcast-qual -Wwrite-strings -Wundef -O3 -fno-math-errno -fno-signed-zeros -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 cc1: error: unrecognized command line option "-fno-signed-zeros"
 check_cflags -fno-tree-vectorize
 check_cc -fno-tree-vectorize
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	int x;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -Wdeclaration-after-statement -Wall -Wno-switch -Wdisabled-optimization -Wpointer-arith -Wredundant-decls -Wno-pointer-sign -Wcast-qual -Wwrite-strings -Wundef -O3 -fno-math-errno -fno-tree-vectorize -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -Wdeclaration-after-statement -Wall -Wno-switch -Wdisabled-optimization -Wpointer-arith -Wredundant-decls -Wno-pointer-sign -Wcast-qual -Wwrite-strings -Wundef -O3 -fno-math-errno -fno-tree-vectorize -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
 check_cflags -Werror=implicit-function-declaration
 check_cc -Werror=implicit-function-declaration
-BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+BEGIN /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
     1	int x;
-END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
-gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -Wdeclaration-after-statement -Wall -Wno-switch -Wdisabled-optimization -Wpointer-arith -Wredundant-decls -Wno-pointer-sign -Wcast-qual -Wwrite-strings -Wundef -O3 -fno-math-errno -fno-tree-vectorize -Werror=implicit-function-declaration -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.MwAC7R1g.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.lwJBGjLr.c
+END /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -arch i386 -D_XBOX -I/opt/local/include -std=c99 -mdynamic-no-pic -fomit-frame-pointer -Wdeclaration-after-statement -Wall -Wno-switch -Wdisabled-optimization -Wpointer-arith -Wredundant-decls -Wno-pointer-sign -Wcast-qual -Wwrite-strings -Wundef -O3 -fno-math-errno -fno-tree-vectorize -Werror=implicit-function-declaration -c -o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.8nF9kPBU.o /var/folders/YU/YU0ca96jGEa-hhiUU3cfRk+++TQ/-Tmp-//ffconf.3XDphuNk.c
