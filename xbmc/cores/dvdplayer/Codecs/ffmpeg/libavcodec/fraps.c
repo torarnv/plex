@@ -21,9 +21,9 @@
  */
 
 /**
- * @file libavcodec/fraps.c
+ * @file
  * Lossless Fraps 'FPS1' decoder
- * @author Roine Gustafsson <roine at users sf net>
+ * @author Roine Gustafsson (roine at users sf net)
  * @author Konstantin Shishkov
  *
  * Codec algorithm for version 0 is taken from Transcode <www.transcoding.org>
@@ -366,7 +366,7 @@ static av_cold int decode_end(AVCodecContext *avctx)
 
 AVCodec fraps_decoder = {
     "fraps",
-    CODEC_TYPE_VIDEO,
+    AVMEDIA_TYPE_VIDEO,
     CODEC_ID_FRAPS,
     sizeof(FrapsContext),
     decode_init,

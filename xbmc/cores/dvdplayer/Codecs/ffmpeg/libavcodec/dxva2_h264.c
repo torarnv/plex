@@ -46,7 +46,7 @@ static void fill_picture_parameters(struct dxva_context *ctx, const H264Context 
 {
     const MpegEncContext *s = &h->s;
     const Picture *current_picture = s->current_picture_ptr;
-    int i;
+    int i, j;
 
     memset(pp, 0, sizeof(*pp));
     /* Configure current picture */
@@ -56,16 +56,16 @@ static void fill_picture_parameters(struct dxva_context *ctx, const H264Context 
     /* Configure the set of references */
     pp->UsedForReferenceFlags  = 0;
     pp->NonExistingFrameFlags  = 0;
-    for (i = 0; i < FF_ARRAY_ELEMS(pp->RefFrameList); i++) {
-        if (i < h->short_ref_count + h->long_ref_count) {
-            const Picture *r;
-            if (i < h->short_ref_count) {
-                r = h->short_ref[i];
-                assert(!r->long_ref);
-            } else {
-                r = h->long_ref[i - h->short_ref_count];
-                assert(r->long_ref);
-            }
+    for (i = 0, j = 0; i < FF_ARRAY_ELEMS(pp->RefFrameList); i++) {
+        const Picture *r;
+        if (j < h->short_ref_count) {
+            r = h->short_ref[j++];
+        } else {
+            r = NULL;
+            while (!r && j < h->short_ref_count + 16)
+                r = h->long_ref[j++ - h->short_ref_count];
+        }
+        if (r) {
             fill_picture_entry(&pp->RefFrameList[i],
                                ff_dxva2_get_surface_index(ctx, r),
                                r->long_ref != 0);
@@ -194,7 +194,7 @@ static void fill_slice_long(AVCodecContext *avctx, DXVA_Slice_H264_Long *slice,
 
     slice->first_mb_in_slice     = (s->mb_y >> FIELD_OR_MBAFF_PICTURE) * s->mb_width + s->mb_x;
     slice->NumMbsForSlice        = 0; /* XXX it is set once we have all slices */
-    slice->BitOffsetToSliceData  = get_bits_count(&s->gb) + 8;
+    slice->BitOffsetToSliceData  = get_bits_count(&s->gb);
     slice->slice_type            = ff_h264_get_slice_type(h);
     if (h->slice_type_fixed)
         slice->slice_type += 5;
@@ -425,7 +425,7 @@ static int end_frame(AVCodecContext *avctx)
 
 AVHWAccel h264_dxva2_hwaccel = {
     .name           = "h264_dxva2",
-    .type           = CODEC_TYPE_VIDEO,
+    .type           = AVMEDIA_TYPE_VIDEO,
     .id             = CODEC_ID_H264,
     .pix_fmt        = PIX_FMT_DXVA2_VLD,
     .capabilities   = 0,

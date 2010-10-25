@@ -21,7 +21,7 @@
 
 /**
  * RL2 Video Decoder
- * @file libavcodec/rl2.c
+ * @file
  * @author Sascha Sommer (saschasommer@freenet.de)
  * For more information about the RL2 format, visit:
  *   http://wiki.multimedia.cx/index.php?title=RL2
@@ -50,7 +50,7 @@ typedef struct Rl2Context {
 /**
  * Run Length Decode a single 320x200 frame
  * @param s rl2 context
- * @param buf input buffer
+ * @param in input buffer
  * @param size input buffer size
  * @param out ouput buffer
  * @param stride stride of the output buffer
@@ -230,7 +230,7 @@ static av_cold int rl2_decode_end(AVCodecContext *avctx)
 
 AVCodec rl2_decoder = {
     "rl2",
-    CODEC_TYPE_VIDEO,
+    AVMEDIA_TYPE_VIDEO,
     CODEC_ID_RL2,
     sizeof(Rl2Context),
     rl2_decode_init,

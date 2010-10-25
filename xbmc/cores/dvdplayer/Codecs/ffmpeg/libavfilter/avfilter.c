@@ -263,9 +263,7 @@ void avfilter_start_frame(AVFilterLink *link, AVFilterPicRef *picref)
 
         link->cur_pic = avfilter_default_get_video_buffer(link, dst->min_perms, link->w, link->h);
         link->srcpic = picref;
-        link->cur_pic->pts = link->srcpic->pts;
-        link->cur_pic->pos = link->srcpic->pos;
-        link->cur_pic->pixel_aspect = link->srcpic->pixel_aspect;
+        avfilter_copy_picref_props(link->cur_pic, link->srcpic);
     }
     else
         link->cur_pic = picref;
@@ -294,14 +292,13 @@ void avfilter_end_frame(AVFilterLink *link)
 void avfilter_draw_slice(AVFilterLink *link, int y, int h, int slice_dir)
 {
     uint8_t *src[4], *dst[4];
-    int i, j, hsub, vsub;
+    int i, j, vsub;
     void (*draw_slice)(AVFilterLink *, int, int, int);
 
     DPRINTF_START(NULL, draw_slice); dprintf_link(NULL, link, 0); dprintf(NULL, " y:%d h:%d dir:%d\n", y, h, slice_dir);
 
     /* copy the slice if needed for permission reasons */
     if(link->srcpic) {
-        hsub = av_pix_fmt_descriptors[link->format].log2_chroma_w;
         vsub = av_pix_fmt_descriptors[link->format].log2_chroma_h;
 
         for(i = 0; i < 4; i ++) {
@@ -386,7 +383,9 @@ static const char *filter_name(void *p)
 
 static const AVClass avfilter_class = {
     "AVFilter",
-    filter_name
+    filter_name,
+    NULL,
+    LIBAVUTIL_VERSION_INT,
 };
 
 AVFilterContext *avfilter_open(AVFilter *filter, const char *inst_name)

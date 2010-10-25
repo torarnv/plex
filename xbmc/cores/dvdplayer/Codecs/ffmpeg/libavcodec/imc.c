@@ -22,7 +22,8 @@
  */
 
 /**
- *  @file libavcodec/imc.c IMC - Intel Music Coder
+ *  @file
+ *  IMC - Intel Music Coder
  *  A mdct based codec using a 256 points large transform
  *  divied into 32 bands with some mix of scale factors.
  *  Only mono is supported.
@@ -659,7 +660,7 @@ static int imc_decode_frame(AVCodecContext * avctx,
         return -1;
     }
     for(i = 0; i < IMC_BLOCK_SIZE / 2; i++)
-        buf16[i] = bswap_16(((const uint16_t*)buf)[i]);
+        buf16[i] = av_bswap16(((const uint16_t*)buf)[i]);
 
     init_get_bits(&q->gb, (const uint8_t*)buf16, IMC_BLOCK_SIZE * 8);
 
@@ -823,7 +824,7 @@ static av_cold int imc_decode_close(AVCodecContext * avctx)
 
 AVCodec imc_decoder = {
     .name = "imc",
-    .type = CODEC_TYPE_AUDIO,
+    .type = AVMEDIA_TYPE_AUDIO,
     .id = CODEC_ID_IMC,
     .priv_data_size = sizeof(IMCContext),
     .init = imc_decode_init,
