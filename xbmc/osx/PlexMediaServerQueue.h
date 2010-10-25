@@ -8,6 +8,7 @@
 #include "FileItem.h"
 #include "Thread.h"
 #include "PlexDirectory.h"
+#include "StackDirectory.h"
 
 using namespace std;
 using namespace boost;
@@ -88,9 +89,16 @@ class PlexMediaServerQueue : public CThread
   {
     if (item->HasProperty("ratingKey"))
     {
+      CStdString path = item->m_strPath;
+      if (item->IsStack())
+      {
+        CStackDirectory stack;
+        path = stack.GetFirstStackedFile(path);
+      }
+      
       // Build the URL.
       string url = "/:/" + verb;
-      url = CPlexDirectory::ProcessUrl(item->m_strPath, url, false);
+      url = CPlexDirectory::ProcessUrl(path, url, false);
       url += "?key=" + item->GetProperty("ratingKey");
       url += "&identifier=" + item->GetProperty("pluginIdentifier");
       url += options;
