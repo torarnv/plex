@@ -47,6 +47,7 @@
 
 #include "HTTP.h"
 #include "PlexDirectory.h"
+#include "StackDirectory.h"
 
 using namespace std;
 using namespace XFILE;
@@ -305,6 +306,14 @@ void CGUIWindowVideoInfo::SetMovie(const CFileItemPtr& item)
   {
     // Compute the URL for the movie information.
     CURL url(item->m_strPath);
+    
+    // Is it a multipart item?
+    if (item->IsStack())
+    {
+      CStackDirectory dir;
+      url = dir.GetFirstStackedFile(item->m_strPath);
+    }
+    
     url.SetFileName("library/metadata/" + item->GetProperty("ratingKey"));
 
     // Download the data.
