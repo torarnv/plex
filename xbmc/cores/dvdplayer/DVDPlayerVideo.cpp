@@ -55,6 +55,7 @@ CDVDPlayerVideo::CDVDPlayerVideo(CDVDClock* pClock, CDVDOverlayContainer* pOverl
   m_started = false;
   m_iVideoDelay = 0;
   m_iSubtitleDelay = 0;
+  m_fForcedAspectRatio = 0;
   m_iNrOfPicturesNotToSkip = 0;
   InitializeCriticalSection(&m_critCodecSection);
   m_messageQueue.SetMaxDataSize(4*1024*1024); 
@@ -120,6 +121,9 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
     m_fFrameRate = 25;
     m_autosync = 1; // avoid using frame time as we don't know it accurate
   }
+	
+  // use aspect in stream if available
+  m_fForcedAspectRatio = hint.aspect;
 
   // should alway's be NULL!!!!, it will probably crash anyway when deleting m_pVideoCodec here.
   if (m_pVideoCodec)
@@ -304,7 +308,8 @@ void CDVDPlayerVideo::Process()
     }
     else if (pMsg->IsType(CDVDMsg::VIDEO_SET_ASPECT))
     {
-      CLog::Log(LOGDEBUG, "CDVDPlayerVideo - CDVDMsg::VIDEO_SET_ASPECT");
+	  CLog::Log(LOGDEBUG, "CDVDPlayerVideo - CDVDMsg::VIDEO_SET_ASPECT");
+      m_fForcedAspectRatio = *((CDVDMsgDouble*)pMsg);
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_FLUSH)) // private message sent by (CDVDPlayerVideo::Flush())
     {
@@ -409,6 +414,10 @@ void CDVDPlayerVideo::Process()
             /* try to figure out a pts for this frame */
             if(picture.pts == DVD_NOPTS_VALUE && pPacket->dts != DVD_NOPTS_VALUE)
               picture.pts = pPacket->dts;
+		
+			/* use forced aspect if any */
+			if( m_fForcedAspectRatio != 0.0f )
+			  picture.iDisplayWidth = (int) (picture.iDisplayHeight * m_fForcedAspectRatio);
 
             //Deinterlace if codec said format was interlaced or if we have selected we want to deinterlace
             //this video
