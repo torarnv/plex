@@ -33,6 +33,7 @@ class CPlexDirectory : public IDirectory,
   
   string GetData() { return m_data; } 
   
+  static string ProcessMediaElement(const string& parentPath, const char* mediaURL, int maxAge, bool local);
   static string BuildImageURL(const string& parentURL, const string& imageURL, bool local);
   
  protected:
@@ -41,7 +42,7 @@ class CPlexDirectory : public IDirectory,
   virtual void OnExit();
   virtual void StopThread();
   
-  void Parse(const CURL& url, TiXmlElement* root, CFileItemList &items, string& strFileLabel, string& strSecondFileLabel, string& strDirLabel, string& strSecondDirLabel);
+  void Parse(const CURL& url, TiXmlElement* root, CFileItemList &items, string& strFileLabel, string& strSecondFileLabel, string& strDirLabel, string& strSecondDirLabel, bool isLocal);
   void ParseTags(TiXmlElement* element, const CFileItemPtr& item, const string& name);
   
   CEvent     m_downloadEvent;

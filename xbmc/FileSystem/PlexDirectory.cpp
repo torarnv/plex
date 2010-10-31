@@ -129,17 +129,21 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     return false;
   }
   
+  // Is the server local?
+  CURL url(m_url);
+  bool localServer = Cocoa_IsHostLocal(url.GetHostName());
+  
   // Get the fanart.
   const char* fanart = root->Attribute("art");
   string strFanart;
   if (fanart && strlen(fanart) > 0)
-    strFanart = ProcessUrl(strPath, fanart, false);
+    strFanart = ProcessMediaElement(strPath, fanart, MAX_FANART_AGE, localServer);
   
   // Get the thumb.
   const char* thumb = root->Attribute("thumb");
   string strThumb;
   if (thumb && strlen(thumb) > 0)
-    strThumb = ProcessUrl(strPath, thumb, false);
+    strThumb = ProcessMediaElement(strPath, thumb, MAX_THUMBNAIL_AGE, localServer);
 
   // See if the item is too old.
   string cachedFile(CFileItem::GetCachedPlexMediaServerThumb(strFanart));
@@ -152,7 +156,7 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   string strDirLabel = "%B";
   string strSecondDirLabel = "%Y";
   
-  Parse(m_url, root, items, strFileLabel, strSecondFileLabel, strDirLabel, strSecondDirLabel);
+  Parse(m_url, root, items, strFileLabel, strSecondFileLabel, strDirLabel, strSecondDirLabel, localServer);
   
   // Check if any restrictions should be applied
   bool disableFanart = false;
@@ -462,22 +466,22 @@ class PlexMediaNode
      try
      {
        // Thumb.
-       string strThumb = ProcessMediaElement(parentPath, el, "thumb", MAX_THUMBNAIL_AGE, localServer);
+       string strThumb = CPlexDirectory::ProcessMediaElement(parentPath, el.Attribute("thumb"), MAX_THUMBNAIL_AGE, localServer);
        if (strThumb.size() > 0)
          pItem->SetThumbnailImage(strThumb);
        
        // Fanart.
-       string strArt = ProcessMediaElement(parentPath, el, "art", MAX_FANART_AGE, localServer);
+       string strArt = CPlexDirectory::ProcessMediaElement(parentPath, el.Attribute("art"), MAX_FANART_AGE, localServer);
        if (strArt.size() > 0)
          pItem->SetQuickFanart(strArt);
        
        // Banner.
-       string strBanner = ProcessMediaElement(parentPath, el, "banner", MAX_FANART_AGE, localServer);
+       string strBanner = CPlexDirectory::ProcessMediaElement(parentPath, el.Attribute("banner"), MAX_FANART_AGE, localServer);
        if (strBanner.size() > 0)
          pItem->SetQuickBanner(strBanner);
        
        // Theme music.
-       string strTheme = ProcessMediaElement(parentPath, el, "theme", MAX_FANART_AGE, localServer);
+       string strTheme = CPlexDirectory::ProcessMediaElement(parentPath, el.Attribute("theme"), MAX_FANART_AGE, localServer);
        if (strTheme.size() > 0)
          pItem->SetProperty("theme", strTheme);
      }
@@ -589,32 +593,6 @@ class PlexMediaNode
      }
      
      return pItem;
-   }
-   
-   string ProcessMediaElement(const string& parentPath, TiXmlElement& el, const string& name, int maxAge, bool local)
-   {
-     const char* media = el.Attribute(name.c_str());
-     if (media && strlen(media) > 0)
-     {
-       CStdString strMedia = CPlexDirectory::ProcessUrl(parentPath, media, false);
-      
-       if (strstr(media, "/library/metadata/"))
-       {
-         // Build a special URL to get the media from the media server.
-         strMedia = CPlexDirectory::BuildImageURL(parentPath, strMedia, local);
-       }
-       else
-       {
-         // See if the item is too old.
-         string cachedFile(CFileItem::GetCachedPlexMediaServerThumb(strMedia));
-         if (CFile::Age(cachedFile) > maxAge)
-           CFile::Delete(cachedFile);
-       }
-       
-       return strMedia;
-     }
-     
-     return "";
    }
    
    void CacheMediaThumb(const CFileItemPtr& mediaItem, TiXmlElement* el, const string& baseURL, const string& resource, const string& version, const string& attrName="")
@@ -1404,11 +1382,9 @@ PlexMediaNode* PlexMediaNode::Create(TiXmlElement* element)
 }
   
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void CPlexDirectory::Parse(const CURL& url, TiXmlElement* root, CFileItemList &items, string& strFileLabel, string& strSecondFileLabel, string& strDirLabel, string& strSecondDirLabel)
+void CPlexDirectory::Parse(const CURL& url, TiXmlElement* root, CFileItemList &items, string& strFileLabel, string& strSecondFileLabel, string& strDirLabel, string& strSecondDirLabel, bool isLocal)
 {
   PlexMediaNode* mediaNode = 0;
-  
-  bool isLocal = Cocoa_IsHostLocal(url.GetHostName());
   
   bool gotType = false;
   for (TiXmlElement* element = root->FirstChildElement(); element; element=element->NextSiblingElement())
@@ -1566,6 +1542,32 @@ void CPlexDirectory::StopThread()
 {
   m_bStop = true;
   CThread::StopThread();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+string CPlexDirectory::ProcessMediaElement(const string& parentPath, const char* media, int maxAge, bool local)
+{
+  if (media && strlen(media) > 0)
+  {
+    CStdString strMedia = CPlexDirectory::ProcessUrl(parentPath, media, false);
+   
+    if (strstr(media, "/library/metadata/"))
+    {
+      // Build a special URL to get the media from the media server.
+      strMedia = CPlexDirectory::BuildImageURL(parentPath, strMedia, local);
+    }
+    else
+    {
+      // See if the item is too old.
+      string cachedFile(CFileItem::GetCachedPlexMediaServerThumb(strMedia));
+      if (CFile::Age(cachedFile) > maxAge)
+        CFile::Delete(cachedFile);
+    }
+    
+    return strMedia;
+  }
+  
+  return "";
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
