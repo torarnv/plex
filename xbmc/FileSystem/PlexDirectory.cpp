@@ -390,6 +390,7 @@ string CPlexDirectory::BuildImageURL(const string& parentURL, const string& imag
   CURL url(parentURL);
   url.SetProtocol("http");
   url.SetPort(32400);
+  url.SetOptions("");
   url.SetFileName("photo/:/transcode?width=" + width + "&height=" + height + "&url=" + encodedUrl);
   return url.GetURL();
 }
