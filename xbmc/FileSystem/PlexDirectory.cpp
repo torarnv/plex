@@ -623,8 +623,17 @@ class PlexMediaNode
        else
          mediaItem->SetProperty("cache$mediaTag::" + attr, url);
        
-       // Set the value.
-       mediaItem->SetProperty("mediaTag-" + attr, val);
+       string value = val;
+       
+       if (attr == "contentRating")
+       {
+         // Set the value, taking off any ".../" subdirectory.
+         string::size_type slash = value.find("/"); 
+         if (slash != string::npos)
+           value = value.substr(slash+1);
+       }
+         
+       mediaItem->SetProperty("mediaTag-" + attr, value);
      }
    }
    
