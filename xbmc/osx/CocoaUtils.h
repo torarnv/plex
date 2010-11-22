@@ -184,8 +184,6 @@ extern "C"
   //
   // Bonjour
   //
-  void Cocoa_RefreshAllRemotePlexSources();
-  void Cocoa_RemoveAllRemotePlexSources();
   void Cocoa_StopLookingForRemotePlexSources();
   
   //

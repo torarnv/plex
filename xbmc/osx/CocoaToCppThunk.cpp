@@ -127,10 +127,9 @@ void Cocoa_CPPUpdateProgressDialog()
   g_application.getApplicationMessenger().SendMessage(tMsg);
 }
 
-void Cocoa_AutodetectRemotePlexSources(const char* hostName, const char* hostLabel)
+void Cocoa_AutodetectRemotePlexSources(const char* hostName, const char* hostLabel, const char* url)
 {
-  if (g_guiSettings.GetBool("servers.remoteautosource"))
-    CPlexSourceScanner::ScanHost(hostName, hostLabel);
+  CPlexSourceScanner::ScanHost(hostName, hostLabel, url);
 }
 
 void Cocoa_RemoveRemotePlexSources(const char* hostName)

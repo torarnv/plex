@@ -56,17 +56,17 @@ void CPlexSourceScanner::Process()
     CLog::Log(LOGNOTICE, "Scanning remote server: %s", m_host.c_str());
     
     // Scan the server.
-    path.Format("plex://%s/music/", m_host);
+    path.Format("%s/music/", m_url);
     CUtil::AutodetectPlexSources(path, sources->musicSources, realHostLabel, onlyShared);
     
-    path.Format("plex://%s/video/", m_host);
+    path.Format("%s/video/", m_url);
     CUtil::AutodetectPlexSources(path, sources->videoSources, realHostLabel, onlyShared);
     
-    path.Format("plex://%s/photos/", m_host);
+    path.Format("%s/photos/", m_url);
     CUtil::AutodetectPlexSources(path, sources->pictureSources, realHostLabel, onlyShared);
 
     // Library sections.
-    path.Format("plex://%s/library/sections", m_host);
+    path.Format("%s/library/sections", m_url);
     CPlexDirectory plexDir(true, false);
     plexDir.SetTimeout(5);
     sources->librarySections.ClearItems();
@@ -102,9 +102,9 @@ void CPlexSourceScanner::Process()
   CLog::Log(LOGNOTICE, "Plex Source Scanner finished for host %s (%d left)", m_host.c_str(), g_activeScannerCount);
 }
 
-void CPlexSourceScanner::ScanHost(const string& host, const string& hostLabel)
+void CPlexSourceScanner::ScanHost(const string& host, const string& hostLabel, const string& url)
 {
-  new CPlexSourceScanner(host, hostLabel);
+  new CPlexSourceScanner(host, hostLabel, url);
 }
 
 void CPlexSourceScanner::RemoveHost(const string& host)

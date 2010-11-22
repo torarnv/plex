@@ -38,7 +38,7 @@ public:
   
   virtual void Process();
   
-  static void ScanHost(const string& host, const string& hostLabel);
+  static void ScanHost(const string& host, const string& hostLabel, const string& url);
   static void RemoveHost(const string& host);
   
   static void MergeSourcesForWindow(int windowId);
@@ -54,9 +54,10 @@ protected:
   static void MergeSource(VECSOURCES& sources, VECSOURCES& remoteSources);
   static void CheckForRemovedSources(VECSOURCES& sources, int windowId);
   
-  CPlexSourceScanner(const string& host, const string& hostLabel)
+  CPlexSourceScanner(const string& host, const string& hostLabel, const string& url)
   : m_host(host)
   , m_hostLabel(hostLabel)
+  , m_url(url)
   {
     Create(true);
   }
@@ -67,6 +68,7 @@ private:
   
   string m_host;
   string m_hostLabel;
+  string m_url;
   
   static map<string, HostSourcesPtr> g_hostSourcesMap;
   static CCriticalSection g_lock;
