@@ -176,7 +176,7 @@ bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString
   CLog::Log(LOGINFO, "Creating thumb from: %s as: %s", strFileName.c_str(),strThumbFileName.c_str());
 
   CFileItem fileItem(strFileName, false);
-  CStdString tmpFile = strThumbFileName + ".tmp";
+  CStdString tmpFile = strThumbFileName + ".tmp." + boost::lexical_cast<CStdString>(GetCurrentThreadId());
   
   if (GetMediaFromPlexMediaServerCache(strFileName, tmpFile) == false)
   {
@@ -193,7 +193,8 @@ bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString
   }
 
   // Atomically rename.
-  CFile::Rename(tmpFile, strThumbFileName);
+  if (CFile::Exists(tmpFile))
+    CFile::Rename(tmpFile, strThumbFileName);
   
   return true;
 }
@@ -203,7 +204,7 @@ bool CPicture::CacheImage(const CStdString& sourceFileName, const CStdString& de
   bool ret = true;
   CLog::Log(LOGINFO, "Caching image from: %s to %s", sourceFileName.c_str(), destFileName.c_str());
   
-  CStdString tmpFile = destFileName + ".tmp";
+  CStdString tmpFile = destFileName + ".tmp." + boost::lexical_cast<CStdString>(GetCurrentThreadId());
   if (GetMediaFromPlexMediaServerCache(sourceFileName, tmpFile) == false)
   {
 #ifdef RESAMPLE_CACHED_IMAGES
@@ -219,7 +220,8 @@ bool CPicture::CacheImage(const CStdString& sourceFileName, const CStdString& de
   }
   
   // Atomically rename.
-  CFile::Rename(tmpFile, destFileName);
+  if (CFile::Exists(tmpFile))
+    CFile::Rename(tmpFile, destFileName);
   
   return ret;
 }
