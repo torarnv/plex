@@ -129,10 +129,12 @@ void Cocoa_CPPUpdateProgressDialog()
 
 void Cocoa_AutodetectRemotePlexSources(const char* hostName, const char* hostLabel, const char* url)
 {
-  CPlexSourceScanner::ScanHost(hostName, hostLabel, url);
+  if (hostName && hostLabel && url)
+    CPlexSourceScanner::ScanHost(hostName, hostLabel, url);
 }
 
 void Cocoa_RemoveRemotePlexSources(const char* hostName)
 {
-  CPlexSourceScanner::RemoveHost(hostName);
+  if (hostName)
+    CPlexSourceScanner::RemoveHost(hostName);
 }
