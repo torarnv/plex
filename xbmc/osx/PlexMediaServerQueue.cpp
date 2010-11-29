@@ -30,7 +30,7 @@ void PlexMediaServerQueue::Process()
       CHTTP http;
       CStdString reply;
       http.Open(url, "GET", 0);
-      printf("Plex Media Server Queue: %s\n", url.c_str());
+      CLog::Log(LOGNOTICE, "Plex Media Server Queue: %s", url.c_str());
       
       // That's it, pop it off the queue.
       m_queue.pop();
