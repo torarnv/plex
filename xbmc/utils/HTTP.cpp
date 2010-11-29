@@ -1192,7 +1192,7 @@ int CHTTP::Open(const string& strURL, const char* verb, const char* pData, bool 
   }
   else
   {
-    CLog::Log(LOGERROR, "Server returned: %d %s", status, strReason.c_str());
+    CLog::Log(LOGERROR, "Server returned (%s): %d %s", strURL.c_str(), status, strReason.c_str());
     Close();
     return status; // error
   }
