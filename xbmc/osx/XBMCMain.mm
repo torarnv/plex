@@ -14,10 +14,12 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
+#define __DEBUGGING__
+#include "stdafx.h"
+#include "Application.h"
+
 #import "XBMCMain.h"
 #import "AppleRemote.h"
-
-typedef char BYTE;
 
 #include "Log.h"
 #include "CocoaToCppThunk.h"
@@ -67,9 +69,16 @@ static XBMCMain *_o_sharedMainInstance = nil;
 
 - (void)resetBonjourSearch
 {
-  CLog::Log(LOGNOTICE, "Bonjour: Restarting search.");
-  BOOST_FOREACH(string_server_pair pair, BonjourServerMap)
-    [pair.second->service resolveWithTimeout:30];
+  if (g_application.IsPlayingVideo() == false)
+  {
+    CLog::Log(LOGNOTICE, "Bonjour: Restarting search.");
+    BOOST_FOREACH(string_server_pair pair, BonjourServerMap)
+      [pair.second->service resolveWithTimeout:30];
+  }
+  else
+  {
+    CLog::Log(LOGNOTICE, "Bonjour: Skipping the search because video is playing.");
+  }
   
   [self performSelector:@selector(resetBonjourSearch) withObject:nil afterDelay:60];
 }
