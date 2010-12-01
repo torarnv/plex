@@ -73,7 +73,8 @@ static XBMCMain *_o_sharedMainInstance = nil;
   {
     CLog::Log(LOGNOTICE, "Bonjour: Restarting search.");
     BOOST_FOREACH(string_server_pair pair, BonjourServerMap)
-      [pair.second->service resolveWithTimeout:30];
+      if (pair.second)
+        [pair.second->service resolveWithTimeout:30];
   }
   else
   {
