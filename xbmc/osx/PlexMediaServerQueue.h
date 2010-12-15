@@ -4,6 +4,7 @@
 #include <queue>
 #include <boost/thread.hpp>
 #include <boost/thread/condition.hpp>
+#include <boost/lexical_cast.hpp>
 
 #include "FileItem.h"
 #include "Thread.h"
@@ -13,6 +14,7 @@
 using namespace std;
 using namespace boost;
 using namespace DIRECTORY;
+using boost::lexical_cast;
 
 class PlexMediaServerQueue : public CThread
 {

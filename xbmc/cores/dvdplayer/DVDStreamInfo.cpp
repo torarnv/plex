@@ -61,6 +61,7 @@ void CDVDStreamInfo::Clear()
   samplerate = 0;
   blockalign = 0;
   bitrate = 0;
+  bitspercodedsample = 0;
   forPreview = false;
 
   identifier = 0;
@@ -91,7 +92,8 @@ bool CDVDStreamInfo::Equal(const CDVDStreamInfo& right, bool withextradata)
   if( channels != right.channels
   ||  samplerate != right.samplerate 
   ||  blockalign != right.blockalign
-  ||  bitrate != right.bitrate) return false;
+  ||  bitrate != right.bitrate
+  ||  bitspercodedsample != right.bitspercodedsample) return false;
 
   // SUBTITLE
   if( identifier != right.identifier ) return false;
@@ -139,6 +141,7 @@ void CDVDStreamInfo::Assign(const CDVDStreamInfo& right, bool withextradata)
   samplerate = right.samplerate;
   blockalign = right.blockalign;
   bitrate = right.bitrate;
+  bitspercodedsample = right.bitspercodedsample;
 
   // SUBTITLE
   identifier = right.identifier;
@@ -167,6 +170,7 @@ void CDVDStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
     samplerate = stream->iSampleRate;
     blockalign = stream->iBlockAlign;
     bitrate = stream->iBitRate;
+    bitspercodedsample = stream->iBitPerCodedSample;
   }
   else if(  right.type == STREAM_VIDEO )
   {

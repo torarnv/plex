@@ -83,7 +83,14 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   m_pCodecContext->sample_rate = hints.samplerate;
   m_pCodecContext->block_align = hints.blockalign;
   m_pCodecContext->bit_rate = hints.bitrate;
+  m_pCodecContext->bits_per_coded_sample = hints.bitspercodedsample;
+  
+  //set a default bitsize to prevent a crash
+  if(m_pCodecContext->bits_per_coded_sample == 0) 
+    m_pCodecContext->bits_per_coded_sample = 24;
+  
   //m_pCodecContext->bits_per_sample = 24;
+  //m_pCodecContext->bits_per_coded_sample = 16;
   
   if( hints.extradata && hints.extrasize > 0 )
   {

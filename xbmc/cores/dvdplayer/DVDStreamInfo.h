@@ -69,6 +69,7 @@ public:
   int channels;
   int samplerate;
   int bitrate;
+  int bitspercodedsample;
   int blockalign;
   // SUBTITLE
   int identifier;

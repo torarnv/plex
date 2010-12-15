@@ -394,7 +394,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 
     CLog::Log(LOGDEBUG, "%s - av_find_stream_info starting", __FUNCTION__);
     int iErr = m_dllAvFormat.av_find_stream_info(m_pFormatContext);
-    if (iErr < 0)
+     if (iErr < 0)
     {
       CLog::Log(LOGWARNING,"could not find codec parameters for %s", strFile.c_str());
       if (m_pFormatContext->nb_streams == 1 && m_pFormatContext->streams[0]->codec->codec_id == CODEC_ID_AC3)
@@ -948,6 +948,7 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
         st->iSampleRate = pStream->codec->sample_rate;
         st->iBlockAlign = pStream->codec->block_align;
         st->iBitRate = pStream->codec->bit_rate;
+        st->iBitPerCodedSample = pStream->codec->bits_per_coded_sample;
         break;
       }
     case CODEC_TYPE_VIDEO:
