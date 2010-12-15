@@ -310,11 +310,8 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       
       if (fileItem.IsPlexMediaServerLibrary())
         context->is_streamed = 0;
-      else if (fileItem.IsInternetStream() == true)
+      else if (m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
         context->is_streamed = 1;
-      
-      //if(m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
-      //  context->is_streamed = 1;
     }
 
 #if LIBAVFORMAT_VERSION_INT >= (52<<16)
