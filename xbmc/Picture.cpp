@@ -157,10 +157,18 @@ bool CPicture::GetMediaFromPlexMediaServerCache(const CStdString& strFileName, c
     }
   }
   
-  CFile::Cache(strFileName, strThumbFileName, 0);
-  if (CFile::Size(strThumbFileName) == 0)
+  CLog::Log(LOGDEBUG, "No PMS cache entry existed, getting %s to %s", strFileName.c_str(), strThumbFileName.c_str());
+  if (CFile::Cache(strFileName, strThumbFileName, 0))
   {
-    CFile::Delete(strThumbFileName);
+    if (CFile::Size(strThumbFileName) == 0)
+    {
+      CFile::Delete(strThumbFileName);
+      return false;
+    }
+  }
+  else
+  {
+    CLog::Log(LOGWARNING, "Error caching file %s", strFileName.c_str());
     return false;
   }
 

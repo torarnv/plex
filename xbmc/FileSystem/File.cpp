@@ -274,7 +274,7 @@ bool CFile::Open(const CStdString& strFileName, bool bBinary, unsigned int flags
     bool bPathInCache;
     if (!g_directoryCache.FileExists(strFileName, bPathInCache) )
     {
-      if (bPathInCache)
+      if (bPathInCache && CUtil::IsPlexMediaServer(strFileName) == false)
         return false;
     }
 
