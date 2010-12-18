@@ -85,9 +85,9 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   m_pCodecContext->bit_rate = hints.bitrate;
   m_pCodecContext->bits_per_coded_sample = hints.bitspercodedsample;
   
-  //set a default bitsize to prevent a crash
-  if(m_pCodecContext->bits_per_coded_sample == 0) 
-    m_pCodecContext->bits_per_coded_sample = 24;
+  //set a default bitsize to prevent a crash - nope, this makes AC3 sound like static.
+  //if(m_pCodecContext->bits_per_coded_sample == 0) 
+  //  m_pCodecContext->bits_per_coded_sample = 24;
   
   //m_pCodecContext->bits_per_sample = 24;
   //m_pCodecContext->bits_per_coded_sample = 16;
