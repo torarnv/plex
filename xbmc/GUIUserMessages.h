@@ -133,3 +133,6 @@
 
 // Send when the main menu needs updating.
 #define GUI_MSG_UPDATE_MAIN_MENU      GUI_MSG_USER + 42
+
+// Send when a search helper has finished.
+#define GUI_MSG_SEARCH_HELPER_COMPLETE GUI_MSG_USER + 43

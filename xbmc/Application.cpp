@@ -160,6 +160,7 @@
 #include "GUIWindowScreensaver.h"
 #include "GUIWindowSlideShow.h"
 #include "GUIWindowNowPlaying.h"
+#include "GUIWindowPlexSearch.h"
 #ifdef HAS_KAI
 #include "GUIWindowBuddies.h"
 #endif
@@ -1528,6 +1529,7 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIWindowGameSaves);               // window id = 35
 #endif
   m_gWindowManager.Add(new CGUIWindowNowPlaying);         // window id = 50
+  m_gWindowManager.Add(new CGUIWindowPlexSearch);         // window id = 51
   m_gWindowManager.Add(new CGUIDialogYesNo);              // window id = 100
   m_gWindowManager.Add(new CGUIDialogProgress);           // window id = 101
 #ifdef HAS_KAI

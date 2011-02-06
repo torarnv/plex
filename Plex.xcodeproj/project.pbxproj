@@ -72,6 +72,7 @@
 		E336F09C0E62D1FD00270758 /* libmms-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E336F09B0E62D1FD00270758 /* libmms-osx.a */; };
 		E336F09F0E62D36200270758 /* FileMMS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E336F09D0E62D36200270758 /* FileMMS.cpp */; };
 		E360D8CF0E557A5700643A82 /* GUIWindowTestPattern.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E360D8CD0E557A5700643A82 /* GUIWindowTestPattern.cpp */; };
+		E36FB27812FCE7760051E321 /* GUIWindowPlexSearch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E36FB27612FCE7760051E321 /* GUIWindowPlexSearch.cpp */; };
 		E371C2020E2F2D5400FBF841 /* AACcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15D50D25F9FA00618676 /* AACcodec.cpp */; };
 		E371C2030E2F2D5400FBF841 /* AC3CDDACodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15D70D25F9FA00618676 /* AC3CDDACodec.cpp */; };
 		E371C2040E2F2D5400FBF841 /* AC3Codec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15D90D25F9FA00618676 /* AC3Codec.cpp */; };
@@ -1168,6 +1169,8 @@
 		E36C29E70DA72486001F0C9D /* ScraperUrl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ScraperUrl.cpp; sourceTree = "<group>"; };
 		E36C29E80DA72486001F0C9D /* MusicArtistInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicArtistInfo.cpp; sourceTree = "<group>"; };
 		E36C29E90DA72486001F0C9D /* Fanart.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Fanart.cpp; sourceTree = "<group>"; };
+		E36FB27612FCE7760051E321 /* GUIWindowPlexSearch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowPlexSearch.cpp; sourceTree = "<group>"; };
+		E36FB27712FCE7760051E321 /* GUIWindowPlexSearch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowPlexSearch.h; sourceTree = "<group>"; };
 		E371C1160E2F130900FBF841 /* Plex.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Plex.xib; path = xbmc/osx/Plex.xib; sourceTree = "<group>"; };
 		E371C1390E2F151A00FBF841 /* PlexApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlexApplication.h; sourceTree = "<group>"; };
 		E371C13A0E2F151A00FBF841 /* PlexApplication.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PlexApplication.mm; sourceTree = "<group>"; };
@@ -3697,6 +3700,8 @@
 		E38E14610D25F9F900618676 /* xbmc */ = {
 			isa = PBXGroup;
 			children = (
+				E36FB27612FCE7760051E321 /* GUIWindowPlexSearch.cpp */,
+				E36FB27712FCE7760051E321 /* GUIWindowPlexSearch.h */,
 				E32C786E116821BF00522F8C /* GUIViewStateMusic.h */,
 				E32C786F116821BF00522F8C /* GUIViewStateMusic.cpp */,
 				1A232874108A94500056F996 /* GUIDialogTimer.h */,
@@ -7301,6 +7306,7 @@
 				94F96B7811856DE100AA6635 /* DVDVideoCodecVDA.cpp in Sources */,
 				E3C7CFF9117C0005000BC8F8 /* DllAvFormat.c in Sources */,
 				E306B5831265A023005AE50A /* sha.c in Sources */,
+				E36FB27812FCE7760051E321 /* GUIWindowPlexSearch.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

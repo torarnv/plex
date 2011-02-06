@@ -462,6 +462,7 @@ class PlexMediaNode
      {
        pItem->SetProperty("mediaType::" + string(el.Attribute("type")), "1");
        pItem->SetProperty("type", el.Attribute("type"));
+       pItem->SetProperty("typeNumber", TypeStringToNumber(el.Attribute("type")));
      }
      
      try
@@ -743,6 +744,28 @@ class PlexMediaNode
      }
      
      return "";
+   }
+   
+ protected:
+   
+   int TypeStringToNumber(const CStdString& type)
+   {
+     if (type == "show")
+       return PLEX_METADATA_SHOW;
+     else if (type == "episode")
+       return PLEX_METADATA_EPISODE;
+     else if (type == "movie")
+       return PLEX_METADATA_MOVIE;
+     else if (type == "artist")
+       return PLEX_METADATA_ARTIST;
+     else if (type == "album")
+       return PLEX_METADATA_ALBUM;
+     else if (type == "track")
+       return PLEX_METADATA_TRACK;
+     else if (type == "clip")
+       return PLEX_METADATA_CLIP;
+
+     return -1;
    }
 };
 

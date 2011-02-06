@@ -17,6 +17,17 @@ class TiXmlElement;
 using namespace std;
 using namespace XFILE;
 
+#define PLEX_METADATA_MOVIE   1
+#define PLEX_METADATA_SHOW    2
+#define PLEX_METADATA_EPISODE 4
+#define PLEX_METADATA_TRAILER 5
+#define PLEX_METADATA_PERSON  7
+#define PLEX_METADATA_ARTIST  8
+#define PLEX_METADATA_ALBUM   9
+#define PLEX_METADATA_TRACK   10
+#define PLEX_MEDATATA_PICTURE 11
+#define PLEX_METADATA_CLIP    12
+
 namespace DIRECTORY
 {
 class CPlexDirectory : public IDirectory, 
