@@ -405,6 +405,9 @@ public:
 
   void UpdateItem(const CFileItem *item);
 
+  void AddProvider(const CFileItemPtr& provider) { m_chainedProviders.push_back(provider); }
+  std::vector<CFileItemPtr>& GetProviders() { return m_chainedProviders; }
+  
   void AddSortMethod(SORT_METHOD method, int buttonLabel, const LABEL_MASKS &labelMasks);
   bool HasSortDetails() const { return m_sortDetails.size() != 0; };
   const std::vector<SORT_METHOD_DETAILS> &GetSortDetails() const { return m_sortDetails; };
@@ -459,6 +462,7 @@ private:
   CStdString m_disabledViewModes;
 
   std::vector<SORT_METHOD_DETAILS> m_sortDetails;
+  std::vector<CFileItemPtr>        m_chainedProviders;
 
   CCriticalSection m_lock;
 };

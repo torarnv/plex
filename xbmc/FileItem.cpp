@@ -1399,6 +1399,7 @@ void CFileItemList::Clear()
   m_sortOrder=SORT_ORDER_NONE;
   m_cacheToDisc=CACHE_IF_SLOW;
   m_sortDetails.clear();
+  m_chainedProviders.clear();
   m_replaceListing = false;
   m_saveInHistory = true;
   m_content.Empty();
@@ -1518,6 +1519,7 @@ void CFileItemList::Assign(const CFileItemList& itemlist, bool append)
   Append(itemlist);
   m_strPath = itemlist.m_strPath;
   m_sortDetails = itemlist.m_sortDetails;
+  m_chainedProviders = itemlist.m_chainedProviders;
   m_replaceListing = itemlist.m_replaceListing;
   m_saveInHistory = itemlist.m_saveInHistory;
   m_content = itemlist.m_content;
