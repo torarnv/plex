@@ -2423,7 +2423,10 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
       break;
     case LISTITEM_TYPE:
       {
-        return item->GetProperty("type").Equals(m_stringParameters[info.GetData1()]);
+        if (item)
+          return item->GetProperty("type").Equals(m_stringParameters[info.GetData1()]);
+        
+        return false;
       }
       break;
   }
