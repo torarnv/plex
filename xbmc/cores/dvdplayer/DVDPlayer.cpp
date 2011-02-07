@@ -328,6 +328,7 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
       if (fileItems.Size() == 1)
       {
         CFileItemPtr finalFile = fileItems.Get(0);
+        g_application.CurrentFileItem().m_strPath = finalFile->m_strPath;
         g_application.CurrentFileItem().SetProperty("httpCookies", finalFile->GetProperty("httpCookies"));
         g_application.CurrentFileItem().SetProperty("userAgent", finalFile->GetProperty("userAgent"));
         theFile.m_strPath = finalFile->m_strPath;
