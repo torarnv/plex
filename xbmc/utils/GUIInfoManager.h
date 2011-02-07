@@ -288,6 +288,7 @@ class CMusicThumbLoader;
 // Plex Media Server.
 #define CONTAINER_FIRST_TITLE       5000
 #define CONTAINER_SECOND_TITLE      5001
+#define LISTITEM_TYPE               5002
 
 #define MUSICPM_ENABLED             381
 #define MUSICPM_SONGSPLAYED         382
