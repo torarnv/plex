@@ -59,6 +59,7 @@
 #include <boost/foreach.hpp>
 #include "CocoaUtilsPlus.h"
 #include "XBAudioConfig.h"
+#include "PlexDirectory.h"
 #endif
 
 using namespace std;
@@ -316,6 +317,22 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
     string localPath = file.GetProperty("localPath");
     if (localPath.size() > 0 && CFile::Exists(localPath))
       theFile.m_strPath = localPath;
+    
+    // See if we need to resolve an indirect item.
+    if (file.GetPropertyInt("indirect") == 1)
+    {
+      CFileItemList  fileItems;
+      DIRECTORY::CPlexDirectory plexDir;
+      
+      plexDir.GetDirectory(file.m_strPath, fileItems);
+      if (fileItems.Size() == 1)
+      {
+        CFileItemPtr finalFile = fileItems.Get(0);
+        g_application.CurrentFileItem().SetProperty("httpCookies", finalFile->GetProperty("httpCookies"));
+        g_application.CurrentFileItem().SetProperty("userAgent", finalFile->GetProperty("userAgent"));
+        theFile.m_strPath = finalFile.m_strPath;
+      }
+    }
     
     CStdString strHeader;
     if (theFile.IsInternetStream())
