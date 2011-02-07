@@ -69,6 +69,7 @@ class CGUIWindowPlexSearch : public CGUIWindow
   
  protected:
   
+  void Bind();
   void Reset();
   void StartSearch(const string& search);
   void Character(WCHAR ch);
@@ -81,12 +82,14 @@ class CGUIWindowPlexSearch : public CGUIWindow
   
  private:
   
-  CVideoThumbLoader m_videoThumbLoader;
-  CMusicThumbLoader m_musicThumbLoader;
-  CStdStringW       m_strEdit;
-  DWORD             m_lastSearchUpdate;
-  bool              m_resetOnNextResults;
-  bool              m_resultSelected;
+  CVideoThumbLoader  m_videoThumbLoader;
+  CMusicThumbLoader  m_musicThumbLoader;
+  CStdStringW        m_strEdit;
+  DWORD              m_lastSearchUpdate;
+  bool               m_resetOnNextResults;
+  
+  int                m_selectedContainerID;
+  int                m_selectedItem;
   
   typedef pair<int, Group> int_list_pair;
   std::map<int, Group> m_categoryResults;

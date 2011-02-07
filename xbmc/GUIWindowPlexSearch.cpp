@@ -115,7 +115,8 @@ CGUIWindowPlexSearch::CGUIWindowPlexSearch()
   : CGUIWindow(WINDOW_PLEX_SEARCH, "PlexSearch.xml")
   , m_lastSearchUpdate(0)
   , m_resetOnNextResults(false)
-  , m_resultSelected(false)
+  , m_selectedContainerID(-1)
+  , m_selectedItem(-1)
   , m_searchWorker(0)
 {
   // Initialize results lists.
@@ -140,19 +141,42 @@ void CGUIWindowPlexSearch::OnInitWindow()
   if (pEdit)
     pEdit->ShowCursor();
 
-  if (m_resultSelected == false)
+  if (m_selectedItem != -1)
   {
+    // Convert back to utf8.
+    CStdString utf8Edit;
+    g_charsetConverter.wToUTF8(m_strEdit, utf8Edit);
+    pEdit->SetLabel(utf8Edit);
+    pEdit->SetCursorPos(utf8Edit.size());
+
+    // Bind the lists.
+    Bind();
+    
+    // Select group.
+    CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), m_selectedContainerID);
+    OnMessage(msg);
+
+    // Select item.
+    CGUIMessage msg2(GUI_MSG_ITEM_SELECT, GetID(), m_selectedContainerID, m_selectedItem);
+    OnMessage(msg2);
+    
+    m_selectedContainerID = -1;
+    m_selectedItem = -1;
+  }
+  else
+  {
+    // Reset the view.
     Reset();
     m_strEdit = "";
     UpdateLabel();
   }
-  
-  m_resultSelected = false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 bool CGUIWindowPlexSearch::OnAction(const CAction &action)
 {
+  printf("On action: %s (%d)\n", action.strAction.c_str(), action.wID);
+  
   CStdString strAction = action.strAction;
   strAction = strAction.ToLower();
   
@@ -166,21 +190,30 @@ bool CGUIWindowPlexSearch::OnAction(const CAction &action)
     Backspace();
     return true;
   }
+  else if (action.wID == ACTION_MOVE_LEFT || action.wID == ACTION_MOVE_RIGHT ||
+           action.wID == ACTION_MOVE_UP   || action.wID == ACTION_MOVE_DOWN  ||
+           action.wID == ACTION_PAGE_UP   || action.wID == ACTION_PAGE_DOWN  ||
+           action.wID == ACTION_HOME      || action.wID == ACTION_END)
+  {
+    // Allow cursor keys to work.
+    return CGUIWindow::OnAction(action);
+  }
   else
   {
     // Input from the keyboard.
     switch (action.unicode)
     {
-    case 8:   // backspace
+    case 8:  // backspace.
       Backspace();
       break;
-    case 27:  // escape
+    case 27: // escape.
       Close();
       break;
-      
+    case 13: // return.
+      return CGUIWindow::OnAction(action);
+      break;
     default:
-      if (CGUIWindow::OnAction(action) == false) 
-        Character(action.unicode);
+      Character(action.unicode);
     }
     return true;
   }
@@ -243,25 +276,19 @@ bool CGUIWindowPlexSearch::OnMessage(CGUIMessage& message)
       }
     }
     
-    // Get thumbs and then reset results.
+    // Get thumbs.
     BOOST_FOREACH(int_list_pair pair, m_categoryResults)
-    {
       pair.second.loader->Load(*pair.second.list.get());
-      pair.second.list->Clear();
-    }
   }
   break;
   
   case GUI_MSG_WINDOW_DEINIT:
   {
-    if (m_resultSelected == false)
-    {
-      if (m_videoThumbLoader.IsLoading())
-        m_videoThumbLoader.StopThread();
-      
-      if (m_musicThumbLoader.IsLoading())
-        m_musicThumbLoader.StopThread();
-    }
+    if (m_videoThumbLoader.IsLoading())
+      m_videoThumbLoader.StopThread();
+    
+    if (m_musicThumbLoader.IsLoading())
+      m_musicThumbLoader.StopThread();
   }
   break;
   
@@ -334,6 +361,35 @@ void CGUIWindowPlexSearch::UpdateLabel()
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+void CGUIWindowPlexSearch::Bind()
+{
+  // Bind all the lists.
+  printf("Binding lists.\n");
+  BOOST_FOREACH(int_list_pair pair, m_categoryResults)
+  {
+    int controlID = 9000 + pair.first;
+    CGUIBaseContainer* control = (CGUIBaseContainer* )GetControl(controlID);
+    if (control && pair.second.list->Size() > 0)
+    {
+      CGUIMessage msg(GUI_MSG_LABEL_BIND, CTL_LABEL_EDIT, controlID, 0, 0, pair.second.list.get());
+      OnMessage(msg);
+      
+      SET_CONTROL_VISIBLE(controlID);
+      SET_CONTROL_VISIBLE(controlID-1000);
+    }
+    else
+    {
+      SET_CONTROL_HIDDEN(controlID);
+      SET_CONTROL_HIDDEN(controlID-1000);
+    }
+  }
+  
+  // Get thumbs.
+  BOOST_FOREACH(int_list_pair pair, m_categoryResults)
+    pair.second.loader->Load(*pair.second.list.get());
+}
+
+///////////////////////////////////////////////////////////////////////////////
 void CGUIWindowPlexSearch::Reset()
 {
   // Reset results.
@@ -351,6 +407,10 @@ void CGUIWindowPlexSearch::Reset()
       SET_CONTROL_HIDDEN(controlID-1000);
     }
   }
+  
+  // Reset results.
+  BOOST_FOREACH(int_list_pair pair, m_categoryResults)
+    pair.second.list->Clear();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -408,8 +468,6 @@ char CGUIWindowPlexSearch::GetCharacter(int iButton)
 ///////////////////////////////////////////////////////////////////////////////
 void CGUIWindowPlexSearch::OnClickButton(int iButtonControl)
 {
-  printf("OnClickButton.\n");
-  
   if (iButtonControl == CTL_BUTTON_BACKSPACE)
   {
     Backspace();
@@ -419,25 +477,26 @@ void CGUIWindowPlexSearch::OnClickButton(int iButtonControl)
     char ch = GetCharacter(iButtonControl);
     if (ch != 0)
     {
+      // A keyboard button was pressed.
       Character(ch);
     }
     else
     {
+      // Let's see if we're asked to play something.
       const CGUIControl* control = GetControl(iButtonControl);
       if (control->IsContainer())
       {
-        const CGUIBaseContainer* container = (CGUIBaseContainer* )control;
+        CGUIBaseContainer* container = (CGUIBaseContainer* )control;
         CGUIListItemPtr item = container->GetListItem(0);
        
         if (item)
         {
+          // Save state.
+          m_selectedContainerID = container->GetID();
+          m_selectedItem = container->GetSelectedItem();
+          
           printf("Playing %s\n", item->GetLabel().c_str());
-          m_resultSelected = true;
           g_application.PlayFile(*(CFileItem* )item.get());
-        }
-        else
-        {
-          printf("No selected item: %d\n");
         }
       }
       else
