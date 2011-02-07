@@ -86,6 +86,7 @@ class CGUIWindowPlexSearch : public CGUIWindow
   CStdStringW       m_strEdit;
   DWORD             m_lastSearchUpdate;
   bool              m_resetOnNextResults;
+  bool              m_resultSelected;
   
   typedef pair<int, Group> int_list_pair;
   std::map<int, Group> m_categoryResults;

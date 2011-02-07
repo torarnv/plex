@@ -23,6 +23,8 @@
 #include <boost/lexical_cast.hpp>
 
 #include "stdafx.h"
+
+#include "Application.h"
 #include "FileItem.h"
 #include "GUIBaseContainer.h"
 #include "GUIWindowManager.h"
@@ -113,6 +115,7 @@ CGUIWindowPlexSearch::CGUIWindowPlexSearch()
   : CGUIWindow(WINDOW_PLEX_SEARCH, "PlexSearch.xml")
   , m_lastSearchUpdate(0)
   , m_resetOnNextResults(false)
+  , m_resultSelected(false)
   , m_searchWorker(0)
 {
   // Initialize results lists.
@@ -137,9 +140,14 @@ void CGUIWindowPlexSearch::OnInitWindow()
   if (pEdit)
     pEdit->ShowCursor();
 
-  Reset();
-  m_strEdit = "";
-  UpdateLabel();
+  if (m_resultSelected == false)
+  {
+    Reset();
+    m_strEdit = "";
+    UpdateLabel();
+  }
+  
+  m_resultSelected = false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -246,11 +254,14 @@ bool CGUIWindowPlexSearch::OnMessage(CGUIMessage& message)
   
   case GUI_MSG_WINDOW_DEINIT:
   {
-    if (m_videoThumbLoader.IsLoading())
-      m_videoThumbLoader.StopThread();
-    
-    if (m_musicThumbLoader.IsLoading())
-      m_musicThumbLoader.StopThread();
+    if (m_resultSelected == false)
+    {
+      if (m_videoThumbLoader.IsLoading())
+        m_videoThumbLoader.StopThread();
+      
+      if (m_musicThumbLoader.IsLoading())
+        m_musicThumbLoader.StopThread();
+    }
   }
   break;
   
@@ -258,6 +269,7 @@ bool CGUIWindowPlexSearch::OnMessage(CGUIMessage& message)
   {
     int iControl = message.GetSenderId();
     OnClickButton(iControl);
+    return true;
   }
   break;
   }
@@ -325,6 +337,7 @@ void CGUIWindowPlexSearch::UpdateLabel()
 void CGUIWindowPlexSearch::Reset()
 {
   // Reset results.
+  printf("Resetting results.\n");
   BOOST_FOREACH(int_list_pair pair, m_categoryResults)
   {
     int controlID = 9000 + pair.first;
@@ -395,8 +408,42 @@ char CGUIWindowPlexSearch::GetCharacter(int iButton)
 ///////////////////////////////////////////////////////////////////////////////
 void CGUIWindowPlexSearch::OnClickButton(int iButtonControl)
 {
+  printf("OnClickButton.\n");
+  
   if (iButtonControl == CTL_BUTTON_BACKSPACE)
+  {
     Backspace();
+  }
   else
-    Character(GetCharacter(iButtonControl));
+  {
+    char ch = GetCharacter(iButtonControl);
+    if (ch != 0)
+    {
+      Character(ch);
+    }
+    else
+    {
+      const CGUIControl* control = GetControl(iButtonControl);
+      if (control->IsContainer())
+      {
+        const CGUIBaseContainer* container = (CGUIBaseContainer* )control;
+        CGUIListItemPtr item = container->GetListItem(0);
+       
+        if (item)
+        {
+          printf("Playing %s\n", item->GetLabel().c_str());
+          m_resultSelected = true;
+          g_application.PlayFile(*(CFileItem* )item.get());
+        }
+        else
+        {
+          printf("No selected item: %d\n");
+        }
+      }
+      else
+      {
+        printf("Not a container: %d\n", iButtonControl);
+      }
+    }
+  }
 }
