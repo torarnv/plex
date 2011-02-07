@@ -870,6 +870,10 @@ class PlexMediaNodeLibrary : public PlexMediaNode
         CFileItemPtr newItem(new CFileItem(song));
         newItem->m_strPath = pItem->m_strPath;
         pItem = newItem;
+       
+        // Check for indirect.
+        if (media->Attribute("indirect") && strcmp(media->Attribute("indirect"), "1") == 0)
+          pItem->SetProperty("indirect", 1);
         
         const char* bitrate = el.Attribute("bitrate");
         if (bitrate && strlen(bitrate) > 0)
@@ -963,6 +967,13 @@ class PlexMediaNodeLibrary : public PlexMediaNode
 
         // Create the file item.
         CFileItemPtr theMediaItem(new CFileItem(theVideoInfo));
+        
+        // Check for indirect.
+        if (media->Attribute("indirect") && strcmp(media->Attribute("indirect"), "1") == 0)
+        {
+          pItem->SetProperty("indirect", 1);
+          theMediaItem->SetProperty("indirect", 1);
+        }
 
         // If it's not an STRM file then save the local path.
         if (CUtil::GetExtension(localPath) != ".strm")
@@ -1088,6 +1099,9 @@ class PlexMediaDirectory : public PlexMediaNode
     }
     else if (type == "album")
     {
+      if (el.Attribute("parentTitle"))
+        pItem->SetProperty("artist", el.Attribute("parentTitle"));
+      
       pItem->SetProperty("album", pItem->GetLabel());
       if (el.Attribute("year"))
         pItem->SetLabel2(el.Attribute("year"));
