@@ -88,7 +88,7 @@ void CGUIListContainer::Render()
       focusedItem = item;
     }
     else
-      RenderItem(posX, posY, item.get(), focused);
+      RenderItem(posX, posY, item.get(), focused && m_bHasFocus);
 
     // increment our position
     if (m_orientation == VERTICAL)
@@ -100,7 +100,7 @@ void CGUIListContainer::Render()
   }
   // and render the focused item last (for overlapping purposes)
   if (focusedItem)
-    RenderItem(focusedPosX, focusedPosY, focusedItem.get(), true);
+    RenderItem(focusedPosX, focusedPosY, focusedItem.get(), m_bHasFocus);
 
   g_graphicsContext.RestoreClipRegion();
 
