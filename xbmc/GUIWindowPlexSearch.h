@@ -28,16 +28,12 @@
 #include "PictureThumbLoader.h"
 #include "Stopwatch.h"
 
-class PlexSearchWorker;
-
 typedef boost::shared_ptr<CBackgroundInfoLoader> CBackgroundInfoLoaderPtr;
 enum LoaderType { kVIDEO_LOADER, kPHOTO_LOADER, kMUSIC_LOADER };
 
 struct Group
 {
-  Group()
-  {
-  }
+  Group() {}
   
   Group(LoaderType loaderType)
   {
@@ -93,6 +89,4 @@ class CGUIWindowPlexSearch : public CGUIWindow
   
   typedef pair<int, Group> int_list_pair;
   std::map<int, Group> m_categoryResults;
-  
-  PlexSearchWorker* m_searchWorker;
 };

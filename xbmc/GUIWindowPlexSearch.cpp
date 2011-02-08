@@ -21,6 +21,7 @@
 
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/thread/mutex.hpp>
 
 #include "stdafx.h"
 
@@ -40,54 +41,60 @@
 
 #define SEARCH_DELAY         500
 
+using namespace boost;
 using namespace DIRECTORY;
+
+class PlexSearchWorker;
+typedef boost::shared_ptr<PlexSearchWorker> PlexSearchWorkerPtr;
 
 class PlexSearchWorker : public CThread
 {
  public:
   
-  PlexSearchWorker(const string& url, const string& query)
-    : m_url(url)
-    , m_query(query)
-    , m_cancelled(false)
-    , m_results(new CFileItemList())
+  virtual ~PlexSearchWorker()
   {
+    printf("Whacking search worker: %d.\n", m_id);
   }
   
   void Process()
   {
-    // Escape the query.
-    CStdString query = m_query;
-    CUtil::URLEncode(query);
+    printf("Processing search request in thread.\n");
     
-    // Get the results.
-    CPlexDirectory dir;
-    CStdString path = CStdString(m_url);
-
-    // Strip tailing slash.
-    if (path[path.size()-1] == '/')
-      path = path.substr(0, path.size()-1);
-    
-    // Add the query parameter.
-    if (path.Find("?") == string::npos)
-      path = path + "?query=" + query;
-    else
-      path = path + "&query=" + query;
-    
-    printf("Running query for %s [%s]\n", path.c_str(), m_query.c_str());
-    dir.GetDirectory(path, *m_results);
-    
+    if (m_cancelled == false)
+    {
+      // Escape the query.
+      CStdString query = m_query;
+      CUtil::URLEncode(query);
+      
+      // Get the results.
+      CPlexDirectory dir;
+      CStdString path = CStdString(m_url);
+      
+      // Strip tailing slash.
+      if (path[path.size()-1] == '/')
+        path = path.substr(0, path.size()-1);
+      
+      // Add the query parameter.
+      if (path.Find("?") == string::npos)
+        path = path + "?query=" + query;
+      else
+        path = path + "&query=" + query;
+      
+      printf("Running query for %s [%s]\n", path.c_str(), m_query.c_str());
+      dir.GetDirectory(path, m_results);
+    }
+      
     // If we haven't been cancelled, send them back.
     if (m_cancelled == false)
     {
       // Notify the main menu.
-      CGUIMessage msg2(GUI_MSG_SEARCH_HELPER_COMPLETE, WINDOW_PLEX_SEARCH, 300, 0, 0, m_results);
+      CGUIMessage msg2(GUI_MSG_SEARCH_HELPER_COMPLETE, WINDOW_PLEX_SEARCH, 300, m_id);
       m_gWindowManager.SendThreadMessage(msg2);
     }
     else
     {
-      // Whack it, nobody wants it.
-      delete m_results;
+      // Get rid of myself.
+      Delete(m_id);
     }
   }
   
@@ -98,17 +105,84 @@ class PlexSearchWorker : public CThread
   
   CFileItemList& GetResults()
   {
-    return *m_results;
+    return m_results;
+  }
+  
+  int GetID()
+  {
+    return m_id;
+  }
+  
+  static PlexSearchWorkerPtr Construct(const string& url, const string& query)
+  {
+    mutex::scoped_lock lk(g_mutex);
+    
+    PlexSearchWorkerPtr worker = PlexSearchWorkerPtr(new PlexSearchWorker(url, query));
+    g_pendingWorkers[worker->GetID()] = worker;
+    worker->Create(false);
+    
+    return worker;
+  }
+  
+  static PlexSearchWorkerPtr Find(int id)
+  {
+    mutex::scoped_lock lk(g_mutex);
+    
+    if (g_pendingWorkers.find(id) != g_pendingWorkers.end())
+      return g_pendingWorkers[id];
+    
+    return PlexSearchWorkerPtr();
+  }
+  
+  static void Delete(int id)
+  {
+    mutex::scoped_lock lk(g_mutex);
+    
+    if (g_pendingWorkers.find(id) != g_pendingWorkers.end())
+      g_pendingWorkers.erase(id);
+  }
+  
+  static void CancelPending()
+  {
+    mutex::scoped_lock lk(g_mutex);
+    
+    typedef pair<int, PlexSearchWorkerPtr> int_worker_pair;
+    BOOST_FOREACH(int_worker_pair pair, g_pendingWorkers)
+      pair.second->Cancel();
+  }
+  
+ protected:
+  
+  PlexSearchWorker(const string& url, const string& query)
+    : m_id(g_workerID++)
+    , m_url(url)
+    , m_query(query)
+    , m_cancelled(false)
+  {
   }
   
  private:
   
-  string m_url;
-  string m_query;
-  bool   m_cancelled;
+  int           m_id;
+  string        m_url;
+  string        m_query;
+  bool          m_cancelled;
+  CFileItemList m_results;
   
-  CFileItemList* m_results;
+  /// Keeps track of the last worker ID.
+  static int g_workerID;
+
+  /// Keeps track of pending workers.
+  static map<int, PlexSearchWorkerPtr> g_pendingWorkers;
+  
+  /// Protects the map.
+  static mutex g_mutex;
 };
+
+// Static initialization.
+int PlexSearchWorker::g_workerID = 0;
+mutex PlexSearchWorker::g_mutex;
+map<int, PlexSearchWorkerPtr> PlexSearchWorker::g_pendingWorkers;
 
 ///////////////////////////////////////////////////////////////////////////////
 CGUIWindowPlexSearch::CGUIWindowPlexSearch() 
@@ -117,7 +191,6 @@ CGUIWindowPlexSearch::CGUIWindowPlexSearch()
   , m_resetOnNextResults(false)
   , m_selectedContainerID(-1)
   , m_selectedItem(-1)
-  , m_searchWorker(0)
 {
   // Initialize results lists.
   m_categoryResults[PLEX_METADATA_MOVIE] = Group(kVIDEO_LOADER);
@@ -175,8 +248,6 @@ void CGUIWindowPlexSearch::OnInitWindow()
 ///////////////////////////////////////////////////////////////////////////////
 bool CGUIWindowPlexSearch::OnAction(const CAction &action)
 {
-  printf("On action: %s (%d)\n", action.strAction.c_str(), action.wID);
-  
   CStdString strAction = action.strAction;
   strAction = strAction.ToLower();
   
@@ -228,57 +299,63 @@ bool CGUIWindowPlexSearch::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_SEARCH_HELPER_COMPLETE:
   {
-    CFileItemListPtr results = CFileItemListPtr((CFileItemList* )message.GetLPVOID());
+    PlexSearchWorkerPtr worker = PlexSearchWorker::Find(message.GetParam1());
+    if (worker)
+    {
+      CFileItemList& results = worker->GetResults();
     
-    if (m_resetOnNextResults)
-    {
-      Reset();
-      m_resetOnNextResults = false;
-    }
-    
-    // If we have any additional providers, run them in parallel.
-    vector<CFileItemPtr>& providers = results->GetProviders();
-    BOOST_FOREACH(CFileItemPtr& provider, providers)
-    {
-      // Convert back to utf8.
-      CStdString search;
-      g_charsetConverter.wToUTF8(m_strEdit, search);
-
-      // Create a new worker.
-      PlexSearchWorker* worker = new PlexSearchWorker(provider->m_strPath.c_str(), search);
-      worker->Create(true);
-    }
-      
-    // Put the items in the right category.
-    for (int i=0; i<results->Size(); i++)
-    {
-      // Get the item and the type.
-      CFileItemPtr item = results->Get(i);
-      int type = boost::lexical_cast<int>(item->GetProperty("typeNumber"));
-      
-      // Add it to the correct "bucket".
-      if (m_categoryResults.find(type) != m_categoryResults.end())
-        m_categoryResults[type].list->Add(item);
-    }
-
-    // Bind all the lists.
-    BOOST_FOREACH(int_list_pair pair, m_categoryResults)
-    {
-      int controlID = 9000 + pair.first;
-      CGUIBaseContainer* control = (CGUIBaseContainer* )GetControl(controlID);
-      if (control && pair.second.list->Size() > 0)
+      if (m_resetOnNextResults)
       {
-        CGUIMessage msg(GUI_MSG_LABEL_BIND, CTL_LABEL_EDIT, controlID, 0, 0, pair.second.list.get());
-        OnMessage(msg);
-        
-        SET_CONTROL_VISIBLE(controlID);
-        SET_CONTROL_VISIBLE(controlID-1000);
+        Reset();
+        m_resetOnNextResults = false;
       }
+      
+      // If we have any additional providers, run them in parallel.
+      vector<CFileItemPtr>& providers = results.GetProviders();
+      BOOST_FOREACH(CFileItemPtr& provider, providers)
+      {
+        // Convert back to utf8.
+        CStdString search;
+        g_charsetConverter.wToUTF8(m_strEdit, search);
+        
+        // Create a new worker.
+        PlexSearchWorker::Construct(provider->m_strPath.c_str(), search);
+      }
+      
+      // Put the items in the right category.
+      for (int i=0; i<results.Size(); i++)
+      {
+        // Get the item and the type.
+        CFileItemPtr item = results.Get(i);
+        int type = boost::lexical_cast<int>(item->GetProperty("typeNumber"));
+        
+        // Add it to the correct "bucket".
+        if (m_categoryResults.find(type) != m_categoryResults.end())
+          m_categoryResults[type].list->Add(item);
+      }
+      
+      // Bind all the lists.
+      BOOST_FOREACH(int_list_pair pair, m_categoryResults)
+      {
+        int controlID = 9000 + pair.first;
+        CGUIBaseContainer* control = (CGUIBaseContainer* )GetControl(controlID);
+        if (control && pair.second.list->Size() > 0)
+        {
+          CGUIMessage msg(GUI_MSG_LABEL_BIND, CTL_LABEL_EDIT, controlID, 0, 0, pair.second.list.get());
+          OnMessage(msg);
+          
+          SET_CONTROL_VISIBLE(controlID);
+          SET_CONTROL_VISIBLE(controlID-1000);
+        }
+      }
+      
+      // Get thumbs.
+      BOOST_FOREACH(int_list_pair pair, m_categoryResults)
+        pair.second.loader->Load(*pair.second.list.get());
+      
+      // Whack it.
+      PlexSearchWorker::Delete(message.GetParam1());
     }
-    
-    // Get thumbs.
-    BOOST_FOREACH(int_list_pair pair, m_categoryResults)
-      pair.second.loader->Load(*pair.second.list.get());
   }
   break;
   
@@ -416,17 +493,19 @@ void CGUIWindowPlexSearch::Reset()
 ///////////////////////////////////////////////////////////////////////////////
 void CGUIWindowPlexSearch::StartSearch(const string& search)
 {
+  // Cancel pending requests.
+  PlexSearchWorker::CancelPending();
+  
   if (search.empty())
   {
-    // Reset results.
+    // Reset the results, we're not searching for anything at the moment.
     Reset();
   }
   else
   {
-    // Issue the first canonical search result to the local media server.
-    m_searchWorker = new PlexSearchWorker("http://localhost:32400/search", search);
-    m_searchWorker->Create(false);
-    m_resetOnNextResults = true; 
+    // Issue the root of the new search, and note that when we receive results, clear out the old ones.
+    PlexSearchWorker::Construct("http://localhost:32400/search", search);
+    m_resetOnNextResults = true;
   }
 }
 
@@ -498,10 +577,6 @@ void CGUIWindowPlexSearch::OnClickButton(int iButtonControl)
           printf("Playing %s\n", item->GetLabel().c_str());
           g_application.PlayFile(*(CFileItem* )item.get());
         }
-      }
-      else
-      {
-        printf("Not a container: %d\n", iButtonControl);
       }
     }
   }
