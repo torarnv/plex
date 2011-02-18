@@ -38,6 +38,8 @@
 
 #define CTL_LABEL_EDIT       310
 #define CTL_BUTTON_BACKSPACE 8
+#define CTL_BUTTON_CLEAR     10
+#define CTL_BUTTON_SPACE     32
 
 #define SEARCH_DELAY         500
 
@@ -199,6 +201,7 @@ CGUIWindowPlexSearch::CGUIWindowPlexSearch()
   m_categoryResults[PLEX_METADATA_ARTIST] = Group(kMUSIC_LOADER);
   m_categoryResults[PLEX_METADATA_ALBUM] = Group(kMUSIC_LOADER);
   m_categoryResults[PLEX_METADATA_TRACK] = Group(kMUSIC_LOADER);
+  m_categoryResults[PLEX_METADATA_PERSON] = Group(kVIDEO_LOADER);
   m_categoryResults[PLEX_METADATA_CLIP] = Group(kVIDEO_LOADER);
 }
 
@@ -211,8 +214,8 @@ CGUIWindowPlexSearch::~CGUIWindowPlexSearch()
 void CGUIWindowPlexSearch::OnInitWindow()
 {
   CGUILabelControl* pEdit = ((CGUILabelControl*)GetControl(CTL_LABEL_EDIT));
-  if (pEdit)
-    pEdit->ShowCursor();
+  //if (pEdit)
+  //  pEdit->ShowCursor();
 
   if (m_selectedItem != -1)
   {
@@ -266,6 +269,10 @@ bool CGUIWindowPlexSearch::OnAction(const CAction &action)
            action.wID == ACTION_PAGE_UP   || action.wID == ACTION_PAGE_DOWN  ||
            action.wID == ACTION_HOME      || action.wID == ACTION_END)
   {
+    // Reset search time.
+    DWORD now = timeGetTime();
+    m_lastSearchUpdate = now;
+    
     // Allow cursor keys to work.
     return CGUIWindow::OnAction(action);
   }
@@ -280,9 +287,12 @@ bool CGUIWindowPlexSearch::OnAction(const CAction &action)
     case 27: // escape.
       Close();
       break;
+    case 0:
+      return false;
     case 13: // return.
       return CGUIWindow::OnAction(action);
       break;
+      
     default:
       Character(action.unicode);
     }
@@ -332,6 +342,8 @@ bool CGUIWindowPlexSearch::OnMessage(CGUIMessage& message)
         // Add it to the correct "bucket".
         if (m_categoryResults.find(type) != m_categoryResults.end())
           m_categoryResults[type].list->Add(item);
+        else
+          printf("Warning, skipping item with category %d.\n", type);
       }
       
       // Bind all the lists.
@@ -533,7 +545,7 @@ char CGUIWindowPlexSearch::GetCharacter(int iButton)
   if (iButton >= 65 && iButton <= 90)
   {
     // It's a letter.
-    return 'a' + (iButton-65);
+    return 'A' + (iButton-65);
   }
   else if (iButton >= 91 && iButton <= 100)
   {
@@ -550,6 +562,27 @@ void CGUIWindowPlexSearch::OnClickButton(int iButtonControl)
   if (iButtonControl == CTL_BUTTON_BACKSPACE)
   {
     Backspace();
+  }
+  else if (iButtonControl == CTL_BUTTON_CLEAR)
+  {
+    CGUILabelControl* pEdit = ((CGUILabelControl*)GetControl(CTL_LABEL_EDIT));
+    if (pEdit)
+    {
+      m_strEdit = "";
+      UpdateLabel();
+      
+      // Convert back to utf8.
+      CStdString utf8Edit;
+      g_charsetConverter.wToUTF8(m_strEdit, utf8Edit);
+      pEdit->SetLabel(utf8Edit);
+      
+      // Reset cursor position.
+      pEdit->SetCursorPos(0);
+    }
+  }
+  else if (iButtonControl == CTL_BUTTON_SPACE)
+  {
+    Character(' ');
   }
   else
   {
@@ -579,7 +612,7 @@ void CGUIWindowPlexSearch::OnClickButton(int iButtonControl)
           
           // Now see what to do with it.
           string type = item->GetProperty("type");
-          if (type == "show")
+          if (type == "show" || type == "person")
             m_gWindowManager.ActivateWindow(WINDOW_VIDEO_FILES, file->m_strPath + ",return");
           else if (type == "artist" || type == "album")
             m_gWindowManager.ActivateWindow(WINDOW_MUSIC_FILES, file->m_strPath + ",return");
