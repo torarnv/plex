@@ -781,6 +781,8 @@ class PlexMediaNode
        return PLEX_METADATA_TRACK;
      else if (type == "clip")
        return PLEX_METADATA_CLIP;
+     else if (type == "person")
+       return PLEX_METADATA_PERSON;
 
      return -1;
    }
