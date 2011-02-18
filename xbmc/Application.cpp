@@ -958,6 +958,7 @@ HRESULT CApplication::Create(HWND hWnd)
   PlexRemoteHelper::Get().Configure();
   PlexMediaServerHelper::Get().Configure();
   
+#ifndef _DEBUG
   // See if we crashed the last time.
   if (CFile::Exists(CRASH_DETECTION_FILE))
   {
@@ -970,6 +971,7 @@ HRESULT CApplication::Create(HWND hWnd)
     // Create the file so we know if we crashed on exit.
     ofstream out(CRASH_DETECTION_FILE);
   }
+#endif
   
   // Note that the screensaver should turn off.
   Cocoa_UpdateSystemActivity();
