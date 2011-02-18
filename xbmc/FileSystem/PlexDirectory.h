@@ -27,6 +27,7 @@ using namespace XFILE;
 #define PLEX_METADATA_TRACK   10
 #define PLEX_MEDATATA_PICTURE 11
 #define PLEX_METADATA_CLIP    12
+#define PLEX_METADATA_PERSON  13
 
 namespace DIRECTORY
 {
