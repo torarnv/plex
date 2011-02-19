@@ -24,9 +24,9 @@
 #include "utils/CharsetConverter.h"
 #include <limits>
 
-CGUIListLabel::CGUIListLabel(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, const CGUIInfoLabel &info, bool alwaysScroll, int scrollSpeed)
+CGUIListLabel::CGUIListLabel(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, const CGUIInfoLabel &info, bool alwaysScroll, int scrollSpeed, bool wrapMultiline)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
-    , m_textLayout(labelInfo.font, false)
+    , m_textLayout(labelInfo.font, wrapMultiline, height)
     , m_scrollInfo(50, 0, scrollSpeed)
 {
   m_selected = false;
@@ -103,7 +103,7 @@ void CGUIListLabel::UpdateInfo(const CGUIListItem *item)
 
 void CGUIListLabel::SetLabel(const CStdString &label)
 {
-  if (m_textLayout.Update(label))
+  if (m_textLayout.Update(label, m_width))
   { // needed an update - reset scrolling
     m_scrollInfo.Reset();
     // recalculate our text layout

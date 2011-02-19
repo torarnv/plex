@@ -37,7 +37,7 @@ class CGUIListLabel :
       public CGUIControl
 {
 public:
-  CGUIListLabel(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, const CGUIInfoLabel &label, bool alwaysScroll, int scrollSpeed);
+  CGUIListLabel(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, const CGUIInfoLabel &label, bool alwaysScroll, int scrollSpeed, bool wrapMultiline=false);
   virtual ~CGUIListLabel(void);
 
   virtual void Render();
