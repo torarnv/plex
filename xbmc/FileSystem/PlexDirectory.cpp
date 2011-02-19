@@ -434,6 +434,10 @@ class PlexMediaNode
      
      // Let subclass finish.
      DoBuildFileItem(pItem, string(parentPath), el);
+
+     // Parent path.
+     if (el.Attribute("parentKey"))
+       pItem->SetProperty("parentPath", CPlexDirectory::ProcessUrl(parentPath, el.Attribute("parentKey"), true));
      
      // Sort label.
      if (el.Attribute("titleSort"))
