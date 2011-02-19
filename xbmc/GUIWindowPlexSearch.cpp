@@ -622,6 +622,30 @@ void CGUIWindowPlexSearch::OnClickButton(int iButtonControl)
             m_gWindowManager.ActivateWindow(WINDOW_VIDEO_FILES, file->m_strPath + ",return");
           else if (type == "artist" || type == "album")
             m_gWindowManager.ActivateWindow(WINDOW_MUSIC_FILES, file->m_strPath + ",return");
+          else if (type == "track")
+          {
+            // Get album.
+            CFileItemList  fileItems;
+            CPlexDirectory plexDir;
+            plexDir.GetDirectory(file->GetProperty("parentPath"), fileItems);
+            int itemIndex = -1;
+
+            for (int i=0; i < fileItems.Size(); ++i)
+            {
+              CFileItemPtr fileItem = fileItems[i];
+              if (fileItem->GetProperty("unprocessedKey") == file->GetProperty("unprocessedKey"))
+              {
+                itemIndex = i;
+                break;
+              }
+            }
+            
+            g_playlistPlayer.ClearPlaylist(PLAYLIST_MUSIC);
+            g_playlistPlayer.Reset();
+            g_playlistPlayer.Add(PLAYLIST_MUSIC, fileItems);
+            g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
+            g_playlistPlayer.Play(itemIndex);
+          }
           else
             g_application.PlayFile(*(CFileItem* )item.get());
         }
