@@ -63,6 +63,8 @@ class CGUIWindowPlexSearch : public CGUIWindow
   virtual void OnInitWindow();
   virtual void Render();
   
+  bool InProgress();
+  
  protected:
   
   void Bind();
@@ -73,7 +75,7 @@ class CGUIWindowPlexSearch : public CGUIWindow
   void UpdateLabel();
   void OnClickButton(int iButtonControl);
   void MoveCursor(int iAmount);
-  int GetCursorPos() const;
+  int  GetCursorPos() const;
   char GetCharacter(int iButton);
   
  private:

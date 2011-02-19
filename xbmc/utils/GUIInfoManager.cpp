@@ -73,6 +73,7 @@
 #include "ThumbLoader.h"
 
 #include "GUILabelControl.h"  // for CInfoLabel
+#include "GUIWindowPlexSearch.h"
 #include "GUIWindowVideoInfo.h"
 #include "GUIWindowMusicInfo.h"
 #ifdef __APPLE__
@@ -353,6 +354,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.memory(used)")) ret = SYSTEM_USED_MEMORY;
     else if (strTest.Equals("system.memory(used.percent)")) ret = SYSTEM_USED_MEMORY_PERCENT;
     else if (strTest.Equals("system.memory(total)")) ret = SYSTEM_TOTAL_MEMORY;
+    else if (strTest.Equals("system.searchinprogress")) ret = SYSTEM_SEARCH_IN_PROGRESS;
 
     else if (strTest.Equals("region.language")) ret = SYSTEM_LANGUAGE;
     else if (strTest.Equals("system.screenmode")) ret = SYSTEM_SCREEN_MODE;
@@ -1777,6 +1779,14 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
 #endif
   else if (condition > SYSTEM_IDLE_TIME_START && condition <= SYSTEM_IDLE_TIME_FINISH)
     bReturn = (g_application.GlobalIdleTime() >= condition - SYSTEM_IDLE_TIME_START);
+  else if (condition == SYSTEM_SEARCH_IN_PROGRESS)
+  {
+    CGUIWindowPlexSearch* searchWin = (CGUIWindowPlexSearch* )m_gWindowManager.GetWindow(WINDOW_PLEX_SEARCH);
+    if (searchWin && searchWin->InProgress())
+      bReturn = true;
+    else
+      bReturn = false;
+  }
   else if (condition == WINDOW_IS_MEDIA)
   { // note: This doesn't return true for dialogs (content, favourites, login, videoinfo)
     CGUIWindow *pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());

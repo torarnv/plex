@@ -178,6 +178,8 @@ class CMusicThumbLoader;
 #define LCD_TIME_43                 178
 #define LCD_TIME_44                 179
 
+#define SYSTEM_SEARCH_IN_PROGRESS   180
+
 #define NETWORK_IP_ADDRESS          190
 #define NETWORK_MAC_ADDRESS         191
 #define NETWORK_IS_DHCP             192
