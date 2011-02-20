@@ -318,10 +318,18 @@ bool CGUIWindowPlexSearch::OnMessage(CGUIMessage& message)
     PlexSearchWorkerPtr worker = PlexSearchWorker::Find(message.GetParam1());
     if (worker)
     {
+      printf("Processing results from worker: %d.\n", worker->GetID());
       CFileItemList& results = worker->GetResults();
-    
+
+      int lastFocusedList = -1;
       if (m_resetOnNextResults)
       {
+        // Get the last focused list.
+        lastFocusedList = GetFocusedControlID();
+        if (lastFocusedList < 9000)
+          lastFocusedList = -1;
+        printf("Saving last focused ID=%d\n", lastFocusedList);
+        
         Reset();
         m_resetOnNextResults = false;
       }
@@ -353,6 +361,7 @@ bool CGUIWindowPlexSearch::OnMessage(CGUIMessage& message)
       }
       
       // Bind all the lists.
+      int firstListWithStuff = -1;
       BOOST_FOREACH(int_list_pair pair, m_categoryResults)
       {
         int controlID = 9000 + pair.first;
@@ -364,7 +373,18 @@ bool CGUIWindowPlexSearch::OnMessage(CGUIMessage& message)
           
           SET_CONTROL_VISIBLE(controlID);
           SET_CONTROL_VISIBLE(controlID-2000);
+          
+          if (firstListWithStuff == -1)
+            firstListWithStuff = controlID;
         }
+      }
+      
+      // If we lost focus, restore it.
+      printf("Last focused list: %d, firstListWithStuff: %d\n", lastFocusedList, firstListWithStuff);
+      if (lastFocusedList > 0)
+      {
+        CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), firstListWithStuff != -1 ? firstListWithStuff : 70);
+        OnMessage(msg);
       }
       
       // Get thumbs.
@@ -414,6 +434,20 @@ void CGUIWindowPlexSearch::Character(WCHAR ch)
   if (!ch) 
     return;
   
+  if (GetFocusedControlID() < 9000)
+  {
+    int control = -1;
+    if (ch >= 'a' && ch <= 'z')
+      control = 65 + (ch - 'a');
+    else if (ch >= 'A' && ch <= 'Z')
+      control = 65 + (ch - 'A');
+    else if (ch >= '0' && ch <= '9')
+      control = 91 + (ch - '0');
+    
+    CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), control);
+    OnMessage(msg);
+  }
+  
   m_strEdit.Insert(GetCursorPos(), ch);
   UpdateLabel();
   MoveCursor(1);
@@ -460,6 +494,7 @@ void CGUIWindowPlexSearch::Bind()
 {
   // Bind all the lists.
   printf("Binding lists.\n");
+  
   BOOST_FOREACH(int_list_pair pair, m_categoryResults)
   {
     int controlID = 9000 + pair.first;
@@ -501,6 +536,13 @@ void CGUIWindowPlexSearch::Reset()
       SET_CONTROL_HIDDEN(controlID);
       SET_CONTROL_HIDDEN(controlID-2000);
     }
+  }
+  
+  // Fix focus if needed.
+  if (GetFocusedControlID() >= 9000)
+  {
+    CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), 70);
+    OnMessage(msg);
   }
   
   // Reset results.
