@@ -1098,7 +1098,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
     const CGUIInfoLabel &content = (infoLabels.size()) ? infoLabels[0] : CGUIInfoLabel("");
     if (insideContainer)
     { // inside lists we use CGUIListLabel
-      control = new CGUIListLabel(dwParentId, id, posX, posY, width, height, labelInfo, content, bScrollLabel, scrollSpeed);
+      control = new CGUIListLabel(dwParentId, id, posX, posY, width, height, labelInfo, content, bScrollLabel, scrollSpeed, wrapMultiLine);
     }
     else
     {
