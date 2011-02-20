@@ -449,6 +449,9 @@ class PlexMediaNode
      pItem->SetProperty("unprocessedKey", key);
      pItem->SetProperty("key", CPlexDirectory::ProcessUrl(parentPath, key, false));
      
+     // Source title.
+     SetProperty(pItem, el, "sourceTitle");
+     
      // Date.
      SetProperty(pItem, el, "subtitle");
      
