@@ -328,7 +328,6 @@ bool CGUIWindowPlexSearch::OnMessage(CGUIMessage& message)
         lastFocusedList = GetFocusedControlID();
         if (lastFocusedList < 9000)
           lastFocusedList = -1;
-        printf("Saving last focused ID=%d\n", lastFocusedList);
         
         Reset();
         m_resetOnNextResults = false;
@@ -380,7 +379,6 @@ bool CGUIWindowPlexSearch::OnMessage(CGUIMessage& message)
       }
       
       // If we lost focus, restore it.
-      printf("Last focused list: %d, firstListWithStuff: %d\n", lastFocusedList, firstListWithStuff);
       if (lastFocusedList > 0)
       {
         CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), firstListWithStuff != -1 ? firstListWithStuff : 70);
@@ -434,20 +432,6 @@ void CGUIWindowPlexSearch::Character(WCHAR ch)
   if (!ch) 
     return;
   
-  if (GetFocusedControlID() < 9000)
-  {
-    int control = -1;
-    if (ch >= 'a' && ch <= 'z')
-      control = 65 + (ch - 'a');
-    else if (ch >= 'A' && ch <= 'Z')
-      control = 65 + (ch - 'A');
-    else if (ch >= '0' && ch <= '9')
-      control = 91 + (ch - '0');
-    
-    CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), control);
-    OnMessage(msg);
-  }
-  
   m_strEdit.Insert(GetCursorPos(), ch);
   UpdateLabel();
   MoveCursor(1);
@@ -493,8 +477,6 @@ void CGUIWindowPlexSearch::UpdateLabel()
 void CGUIWindowPlexSearch::Bind()
 {
   // Bind all the lists.
-  printf("Binding lists.\n");
-  
   BOOST_FOREACH(int_list_pair pair, m_categoryResults)
   {
     int controlID = 9000 + pair.first;
