@@ -367,12 +367,23 @@ bool CGUIWindowPlexSearch::OnMessage(CGUIMessage& message)
         CGUIBaseContainer* control = (CGUIBaseContainer* )GetControl(controlID);
         if (control && pair.second.list->Size() > 0)
         {
-          CGUIMessage msg(GUI_MSG_LABEL_BIND, CTL_LABEL_EDIT, controlID, 0, 0, pair.second.list.get());
-          OnMessage(msg);
-          
-          SET_CONTROL_VISIBLE(controlID);
-          SET_CONTROL_VISIBLE(controlID-2000);
-          
+          if (control->GetRows() != pair.second.list->Size())
+          {
+            // Save selected item.
+            int selectedItem = control->GetSelectedItem();
+            
+            // Set the list.
+            CGUIMessage msg(GUI_MSG_LABEL_BIND, CTL_LABEL_EDIT, controlID, 0, 0, pair.second.list.get());
+            OnMessage(msg);
+            
+            // Restore selected item.
+            CONTROL_SELECT_ITEM(control->GetID(), selectedItem);
+            
+            // Make sure it's visible.
+            SET_CONTROL_VISIBLE(controlID);
+            SET_CONTROL_VISIBLE(controlID-2000);
+          }
+            
           if (firstListWithStuff == -1)
             firstListWithStuff = controlID;
         }
