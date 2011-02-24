@@ -287,7 +287,20 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
       strPath = url.GetHostName();
     }
     else
+    {
       strPath = g_application.CurrentFileItem().m_strPath;
+      
+      // If we're inside the library, we'll need a different path.
+      if (g_application.CurrentFileItem().IsPlexMediaServerLibrary())
+      {
+        // Use the local path.
+        strPath = g_application.CurrentFileItem().GetProperty("localPath");
+        
+        // If that didn't work, just go from root. FIXME, I'm sure there is a better default. Jamie?
+        if (strPath.size() == 0)
+          strPath = "/"; 
+      }
+    }
 
     CStdString strMask = ".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.aqt|.jss|.ass|.idx|.rar|.zip";
     if (g_application.GetCurrentPlayer() == EPC_DVDPLAYER)
