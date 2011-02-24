@@ -680,13 +680,15 @@ void CDVDPlayer::OpenDefaultStreams()
         {
           // ...see if we can match it up with our stream.
           count = m_SelectionStreams.Count(STREAM_AUDIO);
-          for (int i=0; i<count; i++)
+          for (int i=0; i<count && !valid; i++)
           {
             SelectionStream& s = m_SelectionStreams.Get(STREAM_AUDIO, i);
             if (s.id == stream->index && OpenAudioStream(s.id, s.source))
               valid = true;
           }
         }
+        
+        if (valid) break;
       }
     }
 
@@ -720,10 +722,12 @@ void CDVDPlayer::OpenDefaultStreams()
         for (int i = 0; i<count && !valid; i++)
         {
           SelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, i);
-          if (s.id == stream->id && OpenSubtitleStream(s.id, s.source))
+          if (s.id == stream->index && OpenSubtitleStream(s.id, s.source))
             valid = true;
         }
       }
+      
+      if (valid) break;
     }
     
     // If that didn't pick one, just open the first stream and make it invisible.
