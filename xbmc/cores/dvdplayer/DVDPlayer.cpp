@@ -504,13 +504,31 @@ bool CDVDPlayer::OpenInputStream()
   if (!m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) 
   &&  !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
   {
-    if(g_stSettings.m_currentVideoSettings.m_SubtitleOn)
-    {
-      // find any available external subtitles
-      std::vector<std::string> filenames;
-      CDVDFactorySubtitle::GetSubtitles(filenames, m_filename);
-      for(unsigned int i=0;i<filenames.size();i++)
-        AddSubtitleFile(filenames[i]);
+    MediaPartPtr part = GetMediaPart();
+    if (part)
+    {          
+      BOOST_FOREACH(MediaStreamPtr stream, part->mediaStreams)
+      {
+        if (stream->streamType == PLEX_STREAM_SUBTITLE && stream->index == -1)
+        {
+          SelectionStream s;
+          s.source   = m_SelectionStreams.Source(STREAM_SOURCE_TEXT, stream->key);
+          s.type     = STREAM_SUBTITLE;
+          s.id       = stream->id;
+          s.plexID   = stream->id; 
+          s.language = stream->language;
+          s.filename = stream->key;
+          s.name     = stream->language;
+          
+          // Cache the subtitle locally.
+          CStdString path = "z:\\subtitle.plex." + boost::lexical_cast<string>(stream->id) + "." + stream->codec;
+          if (CFile::Cache(stream->key, path))
+          {
+            s.filename = path;
+            m_SelectionStreams.Update(s);  
+          }
+        }
+      }
 
       g_stSettings.m_currentVideoSettings.m_SubtitleCached = true;
     }
@@ -599,17 +617,43 @@ bool CDVDPlayer::OpenDemuxStream()
     m_dvdPlayerVideo.SetMaxDataSize(totalData);
     m_dvdPlayerAudio.SetMaxDataSize(audioCacheSize);
   }
-    
+  
+  // Update Plex streams from the demuxer.
+  MediaPartPtr part = GetMediaPart();
+  if (part)
+  {          
+    BOOST_FOREACH(MediaStreamPtr stream, part->mediaStreams)
+    {
+      StreamType type = STREAM_NONE;
+      
+      if (stream->streamType == PLEX_STREAM_SUBTITLE)
+        type = STREAM_SUBTITLE;
+      else if (stream->streamType == PLEX_STREAM_AUDIO)
+        type = STREAM_AUDIO;
+      
+      if (type != STREAM_NONE)
+      {
+        // Look for the right index and set the Plex stream ID.
+        int count = m_SelectionStreams.Count(type);
+        for (int i=0; i<count; i++)
+        {
+          SelectionStream& s = m_SelectionStreams.Get(type, i);
+          if (s.id == stream->index)
+            s.plexID = stream->id;
+        }
+      }
+    }
+  }
+  
   return true;
 }
 
 void CDVDPlayer::OpenDefaultStreams()
 {
-  int  count;
-  bool valid;
-  // open video stream
-  count = m_SelectionStreams.Count(STREAM_VIDEO);
-  valid = false;
+  int  count = m_SelectionStreams.Count(STREAM_VIDEO);
+  bool valid = false;
+  
+  // Open video stream.
   for(int i = 0;i<count && !valid;i++)
   {
     SelectionStream& s = m_SelectionStreams.Get(STREAM_VIDEO, i);
@@ -619,210 +663,83 @@ void CDVDPlayer::OpenDefaultStreams()
   if(!valid)
     CloseVideoStream(true);
 
-  bool foundMatchingAudioStream = false;
-  bool foundLanguageTaggedAudioStream = false;
-  
-  if(!m_PlayerOptions.video_only)
+  // Select audio stream.  
+  if (!m_PlayerOptions.video_only)
   {
     count = m_SelectionStreams.Count(STREAM_AUDIO);
     valid = false;
 
-    // Open the stream saved in the setting.
-    if (g_stSettings.m_currentVideoSettings.m_AudioStream >= 0 && 
-        g_stSettings.m_currentVideoSettings.m_AudioStream < count)
+    // Pick selected audio stream.
+    MediaPartPtr part = GetMediaPart();
+    if (part)
     {
-      SelectionStream& s = m_SelectionStreams.Get(STREAM_AUDIO, g_stSettings.m_currentVideoSettings.m_AudioStream);
-      if(OpenAudioStream(s.id, s.source))
-        valid = true;
-      else
-        CLog::Log(LOGWARNING, "%s - failed to restore selected audio stream (%d)", __FUNCTION__, g_stSettings.m_currentVideoSettings.m_AudioStream);
-    }
-
-#ifdef __APPLE__
-    // What's my language?
-    string myLang = Cocoa_GetSimpleLanguage();
-    
-    // Try a smart open.
-    if (valid == false && g_guiSettings.GetBool("videoplayer.autoselectaudiostream"))
-    {
-      bool dtsEnabled = false;
-      bool ac3Enabled = false;
-      SelectionStream* pickedStream = 0;
-      
-      if (g_audioConfig.UseDigitalOutput() == true)
+      BOOST_FOREACH(MediaStreamPtr stream, part->mediaStreams)
       {
-        dtsEnabled = g_audioConfig.GetDTSEnabled();
-        ac3Enabled = g_audioConfig.GetAC3Enabled();
-      }
-      
-      // First try to find the right language.
-      CLog::Log(LOGINFO, "Auto-selecting audio stream, DTS=%d, AC3=%d.\n", dtsEnabled, ac3Enabled);
-      vector<SelectionStream*> correctLanguage;
-      for (int i=0; i<count; i++)
-      {
-        SelectionStream& s = m_SelectionStreams.Get(STREAM_AUDIO, i);
-        string iso6391 = Cocoa_ConvertIso6392ToIso6391(s.language);
-        
-        // Keep track of whether we've found any language-tagged stream.
-        if (iso6391.size() > 0)
-          foundLanguageTaggedAudioStream = true;
-        
-        CLog::Log(LOGINFO, " * Considering audio stream %s with my language %s\n", iso6391.c_str(), myLang.c_str());
-        if (iso6391 == myLang)
+        // If we've found the selected audio stream...
+        if (stream->streamType == PLEX_STREAM_AUDIO && stream->selected)
         {
-          CLog::Log(LOGINFO, " * Language match for audio stream: %s\n", myLang.c_str());
-          correctLanguage.push_back(&s);
-        }
-      }
-      
-      if (correctLanguage.size() > 1)
-      {
-        int score = 0;
-        
-        // Pick the best one based on format.
-        BOOST_FOREACH(SelectionStream* s, correctLanguage)
-        {
-          if (s->codec == CODEC_ID_DTS && dtsEnabled)
+          // ...see if we can match it up with our stream.
+          count = m_SelectionStreams.Count(STREAM_AUDIO);
+          for (int i=0; i<count; i++)
           {
-            pickedStream = s;
-            score = 6;
-          }
-          else if (s->codec == CODEC_ID_AC3 && ac3Enabled && score < 5)
-          {
-            pickedStream = s;
-            score = 5;
-          }
-          else if (s->codec == CODEC_ID_AAC && ac3Enabled && score < 4)
-          {
-            pickedStream = s;
-            score = 4;
-          }
-          else if (s->codec != CODEC_ID_VORBIS && s->numChannels == 2 && ac3Enabled == false && dtsEnabled == false && score < 2)
-          {
-            // We check for Vorbis because (a) they don't seem to A/V sync very well and
-            // they tend to be used as director's comments tracks.
-            //
-            pickedStream = s;
-            score = 2;
-          }
-        }
-
-        // If we didn't luck out, just pick the first one.
-        if (pickedStream == 0)
-          pickedStream = correctLanguage[0];
-        
-        if (pickedStream)
-          CLog::Log(LOGINFO, " * Decided to use codec=%d, channels=%d, score=%d\n", pickedStream->codec, pickedStream->numChannels, score);
-      }
-      else if (correctLanguage.size() == 1)
-      {
-        pickedStream = correctLanguage[0];
-      }
-      
-      // If we selected a stream, try to open it.
-      if (pickedStream != 0 && OpenAudioStream(pickedStream->id, pickedStream->source))
-      {
-        foundMatchingAudioStream = true;
-        valid = true;
-      }
-    }
-#endif
-    
-    // Just pick the first valid stream.
-    for(int i = 0; i<count && !valid; i++)
-    {
-      SelectionStream& s = m_SelectionStreams.Get(STREAM_AUDIO, i);
-      if (OpenAudioStream(s.id, s.source))
-      {
-        valid = true;
-        
-#ifdef __APPLE__       
-        // Keep track of whether the pick matched the language.
-        string iso6391 = Cocoa_ConvertIso6392ToIso6391(s.language);
-        if (iso6391 == myLang)
-        {
-          CLog::Log(LOGINFO, " * Well, it was pure luck, but selected stream matched my language [%s]\n", myLang.c_str());
-          foundMatchingAudioStream = true;
-        }
-#endif
-      }
-    }
-    if(!valid)
-      CloseAudioStream(true);
-  }
-
-  // open subtitle stream
-  if(g_stSettings.m_currentVideoSettings.m_SubtitleOn && !m_PlayerOptions.video_only)
-  {
-    m_dvdPlayerVideo.EnableSubtitle(true);
-    count = m_SelectionStreams.Count(STREAM_SUBTITLE);
-    valid = false;
-    
-    // Try opening from settings.
-    if (g_stSettings.m_currentVideoSettings.m_SubtitleStream >= 0 && 
-        g_stSettings.m_currentVideoSettings.m_SubtitleStream < count)
-    {
-      SelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, g_stSettings.m_currentVideoSettings.m_SubtitleStream);
-      if(OpenSubtitleStream(s.id, s.source))
-        valid = true;
-      else
-        CLog::Log(LOGWARNING, "%s - failed to restore selected subtitle stream (%d)", __FUNCTION__, g_stSettings.m_currentVideoSettings.m_SubtitleStream);
-    }
-
-#ifdef __APPLE__
-
-    bool invisibleOpen = false;
-    
-    // Try a smart open.
-    if (valid == false && g_guiSettings.GetBool("subtitles.autoselectsubtitlestream"))
-    {
-      if (foundMatchingAudioStream == true)
-      {
-        // We don't need subtitles since the language matched.
-        CLog::Log(LOGINFO, "Not setting subtitles since we have a language match.\n");
-        invisibleOpen = true;
-      }
-      else if (foundLanguageTaggedAudioStream == true)
-      {
-        // Look for a language match.
-        string lang = Cocoa_GetSimpleLanguage();
-        for (int i=0; i<count && !valid; i++)
-        {
-          SelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, i);
-          string iso6391 = Cocoa_ConvertIso6392ToIso6391(s.language);
-          
-          CLog::Log(LOGINFO, " * Considering %s with %s\n", iso6391.c_str(), lang.c_str());
-          if (Cocoa_ConvertIso6392ToIso6391(s.language) == lang)
-          {
-            CLog::Log(LOGINFO, " * Language match for subtitle stream: %s\n", lang.c_str());
-            if (OpenSubtitleStream(s.id, s.source))
+            SelectionStream& s = m_SelectionStreams.Get(STREAM_AUDIO, i);
+            if (s.id == stream->index && OpenAudioStream(s.id, s.source))
               valid = true;
           }
         }
-
-        // If we didn't find a match, then disable subtitles, and assume audio track was a match.
-        if (valid == false)
-          invisibleOpen = true;
       }
     }
-      
-#endif
 
-    for(int i = 0;i<count && !valid; i++)
+    // If that didn't work, just pick the first valid stream.
+    for (int i = 0; i<count && !valid; i++)
     {
-      SelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, i);
-      if(OpenSubtitleStream(s.id, s.source))
+      SelectionStream& s = m_SelectionStreams.Get(STREAM_AUDIO, i);
+      if (OpenAudioStream(s.id, s.source))
         valid = true;
     }
+
+    // If we don't have an audio stream, close it.
+    if (valid == false)
+      CloseAudioStream(true);
+  }
+
+  valid = false;
+  m_dvdPlayerVideo.EnableSubtitle(true);
+  
+  // Open subtitle stream.
+  MediaPartPtr part = GetMediaPart();
+  if (part)
+  {
+    BOOST_FOREACH(MediaStreamPtr stream, part->mediaStreams)
+    {
+      // If we've found the selected subtitle stream...
+      if (stream->streamType == PLEX_STREAM_SUBTITLE && stream->selected)
+      {
+        count = m_SelectionStreams.Count(STREAM_SUBTITLE);
+        
+        for (int i = 0; i<count && !valid; i++)
+        {
+          SelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, i);
+          if (s.id == stream->id && OpenSubtitleStream(s.id, s.source))
+            valid = true;
+        }
+      }
+    }
     
-    if (!valid)
-      CloseSubtitleStream(false);
-    else if (invisibleOpen)
+    // If that didn't pick one, just open the first stream and make it invisible.
+    if (count > 0)
+    {
+      SelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, 0);
+      OpenSubtitleStream(s.id, s.source);
+    }
+    
+    // Set them on/off based on whether we found one.
+    g_stSettings.m_currentVideoSettings.m_SubtitleOn = valid;
+    
+    // We don't have subtitles to show, close.
+    if (valid == false)
       SetSubtitleVisible(false);
   }
-  else
-    m_dvdPlayerVideo.EnableSubtitle(false);
-
 }
 
 bool CDVDPlayer::ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream)
@@ -986,6 +903,20 @@ void CDVDPlayer::Process()
   if (m_pDlgCache && m_pDlgCache->IsCanceled())
     return;
  
+  // Get details on the item we're playing.
+  if (g_application.CurrentFileItem().IsPlexMediaServerLibrary())
+  {
+    DIRECTORY::CPlexDirectory plex;
+    CFileItemList items;
+    plex.GetDirectory(g_application.CurrentFileItem().GetProperty("key"), items);
+    
+    if (items.Size() == 1)
+    {
+      // Save it.
+      m_itemWithDetails = items[0];
+    }
+  }
+  
   try 
   {
     if (!OpenInputStream())
@@ -1929,7 +1860,6 @@ void CDVDPlayer::HandleMessages()
       else if (pMsg->IsType(CDVDMsg::PLAYER_SET_SUBTITLESTREAM_VISIBLE))
       {
         CDVDMsgBool* pValue = (CDVDMsgBool*)pMsg;
-
         m_dvdPlayerVideo.EnableSubtitle(pValue->m_value);
 
         if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
@@ -2254,6 +2184,12 @@ int CDVDPlayer::GetSubtitle()
   return m_SelectionStreams.IndexOf(STREAM_SUBTITLE, *this);
 }
 
+int CDVDPlayer::GetSubtitlePlexID()
+{
+  SelectionStream& stream = m_SelectionStreams.Get(STREAM_SUBTITLE, m_SelectionStreams.IndexOf(STREAM_SUBTITLE, *this));
+  return stream.plexID;
+}
+
 void CDVDPlayer::GetSubtitleName(int iStream, CStdString &strStreamName)
 {
   strStreamName = "";
@@ -2303,6 +2239,12 @@ int CDVDPlayer::GetAudioStreamCount()
 int CDVDPlayer::GetAudioStream()
 {
   return m_SelectionStreams.IndexOf(STREAM_AUDIO, *this);
+}
+
+int CDVDPlayer::GetAudioStreamPlexID()
+{
+  SelectionStream& stream = m_SelectionStreams.Get(STREAM_AUDIO, m_SelectionStreams.IndexOf(STREAM_AUDIO, *this));
+  return stream.plexID;
 }
 
 void CDVDPlayer::GetAudioStreamName(int iStream, CStdString& strStreamName)

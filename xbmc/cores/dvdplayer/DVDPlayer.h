@@ -21,6 +21,8 @@
  *
  */
 
+#include <boost/lexical_cast.hpp>
+
 #include "cores/IPlayer.h"
 #include "utils/Thread.h"
 
@@ -91,8 +93,21 @@ public:
 struct SelectionStream 
 {
   SelectionStream()
-    : numChannels(0)
+    : plexID(-1)
+    , numChannels(0)
     , codec(CODEC_ID_NONE) {}
+  
+  SelectionStream& operator=(const SelectionStream & other)
+  {
+    // Preserve Plex ID.
+    type = other.type;
+    filename = other.filename;
+    language = other.language;
+    name = other.name;
+    id = other.id;
+    numChannels = other.numChannels;
+    codec = other.codec;
+  }
   
   StreamType   type;
   std::string  filename;
@@ -100,6 +115,7 @@ struct SelectionStream
   std::string  name;
   int          source;
   int          id;
+  int          plexID;
   
   int          numChannels;
   CodecID      codec;
@@ -176,6 +192,7 @@ public:
   virtual int GetSubtitle();
   virtual void GetSubtitleName(int iStream, CStdString &strStreamName);
   virtual void SetSubtitle(int iStream);
+  virtual int  GetSubtitlePlexID();
   virtual bool GetSubtitleVisible();
   virtual void SetSubtitleVisible(bool bVisible);
   virtual bool GetSubtitleExtension(CStdString &strSubtitleExtension) { return false; }
@@ -183,9 +200,19 @@ public:
 
   virtual int GetAudioStreamCount();
   virtual int GetAudioStream();
+  virtual int  GetAudioStreamPlexID();
   virtual void GetAudioStreamName(int iStream, CStdString &strStreamName);
   virtual void SetAudioStream(int iStream);
 
+  virtual int GetPlexMediaPartID() 
+  {
+    MediaPartPtr part = GetMediaPart();
+    if (part)
+      return part->id;
+    
+    return -1;
+  }
+  
   virtual int  GetChapterCount();
   virtual int  GetChapter();
   virtual void GetChapterName(CStdString& strChapterName);
@@ -282,6 +309,25 @@ protected:
   bool        m_caching;  // player is filling up the demux queue
   bool        m_seeking;  // player is currently trying to fullfill a seek request
   CFileItem   m_item;
+  
+  CFileItemPtr m_itemWithDetails;
+
+  MediaPartPtr GetMediaPart()
+  {
+    MediaPartPtr part;
+    
+    if (m_itemWithDetails)
+    {
+      // Figure out what part we're on.
+      int partIndex = 0;
+      if (m_item.HasProperty("partIndex"))
+        partIndex = boost::lexical_cast<int>(m_item.GetProperty("partIndex"));
+    
+      part = m_itemWithDetails->m_mediaParts[partIndex];
+    }
+    
+    return part;
+  }
 
   CCurrentStream m_CurrentAudio;
   CCurrentStream m_CurrentVideo;
