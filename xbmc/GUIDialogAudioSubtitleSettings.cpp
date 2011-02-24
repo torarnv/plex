@@ -32,6 +32,7 @@
 #include "FileSystem/File.h"
 #include "URL.h"
 #include "FileItem.h"
+#include "PlexMediaServerQueue.h"
 
 using namespace std;
 using namespace XFILE;
@@ -103,31 +104,6 @@ void CGUIDialogAudioSubtitleSettings::AddAudioStreams(unsigned int id)
 
   if( m_audioStream < 0 ) m_audioStream = 0;
 
-  // check if we have a single, stereo stream, and if so, allow us to split into
-  // left, right or both
-  if (!setting.max)
-  {
-    CStdString strAudioInfo;
-    g_application.m_pPlayer->GetAudioInfo(strAudioInfo);
-    int iNumChannels = atoi(strAudioInfo.Right(strAudioInfo.size() - strAudioInfo.Find("chns:") - 5).c_str());
-    CStdString strAudioCodec = strAudioInfo.Mid(7, strAudioInfo.Find(") VBR") - 5);
-    bool bDTS = strstr(strAudioCodec.c_str(), "DTS") != 0;
-    bool bAC3 = strstr(strAudioCodec.c_str(), "AC3") != 0;
-    if (iNumChannels == 2 && !(bDTS || bAC3))
-    { // ok, enable these options
-/*      if (g_stSettings.m_currentVideoSettings.m_AudioStream == -1)
-      { // default to stereo stream
-        g_stSettings.m_currentVideoSettings.m_AudioStream = 0;
-      }*/
-      setting.max = 2;
-      for (int i = 0; i <= setting.max; i++)
-        setting.entry.push_back(g_localizeStrings.Get(13320 + i));
-      m_audioStream = -g_stSettings.m_currentVideoSettings.m_AudioStream - 1;
-      m_settings.push_back(setting);
-      return;
-    }
-  }
-
   // cycle through each audio stream and add it to our list control
   for (int i = 0; i <= setting.max; ++i)
   {
@@ -175,7 +151,7 @@ void CGUIDialogAudioSubtitleSettings::AddSubtitleStreams(unsigned int id)
     if (strName.length() == 0)
       strName = "Unnamed";
 
-    strItem.Format("%s (%i/%i)", strName.c_str(), i + 1, (int)setting.max + 1);
+    strItem.Format("(%i/%i) %s", i + 1, (int)setting.max + 1, strName.c_str());
 
     setting.entry.push_back(strItem);
   }
@@ -197,6 +173,26 @@ void CGUIDialogAudioSubtitleSettings::AddSubtitleStreams(unsigned int id)
       setting.format = g_localizeStrings.Get(22004); \
     if (x > 0)\
       setting.format = g_localizeStrings.Get(22005); 
+
+void CGUIDialogAudioSubtitleSettings::UpdatePlexSubtitle()
+{
+  // Notify the Plex Media Server.
+  CFileItemPtr item = g_application.CurrentFileItemPtr();
+  int partID = g_application.m_pPlayer->GetPlexMediaPartID();
+  int subtitleStreamID = g_application.m_pPlayer->GetSubtitlePlexID();
+  
+  PlexMediaServerQueue::Get().onStreamSelected(item, partID, m_subtitleVisible ? subtitleStreamID : 0, -1);
+}
+
+void CGUIDialogAudioSubtitleSettings::UpdatePlexAudioStream()
+{
+  // Notify the Plex Media Server.
+  CFileItemPtr item = g_application.CurrentFileItemPtr();
+  int partID = g_application.m_pPlayer->GetPlexMediaPartID();
+  int audioStreamID = g_application.m_pPlayer->GetAudioStreamPlexID();
+  
+  PlexMediaServerQueue::Get().onStreamSelected(item, partID, -1, audioStreamID);
+}
 
 void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
 {
@@ -243,6 +239,8 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
       g_stSettings.m_currentVideoSettings.m_AudioStream = m_audioStream;
       g_application.m_pPlayer->SetAudioStream(m_audioStream);    // Set the audio stream to the one selected
     }
+    
+    UpdatePlexAudioStream();
   }
   else if (setting.id == AUDIO_SETTINGS_OUTPUT_TO_ALL_SPEAKERS)
   {
@@ -267,6 +265,8 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
       g_application.Restart(true); // cache subtitles
       Close();
     }
+    
+    UpdatePlexSubtitle();
   }
   else if (setting.id == SUBTITLE_SETTINGS_DELAY)
   {
@@ -277,6 +277,8 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
   {
     g_stSettings.m_currentVideoSettings.m_SubtitleStream = m_subtitleStream;
     g_application.m_pPlayer->SetSubtitle(m_subtitleStream);
+    
+    UpdatePlexSubtitle();
   }
   else if (setting.id == SUBTITLE_SETTINGS_BROWSER)
   {

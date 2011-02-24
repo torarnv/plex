@@ -38,6 +38,9 @@ protected:
   void AddAudioStreams(unsigned int id);
   void AddSubtitleStreams(unsigned int id);
 
+  void UpdatePlexSubtitle();
+  void UpdatePlexAudioStream();
+  
   float m_volume;
   int m_audioStream;
   int m_subtitleStream;
