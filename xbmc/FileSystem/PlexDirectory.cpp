@@ -800,7 +800,7 @@ class PlexMediaNodeLibrary : public PlexMediaNode
 {
  public:
   
-  string ComputeMediaUrl(const string& parentPath, TiXmlElement* media, string& localPath)
+  string ComputeMediaUrl(const string& parentPath, TiXmlElement* media, string& localPath, vector<MediaPartPtr>& mediaParts)
   {
     string ret;
     
@@ -818,6 +818,44 @@ class PlexMediaNodeLibrary : public PlexMediaNode
         CStdString path = part->Attribute("file");
         CUtil::UrlDecode(path);
         localPaths.push_back(path);
+      }
+      
+      // Create a media part.
+      int partID = 0;
+      if (part->Attribute("id"))
+        partID = boost::lexical_cast<int>(part->Attribute("id"));
+      
+      MediaPartPtr mediaPart(new MediaPart(partID, part->Attribute("key")));
+      mediaParts.push_back(mediaPart);
+      
+      // Parse the streams.
+      for (TiXmlElement* stream = part->FirstChildElement(); stream; stream=stream->NextSiblingElement())
+      {
+        int id = boost::lexical_cast<int>(stream->Attribute("id"));
+        int streamType = boost::lexical_cast<int>(stream->Attribute("streamType"));
+        int index = -1;
+        bool selected = false; 
+        
+        if (stream->Attribute("index"))
+          index = boost::lexical_cast<int>(stream->Attribute("index"));
+        
+        if (stream->Attribute("selected") && strcmp(stream->Attribute("selected"), "1") == 0)
+          selected = true;
+        
+        string language;
+        if (stream->Attribute("language"))
+          language = stream->Attribute("language");
+
+        string key;
+        if (stream->Attribute("key"))
+          key = CPlexDirectory::ProcessUrl(parentPath, stream->Attribute("key"), false);
+        
+        string codec;
+        if (stream->Attribute("codec"))
+          codec = stream->Attribute("codec");
+        
+        MediaStreamPtr mediaStream(new MediaStream(id, key, streamType, codec, index, selected, language));
+        mediaPart->mediaStreams.push_back(mediaStream);
       }
     }
     
@@ -897,7 +935,8 @@ class PlexMediaNodeLibrary : public PlexMediaNode
         
         // Path to the track.
         string localPath;
-        string url = ComputeMediaUrl(parentPath, media, localPath);
+        vector<MediaPartPtr> mediaParts;
+        string url = ComputeMediaUrl(parentPath, media, localPath, mediaParts);
         pItem->m_strPath = url;
         song.strFileName = pItem->m_strPath;
         
@@ -963,7 +1002,8 @@ class PlexMediaNodeLibrary : public PlexMediaNode
 
         // Compute the URL.
         string localPath;
-        string url = ComputeMediaUrl(parentPath, media, localPath);
+        vector<MediaPartPtr> mediaParts;
+        string url = ComputeMediaUrl(parentPath, media, localPath, mediaParts);
         videoInfo.m_strFile = url;
         videoInfo.m_strFileNameAndPath = url;
 
@@ -977,6 +1017,7 @@ class PlexMediaNodeLibrary : public PlexMediaNode
 
         // Create the file item.
         CFileItemPtr theMediaItem(new CFileItem(theVideoInfo));
+        theMediaItem->m_mediaParts = mediaParts;
         
         // Check for indirect.
         if (media->Attribute("indirect") && strcmp(media->Attribute("indirect"), "1") == 0)

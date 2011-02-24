@@ -62,6 +62,40 @@ class CFileItem;
  */
 typedef boost::shared_ptr<CFileItem> CFileItemPtr;
 
+#define PLEX_STREAM_VIDEO    1
+#define PLEX_STREAM_AUDIO    2
+#define PLEX_STREAM_SUBTITLE 3
+
+class MediaStream
+{
+ public:
+  MediaStream(int id, const std::string& key, int streamType, const std::string& codec, int index, bool selected, const std::string& language)
+    : id(id), key(key), streamType(streamType), codec(codec), index(index), selected(selected), language(language) {}
+   
+  int         id;
+  std::string key;
+  int         streamType;
+  std::string codec;
+  int         index;
+  bool        selected;
+  std::string language;
+};
+
+typedef boost::shared_ptr<MediaStream> MediaStreamPtr;
+
+class MediaPart
+{
+ public:
+  MediaPart(int id, const std::string& key)
+    : id(id), key(key) {}
+  
+  int id;
+  std::string key;
+  std::vector<MediaStreamPtr> mediaStreams;
+};
+
+typedef boost::shared_ptr<MediaPart> MediaPartPtr;
+
 /*!
   \brief Represents a file on a share
   \sa CFileItemList
@@ -288,6 +322,7 @@ public:
   bool m_includeStandardContextItems;
   std::vector<CFileItemPtr> m_contextItems;
   std::vector<CFileItemPtr> m_mediaItems;
+  std::vector<MediaPartPtr> m_mediaParts;
   
 private:
   CStdString GetFolderThumb(const CStdString &folderJPG = "folder.jpg") const;
