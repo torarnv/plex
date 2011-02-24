@@ -4510,6 +4510,8 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
   long totalTime = 0;
   for (int i = 0; i < m_currentStack->Size(); i++)
   {
+    (*m_currentStack)[i]->SetProperty("partIndex", i);
+    
     if (haveTimes)
       (*m_currentStack)[i]->m_lEndOffset = times[i];
     else
