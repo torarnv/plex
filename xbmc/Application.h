@@ -128,6 +128,7 @@ public:
   void ReloadSkin();
   const CStdString& CurrentFile();
   CFileItem& CurrentFileItem();
+  CFileItemPtr& CurrentFileItemPtr();
   virtual bool OnMessage(CGUIMessage& message);
   const EPLAYERCORES GetCurrentPlayer();
   virtual void OnPlayBackEnded();

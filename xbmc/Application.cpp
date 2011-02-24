@@ -6150,6 +6150,11 @@ CFileItem& CApplication::CurrentFileItem()
   return *m_itemCurrentFile;
 }
 
+CFileItemPtr& CApplication::CurrentFileItemPtr()
+{
+  return m_itemCurrentFile;
+}
+
 void CApplication::Mute(void)
 {
   if (g_stSettings.m_bMute)
