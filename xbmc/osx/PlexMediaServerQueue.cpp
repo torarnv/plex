@@ -24,13 +24,13 @@ void PlexMediaServerQueue::Process()
     while (m_queue.size() > 0)
     {
       // Get a URL.
-      string url = m_queue.front();
+      pair<string, string> pair = m_queue.front();
       
       // Hit the Plex Media Server.
       CHTTP http;
       CStdString reply;
-      http.Open(url, "GET", 0);
-      CLog::Log(LOGNOTICE, "Plex Media Server Queue: %s", url.c_str());
+      http.Open(pair.second, pair.first.c_str(), 0);
+      CLog::Log(LOGNOTICE, "Plex Media Server Queue: %s", pair.second.c_str());
       
       // That's it, pop it off the queue.
       m_queue.pop();

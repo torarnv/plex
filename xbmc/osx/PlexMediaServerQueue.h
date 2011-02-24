@@ -47,6 +47,31 @@ class PlexMediaServerQueue : public CThread
     }
   }
   
+  /// Stream selection.
+  void onStreamSelected(const CFileItemPtr& item, int partID, int subtitleStreamID, int audioStreamID)
+  { 
+    if (partID > 0)
+    {
+      string url = "/library/parts/" + boost::lexical_cast<string>(partID);
+      url = buildUrl(item, url);
+      
+      if (subtitleStreamID != -1)
+      {
+        url += "?subtitleStreamID=";
+        if (subtitleStreamID != 0)
+          url += boost::lexical_cast<string>(subtitleStreamID);
+      }
+      else if (audioStreamID != -1)
+      {
+        url += "?audioStreamID=";
+        if (audioStreamID != 0)
+          url += boost::lexical_cast<string>(audioStreamID);
+      }
+      
+      enqueue(url, "PUT");
+    }
+  }
+  
   /// Play progress.
   void onPlayingProgress(const CFileItemPtr& item, int ms)
   { enqueue("progress", item, "&time=" + lexical_cast<string>(ms)); }
@@ -86,21 +111,22 @@ class PlexMediaServerQueue : public CThread
   { m_allowScrobble = true; }
   
  protected:
+
+  void enqueue(const string& url, const string& verb="GET")
+  {
+    m_mutex.lock();
+    m_queue.push(pair<string, string>(verb, url));
+    m_mutex.unlock();
+    m_condition.notify_one();
+  }
   
   void enqueue(const string& verb, const CFileItemPtr& item, const string& options="")
   {
     if (item->HasProperty("ratingKey"))
     {
-      CStdString path = item->m_strPath;
-      if (item->IsStack())
-      {
-        CStackDirectory stack;
-        path = stack.GetFirstStackedFile(path);
-      }
-      
       // Build the URL.
       string url = "/:/" + verb;
-      url = CPlexDirectory::ProcessUrl(path, url, false);
+      url = buildUrl(item, url);
       url += "?key=" + item->GetProperty("ratingKey");
       url += "&identifier=" + item->GetProperty("pluginIdentifier");
       url += options;
@@ -110,17 +136,22 @@ class PlexMediaServerQueue : public CThread
     }
   }
   
-  void enqueue(const string& url)
+  string buildUrl(const CFileItemPtr& item, const string& url)
   {
-    m_mutex.lock();
-    m_queue.push(url);
-    m_mutex.unlock();
-    m_condition.notify_one();
+    CStdString path = item->m_strPath;
+    if (item->IsStack())
+    {
+      CStackDirectory stack;
+      path = stack.GetFirstStackedFile(path);
+    }
+    
+    // Build the URL.
+    return CPlexDirectory::ProcessUrl(path, url, false);
   }
   
  private:
   
-  queue<string> m_queue;
+  queue<pair<string, string> > m_queue;
   condition     m_condition;
   mutex         m_mutex;
   bool          m_allowScrobble;
