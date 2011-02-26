@@ -4,6 +4,7 @@
 #include <queue>
 #include <boost/thread.hpp>
 #include <boost/thread/condition.hpp>
+#include <boost/lexical_cast.hpp>
 
 #include "FileItem.h"
 #include "Thread.h"
