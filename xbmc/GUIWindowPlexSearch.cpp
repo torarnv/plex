@@ -274,7 +274,8 @@ bool CGUIWindowPlexSearch::OnAction(const CAction &action)
   else if (action.wID == ACTION_MOVE_LEFT || action.wID == ACTION_MOVE_RIGHT ||
            action.wID == ACTION_MOVE_UP   || action.wID == ACTION_MOVE_DOWN  ||
            action.wID == ACTION_PAGE_UP   || action.wID == ACTION_PAGE_DOWN  ||
-           action.wID == ACTION_HOME      || action.wID == ACTION_END)
+           action.wID == ACTION_HOME      || action.wID == ACTION_END        ||
+           action.wID == ACTION_SELECT_ITEM)
   {
     // Reset search time.
     m_lastSearchUpdate = 0;
