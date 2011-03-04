@@ -93,7 +93,7 @@ bool CPlexMediaServerPlayer::OpenFile(const CFileItem& file, const CPlayerOption
   {
     // We need to restart the media server.
     printf("Restarting media server because of 5.1 CoreAudio issue.\n");
-    PlexMediaServerHelper::Get().Restart();
+    PlexMediaServerHelper::Get().RestartIfOldFlash();
     g_needToRestartMediaServer = false;
     didWeRestart = true;
   }

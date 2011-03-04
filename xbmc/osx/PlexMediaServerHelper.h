@@ -22,9 +22,14 @@ class PlexMediaServerHelper : public PlexHelperApp
     return *_theInstance;
   }
 
+  void RestartIfOldFlash();
+  
  protected:
    
-  PlexMediaServerHelper() {}
+  PlexMediaServerHelper()
+    : m_oldFlash(true)
+    , m_checkedForOldFlash(false)
+  {}
   
   virtual bool   DoConfigure(int& mode, bool& alwaysRunning, bool& errorStarting);
   virtual string GetConfigString();
@@ -35,5 +40,8 @@ class PlexMediaServerHelper : public PlexHelperApp
   
  private:
    
+  bool m_oldFlash;
+  bool m_checkedForOldFlash;
+  
   static PlexMediaServerHelper* _theInstance;
 };

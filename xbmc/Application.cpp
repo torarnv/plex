@@ -964,7 +964,7 @@ HRESULT CApplication::Create(HWND hWnd)
   {
     // Oops, make sure we restart the media server just in case.
     if (g_guiSettings.GetBool("plexmediaserver.alwayson"))
-      PlexMediaServerHelper::Get().Restart();
+      PlexMediaServerHelper::Get().RestartIfOldFlash();
   }
   else
   {
@@ -4268,7 +4268,7 @@ void CApplication::Stop()
     if (CPlexMediaServerPlayer::IsRestartRequired() == true &&
         g_guiSettings.GetBool("plexmediaserver.alwayson"))
     {
-      PlexMediaServerHelper::Get().Restart();
+      PlexMediaServerHelper::Get().RestartIfOldFlash();
     }
     
     // Shut down bonjour.
