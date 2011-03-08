@@ -4540,7 +4540,7 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
   if (!haveTimes || item.m_lStartOffset == STARTOFFSET_RESUME)
   { 
     // See if we have a view offset.
-    if (item.HasProperty("viewOffset"))
+    if (item.HasProperty("viewOffset") && item.GetProperty("viewOffset").empty() == false)
       seconds = boost::lexical_cast<int>(item.GetProperty("viewOffset"))/1000.0;
     else
       seconds = 0.0f;
