@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "DllLibCurl.h"
+#include "Settings.h"
 
 #include <assert.h>
 
@@ -73,8 +74,7 @@ void DllLibCurlGlobal::Unload()
 void DllLibCurlGlobal::CheckIdle()
 {
   CSingleLock lock(m_critSection);
-  /* 20 seconds idle time before closing handle */
-  const DWORD idletime = 30000;
+  const DWORD idletime = g_advancedSettings.m_curlGlobalIdleTimeout;
 
   VEC_CURLSESSIONS::iterator it = m_sessions.begin();
   while(it != m_sessions.end())
