@@ -238,6 +238,7 @@ public:
     bool m_bTuxBoxSendAllAPids;
 
     int m_curlclienttimeout;
+    int m_curlGlobalIdleTimeout;
 
 #ifdef HAS_SDL
     bool m_fullScreen;

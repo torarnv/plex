@@ -304,6 +304,7 @@ CSettings::CSettings(void)
   g_advancedSettings.m_iTuxBoxZapWaitTime = 0; // Time in sec. Default 0:OFF
 
   g_advancedSettings.m_curlclienttimeout = 40;
+  g_advancedSettings.m_curlGlobalIdleTimeout = 30000; // Milliseconds
 
 #ifdef HAS_SDL
   g_advancedSettings.m_fullScreen = false;
@@ -1291,6 +1292,7 @@ void CSettings::LoadAdvancedSettings()
   {
     GetInteger(pElement, "autodetectpingtime", g_advancedSettings.m_autoDetectPingTime, 1, 240);
     GetInteger(pElement, "curlclienttimeout", g_advancedSettings.m_curlclienttimeout, 1, 1000);
+    GetInteger(pElement, "curlglobalidletimeout", g_advancedSettings.m_curlGlobalIdleTimeout, 1, 200000);
   }
 
   GetFloat(pRootElement, "playcountminimumpercent", g_advancedSettings.m_playCountMinimumPercent, 1.0f, 100.0f);
