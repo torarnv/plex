@@ -833,6 +833,25 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem)
     }
   }
   
+  if (pItem->IsPlexMediaServer())
+  {
+    CFileItemList fileItems;
+    vector<CStdString> items;
+    // Probe for a possible Plex directory. CPlexDirectory will parse
+    // the headers and not read the body unless the content-type is
+    // correct, so we will not end up reading a lot of extra data
+    // in the normal case where the item is a valid video source.
+    CPlexDirectory plexDir(true, false);
+    if (plexDir.GetDirectory(pItem->m_strPath, fileItems))
+    {
+      // Probing succeeded. The item is a Plex directory and should not
+      // be forwarded to the DVDPlayer, as the player will not be able
+      // to determine the input format and will fail to play the item.
+      CFileItemPtr plexDirItem(new CFileItem(pItem->m_strPath, true));
+      return CGUIMediaWindow::OnClick(plexDirItem, iItem);
+    }
+  }
+
   // party mode
   if (g_partyModeManager.IsEnabled(PARTYMODECONTEXT_VIDEO))
   {

@@ -916,7 +916,11 @@ bool CGUIMediaWindow::OnClick(int iItem)
 {
   if ( iItem < 0 || iItem >= (int)m_vecItems->Size() ) return true;
   CFileItemPtr pItem = m_vecItems->Get(iItem);
+  return OnClick(pItem, iItem);
+}
 
+bool CGUIMediaWindow::OnClick(const CFileItemPtr& pItem, int iItem)
+{
   if (pItem->IsParentFolder())
   {
     GoParentFolder();

@@ -68,6 +68,7 @@ protected:
   void SetupShares();
   virtual void GoParentFolder();
   virtual bool OnClick(int iItem);
+  bool OnClick(const CFileItemPtr& pItem, int iItem);
   virtual bool OnPopupMenu(int iItem);
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
