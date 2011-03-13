@@ -102,8 +102,15 @@ struct SelectionStream
     // Preserve Plex ID.
     type = other.type;
     filename = other.filename;
+
+    // Stream language from Plex stream.
+    if (type != STREAM_SUBTITLE)
+      name = other.name;
+    else if (language.size() != 3)
+      name = language;
+    
     language = other.language;
-    name = other.name;
+    
     id = other.id;
     numChannels = other.numChannels;
     codec = other.codec;

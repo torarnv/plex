@@ -174,26 +174,6 @@ void CGUIDialogAudioSubtitleSettings::AddSubtitleStreams(unsigned int id)
     if (x > 0)\
       setting.format = g_localizeStrings.Get(22005); 
 
-void CGUIDialogAudioSubtitleSettings::UpdatePlexSubtitle()
-{
-  // Notify the Plex Media Server.
-  CFileItemPtr item = g_application.CurrentFileItemPtr();
-  int partID = g_application.m_pPlayer->GetPlexMediaPartID();
-  int subtitleStreamID = g_application.m_pPlayer->GetSubtitlePlexID();
-  
-  PlexMediaServerQueue::Get().onStreamSelected(item, partID, m_subtitleVisible ? subtitleStreamID : 0, -1);
-}
-
-void CGUIDialogAudioSubtitleSettings::UpdatePlexAudioStream()
-{
-  // Notify the Plex Media Server.
-  CFileItemPtr item = g_application.CurrentFileItemPtr();
-  int partID = g_application.m_pPlayer->GetPlexMediaPartID();
-  int audioStreamID = g_application.m_pPlayer->GetAudioStreamPlexID();
-  
-  PlexMediaServerQueue::Get().onStreamSelected(item, partID, -1, audioStreamID);
-}
-
 void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
 {
   // setting has changed - update anything that needs it
@@ -239,8 +219,6 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
       g_stSettings.m_currentVideoSettings.m_AudioStream = m_audioStream;
       g_application.m_pPlayer->SetAudioStream(m_audioStream);    // Set the audio stream to the one selected
     }
-    
-    UpdatePlexAudioStream();
   }
   else if (setting.id == AUDIO_SETTINGS_OUTPUT_TO_ALL_SPEAKERS)
   {
@@ -265,8 +243,6 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
       g_application.Restart(true); // cache subtitles
       Close();
     }
-    
-    UpdatePlexSubtitle();
   }
   else if (setting.id == SUBTITLE_SETTINGS_DELAY)
   {
@@ -277,8 +253,6 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
   {
     g_stSettings.m_currentVideoSettings.m_SubtitleStream = m_subtitleStream;
     g_application.m_pPlayer->SetSubtitle(m_subtitleStream);
-    
-    UpdatePlexSubtitle();
   }
   else if (setting.id == SUBTITLE_SETTINGS_BROWSER)
   {
