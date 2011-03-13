@@ -722,7 +722,7 @@ void CDVDPlayer::OpenDefaultStreams()
         for (int i = 0; i<count && !valid; i++)
         {
           SelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, i);
-          if (s.id == stream->index && OpenSubtitleStream(s.id, s.source))
+          if (s.plexID == stream->id && OpenSubtitleStream(s.id, s.source))
             valid = true;
         }
       }
@@ -731,7 +731,7 @@ void CDVDPlayer::OpenDefaultStreams()
     }
     
     // If that didn't pick one, just open the first stream and make it invisible.
-    if (count > 0)
+    if (valid == false && count > 0)
     {
       SelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, 0);
       OpenSubtitleStream(s.id, s.source);
