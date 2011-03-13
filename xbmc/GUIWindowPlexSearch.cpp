@@ -261,8 +261,13 @@ bool CGUIWindowPlexSearch::OnAction(const CAction &action)
 {
   CStdString strAction = action.strAction;
   strAction = strAction.ToLower();
-  
-  if (action.wID == ACTION_PREVIOUS_MENU)
+
+  // Eat returns.
+  if (action.unicode == 13)
+  {
+    return true;
+  }
+  else if (action.wID == ACTION_PREVIOUS_MENU)
   {
     m_gWindowManager.PreviousWindow();
     return true;
