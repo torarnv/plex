@@ -263,7 +263,7 @@ bool CGUIWindowPlexSearch::OnAction(const CAction &action)
   strAction = strAction.ToLower();
 
   // Eat returns.
-  if (action.unicode == 13)
+  if (action.unicode == 13 && GetFocusedControlID() < 9000)
   {
     return true;
   }
