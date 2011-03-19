@@ -79,7 +79,7 @@ bool CPlexDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   while (m_downloadEvent.WaitMSec(100) == false)
   {
     // If enough time has passed, display the dialog.
-    if (GetTickCount() - time > 1000 && m_allowPrompting == true)
+    if (!dlgProgress && GetTickCount() - time > 1000 && m_allowPrompting == true)
     {
       dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
       if (dlgProgress)
