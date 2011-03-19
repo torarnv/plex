@@ -26,6 +26,7 @@
 #include "FileSystem/CDDADirectory.h"
 #include "VideoDatabase.h"
 #include "GUIButtonControl.h"
+#include "GUIDialogProgress.h"
 #include "utils/GUIInfoManager.h"
 #include "Picture.h"
 #include "musicInfoTagLoaderFactory.h"
@@ -2992,6 +2993,32 @@ int CXbmcHttp::xbmcWebServerStatus(int numParas, CStdString paras[])
         return SetResponse(openTag+"Error:Unknown parameter");
 }
 
+int CXbmcHttp::xbmcUpdateProgress(int numParas, CStdString paras[])
+{
+  if (numParas < 1)
+    return SetResponse(openTag + "Error:Must have a least one parameter");
+
+  CGUIDialogProgress* pDialog= (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  if (!pDialog || !pDialog->IsDialogRunning())
+    return SetResponse(openTag + "Error:No dialog open at the moment");
+
+  int percentage = atoi(paras[0].c_str());
+  if (percentage >= 0 && percentage <= 100)
+  {
+    pDialog->SetPercentage(percentage);
+    pDialog->ShowProgressBar(true);
+  }
+  else
+  {
+    pDialog->ShowProgressBar(false);
+  }
+
+  for (int i = 1; i < numParas && i < 4; ++i)
+    pDialog->SetLine(i - 1, paras[i]);
+
+  return SetResponse(openTag + "OK");
+}
+
 int CXbmcHttp::xbmcSetResponseFormat(int numParas, CStdString paras[])
 {
   if (numParas==0)
@@ -3154,6 +3181,7 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
 	  else if (command == "action")                   retVal = xbmcOnAction(numParas, paras);
 	  else if (command == "getrecordstatus")          retVal = xbmcRecordStatus(numParas, paras);
 	  else if (command == "webserverstatus")          retVal = xbmcWebServerStatus(numParas, paras);
+	  else if (command == "updateprogress")           retVal = xbmcUpdateProgress(numParas, paras);
 	  else if (command == "setloglevel")              retVal = xbmcSetLogLevel(numParas, paras);
 	  else if (command == "getloglevel")              retVal = xbmcGetLogLevel();
 

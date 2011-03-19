@@ -124,6 +124,7 @@ public:
   int xbmcGetMusicLabel(int numParas, CStdString paras[]);
   int xbmcGetVideoLabel(int numParas, CStdString paras[]);
   int xbmcGetSkinSetting(int numParas, CStdString paras[]);
+  int xbmcUpdateProgress(int numParas, CStdString paras[]);
   int xbmcWebServerStatus(int numParas, CStdString paras[]);
   int xbmcGetLogLevel();
   int xbmcSetLogLevel(int numParas, CStdString paras[]);
