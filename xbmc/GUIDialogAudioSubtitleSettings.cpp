@@ -86,7 +86,7 @@ void CGUIDialogAudioSubtitleSettings::CreateSettings()
   OnSettingChanged(m_settings.size()-1);
   AddSubtitleStreams(SUBTITLE_SETTINGS_STREAM);
   AddButton(SUBTITLE_SETTINGS_BROWSER,13250);
-  AddButton(AUDIO_SETTINGS_MAKE_DEFAULT, 12376);
+  //AddButton(AUDIO_SETTINGS_MAKE_DEFAULT, 12376);
 }
 
 void CGUIDialogAudioSubtitleSettings::AddAudioStreams(unsigned int id)
