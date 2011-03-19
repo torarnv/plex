@@ -1625,7 +1625,7 @@ void CPlexDirectory::Process()
   CStdString protocols = "protocols=shoutcast,webkit,http-video;audioDecoders=mp3,aac";
   
   if (g_audioConfig.GetDTSEnabled())
-    protocols += ",dts{bitrate=800000&channels:8}";
+    protocols += ",dts{bitrate:800000&channels:8}";
     
   if (g_audioConfig.GetAC3Enabled())
     protocols += ",ac3{bitrate:800000&channels:8}";
