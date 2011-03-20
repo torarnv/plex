@@ -1864,8 +1864,10 @@ int CXbmcHttp::xbmcPlayerPlayMedia(int numParas, CStdString paras[])
   {
     CLog::Log(LOGWARNING, "Unknown type: [%s] (path=%s)", mediaType.c_str(), path.c_str());
   }
-  
-  g_application.ResetDisplaySleep();
+
+  // Easiest way to turn off the screensaver is to send a fake key. #winning.
+  CKey emptyKey;
+  g_application.OnKey(emptyKey);
   
   // Play the media.
   if (mediaType == "track")
