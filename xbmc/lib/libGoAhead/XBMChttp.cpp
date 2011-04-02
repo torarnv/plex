@@ -3019,6 +3019,18 @@ int CXbmcHttp::xbmcUpdateProgress(int numParas, CStdString paras[])
   return SetResponse(openTag + "OK");
 }
 
+int CXbmcHttp::xbmcIsProgressDialogCanceled()
+{
+  CGUIDialogProgress* pDialog= (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  if (!pDialog || !pDialog->IsDialogRunning())
+    return SetResponse(openTag + "Error:No dialog open at the moment");
+
+  if (pDialog->IsCanceled())
+    return SetResponse(openTag + "True");
+  else
+    return SetResponse(openTag + "False");
+}
+
 int CXbmcHttp::xbmcSetResponseFormat(int numParas, CStdString paras[])
 {
   if (numParas==0)
@@ -3182,6 +3194,7 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
 	  else if (command == "getrecordstatus")          retVal = xbmcRecordStatus(numParas, paras);
 	  else if (command == "webserverstatus")          retVal = xbmcWebServerStatus(numParas, paras);
 	  else if (command == "updateprogress")           retVal = xbmcUpdateProgress(numParas, paras);
+	  else if (command == "isprogressdialogcanceled") retVal = xbmcIsProgressDialogCanceled();
 	  else if (command == "setloglevel")              retVal = xbmcSetLogLevel(numParas, paras);
 	  else if (command == "getloglevel")              retVal = xbmcGetLogLevel();
 
